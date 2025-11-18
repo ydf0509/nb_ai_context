@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb_ai_context"
+version = "1.4"
+description = "非常强力的对任意it项目生成ai上下文单个markdown文档，丢给大模型或者知识库，非常强力，大模型幻觉大幅度减少。尤其是对python项目还有专门的ast语法树解析"
+keywords = ["ai", "ai context", "llm", "rag", "python","ast","ast metadata","ai context generator","markdown"]
+authors = [
+    {name = "ydf0509", email = "ydf0509@xxx.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "typing_extensions>=3.7; python_version < '3.8'",
+    "nb_path",
+    "nb_log",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.14",
+]
+dev = [
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.812",
+]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_ai_context"
+Repository = "https://github.com/ydf0509/nb_ai_context"
+Issues = "https://github.com/ydf0509/nb_ai_context/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nb_ai_context*"]
+
+[tool.setuptools.package-data]
+nb_ai_context = ["py.typed", "contrib/README.md"]
