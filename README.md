@@ -29,7 +29,8 @@ ai ide 这种方式简直是管中窥豹 一叶障目不见泰山。
 ai ide 为了减少成本，防止token消耗大，不会全量把源码教程喂给ai大模型，不然的靠用户交的那20美元的月会员，
 cursor要亏得裤衩没得穿。100万 tokens上下文输入，calude gemini gpt 价格大约是3美元，相当于20元人民币，
 如果问一次就20元人民币，cursor每个月给你用8次就要开始亏血本了，(另外tokens输出价格远高于输入价格），
-现在cursor还给你每月用500次，那他只能从节约tokens下手了，具体表现就是cursor不全量把所有教程和源码发给ai大模型推理。
+现在cursor还给你每月用500次，那他只能从节约tokens下手了，具体表现就是cursor不全量把所有教程和源码
+发给ai大模型推理。
 
 `nb_ai_context` 对大型编程项目的效果尤为突出，远远吊打 cursor trae qoder gemini-code-assit 等ai ide中写代码。
 </pre>
