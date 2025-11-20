@@ -13,19 +13,18 @@
 
  `google ai studio` 优点还是1000k上下文以及免费。唯一缺点是他在网页生成代码，而不是直接操作修改你的本地代码文件。
 
- `nb_ai_context` 生成的markdown丢给`google ai studio`完爆cursor trae等ide中写代码
- 主要原因是：
-`google ai studio` 网页版是全量阅读推理你上传的文件，而 ai编程ide 对长教程或者源码，试图采取关键字搜索匹配再投喂上下文给ai大模型，
+ `nb_ai_context` 生成的markdown丢给`google ai studio`完爆cursor trae等ide中写代码 
+ 主要原因是：  
+`google ai studio` 网页版是全量阅读推理你上传的文件，而 ai编程ide 对长教程或者源码，ai agent试图采取关键字搜索匹配再投喂上下文给ai大模型，
 （有时候模糊搜索的关键字压根搜不到内容，因为ai造出来的关键字不是完完全全的匹配你的函数名字或者教程内容，所以就搜不到，
   例如近义词，你代码用别的单词表示，ai却用自己的单词来表示，靠关键字压根就搜不到内容，agent咋投喂ai大模型？）
  ai ide 这种方式简直是管中窥豹 一叶障目不见泰山。
-
- 最根本原因还是：
+ 最根本原因还是：  
 ai ide 为了减少成本，防止token消耗大，不会全量把源码教程喂给ai大模型，不然的靠用户交的那20美元的月会员，cursor要亏得裤衩没得穿。
 100万 tokens上下文输入，calude gemini gpt 价格大约是3美元，相当于20元人民币，如果问一次就20元人民币，cursor每个月给你用8次就要开始亏血本了，
 （另外tokens输出价格远高于输入价格），现在cursor还给你每月用500次，那他只能从节约tokens下手了，具体表现就是cursor不全量把所有教程和源码发给ai大模型推理。
 
-nb_ai_context对大型编程项目的效果尤为突出，远远吊打cursor trae qoder等ai ide中写代码。
+`nb_ai_context` 对大型编程项目的效果尤为突出，远远吊打 cursor trae qoder gemini-code-assit 等ai ide中写代码。
 </pre>
 
 ## ✨ 核心特性
