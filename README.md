@@ -4,7 +4,9 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/nb_ai_context.svg)](https://pypi.org/project/nb_ai_context/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🚀 **极其强大的 AI 上下文生成器** - 将任意 IT 项目合并生成为1个结构化 Markdown 文档，方便一次上传给ai大模型或者rag知识库。
+🚀 **极其强大的 AI 上下文生成器** - 将任意 IT 项目合并生成为1个结构化 Markdown 文档，方便一次上传给ai大模型或者rag知识库。  
+
+**`nb_ai_context` 生成的markdown文件 传给  `google ai studio` ，生成代码质量和准确率，远远吊打在 `cursor` `trae` `qoder` `gemini-code-assit` 等ai ide中写代码。**
 
 <pre style="color: red;font-weight: bold;background-color:yellow;padding: 10px;border-radius: 5px;font-size: 16px;">
 本人实测：
