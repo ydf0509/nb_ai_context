@@ -718,17 +718,45 @@ class AiMdGenerator(NbPath):
                 lines.append(f"*Line: {cls['lineno']}*\n")
                 
                 if cls["docstring"]:
-                    # 只显示文档字符串的前3行
-                    docstring_lines = cls["docstring"].split("\n")[:3]
+                    # 显示完整的类文档字符串
+                    docstring_lines = cls["docstring"].split("\n")
                     lines.append("**Docstring:**")
                     lines.append("```")
                     lines.extend(docstring_lines)
-                    if len(cls["docstring"].split("\n")) > 3:
-                        lines.append("...")
                     lines.append("```\n")
 
-                # 公有方法
-                public_methods = [m for m in cls["methods"] if m["is_public"]]
+                # 首先单独显示 __init__ 方法（非常重要）
+                init_method = None
+                for method in cls["methods"]:
+                    if method["name"] == "__init__":
+                        init_method = method
+                        break
+                
+                if init_method:
+                    lines.append("**🔧 Constructor (`__init__`):**")
+                    params_str = self._format_parameters(init_method["parameters"])
+                    lines.append(f"- `def __init__({params_str})`")
+                    
+                    # 显示 __init__ 的完整文档字符串
+                    if init_method["docstring"]:
+                        lines.append("  - **Docstring:**")
+                        lines.append("  ```")
+                        for doc_line in init_method["docstring"].split("\n"):
+                            lines.append(f"  {doc_line}")
+                        lines.append("  ```")
+                    
+                    # 显示每个参数的详细信息
+                    if init_method["parameters"]:
+                        lines.append("  - **Parameters:**")
+                        for param in init_method["parameters"]:
+                            param_name = param["name"]
+                            param_type = f": {param['type']}" if param["type"] else ""
+                            param_default = f" = {param['default']}" if param["default"] else ""
+                            lines.append(f"    - `{param_name}{param_type}{param_default}`")
+                    lines.append("")
+
+                # 公有方法（排除 __init__）
+                public_methods = [m for m in cls["methods"] if m["is_public"] and m["name"] != "__init__"]
                 if public_methods:
                     lines.append(f"**Public Methods ({len(public_methods)}):**")
                     for method in public_methods:
@@ -742,11 +770,19 @@ class AiMdGenerator(NbPath):
                         
                         lines.append(f"- `{async_str}def {method['name']}({params_str}){return_str}`{decorators_str}")
                         
-                        # 显示简短的文档字符串
+                        # 显示完整的文档字符串
                         if method["docstring"]:
-                            first_line = method["docstring"].split("\n")[0].strip()
-                            if first_line:
-                                lines.append(f"  - *{first_line}*")
+                            # 如果文档字符串只有一行，用简短格式显示
+                            docstring_lines = method["docstring"].split("\n")
+                            if len(docstring_lines) == 1:
+                                lines.append(f"  - *{method['docstring'].strip()}*")
+                            else:
+                                # 多行文档字符串，用代码块格式显示
+                                lines.append("  - **Docstring:**")
+                                lines.append("  ```")
+                                for doc_line in docstring_lines:
+                                    lines.append(f"  {doc_line}")
+                                lines.append("  ```")
                     lines.append("")
 
                 # Properties
@@ -784,9 +820,17 @@ class AiMdGenerator(NbPath):
                     lines.append(f"  - *Line: {func['lineno']}*")
                     
                     if func["docstring"]:
-                        first_line = func["docstring"].split("\n")[0].strip()
-                        if first_line:
-                            lines.append(f"  - *{first_line}*")
+                        # 如果文档字符串只有一行，用简短格式显示
+                        docstring_lines = func["docstring"].split("\n")
+                        if len(docstring_lines) == 1:
+                            lines.append(f"  - *{func['docstring'].strip()}*")
+                        else:
+                            # 多行文档字符串，用代码块格式显示
+                            lines.append("  - **Docstring:**")
+                            lines.append("  ```")
+                            for doc_line in docstring_lines:
+                                lines.append(f"  {doc_line}")
+                            lines.append("  ```")
                     lines.append("")
 
         lines.append("\n---\n")
