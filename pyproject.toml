@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nb_ai_context"
-version = "1.5"
+version = "1.6"
 description = "非常强力的对任意it项目生成ai上下文单个markdown文档，丢给大模型或者知识库，非常强力，大模型幻觉大幅度减少。尤其是对python项目还有专门的ast语法树解析"
 keywords = ["ai", "ai context", "llm", "rag", "python","ast","ast metadata","ai context generator","markdown"]
 authors = [

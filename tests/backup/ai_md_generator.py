@@ -16,56 +16,62 @@ class AiMdGenerator(NbPath):
     well-structured, and context-rich Markdown file, providing the AI with a perfect
     and comprehensive project snapshot.
 
-    Key Features:
-    1.  **AI Reading Guide**: `add_ai_reading_guide()` adds instructions for AI models
-        to better understand the document structure and avoid hallucinations.
-    2.  **Project Summary with Core Files Metadata**: `add_project_summary()` extracts
-        AST metadata from core files without full source code, helping AI quickly
-        grasp the project architecture.
-    3.  **File Dependencies Analysis**: `add_file_dependencies()` analyzes import
-        relationships between files, showing entry points and core modules.
-    4.  **Smart File Merging**: `merge_from_dir()` and `merge_from_files()` with
-        .gitignore support, file filtering, and AST metadata extraction.
-    5.  **Clear File Boundaries**: Each file is marked with project name and path
-        for easy identification by AI models.
+    The benefits for large AI models are immense:
+    1.  **Provides a God's-eye View**: Through a file manifest, clear file boundaries,
+        and relative paths, the AI can easily construct the project's overall
+        architecture and understand file dependencies and relationships, rather than
+        fumbling in the dark.
+    2.  **Ensures Information Integrity and Accuracy**: The AI receives complete,
+        unabridged source file content, avoiding the chaos, omissions, or context
+        loss caused by manual copy-pasting. This enables it to provide more precise
+        analysis and suggestions.
+    3.  **Enhances Security**: The built-in `use_gitignore` feature is a critical
+        security barrier. It automatically ignores files containing sensitive
+        information (like API keys or database passwords) such as `.env` or local
+        configs, allowing you to share code without fear of accidental leaks.
 
-    Main Public Methods:
-    - `set_project_propery(project_name, project_root)`: Set project info (required first)
-    - `add_ai_reading_guide()`: Add AI reading instructions to reduce hallucinations
-    - `add_project_summary(project_summary, most_core_source_code_file_list)`: Add summary with core file metadata
-    - `add_file_dependencies(file_list)`: Analyze and add file dependency graph
-    - `auto_merge_from_python_project_some_files()`: Auto-merge README, setup.py, pyproject.toml
-    - `merge_from_files(file_list, as_title)`: Merge specific files
-    - `merge_from_dir(dir_name, as_title, ...)`: Merge entire directory with filters
-    - `merge_from_files_with_metadata(file_list, as_title, include_ast_metadata, include_file_text)`: Advanced merge with metadata control
+    Its core methods, `merge_from_files` and `merge_from_dir`, offer extreme
+    flexibility. Combined with the elegant chainable calls of `nb_path`, creating a
+    high-quality AI context is transformed from a tedious, error-prone manual task
+    into a single, delightful line of code.
 
     Example:
-        >>> from nb_ai_context import AiMdGenerator
-        >>> 
+        >>> # Imagine you want an AI to review your entire project
         >>> project_name = "my_project"
-        >>> project_root = r"D:\\codes\\my_project"
+        >>> project_summary = '''
+        ... This is an excellent Python project that demonstrates best practices.
+        ... It includes comprehensive documentation and well-structured code.
+        ... '''
         >>> 
         >>> (
-        ...     AiMdGenerator(rf"D:\\ai_docs\\{project_name}_for_ai.md")
-        ...     .set_project_propery(project_name=project_name, project_root=project_root)
-        ...     .clear_text()
-        ...     .add_ai_reading_guide()  # Add AI reading instructions
+        ...     AiMdGenerator("project_context_for_ai.md")
+        ...     .set_project_propery(project_name=project_name, project_root="/path/to/your/project")
+        ...     .clear_text()  # Clear the old file
         ...     .add_project_summary(
-        ...         project_summary="This is my awesome project...",
+        ...         project_summary=project_summary,
+        ...         # Extract metadata (without full source) from core files first
         ...         most_core_source_code_file_list=[
         ...             "src/main.py",
         ...             "src/api.py",
+        ...             "src/models.py",
         ...         ]
         ...     )
-        ...     .auto_merge_from_python_project_some_files()
+        ...     .auto_merge_from_python_project_some_files()  # Auto-include README, setup.py, etc.
         ...     .merge_from_dir(
-        ...         relative_dir_name="src",
-        ...         as_title=f"{project_name} Source Code",
+        ...         relative_dir_name="src", # The main source code directory
+        ...         as_title="Project Source Code",
+        ...         use_gitignore=True,  # Automatically use .gitignore rules
+        ...         should_include_suffixes=[".py", ".md"], # Only include specified file types
+        ...         include_ast_metadata=True,  # Include AST metadata for Python files
+        ...     )
+        ...     .merge_from_dir(
+        ...         relative_dir_name="tests", # The tests directory
+        ...         as_title="Project Tests",
         ...         use_gitignore=True,
-        ...         should_include_suffixes=[".py", ".md"],
+        ...         should_include_suffixes=[".py"],
+        ...         excluded_dir_name_list=["tests/temp_files"],
         ...         include_ast_metadata=True,
         ...     )
-        ...     .show_textfile_info()
         ... )
     """
 
@@ -75,26 +81,18 @@ class AiMdGenerator(NbPath):
     此类旨在彻底改变开发者与大语言模型（LLM）的交互方式。它能够智能地将多个项目源文件
     合并成一个结构清晰、上下文丰富的单一 Markdown 文件，从而为 AI 提供一个完美、全面的项目快照。
 
-    核心功能：
-    1.  **AI 阅读指南**：`add_ai_reading_guide()` 为 AI 模型添加阅读说明，帮助其更好地
-        理解文档结构，减少幻觉。
-    2.  **项目概述与核心文件元数据**：`add_project_summary()` 从核心文件中提取 AST 元数据
-        （不含完整源码），帮助 AI 快速掌握项目架构。
-    3.  **文件依赖分析**：`add_file_dependencies()` 分析文件间的 import 依赖关系，
-        展示入口文件和核心模块。
-    4.  **智能文件合并**：`merge_from_dir()` 和 `merge_from_files()` 支持 .gitignore、
-        文件过滤和 AST 元数据提取。
-    5.  **清晰的文件边界**：每个文件都标记了项目名和路径，方便 AI 模型识别。
+    对 AI 大模型的好处是巨大的：
+    1.  **提供上帝视角**：通过文件清单、清晰的文件边界和相对路径，AI 能够轻松构建出项目的
+        整体架构，理解文件间的依赖和引用关系，而不是盲人摸象。
+    2.  **确保信息的完整与准确**：AI 得到的是未经删减的、完整的源文件内容，避免了因手动
+        复制粘贴导致的格式混乱、内容遗漏或上下文缺失，从而能给出更精准的分析和建议。
+    3.  **提升安全性**：内置的 `use_gitignore` 功能是一道关键的安全屏障。它能自动忽略
+        `.env`、本地配置等包含敏感信息（如 API 密钥、数据库密码）的文件，让你在分享代码
+        时无需担心意外泄露秘密。
 
-    主要公开方法：
-    - `set_project_propery(project_name, project_root)`: 设置项目信息（必须首先调用）
-    - `add_ai_reading_guide()`: 添加 AI 阅读指南以减少幻觉
-    - `add_project_summary(project_summary, most_core_source_code_file_list)`: 添加项目概述和核心文件元数据
-    - `add_file_dependencies(file_list)`: 分析并添加文件依赖图
-    - `auto_merge_from_python_project_some_files()`: 自动合并 README、setup.py、pyproject.toml
-    - `merge_from_files(file_list, as_title)`: 合并指定文件
-    - `merge_from_dir(dir_name, as_title, ...)`: 合并整个目录（支持过滤）
-    - `merge_from_files_with_metadata(...)`: 高级合并，可控制元数据和源码
+    其核心方法 `merge_from_files` 和 `merge_from_dir` 提供了极高的灵活性，结合 `nb_path`
+    优雅的链式调用，使得创建一个高质量的 AI 上下文从繁琐、易错的手工劳动，变成了一行
+    赏心悦目的代码。
 
     """
 
@@ -141,53 +139,6 @@ class AiMdGenerator(NbPath):
         """Checks if the project name is set."""
         if not hasattr(self, 'project_name'):
             raise ValueError("Project name is not set. Please call set_project_name() first.")
-        return self
-
-    def add_ai_reading_guide(self) -> "AiMdGenerator":
-        """
-        添加 AI 阅读指南，帮助 AI 大模型更好地理解文档结构
-        
-        建议在 clear_text() 之后、add_project_summary() 之前调用
-        """
-        self._check_project_name()
-        guide = f"""# 🤖 AI Reading Guide for Project: {self.project_name}
-
-> **Important Notice for AI Models**: This document contains the complete source code and documentation for the `{self.project_name}` project. Please read this guide carefully before analyzing the content.
-
-## 📖 Document Structure
-
-This markdown document is structured as follows:
-
-1. **Project Summary** (`# markdown content namespace: xxx project summary`)
-   - Brief project description
-   - Core source files metadata (AST-parsed class/function signatures without full source code)
-   - File dependencies analysis
-
-2. **Project Root Files** (`# markdown content namespace: xxx Project Root Dir Some Files`)
-   - README.md, pyproject.toml, setup.py, etc.
-
-3. **Source Code Sections** (`# markdown content namespace: xxx codes/examples/...`)
-   - File Tree: Shows directory structure
-   - Included Files: Lists all files in this section
-   - Full source code with AST metadata for Python files
-
-## 🔍 How to Identify File Boundaries
-
-- Each file starts with: `--- **start of file: <path>** (project: {self.project_name}) ---`
-- Each file ends with: `--- **end of file: <path>** (project: {self.project_name}) ---`
-- All file paths are relative to the project root
-
-## ⚠️ Important Notes
-
-1. **Do NOT hallucinate**: Only reference code, classes, functions, and APIs that actually exist in this document
-2. **Check file paths**: When suggesting code changes, always verify the file path exists in the File Tree
-3. **Respect the project structure**: The File Tree shows the actual directory layout
-4. **AST Metadata**: Python files include parsed metadata (imports, classes, methods) before the full source code
-
----
-
-"""
-        self.append_text(guide)
         return self
 
     def add_project_summary(
@@ -253,33 +204,14 @@ This markdown document is structured as follows:
                     str_list.append("\n")
         
         self.append_text('\n'.join(str_list))
-        self.add_file_dependencies(most_core_source_code_file_list)
         return self
 
     def _generate_markdown_header(self, as_title: str, file_text_list: list) -> list:
         """生成包含文件树和文件列表的 Markdown 头部"""
         str_list = [f"# markdown content namespace: {as_title} \n\n"]
-        
-        # 从文件列表中提取公共目录前缀，用于显示相对目录信息
-        if file_text_list:
-            all_paths = [item[1] for item in file_text_list]
-            # 找出公共目录前缀
-            if all_paths:
-                first_parts = all_paths[0].split('/')
-                common_prefix_parts = []
-                for i, part in enumerate(first_parts[:-1]):  # 不包括文件名
-                    if all(p.split('/')[i] == part if i < len(p.split('/')) else False for p in all_paths):
-                        common_prefix_parts.append(part)
-                    else:
-                        break
-                relative_dir = '/'.join(common_prefix_parts) if common_prefix_parts else '.'
-            else:
-                relative_dir = '.'
-        else:
-            relative_dir = '.'
 
         # 1. 生成文件树
-        str_list.append(f"## {self.project_name} File Tree (relative dir: `{relative_dir}`)\n\n")
+        str_list.append("## File Tree\n\n")
         str_list.append(f"{FILE_CONTENT_BACKQUOTES}\n")
         tree = {}
         sorted_paths = sorted([item[1] for item in file_text_list])
@@ -306,7 +238,7 @@ This markdown document is structured as follows:
         str_list.append(f"\n{FILE_CONTENT_BACKQUOTES}\n\n---\n\n")
 
         # 2. 生成文件列表
-        str_list.append(f"## {self.project_name} (relative dir: `{relative_dir}`)  Included Files (total: {len(file_text_list)} files)\n\n")
+        str_list.append("## Included Files\n\n")
         for _, relative_file_name_posix, _, _ in file_text_list:
             str_list.append(f"- `{relative_file_name_posix}`\n")
         str_list.append("\n---\n\n")
@@ -378,7 +310,7 @@ This markdown document is structured as follows:
         for file, relative_file_name_posix, suffix, text in file_text_list:
             # 2. Remove the debug print statement.
             # print(f'file: {file}, relative_file_name_posix: {relative_file_name_posix}, suffix: {suffix}, text: {text}')
-            str_list.append(f"--- **start of file: {relative_file_name_posix}** (project: {self.project_name}) --- \n")
+            str_list.append(f"--- **start of file: {relative_file_name_posix}** --- \n")
             # 3. Handle .md files separately to ensure their content is rendered correctly.
             #    Other file types are wrapped in code blocks.
             # if suffix == ".md":
@@ -389,7 +321,7 @@ This markdown document is structured as follows:
             lang = self.suffix__lang_map.get(suffix, "text")
             str_list.append(f"{FILE_CONTENT_BACKQUOTES}{lang}\n{text}\n{FILE_CONTENT_BACKQUOTES}\n")
 
-            str_list.append(f"--- **end of file: {relative_file_name_posix}** (project: {self.project_name}) --- \n")
+            str_list.append(f"--- **end of file: {relative_file_name_posix}** --- \n")
             str_list.append("---\n\n")
 
         # with self.open(mode="a", encoding="utf-8") as f:
@@ -1000,7 +932,7 @@ This markdown document is structured as follows:
                 continue
             
             # 正常流程：包含文件内容
-            str_list.append(f"--- **start of file: {relative_file_name_posix}** (project: {self.project_name}) --- \n")
+            str_list.append(f"--- **start of file: {relative_file_name_posix}** --- \n")
             
             # 对于 Python 文件，添加 AST 元数据
             if suffix == ".py" and include_ast_metadata:
@@ -1009,372 +941,15 @@ This markdown document is structured as follows:
                 str_list.append(metadata_md)
             
             # 添加完整的文件内容
-            lang = self.suffix__lang_map.get(suffix, "text")
-            str_list.append(f"{FILE_CONTENT_BACKQUOTES}{lang}\n{text}\n{FILE_CONTENT_BACKQUOTES}\n")
+            if suffix == ".md":
+                str_list.append(text + "\n")
+            else:
+                lang = self.suffix__lang_map.get(suffix, "text")
+                str_list.append(f"{FILE_CONTENT_BACKQUOTES}{lang}\n{text}\n{FILE_CONTENT_BACKQUOTES}\n")
 
-            str_list.append(f"--- **end of file: {relative_file_name_posix}** (project: {self.project_name}) --- \n")
+            str_list.append(f"--- **end of file: {relative_file_name_posix}** --- \n")
             str_list.append("---\n\n")
 
         self.append_text('\n'.join(str_list))
         self.ensure_utf8_bom()
-        return self
-
-    def _analyze_file_dependencies(
-        self, 
-        file_list: typing.List[str], 
-        project_root: typing.Union[os.PathLike, str] = None
-    ) -> dict:
-        """
-        分析项目文件之间的 import 依赖关系
-        
-        Args:
-            file_list: 相对文件路径列表
-            project_root: 项目根目录
-            
-        Returns:
-            dict: {
-                "internal_deps": {file: [依赖的项目内文件列表]},
-                "external_deps": {file: [外部依赖模块列表]},
-                "reverse_deps": {file: [被哪些文件依赖]}
-            }
-        """
-        project_root = project_root or self.project_root
-        project_root_path = NbPath(project_root).resolve()
-        
-        # 构建项目内模块名到文件路径的映射
-        # 例如: "nb_ai_context.ai_md_generator" -> "nb_ai_context/ai_md_generator.py"
-        module_to_file = {}
-        file_to_module = {}
-        
-        for relative_file in file_list:
-            if relative_file.endswith('.py'):
-                # 将文件路径转换为模块名
-                module_name = relative_file.replace('/', '.').replace('\\', '.')
-                if module_name.endswith('.py'):
-                    module_name = module_name[:-3]
-                if module_name.endswith('.__init__'):
-                    module_name = module_name[:-9]
-                
-                module_to_file[module_name] = relative_file
-                file_to_module[relative_file] = module_name
-                
-                # 也添加各级父模块的映射
-                parts = module_name.split('.')
-                for i in range(1, len(parts)):
-                    parent_module = '.'.join(parts[:i])
-                    parent_file = '/'.join(parts[:i]) + '/__init__.py'
-                    if parent_file in file_list:
-                        module_to_file[parent_module] = parent_file
-        
-        internal_deps = {}  # 项目内部依赖
-        external_deps = {}  # 外部依赖
-        reverse_deps = {}   # 反向依赖（被谁依赖）
-        
-        # 初始化
-        for f in file_list:
-            internal_deps[f] = []
-            external_deps[f] = set()
-            reverse_deps[f] = []
-        
-        # 分析每个 Python 文件的 imports
-        for relative_file in file_list:
-            if not relative_file.endswith('.py'):
-                continue
-                
-            file_path = project_root_path / relative_file
-            if not file_path.exists():
-                continue
-                
-            try:
-                source_code = file_path.read_text(encoding='utf-8')
-                if source_code.startswith('\ufeff'):
-                    source_code = source_code[1:]
-                tree = ast.parse(source_code)
-            except Exception as e:
-                self.logger.warning(f"无法解析文件 {relative_file}: {e}")
-                continue
-            
-            current_module = file_to_module.get(relative_file, '')
-            # 对于 __init__.py 文件，它本身就是包，current_package 应该等于 current_module
-            # 对于普通 .py 文件，current_package 是其父目录对应的模块
-            if relative_file.endswith('__init__.py'):
-                current_package = current_module
-            else:
-                current_package = '.'.join(current_module.split('.')[:-1]) if '.' in current_module else ''
-            
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Import):
-                    for alias in node.names:
-                        module_name = alias.name
-                        self._categorize_import(
-                            module_name, relative_file, module_to_file,
-                            internal_deps, external_deps, reverse_deps
-                        )
-                        
-                elif isinstance(node, ast.ImportFrom):
-                    module_name = node.module or ''
-                    
-                    # 处理相对导入
-                    if node.level > 0:  # 相对导入
-                        if current_package:
-                            # 计算绝对模块名
-                            # level=1 表示当前包，level=2 表示父包，以此类推
-                            package_parts = current_package.split('.')
-                            # 回退 level-1 级（level=1 时不回退，就是当前包）
-                            levels_to_go_up = node.level - 1
-                            if levels_to_go_up < len(package_parts):
-                                base = '.'.join(package_parts[:len(package_parts) - levels_to_go_up])
-                                if module_name:
-                                    module_name = f"{base}.{module_name}"
-                                else:
-                                    module_name = base
-                            else:
-                                # 相对导入超出了包的层级，保持原样
-                                if module_name:
-                                    pass  # 保持 module_name 不变
-                    
-                    if module_name:
-                        self._categorize_import(
-                            module_name, relative_file, module_to_file,
-                            internal_deps, external_deps, reverse_deps
-                        )
-        
-        # 转换 set 为 list 并排序
-        for f in external_deps:
-            external_deps[f] = sorted(list(external_deps[f]))
-        
-        return {
-            "internal_deps": internal_deps,
-            "external_deps": external_deps,
-            "reverse_deps": reverse_deps,
-            "module_to_file": module_to_file
-        }
-    
-    def _categorize_import(
-        self, 
-        module_name: str, 
-        current_file: str,
-        module_to_file: dict,
-        internal_deps: dict,
-        external_deps: dict,
-        reverse_deps: dict
-    ):
-        """将 import 分类为内部依赖或外部依赖"""
-        # 检查是否是项目内部模块
-        found_internal = False
-        
-        # 尝试匹配完整模块名或其前缀
-        parts = module_name.split('.')
-        for i in range(len(parts), 0, -1):
-            check_module = '.'.join(parts[:i])
-            if check_module in module_to_file:
-                dep_file = module_to_file[check_module]
-                if dep_file != current_file and dep_file not in internal_deps[current_file]:
-                    internal_deps[current_file].append(dep_file)
-                    if dep_file in reverse_deps:
-                        reverse_deps[dep_file].append(current_file)
-                found_internal = True
-                break
-        
-        if not found_internal:
-            # 外部依赖，只记录顶级模块名
-            top_module = parts[0]
-            external_deps[current_file].add(top_module)
-    
-    def _format_dependencies_as_markdown(self, deps_info: dict, file_list: typing.List[str]) -> str:
-        """将依赖关系格式化为 Markdown"""
-        lines = []
-        lines.append(f"\n## 🔗 {self.project_name} Some File Dependencies Analysis\n")
-        lines.append("以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：\n")
-        
-        internal_deps = deps_info["internal_deps"]
-        external_deps = deps_info["external_deps"]
-        reverse_deps = deps_info["reverse_deps"]
-        
-        # 1. 依赖关系图（文本形式）
-        lines.append("### 📊 Internal Dependencies Graph\n")
-        lines.append(f"{FILE_CONTENT_BACKQUOTES}")
-        
-        # 找出入口文件（没有被其他文件依赖的文件）
-        entry_files = [f for f in file_list if f.endswith('.py') and not reverse_deps.get(f, [])]
-        if entry_files:
-            lines.append("Entry Points (not imported by other project files):")
-            for f in sorted(entry_files):
-                lines.append(f"  ★ {f}")
-            lines.append("")
-        
-        # 找出核心文件（被多个文件依赖的文件）
-        core_files = [(f, len(reverse_deps.get(f, []))) for f in file_list if f.endswith('.py')]
-        core_files = sorted(core_files, key=lambda x: x[1], reverse=True)
-        core_files = [(f, count) for f, count in core_files if count > 0]
-        
-        if core_files:
-            lines.append("Core Files (imported by other files, sorted by import count):")
-            for f, count in core_files[:10]:  # 只显示前10个
-                lines.append(f"  ◆ {f} (imported by {count} files)")
-            lines.append("")
-        
-        lines.append(f"{FILE_CONTENT_BACKQUOTES}\n")
-        
-        # 2. 详细依赖列表
-        lines.append("### 📋 Detailed Dependencies\n")
-        
-        py_files = sorted([f for f in file_list if f.endswith('.py')])
-        
-        for f in py_files:
-            int_deps = internal_deps.get(f, [])
-            rev_deps = reverse_deps.get(f, [])
-            
-            # 只显示有依赖关系的文件
-            if int_deps or rev_deps:
-                lines.append(f"#### `{f}`\n")
-                
-                if int_deps:
-                    lines.append("**Imports from project:**")
-                    for dep in sorted(int_deps):
-                        lines.append(f"- `{dep}`")
-                    lines.append("")
-                
-                if rev_deps:
-                    lines.append("**Imported by:**")
-                    for dep in sorted(rev_deps):
-                        lines.append(f"- `{dep}`")
-                    lines.append("")
-        
-        # 3. 外部依赖汇总
-        all_external = set()
-        for ext_list in external_deps.values():
-            all_external.update(ext_list)
-        
-        if all_external:
-            # 过滤掉标准库模块（Python 3.7+ 完整标准库列表）
-            stdlib_modules = {
-                # 文本处理
-                'string', 'stringprep', 're', 'difflib', 'textwrap', 'unicodedata',
-                # 二进制数据
-                'struct', 'codecs',
-                # 数据类型
-                'datetime', 'zoneinfo', 'calendar', 'collections', 'heapq', 'bisect',
-                'array', 'weakref', 'types', 'copy', 'pprint', 'reprlib', 'enum',
-                'graphlib',
-                # 数学和数字
-                'numbers', 'math', 'cmath', 'decimal', 'fractions', 'random', 'statistics',
-                # 函数式编程
-                'itertools', 'functools', 'operator',
-                # 文件和目录
-                'pathlib', 'os', 'io', 'time', 'argparse', 'getopt', 'logging',
-                'getpass', 'curses', 'platform', 'errno', 'ctypes',
-                # 文件格式
-                'csv', 'configparser', 'tomllib', 'netrc', 'plistlib',
-                # 加密
-                'hashlib', 'hmac', 'secrets',
-                # 操作系统服务
-                'os', 'io', 'time', 'argparse', 'getopt', 'logging', 'getpass',
-                'curses', 'platform', 'errno', 'ctypes',
-                # 并发
-                'threading', 'multiprocessing', 'concurrent', 'subprocess', 'sched',
-                'queue', '_thread',
-                # 网络和进程间通信
-                'asyncio', 'socket', 'ssl', 'select', 'selectors', 'signal',
-                'mmap', 'asyncore', 'asynchat',
-                # 互联网数据处理
-                'email', 'json', 'mailbox', 'mimetypes', 'base64', 'binascii',
-                'quopri', 'uu',
-                # HTML 和 XML
-                'html', 'xml',
-                # 互联网协议
-                'webbrowser', 'wsgiref', 'urllib', 'http', 'ftplib', 'poplib',
-                'imaplib', 'smtplib', 'uuid', 'socketserver', 'xmlrpc', 'ipaddress',
-                # 多媒体
-                'wave', 'colorsys',
-                # 国际化
-                'locale', 'gettext',
-                # 程序框架
-                'turtle', 'cmd', 'shlex',
-                # 图形界面
-                'tkinter', 'idlelib',
-                # 开发工具
-                'typing', 'pydoc', 'doctest', 'unittest', 'test', '2to3', 'lib2to3',
-                # 调试和性能
-                'bdb', 'faulthandler', 'pdb', 'profile', 'timeit', 'trace',
-                'tracemalloc', 'cProfile',
-                # 软件打包和分发
-                'distutils', 'ensurepip', 'venv', 'zipapp',
-                # Python 运行时
-                'sys', 'sysconfig', 'builtins', 'warnings', 'dataclasses',
-                'contextlib', 'abc', 'atexit', 'traceback', 'gc', 'inspect',
-                'site',
-                # 自定义解释器
-                'code', 'codeop',
-                # 导入系统
-                'importlib', 'pkgutil', 'modulefinder', 'runpy', 'zipimport',
-                # Python 语言服务
-                'ast', 'symtable', 'token', 'keyword', 'tokenize', 'tabnanny',
-                'pyclbr', 'py_compile', 'compileall', 'dis', 'pickletools',
-                # 文件归档
-                'zipfile', 'tarfile', 'gzip', 'bz2', 'lzma', 'shutil',
-                # 持久化
-                'pickle', 'copyreg', 'shelve', 'marshal', 'dbm', 'sqlite3',
-                # 文件通配
-                'glob', 'fnmatch', 'linecache', 'filecmp', 'fileinput', 'tempfile',
-                # 其他
-                '__future__', 'rlcompleter', 'readline', 'posix', 'posixpath',
-                'ntpath', 'genericpath', 'stat', 'grp', 'pwd', 'spwd', 'crypt',
-                'termios', 'tty', 'pty', 'fcntl', 'resource', 'syslog',
-                'aifc', 'sunau', 'chunk', 'imghdr', 'sndhdr', 'ossaudiodev',
-                'typing_extensions',  # 虽然是第三方但通常被视为标准扩展
-            }
-            third_party = sorted([m for m in all_external if m not in stdlib_modules])
-            
-            if third_party:
-                lines.append("### 📦 Third-party Dependencies\n")
-                lines.append("项目使用的第三方库：\n")
-                for m in third_party:
-                    lines.append(f"- `{m}`")
-                lines.append('- ......以及更多的第三方库......')
-                lines.append("")
-        
-        lines.append("\n---\n")
-        return "\n".join(lines)
-    
-    def add_file_dependencies(
-        self,
-        file_list: typing.List[str] = None,
-        project_root: typing.Union[os.PathLike, str] = None,
-    ) -> "AiMdGenerator":
-        """
-        分析并添加项目文件之间的依赖关系到 markdown
-        
-        Args:
-            file_list: 要分析的文件列表（相对路径），如果为 None 则分析整个项目
-            project_root: 项目根目录
-            
-        Example:
-            >>> (
-            ...     AiMdGenerator("output.md")
-            ...     .set_project_propery("my_project", "/path/to/project")
-            ...     .clear_text()
-            ...     .add_project_summary(project_summary="...")
-            ... )
-        """
-        self._check_project_name()
-        project_root = project_root or self.project_root
-        
-        if file_list is None:
-            # 如果没有指定文件列表，扫描整个项目的 .py 文件
-            project_root_path = NbPath(project_root).resolve()
-            file_list = []
-            for py_file in project_root_path.rglob("*.py"):
-                # 排除隐藏目录
-                relative = py_file.relative_to(project_root_path)
-                if not any(part.startswith('.') for part in relative.parts):
-                    file_list.append(relative.as_posix())
-        
-        # 分析依赖
-        deps_info = self._analyze_file_dependencies(file_list, project_root)
-        
-        # 格式化并添加到 markdown
-        deps_md = self._format_dependencies_as_markdown(deps_info, file_list)
-        self.append_text(deps_md)
-        
         return self

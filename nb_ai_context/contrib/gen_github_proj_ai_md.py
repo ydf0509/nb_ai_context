@@ -11,7 +11,7 @@ Generate markdown file
 
 import typing
 from nb_path import NbPath
-from nb_ai_context import AiMdGenerator
+from nb_ai_context.ai_md_generator import AiMdGenerator
 import re
 
 

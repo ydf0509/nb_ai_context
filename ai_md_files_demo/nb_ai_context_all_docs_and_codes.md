@@ -1,3 +1,1108 @@
+﻿# 🤖 AI Reading Guide for Project: nb_ai_context
+
+> **Important Notice for AI Models**: This document contains the complete source code and documentation for the `nb_ai_context` project. Please read this guide carefully before analyzing the content.
+
+## 📖 Document Structure
+
+This markdown document is structured as follows:
+
+1. **Project Summary** (`# markdown content namespace: xxx project summary`)
+   - Brief project description
+   - Core source files metadata (AST-parsed class/function signatures without full source code)
+   - File dependencies analysis
+
+2. **Project Root Files** (`# markdown content namespace: xxx Project Root Dir Some Files`)
+   - README.md, pyproject.toml, setup.py, etc.
+
+3. **Source Code Sections** (`# markdown content namespace: xxx codes/examples/...`)
+   - File Tree: Shows directory structure
+   - Included Files: Lists all files in this section
+   - Full source code with AST metadata for Python files
+
+## 🔍 How to Identify File Boundaries
+
+- Each file starts with: `--- **start of file: <path>** (project: nb_ai_context) ---`
+- Each file ends with: `--- **end of file: <path>** (project: nb_ai_context) ---`
+- All file paths are relative to the project root
+
+## ⚠️ Important Notes
+
+1. **Do NOT hallucinate**: Only reference code, classes, functions, and APIs that actually exist in this document
+2. **Check file paths**: When suggesting code changes, always verify the file path exists in the File Tree
+3. **Respect the project structure**: The File Tree shows the actual directory layout
+4. **AST Metadata**: Python files include parsed metadata (imports, classes, methods) before the full source code
+
+---
+
+# markdown content namespace: nb_ai_context project summary 
+
+
+
+- `nb_ai_context` is a powerful ai llm context gennerator library ,it is uesd for ai llm and rag
+- `AiMdGenerator(...)` is the main class to create ai context for llm.
+
+
+## 📋 nb_ai_context most core source files metadata (Entry Points)
+
+
+以下是项目 nb_ai_context 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_ai_context most core source code files as follows: 
+- `nb_ai_context/__init__.py`
+- `nb_ai_context/ai_md_generator.py`
+- `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+
+### 📄 Python File Metadata: `nb_ai_context/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_path import NbPath`
+- `from ai_md_generator import AiMdGenerator`
+- `from contrib.gen_github_proj_ai_md import gen_github_proj_docs_and_codes_ai_md`
+- `from contrib.gen_github_proj_ai_md import gen_github_proj_all_dirs_ai_md`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_ai_context/ai_md_generator.py`
+
+#### 📦 Imports
+
+- `import typing`
+- `import os`
+- `import fnmatch`
+- `import ast`
+- `from nb_path import NbPath`
+- `import astor`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AiMdGenerator(NbPath)`
+*Line: 10*
+
+**Docstring:**
+`````
+An extremely powerful context generator born for AI collaboration.
+
+This class is designed to revolutionize how developers interact with Large Language
+Models (LLMs). It intelligently merges multiple project source files into a single,
+well-structured, and context-rich Markdown file, providing the AI with a perfect
+and comprehensive project snapshot.
+
+Key Features:
+1.  **AI Reading Guide**: `add_ai_reading_guide()` adds instructions for AI models
+    to better understand the document structure and avoid hallucinations.
+2.  **Project Summary with Core Files Metadata**: `add_project_summary()` extracts
+    AST metadata from core files without full source code, helping AI quickly
+    grasp the project architecture.
+3.  **File Dependencies Analysis**: `add_file_dependencies()` analyzes import
+    relationships between files, showing entry points and core modules.
+4.  **Smart File Merging**: `merge_from_dir()` and `merge_from_files()` with
+    .gitignore support, file filtering, and AST metadata extraction.
+5.  **Clear File Boundaries**: Each file is marked with project name and path
+    for easy identification by AI models.
+
+Main Public Methods:
+- `set_project_propery(project_name, project_root)`: Set project info (required first)
+- `add_ai_reading_guide()`: Add AI reading instructions to reduce hallucinations
+- `add_project_summary(project_summary, most_core_source_code_file_list)`: Add summary with core file metadata
+- `add_file_dependencies(file_list)`: Analyze and add file dependency graph
+- `auto_merge_from_python_project_some_files()`: Auto-merge README, setup.py, pyproject.toml
+- `merge_from_files(file_list, as_title)`: Merge specific files
+- `merge_from_dir(dir_name, as_title, ...)`: Merge entire directory with filters
+- `merge_from_files_with_metadata(file_list, as_title, include_ast_metadata, include_file_text)`: Advanced merge with metadata control
+
+Example:
+    >>> from nb_ai_context import AiMdGenerator
+    >>> 
+    >>> project_name = "my_project"
+    >>> project_root = r"D:\codes\my_project"
+    >>> 
+    >>> (
+    ...     AiMdGenerator(rf"D:\ai_docs\{project_name}_for_ai.md")
+    ...     .set_project_propery(project_name=project_name, project_root=project_root)
+    ...     .clear_text()
+    ...     .add_ai_reading_guide()  # Add AI reading instructions
+    ...     .add_project_summary(
+    ...         project_summary="This is my awesome project...",
+    ...         most_core_source_code_file_list=[
+    ...             "src/main.py",
+    ...             "src/api.py",
+    ...         ]
+    ...     )
+    ...     .auto_merge_from_python_project_some_files()
+    ...     .merge_from_dir(
+    ...         relative_dir_name="src",
+    ...         as_title=f"{project_name} Source Code",
+    ...         use_gitignore=True,
+    ...         should_include_suffixes=[".py", ".md"],
+    ...         include_ast_metadata=True,
+    ...     )
+    ...     .show_textfile_info()
+    ... )
+`````
+
+**Public Methods (9):**
+- `def set_project_propery(self, project_name: str, project_root: typing.Union[os.PathLike, str]) -> 'AiMdGenerator'`
+  - *Sets the project name for the current markdown file.*
+- `def add_ai_reading_guide(self) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  添加 AI 阅读指南，帮助 AI 大模型更好地理解文档结构
+  
+  建议在 clear_text() 之后、add_project_summary() 之前调用
+  `````
+- `def add_project_summary(self, project_summary: str, most_core_source_code_file_list: typing.List[str] = None, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  Adds a project summary to the current markdown file.
+  
+  Args:
+      project_summary: 项目概述文本
+      project_root: 项目根目录（如果提供了 most_core_source_code_file_list）
+      most_core_source_code_file_list: 最核心的源码文件列表（相对路径）
+                                       只提取这些文件的 AST 元数据，不包含完整源码
+  
+  Example:
+      >>> (
+      ...     AiMdGenerator("output.md")
+      ...     .set_project_name("my_project")
+      ...     .clear_text()
+      ...     .add_project_summary(
+      ...         project_summary="这是一个优秀的项目...",
+      ...         project_root="/path/to/project",
+      ...         most_core_source_code_file_list=["src/main.py", "src/api.py"],
+      ...     )
+      ... )
+  `````
+- `def auto_merge_from_python_project_some_files(self, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - *自动合并项目根目录下的 readme.md 或者ReADME.md 以及setup.py 和 pyproject.toml ，如果有就添加*
+- `def merge_from_files(self, relative_file_name_list: typing.List[str], as_title: str, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  Merges the content of the given files into the current markdown file.
+  the current markdown file will be used to upload to ai model for code review and learning.
+  `````
+- `def merge_from_dir(self, relative_dir_name: str, as_title: str, project_root: typing.Union[os.PathLike, str] = None, should_include_suffixes: typing.List[str] = [], excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [], use_gitignore: bool = True, dry_run: bool = False, include_ast_metadata: bool = True) -> 'AiMdGenerator'`
+  - *Merges the content of the given directory into the current file.*
+- `def merge_dir_of_package_examples(self)`
+  - *合并包的examples目录到当前markdown文件*
+- `def merge_from_files_with_metadata(self, relative_file_name_list: typing.List[str], as_title: str, project_root: typing.Union[os.PathLike, str] = None, include_ast_metadata: bool = True, include_file_text: bool = True) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  合并文件内容到 Markdown，对于 Python 文件会额外生成 AST 元数据
+  
+  Args:
+      project_root: 项目根目录
+      relative_file_name_list: 相对文件路径列表
+      as_title: 标题
+      include_ast_metadata: 是否包含 AST 元数据（仅对 .py 文件）
+      include_file_text: 是否包含完整文件源码（False 时只显示元数据）
+  `````
+- `def add_file_dependencies(self, file_list: typing.List[str] = None, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  分析并添加项目文件之间的依赖关系到 markdown
+  
+  Args:
+      file_list: 要分析的文件列表（相对路径），如果为 None 则分析整个项目
+      project_root: 项目根目录
+      
+  Example:
+      >>> (
+      ...     AiMdGenerator("output.md")
+      ...     .set_project_propery("my_project", "/path/to/project")
+      ...     .clear_text()
+      ...     .add_project_summary(project_summary="...")
+      ... )
+  `````
+
+**Class Variables (1):**
+- `suffix__lang_map = {'.py': 'python', '.md': 'markdown', '.txt': 'text...`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+#### 📝 Module Docstring
+
+`````
+Generate tutorials and code from any GitHub project into a markdown file for AI context
+
+Download GitHub project zip file
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/tags/0.0.25
+
+Unzip the file
+Generate markdown file
+`````
+
+#### 📦 Imports
+
+- `import typing`
+- `from nb_path import NbPath`
+- `from nb_ai_context.ai_md_generator import AiMdGenerator`
+- `import re`
+
+#### 🔧 Public Functions (3)
+
+- `def extract_repo_name(github_url)`
+  - *Line: 18*
+
+- `def gen_github_proj_docs_and_codes_ai_md(github_zip_url: str, output_md_path: str, docs_dir_name: str, codes_dir_name: str, readme_file: str, should_include_suffixes: list = None, excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [])`
+  - *Line: 27*
+  - **Docstring:**
+  `````
+  Generate a Markdown document containing README, tutorials, and source code from a GitHub repository URL
+  
+  Args:
+      github_zip_url: GitHub repository zip download link
+                     Example: https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+      output_md_path: Output Markdown file path
+      readme_file: README file name, default is "README.md"
+      docs_dir_name: Documentation directory name, e.g. "docs"
+      codes_dir_name: Source code directory name, e.g. "sqlmodel"
+      should_include_suffixes: List of file extensions to include,
+                              By default includes ['.py', '.java', '.go', '.md', '.html']
+  `````
+
+- `def gen_github_proj_all_dirs_ai_md(github_zip_url: str, output_md_path: str, should_include_suffixes: list = None, excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [])`
+  - *Line: 99*
+  - *生成github的项目根目录下所有文件到markdown，*
+
+
+---
+
+
+
+## 🔗 nb_ai_context Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Entry Points (not imported by other project files):
+  ★ nb_ai_context/__init__.py
+
+Core Files (imported by other files, sorted by import count):
+  ◆ nb_ai_context/ai_md_generator.py (imported by 2 files)
+  ◆ nb_ai_context/contrib/gen_github_proj_ai_md.py (imported by 1 files)
+
+`````
+
+### 📋 Detailed Dependencies
+
+#### `nb_ai_context/__init__.py`
+
+**Imports from project:**
+- `nb_ai_context/ai_md_generator.py`
+- `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+#### `nb_ai_context/ai_md_generator.py`
+
+**Imported by:**
+- `nb_ai_context/__init__.py`
+- `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+#### `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+**Imports from project:**
+- `nb_ai_context/ai_md_generator.py`
+
+**Imported by:**
+- `nb_ai_context/__init__.py`
+
+### 📦 Third-party Dependencies
+
+项目使用的第三方库：
+
+- `astor`
+- `nb_path`
+- ......以及更多的第三方库......
+
+
+---
+# markdown content namespace: nb_ai_context Project Root Dir Some Files 
+
+
+## nb_ai_context File Tree (relative dir: `.`)
+
+
+`````
+
+├── README.md
+└── pyproject.toml
+
+`````
+
+---
+
+
+## nb_ai_context (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `README.md`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: README.md** (project: nb_ai_context) --- 
+
+`````markdown
+# nb_ai_context
+
+**[English](README.md) | [中文](README_CN.md)**
+
+[![PyPI version](https://img.shields.io/pypi/v/nb_ai_context.svg)](https://pypi.org/project/nb_ai_context/)
+[![Python versions](https://img.shields.io/pypi/pyversions/nb_ai_context.svg)](https://pypi.org/project/nb_ai_context/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+🚀 **An extremely powerful AI context generator** - Merge any IT project into a single structured Markdown document for AI LLMs or RAG knowledge bases.
+
+## What is nb_ai_context?
+
+- **nb_ai_context packages any IT project into a single markdown file for AI to learn and understand.**
+- You can search for "repomix" to understand its purpose - nb_ai_context generates documents that are far superior for AI learning, especially for Python projects.  
+  repomix simply merges multiple file contents, but nb_ai_context does much more than just merging.
+- **Why do you need nb_ai_context?** Because third-party packages like google-genai, langchain, and pydantic have APIs that change too quickly. If you don't provide the latest documentation, AI will write outdated code using old package versions - sometimes even the imports won't work!  
+  You need to upload updated tutorial documents to AI so it can write correct code. Users shouldn't have to compromise by using old, outdated Python package versions just to use AI.
+
+## ✨ Core Features
+
+- ✅ **AI Reading Guide** - Adds instructions to help AI models understand document structure and reduce hallucinations
+- ✅ **File Dependencies Analysis** - Analyzes import relationships, identifies entry points and core modules
+- ✅ **AST Metadata Extraction** - Extracts class/function signatures from Python files without full source code
+- ✅ **Smart File Merging** - Supports .gitignore, file filtering, directory exclusion
+- ✅ **Clear File Boundaries** - Each file marked with project name and path for easy AI identification
+- ✅ **GitHub Project Support** - Generate docs directly from GitHub zip URLs
+- ✅ **Chainable API** - Elegant fluent interface for building context
+
+## 📦 Installation
+
+```bash
+pip install nb_ai_context
+```
+
+**Requirements:**
+- Python >= 3.7
+- nb_path
+- nb_log
+
+## 🚀 Quick Start
+
+### Basic Usage (from examples/AiMdGenerator_example.py)
+
+```python
+from nb_ai_context import AiMdGenerator
+
+project_name = "nb_ai_context"
+project_root = rf"D:\codes\{project_name}"
+
+project_summary = f"""
+- `{project_name}` is a powerful ai llm context generator library, it is used for ai llm and rag
+- `AiMdGenerator(...)` is the main class to create ai context for llm.
+"""
+
+(
+    AiMdGenerator(
+        rf"D:\codes\nb_ai_context\ai_md_files_demo\{project_name}_all_docs_and_codes.md"
+    )
+    .set_project_propery(project_name=project_name, project_root=project_root)
+    .ensure_parent()
+    .clear_text()
+    .add_ai_reading_guide()  # Add AI reading guide to help AI understand document structure
+    .add_project_summary(
+        project_summary=project_summary,
+        most_core_source_code_file_list=[
+            "nb_ai_context/__init__.py",
+            "nb_ai_context/ai_md_generator.py",
+            "nb_ai_context/contrib/gen_github_proj_ai_md.py",
+        ],
+    )
+    .auto_merge_from_python_project_some_files()
+    .show_textfile_info()
+    .merge_from_dir(
+        relative_dir_name='examples',
+        use_gitignore=True,
+        as_title=f"{project_name} examples",
+        should_include_suffixes=[".py", ".md"],
+        excluded_dir_name_list=[],
+        include_ast_metadata=True,
+    )
+    .merge_from_dir(
+        relative_dir_name=project_name,
+        use_gitignore=True,
+        as_title=f"{project_name} codes",
+        should_include_suffixes=[".py", ".md"],
+        excluded_dir_name_list=[],
+        include_ast_metadata=True,
+    )
+    .show_textfile_info()
+)
+```
+
+### From GitHub Projects
+
+```python
+from nb_ai_context import gen_github_proj_docs_and_codes_ai_md
+
+gen_github_proj_docs_and_codes_ai_md(
+    github_zip_url="https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main",
+    output_md_path=r"D:\ai_docs\sqlmodel_all_docs_and_codes.md",
+    readme_file="README.md",
+    docs_dir_name="docs",
+    codes_dir_name="sqlmodel",
+    should_include_suffixes=[".py", ".md"],
+    excluded_dir_name_list=["tests", "__pycache__"],
+)
+```
+
+## 📖 API Reference
+
+### AiMdGenerator Class
+
+The core class for generating AI context. Inherits from `NbPath` and supports chainable calls.
+
+#### Methods
+
+| Method | Description |
+|--------|-------------|
+| `set_project_propery(project_name, project_root)` | **Required first**. Set project name and root directory |
+| `add_ai_reading_guide()` | Add AI reading instructions to reduce hallucinations |
+| `add_project_summary(project_summary, most_core_source_code_file_list)` | Add project summary with core file AST metadata |
+| `add_file_dependencies(file_list)` | Analyze and add file dependency graph |
+| `auto_merge_from_python_project_some_files()` | Auto-merge README.md, setup.py, pyproject.toml |
+| `merge_from_files(file_list, as_title)` | Merge specific files |
+| `merge_from_dir(relative_dir_name, as_title, ...)` | Merge entire directory with filters |
+| `merge_from_files_with_metadata(...)` | Advanced merge with metadata control |
+| `show_textfile_info()` | Display generated file statistics |
+
+#### merge_from_dir Parameters
+
+```python
+.merge_from_dir(
+    relative_dir_name="src",           # Directory relative to project_root
+    as_title="Source Code",            # Section title in markdown
+    project_root=None,                 # Override project root (optional)
+    should_include_suffixes=[".py"],   # File extensions to include
+    excluded_dir_name_list=[],         # Directories to exclude
+    excluded_file_name_list=[],        # Files to exclude
+    use_gitignore=True,                # Respect .gitignore rules
+    dry_run=False,                     # Preview mode (no actual generation)
+    include_ast_metadata=True,         # Include Python AST metadata
+)
+```
+
+### GitHub Helper Functions
+
+| Function | Description |
+|----------|-------------|
+| `gen_github_proj_docs_and_codes_ai_md(...)` | Generate docs from GitHub repo with separate docs/codes directories |
+| `gen_github_proj_all_dirs_ai_md(...)` | Generate docs from entire GitHub repo |
+
+## 🎨 Generated Markdown Structure
+
+````markdown
+# 🤖 AI Reading Guide for Project: my_project
+(Instructions for AI models)
+
+# markdown content namespace: my_project project summary
+(Project description)
+
+## 📋 my_project most core source files metadata
+(AST metadata for core files - no source code)
+
+## 🔗 my_project File Dependencies Analysis
+(Import relationships and dependency graph)
+
+# markdown content namespace: my_project Source Code
+
+## my_project File Tree (relative dir: `src`)
+(Directory tree)
+
+## my_project Included Files (total: X files)
+(File list)
+
+--- **start of file: src/main.py** (project: my_project) ---
+### 📄 Python File Metadata: `src/main.py`
+(AST metadata)
+
+```python
+(Full source code)
+```
+
+--- **end of file: src/main.py** (project: my_project) ---
+````
+
+## 🐍 Python AST Metadata Extraction
+
+For Python files, automatically extracts:
+- Module docstrings
+- Import statements
+- Class definitions (name, bases, decorators, docstring, methods, properties, class variables)
+- Function definitions (name, parameters with types/defaults, return type, decorators, docstring)
+- Constructor (`__init__`) details
+
+## 🔒 Security
+
+- Automatically respects `.gitignore` rules when `use_gitignore=True`
+- Excludes hidden directories (starting with `.`)
+- Supports manual exclusion of sensitive directories/files
+
+## 🎯 Use Cases
+
+1. **AI Code Review** - Let AI analyze entire project for quality, security, performance
+2. **RAG Knowledge Base** - Import structured project docs into vector databases
+3. **Project Documentation** - Generate comprehensive project overview for new team members
+4. **Learning Open Source** - Quickly understand GitHub project architecture with AI assistance
+
+## 🔗 Links
+
+- **GitHub**: https://github.com/ydf0509/nb_ai_context
+- **PyPI**: https://pypi.org/project/nb_ai_context/
+- **Issues**: https://github.com/ydf0509/nb_ai_context/issues
+
+## 📄 License
+
+MIT License
+
+---
+
+# nb_ai_context vs repomix: Professional Analysis on Reducing AI Hallucinations
+
+- `nb_ai_context` is a byproduct of `nb_path`. `AiMdGenerator` inherits from `NbPath`, so it also supports infinite chainable operations, making it easy for users to chain-merge multiple folder sources into one markdown.  
+  However, `nb_ai_context` has now been separated out because generating AI context is harder, more complex, and requires more skill than file path operations.
+
+- `repomix` is the top-tier third-party library for packaging IT project code into a single file, but **`nb_ai_context` surpasses `repomix` in almost every aspect**.
+- `nb_ai_context` uses Python code with infinite chainable operations, supporting various methods - much more flexible than repomix's command-line approach. For example, it supports custom important AI prompt engineering.  
+  `nb_ai_context` allows users to specify the most important core file list via `most_core_source_code_file_list`, helping AI clearly understand the core APIs of third-party packages or your project. `nb_ai_context` Support adding custom AI prompt words through project_stummary input parameter.
+- Users can verify whether `nb_ai_context` is really powerful or if the author is just bragging. The file `ai_md_files_demo/nb_ai_context_all_docs_and_codes.md` in this project was generated by `nb_ai_context`.  
+  You can upload `nb_ai_context_all_docs_and_codes.md` to `Google AI Studio` and let AI help you master how to use `nb_ai_context` - see if AI can learn how to use an obscure third-party package without prior training.
+
+## Core Design Philosophy Comparison
+
+### nb_ai_context
+**Designed specifically to reduce AI hallucinations**, with multiple targeted features explicitly mentioned in the documentation:
+- Detailed AI reading guide (explicitly tells AI how to understand document structure)
+- Strict file boundary markers (clearly identifies start/end of each file)
+- AST metadata extraction (lets AI understand code structure before seeing source code)
+- Project dependency analysis (helps AI understand inter-module relationships)
+- Forced path verification (requires AI to verify file paths exist when suggesting code changes)
+
+### repomix
+**Mainly focused on codebase aggregation**, with the design goal of converting codebases into a single text file:
+- Simple file separation markers
+- Basic file filtering capability
+- Preserves original code structure
+- Lacks deep design specifically for AI understanding and reducing hallucinations
+
+## Key Feature Comparison for Reducing AI Hallucinations
+
+| Feature | nb_ai_context | repomix |
+|---------|---------------|---------|
+| **AI Reading Guide** | ✅ Detailed guide explicitly telling AI how to understand document structure | ❌ Basically none |
+| **File Boundary Identification** | ✅ Strict project name + path identification to prevent file confusion | ⚠️ Simple file separators |
+| **Code Structure Preview** | ✅ AST metadata extraction (class/function signatures, docstrings) | ❌ None, shows source code directly |
+| **Dependency Analysis** | ✅ Visualizes inter-module dependencies, helps AI understand architecture | ❌ None |
+| **Core Entry Point Identification** | ✅ Clearly identifies core files and entry points | ❌ None |
+| **Path Verification Requirements** | ✅ Explicit instructions requiring AI to verify file paths | ❌ No explicit guidance |
+| **Project Summary** | ✅ Structured project overview helps AI quickly grasp key points | ⚠️ Limited description capability |
+| **Hidden/Sensitive File Handling** | ✅ Supports .gitignore and manual exclusion of sensitive content | ⚠️ Basic filtering |
+
+## Practical Effect Comparison
+
+When providing context generated by these tools to AI models:
+
+### nb_ai_context Advantages
+1. **Reduces file path hallucinations**: By forcing AI to "check file paths" and "verify file paths exist in the File Tree", it nearly eliminates the problem of AI fabricating non-existent files
+2. **Reduces architectural misunderstanding**: Through dependency graphs and AST metadata, AI more easily understands overall project architecture and won't incorrectly assume inter-module relationships
+3. **Precise code references**: Strictly marked file boundaries enable AI to accurately reference specific files and line numbers when answering
+4. **More comprehensive context understanding**: Project summaries and core file analysis help AI quickly grasp project focus instead of getting lost in details
+
+### repomix Limitations
+1. **Blurred boundaries**: Simple file separators may cause AI to confuse content from different files
+2. **Lack of guidance**: No explicit instructions on how AI should interpret document structure, increasing hallucination risk
+3. **Insufficient deep understanding**: Directly exposes complete source code without providing code structure preview, making it difficult for AI to quickly grasp project architecture
+
+## Conclusion: nb_ai_context is Significantly Stronger at Reducing AI Hallucinations
+
+nb_ai_context is not just a code aggregation tool, but **a context optimization system specifically designed for AI-code interaction**. It explicitly targets "reducing hallucinations" as a core goal, repeatedly emphasizing in the documentation:
+
+> ⚠️ Important Notes
+> 1. **Do NOT hallucinate**: Only reference code, classes, functions, and APIs that actually exist in this document
+> 2. **Check file paths**: When suggesting code changes, always verify the file path exists in the File Tree
+> 3. **Respect the project structure**: The File Tree shows the actual directory layout
+
+While repomix is more of a general code aggregation tool without deep design specifically targeting AI hallucination issues. For scenarios requiring high-quality AI code understanding, review, or generation, nb_ai_context provides a more professional solution.
+
+If you're preparing code context for AI systems, especially in enterprise applications or security-sensitive scenarios, nb_ai_context's professional design will significantly reduce the risk of AI producing dangerous hallucinations.
+
+---
+
+**nb_ai_context** - Let AI truly understand your code 🚀
+
+`````
+
+--- **end of file: README.md** (project: nb_ai_context) --- 
+
+---
+
+
+--- **start of file: pyproject.toml** (project: nb_ai_context) --- 
+
+`````text
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb_ai_context"
+version = "1.5"
+description = "非常强力的对任意it项目生成ai上下文单个markdown文档，丢给大模型或者知识库，非常强力，大模型幻觉大幅度减少。尤其是对python项目还有专门的ast语法树解析"
+keywords = ["ai", "ai context", "llm", "rag", "python","ast","ast metadata","ai context generator","markdown"]
+authors = [
+    {name = "ydf0509", email = "ydf0509@xxx.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "typing_extensions>=3.7; python_version < '3.8'",
+    "nb_path",
+    "nb_log",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.14",
+]
+dev = [
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.812",
+]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_ai_context"
+Repository = "https://github.com/ydf0509/nb_ai_context"
+Issues = "https://github.com/ydf0509/nb_ai_context/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nb_ai_context*"]
+
+[tool.setuptools.package-data]
+nb_ai_context = ["py.typed", "contrib/README.md"]
+
+`````
+
+--- **end of file: pyproject.toml** (project: nb_ai_context) --- 
+
+---
+
+# markdown content namespace: nb_ai_context examples 
+
+
+## nb_ai_context File Tree (relative dir: `examples`)
+
+
+`````
+
+└── examples
+    ├── AiMdGenerator_example.py
+    └── generate_nb_log_ai_context.py
+
+`````
+
+---
+
+
+## nb_ai_context (relative dir: `examples`)  Included Files (total: 2 files)
+
+
+- `examples/AiMdGenerator_example.py`
+
+- `examples/generate_nb_log_ai_context.py`
+
+
+---
+
+
+--- **start of file: examples/AiMdGenerator_example.py** (project: nb_ai_context) --- 
+
+
+### 📄 Python File Metadata: `examples/AiMdGenerator_example.py`
+
+#### 📦 Imports
+
+- `from nb_ai_context import AiMdGenerator`
+
+
+---
+
+`````python
+from nb_ai_context import AiMdGenerator
+
+
+project_name = "nb_ai_context"
+project_root = rf"D:\codes\{project_name}"
+
+project_summary = f"""
+- `{project_name}` is a powerful ai llm context gennerator library ,it is uesd for ai llm and rag
+- `AiMdGenerator(...)` is the main class to create ai context for llm.
+"""
+
+
+(
+    AiMdGenerator(
+        rf"D:\codes\nb_ai_context\ai_md_files_demo\{project_name}_all_docs_and_codes.md"
+    )
+    .set_project_propery(project_name=project_name, project_root=project_root)
+    .ensure_parent()
+    .clear_text()
+    .add_ai_reading_guide()  # 添加 AI 阅读指南，帮助 AI 更好地理解文档结构
+    .add_project_summary(
+        project_summary=project_summary,
+        most_core_source_code_file_list=[
+            "nb_ai_context/__init__.py",
+            "nb_ai_context/ai_md_generator.py",
+            "nb_ai_context/contrib/gen_github_proj_ai_md.py",
+        ],
+    )
+    .auto_merge_from_python_project_some_files()
+    .show_textfile_info()
+    .merge_from_dir(
+        relative_dir_name='examples',
+        use_gitignore=True,
+        as_title=f"{project_name} examples",
+        # 只包含 .py 和 .md 文件
+        should_include_suffixes=[".py", ".md"],
+        # 排除 __pycache__ 目录和特定的测试文件
+        excluded_dir_name_list=[],
+        include_ast_metadata=True,
+    )
+    .merge_from_dir(
+        relative_dir_name=project_name,
+        use_gitignore=True,
+        as_title=f"{project_name} codes",
+        # 只包含 .py 和 .md 文件
+        should_include_suffixes=[".py", ".md"],
+        # 排除 __pycache__ 目录和特定的测试文件
+        excluded_dir_name_list=[],
+        include_ast_metadata=True,
+    )
+    .show_textfile_info()
+)
+
+`````
+
+--- **end of file: examples/AiMdGenerator_example.py** (project: nb_ai_context) --- 
+
+---
+
+
+--- **start of file: examples/generate_nb_log_ai_context.py** (project: nb_ai_context) --- 
+
+
+### 📄 Python File Metadata: `examples/generate_nb_log_ai_context.py`
+
+#### 📦 Imports
+
+- `from nb_ai_context import AiMdGenerator`
+- `from nb_log import get_logger`
+
+
+---
+
+`````python
+
+from nb_ai_context import AiMdGenerator
+from nb_log import get_logger
+
+get_logger("nb_path")
+
+project_name = "nb_log"
+project_root = rf"D:\codes\{project_name}"
+
+project_summary = """
+- `nb_log` is a powerful logging library for Python. 
+
+- `nb_log.get_logger(...)` is the main function to get a logger object.
+
+"""
+
+ai_md = AiMdGenerator(
+    r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\nb_log_all_docs_and_codes.md"
+).set_project_propery(project_name=project_name, project_root=project_root)
+
+
+(
+    ai_md.clear_text()
+    .add_ai_reading_guide()
+    .add_project_summary(
+        project_summary=project_summary,
+        most_core_source_code_file_list=[
+            "nb_log/__init__.py",
+            "nb_log/log_manager.py",
+            "nb_log/nb_log_config_default.py",
+        ],
+    )
+    .merge_from_dir(
+        project_root=r"D:\codes\nb_log_readdocs",
+        relative_dir_name=r"source\articles",
+        use_gitignore=True,
+        as_title=f"{project_name} docs",
+        # 只包含 .py 和 .md 文件
+        should_include_suffixes=[".md"],
+        # 排除 __pycache__ 目录和特定的测试文件
+        excluded_dir_name_list=[],
+    )
+    .merge_from_dir(
+        relative_dir_name=project_name,
+        use_gitignore=True,
+        as_title=f"{project_name} codes",
+        # 只包含 .py 和 .md 文件
+        should_include_suffixes=[".py", ".md"],
+        # 排除 __pycache__ 目录和特定的测试文件
+        excluded_dir_name_list=[],
+        include_ast_metadata=True,
+    )
+    .get_textfile_info(is_show_info=True)
+)
+
+`````
+
+--- **end of file: examples/generate_nb_log_ai_context.py** (project: nb_ai_context) --- 
+
+---
+
+# markdown content namespace: nb_ai_context codes 
+
+
+## nb_ai_context File Tree (relative dir: `nb_ai_context`)
+
+
+`````
+
+└── nb_ai_context
+    ├── __init__.py
+    ├── ai_md_generator.py
+    └── contrib
+        ├── about.md
+        └── gen_github_proj_ai_md.py
+
+`````
+
+---
+
+
+## nb_ai_context (relative dir: `nb_ai_context`)  Included Files (total: 4 files)
+
+
+- `nb_ai_context/ai_md_generator.py`
+
+- `nb_ai_context/__init__.py`
+
+- `nb_ai_context/contrib/about.md`
+
+- `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+
+---
+
+
+--- **start of file: nb_ai_context/ai_md_generator.py** (project: nb_ai_context) --- 
+
+
+### 📄 Python File Metadata: `nb_ai_context/ai_md_generator.py`
+
+#### 📦 Imports
+
+- `import typing`
+- `import os`
+- `import fnmatch`
+- `import ast`
+- `from nb_path import NbPath`
+- `import astor`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AiMdGenerator(NbPath)`
+*Line: 10*
+
+**Docstring:**
+`````
+An extremely powerful context generator born for AI collaboration.
+
+This class is designed to revolutionize how developers interact with Large Language
+Models (LLMs). It intelligently merges multiple project source files into a single,
+well-structured, and context-rich Markdown file, providing the AI with a perfect
+and comprehensive project snapshot.
+
+Key Features:
+1.  **AI Reading Guide**: `add_ai_reading_guide()` adds instructions for AI models
+    to better understand the document structure and avoid hallucinations.
+2.  **Project Summary with Core Files Metadata**: `add_project_summary()` extracts
+    AST metadata from core files without full source code, helping AI quickly
+    grasp the project architecture.
+3.  **File Dependencies Analysis**: `add_file_dependencies()` analyzes import
+    relationships between files, showing entry points and core modules.
+4.  **Smart File Merging**: `merge_from_dir()` and `merge_from_files()` with
+    .gitignore support, file filtering, and AST metadata extraction.
+5.  **Clear File Boundaries**: Each file is marked with project name and path
+    for easy identification by AI models.
+
+Main Public Methods:
+- `set_project_propery(project_name, project_root)`: Set project info (required first)
+- `add_ai_reading_guide()`: Add AI reading instructions to reduce hallucinations
+- `add_project_summary(project_summary, most_core_source_code_file_list)`: Add summary with core file metadata
+- `add_file_dependencies(file_list)`: Analyze and add file dependency graph
+- `auto_merge_from_python_project_some_files()`: Auto-merge README, setup.py, pyproject.toml
+- `merge_from_files(file_list, as_title)`: Merge specific files
+- `merge_from_dir(dir_name, as_title, ...)`: Merge entire directory with filters
+- `merge_from_files_with_metadata(file_list, as_title, include_ast_metadata, include_file_text)`: Advanced merge with metadata control
+
+Example:
+    >>> from nb_ai_context import AiMdGenerator
+    >>> 
+    >>> project_name = "my_project"
+    >>> project_root = r"D:\codes\my_project"
+    >>> 
+    >>> (
+    ...     AiMdGenerator(rf"D:\ai_docs\{project_name}_for_ai.md")
+    ...     .set_project_propery(project_name=project_name, project_root=project_root)
+    ...     .clear_text()
+    ...     .add_ai_reading_guide()  # Add AI reading instructions
+    ...     .add_project_summary(
+    ...         project_summary="This is my awesome project...",
+    ...         most_core_source_code_file_list=[
+    ...             "src/main.py",
+    ...             "src/api.py",
+    ...         ]
+    ...     )
+    ...     .auto_merge_from_python_project_some_files()
+    ...     .merge_from_dir(
+    ...         relative_dir_name="src",
+    ...         as_title=f"{project_name} Source Code",
+    ...         use_gitignore=True,
+    ...         should_include_suffixes=[".py", ".md"],
+    ...         include_ast_metadata=True,
+    ...     )
+    ...     .show_textfile_info()
+    ... )
+`````
+
+**Public Methods (9):**
+- `def set_project_propery(self, project_name: str, project_root: typing.Union[os.PathLike, str]) -> 'AiMdGenerator'`
+  - *Sets the project name for the current markdown file.*
+- `def add_ai_reading_guide(self) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  添加 AI 阅读指南，帮助 AI 大模型更好地理解文档结构
+  
+  建议在 clear_text() 之后、add_project_summary() 之前调用
+  `````
+- `def add_project_summary(self, project_summary: str, most_core_source_code_file_list: typing.List[str] = None, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  Adds a project summary to the current markdown file.
+  
+  Args:
+      project_summary: 项目概述文本
+      project_root: 项目根目录（如果提供了 most_core_source_code_file_list）
+      most_core_source_code_file_list: 最核心的源码文件列表（相对路径）
+                                       只提取这些文件的 AST 元数据，不包含完整源码
+  
+  Example:
+      >>> (
+      ...     AiMdGenerator("output.md")
+      ...     .set_project_name("my_project")
+      ...     .clear_text()
+      ...     .add_project_summary(
+      ...         project_summary="这是一个优秀的项目...",
+      ...         project_root="/path/to/project",
+      ...         most_core_source_code_file_list=["src/main.py", "src/api.py"],
+      ...     )
+      ... )
+  `````
+- `def auto_merge_from_python_project_some_files(self, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - *自动合并项目根目录下的 readme.md 或者ReADME.md 以及setup.py 和 pyproject.toml ，如果有就添加*
+- `def merge_from_files(self, relative_file_name_list: typing.List[str], as_title: str, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  Merges the content of the given files into the current markdown file.
+  the current markdown file will be used to upload to ai model for code review and learning.
+  `````
+- `def merge_from_dir(self, relative_dir_name: str, as_title: str, project_root: typing.Union[os.PathLike, str] = None, should_include_suffixes: typing.List[str] = [], excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [], use_gitignore: bool = True, dry_run: bool = False, include_ast_metadata: bool = True) -> 'AiMdGenerator'`
+  - *Merges the content of the given directory into the current file.*
+- `def merge_dir_of_package_examples(self)`
+  - *合并包的examples目录到当前markdown文件*
+- `def merge_from_files_with_metadata(self, relative_file_name_list: typing.List[str], as_title: str, project_root: typing.Union[os.PathLike, str] = None, include_ast_metadata: bool = True, include_file_text: bool = True) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  合并文件内容到 Markdown，对于 Python 文件会额外生成 AST 元数据
+  
+  Args:
+      project_root: 项目根目录
+      relative_file_name_list: 相对文件路径列表
+      as_title: 标题
+      include_ast_metadata: 是否包含 AST 元数据（仅对 .py 文件）
+      include_file_text: 是否包含完整文件源码（False 时只显示元数据）
+  `````
+- `def add_file_dependencies(self, file_list: typing.List[str] = None, project_root: typing.Union[os.PathLike, str] = None) -> 'AiMdGenerator'`
+  - **Docstring:**
+  `````
+  分析并添加项目文件之间的依赖关系到 markdown
+  
+  Args:
+      file_list: 要分析的文件列表（相对路径），如果为 None 则分析整个项目
+      project_root: 项目根目录
+      
+  Example:
+      >>> (
+      ...     AiMdGenerator("output.md")
+      ...     .set_project_propery("my_project", "/path/to/project")
+      ...     .clear_text()
+      ...     .add_project_summary(project_summary="...")
+      ... )
+  `````
+
+**Class Variables (1):**
+- `suffix__lang_map = {'.py': 'python', '.md': 'markdown', '.txt': 'text...`
+
+
+---
+
+`````python
 import typing
 import os
 import fnmatch
@@ -1378,3 +2483,285 @@ This markdown document is structured as follows:
         self.append_text(deps_md)
         
         return self
+
+`````
+
+--- **end of file: nb_ai_context/ai_md_generator.py** (project: nb_ai_context) --- 
+
+---
+
+
+--- **start of file: nb_ai_context/__init__.py** (project: nb_ai_context) --- 
+
+
+### 📄 Python File Metadata: `nb_ai_context/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_path import NbPath`
+- `from ai_md_generator import AiMdGenerator`
+- `from contrib.gen_github_proj_ai_md import gen_github_proj_docs_and_codes_ai_md`
+- `from contrib.gen_github_proj_ai_md import gen_github_proj_all_dirs_ai_md`
+
+
+---
+
+`````python
+
+from nb_path import NbPath
+from .ai_md_generator import AiMdGenerator
+
+from .contrib.gen_github_proj_ai_md import gen_github_proj_docs_and_codes_ai_md,gen_github_proj_all_dirs_ai_md
+`````
+
+--- **end of file: nb_ai_context/__init__.py** (project: nb_ai_context) --- 
+
+---
+
+
+--- **start of file: nb_ai_context/contrib/about.md** (project: nb_ai_context) --- 
+
+`````markdown
+
+
+some contribution about nb_path
+`````
+
+--- **end of file: nb_ai_context/contrib/about.md** (project: nb_ai_context) --- 
+
+---
+
+
+--- **start of file: nb_ai_context/contrib/gen_github_proj_ai_md.py** (project: nb_ai_context) --- 
+
+
+### 📄 Python File Metadata: `nb_ai_context/contrib/gen_github_proj_ai_md.py`
+
+#### 📝 Module Docstring
+
+`````
+Generate tutorials and code from any GitHub project into a markdown file for AI context
+
+Download GitHub project zip file
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/tags/0.0.25
+
+Unzip the file
+Generate markdown file
+`````
+
+#### 📦 Imports
+
+- `import typing`
+- `from nb_path import NbPath`
+- `from nb_ai_context.ai_md_generator import AiMdGenerator`
+- `import re`
+
+#### 🔧 Public Functions (3)
+
+- `def extract_repo_name(github_url)`
+  - *Line: 18*
+
+- `def gen_github_proj_docs_and_codes_ai_md(github_zip_url: str, output_md_path: str, docs_dir_name: str, codes_dir_name: str, readme_file: str, should_include_suffixes: list = None, excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [])`
+  - *Line: 27*
+  - **Docstring:**
+  `````
+  Generate a Markdown document containing README, tutorials, and source code from a GitHub repository URL
+  
+  Args:
+      github_zip_url: GitHub repository zip download link
+                     Example: https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+      output_md_path: Output Markdown file path
+      readme_file: README file name, default is "README.md"
+      docs_dir_name: Documentation directory name, e.g. "docs"
+      codes_dir_name: Source code directory name, e.g. "sqlmodel"
+      should_include_suffixes: List of file extensions to include,
+                              By default includes ['.py', '.java', '.go', '.md', '.html']
+  `````
+
+- `def gen_github_proj_all_dirs_ai_md(github_zip_url: str, output_md_path: str, should_include_suffixes: list = None, excluded_dir_name_list: typing.List[str] = [], excluded_file_name_list: typing.List[str] = [])`
+  - *Line: 99*
+  - *生成github的项目根目录下所有文件到markdown，*
+
+
+---
+
+`````python
+"""
+Generate tutorials and code from any GitHub project into a markdown file for AI context
+
+Download GitHub project zip file
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+https://codeload.github.com/fastapi/sqlmodel/zip/refs/tags/0.0.25
+
+Unzip the file
+Generate markdown file
+"""
+
+import typing
+from nb_path import NbPath
+from nb_ai_context.ai_md_generator import AiMdGenerator
+import re
+
+
+def extract_repo_name(github_url):
+    # Match GitHub codeload URL pattern
+    pattern = r"https://codeload\.github\.com/[^/]+/([^/]+)"
+    match = re.search(pattern, github_url)
+    if match:
+        return match.group(1)
+    return None
+
+
+def gen_github_proj_docs_and_codes_ai_md(
+    github_zip_url: str,
+    output_md_path: str,
+    docs_dir_name: str,
+    codes_dir_name: str,
+    readme_file: str,
+    should_include_suffixes: list = None,
+    excluded_dir_name_list: typing.List[str] = [],
+    excluded_file_name_list: typing.List[str] = [],
+):
+    """
+    Generate a Markdown document containing README, tutorials, and source code from a GitHub repository URL
+
+    Args:
+        github_zip_url: GitHub repository zip download link
+                       Example: https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main
+        output_md_path: Output Markdown file path
+        readme_file: README file name, default is "README.md"
+        docs_dir_name: Documentation directory name, e.g. "docs"
+        codes_dir_name: Source code directory name, e.g. "sqlmodel"
+        should_include_suffixes: List of file extensions to include,
+                                By default includes ['.py', '.java', '.go', '.md', '.html']
+    """
+    project_name = extract_repo_name(github_zip_url)
+    if should_include_suffixes is None:
+        should_include_suffixes = [".py", ".java", ".go", ".md", ".html"]
+
+    with NbPath.tempdir() as temp_dir:
+        # Download zip file
+        zip_file = temp_dir / "repo.zip"
+        zip_file.download_from_url(github_zip_url)
+
+        # Unzip the file
+        unzip_dir = zip_file.unzip_to(temp_dir / "unzip")
+        project_root = list(unzip_dir.iterdir())[
+            0
+        ]  # Get the project root directory after extraction
+
+        print(f"tempdir github project_root: {project_root}")
+
+        # Create AiMdGenerator instance and chain calls
+
+        md_generator = (
+            AiMdGenerator(output_md_path)
+            .set_project_propery(project_name=project_name, project_root=project_root)
+            .clear_text()
+            .merge_from_files(
+                relative_file_name_list=[readme_file],
+                as_title=f"{project_name}  README",
+            )
+            .merge_from_dir(
+                relative_dir_name=docs_dir_name,
+                as_title=f"{project_name}  Documentation",
+                should_include_suffixes=should_include_suffixes,
+                use_gitignore=False,
+                excluded_dir_name_list=excluded_dir_name_list,
+                excluded_file_name_list=excluded_file_name_list,
+            )
+            .merge_from_dir(
+                relative_dir_name=codes_dir_name,
+                as_title=f"{project_name}  Source Code",
+                should_include_suffixes=should_include_suffixes,
+                use_gitignore=False,
+                excluded_dir_name_list=excluded_dir_name_list,
+                excluded_file_name_list=excluded_file_name_list,
+            )
+            .show_textfile_info()
+        )
+
+        return md_generator
+
+
+def gen_github_proj_all_dirs_ai_md(
+    github_zip_url: str,
+    output_md_path: str,
+    should_include_suffixes: list = None,
+    excluded_dir_name_list: typing.List[str] = [],
+    excluded_file_name_list: typing.List[str] = [],
+):
+    """
+    生成github的项目根目录下所有文件到markdown，
+    """
+    project_name = extract_repo_name(github_zip_url)
+    if should_include_suffixes is None:
+        should_include_suffixes = [".py", ".java", ".go", ".md", ".html"]
+
+    with NbPath.tempdir() as temp_dir:
+        # Download zip file
+        zip_file = temp_dir / "repo.zip"
+        zip_file.download_from_url(github_zip_url)
+
+        # Unzip the file
+        unzip_dir = zip_file.unzip_to(temp_dir / "unzip")
+        project_root = list(unzip_dir.iterdir())[
+            0
+        ]  # Get the project root directory after extraction
+
+        print(f"tempdir github project_root: {project_root}")
+
+        # Create AiMdGenerator instance and chain calls
+
+        md_generator = (
+            AiMdGenerator(output_md_path)
+            .set_project_propery(project_name=project_name, project_root=project_root)
+            .clear_text()
+            .merge_from_dir(
+                relative_dir_name=".",
+                as_title=f"{project_name}  all files",
+                should_include_suffixes=should_include_suffixes,
+                use_gitignore=False,
+                excluded_dir_name_list=excluded_dir_name_list,
+                excluded_file_name_list=excluded_file_name_list,
+            )
+            .show_textfile_info()
+        )
+
+        return md_generator
+
+
+if __name__ == "__main__":
+    # Example: Generate documentation for sqlmodel project
+    gen_github_proj_docs_and_codes_ai_md(
+        github_zip_url="https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main",
+        output_md_path=NbPath(
+            r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\other_peoples"
+        )
+        .joinpath("sqlmodel_all_docs_and_codes.md")
+        .ensure_parent(),
+        readme_file="README.md",
+        docs_dir_name="docs",
+        codes_dir_name="sqlmodel",
+        should_include_suffixes=[
+            ".py",
+            ".md",
+        ],
+    )
+
+    gen_github_proj_all_dirs_ai_md(
+        github_zip_url="https://codeload.github.com/fastapi/sqlmodel/zip/refs/heads/main",
+        output_md_path=NbPath(
+            r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\other_peoples"
+        )
+        .joinpath("sqlmodel_all_dirs.md")
+        .ensure_parent(),
+    )
+
+`````
+
+--- **end of file: nb_ai_context/contrib/gen_github_proj_ai_md.py** (project: nb_ai_context) --- 
+
+---
+

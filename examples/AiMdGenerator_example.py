@@ -12,10 +12,12 @@ project_summary = f"""
 
 (
     AiMdGenerator(
-        rf"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\{project_name}_all_docs_and_codes.md"
+        rf"D:\codes\nb_ai_context\ai_md_files_demo\{project_name}_all_docs_and_codes.md"
     )
     .set_project_propery(project_name=project_name, project_root=project_root)
+    .ensure_parent()
     .clear_text()
+    .add_ai_reading_guide()  # 添加 AI 阅读指南，帮助 AI 更好地理解文档结构
     .add_project_summary(
         project_summary=project_summary,
         most_core_source_code_file_list=[
