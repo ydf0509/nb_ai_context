@@ -8,6 +8,8 @@
 
 🚀 **An extremely powerful AI context generator** - Merge any IT project into a single structured Markdown document for AI LLMs or RAG knowledge bases.
 
+**🔥 God-tier Use Case: Chat with AI about your project anytime, anywhere** - Before leaving work or going on vacation, run `AiMdGenerator` to get a single merged markdown. You can then have precise conversations with AI about your project code while on the subway or before bed. You can't carry your programming computer everywhere, but your phone is with you 24/7. Upload the document to `Google AI Studio` - its code understanding and generation capabilities far surpass average programmers. Use natural language on your phone to effortlessly command your tens of thousands of lines of code.This is like a total game-changer: it gives someone with just a smartphone a wider perspective and far more flexible thinking than someone glued to their computer, obsessing over their IDE. This is what AI empowerment for programmers looks like at its ultimate level.
+
 ## What is nb_ai_context?
 
 nb_ai_context is not simply merging project file code, it is a context optimization tool specifically designed for AI code interaction, with the core goal of reducing AI illusions.
@@ -209,6 +211,34 @@ For Python files, automatically extracts:
 3. **Project Documentation** - Generate comprehensive project overview for new team members
 4. **Learning Open Source** - Quickly understand GitHub project architecture with AI assistance
 
+### 🔥 God-tier Use Case Scenarios:
+
+**Chat with AI about your project anytime, anywhere** - Before leaving work or going on vacation, run `AiMdGenerator` to get a single merged markdown. You can then have precise conversations with AI about your project code while on the subway or before bed. You can't carry your programming computer everywhere, but your phone is with you 24/7. Upload the document to `Google AI Studio` - its code understanding and generation capabilities far surpass average programmers. Use natural language on your phone to effortlessly command your tens of thousands of lines of code.This is like a total game-changer: it gives someone with just a smartphone a wider perspective and far more flexible thinking than someone glued to their computer, obsessing over their IDE. This is what AI empowerment for programmers looks like at its ultimate level.
+
+#### What makes this workflow so satisfying?
+
+**Scenario 1: "Code Review" on the Subway**
+> *You're on the subway and suddenly think: "Hmm, is that `User` module I wrote this afternoon too tightly coupled with the `Order` module?"*
+>
+> **Action**: Open your phone and ask Gemini: "Based on the code I uploaded, analyze the coupling between the `User` class and `Order` class, and give me refactoring suggestions."
+> **Result**: AI will reference your specific code line numbers and provide extremely professional refactoring solutions. You just nod: "Yeah, this approach is right, I'll make these changes first thing tomorrow morning." — **Commute time becomes high-value architecture thinking time.**
+
+**Scenario 2: "Painless Reading" Before Bed**
+> *You inherited a legacy codebase, spent all day looking at it with a headache, and still don't understand one core logic.*
+>
+> **Action**: Lying in bed, ask Gemini: "In the simplest language possible, explain how the `CoreEngine` class schedules tasks, and draw me a text-based flowchart."
+> **Result**: AI acts like a patient mentor, breaking down the logic for you. You don't need to strain your eyes reading code - you understand it through the plain language explanation and can sleep peacefully.
+
+**Scenario 3: Capturing Inspiration**
+> *You're out shopping on the weekend and suddenly think of a new feature.*
+>
+> **Action**: Pull out your phone: "If I want to add a `WebSocket` push feature to the current project, which files need to be changed? Write me an MVP plan."
+> **Result**: Based on your complete codebase, AI lists exactly which files to modify - `api.py`, `models.py` - and even drafts the approximate code. You screenshot it, and on Monday you can implement it directly with AI assistance.
+
+#### **Summary:**
+
+This workflow **transforms "writing code" (heavy physical labor) into "discussing architecture and logic" (light mental work).**
+
 ## 🔗 Links
 
 - **GitHub**: https://github.com/ydf0509/nb_ai_context
@@ -263,6 +293,15 @@ MIT License
 | **Path Verification Requirements** | ✅ Explicit instructions requiring AI to verify file paths | ❌ No explicit guidance |
 | **Project Summary** | ✅ Structured project overview helps AI quickly grasp key points | ⚠️ Limited description capability |
 | **Hidden/Sensitive File Handling** | ✅ Supports .gitignore and manual exclusion of sensitive content | ⚠️ Basic filtering |
+
+## Comparison with Similar Tools
+
+In addition to the detailed comparison with repomix provided above, here is a concise table comparing key features:
+
+| Tool | Context Completeness | Token Consumption | Security | Cost |
+|------|---------------------|------------------|----------|------|
+| **repomix** | ⚠️ Simple concatenation | ⚠️ Moderate | ⚠️ Basic filtering | 🆓 Free tool |
+| **nb_ai_context** | ✅ Full structured context | ✅ AST metadata optimized | ✅ Automatic .gitignore support | 🆓 Free tool |
 
 ## Practical Effect Comparison
 

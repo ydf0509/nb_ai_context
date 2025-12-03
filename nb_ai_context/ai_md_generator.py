@@ -410,6 +410,7 @@ This markdown document is structured as follows:
         use_gitignore: bool = True,
         dry_run: bool = False,
         include_ast_metadata: bool = True,
+        include_file_text: bool = True,
     ) -> "AiMdGenerator":
         """Merges the content of the given directory into the current file."""
         project_root =  project_root or self.project_root
@@ -507,11 +508,11 @@ This markdown document is structured as follows:
         else:
             # 使用带元数据的方法
             return self.merge_from_files_with_metadata(
-                 
                 relative_paths_to_include, 
                 as_title,
                 project_root=project_root,
-                include_ast_metadata=include_ast_metadata
+                include_ast_metadata=include_ast_metadata,
+                include_file_text=include_file_text,
             )
 
     def merge_dir_of_package_examples(self):
