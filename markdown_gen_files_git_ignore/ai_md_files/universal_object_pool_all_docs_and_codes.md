@@ -1,0 +1,1600 @@
+# markdown content namespace: object_pool_proj readme 
+
+
+## File Tree
+
+
+```
+
+└── README.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+
+---
+
+
+### code file start: README.md 
+
+## pip install universal_object_pool
+
+此包能够将一切任意类型的python对象池化，是万能池，适用范围远大于单一用途的mysql连接池 http连接池等。
+
+使用这个通用对象池框架，自带实现了4个对象池例子。可以直接开箱用这四个对象池，也可以作为例子学习对象池用法。
+
+contrib 文件夹自带演示了4个封装，包括http pymsql webdriver paramiko(操作linux的python包)的池化。
+
+<pre style="color: darkgreen;font-size: medium">
+python 通用对象池，socket连接池、mysql连接池归根结底都是对象池。
+mysql连接池就是pymsql.Connection类型的对象池，一切皆对象。
+只是那些很常用的功能的包都有相关的池库，池都是为他们特定的功能定制服务的，不够通用。
+
+编码中很多创建代价大的对象（耗时耗cpu），但是他们的核心操作方法只能是被一个线程占用。
+
+例如mysql，你用同一个conn在不同线程同时去高并发去执行插入修改删除操作就会报错，而且就算包不自带报错，
+带事务的即使不报错在多线程也容易混乱，例如线程1要吧conn roallback，线程2要commit，conn中的事务到底听谁的？
+例如一个浏览器要并发打开多个网页，线程1命令浏览器打开新浪，线程2命令浏览器打开搜狐，那么浏览器到底听谁的？
+一个http链接要打开百度新闻的第一页，另外一个线程又让他打开百度新闻的第二页，那么这个socket到底听谁的？
+解决类似这种抓狂的场景，如果不想再函数内部频繁创建和摧毁，那么就要使用池化思想。
+
+
+如果一个对象的创建代价大例如耗时耗费代码行数长(耗cpu)，并且他的核心操作方法是耗时的并且是多线程不安全的，
+那么就有必要使用池化，使程序运行速度加快。和这个对象代表的是不是一个socket连接，是不是一个浏览器，没有任何关系。
+
+
+
+
+</pre>
+
+
+
+[这是一篇很好的博客，说明连接池重要性: ](https://blog.csdn.net/claroja/article/details/103204159?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522166364368816782388023926%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=166364368816782388023926&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-2-103204159-null-null.nonecase&utm_term=python%20%20DBUtils&spm=1018.2226.3001.4450)
+
+
+
+```
+
+
+
+
+编码中有时候需要使用一种创建代价很大的对象，而且这个对象不能被多线程同时调用他的操作方法，
+
+比如mysql连接池，socket连接池。
+很多这样的例子例典型如mysql的插入，如果多线程高并发同时操作同一个全局connection去插入，很快就会报错了。
+那么你可能会为了解决这个问题的方式有如下：
+
+1.你可能这么想，操作mysql的那个函数里面每一次都临时创建mysql连接，函数的末尾关闭coonection，
+  这样频繁创建和摧毁连接，无论是服务端还是客户端开销cpu和io高出很多。
+
+2.或者不使用方案1，你是多线程的函数里面用一个全局connection，但是每一个操作mysql的地方都加一个线程锁，
+  使得不可能线程1和线程2同时去操作这个connction执行插入，如果假设插入耗时1秒，那么100线程插入1000次要1000秒。
+
+正确的做法是使用mysql连接池库。如果设置开启的连接池中的数量是大于100，100线程插入1000次只需要10秒，节省时间100倍。
+mysql连接池已经有知名的连接池包了。如果没有大佬给我们开发mysql连接池库或者一个小众的需求还没有大神针对这个耗时对象开发连接池。
+那么可以使用 ObjectPool 实现对象池，连接池就是对象池的一种子集，connection就是pymysql.Connection类型的对象，连接也是对象。
+这是万能对象池，所以可以实现webdriver浏览器池。对象并不是需要严格实实在在的外部cocket或者浏览器什么的，也可以是python语言的一个普通对象。
+只要这个对象创建代价大，并且它的核心方法是非线程安全的，就很适合使用对象池来使用它。
+
+
+
+
+```
+
+## 1.常问问题回答
+
+### 1.1 对象池是线程安全的吗？
+
+```
+这个问题牛头不对马嘴 ，对象池就是为多线程或者并发而生的。
+你想一下，如果你的操作只有一个主线程，那直接用一个对象一直用就是了，反正不会遇到多线程要使用同一个对象。
+
+你花脑袋想想，如果你的代码是主线程单线程的，你有必要用dbutils来搞mysql连接池吗。
+直接用pymysql的conn不是更简单更香吗。
+web后端是uwsgi gunicorn来自动开多线程或者协程是自动并发的，虽然你没亲自开多线程，但也是多线程的，需要使用连接池。
+
+任何叫池的东西都是为并发而生的，如果不能多线程安全，那存在的意义目的何在？
+
+```
+
+### 1.2 对象池 连接池 线程池有什么区别。
+
+```
+连接池就是对象池，连接池一般是链接数据库 或者中间件或者socket的对象，比如mysql的connection，有的对象并不是链接什么socket，
+但是创建代价大，方法非线程安全，就是对象池。连接池是对象池的一个子集。
+
+线程池和对象池关系很小，此对象池可以实现了一切对象池化，但并不能拿来实现线程池。
+如果要看线程池，https://github.com/ydf0509/threadpool_executor_shrink_able 此项目实现了线程池。
+
+
+https://blog.csdn.net/Alan_Mathison_Turing/article/details/78512410 这个讲得对象池和线程池区别，讲的不错。
+
+一个对象池的基本行为包括：
+
+创建对象newObject()
+借取对象getObject()
+归还对象freeObject()
+
+线程池
+首先摆出结论：线程池糅合了对象池模型，但是核心原理是生产者-消费者模型。
+
+线程池并不是像多线程把某个线程借出去使用然后利用完了归还，线程池里面的线程都是while true的死循环，
+不会像对象池例如mysql的conn查询一下几十毫秒钟就用完了，线程池里面的线程对象是永不结束的，没有借出去使用用完了后归还这种事情。
+
+所以不能想着学习池化mysql connection或者selnium的driver，也把threading.Thread池化呢，Thread对象随着run方法的结束就会自动摧毁了
+，无法人为的使Thread不摧毁，也就是说线程是随着run方法运行完成就自动结束了不可放到池子里面反复拿出来短暂利用，那么线程池是如何复用线程的呢？
+因为上面说了线程随着run方法运行完成就自动结束了是一次性的，那么主要是就是把线程池的每个线程的run方法设计成无限蒙蔽死循环的while 1永不结束就能解决复用问题了，
+每个线程的run方法都是在while 1 里面 fun,args = queue.get(block=True),每取出一个任务后就在当前线程执行 fun(*agrs)，所以线程一直是那个线程，
+但是可以运行的函数和函数参数却是无限可能的。
+任何线程池实现都是有个queue，生产者往queue里面submit任务，
+消费者是例如100个线程，每个线程里面跑的函数都是while True的死循环函数，while 1里面不断的用queue.get从queue里面拉取任务，
+拉取一个任务，就立即fun(x,y)这么去运行。任何语言任何人实现线程池一定是这个思路这么写的，没有例外。
+
+说到死循环那就很有趣了，这里是线程池设计的一个难点重点，如果while True死循环，那线程池不是无敌了无解了，代码那不是永远结束不了？
+线程池里面设计的一个难点就包括这里，所以很多人写的线程池都很难用，要么程序永不结束，要么设计成了线程池的queue里面还有任务没完成，
+程序就结束了，所以pool.submit，很多人搞的线程池在代码最结尾要加上pool.termit什么玩意的，可以百度博客园python线程池好多就是这样的，
+没有几个人设计的手写线程池达到了 concurrent.futures.Threadpoolexecutor那么好用的程度，最主要是不了解守护线程，
+很多人都是搞的非守护线程，导致发明的线程池比内置的concurrent.futures.Threadpoolexecutor好用程度差十万八千里。
+如果把while 1死循环的线程设置为守护线程，那么当主线程结束后，守护线程就会自动随程序结束了。当然了光设置守护线程还不够，
+如果主线程把任务都submit到queue里面了，实际上线程池应该还需要运行queue里面的任务，所以还需要加个判断，要加上 atexit.register的钩子，
+让任务执行完成才关闭。设计一个好用的线程池还是很难的，设计一个死循环导致代码永不能自动结束的线程池就简单很多了。
+比如这个线程池  https://github.com/mingxiaoHe/ThreadPool/blob/master/threadpool.py 设计得很悲催，
+必须手动在整个项目最末未加上 pool.close(),而且不能加在代码中间，因为加载中间会导致如果之后继续提交任务就没线程能力执行了，太难了用了这种
+主要是不知道守护线程用途。
+
+还有这个 https://github.com/shengqi158/ThreadPool/blob/master/ThreadPool.py，最末未要加上threadpool.task_join()，
+很多封装的需要最最末尾加一句，主要是不知道守护线程用途。
+
+
+线程池的思路于对象池几乎完全不同。
+
+
+
+```
+
+## 2.利用对象池来封装任意类型的池演示
+
+contrib 文件夹自带演示了4个封装，包括http pymsql webdriver paramiko(操作linux的python包)的池化。
+
+### 2.0 例如使用万能对象池包实现的 nb_http_client
+
+[nb_http_client](https://github.com/ydf0509/nb_http_client)
+
+nb_http_client 是 python 史上性能最强的http客户端，比任意自带和三方请求包快很多倍。
+
+### 2.1 mysql 池化
+
+以下是pymysql_pool的池化代码，使用has a模式封装的PyMysqlOperator对象，你也可以使用is a来继承方式来写，但要实现clean_up等方法。
+
+```python
+import copy
+
+import pymysql
+import typing
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import threading
+import time
+import decorator_libs
+
+"""
+这个是真正的用pymsql实现连接池的例子，完全没有依赖dbutils包实现的连接池。
+比dbutils嗨好用，实际使用时候不需要操作cursor的建立和关闭。
+
+dbutils官方用法是
+
+pool= PooledDB()
+db = pool.connection()
+cur = db.cursor()
+cur.execute(...)
+res = cur.fetchone()
+cur.close()  # or del cur
+db.close()  # or del db
+
+"""
+
+
+class PyMysqlOperator(AbstractObject):
+    error_type_list_set_not_available = []  # 出了特定类型的错误，可以设置对象已经无效不可用了，不归还到队列里面。
+
+    # error_type_list_set_not_available = [pymysql.err.InterfaceError]
+
+    def __init__(self, host='192.168.6.130', user='root', password='123456', cursorclass=pymysql.cursors.DictCursor,
+                 autocommit=False, **pymysql_connection_kwargs):
+        in_params = copy.copy(locals())
+        in_params.update(pymysql_connection_kwargs)
+        in_params.pop('self')
+        in_params.pop('pymysql_connection_kwargs')
+        self.conn = pymysql.Connection(**in_params)
+
+    """ 下面3个是重写的方法"""
+
+    def clean_up(self):  # 如果一个对象最近30分钟内没被使用，那么对象池会自动将对象摧毁并从池中删除，会自动调用对象的clean_up方法。
+        self.conn.close()
+
+    def before_use(self):
+        self.cursor = self.conn.cursor()
+        self.core_obj = self.cursor  # 这个是为了operator对象自动拥有cursor对象的所有方法。
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            self.conn.rollback()
+        else:
+            self.conn.commit()
+        self.cursor.close()  # 也可以不要，因为每次的cusor都是不一样的。
+
+    """以下可以自定义其他方法。
+    因为设置了self.core_obj = self.cursor ，父类重写了__getattr__,所以此对象自动拥有cursor对象的所有方法,如果是同名同意义的方法不需要一个个重写。
+    """
+
+    def execute(self, query, args):
+        """
+        这个execute由于方法名和入参和逻辑与官方一模一样，可以不需要，因为设置了core_obj后，operator对象自动拥有cursor对象的所有方法，可以把这个方法注释了然后测试运行不受影响。
+        :param query:
+        :param args:
+        :return:
+        """
+        return self.cursor.execute(query, args)
+
+
+if __name__ == '__main__':
+    mysql_pool = ObjectPool(object_type=PyMysqlOperator, object_pool_size=100, object_init_kwargs={'port': 3306})
+
+
+    def test_update(i):
+        sql = f'''
+            INSERT INTO db1.table1(uname ,age)
+        VALUES(
+            %s ,
+            %s)
+        ON DUPLICATE KEY UPDATE
+            uname = values(uname),
+            age = if(values(age)>age,values(age),age);
+        '''
+        with mysql_pool.get(
+                timeout=2) as operator:  # type: typing.Union[PyMysqlOperator,pymysql.cursors.DictCursor] #利于补全
+            print(id(operator.cursor), id(operator.conn))
+            operator.execute(sql, args=(f'name_{i}', i * 4))
+            print(
+                operator.lastrowid)  # opererator 自动拥有 operator.cursor 的所有方法和属性。 opererator.methodxxx 会自动调用 opererator.cursor.methodxxx
+
+
+    operator_global = PyMysqlOperator()
+
+
+    def test_update_multi_threads_use_one_conn(i):
+        """
+        这个是个错误的例子，多线程运行此函数会疯狂报错,单线程不报错
+        这个如果运行在多线程同时操作同一个conn，就会疯狂报错。所以要么狠low的使用临时频繁在函数内部每次创建和摧毁mysql连接，要么使用连接池。
+        :param i:
+        :return:
+        """
+        sql = f'''
+            INSERT INTO db1.table1(uname ,age)
+        VALUES(
+            %s ,
+            %s)
+        ON DUPLICATE KEY UPDATE
+            uname = values(uname),
+            age = if(values(age)>age,values(age),age);
+        '''
+
+        operator_global.before_use()
+        print(id(operator_global.cursor), id(operator_global.conn))
+        operator_global.execute(sql, args=(f'name_{i}', i * 3))
+        operator_global.cursor.close()
+        operator_global.conn.commit()
+
+
+    thread_pool = BoundedThreadPoolExecutor(20)
+    with decorator_libs.TimerContextManager():
+        for x in range(200000, 300000):
+            thread_pool.submit(test_update, x)
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试验证，此对象池会自动摧毁连接如果闲置时间太长，会自动摧毁对象
+
+
+``` 
+
+### 2.2 linux 操作神库 paramiko 的池化，例如可以大幅度加快文件传输和大幅度加快有io的命令。
+
+比如有很多几kb的小文件需要上传，对象池 + 线程池可以大幅度提升上传速度
+
+比如让linux执行有io耗时的curl命令，对象池 + 线程池可以大幅度提升命令执行效率。
+
+所以此对象池可以池化一切python对象，不仅是是数据库连接。
+
+```python
+import time
+
+import decorator_libs
+import paramiko
+import nb_log
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+from universal_object_pool import AbstractObject, ObjectPool
+
+"""
+ t = paramiko.Transport((self._host, self._port))
+        t.connect(username=self._username, password=self._password)
+        self.sftp = paramiko.SFTPClient.from_transport(t)
+
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self._host, port=self._port, username=self._username, password=self._password, compress=True)
+        self.ssh = ssh
+"""
+
+
+class ParamikoOperator(nb_log.LoggerMixin, nb_log.LoggerLevelSetterMixin, AbstractObject):
+    """
+    这个是linux操作包的池化。例如执行的shell命令耗时比较长，如果不采用池，那么一个接一个的命令执行将会很耗时。
+    如果每次临时创建和摧毁linux连接，会很多耗时和耗cpu开销。
+    """
+    def __init__(self, host, port, username, password):
+        # self.logger = nb_log.get_logger('ParamikoOperator')
+
+        t = paramiko.Transport((host, port))
+        t.connect(username=username, password=password)
+        self.sftp = paramiko.SFTPClient.from_transport(t)
+
+        ssh = paramiko.SSHClient()
+        # ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(host, port=port, username=username, password=password, compress=True)  # 密码方式
+
+        # private = paramiko.RSAKey.from_private_key_file('C:/Users/Administrator/.ssh/id_rsa')  # 秘钥方式
+        # ssh.connect(host, port=port, username=username, pkey=private)
+        self.ssh = self.core_obj = ssh
+
+        self.ssh_session = self.ssh.get_transport().open_session()
+
+    def clean_up(self):
+        self.sftp.close()
+        self.ssh.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def exec_cmd(self, cmd):
+        # paramiko.channel.ChannelFile.readlines()
+        self.logger.debug('要执行的命令是： ' + cmd)
+        stdin, stdout, stderr = self.ssh.exec_command(cmd)
+        stdout_str = stdout.read().decode()
+        stderr_str = stderr.read().decode()
+        if stdout_str != '':
+            self.logger.info('执行 {} 命令的stdout是 -- > \n{}'.format(cmd, stdout_str))
+        if stderr_str != '':
+            self.logger.error('执行 {} 命令的stderr是 -- > \n{}'.format(cmd, stderr_str))
+        return stdout_str, stderr_str
+
+
+if __name__ == '__main__':
+    paramiko_pool = ObjectPool(object_type=ParamikoOperator,
+                               object_init_kwargs=dict(host='192.168.6.130', port=22, username='ydf',
+                                                       password='372148', ),
+                               max_idle_seconds=120, object_pool_size=20)
+
+    ParamikoOperator(**dict(host='192.168.6.130', port=22, username='ydf', password='372148', ))
+
+
+    def test_paramiko(cmd):
+        with paramiko_pool.get() as paramiko_operator:  # type:ParamikoOperator
+            # pass
+            ret = paramiko_operator.exec_cmd(cmd)
+            print(ret[0])
+            print(ret[1])
+
+
+    thread_pool = BoundedThreadPoolExecutor(20)
+    with decorator_libs.TimerContextManager():
+        for x in range(20, 100):
+            thread_pool.submit(test_paramiko, 'date;sleep 20s;date')  # 这个命令单线程for循环顺序执行每次需要20秒，如果不用对象池执行80次要1600秒
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试验证，此对象池会自动摧毁连接如果闲置时间太长，会自动摧毁对象
+    
+
+```
+
+### 2.3 一般性任意python对象的池化
+
+```python
+import typing
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import threading
+import time
+
+"""
+编码中有时候需要使用一种创建代价很大的对象，而且这个对象不能被多线程同时调用他的操作方法，
+
+比如mysql连接池，socket连接池。
+很多这样的例子例典型如mysql的插入，如果多线程高并发同时操作同一个全局connection去插入，很快就会报错了。
+那么你可能会为了解决这个问题的方式有如下：
+
+1.你可能这么想，操作mysql的那个函数里面每一次都临时创建mysql连接，函数的末尾关闭coonection，
+  这样频繁创建和摧毁连接，无论是服务端还是客户端开销cpu和io高出很多。
+
+2.或者不使用方案1，你是多线程的函数里面用一个全局connection，但是每一个操作mysql的地方都加一个线程锁，
+  使得不可能线程1和线程2同时去操作这个connction执行插入，如果假设插入耗时1秒，那么100线程插入1000次要1000秒。
+
+正确的做法是使用mysql连接池库。如果设置开启的连接池中的数量是大于100，100线程插入1000次只需要10秒，节省时间100倍。
+mysql连接池已经有知名的连接池包了。如果没有大佬给我们开发mysql连接池库或者一个小众的需求还没有大神针对这个耗时对象开发连接池。
+那么可以使用 ObjectPool 实现对象池，连接池就是对象池的一种子集，connection就是pymysql.Connection类型的对象，连接也是对象。
+这是万能对象池，所以可以实现webdriver浏览器池。对象并不是需要严格实实在在的外部cocket或者浏览器什么的，也可以是python语言的一个普通对象。
+只要这个对象创建代价大，并且它的核心方法是非线程安全的，就很适合使用对象池来使用它。
+
+"""
+
+"""
+此模块演示一般常规性任意对象的池化
+"""
+
+
+class Core:  # 一般假设这是个三方包大神写的包里面的某个重要公有类,你需要写的是用has a 模式封装他，你当然也可以使用is a模式来继承它并加上clean_up before_back_to_queue 方法。
+    def insert(self, x):
+        time.sleep(0.5)
+        print(f'插入 {x}')
+
+    def close(self):
+        print('关闭连接')
+
+
+class MockSpendTimeObject(AbstractObject):
+
+    def __init__(self, ):
+        time.sleep(0.1)  # 模拟创建对象耗时
+
+        s = 0  # 模拟创建对象耗费cpu
+        for j in range(10000 * 500):
+            s += j
+
+        self.conn = self.core_obj = Core()  # 这个会造成obj.xx  自动调用 obj.core_obj.xx，很好用。
+
+        self._lock = threading.Lock()
+
+    def do_sth(self, x):
+        with self._lock:
+            self.conn.insert(x)
+            print(f' {x} 假设做某事同一个object只能同时被一个线程调用此方法，是排他的')
+
+    def clean_up(self):
+        self.core_obj.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+
+if __name__ == '__main__':
+    pool = ObjectPool(object_type=MockSpendTimeObject, object_pool_size=40).set_log_level(10)
+
+
+    def use_object_pool_run(y):
+        """ 第1种 使用对象池是正解"""
+        # with ObjectContext(pool) as mock_obj:
+        #     mock_obj.do_sth(y)
+        with pool.get() as mock_obj:  # type:typing.Union[MockSpendTimeObject,Core]
+            # mock_obj.insert(y)  # 可以直接使用core_obj的方法
+            mock_obj.do_sth(y)
+
+
+    def create_object_every_times_for_run(y):
+        """第2种 多线程函数内部每次都采用临时创建对象，创建对象代价大，导致总耗时很长"""
+        mock_obj = MockSpendTimeObject()
+        mock_obj.do_sth(y)
+
+
+    global_mock_obj = MockSpendTimeObject()
+    global_mock_obj.insert(6666)  # 自动拥有self.core_object的方法。
+
+
+    def use_globle_object_for_run(y):
+        """
+        第3种 ，多线程中，使用全局唯一对象。少了创建对象的时间，但是操作是独占时间排他的，这种速度是最差的。
+        """
+        global_mock_obj.do_sth(y)
+
+
+    t1 = time.perf_counter()
+    threadpool = BoundedThreadPoolExecutor(50)
+
+    for i in range(1000):  # 这里随着函数的调用次数越多，对象池优势越明显。假设是运行10万次，三者耗时差距会更大。
+        # 这里演示三种调用，1是多线程里用使用对象池 2是使用多线程函数内部每次临时创建关闭对象 3是多线程函数内部使用全局唯一对象。
+
+        threadpool.submit(use_object_pool_run, i)  # 6秒完成
+        # threadpool.submit(create_object_every_times_for_run, i)  # 82秒完成
+        # threadpool.submit(use_globle_object_for_run, i)  # 耗时100秒
+
+    threadpool.shutdown()
+    print(time.perf_counter() - t1)
+
+    time.sleep(100)
+    
+```
+
+
+**code file end: README.md**
+
+---
+
+# markdown content namespace: object_pool codes 
+
+
+## File Tree
+
+
+```
+
+└── universal_object_pool
+    ├── __init__.py
+    └── contrib
+        ├── README.md
+        ├── __init__.py
+        ├── http_pool.py
+        ├── mock_spend_time_object_use_object_pool.py
+        ├── paramiko_pool.py
+        ├── pika_pool.py
+        ├── pymysql_pool.py
+        ├── threadpool_using_object_pool.py
+        └── webdriver_pool.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `universal_object_pool/__init__.py`
+
+- `universal_object_pool/contrib/http_pool.py`
+
+- `universal_object_pool/contrib/mock_spend_time_object_use_object_pool.py`
+
+- `universal_object_pool/contrib/paramiko_pool.py`
+
+- `universal_object_pool/contrib/pika_pool.py`
+
+- `universal_object_pool/contrib/pymysql_pool.py`
+
+- `universal_object_pool/contrib/README.md`
+
+- `universal_object_pool/contrib/threadpool_using_object_pool.py`
+
+- `universal_object_pool/contrib/webdriver_pool.py`
+
+- `universal_object_pool/contrib/__init__.py`
+
+
+---
+
+
+### code file start: universal_object_pool/__init__.py 
+
+```python
+import abc
+import queue
+import threading
+import time
+from queue import LifoQueue
+import decorator_libs
+import nb_log
+
+
+# noinspection PyUnusedLocal
+class ObjectPool(nb_log.LoggerMixin, nb_log.LoggerLevelSetterMixin):
+    def __init__(self, object_type, object_init_kwargs: dict = None, object_pool_size=10, max_idle_seconds=30 * 60):
+        """
+
+        :param object_type: 对象类型，将会实例化此类
+        :param object_init_kwargs: 对象的__init__方法的初始化参数
+        :param object_pool_size: 对象池大小
+        :param max_idle_seconds: 最大空闲时间，大于次时间没被使用的对象，将会被自动摧毁和弹出。摧毁是自动调用对象的clean_up方法
+        """
+        self._object_init_kwargs = {} if object_init_kwargs is None else object_init_kwargs
+        self._max_idle_seconds = max_idle_seconds  # 大于此空闲时间没被使用的对象，将会被自动摧毁从对象池弹出。
+        self.object_pool_size = object_pool_size
+        self.queue = self._queue = LifoQueue(object_pool_size)
+        self._lock = threading.Lock()
+        self.is_using_num = 0
+        self._has_create_object_num = 0
+        self.object_type = object_type
+        self.logger.setLevel(20)
+        self._check_and_cleanup_objects()
+
+    @decorator_libs.keep_circulating(10, block=False, daemon=True)
+    def _check_and_cleanup_objects(self):
+        with self._lock:
+            t0 = time.time()
+            to_be_requeue_object = []
+            while 1:
+                try:
+                    obj = self._queue.get_nowait()
+                except queue.Empty:
+                    break
+                else:
+                    # if time.time() - obj.the_obj_last_use_time > 30 * 60:
+                    if time.time() - obj.the_obj_last_use_time > self._max_idle_seconds:
+                        # t1 = time.time()
+                        threading.Thread(target=obj.clean_up).start()
+                        # print(time.time() -t1)
+                        self.logger.info(
+                            f'此对象空闲时间超过 {self._max_idle_seconds}  秒，使用 {obj.clean_up} 方法 自动摧毁{obj}')  # 例如mysql的连接，默认配置是超过8小时空闲，就会被回收，你再用这个连接对象去操作数据库就报报错了。
+                        self._has_create_object_num -= 1
+                    else:
+                        to_be_requeue_object.append(obj)
+            [self._queue.put_nowait(obj) for obj in to_be_requeue_object]
+            if time.time() - t0 > 5:
+                self.logger.warning(f'耗时 {time.time() - t0}')
+
+    def _borrow_a_object(self, block, timeout):
+        with self._lock:
+            t0 = time.time()
+            try:
+                # print(self._queue.qsize(), self._has_create_object_num,self.object_pool_size)
+                if self._queue.qsize() == 0 and self._has_create_object_num < self.object_pool_size:
+                    t1 = time.perf_counter()
+                    obj = self.object_type(**self._object_init_kwargs)
+                    self.logger.info(f'创建对象 {obj} ,耗时 {round(time.perf_counter() - t1, 3)}')
+                    self._queue.put(obj)
+                    self._has_create_object_num += 1
+                    # print(self._queue.qsize())
+                t2 = time.time()
+                obj = self._queue.get(block, timeout)
+                # print(time.time() -t2)
+                self.is_using_num += 1
+                self.logger.debug(f'获取对象 {obj}')
+                obj.the_obj_last_use_time = time.time()
+                return obj
+            except queue.Empty as e:
+                self.logger.critical(f'{e}  对象池暂时没有可用的对象了，请把timeout加大、或者不设置timeout(没有对象就进行永久阻塞等待)、或者设置把对象池的数量加大',
+                                     exc_info=True)
+                raise e
+            except Exception as e:
+                self.logger.critical(e, exc_info=True)
+                raise e
+            finally:
+                pass
+                # print(time.time() -t0)
+
+    def _back_a_object(self, obj):
+        if getattr(obj, 'is_available', None) is False:
+            self.logger.critical(f'{obj} 不可用,不放入')
+            self._has_create_object_num -= 1
+        else:
+            self._queue.put(obj)
+            self.logger.debug(f'归还对象 {obj}')
+        self.is_using_num -= 1
+
+    def get(self, block=True, timeout=None):
+        return _ObjectContext(self, block=block, timeout=timeout)
+
+
+# noinspection PyProtectedMember
+class _ObjectContext(nb_log.LoggerMixin):
+    def __init__(self, pool: ObjectPool, block, timeout):
+        self._pool = pool
+        self._block = block
+        self._timeout = timeout
+        self.obj = None
+
+    def __enter__(self):
+        self.obj = self._pool._borrow_a_object(self._block, self._timeout)
+        self.obj.is_available = True
+        self.obj.before_use()
+        return self.obj
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # self.logger.info(self.obj)
+        if exc_type:
+            self.logger.critical(exc_type)
+        if exc_type in getattr(self.obj, 'error_type_list_set_not_available', []):
+            self.obj._set_not_available()
+        if self.obj is not None:
+            self.obj.before_back_to_queue(exc_type, exc_val, exc_tb)
+            self._pool._back_a_object(self.obj, )
+        self.obj = None
+
+    def __del__(self):
+        # self.logger.warning(self.obj)
+        if self.obj is not None:
+            self._pool._back_a_object(self.obj)
+        self.obj = None
+
+
+class AbstractObject(metaclass=abc.ABCMeta, ):
+    error_type_list_set_not_available = []  # 可以设置当发生了什么类型的错误，就把对象设置为失效不可用。
+
+    @abc.abstractmethod
+    def __init__(self):
+        self.core_obj = None  # 这个主要是为了把自定义对象的属性指向的核心对象的方法自动全部注册到自定义对象的方法。
+
+    @abc.abstractmethod
+    def clean_up(self):
+        """ 这里写关闭操作，如果没有逻辑，可以写 pass """
+
+    def before_use(self):
+        """ 可以每次对取出来的对象做一些操作"""
+        pass
+
+    def _set_not_available(self):
+        self.is_available = False
+
+    @abc.abstractmethod
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        """ 这里写 with语法退出__exit__前的操作，如果没有逻辑，可以写 pass """
+
+    def __getattr__(self, item):
+        """ 这个很强悍，可以使某个官方对象的全部方法和属性自动加到自己的自定义对象上面来。例如 myobj.conn.query(sql) 能直接 myobj.query(sql)"""
+        # if 'item' in self.__dict__:
+        #     return getattr(self,item)
+        if 'core_obj' in self.__dict__:
+            return getattr(self.core_obj, item)
+        raise ValueError(f'{item} 方法或属性不存在')
+
+```
+
+**code file end: universal_object_pool/__init__.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/http_pool.py 
+
+```python
+import time
+import typing
+import http
+from http.client import HTTPConnection, HTTPResponse
+import nb_log
+
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import decorator_libs
+
+
+class CustomHTTPResponse(HTTPResponse):  # 为了ide补全
+    text: str = None
+    content: bytes = None
+
+
+class HttpOperator(AbstractObject):
+    """ 这个请求速度暴击requests，可以自行测试请求nginx网关本身"""
+    error_type_list_set_not_available = [http.client.CannotSendRequest]
+
+    def __init__(self, host, port=None, timeout=5,
+                 source_address=None):
+        self.conn = HTTPConnection(host=host, port=port, timeout=timeout, source_address=source_address, )
+        self.core_obj = self.conn
+
+    def clean_up(self):
+        self.conn.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+    # noinspection PyDefaultArgument
+    def request_and_getresponse(self, method, url, body=None, headers={}, *,
+                                encode_chunked=False, encoding="utf-8") -> CustomHTTPResponse:
+        self.conn.request(method, url, body=body, headers=headers,
+                          encode_chunked=encode_chunked)
+        resp = self.conn.getresponse()
+        resp.content = resp.read()
+        resp.text = resp.content.decode(encoding)
+        return resp  # noqa
+
+
+if __name__ == '__main__':
+    http_pool = ObjectPool(object_type=HttpOperator, object_pool_size=50, object_init_kwargs=dict(host='127.0.0.1', port=5678),
+                           max_idle_seconds=30)
+
+    import requests
+
+    ss = requests.session()
+
+    import urllib3
+
+    mgr = urllib3.PoolManager(100)
+
+
+    def test_request():
+        # 这个连接池是requests性能5倍。 headers = {'Connection':'close'} 为了防止频繁报错 OSError: [WinError 10048] 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+        # resp = ss.get('http://192.168.6.131:9999/')
+
+        # resp = requests.get('http://127.0.0.1:5678/',headers = {'Connection':'close'}) # 这个请求速度被暴击。win上没有使用连接池如果超大线程并发请求，会造成频繁出现一个端口只能使用一次的错误。
+        # print(resp.text)
+
+        # resp=  mgr.request('get','http://127.0.0.1:5678/', headers = {'Connection':'close'})  # urllib3 第二快，次代码手动实现的http池是第一快。
+        # print(resp.data)
+
+        with http_pool.get() as conn:  # type: typing.Union[HttpOperator,HTTPConnection]  # http对象池的请求速度暴击requests的session和直接requests.get
+            r1 = conn.request_and_getresponse('GET', '/')
+            print(r1.text[:10], )
+
+
+    thread_pool = BoundedThreadPoolExecutor(50)
+    with decorator_libs.TimerContextManager():
+        for x in range(30000):
+            # time.sleep(5)  # 这是测试是否是是智能节制新建对象，如果任务不密集，不需要新建那么多对象。
+            thread_pool.submit(test_request, )
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)
+
+```
+
+**code file end: universal_object_pool/contrib/http_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/mock_spend_time_object_use_object_pool.py 
+
+```python
+import typing
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import threading
+import time
+
+"""
+编码中有时候需要使用一种创建代价很大的对象，而且这个对象不能被多线程同时调用他的操作方法，
+
+比如mysql连接池，socket连接池。
+很多这样的例子例典型如mysql的插入，如果多线程高并发同时操作同一个全局connection去插入，很快就会报错了。
+那么你可能会为了解决这个问题的方式有如下：
+
+1.你可能这么想，操作mysql的那个函数里面每一次都临时创建mysql连接，函数的末尾关闭coonection，
+  这样频繁创建和摧毁连接，无论是服务端还是客户端开销cpu和io高出很多。
+
+2.或者不使用方案1，你是多线程的函数里面用一个全局connection，但是每一个操作mysql的地方都加一个线程锁，
+  使得不可能线程1和线程2同时去操作这个connction执行插入，如果假设插入耗时1秒，那么100线程插入1000次要1000秒。
+
+正确的做法是使用mysql连接池库。如果设置开启的连接池中的数量是大于100，100线程插入1000次只需要10秒，节省时间100倍。
+mysql连接池已经有知名的连接池包了。如果没有大佬给我们开发mysql连接池库或者一个小众的需求还没有大神针对这个耗时对象开发连接池。
+那么可以使用 ObjectPool 实现对象池，连接池就是对象池的一种子集，connection就是pymysql.Connection类型的对象，连接也是对象。
+这是万能对象池，所以可以实现webdriver浏览器池。对象并不是需要严格实实在在的外部cocket或者浏览器什么的，也可以是python语言的一个普通对象。
+只要这个对象创建代价大，并且它的核心方法是非线程安全的，就很适合使用对象池来使用它。
+
+"""
+
+"""
+此模块演示一般常规性任意对象的池化
+"""
+
+
+class Core:  # 一般假设这是个三方包大神写的包里面的某个重要公有类,你需要写的是用has a 模式封装他，你当然也可以使用is a模式来继承它并加上clean_up before_back_to_queue 方法。
+    def insert(self, x):
+        time.sleep(0.5)
+        print(f'插入 {x}')
+
+    def close(self):
+        print('关闭连接')
+
+
+class MockSpendTimeObject(AbstractObject):
+
+    def __init__(self, ):
+        time.sleep(0.1)  # 模拟创建对象耗时
+
+        s = 0  # 模拟创建对象耗费cpu
+        for j in range(10000 * 500):
+            s += j
+
+        self.conn = self.core_obj = Core()  # 这个会造成obj.xx  自动调用 obj.core_obj.xx，很好用。
+
+        self._lock = threading.Lock()
+
+    def do_sth(self, x):
+        with self._lock:
+            self.conn.insert(x)
+            print(f' {x} 假设做某事同一个object只能同时被一个线程调用此方法，是排他的')
+
+    def clean_up(self):
+        self.core_obj.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+
+if __name__ == '__main__':
+    pool = ObjectPool(object_type=MockSpendTimeObject, object_pool_size=40).set_log_level(10)
+
+
+    def use_object_pool_run(y):
+        """ 第1种 使用对象池是正解"""
+        # with ObjectContext(pool) as mock_obj:
+        #     mock_obj.do_sth(y)
+        with pool.get() as mock_obj:  # type:typing.Union[MockSpendTimeObject,Core]
+            # mock_obj.insert(y)  # 可以直接使用core_obj的方法
+            mock_obj.do_sth(y)
+
+
+    def create_object_every_times_for_run(y):
+        """第2种 多线程函数内部每次都采用临时创建对象，创建对象代价大，导致总耗时很长"""
+        mock_obj = MockSpendTimeObject()
+        mock_obj.do_sth(y)
+
+
+    global_mock_obj = MockSpendTimeObject()
+    global_mock_obj.insert(6666)  # 自动拥有self.core_object的方法。
+
+
+    def use_globle_object_for_run(y):
+        """
+        第3种 ，多线程中，使用全局唯一对象。少了创建对象的时间，但是操作是独占时间排他的，这种速度是最差的。
+        """
+        global_mock_obj.do_sth(y)
+
+
+    t1 = time.perf_counter()
+    threadpool = BoundedThreadPoolExecutor(50)
+
+    for i in range(1000):  # 这里随着函数的调用次数越多，对象池优势越明显。假设是运行10万次，三者耗时差距会更大。
+        # 这里演示三种调用，1是多线程里用使用对象池 2是使用多线程函数内部每次临时创建关闭对象 3是多线程函数内部使用全局唯一对象。
+
+        threadpool.submit(use_object_pool_run, i)  # 6秒完成
+        # threadpool.submit(create_object_every_times_for_run, i)  # 82秒完成
+        # threadpool.submit(use_globle_object_for_run, i)  # 耗时100秒
+
+    threadpool.shutdown()
+    print(time.perf_counter() - t1)
+
+    time.sleep(100)
+
+```
+
+**code file end: universal_object_pool/contrib/mock_spend_time_object_use_object_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/paramiko_pool.py 
+
+```python
+import time
+import typing
+import decorator_libs
+import paramiko
+import nb_log
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+from universal_object_pool import AbstractObject, ObjectPool
+
+"""
+ t = paramiko.Transport((self._host, self._port))
+        t.connect(username=self._username, password=self._password)
+        self.sftp = paramiko.SFTPClient.from_transport(t)
+
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self._host, port=self._port, username=self._username, password=self._password, compress=True)
+        self.ssh = ssh
+"""
+
+
+class ParamikoOperator( AbstractObject):
+    """
+    这个是linux操作包的池化。例如执行的shell命令耗时比较长，如果不采用池，那么一个接一个的命令执行将会很耗时。
+    如果每次临时创建和摧毁linux连接，会很多耗时和耗cpu开销。
+    """
+
+    def __init__(self, host, port, username, password):
+        # self.logger = nb_log.get_logger('ParamikoOperator')
+
+        t = paramiko.Transport((host, port))
+        t.connect(username=username, password=password)
+        self.sftp = paramiko.SFTPClient.from_transport(t)
+
+        ssh = paramiko.SSHClient()
+        # ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(host, port=port, username=username, password=password, compress=True)  # 密码方式
+
+        # private = paramiko.RSAKey.from_private_key_file('C:/Users/Administrator/.ssh/id_rsa')  # 秘钥方式
+        # ssh.connect(host, port=port, username=username, pkey=private)
+        self.ssh = self.core_obj = ssh
+
+        self.ssh_session = self.ssh.get_transport().open_session()
+
+        self.logger = nb_log.get_logger(self.__class__.__name__)
+
+    def clean_up(self):
+        self.sftp.close()
+        self.ssh.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def exec_cmd(self, cmd):
+        # paramiko.channel.ChannelFile.readlines()
+        self.logger.debug('要执行的命令是： ' + cmd)
+        stdin, stdout, stderr = self.ssh.exec_command(cmd)
+        stdout_str = stdout.read().decode()
+        stderr_str = stderr.read().decode()
+        if stdout_str != '':
+            self.logger.info('执行 {} 命令的stdout是 -- > \n{}'.format(cmd, stdout_str))
+        if stderr_str != '':
+            self.logger.error('执行 {} 命令的stderr是 -- > \n{}'.format(cmd, stderr_str))
+        return stdout_str, stderr_str
+
+
+if __name__ == '__main__':
+    paramiko_pool = ObjectPool(object_type=ParamikoOperator,
+                               object_init_kwargs=dict(host='192.168.6.130', port=22, username='ydf', password='372148', ),
+                               max_idle_seconds=120, object_pool_size=20)
+
+    ParamikoOperator(**dict(host='192.168.6.130', port=22, username='ydf', password='372148', ))
+
+
+    def test_paramiko(cmd):
+        with paramiko_pool.get() as paramiko_operator:  # type:typing.Union[ParamikoOperator,paramiko.SSHClient]
+            # pass
+            ret = paramiko_operator.exec_cmd(cmd)
+            print(ret[0])
+            print(ret[1])
+
+
+    thread_pool = BoundedThreadPoolExecutor(20)
+    with decorator_libs.TimerContextManager():
+        for x in range(20, 100):
+            thread_pool.submit(test_paramiko, 'date;sleep 20s;date')  # 这个命令单线程for循环顺序执行每次需要20秒，如果不用对象池执行80次要1600秒
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试验证，此对象池会自动摧毁连接如果闲置时间太长，会自动摧毁对象
+
+```
+
+**code file end: universal_object_pool/contrib/paramiko_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/pika_pool.py 
+
+```python
+import copy
+import time
+import typing
+import nb_log
+import pika
+from pika.channel import Channel
+from pika.exceptions import AMQPError
+
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import decorator_libs
+
+
+class PikaOperator(AbstractObject, ):
+    """
+    如果是外网mq，这种快很多。
+    """
+    def __init__(self, host, port, user, password, queue):
+        self._host = host
+        self._port = port
+        self._user = user
+        self._password = password
+        self._queue = queue
+        self._create_channel()
+        self.logger = nb_log.get_logger(self.__class__.__name__)
+
+    def _create_channel(self):
+        auth = pika.PlainCredentials(self._user, self._password)
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self._host, port=self._port, credentials=auth, heartbeat=20))
+        self.channel = self.connection.channel()
+        self.channel.queue_declare(queue=self._queue)
+        self.core_obj = self.channel
+
+    def simple_publish(self, body):
+        # print(self.channel)
+        try:
+            self.channel.basic_publish(exchange='',
+                                       routing_key=self._queue,
+                                       body=body)
+        except AMQPError as e:
+            self.logger.critical(e, exc_info=False)
+            self._create_channel()
+            self.channel.basic_publish(exchange='',
+                                       routing_key=self._queue,
+                                       body=body)
+
+    def clean_up(self):
+        self.channel.close()
+        self.connection.close()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+
+if __name__ == '__main__':
+    pika_pool = ObjectPool(object_type=PikaOperator, object_pool_size=10, object_init_kwargs=dict(
+        host='106.55.244.xxx', port=5672, user='xxxx', password='xxxx', queue='test_pika_pool_queue7'),
+                           max_idle_seconds=60)
+
+    pika_oprator = PikaOperator(host='106.55.244.xxx', port=5672, user='xxx', password='xxxx', queue='test_pika_pool_queue7')
+
+
+    def test_publish():
+        with pika_pool.get() as ch:  # type: typing.Union[Channel,PikaOperator]
+            # 如果是外网连接mq，就快很多。
+            ch.simple_publish('hello')
+            # print(ch)
+            # time.sleep(1)
+        # pika_oprator.simple_publish('hello')
+
+    thread_pool = BoundedThreadPoolExecutor(200)
+    with decorator_libs.TimerContextManager():
+        for x in range(50000):
+            thread_pool.submit(test_publish, )
+            print(x)
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)
+
+```
+
+**code file end: universal_object_pool/contrib/pika_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/pymysql_pool.py 
+
+```python
+import copy
+
+import nb_log
+import pymysql
+import typing
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import threading
+import time
+import decorator_libs
+
+"""
+这个是真正的用pymsql实现连接池的例子，完全没有依赖dbutils包实现的连接池。
+比dbutils嗨好用，实际使用时候不需要操作cursor的建立和关闭。
+
+dbutils官方用法是
+
+pool= PooledDB()
+db = pool.connection()
+cur = db.cursor()
+cur.execute(...)
+res = cur.fetchone()
+cur.close()  # or del cur
+db.close()  # or del db
+
+
+"""
+
+
+class PyMysqlOperator(AbstractObject):
+    error_type_list_set_not_available = []  # 出了特定类型的错误，可以设置对象已经无效不可用了，不归还到队列里面。
+
+    # error_type_list_set_not_available = [pymysql.err.InterfaceError]
+
+    def __init__(self, host='192.168.6.130', user='root', password='123456', cursorclass=pymysql.cursors.DictCursor, autocommit=False, **pymysql_connection_kwargs):
+        in_params = copy.copy(locals())
+        in_params.update(pymysql_connection_kwargs)
+        in_params.pop('self')
+        in_params.pop('pymysql_connection_kwargs')
+        self.conn = pymysql.Connection(**in_params)
+        self.logger = nb_log.get_logger(self.__class__.__name__)
+
+    """ 下面3个是重写的方法"""
+
+    def clean_up(self):  # 如果一个对象最近30分钟内没被使用，那么对象池会自动将对象摧毁并从池中删除，会自动调用对象的clean_up方法。
+        self.conn.close()
+
+    def before_use(self):
+        self.cursor = self.conn.cursor()
+        self.core_obj = self.cursor  # 这个是为了operator对象自动拥有cursor对象的所有方法。
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            self.conn.rollback()
+        else:
+            self.conn.commit()
+        self.cursor.close()  # 也可以不要，因为每次的cusor都是不一样的。
+
+    """以下可以自定义其他方法。
+    因为设置了self.core_obj = self.cursor ，父类重写了__getattr__,所以此对象自动拥有cursor对象的所有方法,如果是同名同意义的方法不需要一个个重写。
+    """
+
+    def execute(self, query, args):
+        """
+        这个execute由于方法名和入参和逻辑与官方一模一样，可以不需要，因为设置了core_obj后，operator对象自动拥有cursor对象的所有方法，可以把这个方法注释了然后测试运行不受影响。
+        :param query:
+        :param args:
+        :return:
+        """
+        return self.cursor.execute(query, args)
+
+
+
+
+
+if __name__ == '__main__':
+    mysql_pool = ObjectPool(object_type=PyMysqlOperator, object_pool_size=100, object_init_kwargs={'port': 3306})
+
+
+    def test_update(i):
+        sql = f'''
+            INSERT INTO db1.table1(uname ,age)
+        VALUES(
+            %s ,
+            %s)
+        ON DUPLICATE KEY UPDATE
+            uname = values(uname),
+            age = if(values(age)>age,values(age),age);
+        '''
+        with mysql_pool.get(timeout=2) as operator:  # type: typing.Union[PyMysqlOperator,pymysql.cursors.DictCursor] #利于补全
+            print(id(operator.cursor), id(operator.conn))
+            operator.execute(sql, args=(f'name_{i}', i * 4))
+            print(operator.lastrowid)  # opererator 自动拥有 operator.cursor 的所有方法和属性。 opererator.methodxxx 会自动调用 opererator.cursor.methodxxx
+
+
+    operator_global = PyMysqlOperator()
+
+
+    def test_update_multi_threads_use_one_conn(i):
+        """
+        这个是个错误的例子，多线程运行此函数会疯狂报错,单线程不报错
+        这个如果运行在多线程同时操作同一个conn，就会疯狂报错。所以要么狠low的使用临时频繁在函数内部每次创建和摧毁mysql连接，要么使用连接池。
+        :param i:
+        :return:
+        """
+        sql = f'''
+            INSERT INTO db1.table1(uname ,age)
+        VALUES(
+            %s ,
+            %s)
+        ON DUPLICATE KEY UPDATE
+            uname = values(uname),
+            age = if(values(age)>age,values(age),age);
+        '''
+
+        operator_global.before_use()
+        print(id(operator_global.cursor), id(operator_global.conn))
+        operator_global.execute(sql, args=(f'name_{i}', i * 3))
+        operator_global.cursor.close()
+        operator_global.conn.commit()
+
+
+    thread_pool = BoundedThreadPoolExecutor(20)
+    with decorator_libs.TimerContextManager():
+        for x in range(200000, 300000):
+            thread_pool.submit(test_update, x)
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(10000)  #这个可以测试验证，此对象池会自动摧毁连接如果闲置时间太长，会自动摧毁对象
+
+```
+
+**code file end: universal_object_pool/contrib/pymysql_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/README.md 
+
+自带4个对象的池化和一个mock的池化演示。
+
+自带的4个真实对象池包括
+
+```
+HTTPConnection 池化，每秒并发请求完成的个数远超requests
+
+paramiko 池化，大幅度加快linux同时并发运行命令和上传文件
+
+pymysql 池化，不依赖美国大神写的dbutils包，照样可以实现数据库连接池，而且封装的比dbutils好用，虽然池没有针对性优化mysql
+
+webdriver 池化，可以使用多个浏览器同时打开不同的网页，比一个浏览器慢慢的一个接一个打开网页或者在函数内部频繁创建和摧毁浏览器强太多了。
+
+
+```
+
+可以直接使用这里面的4个对象池。
+
+
+
+**code file end: universal_object_pool/contrib/README.md**
+
+---
+
+
+### code file start: universal_object_pool/contrib/threadpool_using_object_pool.py 
+
+```python
+import concurrent.futures
+import queue
+import threading
+import time
+
+import nb_log
+
+from universal_object_pool import AbstractObject, ObjectPool
+
+
+class ThreadObjectPool(ObjectPool):
+
+    def __init__(self, object_pool_size=10, max_idle_seconds=60):
+        self.work_queue = queue.Queue(object_pool_size)  # 使工作队列使有界队列。
+        super().__init__(ThreadOperator, {'q': self.work_queue}, object_pool_size, max_idle_seconds)
+
+    def _borrow_a_object(self, block, timeout):
+        with self._lock:
+            t0 = time.time()
+            try:
+                if self._has_create_object_num < self.object_pool_size:  # 这行改了。
+                    t1 = time.perf_counter()
+                    obj = self.object_type(**self._object_init_kwargs)
+                    self.logger.info(f'创建对象 {obj} ,耗时 {round(time.perf_counter() - t1, 3)}')
+                    self._queue.put(obj)
+                    self._has_create_object_num += 1
+                    # print(self._queue.qsize())
+                t2 = time.time()
+                obj = self._queue.get(block, timeout)
+                # print(time.time() -t2)
+                self.is_using_num += 1
+                self.logger.debug(f'获取对象 {obj}')
+                obj.the_obj_last_use_time = time.time()
+                return obj
+            except queue.Empty as e:
+                self.logger.critical(f'{e}  对象池暂时没有可用的对象了，请把timeout加大、或者不设置timeout(没有对象就进行永久阻塞等待)、或者设置把对象池的数量加大',
+                                     exc_info=True)
+                raise e
+            except Exception as e:
+                self.logger.critical(e, exc_info=True)
+                raise e
+            finally:
+                pass
+                # print(time.time() -t0)
+
+    def submit(self, f, *args, **kwargs):
+        with self.get() as thread_op:  # type:ThreadOperator
+            thread_op.submit(f, *args, **kwargs)
+
+
+class ThreadOperator(AbstractObject, nb_log.LoggerMixin):
+    error_type_list_set_not_available = []  # 出了特定类型的错误，可以设置对象已经无效不可用了，不归还到队列里面。
+
+    def __init__(self, q: queue.Queue):
+        self._work_queue = q
+        self._thread_term_flag = 0
+        self.thread = threading.Thread(target=self._run)
+        self.thread.start()
+
+    """ 下面3个是重写的方法"""
+
+    def clean_up(self):
+        self._thread_term_flag = 1
+
+    def before_use(self):
+        pass
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def submit(self, f, *args, **kwargs):
+        item= (f, args, kwargs)
+        self._work_queue.put(item)
+
+    def _run(self):
+        while 1:
+            if self._thread_term_flag == 1:
+                break
+            try:
+                item = self._work_queue.get(block=True, timeout=10)
+                f, args, kwargs = item
+            except queue.Empty:
+                pass
+            else:
+                try:
+                    f(*args, **kwargs)
+                except BaseException as e:
+                    self.logger.error(e, exc_info=True)
+
+
+if __name__ == '__main__':
+
+    thread_pool = ThreadObjectPool(100)
+
+    c_pool = concurrent.futures.ThreadPoolExecutor(100)
+
+
+    def my_fun(x, y):
+        z = x + y
+        if x % 1 == 0:
+            print(x)
+
+
+    t00 = time.time()
+    for i in range(10 * 1000):
+        # thread_pool.submit(my_fun, i, i * 2)  # 使用线程池测试求和100万次 30秒
+
+        # threading.Thread(target=my_fun, args=(i, i * 2)).start() #  使用临时启动线程池，测试求和100万次150秒
+
+        c_pool.submit(my_fun, i, i * 2)  # 对比官方是15秒。
+
+    print(time.time() - t00)
+
+    # time.sleep(100)
+
+    for i in range(10 * 1000):
+        thread_pool.submit(my_fun, i, i * 2)  # 测试空闲关闭线程后，能否在启动线程
+
+```
+
+**code file end: universal_object_pool/contrib/threadpool_using_object_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/webdriver_pool.py 
+
+```python
+import copy
+import time
+import typing
+from urllib.error import URLError
+import nb_log
+import selenium
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchWindowException
+from selenium.webdriver import DesiredCapabilities
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver import Chrome
+from selenium.webdriver import PhantomJS
+
+from universal_object_pool import ObjectPool, AbstractObject
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+import decorator_libs
+
+"""
+这个是池化 webdriver浏览器对象，可以同时用多个浏览器打开网页，比单个浏览器单线程循环调用driver快多了。
+也比在多线程的函数内部频繁 driver实例化 和driver.quit()强很多。
+"""
+
+
+class WebDriverOperator(AbstractObject):
+    error_type_list_set_not_available = [NoSuchWindowException, URLError]
+
+    # 如果出现了这些错误，会自动把对象标记为不可用，会重新生成。
+    def __init__(self, driver_klass=webdriver.Chrome, is_open_picture=True, is_use_mobile_ua=False, is_use_headless=False, **selenium_driver_kwargs):
+        self._is_open_picture = is_open_picture
+        self._is_use_headless = is_use_headless
+        self._is_use_mobile_ua = is_use_mobile_ua
+        self._selenium_driver_kwargs = selenium_driver_kwargs
+        if is_use_mobile_ua:
+            self._ua = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Mobile Safari/537.36'
+        else:
+            self._ua = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
+        if driver_klass == webdriver.Chrome:
+            driver = self._create_a_chrome_driver()
+        elif driver_klass == webdriver.PhantomJS:
+            driver = self._create_a_phantomjs_driver()
+        else:
+            raise ValueError(f'driver_klass 设置的不正确')
+        self.core_obj = self.driver = driver
+        self.logger = nb_log.get_logger(self.__class__.__name__)
+
+    def _create_a_chrome_driver(self):
+        driver_path = ChromeDriverManager().install()  # webdriver_manager 包可以自动下载安装chrome驱动，比较方便，不需要自己指定路径。
+        options = webdriver.ChromeOptions()
+        # options.add_argument(r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data")
+        # add_argument()方法里填你Chrome浏览器保存Cookies的路径。
+        options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
+        # add_experimental_option()方法是访问https的网站，Selenium可能会报错，使用这个方法可以忽略报错。
+        # driver.set_page_load_timeout(10)
+        # driver.set_script_timeout(10)  # 这两种设置都进行才有效
+        # driver.implicitly_wait(7)
+        if self._is_use_headless:
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+
+        options.add_argument('--no-sandbox')
+        options.add_argument(f'User-Agent={self._ua}')
+        prefs = {
+            'profile.default_content_setting_values': {
+                # 'images': 2,  # 不加载图片
+                'javascript': 1,  # 2不加载JS
+                "User-Agent": self._ua}
+        }
+        options.add_experimental_option("prefs", prefs)
+        if not self._is_open_picture:
+            options.add_argument('--disable-images')
+            options.add_argument('blink-settings=imagesEnabled=false')  # 这句禁用图片才能生效，上面两个禁用图片没起到效果。
+        driver = webdriver.Chrome(driver_path, chrome_options=options, **self._selenium_driver_kwargs)
+        driver.maximize_window()
+        return driver
+
+    def _create_a_phantomjs_driver(self):
+        capabilities = DesiredCapabilities.PHANTOMJS.copy()
+        capabilities['platform'] = "WINDOWS"
+        capabilities['version'] = "10"
+        capabilities['phantomjs.page.settings.loadImages'] = self._is_open_picture
+        # capabilities['phantomjs.page.settings.userAgent'] = (
+        #     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) "
+        #     "Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0")
+        capabilities['phantomjs.page.settings.userAgent'] = self._ua
+        capabilities['phantomjs.page.customHeaders.Accept-Language'] = 'zh-CN,zh;q=0.9,en;q=0.8'
+        capabilities['phantomjs.page.customHeaders.Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
+        no_or_yes = 'yes' if self._is_open_picture else 'no'
+        service_args = [f'--load-images={no_or_yes}', '--disk-cache=yes', '--ignore-ssl-errors=true']
+        driver = webdriver.PhantomJS(desired_capabilities=capabilities, service_args=service_args, **self._selenium_driver_kwargs)
+        return driver
+
+    """ 下面3个是重写的方法"""
+
+    def clean_up(self):  # 如果一个对象长时间内没被使用，那么对象池会自动将对象摧毁并从池中删除，会自动调用对象的clean_up方法。
+        self.driver.quit()
+
+    def before_back_to_queue(self, exc_type, exc_val, exc_tb):
+        pass
+
+    """以下可以自定义其他方法。
+    因为设置了self.core_obj = self.driver ，父类重写了__getattr__,所以此对象自动拥有driver对象的所有方法,如果是同名同意义的方法不需要一个个重写。
+    """
+
+
+if __name__ == '__main__':
+    driver_pool = ObjectPool(object_type=WebDriverOperator,
+                             object_init_kwargs=dict(driver_klass=webdriver.Chrome, is_use_mobile_ua=False, ),
+                             object_pool_size=2, max_idle_seconds=60)
+
+
+    def test_open_page(url):
+        with driver_pool.get(timeout=20) as driver:  # type: typing.Union[webdriver.Chrome,WebDriverOperator]
+            driver.get(url)
+            driver.save_screenshot(f'{int(time.time() * 1000)}.png')
+
+
+    thread_pool = BoundedThreadPoolExecutor(20)
+    with decorator_libs.TimerContextManager():
+        for p in range(1, 10):
+            urlx = f'https://www.autohome.com.cn/news/{p}/#liststart'
+            thread_pool.submit(test_open_page, urlx)
+            # thread_pool.submit(test_update_multi_threads_use_one_conn, x)
+        thread_pool.shutdown()
+    time.sleep(1000)
+
+```
+
+**code file end: universal_object_pool/contrib/webdriver_pool.py**
+
+---
+
+
+### code file start: universal_object_pool/contrib/__init__.py 
+
+```python
+import typing
+from universal_object_pool.contrib.http_pool import HttpOperator, HTTPConnection
+from universal_object_pool.contrib.paramiko_pool import ParamikoOperator
+from paramiko import SSHClient
+from universal_object_pool.contrib.pymysql_pool import PyMysqlOperator
+from pymysql.cursors import DictCursor
+# from universal_object_pool.contrib.webdriver_pool import WebDriverOperator, PhantomJS, Chrome
+
+```
+
+**code file end: universal_object_pool/contrib/__init__.py**
+
+---
+

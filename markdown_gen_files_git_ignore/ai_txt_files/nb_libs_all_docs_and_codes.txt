@@ -1,0 +1,2211 @@
+﻿# markdown content namespace: nb_libs readme 
+
+
+## File Tree
+
+
+```
+
+└── README.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+
+---
+
+
+### code file start: README.md 
+
+# 1.nb_libs 介绍
+
+nb_libs 是 各种小功能集合，不再单独给每个功能模块创建单独的git项目
+
+# 2. 安装
+
+pip install nb_libs
+
+
+不想分开分发很多个不同功能单独的包,各种小功能杂项放在一起,具体功能看代码.
+
+
+# 3. 各模块功能介绍
+
+## 3.1 auto_git 
+自动merge你自己的开发分支到指定的分支，节约10次git命令操作
+
+## 3.2 code_line_statistics
+统计代码文件和行数
+
+## 3.4 github_git_clone
+自动批量下载git项目，人工太累了。
+
+## 3.5 global_dict
+全局字典
+
+## 3.6 http_utils
+
+http url相关函数工具
+
+## 3.7 lazy_importer
+延迟导入，适合破解循环导入
+
+## 3.8 path_helper
+文件操作，强力的文件路径和import相互转化
+
+## 3.9 pydantic_helper
+pydantic辅助，pydantic api老是改来改去，有的在未来需要抛弃过时，直接使用官方api兼容风险很大。
+
+## 3.10 restart_programe_by_interval.py
+自动定时重启python自身，很强力很好用。
+有时候python内存泄漏，每隔一周需要人工重启，定时重启就很好用，省去你苦逼找内存泄漏原因。
+
+## 3.11 str_utils
+字符串辅助，可以加密常规数据库 中间件 uri中的密码
+
+
+## 3.12 sys_frame_uitils
+sys._getframe 的封装，使得更好用，直接sys._getframe 来获取行号 函数名字 文件名 很难写，
+很难记住方法名，EasyFrame类大幅简化
+
+
+
+
+
+# 4 记录其他的三方包
+
+## 4.1 icecream
+```
+from icecream import ic
+
+x = 1
+ic(x)
+```
+
+## 4.2 dotenv
+
+
+**code file end: README.md**
+
+---
+
+# markdown content namespace: nb_libs codes 
+
+
+## File Tree
+
+
+```
+
+└── nb_libs
+    ├── __init__.py
+    ├── aio_util.py
+    ├── dict_util.py
+    ├── env_util.py
+    ├── global_dict.py
+    ├── http_util.py
+    ├── lazy_importer.py
+    ├── nb_time.py
+    ├── path_helper.py
+    ├── platforms.py
+    ├── pydantic_helper.py
+    ├── restart_programe.py
+    ├── str_utils.py
+    ├── sys_frame_uitils.py
+    ├── temps
+    │   ├── nbic.py
+    │   ├── redis_key.py
+    │   ├── smart_serialization.py
+    │   └── smart_serialization0001.py
+    └── tools
+        ├── auto_git.py
+        ├── code_line_statistics.py
+        ├── codes2_md.py
+        ├── github_git_clone.py
+        ├── markdown2pdf.py
+        └── memory_leak_analysis.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `nb_libs/aio_util.py`
+
+- `nb_libs/dict_util.py`
+
+- `nb_libs/env_util.py`
+
+- `nb_libs/global_dict.py`
+
+- `nb_libs/http_util.py`
+
+- `nb_libs/lazy_importer.py`
+
+- `nb_libs/nb_time.py`
+
+- `nb_libs/path_helper.py`
+
+- `nb_libs/platforms.py`
+
+- `nb_libs/pydantic_helper.py`
+
+- `nb_libs/restart_programe.py`
+
+- `nb_libs/str_utils.py`
+
+- `nb_libs/sys_frame_uitils.py`
+
+- `nb_libs/__init__.py`
+
+- `nb_libs/temps/nbic.py`
+
+- `nb_libs/temps/redis_key.py`
+
+- `nb_libs/temps/smart_serialization.py`
+
+- `nb_libs/temps/smart_serialization0001.py`
+
+- `nb_libs/tools/auto_git.py`
+
+- `nb_libs/tools/codes2_md.py`
+
+- `nb_libs/tools/code_line_statistics.py`
+
+- `nb_libs/tools/github_git_clone.py`
+
+- `nb_libs/tools/markdown2pdf.py`
+
+- `nb_libs/tools/memory_leak_analysis.py`
+
+
+---
+
+
+### code file start: nb_libs/aio_util.py 
+
+```python
+
+
+import asyncio
+
+def run_async(coro):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    return loop.run_until_complete(coro)
+```
+
+**code file end: nb_libs/aio_util.py**
+
+---
+
+
+### code file start: nb_libs/dict_util.py 
+
+```python
+import json
+from datetime import date, datetime
+from decimal import Decimal
+
+def dict_to_loose_json(dictx: dict, indent=4):
+    """宽松的json,使对象能被json序列化"""
+    dict_new = {}
+    for k, v in dictx.items():
+        if isinstance(v, (bool, tuple, dict, float, int)):
+            dict_new[k] = v
+        else:
+            dict_new[k] = str(v)
+    return json.dumps(dict_new, ensure_ascii=False, indent=indent)
+
+
+class EnhancedJSONEncoder(json.JSONEncoder):
+    """
+    一个可以处理 datetime, date, Decimal 等非标准JSON类型的编码器。
+    return json.dumps(data, cls=EnhancedJSONEncoder)
+    """
+    def default(self, o):
+        if isinstance(o, (datetime, date)):
+            return o.isoformat()
+        if isinstance(o, Decimal):
+            return str(o)
+        return super().default(o)
+
+
+def dict_time_to_json(data):
+    return json.dumps(data, cls=EnhancedJSONEncoder)
+
+
+
+
+class Undefined:
+    """表示未定义的值"""
+    pass
+
+def deep_get(d, keys, default=Undefined):
+    """安全地获取嵌套字典的值。keys可以是 'a.b.c' 或 ['a', 'b', 'c']。"""
+    if isinstance(keys, str):
+        keys = keys.split('.')
+    for key in keys:
+        if isinstance(d, dict):
+            d = d.get(key)
+        else:
+            return default
+    return d
+```
+
+**code file end: nb_libs/dict_util.py**
+
+---
+
+
+### code file start: nb_libs/env_util.py 
+
+```python
+
+# pip install python-dotenv
+
+
+```
+
+**code file end: nb_libs/env_util.py**
+
+---
+
+
+### code file start: nb_libs/global_dict.py 
+
+```python
+import json
+
+import nb_log
+
+from nb_libs.dict2json import dict2json
+
+logger = nb_log.get_logger(__name__)
+
+
+class GlobalDict:
+    global_dict = {}
+
+    @classmethod
+    def show(cls):
+        json_str = dict2json(cls.global_dict)
+        logger.info(json_str)
+        return json_str
+
+    @classmethod
+    def set(cls, k, v):
+        cls.global_dict[k] = v
+
+    @classmethod
+    def get(cls, k, default=None):
+        return cls.global_dict.get(k, default)
+
+```
+
+**code file end: nb_libs/global_dict.py**
+
+---
+
+
+### code file start: nb_libs/http_util.py 
+
+```python
+from urllib.parse import parse_qs,parse_qsl,urlencode,quote_plus
+from itertools import chain
+
+class BodyParser(object):
+    @classmethod
+    def formdata_to_dict(cls, query_string):
+        body_dict = parse_qs(query_string)
+        body_dict_new = {}
+        for k,v in body_dict.items():
+            if len(v)>1:
+                body_dict_new[k] = v
+            else:
+                body_dict_new[k]=v[0]
+        return body_dict_new
+
+    @classmethod
+    def dict_to_query_string(cls, body_dict):
+        parts = []
+        for key, value in body_dict.items():
+            if isinstance(value, list):
+                # 对于列表，我们将其元素转换为'key[index]=value'的形式
+                for index, item in enumerate(value):
+                    parts.append(f"{quote_plus(key)}={quote_plus(str(item))}")
+            else:
+                # 对于非列表值，直接转换为'key=value'
+                parts.append(f"{quote_plus(key)}={quote_plus(str(value))}")
+        return '&'.join(parts)
+
+
+
+
+if __name__ == '__main__':
+    query_string = "name=John+Doe&age=30&age=31&city=New+York"
+    print(BodyParser.formdata_to_dict(query_string))
+
+    body_dict = {'name': 'John Doe', 'age': ['30', '31'], 'city': 'New York'}
+    print(BodyParser.dict_to_query_string(body_dict))
+```
+
+**code file end: nb_libs/http_util.py**
+
+---
+
+
+### code file start: nb_libs/lazy_importer.py 
+
+```python
+
+
+from decorator_libs import cached_method_result,SingletonBaseNew
+
+class LazyImpoter(SingletonBaseNew):
+    """
+    延迟导入,避免需要互相导入.
+    """
+
+    @property
+    @cached_method_result
+    def gvent_patch_all(self):
+        from gevent import monkey
+        return monkey.patch_all
+
+
+
+lazy_impoter = LazyImpoter()
+
+if __name__ == '__main__':
+    pass
+    # lazy_impoter.gvent_patch_all()
+    from gevent import monkey
+    monkey.patch_all()
+
+
+```
+
+**code file end: nb_libs/lazy_importer.py**
+
+---
+
+
+### code file start: nb_libs/nb_time.py 
+
+```python
+from nb_time import *
+```
+
+**code file end: nb_libs/nb_time.py**
+
+---
+
+
+### code file start: nb_libs/path_helper.py 
+
+```python
+import functools
+import importlib.util
+import os
+import shutil
+import sys
+import threading
+import types
+import typing
+from pathlib import Path, WindowsPath, PosixPath
+from nb_log import get_logger
+
+
+class PathHelper:
+    _modules_cache = {}
+    _lock = threading.Lock()
+    logger = get_logger(name=__name__)
+    def __init__(self, path: typing.Union[os.PathLike, str], is_always_resolve=False):
+        """
+        :param path:
+        :param is_always_resolve:  是否总是使用绝对路径.
+        """
+        self._is_always_resolve = is_always_resolve
+        path_obj = Path(path)
+        if is_always_resolve:
+            path_obj = path_obj.resolve()
+        self.path: Path = path_obj
+
+    @property
+    def path_str(self):
+        return self.path.as_posix()
+    
+    def get_relative_path(self, parent_path: Path) -> Path:
+        return self.path.relative_to(parent_path)
+
+    def ensure_parent(self) -> 'PathHelper':
+        """确保当前路径的父目录存在，如果不存在则创建。"""
+        """
+        PathHelper('data/reports/2023/sales.csv').ensure_parent().write_text('...')
+        """
+        parent_dir = self.path.parent
+        parent_dir.mkdir(parents=True, exist_ok=True)
+        return self
+
+    def read_text(self, encoding: str = 'utf-8') -> str:
+        return self.path.read_text(encoding=encoding)
+    
+    def write_text(self, text: str, encoding: str = 'utf-8') -> None:
+        return self.path.write_text(text, encoding=encoding)
+
+    def copy_to(self, destination: typing.Union[os.PathLike, str]) -> 'PathHelper':
+        """
+        将文件或目录复制到指定位置。
+        - 如果 destination 是一个目录，则复制到该目录下。
+        - 如果 destination 是一个文件路径，则复制并重命名。
+        """
+        dest_path = Path(destination)
+        if self.path.is_file():
+            shutil.copy2(self.path, dest_path)  # copy2 同时复制元数据
+        elif self.path.is_dir():
+            # 如果目标是目录，需要指定新目录名
+            dest_path_final = dest_path if not dest_path.is_dir() else dest_path / self.path.name
+            shutil.copytree(self.path, dest_path_final)
+        return self.__class__(dest_path)
+    
+    def move_to(self, destination: typing.Union[os.PathLike, str]) -> 'PathHelper':
+        """将文件或目录移动到指定位置。"""
+        moved_path = shutil.move(str(self.path), str(destination))
+        return self.__class__(moved_path)
+
+    def rglob_files(self, pattern: str, ) -> typing.List[Path]:
+        """递归查找所有匹配的文件。"""
+        files = [p for p in self.path.rglob(pattern) if p.is_file()]
+        if self._is_always_resolve:
+            # 只在最后对结果列表进行一次 resolve 操作
+            return [p.resolve() for p in files]
+        return files
+
+    def rglob_dirs(self, pattern: str, ) -> typing.List[Path]:
+        """递归查找所有匹配的目录。"""
+        dirs = [p for p in self.path.rglob(pattern) if p.is_dir()]
+        if self._is_always_resolve:
+            return [p.resolve() for p in dirs]
+        return dirs
+
+    @staticmethod
+    @functools.lru_cache()
+    def _get_file__module_map():
+        file__module_map = {}
+        for k, v in sys.modules.items():
+            try:
+                # print(v)
+                # print(v.__file__)
+                file__module_map[Path(v.__file__).resolve().as_posix()] = v
+            except (AttributeError, TypeError):
+                pass
+        # print(file__module_map)
+        return file__module_map
+
+    def import_as_module(self, module_name: str = None) -> types.ModuleType:
+        """import 当前文件路径"""
+        with self._lock:
+            path_str = self.path.resolve().as_posix()
+            key = (path_str, module_name)
+            if key in self._modules_cache:
+                return self._modules_cache[key]
+            file__module_map = self._get_file__module_map()
+            if path_str in file__module_map:
+                module = file__module_map[path_str]
+                self._modules_cache[key] = module
+                return module
+            if module_name is None:
+                module_name = self.path.parent.as_posix().replace('/', '.') + '.' + self.path.stem
+            module_spec = importlib.util.spec_from_file_location(module_name, self.path)
+            module = importlib.util.module_from_spec(module_spec)
+            module_spec.loader.exec_module(module)
+            self._modules_cache[key] = module
+            return module
+        # except FileNotFoundError:
+        #     self.logger.exception(f"Module file '{self.path}' not found.")
+        # except Exception as e:
+        #     self.logger.exception(f"Failed to import module '{module_name}': {str(e)}")
+
+    def auto_import_pyfiles_in_dir(self, pattern: str = '*.py') -> None:
+        for file_path in self.rglob_files(pattern):
+            
+            if Path(file_path) == Path(sys._getframe(1).f_code.co_filename):
+                self.logger.warning(f'排除导入调用PathHelper的模块自身 {file_path}')  # 否则下面的import这个文件,会造成无限懵逼死循环
+                continue
+            self.logger.debug(f'导入模块 {file_path}')
+            self.__class__(file_path).import_as_module()
+
+    def get_module_name(self, ) -> str:
+        """获取当前文件的模块名字"""
+        relative_path = None
+        for python_path in sys.path[0:]:
+            try:
+                relative_path = self.path.relative_to(Path(python_path))
+                break
+                # print(relative_path)
+            except ValueError as e:
+                pass
+                # print(type(e))
+        if relative_path is None:
+            raise ValueError(f'{self.path} not in sys.path')
+        module_name= str(relative_path).replace('\\','.').replace('/', '.').replace('.py', '')
+        return module_name
+        # return PathHelper(relative_path).path_resolve_str.replace('/', '.').replace('.py', '')
+
+    @staticmethod
+    @functools.lru_cache()
+    def import_module(module_name:str):
+        """import a.b.c 这样"""
+        return importlib.import_module(module_name)
+
+    def __str__(self):
+        return f'''<PathHelper["{self.path}"]>'''
+
+
+if __name__ == '__main__':
+    print(type(Path('/')))
+    cur_dir = Path(__file__).parent
+    print(PathHelper(cur_dir, is_always_resolve=True))
+    print(PathHelper(cur_dir, is_always_resolve=True).path)
+    print(list(PathHelper(cur_dir).rglob_files('*.py', )))
+    print(PathHelper(r'D:\codes\nb_libs\nb_libs\dict_util.py').import_as_module())
+
+    PathHelper(Path(__file__).parent.parent.joinpath('tests/test_import_dir')).auto_import_pyfiles_in_dir()
+
+    print(PathHelper(r'D:\codes\nb_libs\nb_libs\dict_util.py').get_module_name())
+
+    import nb_libs.dict_util
+
+```
+
+**code file end: nb_libs/path_helper.py**
+
+---
+
+
+### code file start: nb_libs/platforms.py 
+
+```python
+#!/usr/bin/python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
+"""
+:description:
+    cross-platform functions related module
+"""
+
+import sys
+import select
+import platform
+
+__all__ = [
+    'is_linux',
+    'is_windows',
+    'is_mac',
+    'is_py2',
+    'is_py3'
+]
+
+
+def is_linux():
+    """
+    Check if you are running on Linux.
+
+    :return:
+        True or False
+    """
+    if platform.platform().startswith('Linux'):
+        return True
+    else:
+        return False
+
+
+def is_windows():
+    """
+    Check if you are running on Windows.
+
+    :return:
+        True or False
+    """
+
+    if platform.platform().startswith('Windows'):
+        return True
+    else:
+        return False
+
+
+def is_mac():
+    """
+    is mac os
+    """
+    if hasattr(select, 'kqueue'):
+        return True
+    else:
+        return False
+
+
+def is_py2():
+    """
+    is python 2.x
+    """
+    if sys.version_info >= (3, 0):
+        return False
+    if sys.version_info < (3, 0):
+        return True
+    raise ValueError('cannot determine if it\'s python2')
+
+
+def is_py3():
+    """is python 3.x"""
+    if (3, 0) <= sys.version_info <= (4, 0):
+        return True
+    else:
+        return False
+
+
+def is_str_py2py3(input):
+    """
+    check if the input is string. py2 compatible
+    :param input
+        input
+    """
+    if is_py3():
+        return isinstance(input, str)
+    if is_py2():
+        return isinstance(input, unicode)
+
+# vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
+```
+
+**code file end: nb_libs/platforms.py**
+
+---
+
+
+### code file start: nb_libs/pydantic_helper.py 
+
+```python
+import json
+import typing
+from collections import OrderedDict
+
+from pydantic import BaseModel, BaseConfig
+
+class BaseJsonAbleModel(BaseModel):
+    """
+    因为model字段包括了 函数和自定义类型的对象,无法直接json序列化,需要自定义json序列化
+    """
+
+    class Config(BaseConfig):
+        arbitrary_types_allowed = True
+        # allow_mutation = False
+        extra = "forbid"
+    def get_str_dict(self):
+        model_dict: dict = self.dict()  # noqa
+        model_dict_copy = OrderedDict()
+        for k, v in model_dict.items():
+            if isinstance(v, typing.Callable):
+                model_dict_copy[k] = str(v)
+            # elif k in ['specify_concurrent_pool', 'specify_async_loop'] and v is not None:
+            elif type(v).__module__ != "builtins":  # 自定义类型的对象,json不可序列化,需要转化下.
+                model_dict_copy[k] = str(v)
+            else:
+                model_dict_copy[k] = v
+        return model_dict_copy
+
+    def json_str_value(self):
+        try:
+            return json.dumps(self.get_str_dict(), ensure_ascii=False, )
+        except TypeError as e:
+            return str(self.get_str_dict())
+
+    def json_pre(self):
+        try:
+            return json.dumps(self.get_str_dict(), ensure_ascii=False, indent=4)
+        except TypeError as e:
+            return str(self.get_str_dict())
+
+    def update_from_dict(self, dictx: dict,is_generate_new_model=False,is_ignore_field_not_exists=False):
+        model = self
+        if is_generate_new_model:
+            model = self.copy()
+        for k, v in dictx.items():
+            if is_ignore_field_not_exists is True:
+                if k in model.dict():
+                    setattr(model, k, v)
+            else:
+                setattr(model, k, v)
+        return model
+
+    def update_from_kwargs(self,is_generate_new_model=False,is_ignore_field_not_exists=False, **kwargs,):
+        model = self
+        # print(id(model))
+        if is_generate_new_model:
+            model = self.copy()
+            # print(id(model))
+        for k, v in kwargs.items():
+            if is_ignore_field_not_exists is True:
+                if k in model.dict():
+                    setattr(model, k, v)
+            else:
+                setattr(model, k, v)
+        return model
+
+    def update_from_model(self, modelx: BaseModel,is_generate_new_model=False,is_ignore_field_not_exists=False):
+        model = self
+        if is_generate_new_model:
+            model = self.copy()
+        for k, v in modelx.dict().items():
+            if is_ignore_field_not_exists is True:
+                if k in model.dict():
+                    setattr(model, k, v)
+            else:
+                setattr(model, k, v)
+        return model
+
+    def __str__(self):
+        str1 =  self.__repr_str__(' ')
+        return f'<{self.__class__.__name__} id:{id(self)} [{str1}]>'
+
+    @staticmethod
+    def init_by_another_model(model_type:typing.Type[BaseModel],modelx:BaseModel):
+        init_dict = {}
+        for k,v in modelx.dict().items():
+            if k in model_type.__fields__.keys():
+                init_dict[k] = v
+        return model_type(**init_dict)
+
+
+
+
+
+if __name__ == '__main__':
+    import nb_print
+
+
+    class Model1(BaseJsonAbleModel):
+        a:int=1
+        c:int=66
+
+    class Model2(BaseJsonAbleModel):
+        a:int=2
+        b:str = 'abcd'
+
+
+    m1 = Model1(a=1)
+    m2 = Model2(a=22)
+    m1.update_from_model(m2,is_ignore_field_not_exists=True)
+    print(m1)
+
+    m1.update_from_dict(m2.dict(), is_ignore_field_not_exists=True)
+    print(m1)
+
+    m1_new = m1.update_from_kwargs(**m2.dict(), is_ignore_field_not_exists=True,is_generate_new_model=True)
+    print(m1_new)
+
+
+```
+
+**code file end: nb_libs/pydantic_helper.py**
+
+---
+
+
+### code file start: nb_libs/restart_programe.py 
+
+```python
+import datetime
+import os
+import sys
+import threading
+import time
+
+import nb_log
+
+# print(sys.path)
+
+logger = nb_log.get_logger('restart_program')
+
+""" 这个只能在 win cmd 或者 linux下测试重启功能，
+   不能在pycharm中观察有无打印来判断是否重启了，因为重启后python进程变化了，pycharm控制台不能捕捉到新进程的打印输出，所以不要在pycharm下运行python来验证重启功能。
+
+"""
+
+"""
+这个意义是，不需要排查内存泄漏，自动重启你的任意代码。所有环境变量和python命令行参数，下次自动重启都能自动利用。
+有时候你的web服务每天上涨0.05%的内存，每隔半年需要手动重启一下服务防止服务器oom宕机，如果你懒得排查为什么内存泄漏了，
+可以使用这个来自动重启。
+"""
+
+
+def restart_program(seconds):
+    '''
+    间隔n秒重启脚本
+    :param seconds:
+    :return:
+    '''
+    """ 
+    这个只能在 win cmd 或者 linux下测试重启功能，
+    不能在pycharm中观察有无打印来判断是否重启了，因为重启后python进程变化了，pycharm控制台不能捕捉到新进程的打印输出，所以不要在pycharm下运行python来验证重启功能。
+    """
+
+    def _restart_program():
+        time.sleep(seconds)
+        python = sys.executable
+        logger.warning(f'重启当前python程序 {python} , {sys.argv}')
+        os.execl(python, python, *sys.argv)
+
+    threading.Thread(target=_restart_program).start()
+
+
+def _run():
+    print(datetime.datetime.now(),'开始运行程序')
+    for i in range(1000):
+        time.sleep(0.5)
+        print(datetime.datetime.now(),i)
+
+if __name__ == '__main__':
+    restart_program(10)  # 每隔10秒重启。
+    _run()
+
+```
+
+**code file end: nb_libs/restart_programe.py**
+
+---
+
+
+### code file start: nb_libs/str_utils.py 
+
+```python
+class PwdEnc:
+
+    @classmethod
+    def enc_broker_uri(cls, uri: str):
+        protocol_split_list = uri.split('://')
+        if len(protocol_split_list) != 2:
+            return uri
+        user_pass__ip_port_split_list = protocol_split_list[1].split('@')
+        if len(user_pass__ip_port_split_list) != 2:
+            return uri
+        user__pass_split_list = user_pass__ip_port_split_list[0].split(':')
+        if len(user__pass_split_list) != 2:
+            return uri
+        user = user__pass_split_list[0]
+        pwd = user__pass_split_list[1]
+        pwd_enc = cls.enc_pwd(pwd)
+        return f'{protocol_split_list[0]}://{user}:{pwd_enc}@{user_pass__ip_port_split_list[1]}'
+
+    @staticmethod
+    def enc_pwd(pwd: str, plain_len=3):
+        pwd_enc = pwd
+        if len(pwd_enc) > plain_len:
+            pwd_enc = f'{pwd_enc[:plain_len]}{"*" * (len(pwd_enc) - plain_len)}'
+        return pwd_enc
+
+
+class StrHelper:
+    def __init__(self, strx: str):
+        self.strx = strx
+
+    def judge_contains_str_list(self, str_list: list, ignore_case=True):
+        for str1 in str_list:
+            if str1 in self.strx:
+                return True
+            if ignore_case:
+                if str1.lower() in self.strx.lower():
+                    return True
+        return False
+
+
+if __name__ == '__main__':
+    str1 = "amqp://admin:abc234@108.55.33.99:5672/"
+    str2 = "redis://:myRedisPass1234@127.0.0.1:6379/0"
+    print(PwdEnc.enc_broker_uri(str1))
+    print(PwdEnc.enc_broker_uri(str2))
+    print(PwdEnc.enc_pwd('465460dsdsd'))
+
+```
+
+**code file end: nb_libs/str_utils.py**
+
+---
+
+
+### code file start: nb_libs/sys_frame_uitils.py 
+
+```python
+import inspect
+import sys
+
+'''
+此模块不要导入nb_log,避免互相引用
+'''
+
+def get_current_fun_name():
+    """
+    获取代码所在函数或方法的名字
+    :return:
+    """
+    method_name = inspect.getframeinfo(inspect.currentframe().f_back).function  # 也可以 sys._getframe(0).f_code.co_name
+    return method_name
+
+
+class EasyFrame:
+    def __init__(self, frame_level=0):
+        self.framex = sys._getframe(frame_level + 1)  # 因为这里封装调用了一次,所以 +1
+
+    @property
+    def filename(self):
+        return self.framex.f_code.co_filename
+
+    @property
+    def func_name(self):
+        return self.framex.f_code.co_name
+
+    @property
+    def lineno(self):
+        return self.framex.f_lineno
+
+    def get_jump_line(self, next_line=False):
+        next_line_str = ''
+        if next_line:
+            next_line_str = '\n'
+        return f'''{next_line_str}"{self.filename}:{self.lineno}"'''
+
+
+if __name__ == '__main__':
+    from nb_log import print_raw
+
+
+    def get_a():
+        print(dir(sys._getframe(1).f_code))
+        print(sys._getframe(1).f_code.co_filename)  # 文件
+        print(sys._getframe(1).f_code.co_name)  # 函数
+        print(sys._getframe(0).f_code.co_name)  # 函数
+        print(dir(sys._getframe(1)))
+        print(sys._getframe(1).f_lineno)  # 行
+        print(sys._getframe(0).f_back.f_lineno)
+
+        ef = EasyFrame()
+        print(ef.filename, ef.lineno, ef.func_name, ef.get_jump_line(next_line=True))
+
+        ef = EasyFrame(1)
+        print(ef.filename, ef.lineno, ef.func_name, ef.get_jump_line(next_line=True))
+
+
+    get_a()
+
+```
+
+**code file end: nb_libs/sys_frame_uitils.py**
+
+---
+
+
+### code file start: nb_libs/__init__.py 
+
+```python
+
+```
+
+**code file end: nb_libs/__init__.py**
+
+---
+
+
+### code file start: nb_libs/temps/nbic.py 
+
+```python
+"""
+实现一个 icecream包ic函数那样的，自动拼接  变量名1:变量值1,变量名2:变量值2 那样的字符串
+
+
+例如
+ a  =1
+ b = 2
+
+print(nbicf(a,b,
+            a+b))
+
+nbicf需要返回 a:1,b:2,a+b:3
+
+
+"""
+
+import inspect
+import linecache
+import functools
+import re
+import time
+
+
+@functools.lru_cache(maxsize=10000)
+def _parse_nbicf_call(filename, lineno):
+    """
+    快速解析nbicf调用的参数表达式
+    """
+    # 向上最多搜索5行找到nbicf调用
+    for i in range(max(1, lineno - 4), lineno + 1):
+        line = linecache.getline(filename, i)
+        if 'nbicf(' in line:
+            start_line = i
+            break
+    else:
+        return None
+
+    # 收集从nbicf(开始到)结束的所有代码
+    code_lines = []
+    paren_count = 0
+    found_start = False
+
+    for line_num in range(start_line, lineno + 5):
+        line = linecache.getline(filename, line_num)
+        if not line:
+            break
+
+        if not found_start:
+            # 找到nbicf(的位置
+            nbicf_pos = line.find('nbicf(')
+            if nbicf_pos >= 0:
+                found_start = True
+                line = line[nbicf_pos + 6:]  # 从nbicf(后开始
+
+        if found_start:
+            for char in line:
+                if char == '(':
+                    paren_count += 1
+                elif char == ')':
+                    if paren_count == 0:
+                        # 找到匹配的结束括号
+                        code_lines.append(line[:line.index(char)])
+                        # 简单的参数分割：用正则处理顶层逗号 
+                        full_args = ''.join(code_lines)
+                        # 移除多余空格但保持结构
+                        full_args = re.sub(r'\s+', ' ', full_args.strip())
+                        # 简单分割（不处理嵌套括号内的逗号）
+                        args = [arg.strip() for arg in full_args.split(',') if arg.strip()]
+                        return args
+                    else:
+                        paren_count -= 1
+            code_lines.append(line)
+
+    return None
+
+
+def nbicf(*args):
+    """
+    Like icecream.ic(), but returns string instead of printing.
+    """
+    try:
+        frame = inspect.currentframe().f_back
+        filename = frame.f_code.co_filename
+        lineno = frame.f_lineno
+
+        # 快速解析
+        exprs = _parse_nbicf_call(filename, lineno)
+        if not exprs or len(exprs) != len(args):
+            # 解析失败，使用简单fallback
+            exprs = ['?'] * len(args)
+
+    except Exception:
+        exprs = ['?'] * len(args)
+
+    return ', '.join(f'{expr}: {value!r}' for expr, value in zip(exprs, args))
+
+
+if __name__ == '__main__':
+    import nb_print
+
+    a = 1
+    b = 2
+    c = 3
+    t1 = time.time()
+    # c = a +b
+    print()
+    for i in range(10000):
+        r = nbicf(a, b,
+                  a + b)
+
+        # r = (a,b,
+        #         a+b)
+        if i % 1000 == 0:
+            print(r)
+    print()
+
+    # print(nbicf(a,c))
+
+    print(time.time() - t1)
+
+```
+
+**code file end: nb_libs/temps/nbic.py**
+
+---
+
+
+### code file start: nb_libs/temps/redis_key.py 
+
+```python
+from functools import partial
+from typing import Union
+import copy
+from redis import Redis
+from redis.typing import ExpiryT, AbsExpiryT, EncodableT, FieldT
+from inspect import signature
+
+
+def _get_locals_params(key_name, loclasx: dict):
+    loc = copy.copy(loclasx)
+    loc.pop('self')
+    loc['name'] = key_name
+    return loc
+
+
+class RedisKeyOp:
+    redis_methods = [attr for attr in dir(Redis) if callable(getattr(Redis, attr)) and not attr.startswith("__")]
+    methods_name_op = []  # 第二个入参是name,第一个入参是self的Reids类的方法名大全
+    for m in redis_methods:
+        fun_param_name_list = list(signature(getattr(Redis, m)).parameters.keys())
+        if len(fun_param_name_list) > 1 and fun_param_name_list[1] == 'name' and fun_param_name_list[0] == 'self':
+            methods_name_op.append(m)
+
+    def __init__(self, redis_conn: Redis, key: str):
+        self.redis_conn = redis_conn
+        self.key_name = key
+        self.get = partial(self.redis_conn.get, self.key_name)
+
+    def set(self, value: EncodableT,
+            ex: Union[ExpiryT, None] = None,
+            px: Union[ExpiryT, None] = None,
+            nx: bool = False,
+            xx: bool = False,
+            keepttl: bool = False,
+            get: bool = False,
+            exat: Union[AbsExpiryT, None] = None,
+            pxat: Union[AbsExpiryT, None] = None, ):
+        params = _get_locals_params(self.key_name, locals())
+        return self.redis_conn.set(**params)
+
+    def lpush(self, *values: FieldT):
+        return self.redis_conn.lpush(self.key_name, *values)
+
+    def __getattr__(self, item: str):
+        if item in self.methods_name_op:
+            return partial(getattr(self.redis_conn, item), self.key_name)
+        else:
+            raise AttributeError(f'not support redis `name` method {item}')
+
+
+if __name__ == '__main__':
+    redis_conn = Redis(decode_responses=True, encoding='utf-8')
+    print(RedisKeyOp.methods_name_op)
+    ro_test_key = RedisKeyOp(redis_conn, 'test_key')
+    ro_test_key.set(456)
+    print(ro_test_key.get())
+
+    RedisKeyOp(redis_conn, 'tk2').incr()
+
+```
+
+**code file end: nb_libs/temps/redis_key.py**
+
+---
+
+
+### code file start: nb_libs/temps/smart_serialization.py 
+
+```python
+import typing
+import orjson
+import pickle
+import base64
+from datetime import datetime, date, time, timedelta
+import json as std_json
+
+
+class Serialization:
+    """高性能 JSON 封装：orjson 为主"""
+    @staticmethod
+    def to_json_str(obj: typing.Any) -> str:
+        return orjson.dumps(obj).decode('utf8')
+
+    @staticmethod
+    def to_dict(data: str) -> dict:
+        return orjson.loads(data)
+
+
+class PickleHelper:
+    """pickle <-> base64 文本化，安全且可放入 JSON"""
+    @staticmethod
+    def to_str(obj: typing.Any) -> str:
+        return base64.b64encode(
+            pickle.dumps(obj, protocol=pickle.HIGHEST_PROTOCOL)
+        ).decode('utf8')
+
+    @staticmethod
+    def to_obj(data: str) -> typing.Any:
+        return pickle.loads(base64.b64decode(data))
+
+
+"""
+SmartSerialization 是一个智能序列化类,使用orjson序列化 + pickle 序列化
+例如一个字典 {"a":1,"b":2,"c":3,"d":MyCalss(1,2)}
+这个字典不能josn序列化,如果直接 pickle序列化,导致 a  b c 这种简单类型也看不清楚键值对,
+
+SmartSerialization 是对不能json序列化的,使用pickle序列化,避免了 a b c 也看不清楚
+
+
+注意这个源码的实现:
+orjson 不同于 json,orjson能直接序列化各种时间对象成字符串,这会导致反序列化时候生成不了时间对象,
+所以对时间对象类型需要改成pickle序列化,而不能使用orjson的序列化方式
+"""
+class SmartSerialization:
+    TYPE_KEY = "__type__"
+    DATA_KEY = "__data__"
+    STR_KEY = "__str__"
+
+    _CONTAINER_MAP = {"list": list, "tuple": tuple, "set": set}
+    _DATETIME_TYPES = (datetime, date, time, timedelta)
+    
+    # 优化: 为反序列化器按类型名称预先计算映射
+    _type_handlers: dict = {}
+    _deserializers_by_name: dict = {}
+
+    _simple_types = (str, int, float, bool, type(None))
+    _simple_types_set = set(_simple_types)
+
+    @classmethod
+    def register_type(cls, py_type, serializer, deserializer):
+        cls._type_handlers[py_type] = (serializer, deserializer)
+        # 优化: 构建从类型名称到反序列化器的映射,以加快查找速度
+        cls._deserializers_by_name[py_type.__name__] = deserializer
+
+    @staticmethod
+    def _process_for_serialization(obj: typing.Any) -> typing.Any:
+        obj_type = type(obj)
+        
+        # 快速路径: 简单类型直接返回
+        if obj_type in SmartSerialization._simple_types_set:
+            return obj
+
+        # 字典和列表非常常见,优先处理
+        if obj_type is dict:
+            # 优化: 仅当字典包含非简单类型时才进行处理
+            if any(type(v) not in SmartSerialization._simple_types_set for v in obj.values()):
+                process_func = SmartSerialization._process_for_serialization
+                return {k: process_func(v) for k, v in obj.items()}
+            return obj
+
+        if obj_type is list:
+            # 优化: 仅当列表包含非简单类型时才进行处理
+            if any(type(item) not in SmartSerialization._simple_types_set for item in obj):
+                process_func = SmartSerialization._process_for_serialization
+                return [process_func(item) for item in obj]
+            return obj
+
+        # 检查已注册的自定义类型(为性能起见,进行精确匹配)
+        if obj_type in SmartSerialization._type_handlers:
+            ser, _ = SmartSerialization._type_handlers[obj_type]
+            return {
+                SmartSerialization.TYPE_KEY: obj_type.__name__,
+                SmartSerialization.STR_KEY: str(obj),
+                SmartSerialization.DATA_KEY: ser(obj)
+            }
+
+        # 元组和集合不是原生JSON类型,需要特殊处理
+        if obj_type in (tuple, set):
+            container_type = obj_type.__name__
+            # 优化: 避免对只包含简单类型的容器进行递归
+            if any(type(item) not in SmartSerialization._simple_types_set for item in obj):
+                process_func = SmartSerialization._process_for_serialization
+                processed_items = [process_func(item) for item in obj]
+            else:
+                processed_items = list(obj)
+            return {
+                SmartSerialization.TYPE_KEY: container_type,
+                SmartSerialization.STR_KEY: str(obj),
+                SmartSerialization.DATA_KEY: processed_items
+            }
+
+        # 日期时间类型被pickle以保留类型信息,因为orjson会将其字符串化
+        if isinstance(obj, SmartSerialization._DATETIME_TYPES):
+            return {
+                SmartSerialization.TYPE_KEY: obj_type.__name__,
+                SmartSerialization.STR_KEY: str(obj),  # 额外保存可读的时间字符串
+                SmartSerialization.DATA_KEY: PickleHelper.to_str(obj)
+            }
+
+        # 后备: pickle任何其他复杂类型
+        return {
+            SmartSerialization.TYPE_KEY: "pickle",
+            SmartSerialization.STR_KEY: str(obj),
+            SmartSerialization.DATA_KEY: PickleHelper.to_str(obj)
+        }
+
+    @staticmethod
+    def _process_for_deserialization(obj: typing.Any) -> typing.Any:
+        obj_type = type(obj)
+        
+        # 快速路径: 简单类型直接返回
+        if obj_type in SmartSerialization._simple_types_set:
+            return obj
+
+        if obj_type is dict:
+            # 检查它是否是一个特殊序列化的对象
+            if SmartSerialization.TYPE_KEY in obj:
+                tname = obj[SmartSerialization.TYPE_KEY]
+                data = obj.get(SmartSerialization.DATA_KEY)
+
+                # 优化: 为已注册类型和容器进行直接查找
+                deserializer = SmartSerialization._deserializers_by_name.get(tname)
+                if deserializer:
+                    return deserializer(data)
+
+                if tname in SmartSerialization._CONTAINER_MAP:
+                    deserialze_func = SmartSerialization._process_for_deserialization
+                    iterable = [deserialze_func(i) for i in data]
+                    return SmartSerialization._CONTAINER_MAP[tname](iterable)
+
+                # 日期时间类型和通用的pickle后备
+                if tname in ("datetime", "date", "time", "timedelta", "pickle"):
+                    return PickleHelper.to_obj(data)
+
+                return obj
+
+            # 处理一个普通的字典
+            if any(type(v) not in SmartSerialization._simple_types_set for v in obj.values()):
+                deserialize_func = SmartSerialization._process_for_deserialization
+                return {k: deserialize_func(v) for k, v in obj.items()}
+            return obj
+
+        if obj_type is list:
+            deserialize_func = SmartSerialization._process_for_deserialization
+            if any(type(item) not in SmartSerialization._simple_types_set for item in obj):
+                return [deserialize_func(item) for item in obj]
+            return obj
+
+        return obj
+
+    @staticmethod
+    def serialize(obj: typing.Any) -> str:
+        processed = SmartSerialization._process_for_serialization(obj)
+        return Serialization.to_json_str(processed)
+
+    @staticmethod
+    def deserialize(data: str) -> typing.Any:
+        try:
+            obj = Serialization.to_dict(data)
+            return SmartSerialization._process_for_deserialization(obj)
+        except (orjson.JSONDecodeError, std_json.JSONDecodeError):
+            # 非 JSON 文本时，尝试直接按 base64(pickle) 反序列化
+            return PickleHelper.to_obj(data)
+
+ # 可插拔类型示例（演示：将 bytes 注册为 base64 文本）
+def bytes_serializer(b: bytes) -> str:
+    return base64.b64encode(b).decode("utf8")
+
+def bytes_deserializer(s: str) -> bytes:
+    return base64.b64decode(s)
+
+SmartSerialization.register_type(bytes, bytes_serializer, bytes_deserializer) # bytes类型现在会被新方法注册
+
+
+# =========================
+# 使用示例与一致性校验
+# =========================
+if __name__ == "__main__":
+    class MyClass:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+        def __repr__(self):
+            return f"MyClass(x={self.x}, y={self.y})"
+
+
+
+    test_dict = {
+        "name": "张三",
+        "age": 25,
+        "scores": [90, 85, 92],
+        "metadata": {"city": "北京", "active": True},
+        "created_time": datetime.now(),                     # datetime 对象
+        "birth_date": date(1990, 5, 15),                    # date 对象
+        "work_time": time(9, 30, 0),                        # time 对象
+        "duration": timedelta(hours=2, minutes=30),         # timedelta 对象
+        "complex_obj": {"nested": {"data": datetime.now()}},
+        "tags": {"python", "programming", "AI"},            # set
+        "tuple_a": (1, "hello"),                            # tuple
+        "nested_tuple": ("a", (1, 2), {"key": "value"}),    # 嵌套 tuple
+        "mixed_list": [1, "string", datetime.now(), [1, 2, 3]],
+        "obj_a": MyClass(1, 2),                             # 自定义对象 → pickle
+        "payload": b"\x00\x01\x02\x03",                     # bytes → 注册类型
+    }
+
+    print("原始数据:")
+    for k, v in test_dict.items():
+        print(f"  {k}: {v} ({type(v).__name__})")
+    print()
+
+    serialized = SmartSerialization.serialize(test_dict)
+    print("序列化后的字符串:")
+    print(serialized)
+    print()
+
+    deserialized = SmartSerialization.deserialize(serialized)
+    print("反序列化后的数据:")
+    for k, v in deserialized.items():
+        print(f"  {k}: {v} ({type(v).__name__})")
+    print()
+
+    print("验证结果:")
+    print(f"created_time 是否相等: {test_dict['created_time'] == deserialized['created_time']}")
+    print(f"birth_date 是否相等: {test_dict['birth_date'] == deserialized['birth_date']}")
+    print(f"tuple_a 是否相等: {test_dict['tuple_a'] == deserialized['tuple_a']}")
+    print(f"tuple_a 反序列化类型: {type(deserialized['tuple_a']).__name__}")
+    print(f"nested_tuple 是否相等: {test_dict['nested_tuple'] == deserialized['nested_tuple']}")
+    print(f"nested_tuple 反序列化类型: {type(deserialized['nested_tuple']).__name__}")
+    print(f"set 是否相等: {test_dict['tags'] == deserialized['tags']}")
+    print(f"bytes 是否相等: {test_dict['payload'] == deserialized['payload']}")
+
+    # 智能序列化,测试性能
+    import  time as time_std
+    t1 = time_std.time()
+    for i in range(100000):
+        str1 = SmartSerialization.serialize(test_dict)
+        dic1 = SmartSerialization.deserialize(str1)
+    print("智能序列化,100000次耗时: ",time_std.time() - t1)
+
+    # pickle 粗暴序列化,测试性能
+    t1 = time_std.time()
+    for i in range(100000):
+        str1 = PickleHelper.to_str(test_dict)
+        dic1 =  PickleHelper.to_obj(str1)
+    print("pickle粗暴 序列化,100000次耗时: ", time_std.time() - t1)
+```
+
+**code file end: nb_libs/temps/smart_serialization.py**
+
+---
+
+
+### code file start: nb_libs/temps/smart_serialization0001.py 
+
+```python
+import typing
+import json
+import orjson
+import pickle
+import ast
+
+
+class Serialization:
+    @staticmethod
+    def to_json_str(dic: typing.Union[dict, str]):
+        if isinstance(dic, str):
+            return dic
+        str1 = orjson.dumps(dic)
+        return str1.decode('utf8')
+
+    @staticmethod
+    def to_dict(strx: typing.Union[str, dict]):
+        if isinstance(strx, dict):
+            return strx
+        return orjson.loads(strx)
+
+    @staticmethod
+    def find_can_not_json_serializable_keys(dic: dict) -> typing.List[str]:
+        can_not_json_serializable_keys = []
+        dic = Serialization.to_dict(dic)
+        for k, v in dic.items():
+            if not isinstance(v, str):
+                try:
+                    json.dumps(v)
+                except:
+                    can_not_json_serializable_keys.append(k)
+        return can_not_json_serializable_keys
+
+
+class PickleHelper:
+    @staticmethod
+    def to_str(obj_x: typing.Any):
+        return str(pickle.dumps(obj_x))  # 对象pickle,转成字符串
+
+    @staticmethod
+    def to_obj(str_x: str):
+        return pickle.loads(ast.literal_eval(str_x))  # 不是从字节转成对象,是从字符串转,所以需要这样.
+
+
+class SmartSerialization:
+    """智能宽松序列化类"""
+
+    @staticmethod
+    def serialize(obj: typing.Any) -> str:
+        """
+        智能序列化：优先使用JSON，无法序列化的部分使用pickle
+        """
+        if isinstance(obj, dict):
+            # 创建一个副本用于处理
+            processed_dict = {}
+            for key, value in obj.items():
+                try:
+                    # 尝试直接JSON序列化该值
+                    json.dumps(value)
+                    processed_dict[key] = value
+                except (TypeError, ValueError):
+                    # 如果JSON序列化失败，使用pickle序列化
+                    pickle_str = PickleHelper.to_str(value)
+                    processed_dict[key] = {
+                        "__pickle__": True,
+                        "data": pickle_str
+                    }
+
+            # 序列化整个字典
+            return Serialization.to_json_str(processed_dict)
+        else:
+            # 非字典对象直接尝试JSON序列化
+            try:
+                return Serialization.to_json_str(obj)
+            except (TypeError, ValueError):
+                return PickleHelper.to_str(obj)
+
+    @staticmethod
+    def deserialize(serialized_str: str) -> typing.Any:
+        """
+        智能反序列化：自动识别并处理pickle序列化的部分
+        """
+        try:
+            # 先尝试作为JSON反序列化
+            result = Serialization.to_dict(serialized_str)
+
+            if isinstance(result, dict):
+                # 检查是否有pickle序列化的数据
+                processed_result = {}
+                for key, value in result.items():
+                    if isinstance(value, dict) and value.get("__pickle__") is True:
+                        # 这是pickle序列化的数据，需要反序列化
+                        pickle_data = value.get("data")
+                        if pickle_data:
+                            processed_result[key] = PickleHelper.to_obj(pickle_data)
+                        else:
+                            processed_result[key] = value
+                    else:
+                        processed_result[key] = value
+                return processed_result
+            else:
+                return result
+        except (json.JSONDecodeError, orjson.JSONDecodeError):
+            # 如果JSON反序列化失败，尝试pickle反序列化
+            return PickleHelper.to_obj(serialized_str)
+
+
+# 使用示例
+if __name__ == "__main__":
+    # 测试数据
+    import datetime
+
+    test_dict = {
+        "name": "张三",
+        "age": 25,
+        "scores": [90, 85, 92],
+        "metadata": {"city": "北京", "active": True},
+        "created_time": datetime.datetime.now(),  # 这个无法JSON序列化
+        "complex_obj": {"nested": {"data": datetime.date.today()}}  # 嵌套的复杂对象
+    }
+
+    print("原始数据:")
+    print(test_dict)
+    print()
+
+    # 智能序列化
+    serialized = SmartSerialization.serialize(test_dict)
+    print("序列化后的字符串:")
+    print(serialized)
+    print()
+
+    # 智能反序列化
+    deserialized = SmartSerialization.deserialize(serialized)
+    print("反序列化后的数据:")
+    print(deserialized)
+    print()
+
+    # 验证是否相等
+    print("原始时间和反序列化时间是否相等:", test_dict["created_time"] == deserialized["created_time"])
+```
+
+**code file end: nb_libs/temps/smart_serialization0001.py**
+
+---
+
+
+### code file start: nb_libs/tools/auto_git.py 
+
+```python
+import os
+import subprocess
+import time
+
+
+def getstatusoutput(cmd):
+    try:
+        data = subprocess.check_output(cmd, shell=True, universal_newlines=True,
+                                       stderr=subprocess.STDOUT, encoding='utf8')  # 必須設置為utf8， 不然报错了。
+        exitcode = 0
+    except subprocess.CalledProcessError as ex:
+        data = ex.output
+        exitcode = ex.returncode
+    if data[-1:] == '\n':
+        data = data[:-1]
+    return exitcode, data
+
+
+def do_cmd(cmd_strx, is_print_out=True):
+    print(f'执行 {cmd_strx}')
+    t0 = time.time()
+    exitcode, data = getstatusoutput(cmd_strx)
+    if is_print_out:
+        print(f'exitcode: {exitcode}, 耗时 {time.time() -t0} 秒')
+        print(data, '\n', '- -' * 20, '\n\n')
+    if exitcode == 1 and 'nothing to commit' in data:
+        return
+    if exitcode != 0:
+        raise ValueError('要检查git提交')
+
+    return exitcode, data
+
+
+class GitBranchMerge:
+    # MY_BRANCH = 'yangmei/0607ym'   #0707
+    # TARGET_BRANCH = 'develop'
+    # commit_msg = '特征需求'
+
+    def __init__(self, my_branch='master', target_branch='master', commit_msg='', git_root_path='./',
+                 only_push_my_branch=True):
+        self.my_branch = my_branch
+        self.target_branch = target_branch
+        self.commit_msg = commit_msg
+        self.git_root_path = git_root_path
+        self.only_push_my_branch = only_push_my_branch
+
+    def _chdir_and_do_cmd(self, cmd: str, is_print_out=True):
+        cmd = f'cd {self.git_root_path} && {cmd}'
+        return do_cmd(cmd, is_print_out)
+
+    def do_merge(self):
+        t1 = time.perf_counter()
+        # do_cmd(f'git checkout {MY_BRANCH}')
+
+        git_branch_str = self._chdir_and_do_cmd('git branch', is_print_out=False)[1]
+        if '* ' + self.my_branch not in git_branch_str + '\n':
+            raise ValueError(f'当前分支不是处在 {self.my_branch},退出提交')
+
+        diff_text = self._chdir_and_do_cmd('git diff')
+        print('差异:\n', diff_text[1])
+        self._chdir_and_do_cmd(f'git add {self.git_root_path}')
+        self._chdir_and_do_cmd(f'''git commit -m "{self.commit_msg}" ''')
+        self._chdir_and_do_cmd(f''' git push --set-upstream origin {self.my_branch} ''')
+        self._chdir_and_do_cmd('git push')
+
+        if self.only_push_my_branch is False:
+            self._chdir_and_do_cmd(f'git checkout {self.target_branch}')
+            self._chdir_and_do_cmd('git  pull')
+            self._chdir_and_do_cmd(f'git merge {self.my_branch}')
+            self._chdir_and_do_cmd('git push')
+            self._chdir_and_do_cmd(f'git checkout {self.my_branch}')
+
+        git_branch_str = self._chdir_and_do_cmd('git branch', is_print_out=False)[1]
+        if '* ' + self.my_branch not in git_branch_str + '\n':
+            raise ValueError(f'当前分支不是处在 {self.my_branch},合并冲突')
+
+        print(f'耗时 {time.perf_counter() - t1}  ...')
+
+        time.sleep(5)
+        print(time.strftime('%H:%M:%S'))
+        time.sleep(3600000)
+
+```
+
+**code file end: nb_libs/tools/auto_git.py**
+
+---
+
+
+### code file start: nb_libs/tools/codes2_md.py 
+
+```python
+"""
+用这个将整个文件夹所有代码文件路径 + 内容, 生成到一个大的markdown文件中, 上传给ai后再提问和推理,非常好用非常高效
+"""
+
+import os
+from pathlib import Path
+from nb_libs.path_helper import PathHelper
+
+
+# def _get_file_suffix(file_name:str):
+#     return os.path.splitext(file_name)[1]
+
+
+def _judge_suffixes_file_need_process(
+    filename: str, exclude_suffixes: list, should_include_suffixes: list
+):
+    file_need_process = True
+    for exclude_suffix in exclude_suffixes:
+        if filename.endswith(exclude_suffix):
+            file_need_process = False
+            break
+    if len(should_include_suffixes) == 0:
+        return file_need_process
+    file_need_process = False
+    for should_include_suffix in should_include_suffixes:
+        if filename.endswith(should_include_suffix):
+            file_need_process = True
+            break
+    return file_need_process
+
+
+def codes2md(
+    root_dir: str,
+    excluded_dirs: list,
+    excluded_files: list,
+    exclude_suffixes: list,
+    should_include_suffixes: list,
+    all_codes_md_path: Path,
+    all_codes_first_str: str,
+    abs_path_prefix: str,
+    other_file_list: list=[],
+):
+    # print(f)
+
+    excluded_dirs.extend([
+        Path(root_dir).joinpath("__pycache__").as_posix(),
+        Path(root_dir).joinpath(".vscode").as_posix(),
+        Path(root_dir).joinpath(".git").as_posix(),
+        Path(root_dir).joinpath(".idea").as_posix(),
+        Path(root_dir).joinpath("dist").as_posix(),
+        Path(root_dir).joinpath("build").as_posix(),
+
+        Path(root_dir).joinpath(".history").as_posix(),
+        Path(root_dir).joinpath("build").as_posix(),
+    ])
+
+    excluded_files.extend([
+        Path(root_dir).joinpath("setup.py").as_posix(),
+        Path(root_dir).joinpath("nb_log_config.py").as_posix(),
+    ])
+
+    exclude_suffixes.extend(
+        [".png", ".jpg", ".ico", ".pyc", ".sqlite", ".data", ".dat", ".db", ".log"]
+    )
+
+    all_codes_str = all_codes_first_str + "\n"
+
+    print("excluded_dirs:", excluded_dirs)
+    all_need_process_full_file_list = []
+    all_need_process_full_file_list.extend(other_file_list)
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        # Exclude specified directories
+        # To be safe, we check if the current directory path starts with any of the excluded paths.
+        if any(dirpath.startswith(excluded_dir) for excluded_dir in excluded_dirs):
+            continue
+        if any(Path(dirpath).as_posix().startswith(excluded_dir) for excluded_dir in excluded_dirs):
+            continue
+
+        
+        for filename in filenames:
+            file_need_process = _judge_suffixes_file_need_process(
+                filename, exclude_suffixes, should_include_suffixes
+            )
+            if file_need_process:
+                full_file_name = os.path.join(dirpath, filename)
+                if any(full_file_name.startswith(excluded_file) for excluded_file in excluded_files):
+                    continue
+                if any(Path(full_file_name).as_posix().startswith(excluded_file) for excluded_file in excluded_files):
+                    continue
+                
+                all_need_process_full_file_list.append(full_file_name)
+    all_need_process_full_file_list = list(set(all_need_process_full_file_list))
+    print(len(all_need_process_full_file_list))
+    for full_file_name in all_need_process_full_file_list:
+        print(full_file_name)
+        file_str = open(full_file_name, "r", encoding="utf-8").read()
+        short_file_name = full_file_name.replace(abs_path_prefix, "")
+        lang = short_file_name.split(".")[-1]
+        if lang == "py":
+            lang = "python"
+        if lang == "md":
+            all_codes_str += (
+                f"\n### 代码文件: {short_file_name}\n \n{file_str}\n \n"
+            )
+        else:
+            all_codes_str += (
+                f"\n### 代码文件: {short_file_name}\n```{lang}\n{file_str}\n```\n"
+            )
+    all_codes_md_path.write_text(all_codes_str, encoding="utf-8")
+    print(f"{all_codes_md_path} 文件生成成功")
+    print(f"{all_codes_md_path} 文件内容字母数量: {len(all_codes_str)}")
+    newline_count = all_codes_str.count("\n")
+ 
+    print(f"{all_codes_md_path} 文件内容行数: {newline_count}")
+    print(f"{all_codes_md_path} 文件内容个数: {len(all_need_process_full_file_list)}")
+    
+    for i in range(3):
+        print('* *' * 20 + '\n')
+
+if __name__ == "__main__":
+    codes2md(
+        root_dir=r"D:\codes\funboost\funboost",
+        excluded_dirs=[
+            r"D:\codes\funboost\funboost\utils\dependency_packages",
+            r"D:\codes\funboost\funboost\utils\dependency_packages_in_pythonpath",
+            r"D:\codes\funboost\funboost\function_result_web\static",
+        ],
+        exclude_suffixes=[],
+        all_codes_md_path=Path(r"D:\codes\nb_libs\tests\md_dirs").joinpath(
+            "funboost_all_codes.md"
+        ),
+        all_codes_first_str="# funboost 项目代码文件大全 \n",
+        abs_path_prefix="D:\\codes\\funboost\\",
+    )
+
+```
+
+**code file end: nb_libs/tools/codes2_md.py**
+
+---
+
+
+### code file start: nb_libs/tools/code_line_statistics.py 
+
+```python
+
+import os
+from nb_log import LoggerMixin
+
+
+class CodeLineStstistics(LoggerMixin):
+    def __init__(self, file_path, k_file_extension='.py'):
+        self.file_path = file_path
+        self.file_list = []
+        self.k_file_extension = k_file_extension
+
+        self.count_of_code_lines = 0
+        self.count_of_blank_lines = 0
+        self.count_of_annotation_lines = 0
+        self.count_of_letters =0
+
+
+    def get_file_list(self):
+        self.file_list = [os.path.join(root, file) for root, dirs, files in os.walk(self.file_path) for file in files if
+                          file.endswith(self.k_file_extension)]
+
+    def count_one_file_lines(self, file):
+        with open(file, 'r', encoding='utf-8') as fp:
+            content_list = fp.readlines()
+            for content in content_list:
+                content = content.strip()
+                if content == '':
+                    self.count_of_blank_lines += 1
+                elif content.startswith('#'):
+                    self.count_of_annotation_lines += 1
+                else:
+                    self.count_of_code_lines += 1
+                self.count_of_letters += len(content)
+
+    def start_count_all_files_lines(self):
+        self.get_file_list()
+        for file in self.file_list:
+            self.count_one_file_lines(file)
+        self.logger.info(
+            f'文件夹 {self.file_path}  代码文件个数 {len(self.file_list)},代码总行数：{self.count_of_code_lines}，代码空行：{self.count_of_blank_lines}，代码注释：{self.count_of_annotation_lines},字母个数 {self.count_of_letters}')
+
+
+if __name__ == '__main__':
+    for file_pathx in [
+        r'D:\codes\funboost\funboost',
+        r'D:\codes\funboost\funboost\utils\dependency_packages_in_pythonpath',
+        r'D:\codes\funboost\test_frame',
+        r'D:\ProgramData\Miniconda3\Lib\site-packages\celery',
+        r'D:\ProgramData\Miniconda3\Lib\site-packages\kombu',
+        r'D:\ProgramData\Miniconda3\Lib\site-packages\nameko',
+        r'D:\codes\feapder\feapder',
+        r'D:\codes_aku\feature-services\mixnew',
+        r'D:\codes_aku\feature_data_report'
+    ]:
+        CodeLineStstistics(file_pathx).start_count_all_files_lines()
+
+```
+
+**code file end: nb_libs/tools/code_line_statistics.py**
+
+---
+
+
+### code file start: nb_libs/tools/github_git_clone.py 
+
+```python
+# -*- coding: utf-8 -*-
+import os
+import time
+from pathlib import Path
+
+import nb_log
+import requests
+from parsel import Selector
+
+"""
+自动下载和更新某人所有的github代码,仓库太多了,手动下载很麻烦.
+"""
+
+
+class GithubCloner(nb_log.LoggerMixin):
+    def __init__(self, username: str, total_pages: int = 3, dir='/codes_github'):
+        self.username = username
+        self.total_pages = total_pages
+        self.repo_list = []
+        self.dir = dir
+        os.makedirs(self.dir, exist_ok=True)
+        os.system('chcp 65001')  # 先设置utf8编码,避免os.system 乱码
+
+    def get_repo_urls(self):
+        for p in range(1, self.total_pages + 1):
+            url_repo_list = f'https://github.com/{self.username}?language=&page={p}&q=&sort=&tab=repositories&type=source'
+            resp = requests.get(url_repo_list)
+            sel = Selector(resp.text)
+            self.repo_list.extend(sel.xpath('//*[@id="user-repositories-list"]/ul/li/div/div/h3/a/@href').extract())
+            time.sleep(10)
+        self.logger.info(len(self.repo_list))
+
+    def clone_one_repo(self, repo: str):
+        url = f'git@github.com:{repo[1:]}.git'
+
+        repo_short_name = repo.split('/')[-1]
+        # print(repo, repo_short_name)
+        repo_full_dir = Path(self.dir).joinpath(repo_short_name).as_posix()
+
+        if Path(repo_full_dir).exists():
+            cmd = f'cd {repo_full_dir} && git pull'
+            os.system(cmd)
+            self.logger.info(cmd)
+            time.sleep(1)
+        else:
+            cmd = f'''cd {self.dir} && git clone {url}'''
+            self.logger.warning(cmd)
+            os.system(cmd)
+            time.sleep(30)
+
+    def start_clone(self):
+        self.get_repo_urls()
+
+        for repo in self.repo_list:
+            self.clone_one_repo(repo)
+
+    def push_one_repo(self,folder):
+        folder = str(folder)
+        cmd_list =[f'cd {folder}','git pull','git diff','git add ./.','git commit -m "auto commit"','git push origin','git push github']
+        cmd = ' && '.join(cmd_list)
+        self.logger.info(cmd)
+        os.system(cmd)
+
+    def start_push(self):
+        # folder_list = list(Path(self.dir).iterdir())
+        folder_list = list(Path(self.dir).iterdir())
+        for folder in folder_list:
+            self.push_one_repo(folder)
+
+
+
+
+if __name__ == '__main__':
+
+    # GithubCloner('ydf0509', total_pages=2, dir='/codes_github').start_clone()
+    GithubCloner('ydf0509', total_pages=2, dir='/codes').start_push()
+
+    # os.system(''' cd /codes_github/nb_log2 && git pull  ''')
+
+```
+
+**code file end: nb_libs/tools/github_git_clone.py**
+
+---
+
+
+### code file start: nb_libs/tools/markdown2pdf.py 
+
+```python
+
+"""
+import markdown
+from weasyprint import HTML
+
+# 读取Markdown文件
+with open('input.md', 'r', encoding='utf-8') as file:
+    markdown_text = file.read()
+
+# 将Markdown转换为HTML
+html_text = markdown.markdown(markdown_text)
+
+# 将HTML写入临时文件
+with open('temp.html', 'w', encoding='utf-8') as file:
+    file.write(html_text)
+
+# 使用weasyprint将HTML转换为PDF
+HTML(filename='temp.html').write_pdf('output.pdf')
+"""
+
+import markdown
+from weasyprint import HTML
+from pathlib import Path
+
+
+class MarkdownConvter:
+    def __init__(self,markdown_file_list:list,html_file,pdf_file):
+
+        self.markdown_file_list = markdown_file_list
+        self.html_file = html_file
+        self.pdf_file = pdf_file
+
+        self.markdown_text_all = ''
+        self.html_text = ''
+        self.get_text()
+
+
+    def get_text(self,):
+        for md_file in self.markdown_file_list:
+            with Path(md_file).open('r', encoding='utf-8') as fs:
+                markdown_text = fs.read()
+                self.markdown_text_all += markdown_text
+        self.html_text = markdown.markdown(self.markdown_text_all)
+
+    def convert2html(self):
+        with open(self.html_file, 'w', encoding='utf-8') as file:
+            file.write(self.html_text)
+
+    def convert2pdf(self):
+        self.convert2html()
+        HTML(filename=self.html_file).write_pdf(self.pdf_file)
+
+
+
+if __name__ == '__main__':
+    MarkdownConvter([r'D:\codes\funboost_docs\source\articles\c1.md',r'D:\codes\funboost_docs\source\articles\c2.md'],
+                    html_file='tmp.html',pdf_file='temp.pdf').convert2pdf()
+
+```
+
+**code file end: nb_libs/tools/markdown2pdf.py**
+
+---
+
+
+### code file start: nb_libs/tools/memory_leak_analysis.py 
+
+```python
+import gc
+import sys
+
+import objgraph
+from nb_log import LoggerMixinDefaultWithFileHandler
+
+class MemoryLeakAnalysis(LoggerMixinDefaultWithFileHandler):
+    mla_flag = '内存排查自身对象标志-'
+
+    @staticmethod
+    def _get_obj_len(obj):
+        try:
+            return len(obj)
+        except Exception:
+            return -1
+
+    @staticmethod
+    def _dict_sort(dictx:dict,sort_k:str):
+        items_list:list = list(dictx.items())
+        items_list.sort(key=lambda x:x[1][sort_k],reverse=True)
+        return dict(items_list)
+
+    @staticmethod
+    def _judge_contains_words(obj,word_list):
+        for word in word_list:
+            if word in str(obj):
+                return True
+        return False
+
+
+    def show_max_obj(self):
+        type_cnt_list= objgraph.most_common_types(limit=10000 *10000)
+        # self.logger.debug(type_cnt_list)
+        # self.logger.debug(len(type_cnt_list))
+        type__max_size_map= {}
+        type__max_obj_map = {}
+        for typex,cnt in type_cnt_list:
+            # if typex != 'dict':
+            #     continue
+            # print(typex)
+            obj_list = objgraph.by_type(typex)
+
+
+            max_len_obj = None
+            max_str_len_obj = None
+            max_size_obj = None
+            max_len=0
+            max_str_len = 0
+            max_size = 0
+            for obj in obj_list:
+                # if  not self._judge_contains_words(obj,[self.mla_flag]):
+                # if 'many str in ' in str(obj):
+                #     print(obj.keys())
+                #     print(len(obj), len(str(obj)), sys.getsizeof(obj))
+                if self.mla_flag not in str(obj):
+                    if self._get_obj_len(obj) > max_len :
+                        max_len = self._get_obj_len(obj)
+                        max_len_obj = obj
+                    if len(str(obj))  > max_str_len:
+                        max_str_len = len(str(obj))
+                        max_str_len_obj = obj
+                    if sys.getsizeof(obj) >max_size:
+                        max_size = sys.getsizeof(obj)
+                        max_size_obj = obj
+
+
+            type__max_size_map[typex] = {f'{self.mla_flag}max_len': max_len, f'{self.mla_flag}max_str_len': max_str_len,f'{self.mla_flag}max_size': max_size}
+            type__max_obj_map[typex] = {f'{self.mla_flag}max_len_obj':max_len_obj,f'{self.mla_flag}max_str_len_obj':max_str_len_obj,f'{self.mla_flag}max_size_obj':max_size_obj}
+
+        # self.logger.debug(type__max_size_map)
+        # self.logger.debug(self._dict_sort(type__max_size_map,f'{self.mla_flag}max_size'))
+        # self.logger.debug(self._dict_sort(type__max_size_map, f'{self.mla_flag}max_str_len_obj')['__name__'])
+        self.logger.debug(type__max_obj_map['dict'][f'{self.mla_flag}max_str_len_obj'].keys())
+        for ref in gc.get_referrers(type__max_obj_map['dict'][f'{self.mla_flag}max_str_len_obj']):
+            if self.mla_flag not in str(ref):
+                self.logger.debug(ref)
+
+
+    def start(self):
+        pass
+
+
+if __name__ == '__main__':
+    import aiomysql
+    mla = MemoryLeakAnalysis()
+    mla.show_max_obj()
+
+```
+
+**code file end: nb_libs/tools/memory_leak_analysis.py**
+
+---
+

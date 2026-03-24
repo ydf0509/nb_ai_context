@@ -207,4 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 
-markdown_gen_files_git_ignore/
+# markdown_gen_files_git_ignore/

@@ -1,0 +1,889 @@
+﻿# markdown content namespace: nb_config_center project summary 
+
+
+
+- `nb_config_center` is a redis config center library for Python. 
+- `NbConfigCenter(...)` is the main class to create a redis config center object.
+
+
+## 📋 Core Source Files Metadata (Entry Points)
+
+
+以下是项目最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_config_center most core source code files as follows: 
+- `nb_config_center/__init__.py`
+
+
+### 📄 Python File Metadata: `nb_config_center/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_config_center_class import NbConfigCenter`
+
+
+---
+
+
+# markdown content namespace: nb_config_center Project Root Dir Some Files 
+
+
+## File Tree
+
+
+```
+
+├── README.md
+└── pyproject.toml
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: README.md** --- 
+
+# nb_config_center
+
+English | [简体中文](README_CN.md)
+
+A Redis-based distributed configuration center for Python applications with real-time synchronization and type preservation.
+
+## Why nb_config_center?
+
+**Problem**: In distributed systems, you often need to check runtime flags from Redis repeatedly:
+```python
+# ❌ Bad: Query Redis every time (thousands of times!)
+if redis.get('queue_paused') == 'true':
+    return
+if int(redis.get('max_qps')) > current_qps:
+    process()
+```
+
+**Solution**: nb_config_center caches configuration in local memory and auto-syncs via Pub/Sub:
+```python
+# ✅ Good: Read from local cache (zero Redis I/O!)
+if config.get('queue_paused'):
+    return
+if config.get('max_qps') > current_qps:
+    process()
+```
+
+**Key Benefits**:
+- 🚀 **Performance**: Avoid tens of thousands of Redis queries - read from local memory instead
+- 🔄 **Real-time Updates**: Changes propagate to all instances within milliseconds via Pub/Sub
+- 🎯 **Use Case**: Perfect for runtime controls (pause/resume, rate limits, feature flags), not for static configs like database credentials
+
+## Features
+
+- **Centralized Configuration Storage**: Store configuration as key-value pairs in Redis Hash
+- **Type Preservation**: Automatically preserves Python types (int, float, bool, dict, list, str) using JSON serialization
+- **Real-time Synchronization**: Uses Redis Pub/Sub to notify all instances when configuration changes
+- **Callback Support**: Register callbacks to execute custom logic when configuration updates
+- **Resource Efficiency**: Reuses Redis connections and subscriber threads across multiple instances
+- **Thread-Safe**: Built-in thread safety for concurrent access
+
+## Installation
+
+```bash
+pip install nb_config_center
+```
+
+## Requirements
+
+- Python >= 3.7
+- redis
+
+## Quick Start
+
+```python
+import redis
+from nb_config_center import NbConfigCenter
+
+# Create Redis client
+r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
+# Initialize configuration center
+config = NbConfigCenter(r, namespace="my_app_runtime")
+
+# Update runtime configuration
+config.update_config({
+    "queue_consumer_paused": False,  # Control message queue consumption
+    "max_qps": 1000,                 # QPS limit
+    "feature_flags": {"new_algorithm": True, "beta_feature": False}
+})
+
+# Access configuration from local cache (no Redis query needed!)
+is_paused = config.get("queue_consumer_paused")  # Returns: False (bool)
+max_qps = config.get("max_qps")                  # Returns: 1000 (int)
+```
+
+## Usage Examples
+
+### Basic Configuration Management
+
+```python
+import redis
+from nb_config_center import NbConfigCenter
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+config = NbConfigCenter(r, namespace="app_runtime")
+
+# Update runtime configuration
+config.update_config({
+    "task_queue_paused": False,
+    "max_workers": 10,
+    "rate_limit_enabled": True
+})
+
+# Access configuration from local cache (no Redis I/O!)
+print(config.get("max_workers"))  # 10
+print(config.config)  # {'task_queue_paused': False, 'max_workers': 10, 'rate_limit_enabled': True}
+```
+
+### Multiple Instances with Real-time Sync
+
+```python
+import redis
+from nb_config_center import NbConfigCenter
+import time
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
+# Control Center: Manages runtime configuration
+control = NbConfigCenter(r, namespace="worker_runtime")
+control.update_config({"max_qps": 1000, "worker_paused": False})
+
+# Worker Instance: Consumes messages based on configuration
+worker = NbConfigCenter(r, namespace="worker_runtime")
+
+# Register callback to react to configuration changes
+@worker.add_update_callback
+def on_config_change(old_config, new_config):
+    if new_config.get("worker_paused"):
+        print("⏸️  Worker paused by control center")
+    else:
+        print(f"▶️  Worker resumed, QPS limit: {new_config.get('max_qps')}")
+
+# Control center adjusts QPS limit - all workers receive update instantly
+control.update_config({"max_qps": 500})
+# Output: ▶️  Worker resumed, QPS limit: 500
+```
+
+### Type Preservation
+
+```python
+import redis
+from nb_config_center import NbConfigCenter
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+config = NbConfigCenter(r, namespace="typed_config")
+
+# Store different types
+config.update_config({
+    "string_val": "hello",
+    "int_val": 42,
+    "float_val": 3.14,
+    "bool_val": True,
+    "list_val": [1, 2, 3],
+    "dict_val": {"nested": "value"}
+})
+
+# Types are preserved when retrieved
+print(type(config.get("int_val")))    # <class 'int'>
+print(type(config.get("float_val")))  # <class 'float'>
+print(type(config.get("bool_val")))   # <class 'bool'>
+print(type(config.get("list_val")))   # <class 'list'>
+print(type(config.get("dict_val")))   # <class 'dict'>
+```
+
+### Using Custom Channel Names
+
+When multiple projects share the same Redis instance, use different channel names to avoid cross-talk:
+
+```python
+import redis
+from nb_config_center import NbConfigCenter
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
+# Project A
+config_a = NbConfigCenter(r, namespace="project_a", channel_name="project_a_updates")
+
+# Project B
+config_b = NbConfigCenter(r, namespace="project_b", channel_name="project_b_updates")
+
+# Updates to config_a won't trigger callbacks in config_b
+```
+
+## API Reference
+
+### `NbConfigCenter`
+
+Main class for managing distributed configuration.
+
+#### Constructor
+
+```python
+NbConfigCenter(redis_client, namespace: str, channel_name: str = "nb_config_update_bus")
+```
+
+**Parameters:**
+- `redis_client`: Redis client object (from `redis` package)
+- `namespace`: Configuration namespace (used as Redis Hash key)
+- `channel_name`: Redis Pub/Sub channel name for notifications (default: `"nb_config_update_bus"`)
+
+#### Methods
+
+##### `get(key: str)`
+
+Retrieve a configuration value by key.
+
+**Parameters:**
+- `key`: Configuration key
+
+**Returns:** Configuration value with original type preserved
+
+**Raises:** `KeyError` if key doesn't exist
+
+##### `update_config(config: dict)`
+
+Update configuration to Redis and notify all instances.
+
+**Parameters:**
+- `config`: Dictionary of configuration key-value pairs to update
+
+**Example:**
+```python
+config.update_config({"queue_paused": True, "max_qps": 500})
+```
+
+##### `add_update_callback(func)`
+
+Register a callback function to be executed when configuration changes. Can be used as a decorator.
+
+**Parameters:**
+- `func`: Callback function that accepts two parameters: `old_config` and `new_config`
+
+**Returns:** The function (allows use as decorator)
+
+**Example:**
+```python
+@config.add_update_callback
+def my_callback(old_config, new_config):
+    print(f"Config changed from {old_config} to {new_config}")
+```
+
+#### Attributes
+
+- `config`: Current configuration dictionary
+- `old_config`: Previous configuration dictionary (before last update)
+- `namespace`: Configuration namespace
+- `redis`: Redis client instance
+
+## How It Works
+
+1. **Storage**: Configuration is stored in Redis as a Hash, with each key-value pair serialized using JSON to preserve types
+2. **Synchronization**: When `update_config()` is called, the changes are:
+   - Written to Redis Hash atomically
+   - Published to a Redis Pub/Sub channel
+3. **Notification**: All `NbConfigCenter` instances subscribed to the same namespace receive the notification
+4. **Refresh**: Each instance pulls the latest configuration from Redis
+5. **Callbacks**: Registered callbacks are executed with old and new configuration
+
+### Architecture
+
+```
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│  Instance 1 │         │  Instance 2 │         │  Instance N │
+│             │         │             │         │             │
+│  update()   │         │  callback() │         │  callback() │
+└──────┬──────┘         └──────▲──────┘         └──────▲──────┘
+       │                       │                        │
+       │ 1. Write Hash         │ 3. Receive Pub/Sub    │
+       │ 2. Publish            │ 4. Refresh from Hash  │
+       ▼                       │                        │
+┌─────────────────────────────────────────────────────────────┐
+│                         Redis Server                        │
+│  ┌──────────────┐              ┌──────────────────────┐    │
+│  │  Hash Store  │              │  Pub/Sub Channel     │    │
+│  │  namespace:  │              │  nb_config_update_bus│    │
+│  │  {k1: v1...} │              │                      │    │
+│  └──────────────┘              └──────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Best Practices
+
+1. **Use for Runtime Controls**: Perfect for dynamic flags (pause/resume, rate limits, feature toggles) that change during runtime
+2. **Not for Static Configs**: Don't use for database credentials or API keys that are set once at deployment - use environment variables or Apollo/Consul for those
+3. **Namespace Isolation**: Use unique namespaces for different applications or environments
+4. **Channel Names**: When sharing Redis across projects, use unique channel names
+5. **Callback Design**: Keep callbacks lightweight and avoid blocking operations
+6. **Error Handling**: Callbacks should handle their own exceptions to prevent disrupting the update process
+7. **Initial Load**: Callbacks are NOT triggered on the first load when an instance is created
+
+## Common Use Cases
+
+✅ **Good Use Cases**:
+- Pause/resume message queue consumption
+- Adjust QPS/rate limits dynamically
+- Feature flags and A/B testing toggles
+- Circuit breaker states
+- Dynamic worker pool sizing
+- Temporary maintenance mode flags
+
+❌ **Not Recommended**:
+- Database connection strings (use environment variables)
+- API keys and secrets (use secret management tools)
+- Static application configs (use config files or Apollo)
+- Configs that never change after deployment
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+## Links
+
+- **GitHub**: https://github.com/ydf0509/nb_config_center
+- **Issues**: https://github.com/ydf0509/nb_config_center/issues
+- **PyPI**: https://pypi.org/project/nb_config_center/
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+--- **end of file: README.md** --- 
+
+---
+
+
+--- **start of file: pyproject.toml** --- 
+
+``text
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb_config_center"
+version = "0.1"
+description = "redis config center"
+keywords = ["redis","config","dict","config center"]
+authors = [
+    {name = "ydf0509", email = "ydf0509@xxx.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "typing_extensions>=3.7; python_version < '3.8'",
+    "redis",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.14",
+]
+dev = [
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.812",
+]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_config_center"
+Repository = "https://github.com/ydf0509/nb_config_center"
+Issues = "https://github.com/ydf0509/nb_config_center/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nb_config_center*"]
+
+[tool.setuptools.package-data]
+nb_config_center = ["py.typed", "contrib/README.md"]
+
+```
+
+--- **end of file: pyproject.toml** --- 
+
+---
+
+# markdown content namespace: nb_config_center codes 
+
+
+## File Tree
+
+
+```
+
+└── nb_config_center
+    ├── __init__.py
+    └── nb_config_center_class.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `nb_config_center/nb_config_center_class.py`
+
+- `nb_config_center/__init__.py`
+
+
+---
+
+
+--- **start of file: nb_config_center/nb_config_center_class.py** --- 
+
+
+### 📄 Python File Metadata: `nb_config_center/nb_config_center_class.py`
+
+#### 📦 Imports
+
+- `import threading`
+- `import weakref`
+- `import logging`
+- `import time`
+- `import json`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class _RedisSubscriber`
+*Line: 9*
+
+**Docstring:**
+```
+Singleton/Multiton manager class for listening to Redis changes (reuses connections and threads)
+```
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, redis_client, channel_name)`
+  - **Parameters:**
+    - `self`
+    - `redis_client`
+    - `channel_name`
+
+**Public Methods (2):**
+- `def get_subscriber(cls, redis_client, channel_name)` `classmethod`
+- `def add_observer(self, observer)`
+
+**Class Variables (2):**
+- `_instances = {}`
+- `_lock = threading.Lock()`
+
+##### 📌 `class NbConfigCenter`
+*Line: 96*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, redis_client, namespace: str, channel_name = 'nb_config_update_bus')`
+  - **Docstring:**
+  ```
+  :param redis_client: Redis client object
+  :param namespace: Configuration namespace (Redis Hash key)
+  :param channel_name: Notification channel name, recommended to modify when multiple projects share Redis
+  ```
+  - **Parameters:**
+    - `self`
+    - `redis_client`
+    - `namespace: str`
+    - `channel_name = 'nb_config_update_bus'`
+
+**Public Methods (3):**
+- `def add_update_callback(self, func)`
+  - **Docstring:**
+  ```
+  Register a callback function to be executed after configuration changes.
+  The callback function will receive the current self.config dictionary as a parameter.
+  ```
+- `def get(self, key: str)`
+- `def update_config(self, config: dict)`
+  - **Docstring:**
+  ```
+  Update configuration to Redis.
+  All values are processed through json.dumps to preserve type information (int, bool, dict, list, str).
+  ```
+
+#### 🔧 Public Functions (1)
+
+- `def get_namespace_key(namespace)`
+  - *Line: 93*
+
+
+---
+
+```python
+import threading
+import weakref
+import logging
+import time
+import json
+
+logger = logging.getLogger(__name__)
+
+class _RedisSubscriber:
+    """
+    Singleton/Multiton manager class for listening to Redis changes (reuses connections and threads)
+    """
+    _instances = {}
+    _lock = threading.Lock()
+
+    @classmethod
+    def get_subscriber(cls, redis_client, channel_name):
+        # Reuse listener thread based on client connection ID and channel name
+        pool_id = id(redis_client.connection_pool) if hasattr(redis_client, 'connection_pool') else id(redis_client)
+        key = (pool_id, channel_name)
+        
+        with cls._lock:
+            if key not in cls._instances:
+                cls._instances[key] = cls(redis_client, channel_name)
+            return cls._instances[key]
+
+    def __init__(self, redis_client, channel_name):
+        self.redis_client = redis_client
+        self.channel_name = channel_name
+        self.pubsub = None
+        self.observers = weakref.WeakSet()
+        self.running = True
+        self.last_refresh_time = time.time()  # Track last periodic refresh time
+        self.thread = threading.Thread(target=self._listen_loop, daemon=True, name=f"RedisConfigSub-{channel_name}")
+        self.thread.start()
+
+    def _connect(self):
+        try:
+            if self.pubsub:
+                self.pubsub.close()
+            self.pubsub = self.redis_client.pubsub()
+            self.pubsub.subscribe(self.channel_name)
+            logger.info(f"NbConfigCenter: Subscribed to {self.channel_name}")
+            return True
+        except Exception as e:
+            logger.error(f"NbConfigCenter: Subscribe failed: {e}")
+            return False
+
+    def _listen_loop(self):
+        while self.running:
+            if self.pubsub is None:
+                if not self._connect():
+                    time.sleep(2)
+                    continue
+            
+            try:
+                message = self.pubsub.get_message(ignore_subscribe_messages=True, timeout=1.0)
+                if message and message['type'] == 'message':
+                    data = message['data']
+                    if isinstance(data, bytes):
+                        data = data.decode('utf-8')
+                    self._notify_observers(data)
+            except Exception as e:
+                # Ignore timeout errors, log other errors and retry
+                if "Timeout" not in str(e):
+                    logger.error(f"Redis subscriber error: {e}")
+                    self.pubsub = None
+                    time.sleep(1)
+            
+            # Periodic refresh every 5 minutes to prevent missed updates due to network issues
+            current_time = time.time()
+            if current_time - self.last_refresh_time >= 300:  # 300 seconds = 5 minutes
+                self.last_refresh_time = current_time
+                self._refresh_all_observers()
+
+    def _notify_observers(self, namespace):
+        for observer in list(self.observers):
+            # Only trigger refresh when namespace matches
+            if observer.namespace == namespace:
+                observer._refresh_config_from_redis()
+    
+    def _refresh_all_observers(self):
+        """Periodically refresh all observers to prevent missed updates"""
+        for observer in list(self.observers):
+            try:
+                observer._refresh_config_from_redis()
+            except Exception as e:
+                logger.error(f"Periodic refresh failed for {observer.namespace}: {e}")
+
+    def add_observer(self, observer):
+        self.observers.add(observer)
+
+def get_namespace_key(namespace):
+    return f"nb_config_center:{namespace}"
+
+class NbConfigCenter:
+    def __init__(self, redis_client, namespace: str, channel_name="nb_config_update_bus"):
+        """
+        :param redis_client: Redis client object
+        :param namespace: Configuration namespace (Redis Hash key)
+        :param channel_name: Notification channel name, recommended to modify when multiple projects share Redis
+        """
+        self.redis = redis_client
+        self.namespace = namespace
+        self.namespace_key = get_namespace_key(namespace)
+        self.old_config = {}
+        self.config = {}
+        self.callbacks = []
+        
+        # Start or reuse listener thread
+        self.subscriber = _RedisSubscriber.get_subscriber(redis_client, channel_name)
+        self.subscriber.add_observer(self)
+        
+        # Initial load
+        self._is_first_load = True
+        self._refresh_config_from_redis()
+
+    def add_update_callback(self, func):
+        """
+        Register a callback function to be executed after configuration changes.
+        The callback function will receive the current self.config dictionary as a parameter.
+        """
+        self.callbacks.append(func)
+        return func
+    
+    def get(self, key: str):
+        return self.config[key]
+
+    def update_config(self, config: dict):
+        """
+        Update configuration to Redis.
+        All values are processed through json.dumps to preserve type information (int, bool, dict, list, str).
+        """
+        if not config:
+            return
+        
+        # 1. Serialize all values to ensure type safety
+        data_to_store = {}
+        for k, v in config.items():
+            # ensure_ascii=False ensures Chinese characters are readable, separators compress whitespace
+            data_to_store[k] = json.dumps(v, ensure_ascii=False)
+        
+        # 2. Atomic operation: write to Hash and publish notification
+        pipe = self.redis.pipeline()
+        pipe.hset(self.namespace_key, mapping=data_to_store)
+        pipe.publish(self.subscriber.channel_name, self.namespace)
+        pipe.execute()
+        
+        # 3. Immediately refresh local configuration
+        self._refresh_config_from_redis()
+
+    def _refresh_config_from_redis(self):
+        """
+        Pull the latest configuration from Redis.
+        """
+        try:
+            # Get all data (returns bytes type keys and values)
+            raw_data = self.redis.hgetall(self.namespace_key)
+            decoded_config = {}
+            
+            for k_bytes, v_bytes in raw_data.items():
+                # 1. Decode Key
+                key_str = k_bytes.decode('utf-8') if isinstance(k_bytes, bytes) else str(k_bytes)
+                
+                # 2. Decode Value string
+                val_str = v_bytes.decode('utf-8') if isinstance(v_bytes, bytes) else str(v_bytes)
+                
+                # 3. Attempt JSON deserialization to restore type
+                try:
+                    val = json.loads(val_str)
+                except (json.JSONDecodeError, TypeError):
+                    # Only when the value in Redis is not valid JSON (e.g., manually entered plain string),
+                    # we keep the original string.
+                    # Note: If the original stored value is the string "hello", after json.dumps it becomes '"hello"',
+                    # and json.loads can correctly extract "hello".
+                    logger.warning(f"Failed to json.loads value for key {key_str}: {val_str}")
+                    val = val_str
+                
+                decoded_config[key_str] = val
+
+            if decoded_config == self.config:
+                return
+
+            if self._is_first_load:
+                self._is_first_load = False
+                self.old_config = decoded_config
+                self.config = decoded_config
+                logger.info(f"NbConfigCenter initialized. Namespace: {self.namespace}")
+                return  # Suggestion: Return directly on first load without triggering callbacks
+            else:
+                self.old_config = self.config
+                self.config = decoded_config
+            logger.info(f"Config reloaded for {self.namespace}. Keys: {list(self.config.keys())}")
+            
+
+            # 4. Execute callbacks
+            for func in self.callbacks:
+                try:
+                    func(old_config=self.old_config,new_config=decoded_config)
+                except Exception as e:
+                    logger.error(f"Callback error in {func}: {e}")
+
+            
+                    
+        except Exception as e:
+            logger.error(f"Failed to refresh config from redis: {e}")
+```
+
+--- **end of file: nb_config_center/nb_config_center_class.py** --- 
+
+---
+
+
+--- **start of file: nb_config_center/__init__.py** --- 
+
+
+### 📄 Python File Metadata: `nb_config_center/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_config_center_class import NbConfigCenter`
+
+
+---
+
+```python
+from .nb_config_center_class import NbConfigCenter  # noqa: F401
+
+```
+
+--- **end of file: nb_config_center/__init__.py** --- 
+
+---
+
+# markdown content namespace: nb_config_center examples 
+
+
+## File Tree
+
+
+```
+
+└── examples
+    ├── ex_update_config.py
+    └── example1.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `examples/example1.py`
+
+- `examples/ex_update_config.py`
+
+
+---
+
+
+--- **start of file: examples/example1.py** --- 
+
+```python
+
+import redis
+from nb_config_center import NbConfigCenter
+import time
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0, socket_timeout=1,decode_responses=True)
+namespace = "test_config_ns5"
+# Clean up previous run
+# r.delete(namespace)
+
+# 1. Instantiate first center
+center1 = NbConfigCenter(r, namespace)
+print(f"Center1 initial config: {center1.config}")
+
+
+# 2. Update config via center1
+center1.update_config({"key_str": "value1", "key_int": 222})
+
+
+center2 = NbConfigCenter(r, namespace)
+
+@center2.add_update_callback
+def callback(old_config,new_config):
+    print(f"Callback received new config: {new_config},old config is: {old_config}")
+
+while True:
+    time.sleep(10)
+    print(f"Center2 initial config: {center2.config}")
+    print(center2.get("key_int"))
+
+
+
+```
+
+--- **end of file: examples/example1.py** --- 
+
+---
+
+
+--- **start of file: examples/ex_update_config.py** --- 
+
+```python
+import redis
+import time
+from nb_config_center import NbConfigCenter
+import json
+import nb_log
+
+nb_log.get_logger("nb_config_center.nb_config_center_class")
+
+
+r = redis.StrictRedis(
+    host="localhost", port=6379, db=0, socket_timeout=1, decode_responses=True
+)
+namespace = "test_config_ns5"
+
+
+center3 = NbConfigCenter(r, namespace)
+
+center3.update_config(
+    {
+        "key_str": "valuef2b",
+        "key_int": 11234,
+        "key_dict": {"c": 1, "d": 22},
+        "key_float": 123.456,
+        "key_bool": True,
+    }
+)
+
+# time.sleep(1)
+print(center3.config)
+
+```
+
+--- **end of file: examples/ex_update_config.py** --- 
+
+---
+

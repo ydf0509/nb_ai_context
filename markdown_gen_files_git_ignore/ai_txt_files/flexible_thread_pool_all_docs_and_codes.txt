@@ -1,0 +1,321 @@
+﻿# markdown content namespace: flexible_thread_pool readme 
+
+
+## File Tree
+
+
+```
+
+└── README.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+
+---
+
+
+### code file start: README.md 
+
+# 1. flexible_thread_pool
+
+flexible_thread_pool ，auto expand thread and reduce threads. both support sync and asyncio,fast than concurrent.futures.ThreadpoolExecutor
+
+可扩大和自动缩小的线程池，比 threadpool_executor_shrink_able 实现更简单的线程池，性能超过 concurrent.futures.ThreadpoolExecutor 200%
+
+另一个本人实现的可自动扩大和缩小的线程池： https://github.com/ydf0509/threadpool_executor_shrink_able
+
+
+说明：
+此线程池支持submit 方法，但不支持Future特性，只支持简单粗暴的submit自动并发执行。
+
+## 1.2 flexible_thread_pool 性能说明
+
+在 win11 + r5 4600u 这个很差的cpu 前提下， 单核单进程测试下，100线程池每秒执行3万次 def f(): pass    函数。
+
+## 1.3 重点说明可变线程池和一般线程池区别
+
+例如代码如下:
+```python
+import time
+
+pool = ThreadpoolExecutor(500)
+
+
+def f(x):
+    time.sleep(10) # 这个sleep 模拟函数阻塞耗时,需要开多线程才能在单位时间内执行更多次数的f函数
+    print(x)
+
+for i in  range(10000):
+    time.sleep(1)
+    time.sleep(100)  # 这个sleep模拟消息任务的频繁程度.
+    pool.submit(f,i)
+```
+
+### 1.3.1 情景1,不需要开很多线程就能应付函数运行
+```
+假设每隔100秒 submit一个任务到pool中,愚蠢的 ThreadpoolExecutor 线程池会一直扩大到500线程,
+但是 FlexibleThreadPool 即使你设置最大线程为500,也只会开1个线程,因为你每隔100秒才会提交下一个运行,
+而函数只要10秒就能运行完,那需要开500线程做什么?
+
+FlexibleThreadPool 会用最智能的线程数量来应付任务,自适应调节,既不会多开线程浪费,
+也不会少开线程导致单位时间内运行函数次数变少.
+```
+
+### 1.3.2 情景2,流量高峰过后线程池自动缩小
+
+假设你 9:00 到10:00, 每隔0.00001秒submit一个任务到pool, 10:00后每隔 2秒submit一个任务到pool
+
+```
+愚蠢的线程池,任何时候一直保持线程数量是500
+
+智能的自适应线程池 FlexibleThreadPool,因为9:00-10:00 是流量高峰,而f函数需要10秒才能运行完,
+所以9:00-10:00 会火力全开,开到500线程.
+10:00后每隔 2秒submit一个任务到pool,而f需要耗时10秒,FlexibleThreadPool会自动减少到5个线程,
+刚好使得线程消费和发布速度100%匹配.
+FlexibleThreadPool 时时刻刻在自适应调整线程数量
+```
+
+### 1.3.3 情景3,函数执行耗时降低了,自动减少线程数量 (函数耗时增多了,也会自动增加线程数量)
+
+```
+假设函数耗时是100秒,每隔0.01秒submit一个任务,后来函数执行耗时变短了只需要耗时1秒,
+
+笨瓜线程池会保持500线程.
+
+FlexibleThreadPool 由于后来函数只需要耗时1秒,你仍然保持每隔0.01秒submit一个任务,
+FlexibleThreadPool 会从500线程降低到100线程来应付消费.
+```
+
+### 1.3.4 FlexibleThreadPool 是无视函数耗时多少,自适应调节线程数量.
+
+FlexibleThreadPool 无需用户自己提前分析预估一个函数需要耗时多久,来评估计算需要指定一个合理的线程池大小,完全不需要.
+
+```
+FlexibleThreadPool 并不能自动读取f函数的逻辑,开启天眼知道f函数是耗时10秒,而是真正的自动调整,
+它无需用户自己提前分析预估一个函数需要耗时多久,来评估计算需要指定一个合理的线程池大小,完全不需要.
+```
+
+
+# 2. 安装
+pip install flexible_thread_pool
+
+
+# 3 用法
+
+FlexibleThreadPool 能够支持同步函数和asyncio异步函数的并发执行。
+
+```python
+import asyncio
+import time
+from flexible_thread_pool import FlexibleThreadPool
+
+
+def testf(x):
+    time.sleep(10)
+    if x % 10000 == 0:
+        print(x)
+
+
+async def aiotestf(x):
+    await asyncio.sleep(1)
+    if x % 10 == 0:
+        print(x)
+    return x * 2
+
+
+pool = FlexibleThreadPool(100)
+# pool = ThreadPoolExecutor(100)
+
+for i in range(20000):
+    # time.sleep(2)
+    pool.submit(aiotestf, i)
+```
+
+
+
+
+
+**code file end: README.md**
+
+---
+
+# markdown content namespace: flexible_thread_pool codes 
+
+
+## File Tree
+
+
+```
+
+└── flexible_thread_pool
+    └── __init__.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `flexible_thread_pool/__init__.py`
+
+
+---
+
+
+### code file start: flexible_thread_pool/__init__.py 
+
+```python
+"""
+比 ThreadPoolExecutorShrinkAble 更简单的的弹性线程池。完全彻底从头手工开发
+
+这个线程池 submit没有返回值，不返回future对象，不支持map方法。
+
+此线程池性能比concurrent.futures.ThreadPoolExecutor高200%
+
+顺便兼容asyns def的函数并发运行
+"""
+
+import asyncio
+import inspect
+import queue
+import threading
+from functools import wraps
+
+import nb_log
+from nb_log import LoggerMixin, LoggerLevelSetterMixin
+
+
+class FlexibleThreadPool(LoggerMixin, LoggerLevelSetterMixin):
+    KEEP_ALIVE_TIME = 10
+    MIN_WORKERS = 0
+
+    def __init__(self, max_workers: int = None):
+        self.work_queue = queue.Queue(10)
+        self.max_workers = max_workers
+        self._threads_num = 0
+        self.threads_free_count = 0
+        self._lock_compute_start_thread = threading.Lock()
+        self._lock_compute_threads_free_count = threading.Lock()
+        self._lock_for_adjust_thread = threading.Lock()
+        self._lock_for_judge_threads_free_count = threading.Lock()
+        self.pool_ident = id(self)
+        self.asyncio_loop = asyncio.new_event_loop()
+
+    def _change_threads_free_count(self, change_num):
+        with self._lock_compute_threads_free_count:
+            self.threads_free_count += change_num
+
+    def _change_threads_start_count(self, change_num):
+        with self._lock_compute_start_thread:
+            self._threads_num += change_num
+
+    def submit(self, func, *args, **kwargs):
+        self.work_queue.put([func, args, kwargs])
+        with self._lock_for_adjust_thread:
+            if self.threads_free_count <= self.MIN_WORKERS and self._threads_num < self.max_workers:
+                _KeepAliveTimeThread(self).start()
+
+
+def run_sync_or_async_fun(func, *args, **kwargs):
+    fun_is_asyncio = inspect.iscoroutinefunction(func)
+    if fun_is_asyncio:
+        loop = asyncio.new_event_loop()
+        try:
+            return loop.run_until_complete(func(*args, **kwargs))
+        finally:
+            loop.close()
+    else:
+        return func(*args, **kwargs)
+
+
+def sync_or_async_fun_deco(func):
+    @wraps(func)
+    def _inner(*args, **kwargs):
+        return run_sync_or_async_fun(func, *args, **kwargs)
+
+    return _inner
+
+
+# noinspection PyProtectedMember
+class _KeepAliveTimeThread(threading.Thread):
+    logger = nb_log.get_logger('_KeepAliveTimeThread', log_level_int=10)
+
+    def __init__(self, thread_pool: FlexibleThreadPool):
+        super().__init__()
+        self.pool = thread_pool
+
+    def run(self) -> None:
+        self.logger.debug(f'新启动线程 {self.ident} ')
+        self.pool._change_threads_free_count(1)
+        self.pool._change_threads_start_count(1)
+        while 1:
+            try:
+                func, args, kwargs = self.pool.work_queue.get(block=True, timeout=self.pool.KEEP_ALIVE_TIME)
+            except queue.Empty:
+                with self.pool._lock_for_judge_threads_free_count:
+                    # print(self.pool.threads_free_count)
+                    if self.pool.threads_free_count > self.pool.MIN_WORKERS:
+                        self.logger.debug(
+                            f'停止线程 {self._ident}, 触发条件是 {self.pool.pool_ident} 线程池中的 {self.ident} 线程 超过 {self.pool.KEEP_ALIVE_TIME} 秒没有任务，线程池中不在工作状态中的线程数量是 {self.pool.threads_free_count}，超过了指定的最小核心数量 {self.pool.MIN_WORKERS}')  # noqa
+                        self.pool._change_threads_free_count(-1)
+                        self.pool._change_threads_start_count(-1)
+                        break  # 退出while 1，即是结束。
+                    else:
+                        continue
+            self.pool._change_threads_free_count(-1)
+            try:
+                fun = sync_or_async_fun_deco(func)
+                fun(*args, **kwargs)
+            except BaseException as exc:
+                self.logger.exception(f'函数 {func.__name__} 中发生错误，错误原因是 {type(exc)} {exc} ')
+            self.pool._change_threads_free_count(1)
+
+
+if __name__ == '__main__':
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+
+    def testf(x):
+        # time.sleep(10)
+        if x % 10000 == 0:
+            print(x)
+
+
+    async def aiotestf(x):
+        # await asyncio.sleep(1)
+        if x % 10 == 0:
+            print(x)
+        return x * 2
+
+
+    pool = FlexibleThreadPool(100)
+    # pool = ThreadPoolExecutor(100)
+
+    for i in range(20000):
+        # time.sleep(2)
+        pool.submit(aiotestf, i)
+
+    # for i in range(1000000):
+    #     pool.submit(testf, i)
+
+    # while 1:
+    #     time.sleep(1000)
+    # loop.run_forever()
+
+```
+
+**code file end: flexible_thread_pool/__init__.py**
+
+---
+

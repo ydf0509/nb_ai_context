@@ -1,0 +1,32088 @@
+# markdown content namespace: Crawlo  all files 
+
+
+## File Tree
+
+
+```
+
+├── README.md
+├── assets
+│   └── README.md
+└── docs
+    ├── README_en.md
+    ├── api
+    │   ├── crawlo___init__.md
+    │   ├── crawlo_config.md
+    │   ├── crawlo_config_validator.md
+    │   ├── crawlo_core_scheduler.md
+    │   ├── crawlo_crawler.md
+    │   ├── crawlo_downloader___init__.md
+    │   ├── crawlo_extension.md
+    │   ├── crawlo_extension___init__.md
+    │   ├── crawlo_filters___init__.md
+    │   ├── crawlo_items_items.md
+    │   ├── crawlo_middleware.md
+    │   ├── crawlo_middleware___init__.md
+    │   ├── crawlo_network_request.md
+    │   ├── crawlo_network_response.md
+    │   ├── crawlo_pipelines.md
+    │   ├── crawlo_pipelines___init__.md
+    │   ├── crawlo_pipelines_bloom_dedup_pipeline.md
+    │   ├── crawlo_pipelines_console_pipeline.md
+    │   ├── crawlo_pipelines_csv_pipeline.md
+    │   ├── crawlo_pipelines_database_dedup_pipeline.md
+    │   ├── crawlo_pipelines_json_pipeline.md
+    │   ├── crawlo_pipelines_memory_dedup_pipeline.md
+    │   ├── crawlo_pipelines_mongo_pipeline.md
+    │   ├── crawlo_pipelines_mysql_pipeline.md
+    │   ├── crawlo_pipelines_redis_dedup_pipeline.md
+    │   ├── crawlo_queue___init__.md
+    │   ├── crawlo_spider___init__.md
+    │   ├── crawlo_utils_log.md
+    │   ├── index.md
+    │   └── index_en.md
+    ├── index.md
+    ├── index_en.md
+    ├── initialization_optimization_report.md
+    ├── modules
+    │   ├── README.md
+    │   ├── advanced
+    │   │   ├── best_practices.md
+    │   │   ├── best_practices_en.md
+    │   │   ├── distributed.md
+    │   │   ├── distributed_en.md
+    │   │   ├── performance.md
+    │   │   ├── performance_en.md
+    │   │   ├── redis_cluster.md
+    │   │   ├── troubleshooting.md
+    │   │   └── troubleshooting_en.md
+    │   ├── architecture
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── modes.md
+    │   │   └── modes_en.md
+    │   ├── cli
+    │   │   ├── check.md
+    │   │   ├── check_en.md
+    │   │   ├── genspider.md
+    │   │   ├── genspider_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── list.md
+    │   │   ├── list_en.md
+    │   │   ├── run.md
+    │   │   ├── run_en.md
+    │   │   ├── startproject.md
+    │   │   ├── startproject_en.md
+    │   │   ├── stats.md
+    │   │   └── stats_en.md
+    │   ├── configuration
+    │   │   ├── index.md
+    │   │   └── index_en.md
+    │   ├── core
+    │   │   ├── cli_startproject.md
+    │   │   ├── cli_startproject_en.md
+    │   │   ├── engine.md
+    │   │   ├── engine_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── processor.md
+    │   │   ├── processor_en.md
+    │   │   ├── scheduler.md
+    │   │   ├── scheduler_en.md
+    │   │   ├── spider.md
+    │   │   └── spider_en.md
+    │   ├── downloader
+    │   │   ├── aiohttp.md
+    │   │   ├── aiohttp_en.md
+    │   │   ├── curl_cffi.md
+    │   │   ├── curl_cffi_en.md
+    │   │   ├── httpx.md
+    │   │   ├── httpx_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── playwright.md
+    │   │   ├── playwright_en.md
+    │   │   ├── selenium.md
+    │   │   └── selenium_en.md
+    │   ├── extension
+    │   │   ├── built_in.md
+    │   │   ├── built_in_en.md
+    │   │   ├── custom.md
+    │   │   ├── custom_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── manager.md
+    │   │   ├── manager_en.md
+    │   │   └── memory_monitor.md
+    │   ├── filter
+    │   │   ├── base.md
+    │   │   ├── base_en.md
+    │   │   ├── bloom.md
+    │   │   ├── bloom_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── memory.md
+    │   │   ├── memory_en.md
+    │   │   ├── redis.md
+    │   │   └── redis_en.md
+    │   ├── installation
+    │   │   ├── index.md
+    │   │   └── index_en.md
+    │   ├── middleware
+    │   │   ├── built_in.md
+    │   │   ├── built_in_en.md
+    │   │   ├── custom.md
+    │   │   ├── custom_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── manager.md
+    │   │   ├── manager_en.md
+    │   │   ├── proxy.md
+    │   │   └── proxy_en.md
+    │   ├── pipeline
+    │   │   ├── built_in.md
+    │   │   ├── built_in_en.md
+    │   │   ├── custom.md
+    │   │   ├── custom_en.md
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── manager.md
+    │   │   └── manager_en.md
+    │   ├── queue
+    │   │   ├── index.md
+    │   │   ├── index_en.md
+    │   │   ├── manager.md
+    │   │   ├── manager_en.md
+    │   │   ├── memory.md
+    │   │   ├── memory_en.md
+    │   │   ├── redis.md
+    │   │   └── redis_en.md
+    │   └── quickstart
+    │       ├── index.md
+    │       └── index_en.md
+    ├── mongo_connection_pool_optimization.md
+    ├── mysql_connection_pool_optimization.md
+    ├── tutorials
+    │   ├── configuration_modes.md
+    │   ├── distributed_crawling.md
+    │   ├── distributed_crawling_en.md
+    │   ├── first_spider.md
+    │   └── first_spider_en.md
+    └── 配置优先级详解.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+- `assets/README.md`
+
+- `docs/index.md`
+
+- `docs/index_en.md`
+
+- `docs/initialization_optimization_report.md`
+
+- `docs/mongo_connection_pool_optimization.md`
+
+- `docs/mysql_connection_pool_optimization.md`
+
+- `docs/README_en.md`
+
+- `docs/配置优先级详解.md`
+
+- `docs/api/crawlo_config.md`
+
+- `docs/api/crawlo_config_validator.md`
+
+- `docs/api/crawlo_core_scheduler.md`
+
+- `docs/api/crawlo_crawler.md`
+
+- `docs/api/crawlo_downloader___init__.md`
+
+- `docs/api/crawlo_extension.md`
+
+- `docs/api/crawlo_extension___init__.md`
+
+- `docs/api/crawlo_filters___init__.md`
+
+- `docs/api/crawlo_items_items.md`
+
+- `docs/api/crawlo_middleware.md`
+
+- `docs/api/crawlo_middleware___init__.md`
+
+- `docs/api/crawlo_network_request.md`
+
+- `docs/api/crawlo_network_response.md`
+
+- `docs/api/crawlo_pipelines.md`
+
+- `docs/api/crawlo_pipelines_bloom_dedup_pipeline.md`
+
+- `docs/api/crawlo_pipelines_console_pipeline.md`
+
+- `docs/api/crawlo_pipelines_csv_pipeline.md`
+
+- `docs/api/crawlo_pipelines_database_dedup_pipeline.md`
+
+- `docs/api/crawlo_pipelines_json_pipeline.md`
+
+- `docs/api/crawlo_pipelines_memory_dedup_pipeline.md`
+
+- `docs/api/crawlo_pipelines_mongo_pipeline.md`
+
+- `docs/api/crawlo_pipelines_mysql_pipeline.md`
+
+- `docs/api/crawlo_pipelines_redis_dedup_pipeline.md`
+
+- `docs/api/crawlo_pipelines___init__.md`
+
+- `docs/api/crawlo_queue___init__.md`
+
+- `docs/api/crawlo_spider___init__.md`
+
+- `docs/api/crawlo_utils_log.md`
+
+- `docs/api/crawlo___init__.md`
+
+- `docs/api/index.md`
+
+- `docs/api/index_en.md`
+
+- `docs/modules/README.md`
+
+- `docs/modules/advanced/best_practices.md`
+
+- `docs/modules/advanced/best_practices_en.md`
+
+- `docs/modules/advanced/distributed.md`
+
+- `docs/modules/advanced/distributed_en.md`
+
+- `docs/modules/advanced/performance.md`
+
+- `docs/modules/advanced/performance_en.md`
+
+- `docs/modules/advanced/redis_cluster.md`
+
+- `docs/modules/advanced/troubleshooting.md`
+
+- `docs/modules/advanced/troubleshooting_en.md`
+
+- `docs/modules/architecture/index.md`
+
+- `docs/modules/architecture/index_en.md`
+
+- `docs/modules/architecture/modes.md`
+
+- `docs/modules/architecture/modes_en.md`
+
+- `docs/modules/cli/check.md`
+
+- `docs/modules/cli/check_en.md`
+
+- `docs/modules/cli/genspider.md`
+
+- `docs/modules/cli/genspider_en.md`
+
+- `docs/modules/cli/index.md`
+
+- `docs/modules/cli/index_en.md`
+
+- `docs/modules/cli/list.md`
+
+- `docs/modules/cli/list_en.md`
+
+- `docs/modules/cli/run.md`
+
+- `docs/modules/cli/run_en.md`
+
+- `docs/modules/cli/startproject.md`
+
+- `docs/modules/cli/startproject_en.md`
+
+- `docs/modules/cli/stats.md`
+
+- `docs/modules/cli/stats_en.md`
+
+- `docs/modules/configuration/index.md`
+
+- `docs/modules/configuration/index_en.md`
+
+- `docs/modules/core/cli_startproject.md`
+
+- `docs/modules/core/cli_startproject_en.md`
+
+- `docs/modules/core/engine.md`
+
+- `docs/modules/core/engine_en.md`
+
+- `docs/modules/core/index.md`
+
+- `docs/modules/core/index_en.md`
+
+- `docs/modules/core/processor.md`
+
+- `docs/modules/core/processor_en.md`
+
+- `docs/modules/core/scheduler.md`
+
+- `docs/modules/core/scheduler_en.md`
+
+- `docs/modules/core/spider.md`
+
+- `docs/modules/core/spider_en.md`
+
+- `docs/modules/downloader/aiohttp.md`
+
+- `docs/modules/downloader/aiohttp_en.md`
+
+- `docs/modules/downloader/curl_cffi.md`
+
+- `docs/modules/downloader/curl_cffi_en.md`
+
+- `docs/modules/downloader/httpx.md`
+
+- `docs/modules/downloader/httpx_en.md`
+
+- `docs/modules/downloader/index.md`
+
+- `docs/modules/downloader/index_en.md`
+
+- `docs/modules/downloader/playwright.md`
+
+- `docs/modules/downloader/playwright_en.md`
+
+- `docs/modules/downloader/selenium.md`
+
+- `docs/modules/downloader/selenium_en.md`
+
+- `docs/modules/extension/built_in.md`
+
+- `docs/modules/extension/built_in_en.md`
+
+- `docs/modules/extension/custom.md`
+
+- `docs/modules/extension/custom_en.md`
+
+- `docs/modules/extension/index.md`
+
+- `docs/modules/extension/index_en.md`
+
+- `docs/modules/extension/manager.md`
+
+- `docs/modules/extension/manager_en.md`
+
+- `docs/modules/extension/memory_monitor.md`
+
+- `docs/modules/filter/base.md`
+
+- `docs/modules/filter/base_en.md`
+
+- `docs/modules/filter/bloom.md`
+
+- `docs/modules/filter/bloom_en.md`
+
+- `docs/modules/filter/index.md`
+
+- `docs/modules/filter/index_en.md`
+
+- `docs/modules/filter/memory.md`
+
+- `docs/modules/filter/memory_en.md`
+
+- `docs/modules/filter/redis.md`
+
+- `docs/modules/filter/redis_en.md`
+
+- `docs/modules/installation/index.md`
+
+- `docs/modules/installation/index_en.md`
+
+- `docs/modules/middleware/built_in.md`
+
+- `docs/modules/middleware/built_in_en.md`
+
+- `docs/modules/middleware/custom.md`
+
+- `docs/modules/middleware/custom_en.md`
+
+- `docs/modules/middleware/index.md`
+
+- `docs/modules/middleware/index_en.md`
+
+- `docs/modules/middleware/manager.md`
+
+- `docs/modules/middleware/manager_en.md`
+
+- `docs/modules/middleware/proxy.md`
+
+- `docs/modules/middleware/proxy_en.md`
+
+- `docs/modules/pipeline/built_in.md`
+
+- `docs/modules/pipeline/built_in_en.md`
+
+- `docs/modules/pipeline/custom.md`
+
+- `docs/modules/pipeline/custom_en.md`
+
+- `docs/modules/pipeline/index.md`
+
+- `docs/modules/pipeline/index_en.md`
+
+- `docs/modules/pipeline/manager.md`
+
+- `docs/modules/pipeline/manager_en.md`
+
+- `docs/modules/queue/index.md`
+
+- `docs/modules/queue/index_en.md`
+
+- `docs/modules/queue/manager.md`
+
+- `docs/modules/queue/manager_en.md`
+
+- `docs/modules/queue/memory.md`
+
+- `docs/modules/queue/memory_en.md`
+
+- `docs/modules/queue/redis.md`
+
+- `docs/modules/queue/redis_en.md`
+
+- `docs/modules/quickstart/index.md`
+
+- `docs/modules/quickstart/index_en.md`
+
+- `docs/tutorials/configuration_modes.md`
+
+- `docs/tutorials/distributed_crawling.md`
+
+- `docs/tutorials/distributed_crawling_en.md`
+
+- `docs/tutorials/first_spider.md`
+
+- `docs/tutorials/first_spider_en.md`
+
+
+---
+
+
+### code file start: README.md 
+
+<p align="center">
+  <img src="assets/logo.svg" alt="Crawlo Logo" width="150"/>
+</p>
+
+<h1 align="center">Crawlo</h1>
+
+<p align="center">
+  <strong>一个基于 asyncio 的现代化、高性能 Python 异步爬虫框架。</strong>
+</p>
+
+<p align="center">
+  <a href="#核心特性">核心特性</a> •
+  <a href="#项目架构">架构</a> •
+  <a href="#安装">安装</a> •
+  <a href="#配置模式详解">配置模式</a> •
+  <a href="https://github.com/yourusername/crawlo">文档</a>
+</p>
+
+## 核心特性
+
+- 🚀 **高性能异步架构**：基于 asyncio 和 aiohttp，充分利用异步 I/O 提升爬取效率
+- 🎯 **智能调度系统**：优先级队列、并发控制、自动重试、智能限速
+- 🔄 **灵活的配置模式**：
+  - **Standalone 模式**：单机开发测试，使用内存队列
+  - **Distributed 模式**：多节点分布式部署，严格要求 Redis（不允许降级）
+  - **Auto 模式**：智能检测 Redis 可用性，自动选择最佳配置（推荐）
+- 📦 **丰富的组件生态**：
+  - 内置 Redis 和 MongoDB 支持
+  - MySQL 异步连接池（基于 asyncmy）
+  - 多种过滤器和去重管道（Memory/Redis）
+  - 代理中间件支持（简单代理/动态代理）
+  - 多种下载器（aiohttp、httpx、curl-cffi）
+- 🛠 **开发友好**：
+  - 类 Scrapy 的项目结构和 API 设计
+  - 配置工厂模式（`CrawloConfig.auto()`）
+  - 自动爬虫发现机制
+  - 完善的日志系统
+
+## 项目架构
+
+Crawlo 框架采用模块化设计，核心组件包括：
+
+![Crawlo 框架架构图](images/Crawlo%20框架架构图.png)
+
+- **Engine**：核心引擎，协调各个组件工作
+- **Scheduler**：调度器，管理请求队列和去重
+- **Downloader**：下载器，支持多种 HTTP 客户端
+- **Spider**：爬虫基类，定义数据提取逻辑
+- **Pipeline**：数据管道，处理和存储数据
+- **Middleware**：中间件，处理请求和响应
+
+![Crawlo 数据流图](images/Crawlo%20数据流图.png)
+
+## 示例项目
+
+查看 [`examples/`](examples/) 目录下的完整示例项目：
+
+- **ofweek_standalone** - Auto 模式示例（智能检测）
+- **ofweek_spider** - Auto 模式示例
+- **ofweek_distributed** - Distributed 模式示例（严格分布式）
+
+## 安装
+
+```bash
+# 基础安装
+pip install crawlo
+```
+
+## 配置模式详解
+
+> ⚠️ **重要**：配置模式的选择直接影响爬虫的运行方式、性能和可靠性，请仔细阅读本节内容。
+
+Crawlo 提供三种配置模式，满足不同场景需求：
+
+### 三种模式对比
+
+| 配置项 | Standalone | Distributed | Auto |
+|--------|-----------|-------------|------|
+| **RUN_MODE** | `standalone` | `distributed` | `auto` |
+| **队列类型** | 内存队列 | Redis 队列 | 自动检测 |
+| **Redis 要求** | 不需要 | **必需** | 可选 |
+| **Redis 不可用时** | N/A | 🚫 **报错退出** | ✅ 降级到内存 |
+| **配置自动更新** | ❌ 否 | ❌ 否 | ✅ 是 |
+| **过滤器** | Memory | Redis | Redis/Memory |
+| **去重管道** | Memory | Redis | Redis/Memory |
+| **适用场景** | 开发测试 | 多节点部署 | 生产环境 |
+| **并发数默认值** | 8 | 16 | 12 |
+| **推荐指数** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+
+### 1. Auto 模式（推荐）
+
+**智能检测，自动适配，推荐用于生产环境。**
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.auto(
+    project_name='myproject',
+    concurrency=12,
+    download_delay=1.0
+)
+locals().update(config.to_dict())
+```
+
+**运行机制**：
+- 配置阶段不依赖 Redis
+- 运行时才检测 Redis 可用性
+- Redis 可用 → 使用 `RedisPriorityQueue` + `AioRedisFilter`
+- Redis 不可用 → 降级到 `MemoryQueue` + `MemoryFilter`
+- 自动更新配置（`QUEUE_TYPE`、`FILTER_CLASS`、`DEFAULT_DEDUP_PIPELINE`）
+
+**优势**：
+- ✅ 开发环境无需配置 Redis，直接启动
+- ✅ 生产环境 Redis 故障时自动降级，保证系统可用性
+- ✅ 同一份代码可在不同环境运行，无需修改配置
+- ✅ 最佳的灵活性和可靠性
+
+**适用场景**：
+- 生产环境部署（首选）
+- 需要在多种环境运行的项目
+- 希望系统具备容错能力
+
+### 2. Standalone 模式
+
+**单机模式，适合开发测试和中小规模爬取。**
+
+```python
+config = CrawloConfig.standalone(
+    project_name='myproject',
+    concurrency=8
+)
+locals().update(config.to_dict())
+```
+
+**运行机制**：
+- 固定使用 `MemoryQueue`（内存队列）
+- 固定使用 `MemoryFilter`（内存过滤器）
+- 固定使用 `MemoryDedupPipeline`（内存去重）
+- 不进行 Redis 检测
+- 配置不会自动更新
+
+**优势**：
+- ✅ 无需任何外部依赖
+- ✅ 启动速度快
+- ✅ 适合快速开发调试
+
+**限制**：
+- ❌ 不支持分布式部署
+- ❌ 重启后队列数据丢失
+- ❌ 不适合大规模数据采集
+
+**适用场景**：
+- 本地开发调试
+- 学习框架特性
+- 中小规模数据采集（< 10万条）
+- 单机运行的简单爬虫
+
+### 3. Distributed 模式
+
+**分布式模式，严格要求 Redis 可用，适合多节点协同工作。**
+
+```python
+config = CrawloConfig.distributed(
+    project_name='myproject',
+    redis_host='redis.example.com',
+    redis_port=6379,
+    redis_password='your_password',
+    concurrency=16
+)
+locals().update(config.to_dict())
+```
+
+**运行机制**：
+- 必须使用 `RedisPriorityQueue`
+- 必须使用 `AioRedisFilter`
+- 必须使用 `RedisDedupPipeline`
+- 启动时强制检查 Redis 连接
+- **Redis 不可用时抛出 `RuntimeError` 并退出（不允许降级）**
+
+**为什么要严格要求 Redis？**
+
+1. **数据一致性**：防止不同节点使用不同的队列类型
+2. **去重有效性**：确保多节点间的去重功能正常工作
+3. **任务分配**：防止任务被重复执行
+4. **问题早发现**：启动失败比运行时失败更容易发现和修复
+5. **明确的意图**：分布式模式就应该是分布式的，不应该静默降级
+
+**Redis 不可用时的错误信息**：
+
+```bash
+$ crawlo run my_spider
+
+2025-10-25 22:00:00 - [queue_manager] - ERROR: 
+Distributed 模式要求 Redis 可用，但无法连接到 Redis 服务器。
+错误信息: Connection refused
+Redis URL: redis://127.0.0.1:6379/0
+请检查：
+  1. Redis 服务是否正在运行
+  2. Redis 连接配置是否正确
+  3. 网络连接是否正常
+
+RuntimeError: Distributed 模式要求 Redis 可用，但无法连接到 Redis 服务器。
+```
+
+**优势**：
+- ✅ 支持多节点协同爬取
+- ✅ 数据持久化，重启后可继续
+- ✅ 严格的分布式一致性保证
+- ✅ 适合大规模数据采集
+
+**适用场景**：
+- 多服务器协同采集
+- 大规模数据采集（> 百万条）
+- 需要严格保证分布式一致性
+- 生产环境多节点部署
+
+### 模式选择建议
+
+| 场景 | 推荐模式 | 原因 |
+|------|---------|------|
+| 生产环境（单节点或多节点） | **Auto** | 自动适配，容错能力强 |
+| 开发环境 | **Standalone** 或 **Auto** | 无需配置 Redis |
+| 严格的多节点分布式部署 | **Distributed** | 保证分布式一致性 |
+| 学习和测试 | **Standalone** | 最简单，无依赖 |
+| 中小规模爬取 | **Standalone** 或 **Auto** | 简单高效 |
+| 大规模爬取 | **Auto** 或 **Distributed** | 性能和可靠性 |
+
+> 📖 **完整文档**：更多详细信息请参考 [配置模式完全指南](docs/tutorials/configuration_modes.md)
+
+## 配置优先级
+
+Crawlo 框架支持多层级的配置系统，了解配置优先级对于正确使用框架至关重要。
+
+### 配置来源与优先级
+
+从**低到高**的优先级顺序：
+
+```
+1. default_settings.py (框架默认配置)                    ⭐
+   ↓
+2. 环境变量 (CRAWLO_*)                                   ⭐⭐
+   (在 default_settings.py 中通过 EnvConfigManager 读取)
+   ↓
+3. 用户 settings.py (项目配置文件)                       ⭐⭐⭐
+   ↓
+4. Spider.custom_settings (Spider 自定义配置)            ⭐⭐⭐⭐
+   ↓
+5. 运行时 settings 参数 (crawl() 传入的配置)             ⭐⭐⭐⭐⭐
+```
+
+### 环境变量配置
+
+所有环境变量都使用 `CRAWLO_` 前缀：
+
+```bash
+# 基础配置
+export CRAWLO_MODE=auto                    # 运行模式
+export CRAWLO_PROJECT_NAME=myproject       # 项目名称
+export CRAWLO_CONCURRENCY=16               # 并发数
+
+# Redis 配置
+export CRAWLO_REDIS_HOST=127.0.0.1         # Redis 主机
+export CRAWLO_REDIS_PORT=6379              # Redis 端口
+export CRAWLO_REDIS_PASSWORD=your_password # Redis 密码
+export CRAWLO_REDIS_DB=0                   # Redis 数据库
+```
+
+### 配置合并策略
+
+**普通配置**（如 `CONCURRENCY`）：采用**覆盖策略**
+```python
+# 假设各处都有定义
+default_settings.py:  8   →
+环境变量:  12  →
+settings.py:  16  →
+Spider.custom_settings:  24  →
+crawl(settings={...}):  32  ✅ 最终值 = 32
+```
+
+**列表配置**（如 `MIDDLEWARES`、`PIPELINES`、`EXTENSIONS`）：采用**合并策略**
+```python
+# default_settings.py
+PIPELINES = ['crawlo.pipelines.console_pipeline.ConsolePipeline']
+
+# settings.py
+PIPELINES = ['myproject.pipelines.MySQLPipeline']
+
+# 最终结果（合并）
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',  # 保留默认
+    'myproject.pipelines.MySQLPipeline',                   # 追加用户
+]
+```
+
+### Spider 级别配置
+
+在 Spider 类中可以覆盖项目配置：
+
+```python
+class MySpider(Spider):
+    name = 'myspider'
+    
+    custom_settings = {
+        'CONCURRENCY': 32,           # 覆盖项目配置
+        'DOWNLOAD_DELAY': 2.0,       # 覆盖项目配置
+        'PIPELINES': [               # 会与默认管道合并
+            'myproject.pipelines.SpecialPipeline',
+        ]
+    }
+```
+
+### 运行时动态配置
+
+```python
+from crawlo import CrawlerProcess
+
+process = CrawlerProcess()
+await process.crawl(
+    MySpider,
+    settings={
+        'CONCURRENCY': 64,        # 最高优先级
+        'DOWNLOAD_DELAY': 0.1,
+    }
+)
+```
+
+### ⚠️ 常见陷阱
+
+**陷阱1：环境变量被项目配置覆盖**
+```python
+# 环境变量
+export CRAWLO_REDIS_HOST=192.168.1.100
+
+# settings.py（这会覆盖环境变量！）
+REDIS_HOST = 'localhost'  # ❌ 会覆盖环境变量
+
+# 解决方案：不在 settings.py 中重复设置，或使用 CrawloConfig.auto()
+```
+
+**陷阱2：误以为列表配置会被清空**
+```python
+# settings.py
+PIPELINES = ['myproject.pipelines.MySQLPipeline']
+
+# 实际结果（默认管道会被保留并合并）
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',  # 默认保留
+    'myproject.pipelines.MySQLPipeline',                   # 用户追加
+]
+
+# 如果想完全替换，需要先清空
+PIPELINES = []  # 清空
+PIPELINES.append('myproject.pipelines.MySQLPipeline')
+```
+
+> 📖 **详细文档**：完整的配置优先级说明请参考 [配置优先级详解](docs/配置优先级详解.md)
+
+## 快速开始
+
+### 1. 创建项目
+
+```bash
+# 创建新项目
+crawlo startproject myproject
+cd myproject
+
+# 创建爬虫
+crawlo genspider example example.com
+```
+
+### 2. 配置项目（推荐使用 Auto 模式）
+
+```python
+# myproject/settings.py
+from crawlo.config import CrawloConfig
+
+# 使用 Auto 模式：智能检测 Redis，自动选择最佳配置
+config = CrawloConfig.auto(
+    project_name='myproject',
+    concurrency=12,          # 并发数
+    download_delay=1.0       # 下载延迟（秒）
+)
+
+# 将配置应用到当前模块
+locals().update(config.to_dict())
+
+# 爬虫模块配置
+SPIDER_MODULES = ['myproject.spiders']
+
+# 日志配置
+LOG_LEVEL = 'INFO'
+LOG_FILE = 'logs/myproject.log'
+
+# 可选：添加数据管道
+# PIPELINES = [
+#     'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+# ]
+
+# 可选：Redis 配置（Auto 模式会自动检测）
+# REDIS_HOST = '127.0.0.1'
+# REDIS_PORT = 6379
+```
+
+**其他配置模式：**
+
+```python
+# Standalone 模式：单机开发测试
+config = CrawloConfig.standalone(
+    project_name='myproject',
+    concurrency=8
+)
+
+# Distributed 模式：多节点分布式（必须配置 Redis）
+config = CrawloConfig.distributed(
+    project_name='myproject',
+    redis_host='redis.example.com',
+    redis_port=6379,
+    redis_password='your_password',
+    concurrency=16
+)
+```
+
+### 3. 编写爬虫
+
+```python
+# myproject/spiders/example.py
+from crawlo import Spider
+from crawlo.http import Request
+
+class ExampleSpider(Spider):
+    name = 'example'
+    start_urls = ['https://example.com']
+    
+    async def parse(self, response):
+        # 提取数据
+        title = response.css('h1::text').get()
+        
+        # 返回数据
+        yield {
+            'title': title,
+            'url': response.url
+        }
+        
+        # 跟进链接
+        for href in response.css('a::attr(href)').getall():
+            yield Request(
+                url=response.urljoin(href),
+                callback=self.parse
+            )
+```
+
+### 4. 运行爬虫
+
+```bash
+# 运行指定爬虫
+crawlo run example
+
+# 指定日志级别
+crawlo run example --log-level DEBUG
+```
+
+## 核心功能
+
+### Response 对象
+
+Crawlo 的 [`Response`](crawlo/http/response.py) 对象提供了强大的网页处理能力：
+
+**1. 智能编码检测**
+
+```python
+# 自动检测并正确解码页面内容
+# 优先级：Content-Type → HTML meta → chardet → utf-8
+response.text      # 已正确解码的文本
+response.encoding  # 检测到的编码
+```
+
+**2. CSS/XPath 选择器**
+
+```python
+# CSS 选择器（推荐）
+title = response.css('h1::text').get()
+links = response.css('a::attr(href)').getall()
+
+# XPath 选择器
+title = response.xpath('//title/text()').get()
+links = response.xpath('//a/@href').getall()
+
+# 支持默认值
+title = response.css('h1::text').get(default='无标题')
+```
+
+**3. URL 处理**
+
+```python
+response.url          # 自动规范化（移除 fragment）
+response.original_url # 保留原始 URL
+
+# 智能 URL 拼接
+response.urljoin('/path')           # 绝对路径
+response.urljoin('../path')         # 相对路径
+response.urljoin('//cdn.com/img')   # 协议相对路径
+```
+
+**4. 便捷提取方法**
+
+```python
+# 提取单个/多个元素文本
+title = response.extract_text('h1')
+paragraphs = response.extract_texts('.content p')
+
+# 提取单个/多个元素属性
+link = response.extract_attr('a', 'href')
+all_links = response.extract_attrs('a', 'href')
+```
+
+### 配置工厂模式
+
+Crawlo 提供了便捷的配置工厂方法，无需手动配置繁琐的参数：
+
+```python
+from crawlo.config import CrawloConfig
+
+# Auto 模式（推荐）：智能检测，自动适配
+config = CrawloConfig.auto(
+    project_name='myproject',
+    concurrency=12,
+    download_delay=1.0
+)
+
+# Standalone 模式：单机开发
+config = CrawloConfig.standalone(
+    project_name='myproject',
+    concurrency=8
+)
+
+# Distributed 模式：严格分布式
+config = CrawloConfig.distributed(
+    project_name='myproject',
+    redis_host='localhost',
+    redis_port=6379,
+    concurrency=16
+)
+
+# 应用到 settings.py
+locals().update(config.to_dict())
+```
+
+**三种模式的核心区别**：
+
+- **Auto**：智能检测 Redis，自动选择最佳配置，**推荐用于生产环境**
+- **Standalone**：固定使用内存队列，适合开发测试，无外部依赖
+- **Distributed**：严格要求 Redis，不允许降级，保证分布式一致性
+
+> 💡 详细配置说明请查看前面的 [配置模式详解](#配置模式详解) 章节
+
+### 日志系统
+
+Crawlo 提供了完善的日志系统，支持控制台和文件双输出：
+
+```python
+from crawlo.logging import get_logger
+
+logger = get_logger(__name__)
+
+logger.debug('调试信息')
+logger.info('普通信息')
+logger.warning('警告信息')
+logger.error('错误信息')
+```
+
+**日志配置：**
+
+```python
+# settings.py
+LOG_LEVEL = 'INFO'          # DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOG_FILE = 'logs/spider.log'
+LOG_ENCODING = 'utf-8'      # 明确指定日志文件编码
+STATS_DUMP = True           # 是否输出统计信息
+```
+
+**高级功能：**
+
+```python
+from crawlo.logging import configure_logging
+
+# 分别配置控制台和文件日志级别
+configure_logging(
+    LOG_LEVEL='INFO',
+    LOG_CONSOLE_LEVEL='WARNING',  # 控制台只显示 WARNING 及以上
+    LOG_FILE_LEVEL='DEBUG',       # 文件记录 DEBUG 及以上
+    LOG_FILE='logs/app.log',
+    LOG_MAX_BYTES=10*1024*1024,   # 10MB
+    LOG_BACKUP_COUNT=5
+)
+```
+
+### 爬虫自动发现
+
+Crawlo 支持自动发现爬虫，无需手动导入：
+
+```bash
+# 自动发现并运行（推荐）
+crawlo run spider_name
+
+# 指定文件路径运行
+crawlo run -f path/to/spider.py -s SpiderClassName
+```
+
+框架会自动在 `SPIDER_MODULES` 配置的模块中查找爬虫。
+
+### 跨平台支持
+
+Crawlo 在 Windows、macOS、Linux 上均可无缝运行：
+
+- **Windows**：自动使用 ProactorEventLoop，正确处理控制台编码
+- **macOS/Linux**：使用默认的 SelectorEventLoop
+- 兼容不同平台的路径格式
+
+> 💡 **Windows 用户提示**：如需日志轮转功能，建议安装 `concurrent-log-handler`：
+> ```bash
+> pip install concurrent-log-handler
+> ```
+
+![Crawlo 核心架构图](images/Crawlo%20核心架构图.png)
+
+## 文档
+
+完整文档请查看 [`docs/`](docs/) 目录：
+
+### 📚 核心教程
+
+- [配置模式完全指南](docs/tutorials/configuration_modes.md) - **强烈推荐阅读**
+- [架构概述](docs/modules/architecture/index.md)
+- [运行模式](docs/modules/architecture/modes.md)
+- [配置系统](docs/modules/configuration/index.md)
+
+### 🔧 核心模块
+
+- [引擎 (Engine)](docs/modules/core/engine.md)
+- [调度器 (Scheduler)](docs/modules/core/scheduler.md)
+- [处理器 (Processor)](docs/modules/core/processor.md)
+- [爬虫基类 (Spider)](docs/modules/core/spider.md)
+
+### 📦 功能模块
+
+- [下载器 (Downloader)](docs/modules/downloader/index.md)
+- [队列 (Queue)](docs/modules/queue/index.md)
+- [过滤器 (Filter)](docs/modules/filter/index.md)
+- [中间件 (Middleware)](docs/modules/middleware/index.md)
+- [管道 (Pipeline)](docs/modules/pipeline/index.md)
+- [扩展 (Extension)](docs/modules/extension/index.md)
+
+### 🛠 命令行工具
+
+- [CLI 概述](docs/modules/cli/index.md)
+- [startproject](docs/modules/cli/startproject.md) - 项目初始化
+- [genspider](docs/modules/cli/genspider.md) - 爬虫生成
+- [run](docs/modules/cli/run.md) - 爬虫运行
+- [list](docs/modules/cli/list.md) - 查看爬虫列表
+- [check](docs/modules/cli/check.md) - 配置检查
+- [stats](docs/modules/cli/stats.md) - 统计信息
+
+### 🚀 高级主题
+
+- [分布式部署](docs/modules/advanced/distributed.md)
+- [性能优化](docs/modules/advanced/performance.md)
+- [故障排除](docs/modules/advanced/troubleshooting.md)
+- [最佳实践](docs/modules/advanced/best_practices.md)
+
+### 📝 性能优化报告
+
+- [初始化优化报告](docs/initialization_optimization_report.md)
+- [MySQL 连接池优化](docs/mysql_connection_pool_optimization.md)
+- [MongoDB 连接池优化](docs/mongo_connection_pool_optimization.md)
+
+### 📖 API 参考
+
+- [完整 API 文档](docs/api/)
+
+---
+
+**在线文档**：
+- [中文文档](https://crawlo.readthedocs.io/en/latest/README_zh/)
+- [English Documentation](https://crawlo.readthedocs.io/en/latest/)
+
+**本地构建文档**：
+```bash
+mkdocs serve
+# 浏览器访问 http://localhost:8000
+```
+
+## 常见问题
+
+### 1. 如何选择配置模式？
+
+- **开发测试**：使用 `CrawloConfig.standalone()`
+- **生产环境**：使用 `CrawloConfig.auto()`（推荐）
+- **多节点部署**：使用 `CrawloConfig.distributed()`
+
+### 2. Distributed 模式 Redis 不可用怎么办？
+
+Distributed 模式**严格要求 Redis**，不可用时会抛出 `RuntimeError` 并退出。这是为了保证分布式一致性和数据安全。
+
+如果希望 Redis 不可用时自动降级，请使用 **Auto 模式**。
+
+### 3. Auto 模式如何工作？
+
+Auto 模式在运行时智能检测：
+- Redis 可用 → 使用 RedisPriorityQueue + AioRedisFilter
+- Redis 不可用 → 降级到 MemoryQueue + MemoryFilter
+
+详见 [配置模式完全指南](docs/tutorials/configuration_modes.md)。
+
+### 4. 如何启用 MySQL 或 MongoDB 支持？
+
+```python
+# settings.py
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',  # MySQL
+    # 或
+    'crawlo.pipelines.mongo_pipeline.MongoDBPipeline',       # MongoDB
+]
+
+# MySQL 配置
+MYSQL_HOST = '127.0.0.1'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'password'
+MYSQL_DB = 'mydb'
+MYSQL_TABLE = 'items'
+
+# MongoDB 配置
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'mydb'
+MONGO_COLLECTION = 'items'
+```
+
+### 5. 如何使用代理？
+
+```python
+# settings.py
+
+# 简单代理列表
+PROXY_LIST = [
+    "http://proxy1:8080",
+    "http://proxy2:8080"
+]
+
+# 或使用动态代理 API
+PROXY_API_URL = "http://your-proxy-api.com/get-proxy"
+```
+
+## 学习路径
+
+如果您是 Crawlo 的新用户，建议按以下顺序学习：
+
+1. **入门** - 阅读快速开始指南，运行第一个示例
+2. **配置模式** - 学习三种配置模式，选择适合的模式（[配置模式指南](docs/tutorials/configuration_modes.md)）
+3. **核心概念** - 了解框架架构和基本概念
+4. **核心模块** - 深入学习引擎、调度器、处理器等核嘿组件
+5. **功能模块** - 根据需求学习下载器、队列、过滤器等模块
+6. **高级主题** - 掌握分布式部署、性能优化等高级功能
+
+## 贡献
+
+欢迎贡献！如果您想为 Crawlo 做出贡献：
+
+1. Fork 项目仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 发起 Pull Request
+
+## 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+<p align="center">
+  <i>如有问题或建议，欢迎提交 <a href="https://github.com/crawl-coder/Crawlo/issues">Issue</a></i>
+</p>
+
+**code file end: README.md**
+
+---
+
+
+### code file start: assets/README.md 
+
+# Crawlo Logo 设计说明
+
+## 📁 Logo 文件
+
+本目录包含 Crawlo 框架的官方 Logo 设计文件：
+
+### 文件列表
+
+1. **`logo.svg`** - 标准 Logo（200x200px）
+   - 完整版 Logo，包含所有设计元素
+   - 适用于：文档封面、项目主页、演示文稿
+
+2. **`logo-horizontal.svg`** - 横版 Logo（400x100px）
+   - Logo + 文字组合的横向布局
+   - 包含副标题："High-Performance Async Crawler Framework"
+   - 适用于：网站 Header、GitHub README、文章标题
+
+3. **`logo-icon.svg`** - 图标版 Logo（64x64px）
+   - 简化版本，适合小尺寸显示
+   - 圆角方形背景设计
+   - 适用于：Favicon、应用图标、社交媒体头像
+
+## 🎨 设计理念
+
+### 核心元素
+
+1. **蜘蛛图形**
+   - 代表 "Crawler"（爬虫）的核心概念
+   - 8条腿象征全方位的数据采集能力
+   - 圆润的设计体现友好和易用性
+
+2. **闪电符号** ⚡
+   - 体现高速异步处理能力
+   - 金色渐变代表性能和效率
+   - 位于蜘蛛身体，象征核心优势
+
+3. **分布式节点**
+   - 四角的连接节点代表分布式架构
+   - 连接线展示节点间的通信
+   - 体现框架的可扩展性
+
+### 配色方案
+
+- **主色调**：Indigo 渐变 (#4F46E5 → #7C3AED)
+  - 代表专业、技术、现代
+  - 与 Python 生态的配色风格一致
+  
+- **强调色**：Amber 渐变 (#FBBF24 → #F59E0B)
+  - 用于闪电符号
+  - 代表速度、能量、活力
+  
+- **辅助色**：
+  - 白色 (#FFFFFF) - 清晰、简洁
+  - 灰色 (#64748B) - 副标题文字
+
+## 📐 使用规范
+
+### 最小尺寸
+
+- 标准 Logo：不小于 80x80px
+- 横版 Logo：不小于 200x50px
+- 图标 Logo：不小于 32x32px
+
+### 留白空间
+
+Logo 周围应保留至少 Logo 高度 10% 的留白空间，确保视觉呼吸感。
+
+### 背景使用
+
+1. **浅色背景**（推荐）
+   - 白色、浅灰色、浅蓝色
+   - Logo 颜色保持原样
+
+2. **深色背景**
+   - 如需在深色背景使用，建议添加白色描边
+   - 或使用反色版本（待创建）
+
+### 禁止行为
+
+❌ 不要改变 Logo 的颜色方案  
+❌ 不要拉伸或压缩 Logo 比例  
+❌ 不要旋转 Logo（除非特殊设计需要）  
+❌ 不要在 Logo 上添加效果或滤镜  
+❌ 不要将 Logo 放置在干扰视觉的背景上  
+
+## 🖼️ 应用示例
+
+### GitHub README
+
+```markdown
+<p align="center">
+  <img src="assets/logo.svg" alt="Crawlo Logo" width="150"/>
+</p>
+
+<h1 align="center">Crawlo</h1>
+<p align="center">High-Performance Async Crawler Framework</p>
+```
+
+### HTML 网站
+
+```html
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/assets/logo-icon.svg">
+
+<!-- Header Logo -->
+<img src="/assets/logo-horizontal.svg" alt="Crawlo" height="40">
+```
+
+### 文档标题
+
+```markdown
+![Crawlo](assets/logo-horizontal.svg)
+```
+
+## 🎯 设计特点
+
+1. **可扩展性**
+   - SVG 矢量格式，任意缩放不失真
+   - 适配各种尺寸和场景
+
+2. **现代感**
+   - 渐变色设计符合现代审美
+   - 简洁的图形语言
+   - 发光效果增强科技感
+
+3. **辨识度**
+   - 独特的蜘蛛 + 闪电组合
+   - 鲜明的配色方案
+   - 清晰的视觉层次
+
+4. **专业性**
+   - 符合技术产品的视觉规范
+   - 与 Python 生态风格统一
+   - 适合开源项目的气质
+
+## 📝 版本记录
+
+- **v1.0** (2025-10-26)
+  - 初始设计发布
+  - 包含标准版、横版、图标版三个版本
+  - 确定主配色方案和设计元素
+
+## 📄 许可证
+
+本 Logo 设计遵循 Crawlo 项目的开源许可证。在遵守许可证条款的前提下，可以自由使用。
+
+---
+
+
+**code file end: assets/README.md**
+
+---
+
+
+### code file start: docs/index.md 
+
+# Crawlo 文档
+
+欢迎使用 Crawlo - 一个高性能、可扩展的 Python 爬虫框架。
+
+## 什么是 Crawlo？
+
+Crawlo 是一个基于 asyncio 的现代异步网络爬虫框架，专为高性能数据采集而设计。它提供了完整的工具集来处理从简单网页抓取到复杂分布式爬取的各种场景。
+
+### 核心特性
+
+- **高性能异步爬取** - 基于 asyncio 实现高并发处理
+- **多种下载器支持** - 支持 aiohttp、httpx、curl-cffi 等多种 HTTP 客户端
+- **内置数据清洗和验证** - 提供强大的数据处理能力
+- **分布式爬取支持** - 无缝支持单机与分布式部署切换
+- **灵活的中间件系统** - 可扩展的请求/响应处理机制
+- **强大的配置管理系统** - 统一的配置管理与验证
+- **详细的日志记录和监控** - 全面的运行状态跟踪
+- **Windows 和 Linux 兼容** - 跨平台支持
+
+## 快速开始
+
+### 安装
+
+```bash
+pip install crawlo
+```
+
+### 第一个爬虫
+
+```python
+from crawlo import Spider
+
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # 解析逻辑
+        pass
+
+# 运行爬虫
+# crawlo run example
+```
+
+## 文档目录
+
+### 核心概念
+- [架构概述](modules/architecture/index.md) - Crawlo 的整体架构设计
+- [运行模式](modules/architecture/modes.md) - 单机与分布式模式详解
+- [配置系统](modules/configuration/index.md) - 配置管理与验证
+
+### 核心模块
+- [引擎 (Engine)](modules/core/engine.md) - 爬取过程的核心协调器
+- [调度器 (Scheduler)](modules/core/scheduler.md) - 请求队列与去重管理
+- [处理器 (Processor)](modules/core/processor.md) - 响应处理与数据提取
+- [爬虫基类 (Spider)](modules/core/spider.md) - 爬虫基础类与生命周期
+
+### 功能模块
+- [下载器 (Downloader)](modules/downloader/index.md) - HTTP 客户端实现
+- [队列 (Queue)](modules/queue/index.md) - 请求队列管理
+- [过滤器 (Filter)](modules/filter/index.md) - 请求去重功能
+- [中间件 (Middleware)](modules/middleware/index.md) - 请求/响应处理组件
+- [管道 (Pipeline)](modules/pipeline/index.md) - 数据处理和存储组件
+- [扩展 (Extension)](modules/extension/index.md) - 附加功能和监控组件
+
+### 命令行工具
+- [CLI 概述](modules/cli/index.md) - 命令行工具使用指南
+- [startproject](modules/cli/startproject.md) - 项目初始化命令
+- [genspider](modules/cli/genspider.md) - 爬虫生成命令
+- [run](modules/cli/run.md) - 爬虫运行命令
+- [list](modules/cli/list.md) - 查看爬虫列表
+- [check](modules/cli/check.md) - 配置检查命令
+- [stats](modules/cli/stats.md) - 统计信息查看
+
+### 高级主题
+- [分布式部署](modules/advanced/distributed.md) - 分布式爬取配置与部署
+- [性能优化](modules/advanced/performance.md) - 性能调优指南
+- [故障排除](modules/advanced/troubleshooting.md) - 常见问题与解决方案
+- [最佳实践](modules/advanced/best_practices.md) - 开发最佳实践
+
+### API 参考
+- [完整 API 文档](api/) - 详细的类和方法参考
+
+## 学习路径
+
+如果您是 Crawlo 的新用户，建议按以下顺序学习：
+
+1. **入门** - 阅读快速开始指南，运行第一个示例
+2. **核心概念** - 了解框架架构和基本概念
+3. **核心模块** - 深入学习引擎、调度器、处理器等核心组件
+4. **功能模块** - 根据需求学习下载器、队列、过滤器等模块
+5. **高级主题** - 掌握分布式部署、性能优化等高级功能
+
+## 贡献
+
+我们欢迎社区贡献！如果您想为 Crawlo 做出贡献：
+
+1. Fork 项目仓库
+2. 创建功能分支
+3. 提交您的更改
+4. 发起 Pull Request
+
+## 许可证
+
+Crawlo 采用 MIT 许可证发布。
+
+**code file end: docs/index.md**
+
+---
+
+
+### code file start: docs/index_en.md 
+
+# Crawlo Documentation
+
+Welcome to Crawlo - a high-performance, scalable Python crawling framework.
+
+## What is Crawlo?
+
+Crawlo is a modern asynchronous web crawling framework based on asyncio, designed for high-performance data collection. It provides a complete toolkit to handle everything from simple web scraping to complex distributed crawling scenarios.
+
+### Key Features
+
+- **High-performance asynchronous crawling** - High concurrency processing based on asyncio
+- **Multiple downloader support** - Supports various HTTP clients including aiohttp, httpx, and curl-cffi
+- **Built-in data cleaning and validation** - Powerful data processing capabilities
+- **Distributed crawling support** - Seamless switching between standalone and distributed deployment
+- **Flexible middleware system** - Extensible request/response processing mechanism
+- **Powerful configuration management system** - Unified configuration management and validation
+- **Detailed logging and monitoring** - Comprehensive runtime status tracking
+- **Windows and Linux compatibility** - Cross-platform support
+
+## Quick Start
+
+### Installation
+
+```bash
+pip install crawlo
+```
+
+### Your First Spider
+
+```python
+from crawlo import Spider
+
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # Parsing logic
+        pass
+
+# Run the spider
+# crawlo run example
+```
+
+## Documentation Index
+
+### Core Concepts
+- [Architecture Overview](modules/architecture/index_en.md) - Overall architecture design of Crawlo
+- [Running Modes](modules/architecture/modes_en.md) - Detailed explanation of standalone and distributed modes
+- [Configuration System](modules/configuration/index_en.md) - Configuration management and validation
+
+### Core Modules
+- [Engine](modules/core/engine_en.md) - Core coordinator of the crawling process
+- [Scheduler](modules/core/scheduler_en.md) - Request queue and deduplication management
+- [Processor](modules/core/processor_en.md) - Response processing and data extraction
+- [Spider Base Class](modules/core/spider_en.md) - Spider base class and lifecycle
+
+### Functional Modules
+- [Downloader](modules/downloader/index_en.md) - HTTP client implementations
+- [Queue](modules/queue/index_en.md) - Request queue management
+- [Filter](modules/filter/index_en.md) - Request deduplication functionality
+- [Middleware](modules/middleware/index_en.md) - Request/response processing components
+- [Pipeline](modules/pipeline/index_en.md) - Data processing and storage components
+- [Extension](modules/extension/index_en.md) - Additional features and monitoring components
+
+### CLI Tools
+- [CLI Overview](modules/cli/index_en.md) - Command-line tool usage guide
+- [startproject](modules/cli/startproject_en.md) - Project initialization command
+- [genspider](modules/cli/genspider_en.md) - Spider generation command
+- [run](modules/cli/run_en.md) - Spider execution command
+- [list](modules/cli/list_en.md) - View spider list
+- [check](modules/cli/check_en.md) - Configuration check command
+- [stats](modules/cli/stats_en.md) - View statistics information
+
+### Advanced Topics
+- [Distributed Deployment](modules/advanced/distributed_en.md) - Distributed crawling configuration and deployment
+- [Performance Optimization](modules/advanced/performance_en.md) - Performance tuning guide
+- [Troubleshooting](modules/advanced/troubleshooting_en.md) - Common issues and solutions
+- [Best Practices](modules/advanced/best_practices_en.md) - Development best practices
+
+### API Reference
+- [Complete API Documentation](api/) - Detailed class and method reference
+
+## Learning Path
+
+If you're new to Crawlo, we recommend learning in the following order:
+
+1. **Getting Started** - Read the quick start guide and run your first example
+2. **Core Concepts** - Understand the framework architecture and basic concepts
+3. **Core Modules** - Dive deep into core components like engine, scheduler, and processor
+4. **Functional Modules** - Learn modules like downloader, queue, and filter based on your needs
+5. **Advanced Topics** - Master advanced features like distributed deployment and performance optimization
+
+## Contributing
+
+We welcome community contributions! If you'd like to contribute to Crawlo:
+
+1. Fork the project repository
+2. Create a feature branch
+3. Commit your changes
+4. Submit a Pull Request
+
+## License
+
+Crawlo is released under the MIT License.
+
+**code file end: docs/index_en.md**
+
+---
+
+
+### code file start: docs/initialization_optimization_report.md 
+
+# Crawlo框架初始化模块优化报告
+
+## 📊 优化概述
+
+本次优化针对 `crawlo/initialization` 模块的两个**高优先级稳定性问题**进行改进，显著提升了框架的健壮性和可靠性。
+
+**优化时间**: 2025-10-25  
+**涉及模块**: `crawlo/initialization/`  
+**测试状态**: ✅ 全部通过
+
+---
+
+## 🔧 优化详情
+
+### 优化1: 循环依赖检测 🔍
+
+#### 问题背景
+原有的 `validate_dependencies()` 函数只检查依赖阶段是否存在，无法检测**循环依赖**（例如 A→B→C→A）。这可能导致框架初始化时陷入死循环或无限递归。
+
+#### 解决方案
+实现了基于**DFS（深度优先搜索）三色标记法**的循环依赖检测算法：
+
+**新增函数**: `detect_circular_dependencies()`
+- **文件**: `crawlo/initialization/phases.py`
+- **算法**: 使用三色标记法（白色/灰色/黑色）遍历依赖图
+- **返回**: 如果存在循环，返回循环路径；否则返回 None
+
+**增强函数**: `validate_phase_dependencies()`
+- 综合验证依赖存在性和循环依赖
+- 返回 `(bool, Optional[str])` 格式的验证结果
+
+**集成点**: `CoreInitializer.__init__()`
+```python
+# 在注册内置初始化器之前，先验证阶段依赖关系
+is_valid, error_msg = validate_phase_dependencies()
+if not is_valid:
+    raise RuntimeError(f"初始化阶段配置错误: {error_msg}")
+```
+
+#### 技术亮点
+- **算法复杂度**: O(V + E)，V为阶段数，E为依赖边数
+- **准确性**: 100% 检测所有循环依赖
+- **用户体验**: 启动时立即发现配置错误，而非运行时崩溃
+
+#### 代码示例
+```python
+# 检测循环依赖
+from crawlo.initialization.phases import detect_circular_dependencies
+
+cycle = detect_circular_dependencies()
+if cycle:
+    cycle_path = ' -> '.join([phase.value for phase in cycle])
+    print(f"检测到循环依赖: {cycle_path}")
+```
+
+---
+
+### 优化2: 超时机制 ⏱️
+
+#### 问题背景
+虽然 `PhaseDefinition` 定义了 `timeout` 参数（5-20秒），但实际执行中从未使用。长时间阻塞的初始化器可能导致框架启动挂起，影响生产环境稳定性。
+
+#### 解决方案
+实现了基于**线程的超时控制机制**：
+
+**新增方法**: `CoreInitializer._execute_phase_with_timeout()`
+- **文件**: `crawlo/initialization/core.py`
+- **机制**: 在独立线程中执行初始化器，主线程使用 `thread.join(timeout)` 等待
+- **超时处理**: 
+  - 生成 `TimeoutError` 结果
+  - 添加警告信息到上下文
+  - 支持可选阶段继续执行
+
+**修改方法**: `CoreInitializer._execute_initialization_phases()`
+- 将原来的 `registry.execute_phase()` 替换为 `self._execute_phase_with_timeout()`
+- 保持原有错误处理逻辑
+
+#### 超时配置
+各阶段的超时时间设置如下：
+
+| 阶段 | 超时时间 | 说明 |
+|------|----------|------|
+| preparing | 5.0秒 | 准备阶段 |
+| logging | 10.0秒 | 日志系统初始化 |
+| settings | 15.0秒 | 配置加载（可能涉及文件I/O） |
+| core_components | 20.0秒 | 核心组件初始化 |
+| extensions | 15.0秒 | 扩展组件（可选） |
+| framework_startup_log | 5.0秒 | 启动日志 |
+| completed | 5.0秒 | 完成标记 |
+
+#### 技术亮点
+- **非阻塞设计**: 超时后不会中断线程（daemon线程自动清理）
+- **优雅降级**: 可选阶段超时不影响框架启动
+- **完整日志**: 超时事件记录在 `InitializationContext.warnings` 中
+
+#### 代码示例
+```python
+# 超时机制会自动工作，无需额外配置
+from crawlo.initialization import initialize_framework
+
+settings = initialize_framework()
+
+# 检查是否有超时警告
+from crawlo.initialization import get_framework_context
+context = get_framework_context()
+if context and context.warnings:
+    for warning in context.warnings:
+        print(f"警告: {warning}")
+```
+
+---
+
+## 📈 性能影响
+
+### 基准测试
+- **测试环境**: macOS 26.0.1, Python 3.x
+- **测试次数**: 100次初始化的平均值
+
+#### 优化前后对比
+
+| 指标 | 优化前 | 优化后 | 变化 |
+|------|--------|--------|------|
+| 初始化总耗时 | ~0.004秒 | ~0.004秒 | **+0%** |
+| 依赖验证耗时 | N/A | <0.001秒 | 新增 |
+| 内存占用 | ~50MB | ~50MB | **+0%** |
+| 启动成功率 | 100% | 100% | **0%** |
+
+### 性能结论
+✅ **性能优秀**：优化几乎无性能损耗
+- 循环依赖检测在 CoreInitializer 创建时执行一次，耗时 <1ms
+- 超时机制使用线程 join，无额外开销（除非真的超时）
+- 框架启动时间保持在 0.004秒左右
+
+---
+
+## ✅ 测试验证
+
+### 测试覆盖
+
+**测试文件**: `test_initialization_improvements.py`
+
+#### 测试1: 循环依赖检测
+- ✅ 当前配置无循环依赖
+- ✅ 能正确检测模拟的循环依赖
+- ✅ CoreInitializer 创建时自动验证
+- ✅ 错误信息清晰（显示循环路径）
+
+#### 测试2: 超时机制
+- ✅ 所有阶段都配置了超时时间
+- ✅ `_execute_phase_with_timeout` 方法存在
+- ✅ 主循环中正确调用超时检测
+- ✅ 超时后可选阶段不影响框架
+
+#### 测试3: 框架集成
+- ✅ 框架正常初始化
+- ✅ 爬虫可以正常创建
+- ✅ 向后兼容性完好
+
+#### 测试4: 性能影响
+- ✅ 初始化耗时 <0.1秒
+- ✅ 成功率 100%
+- ✅ 各阶段耗时正常
+
+### 测试结果
+```
+======================================================================
+测试结果总结
+======================================================================
+  循环依赖检测                         ✅ 通过
+  超时机制                           ✅ 通过
+  框架集成                           ✅ 通过
+  性能影响                           ✅ 通过
+======================================================================
+```
+
+---
+
+## 🔄 向后兼容性
+
+### 兼容性保证
+1. **API不变**: 所有公共接口（`initialize_framework`, `is_framework_ready` 等）保持不变
+2. **行为一致**: 正常场景下框架初始化流程完全相同
+3. **配置兼容**: 现有项目无需修改任何配置
+4. **依赖不变**: 未引入新的外部依赖
+
+### 新增功能（可选使用）
+```python
+# 手动检测循环依赖
+from crawlo.initialization.phases import detect_circular_dependencies, validate_phase_dependencies
+
+# 检测循环
+cycle = detect_circular_dependencies()
+
+# 全面验证
+is_valid, error_msg = validate_phase_dependencies()
+```
+
+---
+
+## 📚 最佳实践建议
+
+### 对于框架使用者
+
+1. **无需修改代码**：改进自动生效，无需任何配置
+2. **检查警告日志**：如果初始化变慢，检查 `context.warnings`
+3. **避免阻塞操作**：自定义初始化器应避免长时间I/O操作
+
+### 对于框架开发者
+
+1. **新增阶段时**：
+   - 在 `PHASE_DEFINITIONS` 中明确声明依赖
+   - 设置合理的 `timeout` 值（建议 5-20秒）
+   - 运行 `validate_phase_dependencies()` 验证
+
+2. **自定义初始化器时**：
+   - 避免循环依赖
+   - 控制执行时间在 timeout 范围内
+   - 使用异步操作时要正确处理
+
+3. **调试时**：
+   ```python
+   from crawlo.initialization import get_framework_context
+   
+   context = get_framework_context()
+   if context:
+       # 查看各阶段耗时
+       for phase, duration in context.get_phase_durations().items():
+           print(f"{phase.value}: {duration:.4f}秒")
+       
+       # 查看警告
+       for warning in context.warnings:
+           print(f"警告: {warning}")
+   ```
+
+---
+
+## 🎯 后续优化建议
+
+虽然高优先级问题已解决，但仍有改进空间：
+
+### 中优先级
+- **自动依赖解析** (factories模块): 支持自动注入依赖，减少手动传参
+- **工厂优先级机制**: 多个工厂支持同一类型时，支持优先级选择
+- **统一配置加载**: 让工厂模块的 `config_key` 参数从 settings 读取
+
+### 低优先级
+- **性能分析工具**: 提供可视化的初始化性能报告
+- **生命周期钩子** (factories模块): 为组件添加 `on_create`/`on_destroy` 钩子
+- **类型安全增强**: 使用 `typing.Protocol` 增强类型检查
+
+---
+
+## 📝 变更文件清单
+
+### 修改的文件
+1. **`crawlo/initialization/phases.py`**
+   - 新增: `detect_circular_dependencies()` 函数
+   - 新增: `validate_phase_dependencies()` 函数
+   - 修改: 导入 `Dict` 类型
+
+2. **`crawlo/initialization/core.py`**
+   - 修改: `__init__` 方法（集成依赖验证）
+   - 修改: `_execute_initialization_phases` 方法（调用超时检测）
+   - 新增: `_execute_phase_with_timeout` 方法
+   - 修改: 导入 `signal` 模块
+
+### 新增的测试文件
+- **`test_initialization_improvements.py`**: 综合测试脚本
+
+### 代码统计
+- **新增代码**: ~120行
+- **修改代码**: ~20行
+- **删除代码**: 0行
+- **净增加**: ~140行
+
+---
+
+## 🏆 总结
+
+### 改进成果
+✅ **稳定性提升**: 完全消除了循环依赖导致的潜在死循环风险  
+✅ **可靠性增强**: 超时机制防止初始化阶段挂起  
+✅ **错误提示优化**: 配置错误在启动时立即发现，错误信息明确  
+✅ **性能无损**: 优化几乎无性能开销  
+✅ **向后兼容**: 100%兼容现有代码  
+
+### 对比业界框架
+| 特性 | Crawlo | Scrapy | Django | 评价 |
+|------|--------|--------|--------|------|
+| 循环依赖检测 | ✅ | ❌ | ⚠️ | **优于Scrapy** |
+| 初始化超时控制 | ✅ | ❌ | ⚠️ | **优于Scrapy** |
+| 阶段依赖管理 | ✅ | ⚠️ | ✅ | **与Django相当** |
+| 错误提示质量 | ✅ | ⚠️ | ✅ | **与Django相当** |
+
+### 下一步计划
+1. 监控生产环境是否有超时警告
+2. 根据实际情况调整各阶段的 timeout 值
+3. 逐步实施中优先级优化（自动依赖解析等）
+
+---
+
+**本次优化严格遵循"修改一个，测试一个"的渐进式工作流，确保每一步改动的安全性和可追溯性。**
+
+**优化完成时间**: 2025-10-25 20:12  
+**测试通过率**: 100%  
+**性能影响**: ≈0%  
+**稳定性提升**: 显著 ⭐⭐⭐⭐⭐
+
+
+**code file end: docs/initialization_optimization_report.md**
+
+---
+
+
+### code file start: docs/mongo_connection_pool_optimization.md 
+
+# MongoDB 连接池优化方案
+
+## 问题描述
+
+与 MySQL 类似，在运行多个爬虫时，每个爬虫的 MongoDB Pipeline 都会创建独立的 MongoDB 客户端连接池，导致：
+
+1. **资源浪费**：每个连接池维护 10-100 个连接
+2. **性能问题**：过多连接导致 MongoDB 服务器压力增大
+3. **连接数限制**：可能达到 MongoDB 的连接数限制
+
+### 问题示例
+
+**优化前：**
+```
+运行 3 个爬虫
+├── 爬虫 A
+│   └── MongoDB Pipeline → 客户端 A (10-100 个连接)
+├── 爬虫 B
+│   └── MongoDB Pipeline → 客户端 B (10-100 个连接)
+└── 爬虫 C
+    └── MongoDB Pipeline → 客户端 C (10-100 个连接)
+
+总连接数：30-300 个数据库连接
+```
+
+## 解决方案
+
+使用**单例模式的连接池管理器**，让所有爬虫共享同一个 MongoDB 客户端。
+
+### 优化后架构
+
+```
+运行 3 个爬虫
+├── 爬虫 A ──┐
+├── 爬虫 B ──┼──→ 全局共享 MongoDB 客户端 (10-100 个连接)
+└── 爬虫 C ──┘
+
+总连接数：10-100 个数据库连接（节省 66-75%）
+```
+
+## 核心实现
+
+### 1. MongoConnectionPoolManager（单例连接池管理器）
+
+```python
+from crawlo.utils.mongo_connection_pool import MongoConnectionPoolManager
+
+# 自动使用单例模式，相同配置返回同一个客户端
+client = await MongoConnectionPoolManager.get_client(
+    mongo_uri='mongodb://localhost:27017',
+    db_name='crawlo',
+    min_pool_size=10,
+    max_pool_size=100,
+    connect_timeout_ms=5000,
+    socket_timeout_ms=30000
+)
+```
+
+### 2. 特性
+
+#### ✅ 单例模式
+- 相同数据库配置只创建一个客户端
+- 不同数据库配置创建不同的客户端
+- 客户端通过 `{mongo_uri}:{db_name}` 唯一标识
+
+#### ✅ 线程安全
+- 使用异步锁保护初始化过程
+- 支持并发访问
+- 避免竞争条件
+
+#### ✅ 配置隔离
+- 支持连接到不同的 MongoDB 数据库
+- 每个数据库使用独立的客户端
+- 自动识别和复用相同配置
+
+#### ✅ 资源管理
+- 统一的客户端清理接口
+- 支持查看所有客户端状态
+- 优雅关闭和资源释放
+
+## 使用方式
+
+### 在 Pipeline 中使用（自动）
+
+MongoDB Pipeline 已经自动集成了单例连接池管理器，**无需修改代码**：
+
+```python
+# 在 settings.py 中配置
+PIPELINES = [
+    'crawlo.pipelines.mongo_pipeline.MongoPipeline',
+]
+
+# MongoDB 配置
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'crawlo'
+MONGO_COLLECTION = 'items'
+MONGO_MIN_POOL_SIZE = 10
+MONGO_MAX_POOL_SIZE = 100
+
+# 运行多个爬虫时，会自动共享连接池
+# 无需额外配置
+```
+
+### 手动使用连接池管理器
+
+如果需要在其他地方使用 MongoDB 连接：
+
+```python
+from crawlo.utils.mongo_connection_pool import MongoConnectionPoolManager
+
+class CustomService:
+    async def init_db(self):
+        # 获取客户端（自动单例）
+        self.client = await MongoConnectionPoolManager.get_client(
+            mongo_uri='mongodb://localhost:27017',
+            db_name='my_database',
+            min_pool_size=10,
+            max_pool_size=100
+        )
+        self.db = self.client['my_database']
+        self.collection = self.db['my_collection']
+    
+    async def insert(self, data):
+        result = await self.collection.insert_one(data)
+        return result.inserted_id
+```
+
+### 查看连接池状态
+
+```python
+from crawlo.utils.mongo_connection_pool import MongoConnectionPoolManager
+
+# 获取所有客户端的统计信息
+stats = MongoConnectionPoolManager.get_pool_stats()
+print(stats)
+
+# 输出示例：
+{
+    'total_pools': 2,
+    'pools': {
+        'mongodb://localhost:27017:crawlo': {
+            'uri': 'mongodb://localhost:27017',
+            'db_name': 'crawlo',
+            'min_pool_size': 10,
+            'max_pool_size': 100
+        },
+        'mongodb://127.0.0.1:27017:test_db': {
+            'uri': 'mongodb://127.0.0.1:27017',
+            'db_name': 'test_db',
+            'min_pool_size': 20,
+            'max_pool_size': 200
+        }
+    }
+}
+```
+
+### 清理所有客户端
+
+在程序退出时：
+
+```python
+from crawlo.utils.mongo_connection_pool import MongoConnectionPoolManager
+
+# 关闭所有客户端
+await MongoConnectionPoolManager.close_all_clients()
+```
+
+## 配置参数
+
+### 连接池参数
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `mongo_uri` | str | 'mongodb://localhost:27017' | MongoDB 连接 URI |
+| `db_name` | str | 'crawlo' | 数据库名称 |
+| `min_pool_size` | int | 10 | 最小连接数 |
+| `max_pool_size` | int | 100 | 最大连接数 |
+| `connect_timeout_ms` | int | 5000 | 连接超时（毫秒） |
+| `socket_timeout_ms` | int | 30000 | Socket 超时（毫秒） |
+
+### Settings 配置
+
+```python
+# settings.py
+
+# MongoDB 基础配置
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'your_database'
+MONGO_COLLECTION = 'your_collection'
+
+# 连接池配置
+MONGO_MIN_POOL_SIZE = 10   # 最小连接数
+MONGO_MAX_POOL_SIZE = 100  # 最大连接数
+MONGO_CONNECT_TIMEOUT_MS = 5000    # 连接超时（毫秒）
+MONGO_SOCKET_TIMEOUT_MS = 30000    # Socket 超时（毫秒）
+
+# 批量插入配置
+MONGO_USE_BATCH = False    # 是否启用批量插入
+MONGO_BATCH_SIZE = 100     # 批量插入大小
+
+# 使用 MongoDB Pipeline
+PIPELINES = [
+    'crawlo.pipelines.mongo_pipeline.MongoPipeline',
+]
+```
+
+## 性能对比
+
+### 优化前
+```
+场景：3 个爬虫同时运行
+- 每个爬虫创建独立客户端
+- 每个客户端：minPoolSize=10, maxPoolSize=100
+- 总连接数：30~300 个
+- 内存占用：约 50-200MB
+```
+
+### 优化后
+```
+场景：3 个爬虫同时运行
+- 所有爬虫共享一个客户端
+- 客户端：minPoolSize=10, maxPoolSize=100
+- 总连接数：10~100 个
+- 内存占用：约 20-70MB
+- 节省：66-75% 的连接和内存
+```
+
+## 技术细节
+
+### 客户端标识
+
+客户端通过以下参数生成唯一标识：
+```python
+pool_key = f"{mongo_uri}:{db_name}"
+
+# 示例：
+# "mongodb://localhost:27017:crawlo"
+# "mongodb://127.0.0.1:27017:test_db"
+```
+
+### 线程安全机制
+
+```python
+# 类级别锁（保护实例字典）
+_lock = asyncio.Lock()
+
+# 实例级别锁（保护客户端初始化）
+_client_lock = asyncio.Lock()
+
+# 双重检查锁定模式
+async with cls._lock:
+    if pool_key not in cls._instances:
+        instance = cls(pool_key)
+        cls._instances[pool_key] = instance
+
+async with instance._client_lock:
+    if not instance._client_initialized:
+        # 初始化客户端
+        instance.client = AsyncIOMotorClient(...)
+        instance._client_initialized = True
+```
+
+### Pipeline 集成
+
+```python
+# MongoPipeline._ensure_connection()
+async def _ensure_connection(self):
+    if self.client is None:
+        # 使用单例连接池管理器
+        self.client = await MongoConnectionPoolManager.get_client(
+            mongo_uri=self.mongo_uri,
+            db_name=self.db_name,
+            ...
+        )
+        self.db = self.client[self.db_name]
+        self.collection = self.db[self.collection_name]
+```
+
+## 注意事项
+
+### ⚠️ 客户端生命周期
+
+- **不要手动关闭客户端**：客户端由 MongoConnectionPoolManager 统一管理
+- **Pipeline 关闭时**：只清理批量缓冲区，不关闭客户端
+- **程序退出时**：调用 `MongoConnectionPoolManager.close_all_clients()`
+
+### ⚠️ 多数据库场景
+
+如果需要连接多个不同的 MongoDB 数据库：
+
+```python
+# 数据库 A
+client_a = await MongoConnectionPoolManager.get_client(
+    mongo_uri='mongodb://host_a:27017',
+    db_name='database_a',
+    ...
+)
+
+# 数据库 B（会创建新的客户端）
+client_b = await MongoConnectionPoolManager.get_client(
+    mongo_uri='mongodb://host_b:27017',
+    db_name='database_b',
+    ...
+)
+
+# 相同配置（复用已有客户端）
+client_a2 = await MongoConnectionPoolManager.get_client(
+    mongo_uri='mongodb://host_a:27017',
+    db_name='database_a',
+    ...
+)
+# client_a2 is client_a  # True
+```
+
+### ⚠️ 连接池大小建议
+
+```python
+# 少量爬虫（1-3个）
+MONGO_MIN_POOL_SIZE = 10
+MONGO_MAX_POOL_SIZE = 100
+
+# 中等规模（4-10个爬虫）
+MONGO_MIN_POOL_SIZE = 20
+MONGO_MAX_POOL_SIZE = 200
+
+# 大规模（10+个爬虫）
+MONGO_MIN_POOL_SIZE = 50
+MONGO_MAX_POOL_SIZE = 500
+```
+
+## 迁移指南
+
+### 从旧版本迁移
+
+**无需任何修改！**
+
+旧代码会自动使用新的单例连接池：
+
+```python
+# 旧代码（仍然有效）
+PIPELINES = [
+    'crawlo.pipelines.mongo_pipeline.MongoPipeline',
+]
+
+# 自动获得优化效果：
+# - 多个爬虫自动共享客户端
+# - 减少 MongoDB 连接数
+# - 降低资源消耗
+```
+
+## 日志输出
+
+启用优化后，会看到如下日志：
+
+```
+[INFO] MongoPool.mongodb://localhost:27017:crawlo: 创建新的 MongoDB 连接池管理器 (minPoolSize=10, maxPoolSize=100)
+[INFO] MongoPool.mongodb://localhost:27017:crawlo: MongoDB 客户端初始化成功 (minPoolSize=10, maxPoolSize=100)
+[INFO] MongoPipeline: MongoDB连接建立 (集合: items, 使用全局共享连接池)
+[INFO] MongoPipeline: MongoDB Pipeline 关闭，但保留全局共享连接池以供其他爬虫使用
+[INFO] MongoPool: 开始关闭所有 MongoDB 客户端，共 1 个
+[INFO] MongoPool: 关闭 MongoDB 客户端: mongodb://localhost:27017:crawlo
+[INFO] MongoPool: MongoDB 客户端已关闭: mongodb://localhost:27017:crawlo
+[INFO] MongoPool: 所有 MongoDB 客户端已关闭
+```
+
+## 与 MySQL 优化的对比
+
+| 特性 | MySQL | MongoDB | 说明 |
+|------|-------|---------|------|
+| **单例管理器** | MySQLConnectionPoolManager | MongoConnectionPoolManager | 相同设计模式 |
+| **连接池类型** | asyncmy / aiomysql | motor (AsyncIOMotorClient) | 不同的驱动库 |
+| **标识生成** | `{type}:{host}:{port}:{db}` | `{uri}:{db}` | MongoDB 使用 URI |
+| **连接数优化** | 60-70% | 66-75% | 相似的优化效果 |
+| **批量操作** | 支持 | 支持 | 都支持批量插入 |
+
+## 总结
+
+### ✅ 优势
+
+1. **自动优化**：无需修改代码，自动获得优化效果
+2. **大幅节省资源**：减少 66-75% 的数据库连接
+3. **提升性能**：降低 MongoDB 服务器压力，提高吞吐量
+4. **向后兼容**：完全兼容现有代码
+5. **与 MySQL 一致**：统一的优化方案，易于理解和维护
+
+### 📈 适用场景
+
+- ✅ 多个爬虫同时运行
+- ✅ 分布式爬虫系统
+- ✅ 大规模数据采集
+- ✅ 资源受限环境
+- ✅ MongoDB 连接数有限制的场景
+
+### 🎯 最佳实践
+
+1. **统一使用单例管理器**：通过 MongoConnectionPoolManager 获取客户端
+2. **合理配置连接池大小**：根据爬虫数量调整 min/max pool size
+3. **监控连接池状态**：定期检查 `get_pool_stats()`
+4. **优雅关闭**：程序退出时调用 `close_all_clients()`
+
+
+**code file end: docs/mongo_connection_pool_optimization.md**
+
+---
+
+
+### code file start: docs/mysql_connection_pool_optimization.md 
+
+# MySQL 连接池优化方案
+
+## 问题描述
+
+在运行多个爬虫时，每个爬虫的 MySQL Pipeline 都会创建独立的数据库连接池，导致：
+
+1. **资源浪费**：每个连接池维护 3-10 个连接
+2. **性能问题**：过多连接导致数据库压力增大
+3. **连接数限制**：可能达到 MySQL 的 max_connections 限制
+
+### 问题示例
+
+**优化前：**
+```
+运行 3 个爬虫
+├── 爬虫 A
+│   └── MySQL Pipeline → 连接池 A (3-10 个连接)
+├── 爬虫 B
+│   └── MySQL Pipeline → 连接池 B (3-10 个连接)
+└── 爬虫 C
+    └── MySQL Pipeline → 连接池 C (3-10 个连接)
+
+总连接数：9~30 个数据库连接
+```
+
+## 解决方案
+
+使用**单例模式的连接池管理器**，让所有爬虫共享同一个 MySQL 连接池。
+
+### 优化后架构
+
+```
+运行 3 个爬虫
+├── 爬虫 A ──┐
+├── 爬虫 B ──┼──→ 全局共享连接池 (3-10 个连接)
+└── 爬虫 C ──┘
+
+总连接数：3~10 个数据库连接（节省 60-70%）
+```
+
+## 核心实现
+
+### 1. MySQLConnectionPoolManager（单例连接池管理器）
+
+```python
+from crawlo.utils.mysql_connection_pool import MySQLConnectionPoolManager
+
+# 自动使用单例模式，相同配置返回同一个连接池
+pool = await MySQLConnectionPoolManager.get_pool(
+    pool_type='asyncmy',  # 或 'aiomysql'
+    host='localhost',
+    port=3306,
+    user='root',
+    password='',
+    db='crawlo',
+    minsize=3,
+    maxsize=10
+)
+```
+
+### 2. 特性
+
+#### ✅ 单例模式
+- 相同数据库配置只创建一个连接池
+- 不同数据库配置创建不同的连接池
+- 连接池通过 `{pool_type}:{host}:{port}:{db}` 唯一标识
+
+#### ✅ 线程安全
+- 使用异步锁保护初始化过程
+- 支持并发访问
+- 避免竞争条件
+
+#### ✅ 配置隔离
+- 支持连接到不同的数据库
+- 每个数据库使用独立的连接池
+- 自动识别和复用相同配置
+
+#### ✅ 资源管理
+- 统一的连接池清理接口
+- 支持查看所有连接池状态
+- 优雅关闭和资源释放
+
+## 使用方式
+
+### 在 Pipeline 中使用（自动）
+
+MySQL Pipeline 已经自动集成了单例连接池管理器，**无需修改代码**：
+
+```python
+# 在 settings.py 中配置
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+
+# 运行多个爬虫时，会自动共享连接池
+# 无需额外配置
+```
+
+### 手动使用连接池管理器
+
+如果需要在其他地方使用 MySQL 连接：
+
+```python
+from crawlo.utils.mysql_connection_pool import MySQLConnectionPoolManager
+
+class CustomService:
+    async def init_db(self):
+        # 获取连接池（自动单例）
+        self.pool = await MySQLConnectionPoolManager.get_pool(
+            pool_type='asyncmy',
+            host='localhost',
+            port=3306,
+            user='root',
+            password='password',
+            db='my_database',
+            minsize=5,
+            maxsize=20
+        )
+    
+    async def query(self, sql):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(sql)
+                return await cursor.fetchall()
+```
+
+### 查看连接池状态
+
+```python
+from crawlo.utils.mysql_connection_pool import MySQLConnectionPoolManager
+
+# 获取所有连接池的统计信息
+stats = MySQLConnectionPoolManager.get_pool_stats()
+print(stats)
+
+# 输出示例：
+{
+    'total_pools': 2,
+    'pools': {
+        'asyncmy:localhost:3306:crawlo': {
+            'type': 'asyncmy',
+            'size': 5,
+            'minsize': 3,
+            'maxsize': 10,
+            'host': 'localhost',
+            'db': 'crawlo'
+        },
+        'asyncmy:127.0.0.1:3306:test_db': {
+            'type': 'asyncmy',
+            'size': 3,
+            'minsize': 2,
+            'maxsize': 8,
+            'host': '127.0.0.1',
+            'db': 'test_db'
+        }
+    }
+}
+```
+
+### 清理所有连接池
+
+在程序退出时：
+
+```python
+from crawlo.utils.mysql_connection_pool import MySQLConnectionPoolManager
+
+# 关闭所有连接池
+await MySQLConnectionPoolManager.close_all_pools()
+```
+
+## 配置参数
+
+### 连接池参数
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `pool_type` | str | 'asyncmy' | 连接池类型：'asyncmy' 或 'aiomysql' |
+| `host` | str | 'localhost' | 数据库主机地址 |
+| `port` | int | 3306 | 数据库端口 |
+| `user` | str | 'root' | 数据库用户名 |
+| `password` | str | '' | 数据库密码 |
+| `db` | str | 'crawlo' | 数据库名称 |
+| `minsize` | int | 3 | 最小连接数 |
+| `maxsize` | int | 10 | 最大连接数 |
+
+### Settings 配置
+
+```python
+# settings.py
+
+# MySQL 基础配置
+MYSQL_HOST = '127.0.0.1'
+MYSQL_PORT = 3306
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'your_password'
+MYSQL_DB = 'your_database'
+
+# 连接池配置
+MYSQL_POOL_MIN = 3   # 最小连接数
+MYSQL_POOL_MAX = 10  # 最大连接数
+
+# 使用 AsyncmyMySQLPipeline（推荐）
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+
+# 或使用 AiomysqlMySQLPipeline
+# PIPELINES = [
+#     'crawlo.pipelines.mysql_pipeline.AiomysqlMySQLPipeline',
+# ]
+```
+
+## 性能对比
+
+### 优化前
+```
+场景：3 个爬虫同时运行
+- 每个爬虫创建独立连接池
+- 每个连接池：minsize=3, maxsize=10
+- 总连接数：9~30 个
+- 内存占用：约 30-100MB
+```
+
+### 优化后
+```
+场景：3 个爬虫同时运行
+- 所有爬虫共享一个连接池
+- 连接池：minsize=3, maxsize=10
+- 总连接数：3~10 个
+- 内存占用：约 10-35MB
+- 节省：60-70% 的连接和内存
+```
+
+## 技术细节
+
+### 连接池标识
+
+连接池通过以下参数生成唯一标识：
+```python
+pool_key = f"{pool_type}:{host}:{port}:{db}"
+
+# 示例：
+# "asyncmy:localhost:3306:crawlo"
+# "aiomysql:127.0.0.1:3306:test_db"
+```
+
+### 线程安全机制
+
+```python
+# 类级别锁（保护实例字典）
+_lock = asyncio.Lock()
+
+# 实例级别锁（保护连接池初始化）
+_pool_lock = asyncio.Lock()
+
+# 双重检查锁定模式
+async with cls._lock:
+    if pool_key not in cls._instances:
+        instance = cls(pool_key)
+        cls._instances[pool_key] = instance
+
+async with instance._pool_lock:
+    if not instance._pool_initialized:
+        # 初始化连接池
+        instance.pool = await create_pool(...)
+        instance._pool_initialized = True
+```
+
+### Pipeline 集成
+
+```python
+# AsyncmyMySQLPipeline._ensure_pool()
+async def _ensure_pool(self):
+    if self._pool_initialized and self.pool:
+        return
+    
+    async with self._pool_lock:
+        if not self._pool_initialized:
+            # 使用单例连接池管理器
+            self.pool = await MySQLConnectionPoolManager.get_pool(
+                pool_type='asyncmy',
+                host=self.settings.get('MYSQL_HOST'),
+                ...
+            )
+            self._pool_initialized = True
+```
+
+## 注意事项
+
+### ⚠️ 连接池生命周期
+
+- **不要手动关闭连接池**：连接池由 MySQLConnectionPoolManager 统一管理
+- **Pipeline 关闭时**：只清理批量缓冲区，不关闭连接池
+- **程序退出时**：调用 `MySQLConnectionPoolManager.close_all_pools()`
+
+### ⚠️ 多数据库场景
+
+如果需要连接多个不同的数据库：
+
+```python
+# 数据库 A
+pool_a = await MySQLConnectionPoolManager.get_pool(
+    host='db_host_a',
+    db='database_a',
+    ...
+)
+
+# 数据库 B（会创建新的连接池）
+pool_b = await MySQLConnectionPoolManager.get_pool(
+    host='db_host_b',
+    db='database_b',
+    ...
+)
+
+# 相同配置（复用已有连接池）
+pool_a2 = await MySQLConnectionPoolManager.get_pool(
+    host='db_host_a',
+    db='database_a',
+    ...
+)
+# pool_a2 is pool_a  # True
+```
+
+### ⚠️ 连接池大小建议
+
+```python
+# 少量爬虫（1-3个）
+MYSQL_POOL_MIN = 3
+MYSQL_POOL_MAX = 10
+
+# 中等规模（4-10个爬虫）
+MYSQL_POOL_MIN = 5
+MYSQL_POOL_MAX = 20
+
+# 大规模（10+个爬虫）
+MYSQL_POOL_MIN = 10
+MYSQL_POOL_MAX = 50
+```
+
+## 迁移指南
+
+### 从旧版本迁移
+
+**无需任何修改！**
+
+旧代码会自动使用新的单例连接池：
+
+```python
+# 旧代码（仍然有效）
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+
+# 自动获得优化效果：
+# - 多个爬虫自动共享连接池
+# - 减少数据库连接数
+# - 降低资源消耗
+```
+
+## 日志输出
+
+启用优化后，会看到如下日志：
+
+```
+[INFO] MySQLPool.asyncmy:localhost:3306:crawlo: 创建新的连接池管理器 (type=asyncmy, minsize=3, maxsize=10)
+[INFO] MySQLPool.asyncmy:localhost:3306:crawlo: 连接池初始化成功 (minsize=3, maxsize=10)
+[INFO] AsyncmyMySQLPipeline: MySQL连接池初始化完成（表: items, 使用全局共享连接池）
+[INFO] AsyncmyMySQLPipeline: MySQL Pipeline 关闭，但保留全局共享连接池以供其他爬虫使用
+[INFO] MySQLPool: 开始关闭所有连接池，共 1 个
+[INFO] MySQLPool: 关闭连接池: asyncmy:localhost:3306:crawlo
+[INFO] MySQLPool: 连接池已关闭: asyncmy:localhost:3306:crawlo
+[INFO] MySQLPool: 所有连接池已关闭
+```
+
+## 总结
+
+### ✅ 优势
+
+1. **自动优化**：无需修改代码，自动获得优化效果
+2. **大幅节省资源**：减少 60-70% 的数据库连接
+3. **提升性能**：降低数据库压力，提高吞吐量
+4. **向后兼容**：完全兼容现有代码
+
+### 📈 适用场景
+
+- ✅ 多个爬虫同时运行
+- ✅ 分布式爬虫系统
+- ✅ 大规模数据采集
+- ✅ 资源受限环境
+
+### 🔍 监控建议
+
+定期检查连接池状态：
+
+```python
+import asyncio
+from crawlo.utils.mysql_connection_pool import MySQLConnectionPoolManager
+
+async def monitor():
+    while True:
+        stats = MySQLConnectionPoolManager.get_pool_stats()
+        print(f"活跃连接池: {stats['total_pools']}")
+        for key, pool_info in stats['pools'].items():
+            print(f"  {key}: {pool_info['size']}/{pool_info['maxsize']} 连接")
+        await asyncio.sleep(60)  # 每分钟检查一次
+```
+
+
+**code file end: docs/mysql_connection_pool_optimization.md**
+
+---
+
+
+### code file start: docs/README_en.md 
+
+# Crawlo Documentation
+
+Welcome to the official documentation for the Crawlo framework. Crawlo is a high-performance, scalable Python crawling framework that supports both standalone and distributed deployment.
+
+## Introduction
+
+Crawlo is a modern asynchronous web crawling framework based on asyncio, designed for high-performance data collection. It provides a complete toolkit to handle everything from simple web scraping to complex distributed crawling scenarios.
+
+### Key Features
+
+- **High-performance asynchronous crawling** - High concurrency processing based on asyncio
+- **Multiple downloader support** - Supports various HTTP clients including aiohttp, httpx, and curl-cffi
+- **Built-in data cleaning and validation** - Powerful data processing capabilities
+- **Distributed crawling support** - Seamless switching between standalone and distributed deployment
+- **Flexible middleware system** - Extensible request/response processing mechanism
+- **Powerful configuration management system** - Unified configuration management and validation
+- **Detailed logging and monitoring** - Comprehensive runtime status tracking
+- **Windows and Linux compatibility** - Cross-platform support
+
+## Quick Start
+
+### Installation
+
+```bash
+pip install crawlo
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install .
+```
+
+### Your First Spider
+
+```python
+from crawlo import Spider
+
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # Parsing logic
+        pass
+
+# Run the spider
+# crawlo run example
+```
+
+## Documentation Index
+
+### Core Concepts
+- [Architecture Overview](modules/architecture/index_en.md) - Overall architecture design of Crawlo
+- [Running Modes](modules/architecture/modes_en.md) - Detailed explanation of standalone and distributed modes
+- [Configuration System](modules/configuration/index_en.md) - Configuration management and validation
+
+### Core Modules
+- [Engine](modules/core/engine_en.md) - Core coordinator of the crawling process
+- [Scheduler](modules/core/scheduler_en.md) - Request queue and deduplication management
+- [Processor](modules/core/processor_en.md) - Response processing and data extraction
+- [Spider Base Class](modules/core/spider_en.md) - Spider base class and lifecycle
+
+### Functional Modules
+- [Downloader](modules/downloader/index_en.md) - HTTP client implementations
+- [Queue](modules/queue/index_en.md) - Request queue management
+- [Filter](modules/filter/index_en.md) - Request deduplication functionality
+- [Middleware](modules/middleware/index_en.md) - Request/response processing components
+- [Pipeline](modules/pipeline/index_en.md) - Data processing and storage components
+- [Extension](modules/extension/index_en.md) - Additional features and monitoring components
+
+### CLI Tools
+- [CLI Overview](modules/cli/index_en.md) - Command-line tool usage guide
+- [startproject](modules/cli/startproject_en.md) - Project initialization command
+- [genspider](modules/cli/genspider_en.md) - Spider generation command
+- [run](modules/cli/run_en.md) - Spider execution command
+- [list](modules/cli/list_en.md) - View spider list
+- [check](modules/cli/check_en.md) - Configuration check command
+- [stats](modules/cli/stats_en.md) - View statistics information
+
+### Advanced Topics
+- [Distributed Deployment](modules/advanced/distributed_en.md) - Distributed crawling configuration and deployment
+- [Performance Optimization](modules/advanced/performance_en.md) - Performance tuning guide
+- [Troubleshooting](modules/advanced/troubleshooting_en.md) - Common issues and solutions
+- [Best Practices](modules/advanced/best_practices_en.md) - Development best practices
+
+### API Reference
+- [Complete API Documentation](api/) - Detailed class and method reference
+
+## Learning Path
+
+If you're new to Crawlo, we recommend learning in the following order:
+
+1. **Getting Started** - Read the quick start guide and run your first example
+2. **Core Concepts** - Understand the framework architecture and basic concepts
+3. **Core Modules** - Dive deep into core components like engine, scheduler, and processor
+4. **Functional Modules** - Learn modules like downloader, queue, and filter based on your needs
+5. **Advanced Topics** - Master advanced features like distributed deployment and performance optimization
+
+## Contributing
+
+We welcome community contributions! If you'd like to contribute to Crawlo:
+
+1. Fork the project repository
+2. Create a feature branch
+3. Commit your changes
+4. Submit a Pull Request
+
+## License
+
+Crawlo is released under the MIT License.
+
+**code file end: docs/README_en.md**
+
+---
+
+
+### code file start: docs/配置优先级详解.md 
+
+# Crawlo 框架配置优先级详解
+
+## 📋 配置来源概览
+
+Crawlo 框架的配置来源有以下几个层级（从低到高）：
+
+1. **框架默认配置** (`default_settings.py`)
+2. **用户项目配置** (项目的 `settings.py`)
+3. **Spider 自定义配置** (Spider 类的 `custom_settings`)
+4. **运行时配置** (`CrawlerProcess`/`Crawler` 传入的 `settings` 参数)
+5. **环境变量** (以 `CRAWLO_` 开头的环境变量)
+
+---
+
+## 🎯 配置加载流程与优先级
+
+### 第一步：框架初始化 - 加载默认配置
+
+**文件位置**: `/Users/oscar/projects/Crawlo/crawlo/settings/default_settings.py`
+
+**作用**: 提供所有配置项的默认值
+
+```python
+# default_settings.py 示例
+PROJECT_NAME = 'crawlo'  # 默认项目名
+CONCURRENCY = 8          # 默认并发数
+DOWNLOAD_DELAY = 0.5     # 默认下载延迟
+REDIS_HOST = '127.0.0.1' # 默认Redis主机
+MIDDLEWARES = [...]      # 默认中间件列表
+PIPELINES = [...]        # 默认管道列表
+```
+
+**优先级**: ⭐ (最低)
+
+---
+
+### 第二步：读取环境变量
+
+**文件位置**: `/Users/oscar/projects/Crawlo/crawlo/utils/config_manager.py`
+
+**关键类**: `EnvConfigManager`
+
+```python
+class EnvConfigManager:
+    @staticmethod
+    def get_redis_config() -> dict:
+        return {
+            'REDIS_HOST': EnvConfigManager.get_env_var('CRAWLO_REDIS_HOST', '127.0.0.1', str),
+            'REDIS_PORT': EnvConfigManager.get_env_var('CRAWLO_REDIS_PORT', 6379, int),
+            # ...
+        }
+    
+    @staticmethod
+    def get_runtime_config() -> dict:
+        return {
+            'CRAWLO_MODE': EnvConfigManager.get_env_var('CRAWLO_MODE', 'standalone', str),
+            'PROJECT_NAME': EnvConfigManager.get_env_var('CRAWLO_PROJECT_NAME', 'crawlo', str),
+            'CONCURRENCY': EnvConfigManager.get_env_var('CRAWLO_CONCURRENCY', 8, int),
+        }
+```
+
+**环境变量规范**:
+- 所有环境变量必须使用 `CRAWLO_` 前缀
+- 支持的环境变量：
+  - `CRAWLO_MODE` - 运行模式
+  - `CRAWLO_PROJECT_NAME` - 项目名称
+  - `CRAWLO_CONCURRENCY` - 并发数
+  - `CRAWLO_REDIS_HOST` - Redis主机
+  - `CRAWLO_REDIS_PORT` - Redis端口
+  - `CRAWLO_REDIS_PASSWORD` - Redis密码
+  - `CRAWLO_REDIS_DB` - Redis数据库
+
+**优先级**: ⭐⭐ (在 `default_settings.py` 中通过 `EnvConfigManager` 读取，会覆盖部分默认值)
+
+**示例**:
+```bash
+# 通过环境变量配置
+export CRAWLO_PROJECT_NAME=myproject
+export CRAWLO_CONCURRENCY=16
+export CRAWLO_REDIS_HOST=192.168.1.100
+```
+
+---
+
+### 第三步：加载用户项目配置
+
+**文件位置**: 用户项目的 `settings.py`
+
+**加载时机**: 框架初始化时通过 `initialize_framework()` 自动加载
+
+```python
+# 用户项目的 settings.py
+from crawlo.config import CrawloConfig
+
+# 方式1: 使用 CrawloConfig（推荐）
+config = CrawloConfig.auto(
+    project_name='myproject',
+    concurrency=16,
+    download_delay=1.0
+)
+locals().update(config.to_dict())
+
+# 方式2: 直接设置变量
+PROJECT_NAME = 'myproject'
+CONCURRENCY = 16
+DOWNLOAD_DELAY = 1.0
+
+# 自定义中间件（会与默认中间件合并）
+MIDDLEWARES = [
+    'myproject.middlewares.MyCustomMiddleware',
+]
+
+# 自定义管道（会与默认管道合并）
+PIPELINES = [
+    'myproject.pipelines.MyCustomPipeline',
+]
+```
+
+**合并策略**:
+
+**文件位置**: `/Users/oscar/projects/Crawlo/crawlo/settings/setting_manager.py`
+
+```python
+def _merge_config(self, user_config):
+    """合并默认配置和用户配置"""
+    # 1. MIDDLEWARES: 合并默认和用户中间件，去重但保持顺序
+    if 'MIDDLEWARES' in user_config:
+        merged_middlewares = default_middlewares[:]
+        for middleware in user_middlewares:
+            if middleware not in merged_middlewares:
+                merged_middlewares.append(middleware)
+    
+    # 2. PIPELINES: 合并默认和用户管道，去重但保持顺序
+    # 3. EXTENSIONS: 合并默认和用户扩展，去重但保持顺序
+    
+    # 4. 其他配置: 直接覆盖默认值
+    for key, value in user_config.items():
+        if key not in ['MIDDLEWARES', 'PIPELINES', 'EXTENSIONS']:
+            self.attributes[key] = value
+```
+
+**优先级**: ⭐⭐⭐ (覆盖默认配置和环境变量)
+
+---
+
+### 第四步：Spider 自定义配置
+
+**定义位置**: Spider 类的 `custom_settings` 属性
+
+```python
+# 在 Spider 类中定义
+class MySpider(Spider):
+    name = 'myspider'
+    
+    custom_settings = {
+        'CONCURRENCY': 32,           # 覆盖项目配置
+        'DOWNLOAD_DELAY': 2.0,       # 覆盖项目配置
+        'PIPELINES': [               # 会与默认管道合并
+            'myproject.pipelines.SpecialPipeline',
+        ]
+    }
+```
+
+**应用时机**: 在创建 `Crawler` 实例时自动合并
+
+**文件位置**: `/Users/oscar/projects/Crawlo/crawlo/crawler.py`
+
+```python
+def _merge_settings(self, additional_settings):
+    """合并配置"""
+    if not additional_settings:
+        return self._settings
+    
+    merged = SettingManager()
+    
+    # 1. 复制基础配置（来自项目 settings.py）
+    if self._settings:
+        merged.update_attributes(self._settings.__dict__)
+    
+    # 2. 应用额外配置（Spider 的 custom_settings）
+    merged.update_attributes(additional_settings)
+    
+    return merged
+```
+
+**优先级**: ⭐⭐⭐⭐ (覆盖项目配置)
+
+---
+
+### 第五步：运行时配置
+
+**传入位置**: 调用 `CrawlerProcess.crawl()` 或 `Crawler.__init__()` 时传入
+
+```python
+# 方式1: 通过 CrawlerProcess.crawl()
+from crawlo import CrawlerProcess
+
+process = CrawlerProcess()
+await process.crawl(
+    MySpider,
+    settings={
+        'CONCURRENCY': 64,        # 运行时覆盖
+        'DOWNLOAD_DELAY': 0.1,    # 运行时覆盖
+    }
+)
+
+# 方式2: 直接创建 Crawler
+from crawlo import Crawler
+
+crawler = Crawler(
+    MySpider,
+    settings={
+        'CONCURRENCY': 64,
+    }
+)
+```
+
+**应用时机**: 在 `CrawlerProcess._merge_settings()` 中合并
+
+**优先级**: ⭐⭐⭐⭐⭐ (最高，覆盖所有其他配置)
+
+---
+
+## 📊 完整优先级总结
+
+从**低到高**的优先级顺序：
+
+```
+1. default_settings.py (框架默认配置)
+   ↓
+2. 环境变量 (CRAWLO_* 环境变量，在 default_settings.py 中通过 EnvConfigManager 读取)
+   ↓
+3. 用户 settings.py (项目配置文件)
+   ↓
+4. Spider.custom_settings (Spider 自定义配置)
+   ↓
+5. 运行时 settings 参数 (crawl() 或 Crawler() 传入的配置)
+```
+
+**重要说明**:
+- 环境变量虽然在第2位，但它在 `default_settings.py` 中就已经被读取和应用
+- `MIDDLEWARES`、`PIPELINES`、`EXTENSIONS` 采用**合并策略**，而不是简单覆盖
+- 其他普通配置采用**覆盖策略**，后者覆盖前者
+
+---
+
+## 🔍 实际案例分析
+
+### 案例 1: CONCURRENCY 配置
+
+假设有以下配置来源：
+
+```python
+# 1. default_settings.py
+CONCURRENCY = 8  # 默认值
+
+# 2. 环境变量
+# export CRAWLO_CONCURRENCY=12
+
+# 3. 用户 settings.py
+CONCURRENCY = 16
+
+# 4. Spider.custom_settings
+class MySpider(Spider):
+    custom_settings = {
+        'CONCURRENCY': 24
+    }
+
+# 5. 运行时配置
+await process.crawl(MySpider, settings={'CONCURRENCY': 32})
+```
+
+**最终结果**: `CONCURRENCY = 32` (运行时配置优先级最高)
+
+**逐步覆盖过程**:
+1. 初始值: `8` (default_settings.py)
+2. 环境变量覆盖: `12` (CRAWLO_CONCURRENCY)
+3. 项目配置覆盖: `16` (settings.py)
+4. Spider配置覆盖: `24` (custom_settings)
+5. 运行时配置覆盖: `32` (crawl参数) ✅ 最终值
+
+---
+
+### 案例 2: PIPELINES 配置（合并策略）
+
+```python
+# 1. default_settings.py
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+]
+
+# 2. 用户 settings.py
+PIPELINES = [
+    'myproject.pipelines.MySQLPipeline',
+    'myproject.pipelines.JsonPipeline',
+]
+
+# 3. Spider.custom_settings
+class MySpider(Spider):
+    custom_settings = {
+        'PIPELINES': [
+            'myproject.pipelines.SpecialPipeline',
+        ]
+    }
+```
+
+**最终结果** (合并后):
+```python
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',  # 默认
+    'myproject.pipelines.MySQLPipeline',                   # 用户添加
+    'myproject.pipelines.JsonPipeline',                    # 用户添加
+    'myproject.pipelines.SpecialPipeline',                 # Spider添加
+]
+```
+
+**合并规则**:
+- 保留默认管道
+- 按顺序添加用户管道
+- 去重（同一个管道只会出现一次）
+- 保持添加顺序
+
+---
+
+### 案例 3: Redis 配置（环境变量优先）
+
+```python
+# 1. default_settings.py
+REDIS_HOST = '127.0.0.1'  # 默认值
+REDIS_PORT = 6379         # 默认值
+
+# 但实际上 default_settings.py 会立即读取环境变量：
+redis_config = EnvConfigManager.get_redis_config()
+REDIS_HOST = redis_config['REDIS_HOST']  # 从 CRAWLO_REDIS_HOST 读取
+REDIS_PORT = redis_config['REDIS_PORT']  # 从 CRAWLO_REDIS_PORT 读取
+```
+
+**环境变量设置**:
+```bash
+export CRAWLO_REDIS_HOST=192.168.1.100
+export CRAWLO_REDIS_PORT=7000
+```
+
+**最终结果**:
+- `REDIS_HOST = '192.168.1.100'` (环境变量)
+- `REDIS_PORT = 7000` (环境变量)
+
+**即使在 `settings.py` 中设置**:
+```python
+# settings.py
+REDIS_HOST = 'localhost'  # 这会覆盖环境变量！
+```
+
+**实际结果**: `REDIS_HOST = 'localhost'` (项目配置覆盖环境变量)
+
+---
+
+## 🎓 最佳实践建议
+
+### 1. 开发环境配置
+
+```bash
+# .env 或环境变量
+export CRAWLO_MODE=standalone
+export CRAWLO_PROJECT_NAME=myproject
+export CRAWLO_CONCURRENCY=8
+```
+
+```python
+# settings.py（保持简洁）
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.auto(
+    project_name='myproject',  # 也可以从环境变量读取
+    concurrency=16,             # 开发环境并发数
+)
+locals().update(config.to_dict())
+
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',  # 开发时输出到控制台
+]
+```
+
+---
+
+### 2. 生产环境配置
+
+```bash
+# 生产环境变量
+export CRAWLO_MODE=distributed
+export CRAWLO_PROJECT_NAME=myproject_prod
+export CRAWLO_CONCURRENCY=32
+export CRAWLO_REDIS_HOST=redis.production.com
+export CRAWLO_REDIS_PORT=6379
+export CRAWLO_REDIS_PASSWORD=xxx
+```
+
+```python
+# settings.py（通用配置，不需要区分环境）
+from crawlo.config import CrawloConfig
+
+# Auto 模式会自动读取环境变量
+config = CrawloConfig.auto()
+locals().update(config.to_dict())
+
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+---
+
+### 3. Spider 特定配置
+
+```python
+class QuickSpider(Spider):
+    """快速爬虫，使用更高并发"""
+    name = 'quick'
+    
+    custom_settings = {
+        'CONCURRENCY': 64,       # 覆盖项目配置
+        'DOWNLOAD_DELAY': 0.1,   # 更快的请求速度
+    }
+
+class SlowSpider(Spider):
+    """慢速爬虫，避免被封"""
+    name = 'slow'
+    
+    custom_settings = {
+        'CONCURRENCY': 2,        # 降低并发
+        'DOWNLOAD_DELAY': 5.0,   # 增加延迟
+    }
+```
+
+---
+
+### 4. 临时调试配置
+
+```python
+# 临时测试高并发
+from crawlo import CrawlerProcess
+
+process = CrawlerProcess()
+await process.crawl(
+    MySpider,
+    settings={
+        'CONCURRENCY': 128,      # 临时测试极限并发
+        'LOG_LEVEL': 'DEBUG',    # 临时开启调试日志
+    }
+)
+```
+
+---
+
+## ⚠️ 常见陷阱与注意事项
+
+### 陷阱 1: 环境变量被项目配置覆盖
+
+```python
+# ❌ 错误示例
+# 环境变量设置
+export CRAWLO_REDIS_HOST=192.168.1.100
+
+# settings.py 中又设置了
+REDIS_HOST = 'localhost'  # 这会覆盖环境变量！
+
+# 结果: REDIS_HOST = 'localhost' (项目配置优先)
+```
+
+**解决方案**:
+```python
+# ✅ 正确示例
+# 如果要使用环境变量，settings.py 中不要重复设置
+# 或者使用 CrawloConfig.auto() 自动处理
+config = CrawloConfig.auto()  # 会正确读取环境变量
+locals().update(config.to_dict())
+```
+
+---
+
+### 陷阱 2: 中间件/管道配置混淆
+
+```python
+# ❌ 错误理解
+# 我在 settings.py 中设置了 PIPELINES，默认管道会被清空吗？
+
+# settings.py
+PIPELINES = [
+    'myproject.pipelines.MySQLPipeline',
+]
+
+# 实际结果（会保留默认管道）:
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',  # 默认管道保留
+    'myproject.pipelines.MySQLPipeline',                   # 用户管道追加
+]
+```
+
+**如果想完全替换**:
+```python
+# ✅ 明确清空默认配置
+PIPELINES = []  # 先清空
+PIPELINES.append('myproject.pipelines.MySQLPipeline')
+```
+
+---
+
+### 陷阱 3: custom_settings 不生效
+
+```python
+# ❌ 错误示例
+class MySpider(Spider):
+    name = 'myspider'
+    
+    # 注意: 这是类属性，需要是字典
+    custom_settings = {
+        'CONCURRENCY': 32,
+    }
+
+# 但如果你这样写：
+class MySpider(Spider):
+    def custom_settings(self):  # ❌ 错误！这是方法，不是属性
+        return {'CONCURRENCY': 32}
+```
+
+**正确方式**:
+```python
+# ✅ 类属性（字典）
+class MySpider(Spider):
+    custom_settings = {
+        'CONCURRENCY': 32,
+    }
+
+# ✅ 或者使用类方法（不推荐，除非需要动态生成）
+class MySpider(Spider):
+    @classmethod
+    def get_custom_settings(cls):
+        return {'CONCURRENCY': 32}
+```
+
+---
+
+## 📚 相关文档
+
+- [`default_settings.py`](file:///Users/oscar/projects/Crawlo/crawlo/settings/default_settings.py) - 框架默认配置
+- [`setting_manager.py`](file:///Users/oscar/projects/Crawlo/crawlo/settings/setting_manager.py) - 配置管理器
+- [`config_manager.py`](file:///Users/oscar/projects/Crawlo/crawlo/utils/config_manager.py) - 环境变量管理
+- [`crawler.py`](file:///Users/oscar/projects/Crawlo/crawlo/crawler.py) - Crawler配置合并逻辑
+- [`config.py`](file:///Users/oscar/projects/Crawlo/crawlo/config.py) - CrawloConfig工具类
+
+---
+
+
+**code file end: docs/配置优先级详解.md**
+
+---
+
+
+### code file start: docs/api/crawlo_config.md 
+
+# crawlo.config
+
+Configuration management module for the Crawlo framework.
+
+## Overview
+
+The configuration module provides a unified way to manage framework settings. It supports multiple configuration sources and provides validation capabilities.
+
+## Classes
+
+### Config
+
+Main configuration class that manages framework settings.
+
+#### Methods
+
+##### `__init__(self, settings=None)`
+
+Initialize the configuration object.
+
+**Parameters:**
+- `settings` (dict, optional): Initial settings dictionary
+
+##### `get(self, key, default=None)`
+
+Get a configuration value by key.
+
+**Parameters:**
+- `key` (str): Configuration key
+- `default` (any, optional): Default value if key not found
+
+**Returns:**
+- Configuration value or default
+
+##### `set(self, key, value)`
+
+Set a configuration value.
+
+**Parameters:**
+- `key` (str): Configuration key
+- `value` (any): Configuration value
+
+##### `update(self, settings)`
+
+Update configuration with a dictionary.
+
+**Parameters:**
+- `settings` (dict): Settings to update
+
+##### `validate(self)`
+
+Validate configuration settings.
+
+**Returns:**
+- bool: True if validation passes
+
+## Usage Example
+
+```python
+from crawlo.config import Config
+
+# Create configuration
+config = Config({
+    'DOWNLOAD_DELAY': 1.0,
+    'CONCURRENT_REQUESTS': 16,
+    'USER_AGENT': 'Crawlo/1.0'
+})
+
+# Get configuration values
+delay = config.get('DOWNLOAD_DELAY')
+concurrent = config.get('CONCURRENT_REQUESTS')
+
+# Set configuration values
+config.set('DOWNLOAD_DELAY', 2.0)
+
+# Update with dictionary
+config.update({
+    'RETRY_TIMES': 3,
+    'RETRY_HTTP_CODES': [500, 502, 503, 504]
+})
+```
+
+**code file end: docs/api/crawlo_config.md**
+
+---
+
+
+### code file start: docs/api/crawlo_config_validator.md 
+
+# crawlo.config_validator
+
+Configuration validation module for the Crawlo framework.
+
+## Overview
+
+The configuration validation module provides tools to validate framework settings. It ensures that configuration values meet the required criteria and formats.
+
+## Classes
+
+### ConfigValidator
+
+Main configuration validator class.
+
+#### Methods
+
+##### `__init__(self)`
+
+Initialize the configuration validator.
+
+##### `add_rule(self, key, rule)`
+
+Add a validation rule for a configuration key.
+
+**Parameters:**
+- `key` (str): Configuration key
+- `rule` (callable): Validation function that takes a value and returns bool
+
+##### `validate(self, config)`
+
+Validate a configuration dictionary.
+
+**Parameters:**
+- `config` (dict): Configuration to validate
+
+**Returns:**
+- tuple: (is_valid, errors) where is_valid is a boolean and errors is a list of error messages
+
+## Usage Example
+
+```python
+from crawlo.config_validator import ConfigValidator
+
+# Create validator
+validator = ConfigValidator()
+
+# Add validation rules
+validator.add_rule('DOWNLOAD_DELAY', lambda x: isinstance(x, (int, float)) and x >= 0)
+validator.add_rule('CONCURRENT_REQUESTS', lambda x: isinstance(x, int) and x > 0)
+validator.add_rule('USER_AGENT', lambda x: isinstance(x, str) and len(x) > 0)
+
+# Validate configuration
+config = {
+    'DOWNLOAD_DELAY': 1.0,
+    'CONCURRENT_REQUESTS': 16,
+    'USER_AGENT': 'Crawlo/1.0'
+}
+
+is_valid, errors = validator.validate(config)
+if not is_valid:
+    print("Configuration errors:", errors)
+```
+
+**code file end: docs/api/crawlo_config_validator.md**
+
+---
+
+
+### code file start: docs/api/crawlo_core_scheduler.md 
+
+# crawlo.core.scheduler
+
+## 导入的类
+
+- Optional
+- Callable
+- get_logger
+- set_request
+- RequestSerializer
+- ErrorHandler
+- QueueManager
+- QueueConfig
+- load_class
+- common_call
+
+## 类
+
+### Scheduler
+
+#### 方法
+
+##### __init__
+
+##### create_instance
+
+##### idle
+检查队列是否为空
+
+##### __len__
+获取队列大小
+
+
+**code file end: docs/api/crawlo_core_scheduler.md**
+
+---
+
+
+### code file start: docs/api/crawlo_crawler.md 
+
+# crawlo.crawler
+
+Crawlo Crawler Module
+====================
+提供爬虫进程管理和运行时核心功能。
+
+核心组件:
+- Crawler: 单个爬虫运行实例，管理Spider与引擎的生命周期
+- CrawlerProcess: 爬虫进程管理器，支持多爬虫并发调度和资源管理
+
+功能特性:
+- 智能并发控制和资源管理
+- 优雅关闭和信号处理
+- 统计监控和性能追踪
+- 自动模块发现和注册
+- 错误恢复和重试机制
+- 大规模爬虫优化支持
+
+示例用法:
+    # 单个爬虫运行
+    crawler = Crawler(MySpider, settings)
+    await crawler.crawl()
+    
+    # 多爬虫并发管理
+    process = CrawlerProcess()
+    await process.crawl([Spider1, Spider2])
+
+## 导入的类
+
+- annotations
+- Type
+- Optional
+- Set
+- List
+- Union
+- Dict
+- Any
+- Spider
+- get_global_spider_registry
+- Engine
+- get_logger
+- Subscriber
+- ExtensionManager
+- StatsCollector
+- spider_opened
+- spider_closed
+- SettingManager
+- merge_settings
+- get_settings
+
+## 类
+
+### CrawlerContext
+爬虫上下文管理器
+提供共享状态和资源管理
+
+#### 方法
+
+##### __init__
+
+##### increment_total
+
+##### increment_active
+
+##### decrement_active
+
+##### increment_completed
+
+##### increment_failed
+
+##### get_stats
+
+### Crawler
+单个爬虫运行实例，管理 Spider 与引擎的生命周期
+
+提供功能:
+- Spider 生命周期管理（初始化、运行、关闭）
+- 引擎组件的协调管理
+- 配置合并和验证
+- 统计数据收集
+- 扩展管理
+- 异常处理和清理
+
+#### 方法
+
+##### __init__
+
+##### _validate_crawler_state
+验证爬虫状态和配置
+确保所有必要组件都已正确初始化
+
+##### _get_total_duration
+获取总运行时间
+
+##### get_performance_metrics
+获取性能指标
+
+##### _create_subscriber
+创建事件订阅器
+
+##### _create_spider
+创建并验证爬虫实例（增强版）
+
+执行以下验证:
+- 爬虫名称必须存在
+- start_requests 方法必须可调用
+- start_urls 不能是字符串
+- parse 方法建议存在
+
+##### _create_engine
+创建并初始化引擎
+
+##### _create_stats
+创建统计收集器
+
+##### _create_extension
+创建扩展管理器
+
+##### _set_spider
+设置爬虫配置和事件订阅
+将爬虫的生命周期事件与订阅器绑定
+
+### CrawlerProcess
+爬虫进程管理器
+
+支持功能:
+- 多爬虫并发调度和资源管理
+- 自动模块发现和爬虫注册
+- 智能并发控制和负载均衡
+- 优雅关闭和信号处理
+- 实时状态监控和统计
+- 错误恢复和重试机制
+- 大规模爬虫优化支持
+
+使用示例:
+    # 基本用法
+    process = CrawlerProcess()
+    await process.crawl(MySpider)
+    
+    # 多爬虫并发
+    await process.crawl([Spider1, Spider2, 'spider_name'])
+    
+    # 自定义并发数
+    process = CrawlerProcess(max_concurrency=8)
+
+#### 方法
+
+##### __init__
+
+##### auto_discover
+自动导入模块，触发 Spider 类定义和注册（增强版）
+
+支持递归扫描和错误恢复
+
+##### get_spider_names
+获取所有已注册的爬虫名称
+
+##### get_spider_class
+根据 name 获取爬虫类
+
+##### is_spider_registered
+检查某个 name 是否已注册
+
+##### get_process_stats
+获取进程统计信息
+
+##### _resolve_spiders_to_run
+解析输入为爬虫类列表
+
+支持各种输入格式并验证唯一性
+
+##### _normalize_inputs
+标准化输入为列表
+
+支持更多输入类型并提供更好的错误信息
+
+##### _resolve_spider_class
+解析单个输入项为爬虫类
+
+提供更好的错误提示和调试信息
+
+##### _shutdown
+优雅关闭信号处理
+
+提供更好的关闭体验和资源清理
+
+##### _get_default_settings
+加载默认配置
+
+提供更好的错误处理和降级策略
+
+## 函数
+
+### create_crawler_with_optimizations
+创建优化的爬虫实例
+
+:param spider_cls: 爬虫类
+:param settings: 设置管理器
+:param optimization_kwargs: 优化参数
+:return: 爬虫实例
+
+### create_process_with_large_scale_config
+创建支持大规模优化的进程管理器
+
+:param config_type: 配置类型 ('conservative', 'balanced', 'aggressive', 'memory_optimized')
+:param concurrency: 并发数
+:param kwargs: 其他参数
+:return: 进程管理器
+
+
+**code file end: docs/api/crawlo_crawler.md**
+
+---
+
+
+### code file start: docs/api/crawlo_downloader___init__.md 
+
+# crawlo.downloader.__init__
+
+Crawlo Downloader Module
+========================
+提供多种高性能异步下载器实现。
+
+下载器类型:
+- AioHttpDownloader: 基于aiohttp的高性能下载器
+- CurlCffiDownloader: 支持浏览器指纹模拟的curl-cffi下载器  
+- HttpXDownloader: 支持HTTP/2的httpx下载器
+
+核心类:
+- DownloaderBase: 下载器基类
+- ActivateRequestManager: 活跃请求管理器
+
+## 导入的类
+
+- abstractmethod
+- ABCMeta
+- Final
+- Set
+- Optional
+- asynccontextmanager
+- get_logger
+- MiddlewareManager
+
+## 类
+
+### ActivateRequestManager
+活跃请求管理器 - 跟踪和管理正在处理的请求
+
+#### 方法
+
+##### __init__
+
+##### add
+添加活跃请求
+
+##### remove
+移除活跃请求并更新统计
+
+##### __len__
+返回当前活跃请求数
+
+##### get_stats
+获取请求统计信息
+
+##### reset_stats
+重置统计信息
+
+### DownloaderMeta
+
+#### 方法
+
+##### __subclasscheck__
+
+### DownloaderBase
+下载器基类 - 提供通用的下载器功能和接口
+
+所有下载器实现都应该继承此基类。
+
+#### 方法
+
+##### __init__
+
+##### create_instance
+创建下载器实例
+
+##### open
+初始化下载器
+
+##### idle
+检查是否空闲（无活跃请求）
+
+##### __len__
+返回活跃请求数
+
+##### get_stats
+获取下载器统计信息
+
+##### reset_stats
+重置统计信息
+
+##### health_check
+健康检查
+
+## 函数
+
+### get_downloader_class
+根据名称获取下载器类
+
+
+**code file end: docs/api/crawlo_downloader___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_extension.md 
+
+# crawlo.extension
+
+Extension module for the Crawlo framework.
+
+## Overview
+
+The extension module provides a way to add additional functionality to the Crawlo framework. Extensions can hook into various parts of the crawling process to add monitoring, logging, or other features.
+
+## Classes
+
+### Extension
+
+Base class for all extensions.
+
+#### `__init__(self, crawler)`
+
+Initialize the extension.
+
+**Parameters:**
+- `crawler` (Crawler): The crawler instance
+
+#### `from_crawler(cls, crawler)`
+
+Create an extension instance from a crawler.
+
+**Parameters:**
+- `crawler` (Crawler): The crawler instance
+
+**Returns:**
+- Extension instance
+
+#### `open(self)`
+
+Called when the extension is opened/started.
+
+#### `close(self)`
+
+Called when the extension is closed/stopped.
+
+## Built-in Extensions
+
+### LogStatsExtension
+
+Logs basic statistics about the crawling process.
+
+### LogIntervalExtension
+
+Logs periodic status updates during crawling.
+
+### HealthCheckExtension
+
+Provides health check functionality for the crawler.
+
+## Usage Example
+
+```python
+from crawlo.extension import Extension
+
+class MyExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.stats = crawler.stats
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+    
+    def open(self):
+        print("Extension opened")
+    
+    def close(self):
+        print("Extension closed")
+
+# Register extension in settings
+EXTENSIONS = {
+    'myproject.extensions.MyExtension': 300,
+}
+```
+
+**code file end: docs/api/crawlo_extension.md**
+
+---
+
+
+### code file start: docs/api/crawlo_extension___init__.md 
+
+# crawlo.extension.__init__
+
+## 导入的类
+
+- List
+- Any
+- pformat
+- get_logger
+- load_class
+- ExtensionInitError
+
+## 类
+
+### ExtensionManager
+
+#### 方法
+
+##### __init__
+
+##### create_instance
+
+##### _add_extensions
+
+
+**code file end: docs/api/crawlo_extension___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_filters___init__.md 
+
+# crawlo.filters.__init__
+
+Crawlo Filters Module
+====================
+提供多种请求去重过滤器实现。
+
+过滤器类型:
+- MemoryFilter: 基于内存的高效去重，适合单机模式
+- AioRedisFilter: 基于Redis的分布式去重，适合分布式模式
+- MemoryFileFilter: 内存+文件持久化，适合需要重启恢复的场景
+
+核心接口:
+- BaseFilter: 所有过滤器的基类
+- requested(): 检查请求是否重复的主要方法
+
+## 导入的类
+
+- ABC
+- abstractmethod
+- Optional
+- request_fingerprint
+
+## 类
+
+### BaseFilter
+请求去重过滤器基类
+
+提供统一的去重接口和统计功能。
+所有过滤器实现都应该继承此类。
+
+#### 方法
+
+##### __init__
+初始化过滤器
+
+:param logger: 日志器实例
+:param stats: 统计信息存储
+:param debug: 是否启用调试日志
+
+##### create_instance
+
+##### requested
+检查请求是否重复（主要接口）
+
+:param request: 请求对象
+:return: True 表示重复，False 表示新请求
+
+##### add_fingerprint
+添加请求指纹（子类必须实现）
+
+:param fp: 请求指纹字符串
+
+##### __contains__
+检查指纹是否存在（支持 in 操作符）
+
+:param item: 要检查的指纹
+:return: 是否已存在
+
+##### log_stats
+记录统计信息
+
+:param request: 重复的请求对象
+
+##### get_stats
+获取过滤器统计信息
+
+:return: 统计信息字典
+
+##### reset_stats
+重置统计信息
+
+##### close
+关闭过滤器并清理资源
+
+##### __str__
+
+## 函数
+
+### get_filter_class
+根据名称获取过滤器类
+
+
+**code file end: docs/api/crawlo_filters___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_items_items.md 
+
+# crawlo.items.items
+
+Item 类定义
+
+## 导入的类
+
+- deepcopy
+- pformat
+- Any
+- Iterator
+- Dict
+- MutableMapping
+- ItemMeta
+- ItemInitError
+- ItemAttributeError
+
+## 类
+
+### Item
+数据项基类，用于定义结构化数据
+
+#### 方法
+
+##### __init__
+
+##### __getitem__
+
+##### __setitem__
+
+##### __delitem__
+
+##### __setattr__
+
+##### __getattr__
+
+##### __getattribute__
+
+##### __repr__
+
+##### __iter__
+
+##### __len__
+
+##### to_dict
+转换为字典
+
+##### copy
+深拷贝当前 Item
+
+
+**code file end: docs/api/crawlo_items_items.md**
+
+---
+
+
+### code file start: docs/api/crawlo_middleware.md 
+
+# crawlo.middleware
+
+Middleware module for the Crawlo framework.
+
+## Overview
+
+The middleware module provides a hook system for processing requests and responses. Middleware can modify requests before they are sent and responses after they are received.
+
+## Classes
+
+### Middleware
+
+Base class for all middleware.
+
+#### `__init__(self, crawler)`
+
+Initialize the middleware.
+
+**Parameters:**
+- `crawler` (Crawler): The crawler instance
+
+#### `process_request(self, request, spider)`
+
+Process a request before it is sent.
+
+**Parameters:**
+- `request` (Request): The request object
+- `spider` (Spider): The spider instance
+
+**Returns:**
+- None, Request, or Response object
+
+#### `process_response(self, request, response, spider)`
+
+Process a response after it is received.
+
+**Parameters:**
+- `request` (Request): The original request object
+- `response` (Response): The response object
+- `spider` (Spider): The spider instance
+
+**Returns:**
+- None, Request, or Response object
+
+#### `process_exception(self, request, exception, spider)`
+
+Process an exception that occurred during request processing.
+
+**Parameters:**
+- `request` (Request): The request object
+- `exception` (Exception): The exception that occurred
+- `spider` (Spider): The spider instance
+
+**Returns:**
+- None, Request, or Response object
+
+## Built-in Middlewares
+
+### RequestIgnoreMiddleware
+
+Filters out unwanted requests.
+
+### DownloadDelayMiddleware
+
+Adds delays between requests.
+
+### DefaultHeaderMiddleware
+
+Adds default headers to requests.
+
+### ProxyMiddleware
+
+Handles proxy configuration for requests.
+
+### RetryMiddleware
+
+Implements retry logic for failed requests.
+
+## Usage Example
+
+```python
+from crawlo.middleware import Middleware
+
+class MyMiddleware(Middleware):
+    def process_request(self, request, spider):
+        # Modify request before sending
+        request.headers['X-Custom-Header'] = 'value'
+        return request
+    
+    def process_response(self, request, response, spider):
+        # Modify response after receiving
+        if response.status_code == 403:
+            # Handle 403 errors
+            pass
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        # Handle exceptions
+        pass
+
+# Register middleware in settings
+MIDDLEWARES = {
+    'myproject.middlewares.MyMiddleware': 500,
+}
+```
+
+**code file end: docs/api/crawlo_middleware.md**
+
+---
+
+
+### code file start: docs/api/crawlo_middleware___init__.md 
+
+# crawlo.middleware.__init__
+
+## 导入的类
+
+- Request
+- Response
+
+## 类
+
+### BaseMiddleware
+
+#### 方法
+
+##### process_request
+
+##### process_response
+
+##### process_exception
+
+##### create_instance
+
+
+**code file end: docs/api/crawlo_middleware___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_network_request.md 
+
+# crawlo.network.request
+
+HTTP Request 封装模块
+====================
+提供功能完善的HTTP请求封装，支持:
+- JSON/表单数据自动处理
+- 优先级排序机制
+- 安全的深拷贝操作
+- 灵活的请求配置
+
+## 导入的类
+
+- deepcopy
+- urlencode
+- safe_url_string
+- Dict
+- Optional
+- Callable
+- Union
+- Any
+- TypeVar
+- List
+- escape_ajax
+
+## 类
+
+### RequestPriority
+请求优先级常量和工具类
+
+#### 方法
+
+##### get_all_priorities
+获取所有优先级常量
+
+##### from_string
+从字符串获取优先级值
+
+### Request
+封装一个 HTTP 请求对象，用于爬虫框架中表示一个待抓取的请求任务。
+支持 JSON、表单、原始 body 提交，自动处理 Content-Type 与编码。
+不支持文件上传（multipart/form-data），保持轻量。
+
+#### 方法
+
+##### __init__
+初始化请求对象。
+
+:param url: 请求 URL（必须）
+:param callback: 成功回调函数
+:param method: HTTP 方法，默认 GET
+:param headers: 请求头
+:param body: 原始请求体（bytes/str），若为 dict 且未使用 json_body/form_data，则自动转为 JSON
+:param form_data: 表单数据，自动转为 application/x-www-form-urlencoded
+:param json_body: JSON 数据，自动序列化并设置 Content-Type
+:param cb_kwargs: 传递给 callback 的额外参数
+:param cookies: Cookies 字典
+:param meta: 元数据（跨中间件传递数据）
+:param priority: 优先级（数值越小越优先）
+:param dont_filter: 是否跳过去重
+:param timeout: 超时时间（秒）
+:param proxy: 代理地址，如 http://127.0.0.1:8080
+:param allow_redirects: 是否允许重定向
+:param auth: 认证元组 (username, password)
+:param verify: 是否验证 SSL 证书
+:param flags: 标记（用于调试或分类）
+:param encoding: 字符编码，默认 utf-8
+
+##### _safe_deepcopy_meta
+安全地 deepcopy meta，移除 logger 后再复制
+
+##### copy
+创建当前请求的副本，保留所有高层语义（json_body/form_data）。
+
+##### set_meta
+设置 meta 中的某个键值，支持链式调用。
+
+##### add_header
+添加请求头，支持链式调用。
+
+##### add_headers
+批量添加请求头，支持链式调用。
+
+##### set_proxy
+设置代理，支持链式调用。
+
+##### set_timeout
+设置超时时间，支持链式调用。
+
+##### add_flag
+添加标记，支持链式调用。
+
+##### remove_flag
+移除标记，支持链式调用。
+
+##### set_dynamic_loader
+设置使用动态加载器，支持链式调用。
+
+##### set_protocol_loader
+强制使用协议加载器，支持链式调用。
+
+##### _set_url
+安全设置 URL，确保格式正确。
+
+##### url
+
+##### meta
+
+##### __str__
+
+##### __repr__
+
+##### __lt__
+用于按优先级排序
+
+
+**code file end: docs/api/crawlo_network_request.md**
+
+---
+
+
+### code file start: docs/api/crawlo_network_response.md 
+
+# crawlo.network.response
+
+HTTP Response 封装模块
+=====================
+提供功能丰富的HTTP响应封装，支持:
+- 智能编码检测和解码
+- XPath/CSS 选择器
+- JSON 解析和缓存
+- 正则表达式支持
+- Cookie 处理
+
+## 导入的类
+
+- SimpleCookie
+- Selector
+- SelectorList
+- Dict
+- Any
+- List
+- Optional
+- Union
+- _urljoin
+- DecodeError
+
+## 类
+
+### Response
+HTTP响应的封装，提供数据解析的便捷方法。
+
+功能特性:
+- 智能编码检测和缓存
+- 懒加载 Selector 实例
+- JSON 解析和缓存
+- 多类型数据提取
+
+#### 方法
+
+##### __init__
+
+##### _determine_encoding
+智能检测响应编码
+
+##### text
+将响应体(body)以正确的编码解码为字符串，并缓存结果。
+
+##### is_success
+检查响应是否成功 (2xx)
+
+##### is_redirect
+检查响应是否为重定向 (3xx)
+
+##### is_client_error
+检查响应是否为客户端错误 (4xx)
+
+##### is_server_error
+检查响应是否为服务器错误 (5xx)
+
+##### content_type
+获取响应的 Content-Type
+
+##### content_length
+获取响应的 Content-Length
+
+##### json
+将响应文本解析为 JSON 对象。
+
+##### urljoin
+拼接 URL，自动处理相对路径。
+
+##### _selector
+懒加载 Selector 实例
+
+##### xpath
+使用 XPath 选择器查询文档。
+
+##### css
+使用 CSS 选择器查询文档。
+
+##### _is_xpath
+判断查询语句是否为XPath
+
+##### _extract_text_from_elements
+从元素列表中提取文本并拼接
+
+:param elements: SelectorList元素列表
+:param join_str: 文本拼接分隔符
+:return: 拼接后的文本
+
+##### extract_text
+提取单个元素的文本内容，支持CSS和XPath选择器
+
+参数:
+    xpath_or_css: XPath或CSS选择器
+    join_str: 文本拼接分隔符(默认为空格)
+    default: 默认返回值，当未找到元素时返回
+
+返回:
+    拼接后的纯文本字符串
+
+##### extract_texts
+提取多个元素的文本内容列表，支持CSS和XPath选择器
+
+参数:
+    xpath_or_css: XPath或CSS选择器
+    join_str: 单个节点内文本拼接分隔符
+    default: 默认返回值，当未找到元素时返回
+
+返回:
+    纯文本列表(每个元素对应一个节点的文本)
+
+##### extract_attr
+提取单个元素的属性值，支持CSS和XPath选择器
+
+参数:
+    xpath_or_css: XPath或CSS选择器
+    attr_name: 属性名称
+    default: 默认返回值
+
+返回:
+    属性值或默认值
+
+##### extract_attrs
+提取多个元素的属性值列表，支持CSS和XPath选择器
+
+参数:
+    xpath_or_css: XPath或CSS选择器
+    attr_name: 属性名称
+    default: 默认返回值
+
+返回:
+    属性值列表
+
+##### re_search
+在响应文本上执行正则表达式搜索。
+
+##### re_findall
+在响应文本上执行正则表达式查找。
+
+##### get_cookies
+从响应头中解析并返回Cookies。
+
+##### meta
+获取关联的 Request 对象的 meta 字典。
+
+##### __str__
+
+
+**code file end: docs/api/crawlo_network_response.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines.md 
+
+# crawlo.pipelines
+
+Pipeline module for the Crawlo framework.
+
+## Overview
+
+The pipeline module provides a way to process extracted items. Pipelines can clean, validate, and store data in various ways.
+
+## Classes
+
+### Pipeline
+
+Base class for all pipelines.
+
+#### `__init__(self, crawler)`
+
+Initialize the pipeline.
+
+**Parameters:**
+- `crawler` (Crawler): The crawler instance
+
+#### `process_item(self, item, spider)`
+
+Process an item.
+
+**Parameters:**
+- `item` (Item): The item to process
+- `spider` (Spider): The spider instance
+
+**Returns:**
+- Processed item
+
+#### `open_spider(self, spider)`
+
+Called when a spider is opened.
+
+**Parameters:**
+- `spider` (Spider): The spider instance
+
+#### `close_spider(self, spider)`
+
+Called when a spider is closed.
+
+**Parameters:**
+- `spider` (Spider): The spider instance
+
+## Built-in Pipelines
+
+### ConsolePipeline
+
+Outputs items to the console.
+
+### JsonPipeline
+
+Outputs items to a JSON file.
+
+### CsvPipeline
+
+Outputs items to a CSV file.
+
+### RedisDedupPipeline
+
+Deduplicates items using Redis.
+
+### MemoryDedupPipeline
+
+Deduplicates items using memory.
+
+### BloomDedupPipeline
+
+Deduplicates items using a Bloom filter.
+
+### DatabasePipelines
+
+Various database pipelines for storing items.
+
+## Usage Example
+
+```python
+from crawlo.pipelines import Pipeline
+
+class MyPipeline(Pipeline):
+    def process_item(self, item, spider):
+        # Process the item
+        item['processed'] = True
+        return item
+    
+    def open_spider(self, spider):
+        # Initialize when spider opens
+        print(f"Spider {spider.name} opened")
+    
+    def close_spider(self, spider):
+        # Clean up when spider closes
+        print(f"Spider {spider.name} closed")
+
+# Register pipeline in settings
+ITEM_PIPELINES = {
+    'myproject.pipelines.MyPipeline': 300,
+}
+```
+
+**code file end: docs/api/crawlo_pipelines.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_bloom_dedup_pipeline.md 
+
+# crawlo.pipelines.bloom_dedup_pipeline
+
+基于 Bloom Filter 的数据项去重管道
+=============================
+提供大规模数据采集场景下的高效去重功能，使用概率性数据结构节省内存。
+
+特点:
+- 内存效率高: 相比传统集合节省大量内存
+- 高性能: 快速的插入和查找操作
+- 可扩展: 支持自定义容量和误判率
+- 适用性广: 特别适合大规模数据采集
+
+注意: Bloom Filter 有误判率，可能会错误地丢弃一些未见过的数据项。
+
+## 导入的类
+
+- Item
+- Spider
+- get_logger
+- DropItem
+
+## 类
+
+### BloomDedupPipeline
+基于 Bloom Filter 的数据项去重管道
+
+#### 方法
+
+##### __init__
+初始化 Bloom Filter 去重管道
+
+:param capacity: 预期存储的元素数量
+:param error_rate: 误判率 (例如 0.001 表示 0.1%)
+:param log_level: 日志级别
+
+##### from_crawler
+从爬虫配置创建管道实例
+
+##### process_item
+处理数据项，进行去重检查
+
+:param item: 要处理的数据项
+:param spider: 爬虫实例
+:return: 处理后的数据项或抛出 DropItem 异常
+
+##### _generate_item_fingerprint
+生成数据项指纹
+
+基于数据项的所有字段生成唯一指纹，用于去重判断。
+
+:param item: 数据项
+:return: 指纹字符串
+
+##### close_spider
+爬虫关闭时的清理工作
+
+:param spider: 爬虫实例
+
+
+**code file end: docs/api/crawlo_pipelines_bloom_dedup_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_console_pipeline.md 
+
+# crawlo.pipelines.console_pipeline
+
+## 导入的类
+
+- Dict
+- Any
+- Item
+- Spider
+- get_logger
+
+## 类
+
+### ConsolePipeline
+将Item内容输出到控制台的管道
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+从crawler实例创建管道
+
+##### _convert_to_serializable
+将Item转换为可序列化的字典
+
+
+**code file end: docs/api/crawlo_pipelines_console_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_csv_pipeline.md 
+
+# crawlo.pipelines.csv_pipeline
+
+## 导入的类
+
+- Path
+- Optional
+- List
+- datetime
+- get_logger
+- ItemDiscard
+
+## 类
+
+### CsvPipeline
+CSV文件输出管道
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+### CsvDictPipeline
+CSV字典写入器管道（使用DictWriter，支持字段映射）
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+##### _get_fieldnames
+获取字段名列表
+
+### CsvBatchPipeline
+CSV批量写入管道（内存缓存，批量写入，提高性能）
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+
+**code file end: docs/api/crawlo_pipelines_csv_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_database_dedup_pipeline.md 
+
+# crawlo.pipelines.database_dedup_pipeline
+
+基于数据库的数据项去重管道
+=======================
+提供持久化去重功能，适用于需要长期运行或断点续爬的场景。
+
+特点:
+- 持久化存储: 重启爬虫后仍能保持去重状态
+- 可靠性高: 数据库事务保证一致性
+- 适用性广: 支持多种数据库后端
+- 可扩展: 支持自定义表结构和字段
+
+## 导入的类
+
+- Dict
+- Any
+- Optional
+- Item
+- Spider
+- get_logger
+- DropItem
+
+## 类
+
+### DatabaseDedupPipeline
+基于数据库的数据项去重管道
+
+#### 方法
+
+##### __init__
+初始化数据库去重管道
+
+:param db_host: 数据库主机地址
+:param db_port: 数据库端口
+:param db_user: 数据库用户名
+:param db_password: 数据库密码
+:param db_name: 数据库名称
+:param table_name: 存储指纹的表名
+:param log_level: 日志级别
+
+##### from_crawler
+从爬虫配置创建管道实例
+
+##### _generate_item_fingerprint
+生成数据项指纹
+
+基于数据项的所有字段生成唯一指纹，用于去重判断。
+
+:param item: 数据项
+:return: 指纹字符串
+
+
+**code file end: docs/api/crawlo_pipelines_database_dedup_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_json_pipeline.md 
+
+# crawlo.pipelines.json_pipeline
+
+## 导入的类
+
+- Path
+- Optional
+- datetime
+- get_logger
+- ItemDiscard
+
+## 类
+
+### JsonPipeline
+JSON文件输出管道
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+### JsonLinesPipeline
+JSON Lines格式输出管道（每行一个JSON对象）
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+### JsonArrayPipeline
+JSON数组格式输出管道（所有item组成一个JSON数组）
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+##### _get_file_path
+获取输出文件路径
+
+
+**code file end: docs/api/crawlo_pipelines_json_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_memory_dedup_pipeline.md 
+
+# crawlo.pipelines.memory_dedup_pipeline
+
+基于内存的数据项去重管道
+======================
+提供单节点环境下的数据项去重功能，防止保存重复的数据记录。
+
+特点:
+- 高性能: 使用内存集合进行快速查找
+- 简单易用: 无需外部依赖
+- 轻量级: 适用于小规模数据采集
+- 低延迟: 内存操作无网络开销
+
+## 导入的类
+
+- Dict
+- Any
+- Set
+- Item
+- Spider
+- get_logger
+- DropItem
+
+## 类
+
+### MemoryDedupPipeline
+基于内存的数据项去重管道
+
+#### 方法
+
+##### __init__
+初始化内存去重管道
+
+:param log_level: 日志级别
+
+##### from_crawler
+从爬虫配置创建管道实例
+
+##### process_item
+处理数据项，进行去重检查
+
+:param item: 要处理的数据项
+:param spider: 爬虫实例
+:return: 处理后的数据项或抛出 DropItem 异常
+
+##### _generate_item_fingerprint
+生成数据项指纹
+
+基于数据项的所有字段生成唯一指纹，用于去重判断。
+
+:param item: 数据项
+:return: 指纹字符串
+
+##### close_spider
+爬虫关闭时的清理工作
+
+:param spider: 爬虫实例
+
+
+**code file end: docs/api/crawlo_pipelines_memory_dedup_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_mongo_pipeline.md 
+
+# crawlo.pipelines.mongo_pipeline
+
+## 导入的类
+
+- Optional
+- List
+- Dict
+- AsyncIOMotorClient
+- PyMongoError
+- get_logger
+- ItemDiscard
+
+## 类
+
+### MongoPipeline
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+
+**code file end: docs/api/crawlo_pipelines_mongo_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_mysql_pipeline.md 
+
+# crawlo.pipelines.mysql_pipeline
+
+## 导入的类
+
+- Optional
+- List
+- Dict
+- create_pool
+- get_logger
+- ItemDiscard
+- make_insert_sql
+- make_batch_sql
+- logger
+
+## 类
+
+### AsyncmyMySQLPipeline
+
+#### 方法
+
+##### __init__
+
+##### from_crawler
+
+### AiomysqlMySQLPipeline
+
+#### 方法
+
+##### __init__
+
+##### create_instance
+
+
+**code file end: docs/api/crawlo_pipelines_mysql_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines_redis_dedup_pipeline.md 
+
+# crawlo.pipelines.redis_dedup_pipeline
+
+基于 Redis 的数据项去重管道
+========================
+提供分布式环境下的数据项去重功能，防止保存重复的数据记录。
+
+特点:
+- 分布式支持: 多节点共享去重数据
+- 高性能: 使用 Redis 集合进行快速查找
+- 可配置: 支持自定义 Redis 连接参数
+- 容错设计: 网络异常时不会丢失数据
+
+## 导入的类
+
+- Optional
+- Item
+- DropItem
+- Spider
+- get_logger
+
+## 类
+
+### RedisDedupPipeline
+基于 Redis 的数据项去重管道
+
+#### 方法
+
+##### __init__
+初始化 Redis 去重管道
+
+:param redis_host: Redis 主机地址
+:param redis_port: Redis 端口
+:param redis_db: Redis 数据库编号
+:param redis_password: Redis 密码
+:param redis_key: 存储指纹的 Redis 键名
+:param log_level: 日志级别
+
+##### from_crawler
+从爬虫配置创建管道实例
+
+##### process_item
+处理数据项，进行去重检查
+
+:param item: 要处理的数据项
+:param spider: 爬虫实例
+:return: 处理后的数据项或抛出 DropItem 异常
+
+##### _generate_item_fingerprint
+生成数据项指纹
+
+基于数据项的所有字段生成唯一指纹，用于去重判断。
+
+:param item: 数据项
+:return: 指纹字符串
+
+##### close_spider
+爬虫关闭时的清理工作
+
+:param spider: 爬虫实例
+
+
+**code file end: docs/api/crawlo_pipelines_redis_dedup_pipeline.md**
+
+---
+
+
+### code file start: docs/api/crawlo_pipelines___init__.md 
+
+# crawlo.pipelines.__init__
+
+## 导入的类
+
+- Item
+- MemoryDedupPipeline
+- RedisDedupPipeline
+- BloomDedupPipeline
+- DatabaseDedupPipeline
+
+## 类
+
+### BasePipeline
+
+#### 方法
+
+##### process_item
+
+##### create_instance
+
+
+**code file end: docs/api/crawlo_pipelines___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_queue___init__.md 
+
+# crawlo.queue.__init__
+
+
+**code file end: docs/api/crawlo_queue___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_spider___init__.md 
+
+# crawlo.spider.__init__
+
+Crawlo Spider Module
+==================
+提供爬虫基类和相关功能。
+
+核心功能:
+- Spider基类：所有爬虫的基础类
+- 自动注册机制：通过元类自动注册爬虫
+- 配置管理：支持自定义设置和链式调用
+- 生命周期管理：开启/关闭钩子函数
+- 分布式支持：智能检测运行模式
+
+使用示例:
+    class MySpider(Spider):
+        name = 'my_spider'
+        start_urls = ['http://example.com']
+        
+        # 自定义配置
+        custom_settings = {
+            'DOWNLOADER_TYPE': 'httpx',
+            'CONCURRENCY': 10
+        }
+        
+        def parse(self, response):
+            # 解析逻辑
+            yield Item(data=response.json())
+
+## 导入的类
+
+- annotations
+- Type
+- Any
+- Optional
+- List
+- Dict
+- Union
+- Iterator
+- AsyncIterator
+- Request
+- get_logger
+
+## 类
+
+### SpiderMeta
+爬虫元类，提供自动注册功能
+
+功能:
+- 自动注册爬虫到全局注册表
+- 验证爬虫名称的唯一性
+- 提供完整的错误提示
+
+#### 方法
+
+##### __new__
+
+### Spider
+爬虫基类 - 所有爬虫实现的基础
+
+必须定义的属性:
+- name: 爬虫名称，必须全局唯一
+
+可选配置:
+- start_urls: 起始 URL 列表
+- custom_settings: 自定义设置字典
+- allowed_domains: 允许的域名列表
+
+必须实现的方法:
+- parse(response): 解析响应的主方法
+
+可选实现的方法:
+- spider_opened(): 爬虫开启时调用
+- spider_closed(): 爬虫关闭时调用
+- start_requests(): 生成初始请求（默认使用start_urls）
+
+示例:
+    class MySpider(Spider):
+        name = 'example_spider'
+        start_urls = ['https://example.com']
+        
+        custom_settings = {
+            'DOWNLOADER_TYPE': 'httpx',
+            'CONCURRENCY': 5,
+            'DOWNLOAD_DELAY': 1.0
+        }
+        
+        def parse(self, response):
+            # 提取数据
+            data = response.css('title::text').get()
+            yield {'title': data}
+            
+            # 生成新请求
+            for link in response.css('a::attr(href)').getall():
+                yield Request(url=link, callback=self.parse_detail)
+
+#### 方法
+
+##### __init__
+初始化爬虫实例
+
+:param name: 爬虫名称（可选，默认使用类属性）
+:param kwargs: 其他初始化参数
+
+##### create_instance
+创建爬虫实例并绑定 crawler
+
+:param crawler: Crawler 实例
+:return: 爬虫实例
+
+##### start_requests
+生成初始请求
+
+默认行为:
+- 使用 start_urls 生成请求
+- 智能检测分布式模式决定是否去重
+- 支持单个 start_url 属性（兼容性）
+- 支持批量生成优化（大规模URL场景）
+
+:return: Request 迭代器
+
+##### _get_batch_size
+获取批量处理大小配置
+
+用于大规模URL场景的性能优化
+
+:return: 批量大小（0表示无限制）
+
+##### _is_distributed_mode
+智能检测是否为分布式模式
+
+检测条件:
+- QUEUE_TYPE = 'redis'
+- FILTER_CLASS 包含 'aioredis_filter' 
+- RUN_MODE = 'distributed'
+
+:return: 是否为分布式模式
+
+##### _is_allowed_domain
+检查URL是否在允许的域名列表中
+
+:param url: 要检查的URL
+:return: 是否允许
+
+##### parse
+解析响应的主方法（必须实现）
+
+:param response: 响应对象
+:return: 生成的 Item 或 Request
+
+##### __str__
+
+##### __repr__
+
+##### set_custom_setting
+设置自定义配置（链式调用）
+
+:param key: 配置键名
+:param value: 配置值
+:return: self（支持链式调用）
+
+示例:
+    spider.set_custom_setting('CONCURRENCY', 10)                  .set_custom_setting('DOWNLOAD_DELAY', 1.0)
+
+##### get_custom_setting
+获取自定义配置值
+
+:param key: 配置键名 
+:param default: 默认值
+:return: 配置值
+
+##### get_spider_info
+获取爬虫详细信息
+
+:return: 爬虫信息字典
+
+##### make_request
+便捷方法：创建 Request 对象
+
+:param url: 请求URL
+:param callback: 回调函数（默认为parse）
+:param kwargs: 其他Request参数
+:return: Request对象
+
+### SpiderStatsTracker
+爬虫统计跟踪器
+提供详细的性能监控功能
+
+#### 方法
+
+##### __init__
+
+##### start_tracking
+开始统计
+
+##### stop_tracking
+停止统计
+
+##### record_request
+记录请求
+
+##### record_response
+记录响应
+
+##### record_item
+记录Item
+
+##### record_error
+记录错误
+
+##### get_summary
+获取统计摘要
+
+## 函数
+
+### create_spider_from_template
+从模板快速创建爬虫类
+
+:param name: 爬虫名称
+:param start_urls: 起始URL列表
+:param options: 其他选项
+:return: 新创建的爬虫类
+
+示例:
+    MySpider = create_spider_from_template(
+        name='quick_spider',
+        start_urls=['http://example.com'],
+        allowed_domains=['example.com'],
+        custom_settings={'CONCURRENCY': 5}
+    )
+
+### get_global_spider_registry
+获取全局爬虫注册表的副本
+
+:return: 爬虫注册表的副本
+
+### get_spider_by_name
+根据名称获取爬虫类
+
+:param name: 爬虫名称
+:return: 爬虫类或None
+
+### get_all_spider_classes
+获取所有注册的爬虫类
+
+:return: 爬虫类列表
+
+### get_spider_names
+获取所有爬虫名称
+
+:return: 爬虫名称列表
+
+### is_spider_registered
+检查爬虫是否已注册
+
+:param name: 爬虫名称
+:return: 是否已注册
+
+### unregister_spider
+取消注册爬虫（仅用于测试）
+
+:param name: 爬虫名称
+:return: 是否成功取消注册
+
+
+**code file end: docs/api/crawlo_spider___init__.md**
+
+---
+
+
+### code file start: docs/api/crawlo_utils_log.md 
+
+# crawlo.utils.log
+
+日志管理器：安全版本，使用字符串化 key 避免 unhashable 问题
+
+## 导入的类
+
+- Formatter
+- StreamHandler
+- FileHandler
+- Logger
+- DEBUG
+- INFO
+- WARNING
+- ERROR
+- CRITICAL
+
+## 类
+
+### LoggerManager
+
+#### 方法
+
+##### _to_level
+安全转换为日志级别 int
+
+##### configure
+使用 settings 对象或关键字参数配置日志
+
+##### get_logger
+简化接口，只暴露必要参数
+
+
+**code file end: docs/api/crawlo_utils_log.md**
+
+---
+
+
+### code file start: docs/api/crawlo___init__.md 
+
+# crawlo.__init__
+
+Crawlo - 一个异步爬虫框架
+
+## 导入的类
+
+- Spider
+- Item
+- Field
+- Request
+- Response
+- DownloaderBase
+- BaseMiddleware
+- TimeUtils
+- parse_time
+- format_time
+- time_diff
+- to_timestamp
+- to_datetime
+- now
+- to_timezone
+- to_utc
+- to_local
+- from_timestamp_with_tz
+- cleaners
+- tools
+
+
+**code file end: docs/api/crawlo___init__.md**
+
+---
+
+
+### code file start: docs/api/index.md 
+
+# API 参考
+
+欢迎查阅 Crawlo 框架的完整 API 参考文档。本文档详细介绍了框架中各个模块和类的使用方法。
+
+## 核心模块
+
+### [crawlo.crawler](crawlo_crawler.md)
+爬虫进程管理和运行时核心功能模块。
+
+核心类：
+- `Crawler` - 单个爬虫运行实例
+- `CrawlerProcess` - 爬虫进程管理器
+
+### [crawlo.spider](crawlo_spider___init__.md)
+爬虫基类和相关功能模块。
+
+核心类：
+- `Spider` - 爬虫基类
+- `SpiderMeta` - 爬虫元类
+
+## 网络模块
+
+### [crawlo.network.request](crawlo_network_request.md)
+HTTP 请求对象实现。
+
+核心类：
+- `Request` - 请求对象
+
+### [crawlo.network.response](crawlo_network_response.md)
+HTTP 响应对象实现。
+
+核心类：
+- `Response` - 响应对象
+
+## 数据处理模块
+
+### [crawlo.items](crawlo_items_items.md)
+数据项定义和处理。
+
+核心类：
+- `Item` - 数据项基类
+- `ItemMeta` - 数据项元类
+
+## 下载器模块
+
+### [crawlo.downloader](crawlo_downloader___init__.md)
+HTTP 客户端下载器实现。
+
+核心类：
+- `DownloaderBase` - 下载器基类
+- `AioHttpDownloader` - 基于 aiohttp 的下载器
+- `HttpXDownloader` - 基于 httpx 的下载器
+- `CurlCffiDownloader` - 基于 curl-cffi 的下载器
+
+## 调度器模块
+
+### [crawlo.core.scheduler](crawlo_core_scheduler.md)
+请求调度和去重管理。
+
+核心类：
+- `Scheduler` - 调度器
+
+## 队列模块
+
+### [crawlo.queue](crawlo_queue___init__.md)
+请求队列管理。
+
+核心类：
+- `QueueManager` - 队列管理器
+
+## 过滤器模块
+
+### [crawlo.filters](crawlo_filters___init__.md)
+请求去重过滤。
+
+核心类：
+- `BaseFilter` - 过滤器基类
+- `MemoryFilter` - 内存过滤器
+- `RedisFilter` - Redis 过滤器
+- `BloomFilter` - 布隆过滤器
+
+## 中间件模块
+
+### [crawlo.middleware](crawlo_middleware___init__.md)
+请求/响应处理中间件。
+
+核心类：
+- `Middleware` - 中间件基类
+- `MiddlewareManager` - 中间件管理器
+
+## 管道模块
+
+### [crawlo.pipelines](crawlo_pipelines___init__.md)
+数据处理和存储管道。
+
+核心类：
+- `Pipeline` - 管道基类
+- `PipelineManager` - 管道管理器
+
+### 内置管道
+
+- [crawlo.pipelines.bloom_dedup_pipeline](crawlo_pipelines_bloom_dedup_pipeline.md) - 布隆去重管道
+- [crawlo.pipelines.console_pipeline](crawlo_pipelines_console_pipeline.md) - 控制台输出管道
+- [crawlo.pipelines.csv_pipeline](crawlo_pipelines_csv_pipeline.md) - CSV 输出管道
+- [crawlo.pipelines.database_dedup_pipeline](crawlo_pipelines_database_dedup_pipeline.md) - 数据库去重管道
+- [crawlo.pipelines.json_pipeline](crawlo_pipelines_json_pipeline.md) - JSON 输出管道
+- [crawlo.pipelines.memory_dedup_pipeline](crawlo_pipelines_memory_dedup_pipeline.md) - 内存去重管道
+- [crawlo.pipelines.mongo_pipeline](crawlo_pipelines_mongo_pipeline.md) - MongoDB 输出管道
+- [crawlo.pipelines.mysql_pipeline](crawlo_pipelines_mysql_pipeline.md) - MySQL 输出管道
+- [crawlo.pipelines.redis_dedup_pipeline](crawlo_pipelines_redis_dedup_pipeline.md) - Redis 去重管道
+
+## 扩展模块
+
+### [crawlo.extension](crawlo_extension___init__.md)
+框架扩展功能。
+
+核心类：
+- `Extension` - 扩展基类
+- `ExtensionManager` - 扩展管理器
+
+## 工具模块
+
+### [crawlo.utils.log](crawlo_utils_log.md)
+日志系统工具。
+
+核心函数：
+- `configure_logging` - 配置日志系统
+- `get_logger` - 获取日志记录器
+
+## 使用示例
+
+```python
+from crawlo.crawler import Crawler
+from crawlo.spider import Spider
+
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # 解析逻辑
+        pass
+
+# 创建并运行爬虫
+crawler = Crawler(MySpider)
+await crawler.crawl()
+```
+
+**code file end: docs/api/index.md**
+
+---
+
+
+### code file start: docs/api/index_en.md 
+
+# API Reference
+
+Welcome to the complete API reference documentation for the Crawlo framework. This document details the usage of various modules and classes in the framework.
+
+## Core Modules
+
+### [crawlo.crawler](crawlo_crawler.md)
+Crawler process management and runtime core functionality module.
+
+Core Classes:
+- `Crawler` - Single crawler instance
+- `CrawlerProcess` - Crawler process manager
+
+### [crawlo.spider](crawlo_spider___init__.md)
+Spider base class and related functionality module.
+
+Core Classes:
+- `Spider` - Spider base class
+- `SpiderMeta` - Spider metaclass
+
+## Network Modules
+
+### [crawlo.network.request](crawlo_network_request.md)
+HTTP request object implementation.
+
+Core Classes:
+- `Request` - Request object
+
+### [crawlo.network.response](crawlo_network_response.md)
+HTTP response object implementation.
+
+Core Classes:
+- `Response` - Response object
+
+## Data Processing Modules
+
+### [crawlo.items](crawlo_items_items.md)
+Data item definition and processing.
+
+Core Classes:
+- `Item` - Data item base class
+- `ItemMeta` - Data item metaclass
+
+## Downloader Modules
+
+### [crawlo.downloader](crawlo_downloader___init__.md)
+HTTP client downloader implementation.
+
+Core Classes:
+- `DownloaderBase` - Downloader base class
+- `AioHttpDownloader` - aiohttp-based downloader
+- `HttpXDownloader` - httpx-based downloader
+- `CurlCffiDownloader` - curl-cffi-based downloader
+
+## Scheduler Modules
+
+### [crawlo.core.scheduler](crawlo_core_scheduler.md)
+Request scheduling and deduplication management.
+
+Core Classes:
+- `Scheduler` - Scheduler
+
+## Queue Modules
+
+### [crawlo.queue](crawlo_queue___init__.md)
+Request queue management.
+
+Core Classes:
+- `QueueManager` - Queue manager
+
+## Filter Modules
+
+### [crawlo.filters](crawlo_filters___init__.md)
+Request deduplication filtering.
+
+Core Classes:
+- `BaseFilter` - Filter base class
+- `MemoryFilter` - Memory filter
+- `RedisFilter` - Redis filter
+- `BloomFilter` - Bloom filter
+
+## Middleware Modules
+
+### [crawlo.middleware](crawlo_middleware___init__.md)
+Request/response processing middleware.
+
+Core Classes:
+- `Middleware` - Middleware base class
+- `MiddlewareManager` - Middleware manager
+
+## Pipeline Modules
+
+### [crawlo.pipelines](crawlo_pipelines___init__.md)
+Data processing and storage pipelines.
+
+Core Classes:
+- `Pipeline` - Pipeline base class
+- `PipelineManager` - Pipeline manager
+
+### Built-in Pipelines
+
+- [crawlo.pipelines.bloom_dedup_pipeline](crawlo_pipelines_bloom_dedup_pipeline.md) - Bloom deduplication pipeline
+- [crawlo.pipelines.console_pipeline](crawlo_pipelines_console_pipeline.md) - Console output pipeline
+- [crawlo.pipelines.csv_pipeline](crawlo_pipelines_csv_pipeline.md) - CSV output pipeline
+- [crawlo.pipelines.database_dedup_pipeline](crawlo_pipelines_database_dedup_pipeline.md) - Database deduplication pipeline
+- [crawlo.pipelines.json_pipeline](crawlo_pipelines_json_pipeline.md) - JSON output pipeline
+- [crawlo.pipelines.memory_dedup_pipeline](crawlo_pipelines_memory_dedup_pipeline.md) - Memory deduplication pipeline
+- [crawlo.pipelines.mongo_pipeline](crawlo_pipelines_mongo_pipeline.md) - MongoDB output pipeline
+- [crawlo.pipelines.mysql_pipeline](crawlo_pipelines_mysql_pipeline.md) - MySQL output pipeline
+- [crawlo.pipelines.redis_dedup_pipeline](crawlo_pipelines_redis_dedup_pipeline.md) - Redis deduplication pipeline
+
+## Extension Modules
+
+### [crawlo.extension](crawlo_extension___init__.md)
+Framework extension functionality.
+
+Core Classes:
+- `Extension` - Extension base class
+- `ExtensionManager` - Extension manager
+
+## Utility Modules
+
+### [crawlo.utils.log](crawlo_utils_log.md)
+Logging system utilities.
+
+Core Functions:
+- `configure_logging` - Configure logging system
+- `get_logger` - Get logger instance
+
+## Usage Example
+
+```python
+from crawlo.crawler import Crawler
+from crawlo.spider import Spider
+
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # Parsing logic
+        pass
+
+# Create and run crawler
+crawler = Crawler(MySpider)
+await crawler.crawl()
+```
+
+**code file end: docs/api/index_en.md**
+
+---
+
+
+### code file start: docs/modules/README.md 
+
+# Module Documentation
+
+This directory contains the modular documentation for the Crawlo framework, organized by core components. Each module has its own subdirectory with detailed documentation about its functionality, configuration, and usage.
+
+## Documentation Structure
+
+The documentation is organized into the following modules:
+
+### Core Module
+- [Engine](core/engine.md) - The central coordinator that manages the crawling lifecycle
+- [Scheduler](core/scheduler.md) - Manages request queues and deduplication
+- [Processor](core/processor.md) - Handles response processing and item extraction
+
+### Downloader Module
+- [Overview](downloader/index.md) - Introduction to the downloader system
+- [AioHttpDownloader](downloader/aiohttp.md) - High-performance downloader based on aiohttp
+- [HttpXDownloader](downloader/httpx.md) - HTTP/2 support with httpx
+- [CurlCffiDownloader](downloader/curl_cffi.md) - Browser fingerprint simulation
+
+### Middleware Module
+- [Overview](middleware/index.md) - Introduction to the middleware system
+- [MiddlewareManager](middleware/manager.md) - Core middleware management system
+- [Built-in Middlewares](middleware/built_in.md) - Overview of built-in middleware components
+
+### Pipeline Module
+- [Overview](pipeline/index.md) - Introduction to the pipeline system
+- [PipelineManager](pipeline/manager.md) - Core pipeline management system
+- [Built-in Pipelines](pipeline/built_in.md) - Overview of built-in pipeline components
+
+### Queue Module
+- [Overview](queue/index.md) - Introduction to the queue system
+- [QueueManager](queue/manager.md) - Unified queue management system
+- [Memory Queue](queue/memory.md) - In-memory queue implementation
+- [Redis Queue](queue/redis.md) - Distributed Redis-based queue
+
+### Filter Module
+- [Overview](filter/index.md) - Introduction to the filter system
+- [BaseFilter](filter/base.md) - Base filter class and interface
+- [MemoryFilter](filter/memory.md) - In-memory deduplication
+- [AioRedisFilter](filter/redis.md) - Distributed Redis-based deduplication
+
+### Extension Module
+- [Overview](extension/index.md) - Introduction to the extension system
+- [ExtensionManager](extension/manager.md) - Core extension management system
+- [Built-in Extensions](extension/built_in.md) - Overview of built-in extension components
+
+## How to Use This Documentation
+
+1. **Start with the Overview**: Each module directory contains an index.md file that provides an overview of that module's functionality.
+
+2. **Dive into Specific Components**: Follow the links to detailed documentation for specific components within each module.
+
+3. **Check Configuration Options**: Most documentation pages include information about configuration options and settings.
+
+4. **Look at Examples**: Many pages include code examples showing how to use the components.
+
+5. **Refer to API Documentation**: For detailed method and class documentation, refer to the API reference section.
+
+## Contributing to Documentation
+
+If you'd like to contribute to this documentation:
+
+1. Follow the existing structure and formatting
+2. Use clear, concise language
+3. Include code examples where appropriate
+4. Update the navigation in mkdocs.yml when adding new pages
+5. Test your changes by building the documentation locally
+
+## Getting Help
+
+If you have questions about the documentation or need help with Crawlo:
+
+1. Check the [main documentation](../index.md) for general information
+2. Look at the [API reference](../api/) for detailed technical information
+3. File an issue on the GitHub repository if you find errors or omissions
+
+**code file end: docs/modules/README.md**
+
+---
+
+
+### code file start: docs/modules/advanced/best_practices.md 
+
+# 最佳实践
+
+本文档总结了使用 Crawlo 框架开发和部署爬虫项目时的最佳实践，帮助开发者编写高质量、可维护和高性能的爬虫代码。
+
+## 项目结构
+
+### 推荐的项目结构
+
+```bash
+my_crawler_project/
+├── crawlo.cfg              # 主配置文件
+├── settings.py             # 配置模块
+├── items.py                # 数据项定义
+├── pipelines.py            # 数据管道
+├── middlewares.py          # 中间件
+├── extensions.py           # 扩展
+├── spiders/                # 爬虫模块
+│   ├── __init__.py
+│   ├── base_spider.py      # 基础爬虫类
+│   └── my_spider.py        # 具体爬虫实现
+├── utils/                  # 工具模块
+│   ├── __init__.py
+│   ├── parsers.py          # 解析工具
+│   └── helpers.py          # 辅助函数
+├── tests/                  # 测试代码
+│   ├── __init__.py
+│   ├── test_spiders.py
+│   └── test_pipelines.py
+├── docs/                   # 文档
+└── requirements.txt        # 依赖列表
+```
+
+### 模块化设计
+
+```python
+# base_spider.py - 基础爬虫类
+from crawlo.spider import Spider
+
+class BaseSpider(Spider):
+    """所有爬虫的基类"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setup_logging()
+        self.setup_metrics()
+    
+    def setup_logging(self):
+        """设置日志"""
+        self.logger = logging.getLogger(f"{self.__class__.__name__}")
+    
+    def setup_metrics(self):
+        """设置指标监控"""
+        self.metrics = {
+            'requests': 0,
+            'items': 0,
+            'errors': 0
+        }
+    
+    def closed(self, reason):
+        """爬虫关闭时的清理工作"""
+        self.logger.info(f"爬虫 {self.name} 已关闭，原因: {reason}")
+        self.report_metrics()
+    
+    def report_metrics(self):
+        """报告指标"""
+        self.logger.info(f"统计信息: {self.metrics}")
+```
+
+## 爬虫开发
+
+### 数据项设计
+
+```python
+# items.py
+from crawlo.items import Item
+
+class ProductItem(Item):
+    """产品数据项"""
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.required_fields = ['name', 'price']
+        self.field_types = {
+            'name': str,
+            'price': float,
+            'description': str,
+            'images': list,
+            'category': str
+        }
+    
+    def validate(self):
+        """数据验证"""
+        # 检查必需字段
+        for field in self.required_fields:
+            if not self.get(field):
+                self.logger.warning(f"缺少必需字段: {field}")
+                return False
+        
+        # 检查字段类型
+        for field, expected_type in self.field_types.items():
+            if field in self and not isinstance(self[field], expected_type):
+                self.logger.warning(f"字段 {field} 类型错误")
+                return False
+        
+        # 业务逻辑验证
+        if self.get('price', 0) < 0:
+            self.logger.warning("价格不能为负数")
+            return False
+        
+        return True
+    
+    def clean(self):
+        """数据清洗"""
+        # 清理字符串字段
+        for field in ['name', 'description']:
+            if field in self:
+                self[field] = self[field].strip()
+        
+        # 格式化价格
+        if 'price' in self:
+            self['price'] = round(float(self['price']), 2)
+        
+        return self
+```
+
+### 爬虫实现
+
+```python
+# my_spider.py
+from .base_spider import BaseSpider
+from .items import ProductItem
+
+class MySpider(BaseSpider):
+    name = 'my_spider'
+    start_urls = ['https://example.com/products']
+    
+    def parse(self, response):
+        """解析产品列表页"""
+        try:
+            # 提取产品链接
+            product_links = response.extract_attrs('.product-link', 'href')
+            
+            for link in product_links:
+                absolute_url = response.urljoin(link)
+                yield Request(
+                    url=absolute_url,
+                    callback=self.parse_product,
+                    meta={'list_page': response.url}
+                )
+            
+            # 处理分页
+            next_page = response.extract_attr('.next-page', 'href')
+            if next_page:
+                yield Request(
+                    url=response.urljoin(next_page),
+                    callback=self.parse
+                )
+                
+        except Exception as e:
+            self.metrics['errors'] += 1
+            self.logger.error(f"解析列表页失败: {e}")
+    
+    def parse_product(self, response):
+        """解析产品详情页"""
+        try:
+            item = ProductItem(
+                name=response.extract_text('h1.product-title'),
+                price=response.extract_text('.price'),
+                description=response.extract_text('.description'),
+                images=response.extract_attrs('.product-images img', 'src'),
+                category=response.extract_text('.category')
+            )
+            
+            # 数据清洗和验证
+            item.clean()
+            if item.validate():
+                self.metrics['items'] += 1
+                yield item
+            else:
+                self.metrics['errors'] += 1
+                self.logger.warning(f"数据验证失败: {response.url}")
+                
+        except Exception as e:
+            self.metrics['errors'] += 1
+            self.logger.error(f"解析产品页失败 {response.url}: {e}")
+```
+
+## 配置管理
+
+### 环境隔离配置
+
+```python
+# settings.py
+import os
+
+class BaseConfig:
+    """基础配置"""
+    # 并发配置
+    CONCURRENCY = 16
+    DOWNLOAD_DELAY = 0.5
+    DOWNLOAD_TIMEOUT = 30
+    
+    # 队列配置
+    SCHEDULER_MAX_QUEUE_SIZE = 10000
+    
+    # 日志配置
+    LOG_LEVEL = 'INFO'
+    LOG_FILE = None
+
+class DevelopmentConfig(BaseConfig):
+    """开发环境配置"""
+    CONCURRENCY = 5
+    DOWNLOAD_DELAY = 1.0
+    LOG_LEVEL = 'DEBUG'
+    LOG_FILE = 'logs/dev.log'
+
+class ProductionConfig(BaseConfig):
+    """生产环境配置"""
+    CONCURRENCY = 50
+    DOWNLOAD_DELAY = 0.1
+    LOG_LEVEL = 'WARNING'
+    LOG_FILE = 'logs/prod.log'
+    LOG_MAX_BYTES = 100 * 1024 * 1024  # 100MB
+    LOG_BACKUP_COUNT = 10
+
+class TestingConfig(BaseConfig):
+    """测试环境配置"""
+    CONCURRENCY = 1
+    DOWNLOAD_DELAY = 0.0
+    LOG_LEVEL = 'DEBUG'
+
+# 根据环境变量选择配置
+config_map = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'testing': TestingConfig
+}
+
+def get_config():
+    env = os.getenv('CRAWLO_ENV', 'development')
+    return config_map.get(env, DevelopmentConfig)()
+```
+
+### 配置验证
+
+```python
+# config_validator.py
+from crawlo.config_validator import ConfigValidator
+
+class CustomConfigValidator(ConfigValidator):
+    """自定义配置验证器"""
+    
+    def validate(self, config):
+        """验证配置"""
+        is_valid, errors, warnings = super().validate(config)
+        
+        # 添加自定义验证规则
+        custom_errors = self._validate_custom_rules(config)
+        errors.extend(custom_errors)
+        
+        return is_valid and len(custom_errors) == 0, errors, warnings
+    
+    def _validate_custom_rules(self, config):
+        """自定义验证规则"""
+        errors = []
+        
+        # 验证价格字段配置
+        if hasattr(config, 'PRICE_FIELDS'):
+            if not isinstance(config.PRICE_FIELDS, list):
+                errors.append("PRICE_FIELDS 必须是列表类型")
+        
+        # 验证自定义中间件
+        if hasattr(config, 'CUSTOM_MIDDLEWARES'):
+            for middleware in config.CUSTOM_MIDDLEWARES:
+                if not self._is_valid_middleware(middleware):
+                    errors.append(f"无效的中间件: {middleware}")
+        
+        return errors
+    
+    def _is_valid_middleware(self, middleware):
+        """验证中间件有效性"""
+        # 实现中间件验证逻辑
+        return True
+```
+
+## 错误处理
+
+### 异常处理策略
+
+```python
+# error_handlers.py
+import asyncio
+import logging
+from functools import wraps
+
+def retry_on_failure(max_retries=3, delay=1.0):
+    """重试装饰器"""
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            last_exception = None
+            
+            for attempt in range(max_retries + 1):
+                try:
+                    if asyncio.iscoroutinefunction(func):
+                        return await func(*args, **kwargs)
+                    else:
+                        return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt < max_retries:
+                        logging.warning(f"函数 {func.__name__} 执行失败 (尝试 {attempt + 1}/{max_retries + 1}): {e}")
+                        await asyncio.sleep(delay * (2 ** attempt))  # 指数退避
+                    else:
+                        logging.error(f"函数 {func.__name__} 执行失败，已达到最大重试次数: {e}")
+                        raise last_exception
+            
+            return None
+        return wrapper
+    return decorator
+
+class ErrorHandler:
+    """错误处理器"""
+    
+    def __init__(self, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
+    
+    def handle_parsing_error(self, response, exception):
+        """处理解析错误"""
+        self.logger.error(f"解析页面失败 {response.url}: {exception}")
+        
+        # 记录错误详情
+        error_info = {
+            'url': response.url,
+            'status_code': response.status_code,
+            'exception': str(exception),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # 可以将错误信息存储到数据库或文件中
+        self._log_error(error_info)
+        
+        # 根据错误类型决定是否重试
+        if self._should_retry(exception):
+            return self._retry_request(response.request)
+        
+        return None
+    
+    def _log_error(self, error_info):
+        """记录错误信息"""
+        # 实现错误日志记录逻辑
+        pass
+    
+    def _should_retry(self, exception):
+        """判断是否应该重试"""
+        # 实现重试逻辑
+        return True
+    
+    def _retry_request(self, request):
+        """重试请求"""
+        # 实现请求重试逻辑
+        request.retry_times += 1
+        return request
+```
+
+## 性能优化
+
+### 异步处理
+
+```python
+# async_utils.py
+import asyncio
+import aiofiles
+from concurrent.futures import ThreadPoolExecutor
+
+class AsyncProcessor:
+    """异步处理器"""
+    
+    def __init__(self, max_workers=4):
+        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        self.semaphore = asyncio.Semaphore(max_workers * 2)
+    
+    async def process_batch(self, items, processor_func):
+        """批量异步处理"""
+        tasks = []
+        async with self.semaphore:
+            for item in items:
+                task = asyncio.create_task(
+                    self._process_item(item, processor_func)
+                )
+                tasks.append(task)
+            
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            return [r for r in results if not isinstance(r, Exception)]
+    
+    async def _process_item(self, item, processor_func):
+        """处理单个项目"""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(self.executor, processor_func, item)
+    
+    async def write_to_file(self, filename, data):
+        """异步写入文件"""
+        async with aiofiles.open(filename, 'w', encoding='utf-8') as f:
+            await f.write(data)
+
+# 使用示例
+async def main():
+    processor = AsyncProcessor(max_workers=8)
+    
+    # 批量处理数据
+    items = [f"item_{i}" for i in range(1000)]
+    results = await processor.process_batch(items, lambda x: x.upper())
+    
+    # 异步写入结果
+    await processor.write_to_file('output.txt', '\n'.join(results))
+```
+
+### 缓存策略
+
+```python
+# cache.py
+import hashlib
+import json
+import time
+from functools import wraps
+
+class CacheManager:
+    """缓存管理器"""
+    
+    def __init__(self, redis_client=None, default_ttl=3600):
+        self.redis_client = redis_client
+        self.default_ttl = default_ttl
+        self.local_cache = {}
+    
+    def cache_result(self, ttl=None):
+        """缓存装饰器"""
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                # 生成缓存键
+                cache_key = self._generate_cache_key(func.__name__, args, kwargs)
+                
+                # 尝试从缓存获取
+                cached_result = self._get_from_cache(cache_key)
+                if cached_result is not None:
+                    return cached_result
+                
+                # 执行函数并缓存结果
+                result = func(*args, **kwargs)
+                self._set_cache(cache_key, result, ttl or self.default_ttl)
+                return result
+            
+            return wrapper
+        return decorator
+    
+    def _generate_cache_key(self, func_name, args, kwargs):
+        """生成缓存键"""
+        key_data = f"{func_name}:{str(args)}:{str(sorted(kwargs.items()))}"
+        return hashlib.md5(key_data.encode()).hexdigest()
+    
+    def _get_from_cache(self, key):
+        """从缓存获取"""
+        # 先检查本地缓存
+        if key in self.local_cache:
+            value, expire_time = self.local_cache[key]
+            if time.time() < expire_time:
+                return value
+            else:
+                del self.local_cache[key]
+        
+        # 再检查 Redis 缓存
+        if self.redis_client:
+            cached_value = self.redis_client.get(key)
+            if cached_value:
+                return json.loads(cached_value)
+        
+        return None
+    
+    def _set_cache(self, key, value, ttl):
+        """设置缓存"""
+        # 设置本地缓存
+        expire_time = time.time() + ttl
+        self.local_cache[key] = (value, expire_time)
+        
+        # 设置 Redis 缓存
+        if self.redis_client:
+            self.redis_client.setex(key, ttl, json.dumps(value))
+```
+
+## 测试策略
+
+### 单元测试
+
+```python
+# test_spiders.py
+import unittest
+from unittest.mock import Mock, patch
+from crawlo.spider import Spider
+from crawlo.network import Response, Request
+
+class TestMySpider(unittest.TestCase):
+    """爬虫单元测试"""
+    
+    def setUp(self):
+        """测试初始化"""
+        self.spider = MySpider(name='test_spider')
+    
+    def test_parse_product(self):
+        """测试产品页面解析"""
+        # 创建模拟响应
+        mock_response = Mock(spec=Response)
+        mock_response.url = 'https://example.com/product/123'
+        mock_response.extract_text.return_value = 'Test Product'
+        mock_response.extract_attrs.return_value = ['image1.jpg', 'image2.jpg']
+        
+        # 执行解析
+        items = list(self.spider.parse_product(mock_response))
+        
+        # 验证结果
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['name'], 'Test Product')
+        self.assertEqual(len(items[0]['images']), 2)
+    
+    def test_parse_with_pagination(self):
+        """测试分页解析"""
+        mock_response = Mock(spec=Response)
+        mock_response.url = 'https://example.com/products'
+        mock_response.extract_attrs.return_value = ['/product/1', '/product/2']
+        mock_response.extract_attr.return_value = '/products?page=2'
+        
+        requests = list(self.spider.parse(mock_response))
+        
+        # 验证生成的请求数量
+        self.assertEqual(len(requests), 3)  # 2个产品请求 + 1个分页请求
+
+# test_pipelines.py
+class TestProductPipeline(unittest.TestCase):
+    """管道单元测试"""
+    
+    def setUp(self):
+        self.pipeline = ProductPipeline()
+    
+    def test_process_item_valid(self):
+        """测试有效数据项处理"""
+        item = ProductItem(name='Test Product', price=99.99)
+        result = self.pipeline.process_item(item, Mock())
+        
+        self.assertEqual(result['name'], 'Test Product')
+        self.assertEqual(result['price'], 99.99)
+    
+    def test_process_item_invalid(self):
+        """测试无效数据项处理"""
+        item = ProductItem(name='', price=-10)  # 无效数据
+        result = self.pipeline.process_item(item, Mock())
+        
+        self.assertIsNone(result)  # 无效数据应该被丢弃
+```
+
+### 集成测试
+
+```python
+# test_integration.py
+import asyncio
+import pytest
+from crawlo.crawler import Crawler
+from crawlo.config import CrawloConfig
+
+class TestIntegration:
+    """集成测试"""
+    
+    @pytest.fixture
+    def config(self):
+        """测试配置"""
+        return CrawloConfig.standalone(
+            concurrency=2,
+            download_delay=0.1,
+            log_level='WARNING'
+        )
+    
+    @pytest.mark.asyncio
+    async def test_crawler_execution(self, config):
+        """测试爬虫执行"""
+        crawler = Crawler(config)
+        
+        # 创建测试爬虫
+        spider = MySpider(name='test_spider')
+        
+        # 执行爬虫
+        stats = await crawler.start_spider(spider)
+        
+        # 验证统计信息
+        assert stats['requests'] > 0
+        assert stats['items'] >= 0
+        assert stats['errors'] == 0
+
+# conftest.py - pytest 配置
+import pytest
+import tempfile
+import os
+
+@pytest.fixture(scope='session')
+def temp_dir():
+    """临时目录"""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield tmpdir
+
+@pytest.fixture(scope='session')
+def test_config(temp_dir):
+    """测试配置"""
+    config_file = os.path.join(temp_dir, 'test_config.py')
+    with open(config_file, 'w') as f:
+        f.write("""
+CONCURRENCY = 1
+DOWNLOAD_DELAY = 0.01
+LOG_LEVEL = 'ERROR'
+""")
+    return config_file
+```
+
+## 部署和运维
+
+### Docker 部署
+
+```dockerfile
+# Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 安装 Python 依赖
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用代码
+COPY . .
+
+# 创建日志目录
+RUN mkdir -p logs
+
+# 暴露端口（如果需要）
+EXPOSE 8000
+
+# 运行命令
+CMD ["crawlo", "run", "my_spider"]
+```
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  crawler:
+    build: .
+    environment:
+      - CRAWLO_ENV=production
+      - REDIS_HOST=redis
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data:
+```
+
+### 监控和告警
+
+```python
+# monitoring.py
+import psutil
+import time
+from datetime import datetime
+
+class SystemMonitor:
+    """系统监控"""
+    
+    def __init__(self, alert_manager):
+        self.alert_manager = alert_manager
+        self.metrics = {}
+    
+    def collect_metrics(self):
+        """收集系统指标"""
+        process = psutil.Process()
+        
+        self.metrics = {
+            'timestamp': datetime.now().isoformat(),
+            'cpu_percent': psutil.cpu_percent(),
+            'memory_percent': process.memory_percent(),
+            'memory_rss': process.memory_info().rss / 1024 / 1024,  # MB
+            'disk_usage': psutil.disk_usage('/').percent,
+            'network_sent': psutil.net_io_counters().bytes_sent,
+            'network_recv': psutil.net_io_counters().bytes_recv
+        }
+        
+        return self.metrics
+    
+    def check_thresholds(self):
+        """检查阈值"""
+        metrics = self.collect_metrics()
+        
+        # CPU 使用率告警
+        if metrics['cpu_percent'] > 90:
+            self.alert_manager.send_alert('cpu_usage', metrics['cpu_percent'], 90)
+        
+        # 内存使用告警
+        if metrics['memory_percent'] > 80:
+            self.alert_manager.send_alert('memory_usage', metrics['memory_percent'], 80)
+        
+        # 磁盘使用告警
+        if metrics['disk_usage'] > 95:
+            self.alert_manager.send_alert('disk_usage', metrics['disk_usage'], 95)
+    
+    def export_metrics(self, exporter):
+        """导出指标"""
+        exporter.export(self.metrics)
+```
+
+通过遵循这些最佳实践，可以开发出高质量、可维护和高性能的 Crawlo 爬虫项目。建议根据具体项目需求选择合适的实践方法，并在实际开发中不断优化和完善。
+
+**code file end: docs/modules/advanced/best_practices.md**
+
+---
+
+
+### code file start: docs/modules/advanced/best_practices_en.md 
+
+# Best Practices
+
+This document summarizes the best practices for developing and deploying crawler projects using the Crawlo framework, helping developers write high-quality, maintainable, and high-performance crawler code.
+
+## Project Structure
+
+### Recommended Project Structure
+
+```bash
+my_crawler_project/
+├── crawlo.cfg              # Main configuration file
+├── settings.py             # Configuration module
+├── items.py                # Data item definitions
+├── pipelines.py            # Data pipelines
+├── middlewares.py          # Middlewares
+├── extensions.py           # Extensions
+├── spiders/                # Spider module
+│   ├── __init__.py
+│   ├── base_spider.py      # Base spider class
+│   └── my_spider.py        # Specific spider implementation
+├── utils/                  # Utility module
+│   ├── __init__.py
+│   ├── parsers.py          # Parsing utilities
+│   └── helpers.py          # Helper functions
+├── tests/                  # Test code
+│   ├── __init__.py
+│   ├── test_spiders.py
+│   └── test_pipelines.py
+├── docs/                   # Documentation
+└── requirements.txt        # Dependency list
+```
+
+### Modular Design
+
+```python
+# base_spider.py - Base spider class
+from crawlo.spider import Spider
+
+class BaseSpider(Spider):
+    """Base class for all spiders"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setup_logging()
+        self.setup_metrics()
+    
+    def setup_logging(self):
+        """Setup logging"""
+        self.logger = logging.getLogger(f"{self.__class__.__name__}")
+    
+    def setup_metrics(self):
+        """Setup metrics monitoring"""
+        self.metrics = {
+            'requests': 0,
+            'items': 0,
+            'errors': 0
+        }
+    
+    def closed(self, reason):
+        """Cleanup when spider closes"""
+        self.logger.info(f"Spider {self.name} closed, reason: {reason}")
+        self.report_metrics()
+    
+    def report_metrics(self):
+        """Report metrics"""
+        self.logger.info(f"Statistics: {self.metrics}")
+```
+
+## Spider Development
+
+### Item Design
+
+```python
+# items.py
+from crawlo.items import Item
+
+class ProductItem(Item):
+    """Product data item"""
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.required_fields = ['name', 'price']
+        self.field_types = {
+            'name': str,
+            'price': float,
+            'description': str,
+            'images': list,
+            'category': str
+        }
+    
+    def validate(self):
+        """Data validation"""
+        # Check required fields
+        for field in self.required_fields:
+            if not self.get(field):
+                self.logger.warning(f"Missing required field: {field}")
+                return False
+        
+        # Check field types
+        for field, expected_type in self.field_types.items():
+            if field in self and not isinstance(self[field], expected_type):
+                self.logger.warning(f"Field {field} has wrong type")
+                return False
+        
+        # Business logic validation
+        if self.get('price', 0) < 0:
+            self.logger.warning("Price cannot be negative")
+            return False
+        
+        return True
+    
+    def clean(self):
+        """Data cleaning"""
+        # Clean string fields
+        for field in ['name', 'description']:
+            if field in self:
+                self[field] = self[field].strip()
+        
+        # Format price
+        if 'price' in self:
+            self['price'] = round(float(self['price']), 2)
+        
+        return self
+```
+
+## Configuration Management
+
+### Environment Isolation Configuration
+
+```python
+# settings.py
+import os
+
+class BaseConfig:
+    """Base configuration"""
+    # Concurrency configuration
+    CONCURRENCY = 16
+    DOWNLOAD_DELAY = 0.5
+    DOWNLOAD_TIMEOUT = 30
+    
+    # Queue configuration
+    SCHEDULER_MAX_QUEUE_SIZE = 10000
+    
+    # Log configuration
+    LOG_LEVEL = 'INFO'
+    LOG_FILE = None
+
+class DevelopmentConfig(BaseConfig):
+    """Development environment configuration"""
+    CONCURRENCY = 5
+    DOWNLOAD_DELAY = 1.0
+    LOG_LEVEL = 'DEBUG'
+    LOG_FILE = 'logs/dev.log'
+
+class ProductionConfig(BaseConfig):
+    """Production environment configuration"""
+    CONCURRENCY = 50
+    DOWNLOAD_DELAY = 0.1
+    LOG_LEVEL = 'WARNING'
+    LOG_FILE = 'logs/prod.log'
+    LOG_MAX_BYTES = 100 * 1024 * 1024  # 100MB
+    LOG_BACKUP_COUNT = 10
+
+class TestingConfig(BaseConfig):
+    """Testing environment configuration"""
+    CONCURRENCY = 1
+    DOWNLOAD_DELAY = 0.0
+    LOG_LEVEL = 'DEBUG'
+
+# Select configuration based on environment variable
+config_map = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'testing': TestingConfig
+}
+
+def get_config():
+    env = os.getenv('CRAWLO_ENV', 'development')
+    return config_map.get(env, DevelopmentConfig)()
+```
+
+## Error Handling
+
+### Exception Handling Strategy
+
+```python
+# error_handlers.py
+import asyncio
+import logging
+from functools import wraps
+
+def retry_on_failure(max_retries=3, delay=1.0):
+    """Retry decorator"""
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            last_exception = None
+            
+            for attempt in range(max_retries + 1):
+                try:
+                    if asyncio.iscoroutinefunction(func):
+                        return await func(*args, **kwargs)
+                    else:
+                        return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt < max_retries:
+                        logging.warning(f"Function {func.__name__} failed (attempt {attempt + 1}/{max_retries + 1}): {e}")
+                        await asyncio.sleep(delay * (2 ** attempt))  # Exponential backoff
+                    else:
+                        logging.error(f"Function {func.__name__} failed, max retries reached: {e}")
+                        raise last_exception
+            
+            return None
+        return wrapper
+    return decorator
+
+class ErrorHandler:
+    """Error handler"""
+    
+    def __init__(self, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
+    
+    def handle_parsing_error(self, response, exception):
+        """Handle parsing errors"""
+        self.logger.error(f"Failed to parse page {response.url}: {exception}")
+        
+        # Log error details
+        error_info = {
+            'url': response.url,
+            'status_code': response.status_code,
+            'exception': str(exception),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Can store error information in database or file
+        self._log_error(error_info)
+        
+        # Decide whether to retry based on error type
+        if self._should_retry(exception):
+            return self._retry_request(response.request)
+        
+        return None
+    
+    def _log_error(self, error_info):
+        """Log error information"""
+        # Implement error logging logic
+        pass
+    
+    def _should_retry(self, exception):
+        """Determine whether to retry"""
+        # Implement retry logic
+        return True
+    
+    def _retry_request(self, request):
+        """Retry request"""
+        # Implement request retry logic
+        request.retry_times += 1
+        return request
+```
+
+## Performance Optimization
+
+### Async Processing
+
+```python
+# async_utils.py
+import asyncio
+import aiofiles
+from concurrent.futures import ThreadPoolExecutor
+
+class AsyncProcessor:
+    """Async processor"""
+    
+    def __init__(self, max_workers=4):
+        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        self.semaphore = asyncio.Semaphore(max_workers * 2)
+    
+    async def process_batch(self, items, processor_func):
+        """Batch async processing"""
+        tasks = []
+        async with self.semaphore:
+            for item in items:
+                task = asyncio.create_task(
+                    self._process_item(item, processor_func)
+                )
+                tasks.append(task)
+            
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            return [r for r in results if not isinstance(r, Exception)]
+    
+    async def _process_item(self, item, processor_func):
+        """Process single item"""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(self.executor, processor_func, item)
+    
+    async def write_to_file(self, filename, data):
+        """Async write to file"""
+        async with aiofiles.open(filename, 'w', encoding='utf-8') as f:
+            await f.write(data)
+
+# Usage example
+async def main():
+    processor = AsyncProcessor(max_workers=8)
+    
+    # Batch process data
+    items = [f"item_{i}" for i in range(1000)]
+    results = await processor.process_batch(items, lambda x: x.upper())
+    
+    # Async write results
+    await processor.write_to_file('output.txt', '\n'.join(results))
+```
+
+## Testing Strategy
+
+### Unit Testing
+
+```python
+# test_spiders.py
+import unittest
+from unittest.mock import Mock, patch
+from crawlo.spider import Spider
+from crawlo.network import Response, Request
+
+class TestMySpider(unittest.TestCase):
+    """Spider unit tests"""
+    
+    def setUp(self):
+        """Test initialization"""
+        self.spider = MySpider(name='test_spider')
+    
+    def test_parse_product(self):
+        """Test product page parsing"""
+        # Create mock response
+        mock_response = Mock(spec=Response)
+        mock_response.url = 'https://example.com/product/123'
+        mock_response.extract_text.return_value = 'Test Product'
+        mock_response.extract_attrs.return_value = ['image1.jpg', 'image2.jpg']
+        
+        # Execute parsing
+        items = list(self.spider.parse_product(mock_response))
+        
+        # Verify results
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['name'], 'Test Product')
+        self.assertEqual(len(items[0]['images']), 2)
+    
+    def test_parse_with_pagination(self):
+        """Test pagination parsing"""
+        mock_response = Mock(spec=Response)
+        mock_response.url = 'https://example.com/products'
+        mock_response.extract_attrs.return_value = ['/product/1', '/product/2']
+        mock_response.extract_attr.return_value = '/products?page=2'
+        
+        requests = list(self.spider.parse(mock_response))
+        
+        # Verify number of generated requests
+        self.assertEqual(len(requests), 3)  # 2 product requests + 1 pagination request
+
+# test_pipelines.py
+class TestProductPipeline(unittest.TestCase):
+    """Pipeline unit tests"""
+    
+    def setUp(self):
+        self.pipeline = ProductPipeline()
+    
+    def test_process_item_valid(self):
+        """Test valid item processing"""
+        item = ProductItem(name='Test Product', price=99.99)
+        result = self.pipeline.process_item(item, Mock())
+        
+        self.assertEqual(result['name'], 'Test Product')
+        self.assertEqual(result['price'], 99.99)
+    
+    def test_process_item_invalid(self):
+        """Test invalid item processing"""
+        item = ProductItem(name='', price=-10)  # Invalid data
+        result = self.pipeline.process_item(item, Mock())
+        
+        self.assertIsNone(result)  # Invalid data should be discarded
+```
+
+## Deployment and Operations
+
+### Docker Deployment
+
+```dockerfile
+# Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency file
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Create log directory
+RUN mkdir -p logs
+
+# Expose port (if needed)
+EXPOSE 8000
+
+# Run command
+CMD ["crawlo", "run", "my_spider"]
+```
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  crawler:
+    build: .
+    environment:
+      - CRAWLO_ENV=production
+      - REDIS_HOST=redis
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data:
+```
+
+By following these best practices, you can develop high-quality, maintainable, and high-performance Crawlo crawler projects. It is recommended to select appropriate practice methods based on specific project requirements and continuously optimize and improve during actual development.
+
+**code file end: docs/modules/advanced/best_practices_en.md**
+
+---
+
+
+### code file start: docs/modules/advanced/distributed.md 
+
+# 分布式部署
+
+Crawlo 支持分布式部署，允许多个节点协同工作以处理大规模爬取任务。本文档详细介绍如何配置和部署分布式爬虫系统。
+
+## 概述
+
+分布式部署通过 Redis 实现任务分发与状态共享，支持多节点并行采集，具备良好的扩展性与容错能力。
+
+### 核心组件
+
+1. **Redis 服务器** - 用于任务队列和状态共享
+2. **控制节点** - 负责任务分发和协调
+3. **工作节点** - 执行具体的爬取任务
+4. **数据存储** - 存储爬取结果
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "控制节点"
+Crawler[Crawler]
+Engine[Engine]
+Scheduler[Scheduler]
+end
+subgraph "数据存储"
+Redis[(Redis)]
+MySQL[(MySQL/MongoDB)]
+end
+subgraph "工作节点 1"
+Worker1[Engine]
+Worker1Scheduler[Scheduler]
+Worker1Downloader[Downloader]
+end
+subgraph "工作节点 2"
+Worker2[Engine]
+Worker2Scheduler[Scheduler]
+Worker2Downloader[Downloader]
+end
+subgraph "工作节点 N"
+WorkerN[Engine]
+WorkerNScheduler[Scheduler]
+WorkerNDownloader[Downloader]
+end
+Crawler --> Engine
+Engine --> Scheduler
+Scheduler --> Redis
+Worker1Scheduler --> Redis
+Worker2Scheduler --> Redis
+WorkerNScheduler --> Redis
+Worker1Downloader --> Redis
+Worker2Downloader --> Redis
+WorkerNDownloader --> Redis
+Redis --> MySQL
+style Redis fill:#f9f,stroke:#333
+style MySQL fill:#bbf,stroke:#333
+```
+
+## 环境准备
+
+### Redis 服务器
+
+1. **安装 Redis**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get update
+   sudo apt-get install redis-server
+   
+   # CentOS/RHEL
+   sudo yum install redis
+   
+   # macOS
+   brew install redis
+   ```
+
+2. **配置 Redis**
+   ```bash
+   # 编辑 Redis 配置文件
+   sudo nano /etc/redis/redis.conf
+   
+   # 设置密码（可选但推荐）
+   requirepass your_redis_password
+   
+   # 启用持久化（可选）
+   save 900 1
+   save 300 10
+   save 60 10000
+   ```
+
+3. **启动 Redis**
+   ```bash
+   # 启动 Redis 服务
+   sudo systemctl start redis
+   
+   # 设置开机自启
+   sudo systemctl enable redis
+   
+   # 检查 Redis 状态
+   sudo systemctl status redis
+   ```
+
+### Redis 集群支持
+
+Crawlo 框架支持 Redis 集群模式，可以提供更高的可用性和性能。详细配置请参考 [Redis 集群使用指南](./redis_cluster.md)。
+
+### 控制节点配置
+
+控制节点负责启动爬虫和分发初始任务。
+
+```python
+# settings_distributed.py
+from crawlo.config import CrawloConfig
+
+# 分布式配置
+config = CrawloConfig.distributed(
+    project_name='distributed_project',
+    redis_host='192.168.1.100',      # Redis 服务器地址
+    redis_port=6379,                 # Redis 端口
+    redis_password='your_password',  # Redis 密码
+    redis_db=0,                      # Redis 数据库编号
+    concurrency=10,                  # 控制节点并发数
+    download_delay=1.0               # 下载延迟
+)
+```
+
+### 工作节点配置
+
+工作节点负责执行具体的爬取任务。
+
+```python
+# worker_settings.py
+from crawlo.config import CrawloConfig
+
+# 工作节点配置
+config = CrawloConfig.distributed(
+    project_name='distributed_project',
+    redis_host='192.168.1.100',      # Redis 服务器地址
+    redis_port=6379,                 # Redis 端口
+    redis_password='your_password',  # Redis 密码
+    redis_db=0,                      # Redis 数据库编号
+    concurrency=20,                  # 工作节点并发数
+    download_delay=0.5               # 下载延迟
+)
+```
+
+## 部署步骤
+
+### 1. 部署控制节点
+
+```bash
+# 在控制节点上创建项目
+crawlo startproject distributed_project
+cd distributed_project
+
+# 配置 settings_distributed.py
+# 编辑爬虫文件
+
+# 启动控制节点
+crawlo run myspider --config settings_distributed.py
+```
+
+### 2. 部署工作节点
+
+```bash
+# 在工作节点上复制项目代码
+git clone https://github.com/your-org/distributed_project.git
+cd distributed_project
+
+# 配置 worker_settings.py
+
+# 启动工作节点
+crawlo run myspider --config worker_settings.py
+```
+
+### 3. 启动多个工作节点
+
+```bash
+# 在不同的终端或服务器上启动多个工作节点
+# 终端 1
+crawlo run myspider --config worker_settings.py
+
+# 终端 2
+crawlo run myspider --config worker_settings.py
+
+# 终端 3
+crawlo run myspider --config worker_settings.py
+```
+
+## 配置选项
+
+分布式部署的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| REDIS_HOST | str | '127.0.0.1' | Redis 服务器地址 |
+| REDIS_PORT | int | 6379 | Redis 端口 |
+| REDIS_PASSWORD | str | None | Redis 密码 |
+| REDIS_DB | int | 0 | Redis 数据库编号 |
+| REDIS_CONNECTION_POOL_SIZE | int | 20 | Redis 连接池大小 |
+| SCHEDULER_PERSIST | bool | True | 是否持久化调度器状态 |
+| QUEUE_PERSISTENCE | bool | True | 是否持久化队列数据 |
+| STATS_PERSISTENCE | bool | True | 是否持久化统计信息 |
+
+## 性能优化
+
+### 1. 调整并发数
+
+```python
+# 控制节点并发数（较低）
+config = CrawloConfig.distributed(concurrency=5)
+
+# 工作节点并发数（较高）
+config = CrawloConfig.distributed(concurrency=30)
+```
+
+### 2. 优化 Redis 配置
+
+```python
+# 增加连接池大小
+config = CrawloConfig.distributed(
+    redis_connection_pool_size=50
+)
+
+# 启用 Redis 集群模式（高级配置）
+REDIS_CLUSTER_NODES = [
+    '192.168.1.100:7000',
+    '192.168.1.101:7000',
+    '192.168.1.102:7000'
+]
+```
+
+### 3. 负载均衡
+
+```python
+# 不同工作节点使用不同的配置
+# 工作节点 1 - 高性能
+config = CrawloConfig.distributed(concurrency=50, download_delay=0.1)
+
+# 工作节点 2 - 中等性能
+config = CrawloConfig.distributed(concurrency=20, download_delay=0.5)
+
+# 工作节点 3 - 低性能（避免被封）
+config = CrawloConfig.distributed(concurrency=5, download_delay=2.0)
+```
+
+## 监控和日志
+
+### 1. Redis 监控
+
+```bash
+# 监控 Redis 性能
+redis-cli info
+
+# 监控 Redis 内存使用
+redis-cli info memory
+
+# 监控 Redis 连接数
+redis-cli info clients
+```
+
+### 2. 爬虫监控
+
+```python
+# 启用分布式统计扩展
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+]
+
+# 设置统计日志间隔
+LOG_STATS_INTERVAL = 30
+```
+
+### 3. 日志配置
+
+```python
+# 配置分布式日志
+LOG_LEVEL = 'INFO'
+LOG_FILE = 'distributed_crawler.log'
+LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
+LOG_BACKUP_COUNT = 5
+
+# 包含节点标识
+LOG_INCLUDE_NODE_ID = True
+```
+
+## 故障排除
+
+### 1. Redis 连接问题
+
+```bash
+# 检查 Redis 服务状态
+sudo systemctl status redis
+
+# 测试 Redis 连接
+redis-cli -h 192.168.1.100 -p 6379 ping
+
+# 检查防火墙设置
+sudo ufw status
+```
+
+### 2. 节点通信问题
+
+```python
+# 启用详细日志
+LOG_LEVEL = 'DEBUG'
+
+# 检查网络连接
+import socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+result = sock.connect_ex(('192.168.1.100', 6379))
+if result == 0:
+    print("端口开放")
+else:
+    print("端口关闭")
+sock.close()
+```
+
+### 3. 数据一致性问题
+
+```python
+# 启用队列持久化
+QUEUE_PERSISTENCE = True
+
+# 启用统计持久化
+STATS_PERSISTENCE = True
+
+# 定期备份 Redis 数据
+# 在 crontab 中添加
+# 0 2 * * * redis-cli bgsave
+```
+
+## 最佳实践
+
+### 1. 安全配置
+
+```python
+# 使用强密码
+REDIS_PASSWORD = 'strong_password_here'
+
+# 限制 Redis 访问
+BIND_ADDRESS = '192.168.1.100'  # 只绑定内网地址
+
+# 启用 Redis 认证
+REQUIREPASS = 'your_strong_password'
+```
+
+### 2. 资源管理
+
+```python
+# 合理设置并发数
+# 控制节点
+config = CrawloConfig.distributed(concurrency=5)
+
+# 工作节点
+config = CrawloConfig.distributed(concurrency=20)
+
+# 设置内存限制
+MEMORY_LIMIT = '2GB'
+```
+
+### 3. 容错处理
+
+```python
+# 配置重试机制
+MAX_RETRY_TIMES = 5
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+
+# 启用自动重试扩展
+EXTENSIONS = [
+    'crawlo.extensions.RetryExtension',
+]
+```
+
+### 4. 监控告警
+
+```python
+# 配置监控扩展
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+    'crawlo.extensions.MemoryUsageExtension',
+]
+
+# 设置告警阈值
+MEMORY_USAGE_WARNING_THRESHOLD = 500  # 500MB
+```
+
+## 扩展部署
+
+### 1. Docker 部署
+
+``dockerfile
+# Dockerfile
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["crawlo", "run", "myspider"]
+```
+
+```bash
+# 构建镜像
+docker build -t crawlo-worker .
+
+# 运行容器
+docker run -d --name worker1 crawlo-worker
+```
+
+### 2. Kubernetes 部署
+
+```yaml
+# worker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawlo-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawlo-worker
+  template:
+    metadata:
+      labels:
+        app: crawlo-worker
+    spec:
+      containers:
+      - name: worker
+        image: crawlo-worker:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: CONCURRENCY
+          value: "20"
+```
+
+通过以上配置和部署步骤，您可以成功搭建一个高效、可扩展的分布式爬虫系统。
+
+**code file end: docs/modules/advanced/distributed.md**
+
+---
+
+
+### code file start: docs/modules/advanced/distributed_en.md 
+
+# Distributed Deployment
+
+Crawlo supports distributed deployment, allowing multiple nodes to work together to handle large-scale crawling tasks. This document details how to configure and deploy a distributed crawler system.
+
+## Overview
+
+Distributed deployment implements task distribution and state sharing through Redis, supporting multi-node parallel crawling with good scalability and fault tolerance.
+
+### Core Components
+
+1. **Redis Server** - Used for task queues and state sharing
+2. **Control Node** - Responsible for task distribution and coordination
+3. **Worker Nodes** - Execute specific crawling tasks
+4. **Data Storage** - Stores crawling results
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Control Node"
+Crawler[Crawler]
+Engine[Engine]
+Scheduler[Scheduler]
+end
+subgraph "Data Storage"
+Redis[(Redis)]
+MySQL[(MySQL/MongoDB)]
+end
+subgraph "Worker Node 1"
+Worker1[Engine]
+Worker1Scheduler[Scheduler]
+Worker1Downloader[Downloader]
+end
+subgraph "Worker Node 2"
+Worker2[Engine]
+Worker2Scheduler[Scheduler]
+Worker2Downloader[Downloader]
+end
+subgraph "Worker Node N"
+WorkerN[Engine]
+WorkerNScheduler[Scheduler]
+WorkerNDownloader[Downloader]
+end
+Crawler --> Engine
+Engine --> Scheduler
+Scheduler --> Redis
+Worker1Scheduler --> Redis
+Worker2Scheduler --> Redis
+WorkerNScheduler --> Redis
+Worker1Downloader --> Redis
+Worker2Downloader --> Redis
+WorkerNDownloader --> Redis
+Redis --> MySQL
+style Redis fill:#f9f,stroke:#333
+style MySQL fill:#bbf,stroke:#333
+```
+
+## Environment Setup
+
+### Redis Server
+
+1. **Install Redis**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get update
+   sudo apt-get install redis-server
+   
+   # CentOS/RHEL
+   sudo yum install redis
+   
+   # macOS
+   brew install redis
+   ```
+
+2. **Configure Redis**
+   ```bash
+   # Edit Redis configuration file
+   sudo nano /etc/redis/redis.conf
+   
+   # Set password (optional but recommended)
+   requirepass your_redis_password
+   
+   # Enable persistence (optional)
+   save 900 1
+   save 300 10
+   save 60 10000
+   ```
+
+3. **Start Redis**
+   ```bash
+   # Start Redis service
+   sudo systemctl start redis
+   
+   # Enable auto-start on boot
+   sudo systemctl enable redis
+   
+   # Check Redis status
+   sudo systemctl status redis
+   ```
+
+### Control Node Configuration
+
+The control node is responsible for starting the crawler and distributing initial tasks.
+
+```python
+# settings_distributed.py
+from crawlo.config import CrawloConfig
+
+# Distributed configuration
+config = CrawloConfig.distributed(
+    project_name='distributed_project',
+    redis_host='192.168.1.100',      # Redis server address
+    redis_port=6379,                 # Redis port
+    redis_password='your_password',  # Redis password
+    redis_db=0,                      # Redis database number
+    concurrency=10,                  # Control node concurrency
+    download_delay=1.0               # Download delay
+)
+```
+
+### Worker Node Configuration
+
+Worker nodes are responsible for executing specific crawling tasks.
+
+```python
+# worker_settings.py
+from crawlo.config import CrawloConfig
+
+# Worker node configuration
+config = CrawloConfig.distributed(
+    project_name='distributed_project',
+    redis_host='192.168.1.100',      # Redis server address
+    redis_port=6379,                 # Redis port
+    redis_password='your_password',  # Redis password
+    redis_db=0,                      # Redis database number
+    concurrency=20,                  # Worker node concurrency
+    download_delay=0.5               # Download delay
+)
+```
+
+## Deployment Steps
+
+### 1. Deploy Control Node
+
+```bash
+# Create project on control node
+crawlo startproject distributed_project
+cd distributed_project
+
+# Configure settings_distributed.py
+# Edit spider file
+
+# Start control node
+crawlo run myspider --config settings_distributed.py
+```
+
+### 2. Deploy Worker Nodes
+
+```bash
+# Copy project code on worker nodes
+git clone https://github.com/your-org/distributed_project.git
+cd distributed_project
+
+# Configure worker_settings.py
+
+# Start worker node
+crawlo run myspider --config worker_settings.py
+```
+
+### 3. Start Multiple Worker Nodes
+
+```bash
+# Start multiple worker nodes on different terminals or servers
+# Terminal 1
+crawlo run myspider --config worker_settings.py
+
+# Terminal 2
+crawlo run myspider --config worker_settings.py
+
+# Terminal 3
+crawlo run myspider --config worker_settings.py
+```
+
+## Configuration Options
+
+The behavior of distributed deployment can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| REDIS_HOST | str | '127.0.0.1' | Redis server address |
+| REDIS_PORT | int | 6379 | Redis port |
+| REDIS_PASSWORD | str | None | Redis password |
+| REDIS_DB | int | 0 | Redis database number |
+| REDIS_CONNECTION_POOL_SIZE | int | 20 | Redis connection pool size |
+| SCHEDULER_PERSIST | bool | True | Whether to persist scheduler state |
+| QUEUE_PERSISTENCE | bool | True | Whether to persist queue data |
+| STATS_PERSISTENCE | bool | True | Whether to persist statistics |
+
+## Performance Optimization
+
+### 1. Adjust Concurrency
+
+```python
+# Control node concurrency (lower)
+config = CrawloConfig.distributed(concurrency=5)
+
+# Worker node concurrency (higher)
+config = CrawloConfig.distributed(concurrency=30)
+```
+
+### 2. Optimize Redis Configuration
+
+```python
+# Increase connection pool size
+config = CrawloConfig.distributed(
+    redis_connection_pool_size=50
+)
+
+# Enable Redis cluster mode (advanced configuration)
+REDIS_CLUSTER_NODES = [
+    '192.168.1.100:7000',
+    '192.168.1.101:7000',
+    '192.168.1.102:7000'
+]
+```
+
+### 3. Load Balancing
+
+```python
+# Use different configurations for different worker nodes
+# Worker Node 1 - High performance
+config = CrawloConfig.distributed(concurrency=50, download_delay=0.1)
+
+# Worker Node 2 - Medium performance
+config = CrawloConfig.distributed(concurrency=20, download_delay=0.5)
+
+# Worker Node 3 - Low performance (avoid being blocked)
+config = CrawloConfig.distributed(concurrency=5, download_delay=2.0)
+```
+
+## Monitoring and Logging
+
+### 1. Redis Monitoring
+
+```bash
+# Monitor Redis performance
+redis-cli info
+
+# Monitor Redis memory usage
+redis-cli info memory
+
+# Monitor Redis connections
+redis-cli info clients
+```
+
+### 2. Crawler Monitoring
+
+```python
+# Enable distributed statistics extension
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+]
+
+# Set statistics log interval
+LOG_STATS_INTERVAL = 30
+```
+
+### 3. Log Configuration
+
+```python
+# Configure distributed logging
+LOG_LEVEL = 'INFO'
+LOG_FILE = 'distributed_crawler.log'
+LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
+LOG_BACKUP_COUNT = 5
+
+# Include node identifier
+LOG_INCLUDE_NODE_ID = True
+```
+
+## Troubleshooting
+
+### 1. Redis Connection Issues
+
+```bash
+# Check Redis service status
+sudo systemctl status redis
+
+# Test Redis connection
+redis-cli -h 192.168.1.100 -p 6379 ping
+
+# Check firewall settings
+sudo ufw status
+```
+
+### 2. Node Communication Issues
+
+```python
+# Enable detailed logging
+LOG_LEVEL = 'DEBUG'
+
+# Check network connection
+import socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+result = sock.connect_ex(('192.168.1.100', 6379))
+if result == 0:
+    print("Port open")
+else:
+    print("Port closed")
+sock.close()
+```
+
+### 3. Data Consistency Issues
+
+```python
+# Enable queue persistence
+QUEUE_PERSISTENCE = True
+
+# Enable statistics persistence
+STATS_PERSISTENCE = True
+
+# Regularly backup Redis data
+# Add to crontab
+# 0 2 * * * redis-cli bgsave
+```
+
+## Best Practices
+
+### 1. Security Configuration
+
+```python
+# Use strong password
+REDIS_PASSWORD = 'strong_password_here'
+
+# Restrict Redis access
+BIND_ADDRESS = '192.168.1.100'  # Bind to internal network address only
+
+# Enable Redis authentication
+REQUIREPASS = 'your_strong_password'
+```
+
+### 2. Resource Management
+
+```python
+# Reasonable concurrency settings
+# Control node
+config = CrawloConfig.distributed(concurrency=5)
+
+# Worker node
+config = CrawloConfig.distributed(concurrency=20)
+
+# Set memory limit
+MEMORY_LIMIT = '2GB'
+```
+
+### 3. Fault Tolerance
+
+```python
+# Configure retry mechanism
+MAX_RETRY_TIMES = 5
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+
+# Enable auto-retry extension
+EXTENSIONS = [
+    'crawlo.extensions.RetryExtension',
+]
+```
+
+### 4. Monitoring and Alerting
+
+```python
+# Configure monitoring extensions
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+    'crawlo.extensions.MemoryUsageExtension',
+]
+
+# Set alert thresholds
+MEMORY_USAGE_WARNING_THRESHOLD = 500  # 500MB
+```
+
+## Extended Deployment
+
+### 1. Docker Deployment
+
+```dockerfile
+# Dockerfile
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["crawlo", "run", "myspider"]
+```
+
+```bash
+# Build image
+docker build -t crawlo-worker .
+
+# Run container
+docker run -d --name worker1 crawlo-worker
+```
+
+### 2. Kubernetes Deployment
+
+```yaml
+# worker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawlo-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawlo-worker
+  template:
+    metadata:
+      labels:
+        app: crawlo-worker
+    spec:
+      containers:
+      - name: worker
+        image: crawlo-worker:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: CONCURRENCY
+          value: "20"
+```
+
+Through the above configuration and deployment steps, you can successfully build an efficient and scalable distributed crawler system.
+
+**code file end: docs/modules/advanced/distributed_en.md**
+
+---
+
+
+### code file start: docs/modules/advanced/performance.md 
+
+# 性能优化
+
+Crawlo 框架提供了多种性能优化选项，帮助用户提高爬虫的爬取效率和资源利用率。本文档详细介绍各种性能优化策略和最佳实践。
+
+## 概述
+
+性能优化是爬虫开发中的重要环节，通过合理的配置和优化策略，可以显著提高爬取速度、降低资源消耗、增强系统稳定性。
+
+### 优化目标
+
+1. **提高爬取速度** - 在保证质量的前提下加快数据采集速度
+2. **降低资源消耗** - 减少内存、CPU 和网络资源使用
+3. **增强稳定性** - 提高系统在高负载下的稳定性
+4. **优化扩展性** - 便于水平扩展以处理更大规模的数据
+
+## 并发优化
+
+### 调整并发数
+
+并发数是影响爬虫性能的关键参数，需要根据目标网站的承受能力和本地资源情况进行调整。
+
+```python
+from crawlo.config import CrawloConfig
+
+# 单机模式并发优化
+config = CrawloConfig.standalone(
+    concurrency=20,        # 并发请求数
+    download_delay=0.5     # 下载延迟
+)
+
+# 分布式模式并发优化
+config = CrawloConfig.distributed(
+    concurrency=50,        # 并发请求数
+    download_delay=0.1     # 下载延迟
+)
+```
+
+### 并发策略
+
+```python
+# 根据网站响应时间调整并发数
+# 响应快的网站可以使用更高并发
+config = CrawloConfig.standalone(concurrency=50)
+
+# 响应慢的网站使用较低并发
+config = CrawloConfig.standalone(concurrency=10)
+
+# 根据网络带宽调整并发数
+# 高带宽环境
+config = CrawloConfig.standalone(concurrency=100)
+
+# 低带宽环境
+config = CrawloConfig.standalone(concurrency=5)
+```
+
+## 内存优化
+
+### 对象池技术
+
+使用对象池减少对象创建和销毁的开销：
+
+```python
+import weakref
+
+class RequestPool:
+    def __init__(self):
+        self._pool = weakref.WeakSet()
+    
+    def get_request(self, url, **kwargs):
+        # 从池中获取或创建请求对象
+        return Request(url, **kwargs)
+    
+    def release_request(self, request):
+        # 释放请求对象到池中
+        self._pool.add(request)
+
+# 全局请求池
+request_pool = RequestPool()
+```
+
+### 内存监控
+
+```python
+import psutil
+import gc
+
+class MemoryMonitor:
+    def __init__(self, threshold_mb=500):
+        self.threshold_mb = threshold_mb
+    
+    def check_memory(self):
+        # 检查内存使用情况
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        
+        if memory_mb > self.threshold_mb:
+            # 触发垃圾回收
+            gc.collect()
+            self.logger.warning(f"内存使用过高: {memory_mb:.2f}MB")
+```
+
+### 数据流优化
+
+```python
+# 使用生成器减少内存占用
+def parse_large_response(response):
+    # 逐行处理大响应
+    for line in response.iter_lines():
+        yield process_line(line)
+
+# 批量处理数据
+def batch_process_items(items, batch_size=100):
+    batch = []
+    for item in items:
+        batch.append(item)
+        if len(batch) >= batch_size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+```
+
+## 网络优化
+
+### 连接池优化
+
+```python
+# 配置连接池大小
+config = CrawloConfig.standalone(
+    downloader_type='aiohttp',
+    aiohttp_connector_limit=100,      # 连接池大小
+    aiohttp_connector_limit_per_host=20  # 每主机连接数限制
+)
+
+# HTTP/2 支持
+config = CrawloConfig.standalone(
+    downloader_type='httpx',
+    http2=True  # 启用 HTTP/2
+)
+```
+
+### DNS 缓存
+
+```python
+# 配置 DNS 缓存
+config = CrawloConfig.standalone(
+    dns_cache_timeout=600,  # DNS 缓存超时时间（秒）
+    dns_cache_size=1000     # DNS 缓存大小
+)
+```
+
+### 压缩支持
+
+```python
+# 启用响应压缩
+config = CrawloConfig.standalone(
+    accept_encoding=True  # 接受压缩编码
+)
+
+# 自定义请求头部
+HEADERS = {
+    'Accept-Encoding': 'gzip, deflate, br',
+    'User-Agent': 'Mozilla/5.0 (compatible; Crawlo/1.0)'
+}
+```
+
+## 存储优化
+
+### 批量写入
+
+```python
+class BatchPipeline:
+    def __init__(self, settings):
+        self.batch_size = 100
+        self.buffer = []
+    
+    def process_item(self, item, spider):
+        self.buffer.append(item)
+        
+        if len(self.buffer) >= self.batch_size:
+            self.flush_buffer()
+        
+        return item
+    
+    def flush_buffer(self):
+        # 批量写入数据库
+        with self.db.transaction():
+            for item in self.buffer:
+                self.db.insert(item)
+        self.buffer.clear()
+```
+
+### 异步存储
+
+```python
+import asyncio
+
+class AsyncPipeline:
+    def __init__(self, settings):
+        self.queue = asyncio.Queue(maxsize=1000)
+        self.worker_task = None
+    
+    async def open_spider(self, spider):
+        # 启动异步写入工作者
+        self.worker_task = asyncio.create_task(self.worker())
+    
+    async def close_spider(self, spider):
+        # 等待队列处理完成
+        await self.queue.join()
+        if self.worker_task:
+            self.worker_task.cancel()
+    
+    async def process_item(self, item, spider):
+        # 异步处理数据项
+        await self.queue.put(item)
+        return item
+    
+    async def worker(self):
+        while True:
+            try:
+                item = await self.queue.get()
+                # 异步写入数据库
+                await self.async_save_item(item)
+                self.queue.task_done()
+            except asyncio.CancelledError:
+                break
+```
+
+## CPU 优化
+
+### 异步处理
+
+```python
+import asyncio
+import concurrent.futures
+
+class CPUIntensivePipeline:
+    def __init__(self, settings):
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+    
+    async def process_item(self, item, spider):
+        # 将 CPU 密集型任务放到线程池中执行
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            self.executor, 
+            self.cpu_intensive_task, 
+            item
+        )
+        return result
+    
+    def cpu_intensive_task(self, item):
+        # CPU 密集型处理逻辑
+        return complex_processing(item)
+```
+
+### 缓存优化
+
+```python
+from functools import lru_cache
+
+class OptimizedSpider(Spider):
+    @lru_cache(maxsize=1000)
+    def parse_url(self, url):
+        # 缓存解析结果
+        return urlparse(url)
+    
+    def parse(self, response):
+        # 使用缓存的解析结果
+        parsed = self.parse_url(response.url)
+        # 处理逻辑
+```
+
+## I/O 优化
+
+### 异步 I/O
+
+```python
+import aiofiles
+
+class AsyncFilePipeline:
+    async def open_spider(self, spider):
+        self.file = await aiofiles.open('output.json', 'w')
+    
+    async def close_spider(self, spider):
+        await self.file.close()
+    
+    async def process_item(self, item, spider):
+        # 异步写入文件
+        await self.file.write(json.dumps(item) + '\n')
+        await self.file.flush()
+        return item
+```
+
+### 内存映射文件
+
+```python
+import mmap
+
+class MmapPipeline:
+    def __init__(self, settings):
+        self.file = open('output.dat', 'r+b')
+        self.mmap = mmap.mmap(self.file.fileno(), 0)
+    
+    def close_spider(self, spider):
+        self.mmap.close()
+        self.file.close()
+```
+
+## 配置优化
+
+### 性能相关配置
+
+```python
+# 高性能配置示例
+PERFORMANCE_CONFIG = {
+    # 并发配置
+    'CONCURRENCY': 50,
+    'DOWNLOAD_DELAY': 0.1,
+    'DOWNLOAD_TIMEOUT': 30,
+    
+    # 下载器配置
+    'DOWNLOADER_TYPE': 'aiohttp',
+    'AIOHTTP_CONNECTOR_LIMIT': 100,
+    'AIOHTTP_CONNECTOR_LIMIT_PER_HOST': 20,
+    
+    # 队列配置
+    'SCHEDULER_MAX_QUEUE_SIZE': 100000,
+    'QUEUE_PERSISTENCE': False,  # 内存队列不持久化
+    
+    # DNS 配置
+    'DNS_CACHE_TIMEOUT': 600,
+    'DNS_CACHE_SIZE': 1000,
+    
+    # 日志配置
+    'LOG_LEVEL': 'WARNING',  # 减少日志输出
+}
+```
+
+### 环境变量优化
+
+```bash
+# 设置高性能环境变量
+export CRAWLO_CONCURRENCY=50
+export CRAWLO_DOWNLOAD_DELAY=0.1
+export CRAWLO_LOG_LEVEL=WARNING
+export CRAWLO_AIOHTTP_CONNECTOR_LIMIT=100
+```
+
+## 监控和调优
+
+### 性能监控
+
+```python
+import time
+import psutil
+
+class PerformanceMonitor:
+    def __init__(self):
+        self.start_time = time.time()
+        self.process = psutil.Process()
+    
+    def get_stats(self):
+        # 获取性能统计信息
+        elapsed = time.time() - self.start_time
+        memory_mb = self.process.memory_info().rss / 1024 / 1024
+        cpu_percent = self.process.cpu_percent()
+        
+        return {
+            'elapsed_time': elapsed,
+            'memory_mb': memory_mb,
+            'cpu_percent': cpu_percent,
+            'requests_per_second': self.request_count / elapsed if elapsed > 0 else 0
+        }
+```
+
+### 性能分析
+
+```python
+import cProfile
+import pstats
+
+def profile_spider():
+    # 性能分析
+    profiler = cProfile.Profile()
+    profiler.enable()
+    
+    # 运行爬虫
+    run_spider()
+    
+    profiler.disable()
+    
+    # 输出分析结果
+    stats = pstats.Stats(profiler)
+    stats.sort_stats('cumulative')
+    stats.print_stats(20)  # 显示前20个最耗时的函数
+```
+
+## 最佳实践
+
+### 1. 渐进式优化
+
+```python
+# 从基础配置开始
+BASE_CONFIG = CrawloConfig.standalone(concurrency=10)
+
+# 逐步增加并发数并监控性能
+MEDIUM_CONFIG = CrawloConfig.standalone(concurrency=20)
+HIGH_CONFIG = CrawloConfig.standalone(concurrency=50)
+
+# 根据监控结果选择最优配置
+```
+
+### 2. 负载测试
+
+```python
+# 使用不同配置进行负载测试
+def load_test(config, duration=60):
+    start_time = time.time()
+    request_count = 0
+    
+    # 运行指定时间
+    while time.time() - start_time < duration:
+        run_crawler(config)
+        request_count += config.CONCURRENCY
+    
+    # 计算性能指标
+    rps = request_count / duration
+    return rps
+```
+
+### 3. 资源限制
+
+```python
+# 设置资源限制
+import resource
+
+def set_resource_limits():
+    # 限制内存使用（1GB）
+    resource.setrlimit(resource.RLIMIT_AS, (1024*1024*1024, 1024*1024*1024))
+    
+    # 限制 CPU 时间（1小时）
+    resource.setrlimit(resource.RLIMIT_CPU, (3600, 3600))
+```
+
+通过以上性能优化策略，可以显著提升 Crawlo 爬虫的性能和效率。建议根据具体应用场景选择合适的优化方案，并通过监控和测试来验证优化效果。
+
+**code file end: docs/modules/advanced/performance.md**
+
+---
+
+
+### code file start: docs/modules/advanced/performance_en.md 
+
+# Performance Optimization
+
+The Crawlo framework provides various performance optimization options to help users improve crawling efficiency and resource utilization. This document details various performance optimization strategies and best practices.
+
+## Overview
+
+Performance optimization is an important aspect of crawler development. Through proper configuration and optimization strategies, crawling speed can be significantly improved, resource consumption reduced, and system stability enhanced.
+
+### Optimization Goals
+
+1. **Improve Crawling Speed** - Accelerate data collection while maintaining quality
+2. **Reduce Resource Consumption** - Decrease memory, CPU, and network resource usage
+3. **Enhance Stability** - Improve system stability under high load
+4. **Optimize Scalability** - Facilitate horizontal scaling to handle larger scale data
+
+## Concurrency Optimization
+
+### Adjusting Concurrency
+
+Concurrency is a key parameter affecting crawler performance and needs to be adjusted based on the target website's capacity and local resources.
+
+```python
+from crawlo.config import CrawloConfig
+
+# Standalone mode concurrency optimization
+config = CrawloConfig.standalone(
+    concurrency=20,        # Concurrent requests
+    download_delay=0.5     # Download delay
+)
+
+# Distributed mode concurrency optimization
+config = CrawloConfig.distributed(
+    concurrency=50,        # Concurrent requests
+    download_delay=0.1     # Download delay
+)
+```
+
+### Concurrency Strategy
+
+```python
+# Adjust concurrency based on website response time
+# Fast responding websites can use higher concurrency
+config = CrawloConfig.standalone(concurrency=50)
+
+# Slow responding websites use lower concurrency
+config = CrawloConfig.standalone(concurrency=10)
+
+# Adjust concurrency based on network bandwidth
+# High bandwidth environment
+config = CrawloConfig.standalone(concurrency=100)
+
+# Low bandwidth environment
+config = CrawloConfig.standalone(concurrency=5)
+```
+
+## Memory Optimization
+
+### Object Pooling
+
+Use object pooling to reduce object creation and destruction overhead:
+
+```python
+import weakref
+
+class RequestPool:
+    def __init__(self):
+        self._pool = weakref.WeakSet()
+    
+    def get_request(self, url, **kwargs):
+        # Get or create request object from pool
+        return Request(url, **kwargs)
+    
+    def release_request(self, request):
+        # Release request object to pool
+        self._pool.add(request)
+
+# Global request pool
+request_pool = RequestPool()
+```
+
+### Memory Monitoring
+
+```python
+import psutil
+import gc
+
+class MemoryMonitor:
+    def __init__(self, threshold_mb=500):
+        self.threshold_mb = threshold_mb
+    
+    def check_memory(self):
+        # Check memory usage
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        
+        if memory_mb > self.threshold_mb:
+            # Trigger garbage collection
+            gc.collect()
+            self.logger.warning(f"High memory usage: {memory_mb:.2f}MB")
+```
+
+### Data Flow Optimization
+
+```python
+# Use generators to reduce memory usage
+def parse_large_response(response):
+    # Process large response line by line
+    for line in response.iter_lines():
+        yield process_line(line)
+
+# Batch process data
+def batch_process_items(items, batch_size=100):
+    batch = []
+    for item in items:
+        batch.append(item)
+        if len(batch) >= batch_size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+```
+
+## Network Optimization
+
+### Connection Pool Optimization
+
+```python
+# Configure connection pool size
+config = CrawloConfig.standalone(
+    downloader_type='aiohttp',
+    aiohttp_connector_limit=100,      # Connection pool size
+    aiohttp_connector_limit_per_host=20  # Connection limit per host
+)
+
+# HTTP/2 support
+config = CrawloConfig.standalone(
+    downloader_type='httpx',
+    http2=True  # Enable HTTP/2
+)
+```
+
+### DNS Caching
+
+```python
+# Configure DNS caching
+config = CrawloConfig.standalone(
+    dns_cache_timeout=600,  # DNS cache timeout (seconds)
+    dns_cache_size=1000     # DNS cache size
+)
+```
+
+### Compression Support
+
+```python
+# Enable response compression
+config = CrawloConfig.standalone(
+    accept_encoding=True  # Accept encoding compression
+)
+
+# Custom request headers
+HEADERS = {
+    'Accept-Encoding': 'gzip, deflate, br',
+    'User-Agent': 'Mozilla/5.0 (compatible; Crawlo/1.0)'
+}
+```
+
+## Storage Optimization
+
+### Batch Writing
+
+```python
+class BatchPipeline:
+    def __init__(self, settings):
+        self.batch_size = 100
+        self.buffer = []
+    
+    def process_item(self, item, spider):
+        self.buffer.append(item)
+        
+        if len(self.buffer) >= self.batch_size:
+            self.flush_buffer()
+        
+        return item
+    
+    def flush_buffer(self):
+        # Batch write to database
+        with self.db.transaction():
+            for item in self.buffer:
+                self.db.insert(item)
+        self.buffer.clear()
+```
+
+### Async Storage
+
+```python
+import asyncio
+
+class AsyncPipeline:
+    def __init__(self, settings):
+        self.queue = asyncio.Queue(maxsize=1000)
+        self.worker_task = None
+    
+    async def open_spider(self, spider):
+        # Start async write worker
+        self.worker_task = asyncio.create_task(self.worker())
+    
+    async def close_spider(self, spider):
+        # Wait for queue to finish processing
+        await self.queue.join()
+        if self.worker_task:
+            self.worker_task.cancel()
+    
+    async def process_item(self, item, spider):
+        # Async process item
+        await self.queue.put(item)
+        return item
+    
+    async def worker(self):
+        while True:
+            try:
+                item = await self.queue.get()
+                # Async write to database
+                await self.async_save_item(item)
+                self.queue.task_done()
+            except asyncio.CancelledError:
+                break
+```
+
+## CPU Optimization
+
+### Async Processing
+
+```python
+import asyncio
+import concurrent.futures
+
+class CPUIntensivePipeline:
+    def __init__(self, settings):
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+    
+    async def process_item(self, item, spider):
+        # Run CPU-intensive tasks in thread pool
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            self.executor, 
+            self.cpu_intensive_task, 
+            item
+        )
+        return result
+    
+    def cpu_intensive_task(self, item):
+        # CPU-intensive processing logic
+        return complex_processing(item)
+```
+
+### Cache Optimization
+
+```python
+from functools import lru_cache
+
+class OptimizedSpider(Spider):
+    @lru_cache(maxsize=1000)
+    def parse_url(self, url):
+        # Cache parsing results
+        return urlparse(url)
+    
+    def parse(self, response):
+        # Use cached parsing results
+        parsed = self.parse_url(response.url)
+        # Processing logic
+```
+
+## I/O Optimization
+
+### Async I/O
+
+```python
+import aiofiles
+
+class AsyncFilePipeline:
+    async def open_spider(self, spider):
+        self.file = await aiofiles.open('output.json', 'w')
+    
+    async def close_spider(self, spider):
+        await self.file.close()
+    
+    async def process_item(self, item, spider):
+        # Async write to file
+        await self.file.write(json.dumps(item) + '\n')
+        await self.file.flush()
+        return item
+```
+
+### Memory-Mapped Files
+
+```python
+import mmap
+
+class MmapPipeline:
+    def __init__(self, settings):
+        self.file = open('output.dat', 'r+b')
+        self.mmap = mmap.mmap(self.file.fileno(), 0)
+    
+    def close_spider(self, spider):
+        self.mmap.close()
+        self.file.close()
+```
+
+## Configuration Optimization
+
+### Performance-Related Configuration
+
+```python
+# High-performance configuration example
+PERFORMANCE_CONFIG = {
+    # Concurrency configuration
+    'CONCURRENCY': 50,
+    'DOWNLOAD_DELAY': 0.1,
+    'DOWNLOAD_TIMEOUT': 30,
+    
+    # Downloader configuration
+    'DOWNLOADER_TYPE': 'aiohttp',
+    'AIOHTTP_CONNECTOR_LIMIT': 100,
+    'AIOHTTP_CONNECTOR_LIMIT_PER_HOST': 20,
+    
+    # Queue configuration
+    'SCHEDULER_MAX_QUEUE_SIZE': 100000,
+    'QUEUE_PERSISTENCE': False,  # Memory queue without persistence
+    
+    # DNS configuration
+    'DNS_CACHE_TIMEOUT': 600,
+    'DNS_CACHE_SIZE': 1000,
+    
+    # Log configuration
+    'LOG_LEVEL': 'WARNING',  # Reduce log output
+}
+```
+
+### Environment Variable Optimization
+
+```bash
+# Set high-performance environment variables
+export CRAWLO_CONCURRENCY=50
+export CRAWLO_DOWNLOAD_DELAY=0.1
+export CRAWLO_LOG_LEVEL=WARNING
+export CRAWLO_AIOHTTP_CONNECTOR_LIMIT=100
+```
+
+## Monitoring and Tuning
+
+### Performance Monitoring
+
+```python
+import time
+import psutil
+
+class PerformanceMonitor:
+    def __init__(self):
+        self.start_time = time.time()
+        self.process = psutil.Process()
+    
+    def get_stats(self):
+        # Get performance statistics
+        elapsed = time.time() - self.start_time
+        memory_mb = self.process.memory_info().rss / 1024 / 1024
+        cpu_percent = self.process.cpu_percent()
+        
+        return {
+            'elapsed_time': elapsed,
+            'memory_mb': memory_mb,
+            'cpu_percent': cpu_percent,
+            'requests_per_second': self.request_count / elapsed if elapsed > 0 else 0
+        }
+```
+
+### Performance Profiling
+
+```python
+import cProfile
+import pstats
+
+def profile_spider():
+    # Performance profiling
+    profiler = cProfile.Profile()
+    profiler.enable()
+    
+    # Run spider
+    run_spider()
+    
+    profiler.disable()
+    
+    # Output analysis results
+    stats = pstats.Stats(profiler)
+    stats.sort_stats('cumulative')
+    stats.print_stats(20)  # Show top 20 most time-consuming functions
+```
+
+## Best Practices
+
+### 1. Progressive Optimization
+
+```python
+# Start with base configuration
+BASE_CONFIG = CrawloConfig.standalone(concurrency=10)
+
+# Gradually increase concurrency and monitor performance
+MEDIUM_CONFIG = CrawloConfig.standalone(concurrency=20)
+HIGH_CONFIG = CrawloConfig.standalone(concurrency=50)
+
+# Choose optimal configuration based on monitoring results
+```
+
+### 2. Load Testing
+
+```python
+# Perform load testing with different configurations
+def load_test(config, duration=60):
+    start_time = time.time()
+    request_count = 0
+    
+    # Run for specified duration
+    while time.time() - start_time < duration:
+        run_crawler(config)
+        request_count += config.CONCURRENCY
+    
+    # Calculate performance metrics
+    rps = request_count / duration
+    return rps
+```
+
+### 3. Resource Limiting
+
+```python
+# Set resource limits
+import resource
+
+def set_resource_limits():
+    # Limit memory usage (1GB)
+    resource.setrlimit(resource.RLIMIT_AS, (1024*1024*1024, 1024*1024*1024))
+    
+    # Limit CPU time (1 hour)
+    resource.setrlimit(resource.RLIMIT_CPU, (3600, 3600))
+```
+
+Through the above performance optimization strategies, Crawlo crawler performance and efficiency can be significantly improved. It is recommended to choose appropriate optimization solutions based on specific application scenarios and verify optimization effects through monitoring and testing.
+
+**code file end: docs/modules/advanced/performance_en.md**
+
+---
+
+
+### code file start: docs/modules/advanced/redis_cluster.md 
+
+# Crawlo框架Redis集群使用指南
+
+## 概述
+
+Crawlo框架支持Redis单实例和集群模式的智能切换。用户无需修改代码，只需通过配置即可在单实例和集群模式之间切换。
+
+## 配置方式
+
+### 1. 通过配置文件配置
+
+在项目的`settings.py`文件中，使用`CrawloConfig.distributed()`方法创建分布式配置：
+
+#### 单实例Redis配置
+```python
+from crawlo.config import CrawloConfig
+
+# 单实例Redis配置
+config = CrawloConfig.distributed(
+    project_name='my_project',
+    redis_host='127.0.0.1',
+    redis_port=6379,
+    redis_password='',
+    redis_db=0,
+    concurrency=16,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+```
+
+#### Redis集群配置
+```python
+from crawlo.config import CrawloConfig
+
+# Redis集群配置 - 方式1：使用逗号分隔的节点列表
+config = CrawloConfig.distributed(
+    project_name='my_project',
+    redis_host='192.168.1.100:7000,192.168.1.101:7000,192.168.1.102:7000',
+    redis_password='your_password',
+    concurrency=16,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+```
+
+```python
+from crawlo.config import CrawloConfig
+
+# Redis集群配置 - 方式2：使用集群URL格式
+config = CrawloConfig.distributed(
+    project_name='my_project',
+    redis_host='redis-cluster://192.168.1.100:7000,192.168.1.101:7000,192.168.1.102:7000',
+    redis_password='your_password',
+    concurrency=16,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+```
+
+### 2. 通过环境变量配置
+
+```bash
+# 设置运行模式为分布式
+export CRAWLO_MODE=distributed
+
+# 设置项目名称
+export PROJECT_NAME=my_project
+
+# 单实例Redis配置
+export REDIS_HOST=127.0.0.1
+export REDIS_PORT=6379
+export REDIS_PASSWORD=your_password
+export REDIS_DB=0
+
+# Redis集群配置 - 使用逗号分隔的节点列表
+export REDIS_HOST=192.168.1.100:7000,192.168.1.101:7000,192.168.1.102:7000
+export REDIS_PASSWORD=your_password
+```
+
+### 3. 通过命令行参数配置
+
+```bash
+# 使用CLI工具运行爬虫时指定参数
+crawlo run myspider --config settings.py --redis-host "192.168.1.100:7000,192.168.1.101:7000,192.168.1.102:7000" --redis-password "your_password"
+```
+
+## 智能模式检测
+
+Crawlo框架会自动检测Redis连接URL的格式来决定使用单实例模式还是集群模式：
+
+1. **单实例模式**：
+   - URL格式：`redis://host:port/db`
+   - 示例：`redis://127.0.0.1:6379/0`
+
+2. **集群模式**：
+   - URL包含多个节点（逗号分隔）：`redis://host1:port1,host2:port2,host3:port3`
+   - 使用集群协议：`redis-cluster://host:port` 或 `rediss-cluster://host:port`
+   - 显式指定集群节点列表
+
+## Redis Key命名规范
+
+无论使用单实例还是集群模式，框架都会自动使用统一的Redis Key命名规范：
+
+- 请求去重：`crawlo:{PROJECT_NAME}:filter:fingerprint`
+- 请求队列：`crawlo:{PROJECT_NAME}:queue:requests`
+- 处理中队列：`crawlo:{PROJECT_NAME}:queue:processing`
+- 失败队列：`crawlo:{PROJECT_NAME}:queue:failed`
+
+在集群模式下，框架会自动使用哈希标签确保相关键在同一个slot中。
+
+## 集群模式特性
+
+### 1. 自动故障转移
+Redis集群支持自动故障转移，当主节点故障时，从节点会自动接管。
+
+### 2. 数据分片
+数据分布在多个节点上，提高性能和可扩展性。
+
+### 3. 高可用性
+即使部分节点故障，系统仍可正常运行。
+
+## 配置参数说明
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| redis_host | str | '127.0.0.1' | Redis服务器地址或集群节点列表 |
+| redis_port | int | 6379 | Redis端口（单实例模式） |
+| redis_password | str | None | Redis密码 |
+| redis_db | int | 0 | Redis数据库编号（单实例模式） |
+| project_name | str | 'crawlo' | 项目名称，用于命名空间 |
+| concurrency | int | 16 | 并发数 |
+| download_delay | float | 1.0 | 下载延迟 |
+
+## 使用示例
+
+### 完整的分布式项目配置示例
+
+```python
+# settings.py
+from crawlo.config import CrawloConfig
+
+# Redis集群配置示例
+config = CrawloConfig.distributed(
+    project_name='distributed_crawler',
+    redis_host='192.168.1.100:7000,192.168.1.101:7000,192.168.1.102:7000',
+    redis_password='strong_password',
+    concurrency=32,
+    download_delay=0.5
+)
+
+locals().update(config.to_dict())
+
+# 其他配置
+SPIDER_MODULES = ['my_project.spiders']
+LOG_LEVEL = 'INFO'
+LOG_FILE = 'logs/distributed_crawler.log'
+```
+
+### 启动多个爬虫节点
+
+```bash
+# 终端1
+crawlo run myspider --config settings.py
+
+# 终端2
+crawlo run myspider --config settings.py
+
+# 终端3
+crawlo run myspider --config settings.py
+```
+
+## 注意事项
+
+1. **集群模式要求**：
+   - Redis版本 >= 3.0
+   - 集群模式已启用
+   - 节点间网络连通
+
+2. **兼容性**：
+   - 单实例和集群模式API完全兼容
+   - 无需修改爬虫代码即可切换模式
+
+3. **性能优化**：
+   - 集群模式下建议使用哈希标签优化键分布
+   - 合理设置并发数避免节点过载
+
+4. **监控和维护**：
+   - 定期检查集群健康状态
+   - 监控各节点内存使用情况
+   - 及时处理节点故障
+
+## 故障排除
+
+### 1. 连接问题
+```bash
+# 检查Redis集群状态
+redis-cli -h 192.168.1.100 -p 7000 ping
+```
+
+### 2. 集群模式检测
+框架会自动记录集群初始化日志：
+```
+INFO: Redis集群连接池初始化成功: 3 个节点
+```
+
+### 3. 常见错误
+- `Redis Cluster cannot be connected`: 集群模式未启用或节点不可达
+- `MOVED` or `ASK` errors: 键重定向问题，框架会自动处理
+
+通过以上配置方式，用户可以轻松在单实例和集群模式之间切换，享受Crawlo框架带来的透明化Redis集群支持。
+
+**code file end: docs/modules/advanced/redis_cluster.md**
+
+---
+
+
+### code file start: docs/modules/advanced/troubleshooting.md 
+
+# 故障排除
+
+在使用 Crawlo 框架过程中可能会遇到各种问题，本文档提供常见问题的诊断和解决方案，帮助用户快速定位和解决问题。
+
+## 概述
+
+故障排除是爬虫开发和运维中的重要环节。通过系统性的诊断方法和丰富的调试工具，可以快速识别和解决各种技术问题。
+
+### 常见问题类型
+
+1. **网络连接问题** - 无法访问目标网站或连接超时
+2. **配置错误** - 配置文件格式错误或参数设置不当
+3. **数据处理问题** - 解析失败或数据格式错误
+4. **性能问题** - 爬取速度慢或资源消耗过高
+5. **分布式问题** - 节点间通信失败或数据不一致
+6. **环境问题** - 依赖缺失或版本冲突
+
+## 网络连接问题
+
+### 连接超时
+
+```python
+# 增加超时时间
+config = CrawloConfig.standalone(
+    download_timeout=60,  # 增加到60秒
+    retry_times=3         # 增加重试次数
+)
+
+# 检查网络连接
+import socket
+
+def check_connection(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        return result == 0
+    except Exception:
+        return False
+
+# 使用示例
+if not check_connection('example.com', 80):
+    print("无法连接到 example.com")
+```
+
+### SSL 证书问题
+
+```python
+# 忽略 SSL 证书验证（仅用于测试）
+config = CrawloConfig.standalone(
+    ssl_verify=False
+)
+
+# 或者使用自定义 SSL 上下文
+import ssl
+
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
+config = CrawloConfig.standalone(
+    ssl_context=ssl_context
+)
+```
+
+### 代理问题
+
+```python
+# 配置代理
+config = CrawloConfig.standalone(
+    proxy='http://proxy.example.com:8080'
+)
+
+# 使用代理列表轮换
+PROXY_LIST = [
+    'http://proxy1.example.com:8080',
+    'http://proxy2.example.com:8080',
+    'http://proxy3.example.com:8080'
+]
+
+# 自定义代理中间件
+class RotatingProxyMiddleware:
+    def __init__(self, settings):
+        self.proxy_list = settings.PROXY_LIST
+        self.current_proxy = 0
+    
+    def process_request(self, request, spider):
+        if self.proxy_list:
+            proxy = self.proxy_list[self.current_proxy]
+            request.proxy = proxy
+            self.current_proxy = (self.current_proxy + 1) % len(self.proxy_list)
+        return request
+```
+
+## 配置问题
+
+### 配置文件验证
+
+```python
+from crawlo.config_validator import validate_config
+
+# 验证配置
+is_valid, errors, warnings = validate_config(settings_dict)
+
+if not is_valid:
+    print("配置验证失败:")
+    for error in errors:
+        print(f"  ❌ {error}")
+    
+    if warnings:
+        print("警告:")
+        for warning in warnings:
+            print(f"  ⚠️  {warning}")
+```
+
+### 环境变量覆盖
+
+```python
+# 检查环境变量
+import os
+
+def check_env_vars():
+    required_vars = ['CRAWLO_CONCURRENCY', 'CRAWLO_DOWNLOAD_DELAY']
+    missing_vars = []
+    
+    for var in required_vars:
+        if not os.getenv(var):
+            missing_vars.append(var)
+    
+    if missing_vars:
+        print(f"缺少环境变量: {', '.join(missing_vars)}")
+
+# 使用示例
+check_env_vars()
+```
+
+## 数据处理问题
+
+### 解析错误
+
+```python
+class RobustSpider(Spider):
+    def parse(self, response):
+        try:
+            # 安全的数据提取
+            title = response.extract_text('title') or '未知标题'
+            price = response.extract_text('.price')
+            
+            # 数据验证
+            if not price:
+                self.logger.warning(f"页面缺少价格信息: {response.url}")
+                return
+            
+            # 数据转换
+            try:
+                price_float = float(price.replace('¥', '').strip())
+            except ValueError:
+                self.logger.error(f"价格格式错误: {price}")
+                return
+            
+            yield Item(
+                title=title,
+                price=price_float
+            )
+            
+        except Exception as e:
+            self.logger.error(f"解析页面失败 {response.url}: {e}")
+            # 可以选择重试或跳过
+```
+
+### 编码问题
+
+```python
+# 处理编码问题
+class EncodingSpider(Spider):
+    def parse(self, response):
+        # 检查响应编码
+        encoding = response.encoding
+        self.logger.debug(f"响应编码: {encoding}")
+        
+        # 如果编码不正确，手动指定
+        if encoding.lower() not in ['utf-8', 'utf8']:
+            response.encoding = 'utf-8'
+        
+        # 处理解码后的内容
+        text = response.text
+```
+
+## 性能问题
+
+### 内存泄漏
+
+```python
+import gc
+import psutil
+import weakref
+
+class MemoryLeakDetector:
+    def __init__(self):
+        self.objects = weakref.WeakSet()
+    
+    def track_object(self, obj):
+        self.objects.add(obj)
+    
+    def check_leaks(self):
+        # 强制垃圾回收
+        gc.collect()
+        
+        # 检查内存使用
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        
+        if memory_mb > 500:  # 500MB 阈值
+            self.logger.warning(f"内存使用过高: {memory_mb:.2f}MB")
+            # 分析对象引用
+            self.analyze_objects()
+    
+    def analyze_objects(self):
+        # 分析可能的内存泄漏对象
+        import objgraph
+        objgraph.show_most_common_types(limit=20)
+```
+
+### CPU 使用过高
+
+```python
+import asyncio
+import time
+
+class CPUMonitor:
+    def __init__(self, threshold=80):
+        self.threshold = threshold
+        self.monitoring = False
+    
+    async def start_monitoring(self):
+        self.monitoring = True
+        while self.monitoring:
+            cpu_percent = psutil.cpu_percent(interval=1)
+            if cpu_percent > self.threshold:
+                self.logger.warning(f"CPU 使用率过高: {cpu_percent}%")
+                # 可以采取降频措施
+                await self.throttle()
+            await asyncio.sleep(10)
+    
+    async def throttle(self):
+        # 临时降低并发数
+        original_concurrency = self.settings.CONCURRENCY
+        self.settings.CONCURRENCY = max(1, original_concurrency // 2)
+        self.logger.info("已降低并发数以减少 CPU 使用")
+        
+        # 等待一段时间后恢复
+        await asyncio.sleep(60)
+        self.settings.CONCURRENCY = original_concurrency
+        self.logger.info("已恢复原始并发数")
+```
+
+## 分布式问题
+
+### Redis 连接问题
+
+```python
+import redis
+import time
+
+class RedisHealthChecker:
+    def __init__(self, redis_config):
+        self.redis_config = redis_config
+        self.client = None
+    
+    def connect(self):
+        try:
+            self.client = redis.Redis(
+                host=self.redis_config['host'],
+                port=self.redis_config['port'],
+                password=self.redis_config.get('password'),
+                db=self.redis_config.get('db', 0),
+                socket_timeout=5
+            )
+            # 测试连接
+            self.client.ping()
+            return True
+        except Exception as e:
+            self.logger.error(f"Redis 连接失败: {e}")
+            return False
+    
+    def check_health(self):
+        if not self.client:
+            return False
+        
+        try:
+            # 检查 Redis 状态
+            info = self.client.info()
+            self.logger.debug(f"Redis 内存使用: {info['used_memory_human']}")
+            self.logger.debug(f"Redis 连接数: {info['connected_clients']}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Redis 健康检查失败: {e}")
+            return False
+```
+
+### 节点通信问题
+
+```python
+import asyncio
+import hashlib
+
+class NodeCommunicator:
+    def __init__(self, node_id, redis_client):
+        self.node_id = node_id
+        self.redis_client = redis_client
+        self.heartbeat_key = f"node:{node_id}:heartbeat"
+    
+    async def send_heartbeat(self):
+        """发送心跳信号"""
+        try:
+            timestamp = int(time.time())
+            self.redis_client.setex(
+                self.heartbeat_key,
+                60,  # 60秒过期
+                timestamp
+            )
+        except Exception as e:
+            self.logger.error(f"发送心跳失败: {e}")
+    
+    async def check_nodes(self):
+        """检查其他节点状态"""
+        try:
+            keys = self.redis_client.keys("node:*:heartbeat")
+            active_nodes = []
+            
+            for key in keys:
+                ttl = self.redis_client.ttl(key)
+                if ttl > 0:
+                    node_id = key.decode().split(':')[1]
+                    active_nodes.append(node_id)
+            
+            self.logger.info(f"活跃节点: {active_nodes}")
+            return active_nodes
+        except Exception as e:
+            self.logger.error(f"检查节点状态失败: {e}")
+            return []
+```
+
+## 日志和调试
+
+### 详细日志配置
+
+```python
+# 启用详细日志
+config = CrawloConfig.standalone(
+    log_level='DEBUG',
+    log_file='debug.log',
+    log_max_bytes=10*1024*1024,  # 10MB
+    log_backup_count=5
+)
+
+# 自定义日志格式
+LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+```
+
+### 调试中间件
+
+```python
+class DebuggingMiddleware:
+    def __init__(self, settings):
+        self.logger = logging.getLogger('debug.middleware')
+    
+    def process_request(self, request, spider):
+        self.logger.debug(f"发送请求: {request.url}")
+        self.logger.debug(f"请求头部: {request.headers}")
+        return request
+    
+    def process_response(self, request, response, spider):
+        self.logger.debug(f"收到响应: {response.url}")
+        self.logger.debug(f"状态码: {response.status_code}")
+        self.logger.debug(f"响应大小: {len(response.content)} bytes")
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        self.logger.error(f"请求异常: {request.url}")
+        self.logger.error(f"异常详情: {exception}")
+        return None
+```
+
+## 监控和告警
+
+### 健康检查
+
+```python
+class HealthChecker:
+    def __init__(self, crawler):
+        self.crawler = crawler
+        self.checks = [
+            self.check_network,
+            self.check_storage,
+            self.check_memory,
+            self.check_cpu
+        ]
+    
+    async def run_health_check(self):
+        results = []
+        for check in self.checks:
+            try:
+                result = await check()
+                results.append(result)
+            except Exception as e:
+                results.append({'name': check.__name__, 'status': 'ERROR', 'error': str(e)})
+        
+        # 汇总检查结果
+        healthy = all(result['status'] == 'OK' for result in results)
+        return healthy, results
+    
+    async def check_network(self):
+        # 检查网络连接
+        return {'name': 'network', 'status': 'OK'}
+    
+    async def check_storage(self):
+        # 检查存储空间
+        import shutil
+        total, used, free = shutil.disk_usage("/")
+        if free < 1024*1024*1024:  # 少于1GB
+            return {'name': 'storage', 'status': 'WARNING', 'message': '存储空间不足'}
+        return {'name': 'storage', 'status': 'OK'}
+    
+    async def check_memory(self):
+        # 检查内存使用
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        if memory_mb > 800:
+            return {'name': 'memory', 'status': 'WARNING', 'message': f'内存使用过高: {memory_mb:.2f}MB'}
+        return {'name': 'memory', 'status': 'OK'}
+    
+    async def check_cpu(self):
+        # 检查CPU使用
+        cpu_percent = psutil.cpu_percent(interval=1)
+        if cpu_percent > 90:
+            return {'name': 'cpu', 'status': 'WARNING', 'message': f'CPU使用率过高: {cpu_percent}%'}
+        return {'name': 'cpu', 'status': 'OK'}
+```
+
+### 告警机制
+
+```python
+class AlertManager:
+    def __init__(self, alert_thresholds):
+        self.alert_thresholds = alert_thresholds
+        self.alert_history = {}
+    
+    def check_and_alert(self, metric_name, value):
+        threshold = self.alert_thresholds.get(metric_name)
+        if threshold and value > threshold:
+            # 检查是否需要发送告警（避免重复告警）
+            last_alert = self.alert_history.get(metric_name, 0)
+            current_time = time.time()
+            
+            # 如果距离上次告警超过5分钟，则发送新告警
+            if current_time - last_alert > 300:
+                self.send_alert(metric_name, value, threshold)
+                self.alert_history[metric_name] = current_time
+    
+    def send_alert(self, metric_name, value, threshold):
+        message = f"告警: {metric_name} 超过阈值 {threshold}, 当前值: {value}"
+        self.logger.error(message)
+        
+        # 可以集成邮件、短信、微信等告警方式
+        # send_email_alert(message)
+        # send_sms_alert(message)
+```
+
+## 最佳实践
+
+### 1. 系统化诊断
+
+```python
+class DiagnosticTool:
+    def __init__(self):
+        self.diagnostic_steps = [
+            self.check_configuration,
+            self.check_network,
+            self.check_dependencies,
+            self.check_permissions,
+            self.check_resources
+        ]
+    
+    def run_diagnostics(self):
+        print("开始系统诊断...")
+        for step in self.diagnostic_steps:
+            print(f"执行检查: {step.__name__}")
+            try:
+                result = step()
+                if result:
+                    print(f"  ✅ {step.__name__}: 通过")
+                else:
+                    print(f"  ❌ {step.__name__}: 失败")
+            except Exception as e:
+                print(f"  ❌ {step.__name__}: 错误 - {e}")
+        print("诊断完成")
+```
+
+### 2. 渐进式调试
+
+```python
+# 从简单配置开始调试
+SIMPLE_CONFIG = CrawloConfig.standalone(
+    concurrency=1,
+    log_level='DEBUG'
+)
+
+# 逐步增加复杂度
+MEDIUM_CONFIG = CrawloConfig.standalone(
+    concurrency=5,
+    downloader_type='aiohttp'
+)
+
+# 完整配置
+FULL_CONFIG = CrawloConfig.standalone(
+    concurrency=20,
+    downloader_type='aiohttp',
+    middlewares=['proxy', 'retry']
+)
+```
+
+通过以上故障排除方法和工具，可以快速识别和解决 Crawlo 爬虫开发和运行过程中遇到的各种问题。建议在遇到问题时按照从简单到复杂的顺序进行排查，并充分利用日志和监控工具来辅助诊断。
+
+**code file end: docs/modules/advanced/troubleshooting.md**
+
+---
+
+
+### code file start: docs/modules/advanced/troubleshooting_en.md 
+
+# Troubleshooting
+
+Various issues may arise when using the Crawlo framework. This document provides diagnosis and solutions for common problems to help users quickly identify and resolve issues.
+
+## Overview
+
+Troubleshooting is an important aspect of crawler development and operations. Through systematic diagnostic methods and rich debugging tools, various technical issues can be quickly identified and resolved.
+
+### Common Problem Types
+
+1. **Network Connection Issues** - Unable to access target websites or connection timeouts
+2. **Configuration Errors** - Configuration file format errors or improper parameter settings
+3. **Data Processing Issues** - Parsing failures or data format errors
+4. **Performance Issues** - Slow crawling or high resource consumption
+5. **Distributed Issues** - Node communication failures or data inconsistency
+6. **Environment Issues** - Missing dependencies or version conflicts
+
+## Network Connection Issues
+
+### Connection Timeout
+
+```python
+# Increase timeout
+config = CrawloConfig.standalone(
+    download_timeout=60,  # Increase to 60 seconds
+    retry_times=3         # Increase retry attempts
+)
+
+# Check network connection
+import socket
+
+def check_connection(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        return result == 0
+    except Exception:
+        return False
+
+# Usage example
+if not check_connection('example.com', 80):
+    print("Cannot connect to example.com")
+```
+
+### SSL Certificate Issues
+
+```python
+# Ignore SSL certificate verification (for testing only)
+config = CrawloConfig.standalone(
+    ssl_verify=False
+)
+
+# Or use custom SSL context
+import ssl
+
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
+config = CrawloConfig.standalone(
+    ssl_context=ssl_context
+)
+```
+
+### Proxy Issues
+
+```python
+# Configure proxy
+config = CrawloConfig.standalone(
+    proxy='http://proxy.example.com:8080'
+)
+
+# Use proxy list rotation
+PROXY_LIST = [
+    'http://proxy1.example.com:8080',
+    'http://proxy2.example.com:8080',
+    'http://proxy3.example.com:8080'
+]
+
+# Custom proxy middleware
+class RotatingProxyMiddleware:
+    def __init__(self, settings):
+        self.proxy_list = settings.PROXY_LIST
+        self.current_proxy = 0
+    
+    def process_request(self, request, spider):
+        if self.proxy_list:
+            proxy = self.proxy_list[self.current_proxy]
+            request.proxy = proxy
+            self.current_proxy = (self.current_proxy + 1) % len(self.proxy_list)
+        return request
+```
+
+## Configuration Issues
+
+### Configuration File Validation
+
+```python
+from crawlo.config_validator import validate_config
+
+# Validate configuration
+is_valid, errors, warnings = validate_config(settings_dict)
+
+if not is_valid:
+    print("Configuration validation failed:")
+    for error in errors:
+        print(f"  ❌ {error}")
+    
+    if warnings:
+        print("Warnings:")
+        for warning in warnings:
+            print(f"  ⚠️  {warning}")
+```
+
+### Environment Variable Override
+
+```python
+# Check environment variables
+import os
+
+def check_env_vars():
+    required_vars = ['CRAWLO_CONCURRENCY', 'CRAWLO_DOWNLOAD_DELAY']
+    missing_vars = []
+    
+    for var in required_vars:
+        if not os.getenv(var):
+            missing_vars.append(var)
+    
+    if missing_vars:
+        print(f"Missing environment variables: {', '.join(missing_vars)}")
+
+# Usage example
+check_env_vars()
+```
+
+## Data Processing Issues
+
+### Parsing Errors
+
+```python
+class RobustSpider(Spider):
+    def parse(self, response):
+        try:
+            # Safe data extraction
+            title = response.extract_text('title') or 'Unknown Title'
+            price = response.extract_text('.price')
+            
+            # Data validation
+            if not price:
+                self.logger.warning(f"Page missing price information: {response.url}")
+                return
+            
+            # Data conversion
+            try:
+                price_float = float(price.replace('¥', '').strip())
+            except ValueError:
+                self.logger.error(f"Price format error: {price}")
+                return
+            
+            yield Item(
+                title=title,
+                price=price_float
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Failed to parse page {response.url}: {e}")
+            # Can choose to retry or skip
+```
+
+### Encoding Issues
+
+```python
+# Handle encoding issues
+class EncodingSpider(Spider):
+    def parse(self, response):
+        # Check response encoding
+        encoding = response.encoding
+        self.logger.debug(f"Response encoding: {encoding}")
+        
+        # If encoding is incorrect, specify manually
+        if encoding.lower() not in ['utf-8', 'utf8']:
+            response.encoding = 'utf-8'
+        
+        # Process decoded content
+        text = response.text
+```
+
+## Performance Issues
+
+### Memory Leaks
+
+```python
+import gc
+import psutil
+import weakref
+
+class MemoryLeakDetector:
+    def __init__(self):
+        self.objects = weakref.WeakSet()
+    
+    def track_object(self, obj):
+        self.objects.add(obj)
+    
+    def check_leaks(self):
+        # Force garbage collection
+        gc.collect()
+        
+        # Check memory usage
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        
+        if memory_mb > 500:  # 500MB threshold
+            self.logger.warning(f"High memory usage: {memory_mb:.2f}MB")
+            # Analyze object references
+            self.analyze_objects()
+    
+    def analyze_objects(self):
+        # Analyze potential memory leak objects
+        import objgraph
+        objgraph.show_most_common_types(limit=20)
+```
+
+### High CPU Usage
+
+```python
+import asyncio
+import time
+
+class CPUMonitor:
+    def __init__(self, threshold=80):
+        self.threshold = threshold
+        self.monitoring = False
+    
+    async def start_monitoring(self):
+        self.monitoring = True
+        while self.monitoring:
+            cpu_percent = psutil.cpu_percent(interval=1)
+            if cpu_percent > self.threshold:
+                self.logger.warning(f"High CPU usage: {cpu_percent}%")
+                # Can take throttling measures
+                await self.throttle()
+            await asyncio.sleep(10)
+    
+    async def throttle(self):
+        # Temporarily reduce concurrency
+        original_concurrency = self.settings.CONCURRENCY
+        self.settings.CONCURRENCY = max(1, original_concurrency // 2)
+        self.logger.info("Reduced concurrency to reduce CPU usage")
+        
+        # Wait for a while then restore
+        await asyncio.sleep(60)
+        self.settings.CONCURRENCY = original_concurrency
+        self.logger.info("Restored original concurrency")
+```
+
+## Distributed Issues
+
+### Redis Connection Issues
+
+```python
+import redis
+import time
+
+class RedisHealthChecker:
+    def __init__(self, redis_config):
+        self.redis_config = redis_config
+        self.client = None
+    
+    def connect(self):
+        try:
+            self.client = redis.Redis(
+                host=self.redis_config['host'],
+                port=self.redis_config['port'],
+                password=self.redis_config.get('password'),
+                db=self.redis_config.get('db', 0),
+                socket_timeout=5
+            )
+            # Test connection
+            self.client.ping()
+            return True
+        except Exception as e:
+            self.logger.error(f"Redis connection failed: {e}")
+            return False
+    
+    def check_health(self):
+        if not self.client:
+            return False
+        
+        try:
+            # Check Redis status
+            info = self.client.info()
+            self.logger.debug(f"Redis memory usage: {info['used_memory_human']}")
+            self.logger.debug(f"Redis connections: {info['connected_clients']}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Redis health check failed: {e}")
+            return False
+```
+
+### Node Communication Issues
+
+```python
+import asyncio
+import hashlib
+
+class NodeCommunicator:
+    def __init__(self, node_id, redis_client):
+        self.node_id = node_id
+        self.redis_client = redis_client
+        self.heartbeat_key = f"node:{node_id}:heartbeat"
+    
+    async def send_heartbeat(self):
+        """Send heartbeat signal"""
+        try:
+            timestamp = int(time.time())
+            self.redis_client.setex(
+                self.heartbeat_key,
+                60,  # Expire in 60 seconds
+                timestamp
+            )
+        except Exception as e:
+            self.logger.error(f"Failed to send heartbeat: {e}")
+    
+    async def check_nodes(self):
+        """Check other nodes' status"""
+        try:
+            keys = self.redis_client.keys("node:*:heartbeat")
+            active_nodes = []
+            
+            for key in keys:
+                ttl = self.redis_client.ttl(key)
+                if ttl > 0:
+                    node_id = key.decode().split(':')[1]
+                    active_nodes.append(node_id)
+            
+            self.logger.info(f"Active nodes: {active_nodes}")
+            return active_nodes
+        except Exception as e:
+            self.logger.error(f"Failed to check node status: {e}")
+            return []
+```
+
+## Logging and Debugging
+
+### Detailed Logging Configuration
+
+```python
+# Enable detailed logging
+config = CrawloConfig.standalone(
+    log_level='DEBUG',
+    log_file='debug.log',
+    log_max_bytes=10*1024*1024,  # 10MB
+    log_backup_count=5
+)
+
+# Custom log format
+LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+```
+
+### Debugging Middleware
+
+```python
+class DebuggingMiddleware:
+    def __init__(self, settings):
+        self.logger = logging.getLogger('debug.middleware')
+    
+    def process_request(self, request, spider):
+        self.logger.debug(f"Sending request: {request.url}")
+        self.logger.debug(f"Request headers: {request.headers}")
+        return request
+    
+    def process_response(self, request, response, spider):
+        self.logger.debug(f"Received response: {response.url}")
+        self.logger.debug(f"Status code: {response.status_code}")
+        self.logger.debug(f"Response size: {len(response.content)} bytes")
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        self.logger.error(f"Request exception: {request.url}")
+        self.logger.error(f"Exception details: {exception}")
+        return None
+```
+
+## Monitoring and Alerting
+
+### Health Check
+
+```python
+class HealthChecker:
+    def __init__(self, crawler):
+        self.crawler = crawler
+        self.checks = [
+            self.check_network,
+            self.check_storage,
+            self.check_memory,
+            self.check_cpu
+        ]
+    
+    async def run_health_check(self):
+        results = []
+        for check in self.checks:
+            try:
+                result = await check()
+                results.append(result)
+            except Exception as e:
+                results.append({'name': check.__name__, 'status': 'ERROR', 'error': str(e)})
+        
+        # Summarize check results
+        healthy = all(result['status'] == 'OK' for result in results)
+        return healthy, results
+    
+    async def check_network(self):
+        # Check network connection
+        return {'name': 'network', 'status': 'OK'}
+    
+    async def check_storage(self):
+        # Check storage space
+        import shutil
+        total, used, free = shutil.disk_usage("/")
+        if free < 1024*1024*1024:  # Less than 1GB
+            return {'name': 'storage', 'status': 'WARNING', 'message': 'Insufficient storage space'}
+        return {'name': 'storage', 'status': 'OK'}
+    
+    async def check_memory(self):
+        # Check memory usage
+        process = psutil.Process()
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        if memory_mb > 800:
+            return {'name': 'memory', 'status': 'WARNING', 'message': f'High memory usage: {memory_mb:.2f}MB'}
+        return {'name': 'memory', 'status': 'OK'}
+    
+    async def check_cpu(self):
+        # Check CPU usage
+        cpu_percent = psutil.cpu_percent(interval=1)
+        if cpu_percent > 90:
+            return {'name': 'cpu', 'status': 'WARNING', 'message': f'High CPU usage: {cpu_percent}%'}
+        return {'name': 'cpu', 'status': 'OK'}
+```
+
+### Alerting Mechanism
+
+```python
+class AlertManager:
+    def __init__(self, alert_thresholds):
+        self.alert_thresholds = alert_thresholds
+        self.alert_history = {}
+    
+    def check_and_alert(self, metric_name, value):
+        threshold = self.alert_thresholds.get(metric_name)
+        if threshold and value > threshold:
+            # Check if alert needs to be sent (avoid duplicate alerts)
+            last_alert = self.alert_history.get(metric_name, 0)
+            current_time = time.time()
+            
+            # Send new alert if more than 5 minutes since last alert
+            if current_time - last_alert > 300:
+                self.send_alert(metric_name, value, threshold)
+                self.alert_history[metric_name] = current_time
+    
+    def send_alert(self, metric_name, value, threshold):
+        message = f"Alert: {metric_name} exceeded threshold {threshold}, current value: {value}"
+        self.logger.error(message)
+        
+        # Can integrate email, SMS, WeChat and other alerting methods
+        # send_email_alert(message)
+        # send_sms_alert(message)
+```
+
+## Best Practices
+
+### 1. Systematic Diagnosis
+
+```python
+class DiagnosticTool:
+    def __init__(self):
+        self.diagnostic_steps = [
+            self.check_configuration,
+            self.check_network,
+            self.check_dependencies,
+            self.check_permissions,
+            self.check_resources
+        ]
+    
+    def run_diagnostics(self):
+        print("Starting system diagnostics...")
+        for step in self.diagnostic_steps:
+            print(f"Running check: {step.__name__}")
+            try:
+                result = step()
+                if result:
+                    print(f"  ✅ {step.__name__}: Passed")
+                else:
+                    print(f"  ❌ {step.__name__}: Failed")
+            except Exception as e:
+                print(f"  ❌ {step.__name__}: Error - {e}")
+        print("Diagnostics completed")
+```
+
+### 2. Progressive Debugging
+
+```python
+# Start debugging with simple configuration
+SIMPLE_CONFIG = CrawloConfig.standalone(
+    concurrency=1,
+    log_level='DEBUG'
+)
+
+# Gradually increase complexity
+MEDIUM_CONFIG = CrawloConfig.standalone(
+    concurrency=5,
+    downloader_type='aiohttp'
+)
+
+# Full configuration
+FULL_CONFIG = CrawloConfig.standalone(
+    concurrency=20,
+    downloader_type='aiohttp',
+    middlewares=['proxy', 'retry']
+)
+```
+
+Through the above troubleshooting methods and tools, various issues encountered during Crawlo crawler development and operation can be quickly identified and resolved. It is recommended to troubleshoot in order from simple to complex when encountering problems, and make full use of logs and monitoring tools to assist in diagnosis.
+
+**code file end: docs/modules/advanced/troubleshooting_en.md**
+
+---
+
+
+### code file start: docs/modules/architecture/index.md 
+
+# 架构概述
+
+Crawlo 是一个基于 asyncio 的现代异步网络爬虫框架，采用模块化设计，具有清晰的组件分离和良好的可扩展性。
+
+## 核心架构
+
+```mermaid
+graph TB
+Crawler[Crawler] --> Engine[Engine]
+Engine --> Scheduler[Scheduler]
+Engine --> Downloader[Downloader]
+Engine --> Processor[Processor]
+Scheduler --> QueueManager[QueueManager]
+QueueManager --> MemoryQueue[Memory Queue]
+QueueManager --> RedisQueue[Redis Queue]
+Scheduler --> Filter[Duplicate Filter]
+Downloader --> HTTP[HTTP Client]
+Processor --> Items[Items]
+Processor --> Pipelines[Pipelines]
+Crawler --> Stats[Stats Collector]
+Crawler --> Extensions[Extensions]
+Crawler --> Subscriber[Subscriber]
+Subscriber --> Events[Event System]
+Engine --> TaskManager[Task Manager]
+style Crawler fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+style Scheduler fill:#f96,stroke:#333
+style Processor fill:#6f9,stroke:#333
+style QueueManager fill:#ff6,stroke:#333
+```
+
+## 核心组件
+
+### Crawler（爬虫控制器）
+Crawler 是 Crawlo 框架的主要协调器，负责管理整个爬取作业的生命周期。它初始化和协调所有其他核心组件，包括引擎、调度器、下载器和处理器。
+
+### Engine（引擎）
+Engine 是 Crawlo 的核心执行单元，负责驱动整个爬取过程。它协调请求调度、页面下载和响应处理，确保数据在各个组件之间正确流动。
+
+### Scheduler（调度器）
+Scheduler 管理请求队列，实现基于优先级的调度和重复请求过滤。它与队列管理器和过滤器协同工作，确保请求按正确的顺序处理。
+
+### Downloader（下载器）
+Downloader 负责发送 HTTP 请求并获取网页内容。Crawlo 支持多种下载器实现，包括基于 aiohttp、httpx 和 curl-cffi 的下载器。
+
+### Processor（处理器）
+Processor 处理下载器返回的响应，调用用户定义的解析函数，并将提取的数据项路由到相应的数据管道。
+
+### QueueManager（队列管理器）
+QueueManager 提供统一的队列接口，支持内存队列和 Redis 队列的无缝切换，是实现分布式爬取的关键组件。
+
+### Filter（过滤器）
+Filter 实现请求去重功能，防止重复爬取相同的 URL。支持内存过滤器和基于 Redis 的分布式过滤器。
+
+## 数据流
+
+Crawlo 的数据流遵循以下过程：
+
+1. **请求生成** - 爬虫或解析函数生成新的请求
+2. **请求调度** - 调度器将请求添加到队列中
+3. **请求获取** - 调度器从队列中获取下一个请求
+4. **页面下载** - 下载器发送 HTTP 请求并获取响应
+5. **响应处理** - 处理器调用用户定义的解析函数
+6. **数据提取** - 解析函数提取数据项或生成新请求
+7. **数据存储** - 数据项通过管道存储到目标位置
+
+## 设计原则
+
+### 模块化设计
+Crawlo 采用模块化设计，各组件职责清晰，便于扩展和维护。核心模块包括引擎、下载器、调度器、中间件、管道、过滤器等。
+
+### 异步非阻塞
+基于 asyncio 实现异步非阻塞 I/O，充分利用系统资源，实现高并发处理能力。
+
+### 可扩展性
+通过中间件、管道和扩展机制，用户可以轻松定制和扩展框架功能。
+
+### 配置驱动
+提供强大的配置管理系统，支持通过配置文件灵活调整框架行为。
+
+### 分布式支持
+通过 Redis 实现任务分发与状态共享，支持多节点并行采集，具备良好的扩展性与容错能力。
+
+## 性能特征
+
+- **高并发** - 基于 asyncio 实现高并发请求处理
+- **低延迟** - 异步非阻塞 I/O 减少等待时间
+- **可扩展** - 支持水平扩展以处理大规模数据采集
+- **资源优化** - 智能并发控制和背压机制优化资源使用
+
+**code file end: docs/modules/architecture/index.md**
+
+---
+
+
+### code file start: docs/modules/architecture/index_en.md 
+
+# Architecture Overview
+
+Crawlo is a modern asynchronous web crawling framework based on asyncio, featuring a modular design with clear component separation and good extensibility.
+
+## Core Architecture
+
+```mermaid
+graph TB
+Crawler[Crawler] --> Engine[Engine]
+Engine --> Scheduler[Scheduler]
+Engine --> Downloader[Downloader]
+Engine --> Processor[Processor]
+Scheduler --> QueueManager[QueueManager]
+QueueManager --> MemoryQueue[Memory Queue]
+QueueManager --> RedisQueue[Redis Queue]
+Scheduler --> Filter[Duplicate Filter]
+Downloader --> HTTP[HTTP Client]
+Processor --> Items[Items]
+Processor --> Pipelines[Pipelines]
+Crawler --> Stats[Stats Collector]
+Crawler --> Extensions[Extensions]
+Crawler --> Subscriber[Subscriber]
+Subscriber --> Events[Event System]
+Engine --> TaskManager[Task Manager]
+style Crawler fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+style Scheduler fill:#f96,stroke:#333
+style Processor fill:#6f9,stroke:#333
+style QueueManager fill:#ff6,stroke:#333
+```
+
+## Core Components
+
+### Crawler
+Crawler is the main coordinator of the Crawlo framework, responsible for managing the entire crawling job lifecycle. It initializes and coordinates all other core components, including the engine, scheduler, downloader, and processor.
+
+### Engine
+Engine is the core execution unit of Crawlo, responsible for driving the entire crawling process. It coordinates request scheduling, page downloading, and response processing, ensuring data flows correctly between components.
+
+### Scheduler
+Scheduler manages request queues, implements priority-based scheduling, and filters duplicate requests. It works with the queue manager and filter to ensure requests are processed in the correct order.
+
+### Downloader
+Downloader is responsible for sending HTTP requests and fetching web content. Crawlo supports multiple downloader implementations, including aiohttp-based, httpx-based, and curl-cffi-based downloaders.
+
+### Processor
+Processor handles responses returned by the downloader, calls user-defined parsing functions, and routes extracted data items to the appropriate data pipelines.
+
+### QueueManager
+QueueManager provides a unified queue interface, supporting seamless switching between memory queues and Redis queues, which is a key component for implementing distributed crawling.
+
+### Filter
+Filter implements request deduplication functionality to prevent crawling the same URLs repeatedly. It supports both memory filters and Redis-based distributed filters.
+
+## Data Flow
+
+The data flow in Crawlo follows this process:
+
+1. **Request Generation** - Spiders or parsing functions generate new requests
+2. **Request Scheduling** - Scheduler adds requests to the queue
+3. **Request Fetching** - Scheduler fetches the next request from the queue
+4. **Page Downloading** - Downloader sends HTTP requests and fetches responses
+5. **Response Processing** - Processor calls user-defined parsing functions
+6. **Data Extraction** - Parsing functions extract data items or generate new requests
+7. **Data Storage** - Data items are stored to target locations through pipelines
+
+## Design Principles
+
+### Modular Design
+Crawlo adopts a modular design with clear responsibilities for each component, making it easy to extend and maintain. Core modules include engine, downloader, scheduler, middleware, pipeline, filter, etc.
+
+### Asynchronous Non-blocking
+Based on asyncio to implement asynchronous non-blocking I/O, fully utilizing system resources to achieve high-concurrency processing capabilities.
+
+### Extensibility
+Through middleware, pipeline, and extension mechanisms, users can easily customize and extend framework functionality.
+
+### Configuration-driven
+Provides a powerful configuration management system that supports flexible adjustment of framework behavior through configuration files.
+
+### Distributed Support
+Implements task distribution and state sharing through Redis, supporting multi-node parallel crawling with good scalability and fault tolerance.
+
+## Performance Characteristics
+
+- **High Concurrency** - High-concurrency request processing based on asyncio
+- **Low Latency** - Asynchronous non-blocking I/O reduces waiting time
+- **Scalability** - Supports horizontal scaling to handle large-scale data collection
+- **Resource Optimization** - Intelligent concurrency control and backpressure mechanisms optimize resource usage
+
+**code file end: docs/modules/architecture/index_en.md**
+
+---
+
+
+### code file start: docs/modules/architecture/modes.md 
+
+# 运行模式
+
+Crawlo 支持两种主要的运行模式：单机模式和分布式模式。这两种模式在架构设计和使用场景上有显著差异。
+
+## 单机模式
+
+单机模式是 Crawlo 的默认运行模式，适用于小规模数据采集任务或开发测试环境。
+
+### 特点
+
+- **内存队列** - 使用内存中的优先级队列管理请求
+- **内存过滤** - 使用内存中的集合进行请求去重
+- **单进程** - 所有组件运行在单个进程中
+- **简单配置** - 无需额外的外部服务依赖
+- **快速启动** - 启动速度快，适合开发调试
+
+### 适用场景
+
+- 小规模数据采集（数千到数万条数据）
+- 开发和测试阶段
+- 不需要高并发的简单爬取任务
+- 无法使用外部服务的环境
+
+### 配置示例
+
+```python
+from crawlo.config import CrawloConfig
+
+# 创建单机配置
+config = CrawloConfig.standalone(
+    project_name='my_standalone_project',
+    concurrency=10,
+    download_delay=1.0
+)
+```
+
+## 分布式模式
+
+分布式模式适用于大规模数据采集任务，支持多节点协同工作，具备良好的扩展性和容错能力。
+
+### 特点
+
+- **Redis 队列** - 使用 Redis 有序集合实现分布式任务队列
+- **Redis 过滤** - 使用 Redis 集合实现分布式去重
+- **多节点** - 支持多个工作节点并行处理
+- **状态共享** - 通过 Redis 实现节点间状态同步
+- **高可用** - 节点故障不影响整体任务执行
+
+### 架构图
+
+```mermaid
+graph TB
+subgraph "控制节点"
+Crawler[Crawler]
+Engine[Engine]
+Scheduler[Scheduler]
+Downloader[Downloader]
+Processor[Processor]
+end
+subgraph "数据存储"
+Redis[(Redis)]
+MySQL[(MySQL)]
+end
+subgraph "工作节点"
+Worker1[工作节点1]
+Worker2[工作节点2]
+WorkerN[工作节点N]
+end
+Crawler --> Engine
+Engine --> Scheduler
+Engine --> Downloader
+Engine --> Processor
+Scheduler --> Redis
+Downloader --> Redis
+Processor --> Redis
+Processor --> MySQL
+Worker1 --> Redis
+Worker2 --> Redis
+WorkerN --> Redis
+style Redis fill:#f9f,stroke:#333
+style MySQL fill:#bbf,stroke:#333
+```
+
+### 适用场景
+
+- 大规模数据采集（数十万到数百万条数据）
+- 需要高并发处理的爬取任务
+- 长时间运行的爬虫项目
+- 需要容错和高可用的生产环境
+
+### 配置示例
+
+```python
+from crawlo.config import CrawloConfig
+
+# 创建分布式配置
+config = CrawloConfig.distributed(
+    project_name='my_distributed_project',
+    redis_host='127.0.0.1',
+    redis_port=6379,
+    redis_password='mypassword',
+    concurrency=20,
+    download_delay=0.5
+)
+```
+
+## 模式切换
+
+Crawlo 设计了灵活的模式切换机制，允许用户在不修改爬虫代码的情况下切换运行模式。
+
+### 切换方式
+
+1. **配置文件** - 通过不同的配置文件指定运行模式
+2. **环境变量** - 通过环境变量动态切换模式
+3. **命令行参数** - 通过命令行参数指定运行模式
+4. **代码配置** - 通过 [CrawloConfig](../../api/crawlo_config.md) 类的工厂方法创建不同模式的配置
+
+### 无缝切换示例
+
+```python
+# 爬虫代码保持不变
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # 解析逻辑
+        pass
+
+# 通过配置切换模式
+# 单机模式
+config = CrawloConfig.standalone(project_name='example')
+
+# 分布式模式
+config = CrawloConfig.distributed(
+    project_name='example',
+    redis_host='127.0.0.1',
+    redis_port=6379
+)
+```
+
+## 性能对比
+
+| 特性 | 单机模式 | 分布式模式 |
+|------|----------|------------|
+| **最大并发数** | 受单机资源限制 | 可通过增加节点无限扩展 |
+| **去重能力** | 单机内存去重 | 分布式 Redis 去重 |
+| **容错性** | 节点故障导致任务中断 | 节点故障不影响整体任务 |
+| **资源利用率** | 单机资源利用 | 多机资源利用 |
+| **配置复杂度** | 简单 | 需要 Redis 等外部服务 |
+| **启动速度** | 快速 | 需要连接外部服务 |
+
+## 最佳实践
+
+### 选择运行模式的建议
+
+1. **开发阶段** - 使用单机模式进行开发和调试
+2. **小规模任务** - 数据量小于10万条时使用单机模式
+3. **大规模任务** - 数据量超过10万条时考虑分布式模式
+4. **生产环境** - 根据容错性要求选择合适的模式
+
+### 模式迁移指南
+
+从单机模式迁移到分布式模式时需要注意：
+
+1. **配置调整** - 修改配置以使用 Redis 队列和过滤器
+2. **Redis 部署** - 确保 Redis 服务可用且性能足够
+3. **网络配置** - 确保所有节点能够访问 Redis 服务
+4. **监控设置** - 配置分布式环境的监控和日志收集
+
+**code file end: docs/modules/architecture/modes.md**
+
+---
+
+
+### code file start: docs/modules/architecture/modes_en.md 
+
+# Running Modes
+
+Crawlo supports two main running modes: standalone mode and distributed mode. These modes have significant differences in architectural design and use cases.
+
+## Standalone Mode
+
+Standalone mode is the default running mode of Crawlo, suitable for small-scale data collection tasks or development and testing environments.
+
+### Features
+
+- **Memory Queue** - Uses in-memory priority queue to manage requests
+- **Memory Filtering** - Uses in-memory sets for request deduplication
+- **Single Process** - All components run in a single process
+- **Simple Configuration** - No additional external service dependencies required
+- **Fast Startup** - Quick startup, suitable for development and debugging
+
+### Use Cases
+
+- Small-scale data collection (thousands to tens of thousands of data items)
+- Development and testing phase
+- Simple crawling tasks that don't require high concurrency
+- Environments where external services cannot be used
+
+### Configuration Example
+
+```python
+from crawlo.config import CrawloConfig
+
+# Create standalone configuration
+config = CrawloConfig.standalone(
+    project_name='my_standalone_project',
+    concurrency=10,
+    download_delay=1.0
+)
+```
+
+## Distributed Mode
+
+Distributed mode is suitable for large-scale data collection tasks, supporting multi-node collaborative work with good scalability and fault tolerance.
+
+### Features
+
+- **Redis Queue** - Uses Redis sorted sets to implement distributed task queues
+- **Redis Filtering** - Uses Redis sets to implement distributed deduplication
+- **Multi-node** - Supports multiple worker nodes processing in parallel
+- **State Sharing** - Implements node-to-node state synchronization through Redis
+- **High Availability** - Node failure does not affect overall task execution
+
+### Architecture Diagram
+
+```mermaid
+graph TB
+subgraph "Control Node"
+Crawler[Crawler]
+Engine[Engine]
+Scheduler[Scheduler]
+Downloader[Downloader]
+Processor[Processor]
+end
+subgraph "Data Storage"
+Redis[(Redis)]
+MySQL[(MySQL)]
+end
+subgraph "Worker Nodes"
+Worker1[Worker Node 1]
+Worker2[Worker Node 2]
+WorkerN[Worker Node N]
+end
+Crawler --> Engine
+Engine --> Scheduler
+Engine --> Downloader
+Engine --> Processor
+Scheduler --> Redis
+Downloader --> Redis
+Processor --> Redis
+Processor --> MySQL
+Worker1 --> Redis
+Worker2 --> Redis
+WorkerN --> Redis
+style Redis fill:#f9f,stroke:#333
+style MySQL fill:#bbf,stroke:#333
+```
+
+### Use Cases
+
+- Large-scale data collection (hundreds of thousands to millions of data items)
+- Crawling tasks requiring high concurrency processing
+- Long-running crawler projects
+- Production environments requiring fault tolerance and high availability
+
+### Configuration Example
+
+```python
+from crawlo.config import CrawloConfig
+
+# Create distributed configuration
+config = CrawloConfig.distributed(
+    project_name='my_distributed_project',
+    redis_host='127.0.0.1',
+    redis_port=6379,
+    redis_password='mypassword',
+    concurrency=20,
+    download_delay=0.5
+)
+```
+
+## Mode Switching
+
+Crawlo is designed with a flexible mode switching mechanism that allows users to switch running modes without modifying spider code.
+
+### Switching Methods
+
+1. **Configuration Files** - Specify running mode through different configuration files
+2. **Environment Variables** - Dynamically switch modes through environment variables
+3. **Command Line Arguments** - Specify running mode through command line arguments
+4. **Code Configuration** - Create configurations for different modes through factory methods of the [CrawloConfig](../../api/crawlo_config.md) class
+
+### Seamless Switching Example
+
+```python
+# Spider code remains unchanged
+class MySpider(Spider):
+    name = 'example'
+    
+    def parse(self, response):
+        # Parsing logic
+        pass
+
+# Switch modes through configuration
+# Standalone mode
+config = CrawloConfig.standalone(project_name='example')
+
+# Distributed mode
+config = CrawloConfig.distributed(
+    project_name='example',
+    redis_host='127.0.0.1',
+    redis_port=6379
+)
+```
+
+## Performance Comparison
+
+| Feature | Standalone Mode | Distributed Mode |
+|---------|-----------------|------------------|
+| **Maximum Concurrency** | Limited by single machine resources | Infinitely scalable by adding nodes |
+| **Deduplication Capability** | Single-machine memory deduplication | Distributed Redis deduplication |
+| **Fault Tolerance** | Node failure causes task interruption | Node failure does not affect overall tasks |
+| **Resource Utilization** | Single-machine resource utilization | Multi-machine resource utilization |
+| **Configuration Complexity** | Simple | Requires external services like Redis |
+| **Startup Speed** | Fast | Requires connecting to external services |
+
+## Best Practices
+
+### Recommendations for Choosing Running Modes
+
+1. **Development Phase** - Use standalone mode for development and debugging
+2. **Small-scale Tasks** - Use standalone mode for data volumes less than 100,000 items
+3. **Large-scale Tasks** - Consider distributed mode for data volumes exceeding 100,000 items
+4. **Production Environment** - Choose the appropriate mode based on fault tolerance requirements
+
+### Mode Migration Guide
+
+When migrating from standalone mode to distributed mode, pay attention to:
+
+1. **Configuration Adjustment** - Modify configuration to use Redis queues and filters
+2. **Redis Deployment** - Ensure Redis service is available and performant
+3. **Network Configuration** - Ensure all nodes can access Redis service
+4. **Monitoring Setup** - Configure monitoring and log collection for distributed environment
+
+**code file end: docs/modules/architecture/modes_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/check.md 
+
+# check 命令
+
+`check` 命令用于检查项目配置和爬虫实现，帮助发现潜在问题和错误。
+
+## 命令语法
+
+```bash
+crawlo check [spider_name] [options]
+```
+
+### 参数说明
+
+- `spider_name` - 要检查的爬虫名称（可选，不指定则检查整个项目）
+- `options` - 可选参数
+
+## 使用示例
+
+### 基本使用
+
+```bash
+# 检查整个项目
+crawlo check
+
+# 检查特定爬虫
+crawlo check myspider
+
+# 指定项目目录
+crawlo check --project-dir /path/to/project
+```
+
+### 详细检查
+
+```bash
+# 显示详细信息
+crawlo check --verbose
+
+# 只显示错误
+crawlo check --errors-only
+
+# 生成检查报告
+crawlo check --output report.txt
+```
+
+## 检查内容
+
+### 1. 配置检查
+
+```bash
+# 检查配置文件
+crawlo check --check-config
+
+# 检查环境变量
+crawlo check --check-env
+```
+
+检查的配置项包括：
+- 项目名称和版本
+- 并发配置
+- 下载器配置
+- 队列和过滤器配置
+- 日志配置
+- 管道和中间件配置
+
+### 2. 爬虫检查
+
+```bash
+# 检查爬虫实现
+crawlo check --check-spiders
+
+# 检查特定爬虫
+crawlo check myspider --check-spider
+```
+
+检查的爬虫项包括：
+- 爬虫名称唯一性
+- 继承关系正确性
+- 解析方法实现
+- 请求和数据项处理
+
+### 3. 依赖检查
+
+```bash
+# 检查依赖项
+crawlo check --check-deps
+
+# 检查版本兼容性
+crawlo check --check-versions
+```
+
+## 配置选项
+
+`check` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --project-dir | string | 当前目录 | 项目目录路径 |
+| --config | string | 'settings.py' | 配置文件路径 |
+| --verbose | flag | - | 显示详细信息 |
+| --quiet | flag | - | 静默模式，只显示错误 |
+| --errors-only | flag | - | 只显示错误信息 |
+| --warnings-only | flag | - | 只显示警告信息 |
+| --check-config | flag | True | 检查配置文件 |
+| --check-spiders | flag | True | 检查爬虫实现 |
+| --check-deps | flag | False | 检查依赖项 |
+| --check-env | flag | False | 检查环境变量 |
+| --output | string | None | 输出报告文件路径 |
+| --format | string | 'text' | 输出格式 (text, json, xml) |
+
+## 检查报告
+
+### 文本格式（默认）
+
+```bash
+$ crawlo check
+检查项目: myproject
+配置检查: 通过
+爬虫检查: 
+  - news_spider: 通过
+  - product_spider: 警告 - 缺少描述文档
+依赖检查: 通过
+
+总计: 3 项检查, 0 个错误, 1 个警告
+```
+
+### JSON 格式
+
+```bash
+$ crawlo check --format json
+{
+  "project": "myproject",
+  "timestamp": "2023-01-01T12:00:00Z",
+  "checks": [
+    {
+      "type": "config",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "type": "spider",
+      "name": "news_spider",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "type": "spider",
+      "name": "product_spider",
+      "status": "warning",
+      "details": ["缺少描述文档"]
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "errors": 0,
+    "warnings": 1
+  }
+}
+```
+
+## 常见检查项
+
+### 配置检查项
+
+```python
+# 检查配置项类型
+CONCURRENCY = 16        # ✅ 正确
+CONCURRENCY = "16"      # ❌ 错误，应该是整数
+
+# 检查必需配置项
+PROJECT_NAME = "myproject"  # ✅ 必需
+# PROJECT_NAME 缺失      # ❌ 错误，缺少必需项
+
+# 检查配置值范围
+DOWNLOAD_DELAY = 0.5    # ✅ 正确范围
+DOWNLOAD_DELAY = -1     # ❌ 错误，不能为负数
+```
+
+### 爬虫检查项
+
+```python
+# 检查爬虫名称
+class MySpider(Spider):
+    name = "my_spider"  # ✅ 正确
+    
+class AnotherSpider(Spider):
+    # name 缺失          # ❌ 错误，缺少名称
+
+# 检查方法实现
+class MySpider(Spider):
+    def parse(self, response):
+        pass  # ✅ 正确实现
+        
+class BadSpider(Spider):
+    # 缺少 parse 方法   # ❌ 错误，缺少必需方法
+```
+
+### 依赖检查项
+
+```bash
+# 检查必需依赖
+requests>=2.25.0    # ✅ 版本满足要求
+requests>=3.0.0     # ❌ 版本不满足要求
+
+# 检查可选依赖
+selenium>=4.0.0     # ✅ 可选依赖，如果使用则需要
+# selenium 缺失      # ⚠️ 警告，如果配置中使用了则需要
+```
+
+## 最佳实践
+
+### 1. 开发阶段检查
+
+```bash
+# 开发过程中定期检查
+crawlo check --verbose
+
+# 提交前检查
+crawlo check --errors-only
+```
+
+### 2. CI/CD 集成
+
+```bash
+# 在 CI/CD 流程中使用
+# .github/workflows/ci.yml
+- name: Check Project
+  run: |
+    pip install -r requirements.txt
+    crawlo check --errors-only
+```
+
+### 3. 配置验证
+
+```bash
+# 部署前验证配置
+crawlo check --check-config --check-env
+
+# 生产环境配置检查
+crawlo check --config production_settings.py
+```
+
+## 自定义检查规则
+
+### 添加自定义检查器
+
+```python
+# custom_checker.py
+from crawlo.check import BaseChecker
+
+class CustomChecker(BaseChecker):
+    def check(self, project):
+        """自定义检查逻辑"""
+        issues = []
+        
+        # 检查自定义规则
+        if not project.settings.get('CUSTOM_SETTING'):
+            issues.append({
+                'type': 'error',
+                'message': '缺少自定义配置项'
+            })
+        
+        return issues
+```
+
+### 注册自定义检查器
+
+```python
+# settings.py
+CUSTOM_CHECKERS = [
+    'myproject.checkers.CustomChecker'
+]
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **配置文件错误**
+   ```bash
+   # 错误: Configuration file not found
+   # 解决: 检查配置文件路径
+   crawlo check --config settings.py
+   
+   # 错误: Invalid configuration syntax
+   # 解决: 检查配置文件语法
+   python -m py_compile settings.py
+   ```
+
+2. **爬虫实现错误**
+   ```bash
+   # 错误: Spider class not found
+   # 解决: 检查爬虫类定义和继承
+   grep -r "class.*Spider" spiders/
+   
+   # 错误: Missing required method
+   # 解决: 实现必需的方法
+   ```
+
+3. **依赖问题**
+   ```bash
+   # 错误: Missing dependency
+   # 解决: 安装缺失的依赖
+   pip install -r requirements.txt
+   
+   # 错误: Version conflict
+   # 解决: 更新或降级依赖版本
+   pip install package==required_version
+   ```
+
+### 调试技巧
+
+```bash
+# 显示详细检查过程
+crawlo check --verbose
+
+# 只关注特定类型的检查
+crawlo check --check-config --verbose
+
+# 生成详细的检查报告
+crawlo check --output detailed_report.json --format json --verbose
+```
+
+**code file end: docs/modules/cli/check.md**
+
+---
+
+
+### code file start: docs/modules/cli/check_en.md 
+
+# check Command
+
+The `check` command checks project configuration and spider implementation, helping to identify potential issues and errors.
+
+## Command Syntax
+
+```bash
+crawlo check [spider_name] [options]
+```
+
+### Parameter Description
+
+- `spider_name` - The spider name to check (optional, checks entire project if not specified)
+- `options` - Optional parameters
+
+## Usage Examples
+
+### Basic Usage
+
+```bash
+# Check entire project
+crawlo check
+
+# Check specific spider
+crawlo check myspider
+
+# Specify project directory
+crawlo check --project-dir /path/to/project
+```
+
+### Detailed Checking
+
+```bash
+# Show detailed information
+crawlo check --verbose
+
+# Show errors only
+crawlo check --errors-only
+
+# Generate check report
+crawlo check --output report.txt
+```
+
+## Check Content
+
+### 1. Configuration Check
+
+```bash
+# Check configuration file
+crawlo check --check-config
+
+# Check environment variables
+crawlo check --check-env
+```
+
+Checked configuration items include:
+- Project name and version
+- Concurrency configuration
+- Downloader configuration
+- Queue and filter configuration
+- Log configuration
+- Pipeline and middleware configuration
+
+### 2. Spider Check
+
+```bash
+# Check spider implementation
+crawlo check --check-spiders
+
+# Check specific spider
+crawlo check myspider --check-spider
+```
+
+Checked spider items include:
+- Spider name uniqueness
+- Inheritance correctness
+- Parse method implementation
+- Request and item processing
+
+### 3. Dependency Check
+
+```bash
+# Check dependencies
+crawlo check --check-deps
+
+# Check version compatibility
+crawlo check --check-versions
+```
+
+## Configuration Options
+
+The `check` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --project-dir | string | Current directory | Project directory path |
+| --config | string | 'settings.py' | Configuration file path |
+| --verbose | flag | - | Show detailed information |
+| --quiet | flag | - | Quiet mode, show errors only |
+| --errors-only | flag | - | Show error information only |
+| --warnings-only | flag | - | Show warning information only |
+| --check-config | flag | True | Check configuration file |
+| --check-spiders | flag | True | Check spider implementation |
+| --check-deps | flag | False | Check dependencies |
+| --check-env | flag | False | Check environment variables |
+| --output | string | None | Output report file path |
+| --format | string | 'text' | Output format (text, json, xml) |
+
+## Check Report
+
+### Text Format (Default)
+
+```bash
+$ crawlo check
+Checking project: myproject
+Configuration check: Passed
+Spider check: 
+  - news_spider: Passed
+  - product_spider: Warning - Missing description document
+Dependency check: Passed
+
+Total: 3 checks, 0 errors, 1 warning
+```
+
+### JSON Format
+
+```bash
+$ crawlo check --format json
+{
+  "project": "myproject",
+  "timestamp": "2023-01-01T12:00:00Z",
+  "checks": [
+    {
+      "type": "config",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "type": "spider",
+      "name": "news_spider",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "type": "spider",
+      "name": "product_spider",
+      "status": "warning",
+      "details": ["Missing description document"]
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "errors": 0,
+    "warnings": 1
+  }
+}
+```
+
+## Common Check Items
+
+### Configuration Check Items
+
+```python
+# Check configuration item types
+CONCURRENCY = 16        # ✅ Correct
+CONCURRENCY = "16"      # ❌ Error, should be integer
+
+# Check required configuration items
+PROJECT_NAME = "myproject"  # ✅ Required
+# PROJECT_NAME missing    # ❌ Error, missing required item
+
+# Check configuration value ranges
+DOWNLOAD_DELAY = 0.5    # ✅ Correct range
+DOWNLOAD_DELAY = -1     # ❌ Error, cannot be negative
+```
+
+### Spider Check Items
+
+```python
+# Check spider names
+class MySpider(Spider):
+    name = "my_spider"  # ✅ Correct
+    
+class AnotherSpider(Spider):
+    # name missing       # ❌ Error, missing name
+
+# Check method implementation
+class MySpider(Spider):
+    def parse(self, response):
+        pass  # ✅ Correct implementation
+        
+class BadSpider(Spider):
+    # Missing parse method  # ❌ Error, missing required method
+```
+
+### Dependency Check Items
+
+```bash
+# Check required dependencies
+requests>=2.25.0    # ✅ Version requirement met
+requests>=3.0.0     # ❌ Version requirement not met
+
+# Check optional dependencies
+selenium>=4.0.0     # ✅ Optional dependency, needed if used
+# selenium missing   # ⚠️ Warning, needed if configured for use
+```
+
+## Best Practices
+
+### 1. Development Stage Checking
+
+```bash
+# Regular checking during development
+crawlo check --verbose
+
+# Pre-commit checking
+crawlo check --errors-only
+```
+
+### 2. CI/CD Integration
+
+```bash
+# Use in CI/CD pipeline
+# .github/workflows/ci.yml
+- name: Check Project
+  run: |
+    pip install -r requirements.txt
+    crawlo check --errors-only
+```
+
+### 3. Configuration Validation
+
+```bash
+# Validate configuration before deployment
+crawlo check --check-config --check-env
+
+# Production environment configuration check
+crawlo check --config production_settings.py
+```
+
+## Custom Check Rules
+
+### Adding Custom Checkers
+
+```python
+# custom_checker.py
+from crawlo.check import BaseChecker
+
+class CustomChecker(BaseChecker):
+    def check(self, project):
+        """Custom checking logic"""
+        issues = []
+        
+        # Check custom rules
+        if not project.settings.get('CUSTOM_SETTING'):
+            issues.append({
+                'type': 'error',
+                'message': 'Missing custom configuration item'
+            })
+        
+        return issues
+```
+
+### Registering Custom Checkers
+
+```python
+# settings.py
+CUSTOM_CHECKERS = [
+    'myproject.checkers.CustomChecker'
+]
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Configuration File Error**
+   ```bash
+   # Error: Configuration file not found
+   # Solution: Check configuration file path
+   crawlo check --config settings.py
+   
+   # Error: Invalid configuration syntax
+   # Solution: Check configuration file syntax
+   python -m py_compile settings.py
+   ```
+
+2. **Spider Implementation Error**
+   ```bash
+   # Error: Spider class not found
+   # Solution: Check spider class definition and inheritance
+   grep -r "class.*Spider" spiders/
+   
+   # Error: Missing required method
+   # Solution: Implement required methods
+   ```
+
+3. **Dependency Issues**
+   ```bash
+   # Error: Missing dependency
+   # Solution: Install missing dependencies
+   pip install -r requirements.txt
+   
+   # Error: Version conflict
+   # Solution: Update or downgrade dependency version
+   pip install package==required_version
+   ```
+
+### Debugging Tips
+
+```bash
+# Show detailed checking process
+crawlo check --verbose
+
+# Focus on specific types of checks
+crawlo check --check-config --verbose
+
+# Generate detailed check report
+crawlo check --output detailed_report.json --format json --verbose
+```
+
+**code file end: docs/modules/cli/check_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/genspider.md 
+
+# genspider 命令
+
+`genspider` 命令用于生成新的爬虫模板，快速创建爬虫类的基础结构。
+
+## 命令语法
+
+```bash
+crawlo genspider <spider_name> <domain> [options]
+```
+
+### 参数说明
+
+- `spider_name` - 爬虫名称（必需）
+- `domain` - 目标域名（必需）
+- `options` - 可选参数
+
+## 使用示例
+
+### 基本使用
+
+```bash
+# 生成基本爬虫
+crawlo genspider myspider example.com
+
+# 指定模块目录
+crawlo genspider myspider example.com --module mymodule
+
+# 生成爬虫到指定文件
+crawlo genspider myspider example.com --output myspider.py
+```
+
+## 爬虫模板
+
+### 默认模板
+
+生成的爬虫模板包含基本结构：
+
+```python
+import crawlo
+from crawlo.spider import Spider
+from crawlo.items import Item
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    allowed_domains = ['example.com']
+    start_urls = ['http://example.com/']
+
+    def parse(self, response):
+        # 解析逻辑
+        pass
+```
+
+### 自定义模板
+
+```bash
+# 使用自定义模板
+crawlo genspider myspider example.com --template advanced
+
+# 列出可用模板
+crawlo genspider --list-templates
+```
+
+## 配置选项
+
+`genspider` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --module | string | 'spiders' | 爬虫模块目录 |
+| --output | string | - | 输出文件路径 |
+| --template | string | 'default' | 使用的模板名称 |
+| --list-templates | flag | - | 列出所有可用模板 |
+| --force | flag | - | 强制覆盖已存在的文件 |
+| --verbose | flag | - | 显示详细输出 |
+
+## 模板类型
+
+### 1. 默认模板 (default)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    start_urls = ['http://example.com/']
+    
+    def parse(self, response):
+        pass
+```
+
+### 2. 高级模板 (advanced)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    allowed_domains = ['example.com']
+    start_urls = ['http://example.com/']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.custom_setting = kwargs.get('custom_setting')
+    
+    def parse(self, response):
+        # 提取数据
+        yield Item(data=response.text)
+        
+        # 跟进链接
+        for link in response.extract_attrs('a', 'href'):
+            yield Request(url=link, callback=self.parse)
+```
+
+### 3. API 模板 (api)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    api_base_url = 'https://api.example.com'
+    
+    def start_requests(self):
+        yield Request(
+            url=f'{self.api_base_url}/data',
+            headers={'Authorization': 'Bearer token'}
+        )
+    
+    def parse(self, response):
+        data = response.json()
+        for item in data['items']:
+            yield Item(**item)
+```
+
+## 最佳实践
+
+### 1. 爬虫命名
+
+```bash
+# 使用描述性的爬虫名称
+crawlo genspider product_spider example.com
+crawlo genspider news_spider news.example.com
+crawlo genspider user_spider social.example.com
+```
+
+### 2. 域名配置
+
+```bash
+# 正确配置域名
+crawlo genspider myspider example.com
+crawlo genspider myspider subdomain.example.com
+crawlo genspider myspider example.com --allowed-domains example.com,api.example.com
+```
+
+### 3. 模板选择
+
+```bash
+# 根据需求选择合适的模板
+crawlo genspider myspider example.com --template default      # 简单爬虫
+crawlo genspider myspider example.com --template advanced     # 复杂爬虫
+crawlo genspider myspider api.example.com --template api      # API 爬虫
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **文件已存在**
+   ```bash
+   # 错误: File already exists
+   # 解决: 使用 --force 选项或选择其他名称
+   crawlo genspider myspider example.com --force
+   ```
+
+2. **模板不存在**
+   ```bash
+   # 错误: Template not found
+   # 解决: 检查模板名称或使用默认模板
+   crawlo genspider myspider example.com --template default
+   ```
+
+3. **模块目录不存在**
+   ```bash
+   # 错误: Module directory not found
+   # 解决: 创建目录或使用现有目录
+   mkdir mymodule
+   crawlo genspider myspider example.com --module mymodule
+   ```
+
+### 调试技巧
+
+```bash
+# 使用详细模式查看生成过程
+crawlo genspider myspider example.com --verbose
+
+# 检查模板列表
+crawlo genspider --list-templates
+
+# 预览生成内容而不创建文件
+crawlo genspider myspider example.com --dry-run
+```
+
+**code file end: docs/modules/cli/genspider.md**
+
+---
+
+
+### code file start: docs/modules/cli/genspider_en.md 
+
+# genspider Command
+
+The `genspider` command generates new spider templates, quickly creating the basic structure for spider classes.
+
+## Command Syntax
+
+```bash
+crawlo genspider <spider_name> <domain> [options]
+```
+
+### Parameter Description
+
+- `spider_name` - Spider name (required)
+- `domain` - Target domain (required)
+- `options` - Optional parameters
+
+## Usage Examples
+
+### Basic Usage
+
+```bash
+# Generate basic spider
+crawlo genspider myspider example.com
+
+# Specify module directory
+crawlo genspider myspider example.com --module mymodule
+
+# Generate spider to specified file
+crawlo genspider myspider example.com --output myspider.py
+```
+
+## Spider Templates
+
+### Default Template
+
+The generated spider template contains basic structure:
+
+```python
+import crawlo
+from crawlo.spider import Spider
+from crawlo.items import Item
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    allowed_domains = ['example.com']
+    start_urls = ['http://example.com/']
+
+    def parse(self, response):
+        # Parsing logic
+        pass
+```
+
+### Custom Templates
+
+```bash
+# Use custom template
+crawlo genspider myspider example.com --template advanced
+
+# List available templates
+crawlo genspider --list-templates
+```
+
+## Configuration Options
+
+The `genspider` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --module | string | 'spiders' | Spider module directory |
+| --output | string | - | Output file path |
+| --template | string | 'default' | Template name to use |
+| --list-templates | flag | - | List all available templates |
+| --force | flag | - | Force overwrite existing file |
+| --verbose | flag | - | Show verbose output |
+
+## Template Types
+
+### 1. Default Template (default)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    start_urls = ['http://example.com/']
+    
+    def parse(self, response):
+        pass
+```
+
+### 2. Advanced Template (advanced)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    allowed_domains = ['example.com']
+    start_urls = ['http://example.com/']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.custom_setting = kwargs.get('custom_setting')
+    
+    def parse(self, response):
+        # Extract data
+        yield Item(data=response.text)
+        
+        # Follow links
+        for link in response.extract_attrs('a', 'href'):
+            yield Request(url=link, callback=self.parse)
+```
+
+### 3. API Template (api)
+
+```python
+class SpiderName(Spider):
+    name = 'spidername'
+    api_base_url = 'https://api.example.com'
+    
+    def start_requests(self):
+        yield Request(
+            url=f'{self.api_base_url}/data',
+            headers={'Authorization': 'Bearer token'}
+        )
+    
+    def parse(self, response):
+        data = response.json()
+        for item in data['items']:
+            yield Item(**item)
+```
+
+## Best Practices
+
+### 1. Spider Naming
+
+```bash
+# Use descriptive spider names
+crawlo genspider product_spider example.com
+crawlo genspider news_spider news.example.com
+crawlo genspider user_spider social.example.com
+```
+
+### 2. Domain Configuration
+
+```bash
+# Properly configure domains
+crawlo genspider myspider example.com
+crawlo genspider myspider subdomain.example.com
+crawlo genspider myspider example.com --allowed-domains example.com,api.example.com
+```
+
+### 3. Template Selection
+
+```bash
+# Choose appropriate template based on requirements
+crawlo genspider myspider example.com --template default      # Simple spider
+crawlo genspider myspider example.com --template advanced     # Complex spider
+crawlo genspider myspider api.example.com --template api      # API spider
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **File Already Exists**
+   ```bash
+   # Error: File already exists
+   # Solution: Use --force option or choose another name
+   crawlo genspider myspider example.com --force
+   ```
+
+2. **Template Not Found**
+   ```bash
+   # Error: Template not found
+   # Solution: Check template name or use default template
+   crawlo genspider myspider example.com --template default
+   ```
+
+3. **Module Directory Not Found**
+   ```bash
+   # Error: Module directory not found
+   # Solution: Create directory or use existing directory
+   mkdir mymodule
+   crawlo genspider myspider example.com --module mymodule
+   ```
+
+### Debugging Tips
+
+```bash
+# Use verbose mode to see generation process
+crawlo genspider myspider example.com --verbose
+
+# Check template list
+crawlo genspider --list-templates
+
+# Preview generated content without creating file
+crawlo genspider myspider example.com --dry-run
+```
+
+**code file end: docs/modules/cli/genspider_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/index.md 
+
+# CLI 工具
+
+Crawlo 提供了丰富的命令行工具，帮助用户快速创建项目、生成爬虫、运行爬虫和管理爬虫任务。
+
+## 工具概述
+
+CLI 工具采用模块化设计，每个命令都有特定的功能，用户可以通过简单的命令行操作完成复杂的爬虫管理任务。
+
+### 核心命令
+
+1. [startproject](startproject.md) - 创建新的爬虫项目
+2. [genspider](genspider.md) - 生成新的爬虫模板
+3. [run](run.md) - 运行爬虫
+4. [list](list.md) - 列出可用的爬虫
+5. [check](check.md) - 检查项目配置
+6. [stats](stats.md) - 查看爬虫统计信息
+
+## 安装和使用
+
+### 安装
+
+CLI 工具随 Crawlo 框架一起安装：
+
+```bash
+pip install crawlo
+```
+
+### 基本使用
+
+安装后，可以通过 `crawlo` 命令访问所有 CLI 工具：
+
+```bash
+# 查看帮助信息
+crawlo --help
+
+# 查看特定命令的帮助信息
+crawlo <command> --help
+```
+
+## 命令详解
+
+### startproject
+
+创建一个新的爬虫项目。
+
+```bash
+# 创建项目
+crawlo startproject myproject
+
+# 创建项目到指定目录
+crawlo startproject myproject /path/to/projects
+```
+
+### genspider
+
+生成一个新的爬虫模板。
+
+```bash
+# 生成爬虫
+crawlo genspider myspider example.com
+
+# 生成爬虫到指定模块
+crawlo genspider myspider example.com --module mymodule
+```
+
+### run
+
+运行爬虫。
+
+```bash
+# 运行爬虫
+crawlo run myspider
+
+# 运行爬虫并指定配置文件
+crawlo run myspider --config settings.py
+
+# 运行爬虫并设置日志级别
+crawlo run myspider --log-level DEBUG
+```
+
+### list
+
+列出项目中所有可用的爬虫。
+
+```bash
+# 列出所有爬虫
+crawlo list
+
+# 以 JSON 格式列出爬虫
+crawlo list --format json
+```
+
+### check
+
+检查项目配置和爬虫实现。
+
+```bash
+# 检查项目
+crawlo check
+
+# 检查特定爬虫
+crawlo check myspider
+```
+
+### stats
+
+查看爬虫运行统计信息。
+
+```bash
+# 查看统计信息
+crawlo stats
+
+# 查看特定爬虫的统计信息
+crawlo stats myspider
+```
+
+## 全局选项
+
+所有 CLI 命令都支持以下全局选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --help | flag | - | 显示帮助信息 |
+| --version | flag | - | 显示版本信息 |
+| --config | string | 'settings.py' | 指定配置文件路径 |
+| --log-level | string | 'INFO' | 设置日志级别 (DEBUG, INFO, WARNING, ERROR) |
+| --project-dir | string | 当前目录 | 指定项目目录 |
+
+## 使用示例
+
+### 创建和运行爬虫项目
+
+```bash
+# 1. 创建新项目
+crawlo startproject myproject
+cd myproject
+
+# 2. 生成爬虫
+crawlo genspider myspider example.com
+
+# 3. 编辑爬虫文件
+# 编辑 myproject/spiders/myspider.py
+
+# 4. 运行爬虫
+crawlo run myspider
+
+# 5. 查看统计信息
+crawlo stats
+```
+
+### 配置管理
+
+```bash
+# 使用不同的配置文件
+crawlo run myspider --config production_settings.py
+
+# 设置调试模式
+crawlo run myspider --log-level DEBUG
+
+# 指定项目目录
+crawlo list --project-dir /path/to/myproject
+```
+
+## 环境变量
+
+CLI 工具支持以下环境变量：
+
+| 环境变量 | 默认值 | 说明 |
+|----------|--------|------|
+| CRAWLO_PROJECT_DIR | 当前目录 | 项目目录路径 |
+| CRAWLO_CONFIG | 'settings.py' | 配置文件路径 |
+| CRAWLO_LOG_LEVEL | 'INFO' | 日志级别 |
+| CRAWLO_CONCURRENCY | 16 | 并发请求数 |
+| CRAWLO_DOWNLOAD_DELAY | 0.5 | 下载延迟 |
+
+## 错误处理
+
+### 常见错误
+
+1. **找不到爬虫**
+   ```bash
+   crawlo run nonexistentspider
+   # 错误: 找不到爬虫 'nonexistentspider'
+   ```
+
+2. **配置文件错误**
+   ```bash
+   crawlo run myspider --config bad_settings.py
+   # 错误: 配置文件 'bad_settings.py' 格式错误
+   ```
+
+3. **权限错误**
+   ```bash
+   crawlo startproject myproject /root/projects
+   # 错误: 没有权限创建目录
+   ```
+
+### 调试技巧
+
+```bash
+# 启用详细日志
+crawlo run myspider --log-level DEBUG
+
+# 检查配置
+crawlo check
+
+# 查看可用爬虫
+crawlo list
+```
+
+## 最佳实践
+
+### 项目结构管理
+
+```bash
+# 推荐的项目结构
+myproject/
+├── settings.py          # 主配置文件
+├── spiders/             # 爬虫目录
+│   ├── __init__.py
+│   └── myspider.py
+├── pipelines/           # 管道目录
+│   ├── __init__.py
+│   └── custom_pipeline.py
+├── middlewares/         # 中间件目录
+│   ├── __init__.py
+│   └── custom_middleware.py
+└── items/               # 数据项定义
+    ├── __init__.py
+    └── myitem.py
+```
+
+### 配置文件管理
+
+```bash
+# 开发环境配置
+crawlo run myspider --config settings_dev.py
+
+# 测试环境配置
+crawlo run myspider --config settings_test.py
+
+# 生产环境配置
+crawlo run myspider --config settings_prod.py
+```
+
+### 日志管理
+
+```bash
+# 设置日志级别
+crawlo run myspider --log-level INFO
+
+# 输出到文件
+crawlo run myspider --log-file crawler.log
+
+# 设置日志轮转
+crawlo run myspider --log-max-bytes 10485760 --log-backup-count 5
+```
+
+### 性能调优
+
+```bash
+# 调整并发数
+crawlo run myspider --concurrency 32
+
+# 设置下载延迟
+crawlo run myspider --download-delay 1.0
+
+# 设置超时时间
+crawlo run myspider --download-timeout 60
+```
+
+**code file end: docs/modules/cli/index.md**
+
+---
+
+
+### code file start: docs/modules/cli/index_en.md 
+
+# CLI Tools
+
+Crawlo provides rich command-line tools to help users quickly create projects, generate spiders, run spiders, and manage spider tasks.
+
+## Tools Overview
+
+CLI tools adopt a modular design, with each command having specific functions, allowing users to complete complex spider management tasks through simple command-line operations.
+
+### Core Commands
+
+1. [startproject](startproject_en.md) - Create a new spider project
+2. [genspider](genspider_en.md) - Generate a new spider template
+3. [run](run_en.md) - Run a spider
+4. [list](list_en.md) - List available spiders
+5. [check](check_en.md) - Check project configuration
+6. [stats](stats_en.md) - View spider statistics
+
+## Installation and Usage
+
+### Installation
+
+CLI tools are installed together with the Crawlo framework:
+
+```bash
+pip install crawlo
+```
+
+### Basic Usage
+
+After installation, all CLI tools can be accessed through the `crawlo` command:
+
+```bash
+# View help information
+crawlo --help
+
+# View help information for a specific command
+crawlo <command> --help
+```
+
+## Command Details
+
+### startproject
+
+Create a new spider project.
+
+```bash
+# Create project
+crawlo startproject myproject
+
+# Create project to specified directory
+crawlo startproject myproject /path/to/projects
+```
+
+### genspider
+
+Generate a new spider template.
+
+```bash
+# Generate spider
+crawlo genspider myspider example.com
+
+# Generate spider to specified module
+crawlo genspider myspider example.com --module mymodule
+```
+
+### run
+
+Run a spider.
+
+```bash
+# Run spider
+crawlo run myspider
+
+# Run spider with specified configuration file
+crawlo run myspider --config settings.py
+
+# Run spider and set log level
+crawlo run myspider --log-level DEBUG
+```
+
+### list
+
+List all available spiders in the project.
+
+```bash
+# List all spiders
+crawlo list
+
+# List spiders in JSON format
+crawlo list --format json
+```
+
+### check
+
+Check project configuration and spider implementation.
+
+```bash
+# Check project
+crawlo check
+
+# Check specific spider
+crawlo check myspider
+```
+
+### stats
+
+View spider runtime statistics.
+
+```bash
+# View statistics
+crawlo stats
+
+# View statistics for specific spider
+crawlo stats myspider
+```
+
+## Global Options
+
+All CLI commands support the following global options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --help | flag | - | Show help information |
+| --version | flag | - | Show version information |
+| --config | string | 'settings.py' | Specify configuration file path |
+| --log-level | string | 'INFO' | Set log level (DEBUG, INFO, WARNING, ERROR) |
+| --project-dir | string | Current directory | Specify project directory |
+
+## Usage Examples
+
+### Create and Run Spider Project
+
+```bash
+# 1. Create new project
+crawlo startproject myproject
+cd myproject
+
+# 2. Generate spider
+crawlo genspider myspider example.com
+
+# 3. Edit spider file
+# Edit myproject/spiders/myspider.py
+
+# 4. Run spider
+crawlo run myspider
+
+# 5. View statistics
+crawlo stats
+```
+
+### Configuration Management
+
+```bash
+# Use different configuration files
+crawlo run myspider --config production_settings.py
+
+# Set debug mode
+crawlo run myspider --log-level DEBUG
+
+# Specify project directory
+crawlo list --project-dir /path/to/myproject
+```
+
+## Environment Variables
+
+CLI tools support the following environment variables:
+
+| Environment Variable | Default | Description |
+|---------------------|---------|-------------|
+| CRAWLO_PROJECT_DIR | Current directory | Project directory path |
+| CRAWLO_CONFIG | 'settings.py' | Configuration file path |
+| CRAWLO_LOG_LEVEL | 'INFO' | Log level |
+| CRAWLO_CONCURRENCY | 16 | Concurrent requests |
+| CRAWLO_DOWNLOAD_DELAY | 0.5 | Download delay |
+
+## Error Handling
+
+### Common Errors
+
+1. **Spider not found**
+   ```bash
+   crawlo run nonexistentspider
+   # Error: Spider 'nonexistentspider' not found
+   ```
+
+2. **Configuration file error**
+   ```bash
+   crawlo run myspider --config bad_settings.py
+   # Error: Configuration file 'bad_settings.py' format error
+   ```
+
+3. **Permission error**
+   ```bash
+   crawlo startproject myproject /root/projects
+   # Error: No permission to create directory
+   ```
+
+### Debugging Tips
+
+```bash
+# Enable verbose logging
+crawlo run myspider --log-level DEBUG
+
+# Check configuration
+crawlo check
+
+# View available spiders
+crawlo list
+```
+
+## Best Practices
+
+### Project Structure Management
+
+```bash
+# Recommended project structure
+myproject/
+├── settings.py          # Main configuration file
+├── spiders/             # Spider directory
+│   ├── __init__.py
+│   └── myspider.py
+├── pipelines/           # Pipeline directory
+│   ├── __init__.py
+│   └── custom_pipeline.py
+├── middlewares/         # Middleware directory
+│   ├── __init__.py
+│   └── custom_middleware.py
+└── items/               # Item definitions
+    ├── __init__.py
+    └── myitem.py
+```
+
+### Configuration File Management
+
+```bash
+# Development environment configuration
+crawlo run myspider --config settings_dev.py
+
+# Testing environment configuration
+crawlo run myspider --config settings_test.py
+
+# Production environment configuration
+crawlo run myspider --config settings_prod.py
+```
+
+### Log Management
+
+```bash
+# Set log level
+crawlo run myspider --log-level INFO
+
+# Output to file
+crawlo run myspider --log-file crawler.log
+
+# Set log rotation
+crawlo run myspider --log-max-bytes 10485760 --log-backup-count 5
+```
+
+### Performance Tuning
+
+```bash
+# Adjust concurrency
+crawlo run myspider --concurrency 32
+
+# Set download delay
+crawlo run myspider --download-delay 1.0
+
+# Set timeout
+crawlo run myspider --download-timeout 60
+```
+
+**code file end: docs/modules/cli/index_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/list.md 
+
+# list 命令
+
+`list` 命令用于列出项目中所有可用的爬虫，帮助用户了解项目结构和可用的爬虫。
+
+## 命令语法
+
+```bash
+crawlo list [options]
+```
+
+### 参数说明
+
+- `options` - 可选参数
+
+## 使用示例
+
+### 基本使用
+
+```bash
+# 列出所有爬虫
+crawlo list
+
+# 指定项目目录
+crawlo list --project-dir /path/to/project
+
+# 以 JSON 格式输出
+crawlo list --format json
+```
+
+### 高级用法
+
+```bash
+# 详细信息
+crawlo list --verbose
+
+# 只显示爬虫名称
+crawlo list --names-only
+
+# 过滤爬虫
+crawlo list --filter "news_*"
+```
+
+## 配置选项
+
+`list` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --project-dir | string | 当前目录 | 项目目录路径 |
+| --format | string | 'table' | 输出格式 (table, json, csv) |
+| --verbose | flag | - | 显示详细信息 |
+| --names-only | flag | - | 只显示爬虫名称 |
+| --filter | string | None | 爬虫名称过滤器 |
+| --sort | string | 'name' | 排序方式 (name, created) |
+
+## 输出格式
+
+### 表格格式（默认）
+
+```bash
+$ crawlo list
++----+-------------+------------------+------------+
+| 序号 | 爬虫名称     | 描述             | 创建时间   |
++----+-------------+------------------+------------+
+| 1  | news_spider | 新闻网站爬虫      | 2023-01-01 |
+| 2  | product_spider | 商品信息爬虫    | 2023-01-02 |
++----+-------------+------------------+------------+
+```
+
+### JSON 格式
+
+```bash
+$ crawlo list --format json
+[
+  {
+    "name": "news_spider",
+    "description": "新闻网站爬虫",
+    "created": "2023-01-01",
+    "file": "spiders/news_spider.py"
+  },
+  {
+    "name": "product_spider",
+    "description": "商品信息爬虫",
+    "created": "2023-01-02",
+    "file": "spiders/product_spider.py"
+  }
+]
+```
+
+### CSV 格式
+
+```bash
+$ crawlo list --format csv
+序号,爬虫名称,描述,创建时间,文件路径
+1,news_spider,新闻网站爬虫,2023-01-01,spiders/news_spider.py
+2,product_spider,商品信息爬虫,2023-01-02,spiders/product_spider.py
+```
+
+## 爬虫发现机制
+
+### 自动发现
+
+```python
+# settings.py 中配置爬虫模块
+SPIDER_MODULES = [
+    'myproject.spiders',
+    'myproject.custom_spiders',
+]
+
+# 爬虫必须继承 Spider 基类
+class MySpider(Spider):
+    name = 'my_spider'
+```
+
+### 命名约定
+
+```bash
+# 推荐的爬虫文件命名
+spiders/
+├── news_spider.py          # 新闻爬虫
+├── product_spider.py       # 商品爬虫
+├── user_spider.py          # 用户爬虫
+└── api_data_spider.py      # API 数据爬虫
+```
+
+## 详细信息显示
+
+### 使用 --verbose 选项
+
+```bash
+$ crawlo list --verbose
+爬虫列表:
+  1. news_spider
+     文件: spiders/news_spider.py
+     类名: NewsSpider
+     描述: 新闻网站爬虫
+     创建时间: 2023-01-01
+     最后修改: 2023-01-15
+
+  2. product_spider
+     文件: spiders/product_spider.py
+     类名: ProductSpider
+     描述: 商品信息爬虫
+     创建时间: 2023-01-02
+     最后修改: 2023-01-10
+```
+
+## 过滤和排序
+
+### 名称过滤
+
+```bash
+# 过滤包含特定字符串的爬虫
+crawlo list --filter "news"
+
+# 使用通配符过滤
+crawlo list --filter "news_*"
+
+# 正则表达式过滤
+crawlo list --filter "^news.*spider$"
+```
+
+### 排序选项
+
+```bash
+# 按名称排序（默认）
+crawlo list --sort name
+
+# 按创建时间排序
+crawlo list --sort created
+```
+
+## 最佳实践
+
+### 1. 项目结构管理
+
+```bash
+# 按功能组织爬虫
+spiders/
+├── news/
+│   ├── cnn_spider.py
+│   ├── bbc_spider.py
+│   └── reuters_spider.py
+├── ecommerce/
+│   ├── amazon_spider.py
+│   ├── ebay_spider.py
+│   └── aliexpress_spider.py
+└── social/
+    ├── twitter_spider.py
+    └── facebook_spider.py
+```
+
+### 2. 爬虫命名规范
+
+```python
+# 使用描述性的爬虫名称
+class NewsSpider(Spider):           # ✅ 好
+    name = 'news_spider'
+
+class ProductSpider(Spider):        # ✅ 好
+    name = 'product_spider'
+
+class Spider1(Spider):              # ❌ 不好
+    name = 'spider1'
+```
+
+### 3. 文档化爬虫
+
+```python
+class NewsSpider(Spider):
+    """新闻网站爬虫
+    
+    用于爬取新闻网站的文章内容，包括标题、正文、发布时间等信息。
+    
+    支持的网站:
+    - news.example.com
+    - blog.example.com
+    """
+    name = 'news_spider'
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **未发现爬虫**
+   ```bash
+   # 问题: No spiders found
+   # 解决: 检查爬虫模块配置和文件结构
+   # 确保 settings.py 中配置了 SPIDER_MODULES
+   ```
+
+2. **爬虫名称冲突**
+   ```bash
+   # 问题: Duplicate spider names found
+   # 解决: 确保每个爬虫有唯一的名称
+   # 检查所有爬虫文件中的 name 属性
+   ```
+
+3. **权限问题**
+   ```bash
+   # 问题: Permission denied
+   # 解决: 检查目录和文件权限
+   ls -la spiders/
+   ```
+
+### 调试技巧
+
+```bash
+# 显示详细信息以调试问题
+crawlo list --verbose
+
+# 检查特定项目目录
+crawlo list --project-dir /path/to/project --verbose
+
+# 以不同格式输出便于分析
+crawlo list --format json | jq '.[] | .name'
+```
+
+**code file end: docs/modules/cli/list.md**
+
+---
+
+
+### code file start: docs/modules/cli/list_en.md 
+
+# list Command
+
+The `list` command lists all available spiders in the project, helping users understand the project structure and available spiders.
+
+## Command Syntax
+
+```bash
+crawlo list [options]
+```
+
+### Parameter Description
+
+- `options` - Optional parameters
+
+## Usage Examples
+
+### Basic Usage
+
+```bash
+# List all spiders
+crawlo list
+
+# Specify project directory
+crawlo list --project-dir /path/to/project
+
+# Output in JSON format
+crawlo list --format json
+```
+
+### Advanced Usage
+
+```bash
+# Verbose information
+crawlo list --verbose
+
+# Show spider names only
+crawlo list --names-only
+
+# Filter spiders
+crawlo list --filter "news_*"
+```
+
+## Configuration Options
+
+The `list` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --project-dir | string | Current directory | Project directory path |
+| --format | string | 'table' | Output format (table, json, csv) |
+| --verbose | flag | - | Show detailed information |
+| --names-only | flag | - | Show spider names only |
+| --filter | string | None | Spider name filter |
+| --sort | string | 'name' | Sort method (name, created) |
+
+## Output Formats
+
+### Table Format (Default)
+
+```bash
+$ crawlo list
++----+-------------+------------------+------------+
+| No | Spider Name | Description      | Created    |
++----+-------------+------------------+------------+
+| 1  | news_spider | News website spider | 2023-01-01 |
+| 2  | product_spider | Product info spider | 2023-01-02 |
++----+-------------+------------------+------------+
+```
+
+### JSON Format
+
+```bash
+$ crawlo list --format json
+[
+  {
+    "name": "news_spider",
+    "description": "News website spider",
+    "created": "2023-01-01",
+    "file": "spiders/news_spider.py"
+  },
+  {
+    "name": "product_spider",
+    "description": "Product info spider",
+    "created": "2023-01-02",
+    "file": "spiders/product_spider.py"
+  }
+]
+```
+
+### CSV Format
+
+```bash
+$ crawlo list --format csv
+No,Spider Name,Description,Created,File Path
+1,news_spider,News website spider,2023-01-01,spiders/news_spider.py
+2,product_spider,Product info spider,2023-01-02,spiders/product_spider.py
+```
+
+## Spider Discovery Mechanism
+
+### Auto Discovery
+
+```python
+# Configure spider modules in settings.py
+SPIDER_MODULES = [
+    'myproject.spiders',
+    'myproject.custom_spiders',
+]
+
+# Spiders must inherit from Spider base class
+class MySpider(Spider):
+    name = 'my_spider'
+```
+
+### Naming Convention
+
+```bash
+# Recommended spider file naming
+spiders/
+├── news_spider.py          # News spider
+├── product_spider.py       # Product spider
+├── user_spider.py          # User spider
+└── api_data_spider.py      # API data spider
+```
+
+## Detailed Information Display
+
+### Using --verbose Option
+
+```bash
+$ crawlo list --verbose
+Spider List:
+  1. news_spider
+     File: spiders/news_spider.py
+     Class: NewsSpider
+     Description: News website spider
+     Created: 2023-01-01
+     Last Modified: 2023-01-15
+
+  2. product_spider
+     File: spiders/product_spider.py
+     Class: ProductSpider
+     Description: Product info spider
+     Created: 2023-01-02
+     Last Modified: 2023-01-10
+```
+
+## Filtering and Sorting
+
+### Name Filtering
+
+```bash
+# Filter spiders containing specific strings
+crawlo list --filter "news"
+
+# Use wildcard filtering
+crawlo list --filter "news_*"
+
+# Regular expression filtering
+crawlo list --filter "^news.*spider$"
+```
+
+### Sorting Options
+
+```bash
+# Sort by name (default)
+crawlo list --sort name
+
+# Sort by creation time
+crawlo list --sort created
+```
+
+## Best Practices
+
+### 1. Project Structure Management
+
+```bash
+# Organize spiders by function
+spiders/
+├── news/
+│   ├── cnn_spider.py
+│   ├── bbc_spider.py
+│   └── reuters_spider.py
+├── ecommerce/
+│   ├── amazon_spider.py
+│   ├── ebay_spider.py
+│   └── aliexpress_spider.py
+└── social/
+    ├── twitter_spider.py
+    └── facebook_spider.py
+```
+
+### 2. Spider Naming Convention
+
+```python
+# Use descriptive spider names
+class NewsSpider(Spider):           # ✅ Good
+    name = 'news_spider'
+
+class ProductSpider(Spider):        # ✅ Good
+    name = 'product_spider'
+
+class Spider1(Spider):              # ❌ Bad
+    name = 'spider1'
+```
+
+### 3. Documenting Spiders
+
+```python
+class NewsSpider(Spider):
+    """News website spider
+    
+    Used to crawl article content from news websites, including title, body, publication time, etc.
+    
+    Supported websites:
+    - news.example.com
+    - blog.example.com
+    """
+    name = 'news_spider'
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **No Spiders Found**
+   ```bash
+   # Issue: No spiders found
+   # Solution: Check spider module configuration and file structure
+   # Ensure SPIDER_MODULES is configured in settings.py
+   ```
+
+2. **Spider Name Conflicts**
+   ```bash
+   # Issue: Duplicate spider names found
+   # Solution: Ensure each spider has a unique name
+   # Check name attribute in all spider files
+   ```
+
+3. **Permission Issues**
+   ```bash
+   # Issue: Permission denied
+   # Solution: Check directory and file permissions
+   ls -la spiders/
+   ```
+
+### Debugging Tips
+
+```bash
+# Show detailed information to debug issues
+crawlo list --verbose
+
+# Check specific project directory
+crawlo list --project-dir /path/to/project --verbose
+
+# Output in different formats for analysis
+crawlo list --format json | jq '.[] | .name'
+```
+
+**code file end: docs/modules/cli/list_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/run.md 
+
+# run 命令
+
+`run` 命令用于运行指定的爬虫，是执行爬虫任务的主要命令。
+
+## 命令语法
+
+```bash
+crawlo run <spider_name> [options]
+```
+
+### 参数说明
+
+- `spider_name` - 要运行的爬虫名称（必需）
+- `options` - 可选参数
+
+## 使用示例
+
+### 基本使用
+
+```bash
+# 运行爬虫
+crawlo run myspider
+
+# 指定配置文件
+crawlo run myspider --config settings.py
+
+# 设置日志级别
+crawlo run myspider --log-level DEBUG
+```
+
+### 高级配置
+
+```bash
+# 设置并发数
+crawlo run myspider --concurrency 32
+
+# 设置下载延迟
+crawlo run myspider --download-delay 1.0
+
+# 设置超时时间
+crawlo run myspider --download-timeout 60
+```
+
+## 配置选项
+
+`run` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --config | string | 'settings.py' | 配置文件路径 |
+| --log-level | string | 'INFO' | 日志级别 (DEBUG, INFO, WARNING, ERROR) |
+| --log-file | string | None | 日志文件路径 |
+| --concurrency | int | 16 | 并发请求数 |
+| --download-delay | float | 0.5 | 下载延迟（秒） |
+| --download-timeout | int | 30 | 下载超时时间（秒） |
+| --max-retry-times | int | 3 | 最大重试次数 |
+| --output-format | string | 'json' | 输出格式 (json, csv, xml) |
+| --output-file | string | None | 输出文件路径 |
+| --stats | flag | - | 显示统计信息 |
+| --dry-run | flag | - | 预演模式，不实际执行请求 |
+
+## 环境变量
+
+`run` 命令支持以下环境变量：
+
+| 环境变量 | 默认值 | 说明 |
+|----------|--------|------|
+| CRAWLO_CONFIG | 'settings.py' | 配置文件路径 |
+| CRAWLO_LOG_LEVEL | 'INFO' | 日志级别 |
+| CRAWLO_CONCURRENCY | 16 | 并发请求数 |
+| CRAWLO_DOWNLOAD_DELAY | 0.5 | 下载延迟 |
+| CRAWLO_PROJECT_DIR | 当前目录 | 项目目录路径 |
+
+## 使用场景
+
+### 1. 开发测试
+
+```bash
+# 开发阶段运行爬虫
+crawlo run myspider --log-level DEBUG --concurrency 1
+
+# 测试特定功能
+crawlo run myspider --dry-run --stats
+```
+
+### 2. 生产部署
+
+```bash
+# 生产环境运行爬虫
+crawlo run myspider --config production_settings.py --log-file logs/myspider.log
+
+# 高性能模式
+crawlo run myspider --concurrency 50 --download-delay 0.1
+```
+
+### 3. 定时任务
+
+```bash
+# 在 crontab 中使用
+0 2 * * * cd /path/to/project && crawlo run myspider --config daily_settings.py
+
+# 带输出的定时任务
+0 3 * * * cd /path/to/project && crawlo run myspider --output-file data/$(date +\%Y-\%m-\%d).json
+```
+
+## 输出格式
+
+### JSON 格式
+
+```bash
+# 输出到 JSON 文件
+crawlo run myspider --output-format json --output-file output.json
+```
+
+### CSV 格式
+
+```bash
+# 输出到 CSV 文件
+crawlo run myspider --output-format csv --output-file output.csv
+```
+
+### 自定义格式
+
+```bash
+# 使用自定义管道
+crawlo run myspider --pipeline myproject.pipelines.CustomPipeline
+```
+
+## 监控和统计
+
+### 实时统计
+
+```bash
+# 显示实时统计信息
+crawlo run myspider --stats
+
+# 定期输出统计信息
+crawlo run myspider --stats-interval 30
+```
+
+### 性能监控
+
+```bash
+# 启用性能监控
+crawlo run myspider --monitor-performance
+
+# 设置内存使用警告阈值
+crawlo run myspider --memory-warning-threshold 500
+```
+
+## 最佳实践
+
+### 1. 配置管理
+
+```bash
+# 不同环境使用不同配置
+crawlo run myspider --config settings_dev.py      # 开发环境
+crawlo run myspider --config settings_test.py     # 测试环境
+crawlo run myspider --config settings_prod.py     # 生产环境
+```
+
+### 2. 日志管理
+
+```bash
+# 合理配置日志
+crawlo run myspider --log-level INFO --log-file logs/myspider.log --log-max-bytes 10485760 --log-backup-count 5
+```
+
+### 3. 资源控制
+
+```bash
+# 根据目标网站调整资源
+crawlo run myspider --concurrency 5 --download-delay 2.0      # 对敏感网站友好
+crawlo run myspider --concurrency 50 --download-delay 0.1     # 对高性能网站
+```
+
+### 4. 错误处理
+
+```bash
+# 设置重试机制
+crawlo run myspider --max-retry-times 5 --retry-http-codes 500,502,503,504,429
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **爬虫未找到**
+   ```bash
+   # 错误: Spider not found
+   # 解决: 检查爬虫名称和项目结构
+   crawlo list  # 查看可用爬虫
+   ```
+
+2. **配置文件错误**
+   ```bash
+   # 错误: Configuration error
+   # 解决: 检查配置文件语法
+   python -m py_compile settings.py
+   ```
+
+3. **权限错误**
+   ```bash
+   # 错误: Permission denied
+   # 解决: 检查文件权限
+   chmod 644 settings.py
+   ```
+
+### 调试技巧
+
+```bash
+# 启用详细日志
+crawlo run myspider --log-level DEBUG
+
+# 预演模式检查配置
+crawlo run myspider --dry-run --stats
+
+# 单并发调试
+crawlo run myspider --concurrency 1 --log-level DEBUG
+```
+
+## 命令行参数
+
+`crawlo run` 命令支持以下参数：
+
+- `<spider_name>` - 要运行的爬虫名称，使用 `all` 运行所有爬虫
+- `--json` - 以 JSON 格式输出结果
+- `--no-stats` - 不记录统计信息
+- `--log-level LEVEL` - 设置日志级别 (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- `--concurrency NUM` - 设置并发数
+
+## 使用示例
+
+```bash
+# 运行指定爬虫
+crawlo run myspider
+
+# 运行所有爬虫
+crawlo run all
+
+# 以JSON格式输出结果
+crawlo run myspider --json
+
+# 设置日志级别为DEBUG
+crawlo run myspider --log-level DEBUG
+
+# 设置并发数为32
+crawlo run myspider --concurrency 32
+
+# 组合使用多个参数
+crawlo run myspider --log-level DEBUG --concurrency 32 --json
+
+**code file end: docs/modules/cli/run.md**
+
+---
+
+
+### code file start: docs/modules/cli/run_en.md 
+
+# run Command
+
+The `run` command runs the specified spider and is the main command for executing crawler tasks.
+
+## Command Syntax
+
+```bash
+crawlo run <spider_name> [options]
+```
+
+### Parameter Description
+
+- `spider_name` - The name of the spider to run (required)
+- `options` - Optional parameters
+
+## Command Line Arguments
+
+The `crawlo run` command supports the following arguments:
+
+- `<spider_name>` - The name of the spider to run, use `all` to run all spiders
+- `--json` - Output results in JSON format
+- `--no-stats` - Don't record statistics
+- `--log-level LEVEL` - Set log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- `--concurrency NUM` - Set concurrency level
+
+## Usage Examples
+
+```
+# Run a specific spider
+crawlo run myspider
+
+# Run all spiders
+crawlo run all
+
+# Output results in JSON format
+crawlo run myspider --json
+
+# Set log level to DEBUG
+crawlo run myspider --log-level DEBUG
+
+# Set concurrency to 32
+crawlo run myspider --concurrency 32
+
+# Combine multiple arguments
+crawlo run myspider --log-level DEBUG --concurrency 32 --json
+```
+
+### Advanced Configuration
+
+```
+# Set concurrency
+crawlo run myspider --concurrency 32
+
+# Set download delay
+crawlo run myspider --download-delay 1.0
+
+# Set timeout
+crawlo run myspider --download-timeout 60
+```
+
+## Configuration Options
+
+The `run` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --config | string | 'settings.py' | Configuration file path |
+| --log-level | string | 'INFO' | Log level (DEBUG, INFO, WARNING, ERROR) |
+| --log-file | string | None | Log file path |
+| --concurrency | int | 16 | Concurrent requests |
+| --download-delay | float | 0.5 | Download delay (seconds) |
+| --download-timeout | int | 30 | Download timeout (seconds) |
+| --max-retry-times | int | 3 | Maximum retry times |
+| --output-format | string | 'json' | Output format (json, csv, xml) |
+| --output-file | string | None | Output file path |
+| --stats | flag | - | Show statistics |
+| --dry-run | flag | - | Dry run mode, don't actually execute requests |
+
+## Environment Variables
+
+The `run` command supports the following environment variables:
+
+| Environment Variable | Default | Description |
+|---------------------|---------|-------------|
+| CRAWLO_CONFIG | 'settings.py' | Configuration file path |
+| CRAWLO_LOG_LEVEL | 'INFO' | Log level |
+| CRAWLO_CONCURRENCY | 16 | Concurrent requests |
+| CRAWLO_DOWNLOAD_DELAY | 0.5 | Download delay |
+| CRAWLO_PROJECT_DIR | Current directory | Project directory path |
+
+## Use Cases
+
+### 1. Development Testing
+
+```
+# Run spider during development
+crawlo run myspider --log-level DEBUG --concurrency 1
+
+# Test specific functionality
+crawlo run myspider --dry-run --stats
+```
+
+### 2. Production Deployment
+
+```
+# Run spider in production environment
+crawlo run myspider --config production_settings.py --log-file logs/myspider.log
+
+# High-performance mode
+crawlo run myspider --concurrency 50 --download-delay 0.1
+```
+
+### 3. Scheduled Tasks
+
+```
+# Use in crontab
+0 2 * * * cd /path/to/project && crawlo run myspider --config daily_settings.py
+
+# Scheduled task with output
+0 3 * * * cd /path/to/project && crawlo run myspider --output-file data/$(date +\%Y-\%m-\%d).json
+```
+
+## Output Formats
+
+### JSON Format
+
+```
+# Output to JSON file
+crawlo run myspider --output-format json --output-file output.json
+```
+
+### CSV Format
+
+```
+# Output to CSV file
+crawlo run myspider --output-format csv --output-file output.csv
+```
+
+### Custom Format
+
+```
+# Use custom pipeline
+crawlo run myspider --pipeline myproject.pipelines.CustomPipeline
+```
+
+## Monitoring and Statistics
+
+### Real-time Statistics
+
+```
+# Show real-time statistics
+crawlo run myspider --stats
+
+# Periodically output statistics
+crawlo run myspider --stats-interval 30
+```
+
+### Performance Monitoring
+
+```
+# Enable performance monitoring
+crawlo run myspider --monitor-performance
+
+# Set memory usage warning threshold
+crawlo run myspider --memory-warning-threshold 500
+```
+
+## Best Practices
+
+### 1. Configuration Management
+
+```
+# Use different configurations for different environments
+crawlo run myspider --config settings_dev.py      # Development environment
+crawlo run myspider --config settings_test.py     # Testing environment
+crawlo run myspider --config settings_prod.py     # Production environment
+```
+
+### 2. Log Management
+
+```
+# Properly configure logs
+crawlo run myspider --log-level INFO --log-file logs/myspider.log --log-max-bytes 10485760 --log-backup-count 5
+```
+
+### 3. Resource Control
+
+```
+# Adjust resources based on target website
+crawlo run myspider --concurrency 5 --download-delay 2.0      # Friendly to sensitive websites
+crawlo run myspider --concurrency 50 --download-delay 0.1     # For high-performance websites
+```
+
+### 4. Error Handling
+
+```
+# Set retry mechanism
+crawlo run myspider --max-retry-times 5 --retry-http-codes 500,502,503,504,429
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Spider Not Found**
+   ```bash
+   # Error: Spider not found
+   # Solution: Check spider name and project structure
+   crawlo list  # View available spiders
+   ```
+
+2. **Configuration File Error**
+   ```bash
+   # Error: Configuration error
+   # Solution: Check configuration file syntax
+   python -m py_compile settings.py
+   ```
+
+3. **Permission Error**
+   ```bash
+   # Error: Permission denied
+   # Solution: Check file permissions
+   chmod 644 settings.py
+   ```
+
+### Debugging Tips
+
+```bash
+# Enable verbose logging
+crawlo run myspider --log-level DEBUG
+
+# Dry run mode to check configuration
+crawlo run myspider --dry-run --stats
+
+# Single concurrency debugging
+crawlo run myspider --concurrency 1 --log-level DEBUG
+```
+
+**code file end: docs/modules/cli/run_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/startproject.md 
+
+# startproject 命令
+
+`startproject` 命令用于创建新的 Crawlo 爬虫项目，提供标准的项目结构和基础配置。
+
+## 命令语法
+
+```bash
+crawlo startproject <project_name> [project_dir]
+```
+
+### 参数说明
+
+- `project_name` - 项目名称（必需）
+- `project_dir` - 项目目录路径（可选，默认为当前目录）
+
+## 使用示例
+
+### 创建项目
+
+```bash
+# 在当前目录创建项目
+crawlo startproject myproject
+
+# 在指定目录创建项目
+crawlo startproject myproject /path/to/projects
+
+# 创建项目并进入目录
+crawlo startproject myproject
+cd myproject
+```
+
+## 项目结构
+
+创建的项目包含以下标准结构：
+
+```bash
+myproject/
+├── settings.py          # 项目配置文件
+├── items.py            # 数据项定义
+├── pipelines.py        # 数据管道
+├── middlewares.py      # 中间件
+├── extensions.py       # 扩展
+├── spiders/            # 爬虫目录
+│   ├── __init__.py
+│   └── example.py      # 示例爬虫
+├── utils/              # 工具模块
+│   └── __init__.py
+├── tests/              # 测试目录
+│   └── __init__.py
+├── requirements.txt    # 依赖列表
+└── README.md           # 项目说明
+```
+
+## 配置文件
+
+### settings.py
+
+```python
+# 项目配置
+PROJECT_NAME = 'myproject'
+VERSION = '1.0.0'
+
+# 并发配置
+CONCURRENCY = 16
+DOWNLOAD_DELAY = 0.5
+DOWNLOAD_TIMEOUT = 30
+
+# 队列配置
+SCHEDULER_MAX_QUEUE_SIZE = 10000
+
+# 日志配置
+LOG_LEVEL = 'INFO'
+LOG_FILE = None
+
+# 下载器配置
+DOWNLOADER_TYPE = 'aiohttp'
+
+# 管道配置
+PIPELINES = []
+
+# 中间件配置
+MIDDLEWARES = []
+
+# 扩展配置
+EXTENSIONS = []
+```
+
+## 自定义模板
+
+### 使用自定义模板
+
+```bash
+# 使用自定义模板创建项目
+crawlo startproject myproject --template mytemplate
+
+# 列出可用模板
+crawlo startproject --list-templates
+```
+
+### 模板结构
+
+```bash
+templates/
+├── default/            # 默认模板
+├── distributed/        # 分布式模板
+├── api/                # API 爬虫模板
+└── custom/             # 自定义模板
+    ├── template.py
+    └── structure.json
+```
+
+## 配置选项
+
+`startproject` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --template | string | 'default' | 使用的模板名称 |
+| --list-templates | flag | - | 列出所有可用模板 |
+| --force | flag | - | 强制覆盖已存在的项目 |
+| --verbose | flag | - | 显示详细输出 |
+
+## 最佳实践
+
+### 1. 项目命名
+
+```bash
+# 使用有意义的项目名称
+crawlo startproject ecommerce_scraper
+crawlo startproject news_collector
+crawlo startproject social_media_monitor
+```
+
+### 2. 目录组织
+
+```bash
+# 按功能组织项目
+projects/
+├── ecommerce/
+│   ├── amazon_scraper/
+│   ├── ebay_scraper/
+│   └── aliexpress_scraper/
+├── news/
+│   ├── cnn_crawler/
+│   └── bbc_crawler/
+└── social/
+    ├── twitter_monitor/
+    └── facebook_scraper/
+```
+
+### 3. 版本控制
+
+```bash
+# 创建项目后初始化 Git 仓库
+crawlo startproject myproject
+cd myproject
+git init
+git add .
+git commit -m "Initial commit: Create Crawlo project"
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **权限错误**
+   ```bash
+   # 错误: Permission denied
+   # 解决: 使用 sudo 或更改目录权限
+   sudo crawlo startproject myproject
+   ```
+
+2. **目录已存在**
+   ```bash
+   # 错误: Directory already exists
+   # 解决: 使用 --force 选项或选择其他目录
+   crawlo startproject myproject --force
+   ```
+
+3. **模板不存在**
+   ```bash
+   # 错误: Template not found
+   # 解决: 检查模板名称或使用默认模板
+   crawlo startproject myproject --template default
+   ```
+
+### 调试技巧
+
+```bash
+# 使用详细模式查看创建过程
+crawlo startproject myproject --verbose
+
+# 检查模板列表
+crawlo startproject --list-templates
+```
+
+**code file end: docs/modules/cli/startproject.md**
+
+---
+
+
+### code file start: docs/modules/cli/startproject_en.md 
+
+# startproject Command
+
+The `startproject` command creates a new Crawlo crawler project, providing a standard project structure and basic configuration.
+
+## Command Syntax
+
+```bash
+crawlo startproject <project_name> [project_dir]
+```
+
+### Parameter Description
+
+- `project_name` - Project name (required)
+- `project_dir` - Project directory path (optional, defaults to current directory)
+
+## Usage Examples
+
+### Create Project
+
+```bash
+# Create project in current directory
+crawlo startproject myproject
+
+# Create project in specified directory
+crawlo startproject myproject /path/to/projects
+
+# Create project and enter directory
+crawlo startproject myproject
+cd myproject
+```
+
+## Project Structure
+
+The created project contains the following standard structure:
+
+```bash
+myproject/
+├── settings.py          # Project configuration file
+├── items.py            # Data item definitions
+├── pipelines.py        # Data pipelines
+├── middlewares.py      # Middlewares
+├── extensions.py       # Extensions
+├── spiders/            # Spider directory
+│   ├── __init__.py
+│   └── example.py      # Example spider
+├── utils/              # Utility module
+│   └── __init__.py
+├── tests/              # Test directory
+│   └── __init__.py
+├── requirements.txt    # Dependency list
+└── README.md           # Project description
+```
+
+## Configuration File
+
+### settings.py
+
+```python
+# Project configuration
+PROJECT_NAME = 'myproject'
+VERSION = '1.0.0'
+
+# Concurrency configuration
+CONCURRENCY = 16
+DOWNLOAD_DELAY = 0.5
+DOWNLOAD_TIMEOUT = 30
+
+# Queue configuration
+SCHEDULER_MAX_QUEUE_SIZE = 10000
+
+# Log configuration
+LOG_LEVEL = 'INFO'
+LOG_FILE = None
+
+# Downloader configuration
+DOWNLOADER_TYPE = 'aiohttp'
+
+# Pipeline configuration
+PIPELINES = []
+
+# Middleware configuration
+MIDDLEWARES = []
+
+# Extension configuration
+EXTENSIONS = []
+```
+
+## Custom Templates
+
+### Using Custom Templates
+
+```bash
+# Create project using custom template
+crawlo startproject myproject --template mytemplate
+
+# List available templates
+crawlo startproject --list-templates
+```
+
+### Template Structure
+
+```bash
+templates/
+├── default/            # Default template
+├── distributed/        # Distributed template
+├── api/                # API crawler template
+└── custom/             # Custom template
+    ├── template.py
+    └── structure.json
+```
+
+## Configuration Options
+
+The `startproject` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --template | string | 'default' | Template name to use |
+| --list-templates | flag | - | List all available templates |
+| --force | flag | - | Force overwrite existing project |
+| --verbose | flag | - | Show verbose output |
+
+## Best Practices
+
+### 1. Project Naming
+
+```bash
+# Use meaningful project names
+crawlo startproject ecommerce_scraper
+crawlo startproject news_collector
+crawlo startproject social_media_monitor
+```
+
+### 2. Directory Organization
+
+```bash
+# Organize projects by function
+projects/
+├── ecommerce/
+│   ├── amazon_scraper/
+│   ├── ebay_scraper/
+│   └── aliexpress_scraper/
+├── news/
+│   ├── cnn_crawler/
+│   └── bbc_crawler/
+└── social/
+    ├── twitter_monitor/
+    └── facebook_scraper/
+```
+
+### 3. Version Control
+
+```bash
+# Initialize Git repository after creating project
+crawlo startproject myproject
+cd myproject
+git init
+git add .
+git commit -m "Initial commit: Create Crawlo project"
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Permission Error**
+   ```bash
+   # Error: Permission denied
+   # Solution: Use sudo or change directory permissions
+   sudo crawlo startproject myproject
+   ```
+
+2. **Directory Already Exists**
+   ```bash
+   # Error: Directory already exists
+   # Solution: Use --force option or choose another directory
+   crawlo startproject myproject --force
+   ```
+
+3. **Template Not Found**
+   ```bash
+   # Error: Template not found
+   # Solution: Check template name or use default template
+   crawlo startproject myproject --template default
+   ```
+
+### Debugging Tips
+
+```bash
+# Use verbose mode to see creation process
+crawlo startproject myproject --verbose
+
+# Check template list
+crawlo startproject --list-templates
+```
+
+**code file end: docs/modules/cli/startproject_en.md**
+
+---
+
+
+### code file start: docs/modules/cli/stats.md 
+
+# stats 命令
+
+`stats` 命令用于查看爬虫运行统计信息，帮助监控爬虫性能和状态。
+
+## 命令语法
+
+```bash
+crawlo stats [spider_name] [options]
+```
+
+### 参数说明
+
+- `spider_name` - 要查看统计信息的爬虫名称（可选，不指定则显示所有爬虫）
+- `options` - 可选参数
+
+## 使用示例
+
+### 基本使用
+
+```bash
+# 查看所有爬虫统计信息
+crawlo stats
+
+# 查看特定爬虫统计信息
+crawlo stats myspider
+
+# 实时监控统计信息
+crawlo stats --follow
+```
+
+### 详细统计
+
+```bash
+# 显示详细统计信息
+crawlo stats --verbose
+
+# 以 JSON 格式输出
+crawlo stats --format json
+
+# 保存统计信息到文件
+crawlo stats --output stats.json
+```
+
+## 统计信息类型
+
+### 1. 基础统计
+
+```bash
+# 基础统计信息
+请求总数: 1000
+成功请求数: 950
+失败请求数: 50
+数据项数: 800
+运行时间: 02:30:15
+```
+
+### 2. 性能统计
+
+```bash
+# 性能相关统计
+平均响应时间: 1.25 秒
+请求速率: 25.5 请求/秒
+数据项速率: 20.3 项/秒
+内存使用: 125.5 MB
+CPU 使用率: 45.2%
+```
+
+### 3. 错误统计
+
+```bash
+# 错误相关统计
+HTTP 错误:
+  - 404: 20 次
+  - 500: 15 次
+  - 403: 10 次
+  - 超时: 5 次
+重试统计:
+  - 重试次数: 100 次
+  - 成功重试: 85 次
+```
+
+## 配置选项
+
+`stats` 命令支持以下选项：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| --project-dir | string | 当前目录 | 项目目录路径 |
+| --format | string | 'table' | 输出格式 (table, json, csv) |
+| --verbose | flag | - | 显示详细信息 |
+| --follow | flag | - | 实时监控统计信息 |
+| --interval | int | 5 | 实时监控间隔（秒） |
+| --output | string | None | 输出文件路径 |
+| --reset | flag | - | 重置统计信息 |
+| --history | flag | - | 显示历史统计信息 |
+| --limit | int | 10 | 历史记录限制 |
+
+## 输出格式
+
+### 表格格式（默认）
+
+```bash
+$ crawlo stats myspider
+爬虫统计信息: myspider
++------------------+-------------------+
+| 统计项           | 值                |
++------------------+-------------------+
+| 请求总数         | 1000              |
+| 成功请求数       | 950               |
+| 失败请求数       | 50                |
+| 数据项数         | 800               |
+| 运行时间         | 02:30:15          |
+| 平均响应时间     | 1.25 秒           |
+| 请求速率         | 25.5 请求/秒      |
+| 内存使用         | 125.5 MB          |
++------------------+-------------------+
+```
+
+### JSON 格式
+
+```bash
+$ crawlo stats myspider --format json
+{
+  "spider": "myspider",
+  "timestamp": "2023-01-01T12:00:00Z",
+  "basic_stats": {
+    "total_requests": 1000,
+    "successful_requests": 950,
+    "failed_requests": 50,
+    "items_scraped": 800,
+    "runtime": "02:30:15"
+  },
+  "performance_stats": {
+    "avg_response_time": 1.25,
+    "request_rate": 25.5,
+    "item_rate": 20.3,
+    "memory_usage": 125.5,
+    "cpu_usage": 45.2
+  },
+  "error_stats": {
+    "http_errors": {
+      "404": 20,
+      "500": 15,
+      "403": 10
+    },
+    "timeouts": 5,
+    "retries": {
+      "total": 100,
+      "successful": 85
+    }
+  }
+}
+```
+
+### CSV 格式
+
+```bash
+$ crawlo stats --format csv
+统计项,值
+请求总数,1000
+成功请求数,950
+失败请求数,50
+数据项数,800
+运行时间,02:30:15
+平均响应时间,1.25 秒
+请求速率,25.5 请求/秒
+内存使用,125.5 MB
+```
+
+## 实时监控
+
+### 实时统计
+
+```bash
+# 实时监控统计信息
+crawlo stats myspider --follow
+
+# 自定义监控间隔
+crawlo stats myspider --follow --interval 10
+```
+
+### 监控输出示例
+
+```bash
+$ crawlo stats myspider --follow --interval 5
+爬虫统计信息: myspider (实时监控)
+更新时间: 2023-01-01 12:00:00
+请求总数: 1000 (+5)
+成功请求数: 950 (+3)
+失败请求数: 50 (+2)
+数据项数: 800 (+4)
+平均响应时间: 1.25 秒
+请求速率: 25.5 请求/秒
+内存使用: 125.5 MB
+
+更新时间: 2023-01-01 12:00:05
+请求总数: 1025 (+25)
+成功请求数: 970 (+20)
+失败请求数: 55 (+5)
+数据项数: 820 (+20)
+平均响应时间: 1.30 秒
+请求速率: 26.8 请求/秒
+内存使用: 128.2 MB
+```
+
+## 历史统计
+
+### 查看历史记录
+
+```bash
+# 查看历史统计信息
+crawlo stats myspider --history
+
+# 限制历史记录数量
+crawlo stats myspider --history --limit 20
+```
+
+### 历史统计输出
+
+```bash
+$ crawlo stats myspider --history --limit 3
+历史统计信息: myspider
++----+---------------------+--------------+----------------+--------------+
+| 序号 | 时间                | 请求总数     | 成功请求数     | 数据项数     |
++----+---------------------+--------------+----------------+--------------+
+| 1  | 2023-01-01 10:00:00 | 500          | 475            | 400          |
+| 2  | 2023-01-01 11:00:00 | 750          | 710            | 600          |
+| 3  | 2023-01-01 12:00:00 | 1000         | 950            | 800          |
++----+---------------------+--------------+----------------+--------------+
+```
+
+## 统计信息重置
+
+### 重置统计
+
+```bash
+# 重置统计信息
+crawlo stats myspider --reset
+
+# 重置所有爬虫统计信息
+crawlo stats --reset
+```
+
+## 最佳实践
+
+### 1. 性能监控
+
+```bash
+# 定期监控性能
+crawlo stats myspider --format json --output stats_$(date +%s).json
+
+# 设置性能告警
+crawlo stats myspider --verbose | grep "请求速率" | awk '{if ($3 < 10) print "警告: 请求速率过低"}'
+```
+
+### 2. 错误分析
+
+```bash
+# 分析错误统计
+crawlo stats myspider --format json | jq '.error_stats'
+
+# 监控特定错误类型
+crawlo stats myspider --follow | grep "404"
+```
+
+### 3. 资源监控
+
+```bash
+# 监控资源使用
+crawlo stats myspider --follow --interval 30
+
+# 设置资源使用告警
+crawlo stats myspider --verbose | grep "内存使用" | awk '{if ($3 > 500) print "警告: 内存使用过高"}'
+```
+
+### 4. 自动化监控
+
+```bash
+# 在脚本中使用统计信息
+#!/bin/bash
+stats=$(crawlo stats myspider --format json)
+requests=$(echo $stats | jq '.basic_stats.total_requests')
+if [ $requests -gt 10000 ]; then
+    echo "请求量达到阈值，准备重启爬虫"
+    # 重启逻辑
+fi
+```
+
+## 自定义统计
+
+### 添加自定义统计项
+
+```python
+# custom_stats.py
+from crawlo.stats import BaseStatsCollector
+
+class CustomStatsCollector(BaseStatsCollector):
+    def collect(self, spider):
+        """收集自定义统计信息"""
+        stats = super().collect(spider)
+        
+        # 添加自定义统计项
+        stats['custom_metric'] = self.calculate_custom_metric()
+        stats['business_stats'] = self.get_business_stats()
+        
+        return stats
+    
+    def calculate_custom_metric(self):
+        # 自定义指标计算逻辑
+        return 42
+    
+    def get_business_stats(self):
+        # 业务相关统计
+        return {'processed_orders': 100, 'revenue': 5000}
+```
+
+### 注册自定义统计收集器
+
+```python
+# settings.py
+STATS_COLLECTORS = [
+    'myproject.stats.CustomStatsCollector'
+]
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **统计信息为空**
+   ```bash
+   # 问题: No statistics found
+   # 解决: 检查爬虫是否正在运行
+   crawlo list  # 确认爬虫存在
+   ps aux | grep crawlo  # 检查进程
+   ```
+
+2. **权限问题**
+   ```bash
+   # 问题: Permission denied
+   # 解决: 检查统计文件权限
+   ls -la ~/.crawlo/stats/
+   chmod 644 ~/.crawlo/stats/*
+   ```
+
+3. **格式错误**
+   ```bash
+   # 问题: Invalid output format
+   # 解决: 检查格式参数
+   crawlo stats --format table  # 使用支持的格式
+   ```
+
+### 调试技巧
+
+```bash
+# 显示详细统计信息
+crawlo stats myspider --verbose
+
+# 检查统计文件
+cat ~/.crawlo/stats/myspider.json
+
+# 实时监控调试
+crawlo stats myspider --follow --verbose --interval 1
+```
+
+**code file end: docs/modules/cli/stats.md**
+
+---
+
+
+### code file start: docs/modules/cli/stats_en.md 
+
+# stats Command
+
+The `stats` command views crawler runtime statistics, helping to monitor crawler performance and status.
+
+## Command Syntax
+
+```bash
+crawlo stats [spider_name] [options]
+```
+
+### Parameter Description
+
+- `spider_name` - The spider name to view statistics for (optional, shows all spiders if not specified)
+- `options` - Optional parameters
+
+## Usage Examples
+
+### Basic Usage
+
+```bash
+# View statistics for all spiders
+crawlo stats
+
+# View statistics for specific spider
+crawlo stats myspider
+
+# Real-time monitor statistics
+crawlo stats --follow
+```
+
+### Detailed Statistics
+
+```bash
+# Show detailed statistics
+crawlo stats --verbose
+
+# Output in JSON format
+crawlo stats --format json
+
+# Save statistics to file
+crawlo stats --output stats.json
+```
+
+## Statistics Types
+
+### 1. Basic Statistics
+
+```bash
+# Basic statistics
+Total Requests: 1000
+Successful Requests: 950
+Failed Requests: 50
+Items Scraped: 800
+Runtime: 02:30:15
+```
+
+### 2. Performance Statistics
+
+```bash
+# Performance-related statistics
+Average Response Time: 1.25 seconds
+Request Rate: 25.5 requests/second
+Item Rate: 20.3 items/second
+Memory Usage: 125.5 MB
+CPU Usage: 45.2%
+```
+
+### 3. Error Statistics
+
+```bash
+# Error-related statistics
+HTTP Errors:
+  - 404: 20 times
+  - 500: 15 times
+  - 403: 10 times
+  - Timeouts: 5 times
+Retry Statistics:
+  - Retry Count: 100 times
+  - Successful Retries: 85 times
+```
+
+## Configuration Options
+
+The `stats` command supports the following options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| --project-dir | string | Current directory | Project directory path |
+| --format | string | 'table' | Output format (table, json, csv) |
+| --verbose | flag | - | Show detailed information |
+| --follow | flag | - | Real-time monitor statistics |
+| --interval | int | 5 | Real-time monitoring interval (seconds) |
+| --output | string | None | Output file path |
+| --reset | flag | - | Reset statistics |
+| --history | flag | - | Show historical statistics |
+| --limit | int | 10 | History record limit |
+
+## Output Formats
+
+### Table Format (Default)
+
+```bash
+$ crawlo stats myspider
+Spider Statistics: myspider
++------------------+-------------------+
+| Statistic        | Value             |
++------------------+-------------------+
+| Total Requests   | 1000              |
+| Successful Requests | 950            |
+| Failed Requests  | 50                |
+| Items Scraped    | 800               |
+| Runtime          | 02:30:15          |
+| Avg Response Time | 1.25 seconds     |
+| Request Rate     | 25.5 req/sec      |
+| Memory Usage     | 125.5 MB          |
++------------------+-------------------+
+```
+
+### JSON Format
+
+```bash
+$ crawlo stats myspider --format json
+{
+  "spider": "myspider",
+  "timestamp": "2023-01-01T12:00:00Z",
+  "basic_stats": {
+    "total_requests": 1000,
+    "successful_requests": 950,
+    "failed_requests": 50,
+    "items_scraped": 800,
+    "runtime": "02:30:15"
+  },
+  "performance_stats": {
+    "avg_response_time": 1.25,
+    "request_rate": 25.5,
+    "item_rate": 20.3,
+    "memory_usage": 125.5,
+    "cpu_usage": 45.2
+  },
+  "error_stats": {
+    "http_errors": {
+      "404": 20,
+      "500": 15,
+      "403": 10
+    },
+    "timeouts": 5,
+    "retries": {
+      "total": 100,
+      "successful": 85
+    }
+  }
+}
+```
+
+### CSV Format
+
+```bash
+$ crawlo stats --format csv
+Statistic,Value
+Total Requests,1000
+Successful Requests,950
+Failed Requests,50
+Items Scraped,800
+Runtime,02:30:15
+Avg Response Time,1.25 seconds
+Request Rate,25.5 req/sec
+Memory Usage,125.5 MB
+```
+
+## Real-time Monitoring
+
+### Real-time Statistics
+
+```bash
+# Real-time monitor statistics
+crawlo stats myspider --follow
+
+# Custom monitoring interval
+crawlo stats myspider --follow --interval 10
+```
+
+### Monitoring Output Example
+
+```bash
+$ crawlo stats myspider --follow --interval 5
+Spider Statistics: myspider (Real-time Monitoring)
+Update Time: 2023-01-01 12:00:00
+Total Requests: 1000 (+5)
+Successful Requests: 950 (+3)
+Failed Requests: 50 (+2)
+Items Scraped: 800 (+4)
+Avg Response Time: 1.25 seconds
+Request Rate: 25.5 req/sec
+Memory Usage: 125.5 MB
+
+Update Time: 2023-01-01 12:00:05
+Total Requests: 1025 (+25)
+Successful Requests: 970 (+20)
+Failed Requests: 55 (+5)
+Items Scraped: 820 (+20)
+Avg Response Time: 1.30 seconds
+Request Rate: 26.8 req/sec
+Memory Usage: 128.2 MB
+```
+
+## Historical Statistics
+
+### View History Records
+
+```bash
+# View historical statistics
+crawlo stats myspider --history
+
+# Limit history record count
+crawlo stats myspider --history --limit 20
+```
+
+### Historical Statistics Output
+
+```bash
+$ crawlo stats myspider --history --limit 3
+Historical Statistics: myspider
++----+---------------------+--------------+----------------+--------------+
+| No | Time                | Total Reqs   | Successful Reqs | Items        |
++----+---------------------+--------------+----------------+--------------+
+| 1  | 2023-01-01 10:00:00 | 500          | 475            | 400          |
+| 2  | 2023-01-01 11:00:00 | 750          | 710            | 600          |
+| 3  | 2023-01-01 12:00:00 | 1000         | 950            | 800          |
++----+---------------------+--------------+----------------+--------------+
+```
+
+## Statistics Reset
+
+### Reset Statistics
+
+```bash
+# Reset statistics
+crawlo stats myspider --reset
+
+# Reset all spider statistics
+crawlo stats --reset
+```
+
+## Best Practices
+
+### 1. Performance Monitoring
+
+```bash
+# Regular performance monitoring
+crawlo stats myspider --format json --output stats_$(date +%s).json
+
+# Set performance alerts
+crawlo stats myspider --verbose | grep "Request Rate" | awk '{if ($3 < 10) print "Warning: Request rate too low"}'
+```
+
+### 2. Error Analysis
+
+```bash
+# Analyze error statistics
+crawlo stats myspider --format json | jq '.error_stats'
+
+# Monitor specific error types
+crawlo stats myspider --follow | grep "404"
+```
+
+### 3. Resource Monitoring
+
+```bash
+# Monitor resource usage
+crawlo stats myspider --follow --interval 30
+
+# Set resource usage alerts
+crawlo stats myspider --verbose | grep "Memory Usage" | awk '{if ($3 > 500) print "Warning: High memory usage"}'
+```
+
+### 4. Automated Monitoring
+
+```bash
+# Use statistics in scripts
+#!/bin/bash
+stats=$(crawlo stats myspider --format json)
+requests=$(echo $stats | jq '.basic_stats.total_requests')
+if [ $requests -gt 10000 ]; then
+    echo "Request threshold reached, preparing to restart spider"
+    # Restart logic
+fi
+```
+
+## Custom Statistics
+
+### Adding Custom Statistics Items
+
+```python
+# custom_stats.py
+from crawlo.stats import BaseStatsCollector
+
+class CustomStatsCollector(BaseStatsCollector):
+    def collect(self, spider):
+        """Collect custom statistics"""
+        stats = super().collect(spider)
+        
+        # Add custom statistics items
+        stats['custom_metric'] = self.calculate_custom_metric()
+        stats['business_stats'] = self.get_business_stats()
+        
+        return stats
+    
+    def calculate_custom_metric(self):
+        # Custom metric calculation logic
+        return 42
+    
+    def get_business_stats(self):
+        # Business-related statistics
+        return {'processed_orders': 100, 'revenue': 5000}
+```
+
+### Registering Custom Statistics Collector
+
+```python
+# settings.py
+STATS_COLLECTORS = [
+    'myproject.stats.CustomStatsCollector'
+]
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Empty Statistics**
+   ```bash
+   # Issue: No statistics found
+   # Solution: Check if spider is running
+   crawlo list  # Confirm spider exists
+   ps aux | grep crawlo  # Check processes
+   ```
+
+2. **Permission Issues**
+   ```bash
+   # Issue: Permission denied
+   # Solution: Check statistics file permissions
+   ls -la ~/.crawlo/stats/
+   chmod 644 ~/.crawlo/stats/*
+   ```
+
+3. **Format Errors**
+   ```bash
+   # Issue: Invalid output format
+   # Solution: Check format parameters
+   crawlo stats --format table  # Use supported format
+   ```
+
+### Debugging Tips
+
+```bash
+# Show detailed statistics
+crawlo stats myspider --verbose
+
+# Check statistics file
+cat ~/.crawlo/stats/myspider.json
+
+# Real-time monitoring debug
+crawlo stats myspider --follow --verbose --interval 1
+```
+
+**code file end: docs/modules/cli/stats_en.md**
+
+---
+
+
+### code file start: docs/modules/configuration/index.md 
+
+# 配置系统
+
+Crawlo 提供了强大而灵活的配置管理系统，支持多种配置方式和验证机制，确保框架的稳定运行。
+
+## 配置方式
+
+Crawlo 支持多种配置方式，用户可以根据需要选择最适合的方式：
+
+### 1. 代码配置
+
+通过 [CrawloConfig](../../api/crawlo_config.md) 类的静态工厂方法创建配置：
+
+```python
+from crawlo.config import CrawloConfig
+
+# 单机模式配置
+config = CrawloConfig.standalone(
+    project_name='my_project',
+    concurrency=10,
+    download_delay=1.0
+)
+
+# 分布式模式配置
+config = CrawloConfig.distributed(
+    project_name='my_project',
+    redis_host='127.0.0.1',
+    redis_port=6379,
+    concurrency=20
+)
+```
+
+### 2. 配置文件
+
+创建 `settings.py` 文件定义配置：
+
+```python
+# settings.py
+PROJECT_NAME = 'my_project'
+CONCURRENCY = 10
+DOWNLOAD_DELAY = 1.0
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+```
+
+### 3. 环境变量
+
+通过环境变量配置关键参数：
+
+```bash
+export CRAWLO_CONCURRENCY=20
+export CRAWLO_DOWNLOAD_DELAY=0.5
+export CRAWLO_REDIS_HOST=192.168.1.100
+```
+
+## 配置优先级
+
+Crawlo 采用以下配置优先级顺序（从高到低）：
+
+1. **代码配置** - 直接通过 CrawloConfig 类设置的配置
+2. **环境变量** - 系统环境变量
+3. **配置文件** - settings.py 文件中的配置
+4. **默认配置** - 框架内置的默认配置
+
+## 核心配置项
+
+### 基础配置
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| PROJECT_NAME | str | 'crawlo_project' | 项目名称 |
+| VERSION | str | '1.0.0' | 项目版本 |
+| CONCURRENCY | int | 16 | 并发请求数 |
+| DOWNLOAD_DELAY | float | 0.5 | 下载延迟（秒） |
+| DOWNLOAD_TIMEOUT | int | 30 | 下载超时时间（秒） |
+| MAX_RETRY_TIMES | int | 3 | 最大重试次数 |
+
+### 队列配置
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| QUEUE_TYPE | str | 'memory' | 队列类型（memory/redis） |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | 调度器最大队列大小 |
+| REDIS_HOST | str | '127.0.0.1' | Redis 主机地址 |
+| REDIS_PORT | int | 6379 | Redis 端口 |
+| REDIS_PASSWORD | str | None | Redis 密码 |
+| REDIS_DB | int | 0 | Redis 数据库编号 |
+
+### 存储配置
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| MYSQL_HOST | str | '127.0.0.1' | MySQL 主机地址 |
+| MYSQL_PORT | int | 3306 | MySQL 端口 |
+| MYSQL_USER | str | 'root' | MySQL 用户名 |
+| MYSQL_PASSWORD | str | '' | MySQL 密码 |
+| MYSQL_DATABASE | str | 'crawlo' | MySQL 数据库名 |
+| MONGO_URI | str | 'mongodb://127.0.0.1:27017' | MongoDB 连接 URI |
+
+### 日志配置
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| LOG_LEVEL | str | 'INFO' | 日志级别 |
+| LOG_FILE | str | None | 日志文件路径 |
+| LOG_MAX_BYTES | int | 10*1024*1024 | 日志文件最大大小 |
+| LOG_BACKUP_COUNT | int | 5 | 日志文件备份数量 |
+
+## 配置验证
+
+Crawlo 内置了配置验证机制，确保配置的正确性和完整性。
+
+### 验证器
+
+[ConfigValidator](../../api/crawlo_config_validator.md) 类提供了全面的配置验证功能：
+
+```python
+from crawlo.config_validator import validate_config, print_validation_report
+
+# 验证配置
+is_valid, errors, warnings = validate_config(settings_dict)
+
+if not is_valid:
+    print(f"配置验证失败，发现 {len(errors)} 个错误")
+    for error in errors:
+        print(f"❌ {error}")
+else:
+    print("配置验证通过")
+
+# 打印详细验证报告
+print_validation_report(settings_dict)
+```
+
+### 验证内容
+
+配置验证器会检查以下内容：
+
+1. **基本设置验证** - 检查项目名称、版本等基本配置项
+2. **网络设置验证** - 验证下载超时、延迟、重试次数等网络相关参数
+3. **并发设置验证** - 确保并发数为正整数
+4. **队列设置验证** - 检查队列类型的有效性
+5. **存储设置验证** - 验证数据库相关配置
+6. **Redis设置验证** - 当使用 Redis 队列时，验证 Redis 配置
+7. **中间件和管道验证** - 确保中间件和管道配置为列表类型
+8. **日志设置验证** - 验证日志级别是否为有效值
+
+## Redis Key 命名规范
+
+为了确保 Redis 中的键名统一和可维护，Crawlo 推荐使用以下命名规范：
+
+```python
+# 推荐的 Redis Key 命名规范
+crawlo:{PROJECT_NAME}:queue:requests     # 请求队列
+crawlo:{PROJECT_NAME}:item:fingerprint   # 数据项去重
+crawlo:{PROJECT_NAME}:queue:processing   # 处理中队列
+crawlo:{PROJECT_NAME}:queue:failed       # 失败队列
+```
+
+## 最佳实践
+
+### 配置管理建议
+
+1. **开发环境** - 使用代码配置或简单的配置文件
+2. **测试环境** - 使用配置文件，通过环境变量覆盖关键参数
+3. **生产环境** - 使用配置文件和环境变量结合的方式，敏感信息通过环境变量传递
+
+### 安全配置
+
+1. **敏感信息** - 密码等敏感信息应通过环境变量配置
+2. **访问控制** - 配置文件应设置适当的文件权限
+3. **备份策略** - 重要配置应定期备份
+
+### 性能调优
+
+1. **并发设置** - 根据目标网站的承受能力调整并发数
+2. **延迟设置** - 合理设置下载延迟，避免对目标网站造成压力
+3. **超时设置** - 根据网络环境调整超时时间
+
+**code file end: docs/modules/configuration/index.md**
+
+---
+
+
+### code file start: docs/modules/configuration/index_en.md 
+
+# Configuration System
+
+Crawlo provides a powerful and flexible configuration management system that supports multiple configuration methods and validation mechanisms to ensure stable framework operation.
+
+## Configuration Methods
+
+Crawlo supports multiple configuration methods, and users can choose the most suitable method according to their needs:
+
+### 1. Code Configuration
+
+Create configurations through static factory methods of the [CrawloConfig](../../api/crawlo_config.md) class:
+
+```python
+from crawlo.config import CrawloConfig
+
+# Standalone mode configuration
+config = CrawloConfig.standalone(
+    project_name='my_project',
+    concurrency=10,
+    download_delay=1.0
+)
+
+# Distributed mode configuration
+config = CrawloConfig.distributed(
+    project_name='my_project',
+    redis_host='127.0.0.1',
+    redis_port=6379,
+    concurrency=20
+)
+```
+
+### 2. Configuration Files
+
+Create a `settings.py` file to define configurations:
+
+```python
+# settings.py
+PROJECT_NAME = 'my_project'
+CONCURRENCY = 10
+DOWNLOAD_DELAY = 1.0
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+```
+
+### 3. Environment Variables
+
+Configure key parameters through environment variables:
+
+```bash
+export CRAWLO_CONCURRENCY=20
+export CRAWLO_DOWNLOAD_DELAY=0.5
+export CRAWLO_REDIS_HOST=192.168.1.100
+```
+
+## Configuration Priority
+
+Crawlo uses the following configuration priority order (from highest to lowest):
+
+1. **Code Configuration** - Configurations set directly through the CrawloConfig class
+2. **Environment Variables** - System environment variables
+3. **Configuration Files** - Configurations in the settings.py file
+4. **Default Configuration** - Built-in default configurations of the framework
+
+## Core Configuration Items
+
+### Basic Configuration
+
+| Configuration Item | Type | Default Value | Description |
+|-------------------|------|---------------|-------------|
+| PROJECT_NAME | str | 'crawlo_project' | Project name |
+| VERSION | str | '1.0.0' | Project version |
+| CONCURRENCY | int | 16 | Concurrent requests |
+| DOWNLOAD_DELAY | float | 0.5 | Download delay (seconds) |
+| DOWNLOAD_TIMEOUT | int | 30 | Download timeout (seconds) |
+| MAX_RETRY_TIMES | int | 3 | Maximum retry times |
+
+### Queue Configuration
+
+| Configuration Item | Type | Default Value | Description |
+|-------------------|------|---------------|-------------|
+| QUEUE_TYPE | str | 'memory' | Queue type (memory/redis) |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | Maximum scheduler queue size |
+| REDIS_HOST | str | '127.0.0.1' | Redis host address |
+| REDIS_PORT | int | 6379 | Redis port |
+| REDIS_PASSWORD | str | None | Redis password |
+| REDIS_DB | int | 0 | Redis database number |
+
+### Storage Configuration
+
+| Configuration Item | Type | Default Value | Description |
+|-------------------|------|---------------|-------------|
+| MYSQL_HOST | str | '127.0.0.1' | MySQL host address |
+| MYSQL_PORT | int | 3306 | MySQL port |
+| MYSQL_USER | str | 'root' | MySQL username |
+| MYSQL_PASSWORD | str | '' | MySQL password |
+| MYSQL_DATABASE | str | 'crawlo' | MySQL database name |
+| MONGO_URI | str | 'mongodb://127.0.0.1:27017' | MongoDB connection URI |
+
+### Logging Configuration
+
+| Configuration Item | Type | Default Value | Description |
+|-------------------|------|---------------|-------------|
+| LOG_LEVEL | str | 'INFO' | Log level |
+| LOG_FILE | str | None | Log file path |
+| LOG_MAX_BYTES | int | 10*1024*1024 | Maximum log file size |
+| LOG_BACKUP_COUNT | int | 5 | Number of log file backups |
+
+## Configuration Validation
+
+Crawlo has built-in configuration validation mechanisms to ensure configuration correctness and completeness.
+
+### Validator
+
+The [ConfigValidator](../../api/crawlo_config_validator.md) class provides comprehensive configuration validation functionality:
+
+```python
+from crawlo.config_validator import validate_config, print_validation_report
+
+# Validate configuration
+is_valid, errors, warnings = validate_config(settings_dict)
+
+if not is_valid:
+    print(f"Configuration validation failed, found {len(errors)} errors")
+    for error in errors:
+        print(f"❌ {error}")
+else:
+    print("Configuration validation passed")
+
+# Print detailed validation report
+print_validation_report(settings_dict)
+```
+
+### Validation Content
+
+The configuration validator checks the following content:
+
+1. **Basic Settings Validation** - Checks basic configuration items like project name and version
+2. **Network Settings Validation** - Validates network-related parameters like download timeout, delay, and retry times
+3. **Concurrency Settings Validation** - Ensures concurrency is a positive integer
+4. **Queue Settings Validation** - Checks the validity of queue type
+5. **Storage Settings Validation** - Validates database-related configurations
+6. **Redis Settings Validation** - Validates Redis configurations when using Redis queues
+7. **Middleware and Pipeline Validation** - Ensures middleware and pipeline configurations are list types
+8. **Logging Settings Validation** - Validates that log level is a valid value
+
+## Redis Key Naming Convention
+
+To ensure unified and maintainable key names in Redis, Crawlo recommends using the following naming convention:
+
+```python
+# Recommended Redis Key Naming Convention
+crawlo:{PROJECT_NAME}:queue:requests     # Request queue
+crawlo:{PROJECT_NAME}:item:fingerprint   # Data item deduplication
+crawlo:{PROJECT_NAME}:queue:processing   # Processing queue
+crawlo:{PROJECT_NAME}:queue:failed       # Failed queue
+```
+
+## Best Practices
+
+### Configuration Management Recommendations
+
+1. **Development Environment** - Use code configuration or simple configuration files
+2. **Testing Environment** - Use configuration files, override key parameters through environment variables
+3. **Production Environment** - Use a combination of configuration files and environment variables, pass sensitive information through environment variables
+
+### Security Configuration
+
+1. **Sensitive Information** - Sensitive information like passwords should be configured through environment variables
+2. **Access Control** - Configuration files should have appropriate file permissions
+3. **Backup Strategy** - Important configurations should be backed up regularly
+
+### Performance Tuning
+
+1. **Concurrency Settings** - Adjust concurrency based on the target website's capacity
+2. **Delay Settings** - Set download delays appropriately to avoid putting pressure on the target website
+3. **Timeout Settings** - Adjust timeout times based on network environment
+
+**code file end: docs/modules/configuration/index_en.md**
+
+---
+
+
+### code file start: docs/modules/core/cli_startproject.md 
+
+# startproject 命令
+
+`startproject` 命令用于初始化一个新的 Crawlo 爬虫项目，创建项目的基本目录结构和配置文件。
+
+## 使用方法
+
+```bash
+crawlo startproject <project_name> [template_type] [--modules module1,module2]
+```
+
+### 参数说明
+
+- `project_name`：项目名称，必须是有效的 Python 标识符
+- `template_type`：可选，模板类型（默认：default）
+- `--modules`：可选，选择要包含的模块组件
+
+## 模板类型
+
+Crawlo 提供多种预定义模板来满足不同场景的需求：
+
+### default（默认模板）
+通用配置，适合大多数项目。包含完整的配置选项和最佳实践设置。
+
+### simple（简化模板）
+最小配置，适合快速开始。只包含最基本的配置项，便于快速上手。
+
+### distributed（分布式模板）
+针对分布式爬取优化。预配置 Redis 队列和去重过滤器，适合大规模数据采集。
+
+### high-performance（高性能模板）
+针对大规模高并发优化。使用高性能下载器和优化的并发设置。
+
+### gentle（温和模板）
+低负载配置，对目标网站友好。使用较低的并发数和较长的请求延迟。
+
+## 模块组件
+
+使用 `--modules` 参数可以选择性地包含特定功能模块：
+
+- `mysql`：MySQL 数据库支持
+- `mongodb`：MongoDB 数据库支持
+- `redis`：Redis 支持（分布式队列和去重）
+- `proxy`：代理支持
+- `monitoring`：监控和性能分析
+- `dedup`：去重功能
+- `httpx`：HttpX 下载器
+- `aiohttp`：AioHttp 下载器
+- `curl`：CurlCffi 下载器
+
+## 使用示例
+
+### 创建默认项目
+```bash
+crawlo startproject my_spider_project
+```
+
+### 创建分布式项目
+```bash
+crawlo startproject news_crawler distributed
+```
+
+### 创建高性能项目并包含 MySQL 和代理支持
+```bash
+crawlo startproject ecommerce_spider high-performance --modules mysql,proxy
+```
+
+### 创建简化项目并包含 MongoDB 支持
+```bash
+crawlo startproject simple_spider simple --modules mongodb
+```
+
+## 项目结构
+
+使用 `startproject` 命令创建的项目具有以下标准结构：
+
+```
+project_name/
+├── crawlo.cfg                 # 项目配置文件
+├── run.py                     # 项目启动脚本
+├── logs/                      # 日志目录
+├── output/                    # 数据输出目录
+└── project_name/              # 项目包
+    ├── __init__.py            # 包初始化文件
+    ├── settings.py            # 项目配置（根据模板类型生成）
+    ├── items.py               # 数据结构定义
+    ├── middlewares.py         # 中间件
+    ├── pipelines.py           # 数据管道
+    └── spiders/               # 爬虫目录
+        └── __init__.py        # 爬虫包初始化文件
+```
+
+## run.py 启动脚本说明
+
+项目根目录下的 `run.py` 文件是一个简化版的爬虫启动脚本，用户可以直接运行：
+
+```bash
+python run.py
+```
+
+该脚本具有以下特点：
+
+1. **自动配置加载**：脚本会自动查找并加载项目的配置文件
+2. **固定爬虫运行**：默认运行名为 `your_spider_name` 的爬虫
+3. **简化设计**：代码简洁，易于理解和修改
+
+使用方法：
+1. 打开 `run.py` 文件
+2. 将 `'your_spider_name'` 替换为实际要运行的爬虫名称
+3. 运行命令 `python run.py`
+
+注意：如果需要更复杂的运行选项（如运行多个爬虫、自定义配置等），建议使用命令行工具：
+```bash
+crawlo run spider_name
+```
+
+## 配置文件说明
+
+无论选择哪种模板类型，生成的配置文件都统一命名为 `settings.py`，但内容会根据模板类型进行相应调整：
+
+- **default 模板**：包含完整的配置选项和详细注释
+- **simple 模板**：只包含最基本的配置项
+- **distributed 模板**：预配置分布式爬取所需的 Redis 设置
+- **high-performance 模板**：优化的高性能配置
+- **gentle 模板**：低负载、对目标网站友好的配置
+
+## 最佳实践
+
+1. **选择合适的模板**：根据项目需求选择最合适的模板类型
+2. **模块化构建**：使用 `--modules` 参数只包含需要的功能组件
+3. **配置调整**：创建项目后根据具体需求调整 `settings.py` 配置
+4. **版本控制**：将项目纳入版本控制系统进行管理
+
+## 故障排除
+
+### 项目名称验证
+项目名称必须满足以下要求：
+- 以小写字母开头
+- 只包含小写字母、数字和下划线
+- 是有效的 Python 标识符
+- 不是 Python 关键字
+
+### 模板类型错误
+如果指定的模板类型不支持，命令会显示可用的模板类型列表。
+
+### 目录已存在
+如果目标目录已存在，命令会提示选择其他项目名称或删除现有目录。
+
+**code file end: docs/modules/core/cli_startproject.md**
+
+---
+
+
+### code file start: docs/modules/core/cli_startproject_en.md 
+
+# startproject Command
+
+The `startproject` command initializes a new Crawlo crawler project, creating the basic directory structure and configuration files.
+
+## Usage
+
+```bash
+crawlo startproject <project_name> [template_type] [--modules module1,module2]
+```
+
+### Parameter Description
+
+- `project_name`: Project name, must be a valid Python identifier
+- `template_type`: Optional, template type (default: default)
+- `--modules`: Optional, select modules to include
+
+## Template Types
+
+Crawlo provides several predefined templates to meet different scenario requirements:
+
+### default (Default Template)
+General configuration suitable for most projects. Contains complete configuration options and best practice settings.
+
+### simple (Simple Template)
+Minimal configuration for quick start. Contains only the most basic configuration items for easy onboarding.
+
+### distributed (Distributed Template)
+Optimized for distributed crawling. Pre-configured with Redis queue and deduplication filter, suitable for large-scale data collection.
+
+### high-performance (High-Performance Template)
+Optimized for large-scale high-concurrency scenarios. Uses high-performance downloaders and optimized concurrency settings.
+
+### gentle (Gentle Template)
+Low-load configuration that is friendly to target websites. Uses lower concurrency and longer request delays.
+
+## Module Components
+
+Use the `--modules` parameter to selectively include specific functional modules:
+
+- `mysql`: MySQL database support
+- `mongodb`: MongoDB database support
+- `redis`: Redis support (distributed queue and deduplication)
+- `proxy`: Proxy support
+- `monitoring`: Monitoring and performance analysis
+- `dedup`: Deduplication functionality
+- `httpx`: HttpX downloader
+- `aiohttp`: AioHttp downloader
+- `curl`: CurlCffi downloader
+
+## Usage Examples
+
+### Create a Default Project
+```bash
+crawlo startproject my_spider_project
+```
+
+### Create a Distributed Project
+```bash
+crawlo startproject news_crawler distributed
+```
+
+### Create a High-Performance Project with MySQL and Proxy Support
+```bash
+crawlo startproject ecommerce_spider high-performance --modules mysql,proxy
+```
+
+### Create a Simple Project with MongoDB Support
+```bash
+crawlo startproject simple_spider simple --modules mongodb
+```
+
+## Project Structure
+
+Projects created using the `startproject` command have the following standard structure:
+
+```
+project_name/
+├── crawlo.cfg                 # Project configuration file
+├── run.py                     # Project startup script
+├── logs/                      # Log directory
+├── output/                    # Data output directory
+└── project_name/              # Project package
+    ├── __init__.py            # Package initialization file
+    ├── settings.py            # Project configuration (generated based on template type)
+    ├── items.py               # Data structure definitions
+    ├── middlewares.py         # Middlewares
+    ├── pipelines.py           # Data pipelines
+    └── spiders/               # Spider directory
+        └── __init__.py        # Spider package initialization file
+```
+
+## run.py Startup Script Description
+
+The `run.py` file in the project root directory is a simplified crawler startup script that users can run directly:
+
+```bash
+python run.py
+```
+
+This script has the following features:
+
+1. **Automatic Configuration Loading**: The script automatically finds and loads the project's configuration file
+2. **Fixed Spider Execution**: By default, it runs a spider named `your_spider_name`
+3. **Simplified Design**: The code is concise and easy to understand and modify
+
+Usage:
+1. Open the `run.py` file
+2. Replace `'your_spider_name'` with the actual spider name you want to run
+3. Run the command `python run.py`
+
+Note: If you need more complex running options (such as running multiple spiders, custom configurations, etc.), it is recommended to use the command-line tool:
+```bash
+crawlo run spider_name
+```
+
+## Configuration File Description
+
+Regardless of the template type chosen, the generated configuration file is uniformly named `settings.py`, but the content will be adjusted accordingly based on the template type:
+
+- **default template**: Contains complete configuration options and detailed comments
+- **simple template**: Contains only the most basic configuration items
+- **distributed template**: Pre-configured Redis settings required for distributed crawling
+- **high-performance template**: Optimized high-performance configuration
+- **gentle template**: Low-load, website-friendly configuration
+
+## Best Practices
+
+1. **Choose the Right Template**: Select the most appropriate template type based on project requirements
+2. **Modular Building**: Use the `--modules` parameter to include only the required functional components
+3. **Configuration Adjustment**: Adjust the `settings.py` configuration according to specific needs after project creation
+4. **Version Control**: Include the project in a version control system for management
+
+## Troubleshooting
+
+### Project Name Validation
+Project names must meet the following requirements:
+- Start with a lowercase letter
+- Contain only lowercase letters, numbers, and underscores
+- Be a valid Python identifier
+- Not be a Python keyword
+
+### Template Type Error
+If an unsupported template type is specified, the command will display a list of available template types.
+
+### Directory Already Exists
+If the target directory already exists, the command will prompt to choose a different project name or delete the existing directory.
+
+**code file end: docs/modules/core/cli_startproject_en.md**
+
+---
+
+
+### code file start: docs/modules/core/engine.md 
+
+# 引擎 (Engine)
+
+引擎是 Crawlo 框架的核心协调者，负责调度请求、管理下载与处理流程，是整个爬取过程的中央执行单元。
+
+## 概述
+
+引擎作为 Crawlo 的核心执行单元，通过协调请求获取、响应处理和项目处理来驱动爬取过程。它是连接调度器、下载器和处理器的中枢，确保数据在各个组件之间正确流动。
+
+### 核心职责
+
+1. **请求调度** - 从调度器获取下一个待处理的请求
+2. **页面下载** - 调用下载器获取网页内容
+3. **响应处理** - 将下载的响应传递给处理器进行解析
+4. **任务管理** - 管理并发任务和资源分配
+5. **生命周期管理** - 控制爬虫的启动、运行和关闭过程
+
+## 类结构
+
+```mermaid
+classDiagram
+class Engine {
++running : bool
++normal : bool
++crawler : Crawler
++settings : Settings
++spider : Spider
++downloader : DownloaderBase
++scheduler : Scheduler
++processor : Processor
++task_manager : TaskManager
++engine_start()
++start_spider(spider)
++crawl()
++_crawl(request)
++_fetch(request)
++enqueue_request(request)
++_schedule_request(request)
++_get_next_request()
++_handle_spider_output(outputs)
++close_spider()
+}
+class Crawler {
++settings : Settings
++subscriber : Subscriber
++close()
+}
+class Scheduler {
++enqueue_request(request)
++next_request()
++idle()
++close()
+}
+class DownloaderBase {
++fetch(request)
++idle()
++close()
+}
+class Processor {
++enqueue(output)
++idle()
++open()
++close()
+}
+class TaskManager {
++create_task(coro)
++all_done()
+}
+Engine --> Crawler : "持有"
+Engine --> Scheduler : "使用"
+Engine --> DownloaderBase : "使用"
+Engine --> Processor : "使用"
+Engine --> TaskManager : "使用"
+```
+
+## 工作流程
+
+### 请求处理流程
+
+```mermaid
+sequenceDiagram
+participant Engine as "引擎"
+participant Scheduler as "调度器"
+participant Downloader as "下载器"
+participant Spider as "爬虫"
+participant Processor as "处理器"
+Engine->>Scheduler : 获取下一个请求
+Scheduler-->>Engine : 返回请求
+Engine->>Downloader : 发起下载
+Downloader-->>Engine : 返回响应
+Engine->>Spider : 调用解析函数
+Spider-->>Engine : 生成输出请求/数据项
+Engine->>Processor : 提交输出
+Processor->>Processor : 分发至管道
+```
+
+### 启动流程
+
+1. **初始化** - 创建引擎实例并初始化相关组件
+2. **启动爬虫** - 调用 [start_spider()](#start_spider) 方法启动指定爬虫
+3. **引擎启动** - 调用 [engine_start()](#engine_start) 方法启动引擎主循环
+4. **任务执行** - 在主循环中不断获取请求、下载页面、处理响应
+5. **关闭流程** - 爬取完成后执行关闭流程，释放资源
+
+## 核心方法
+
+### engine_start()
+
+启动引擎主循环，开始处理请求。
+
+```python
+async def engine_start(self):
+    """启动引擎主循环"""
+    self.running = True
+    while self.running:
+        # 获取下一个请求
+        request = await self._get_next_request()
+        if request:
+            # 处理请求
+            await self._crawl(request)
+        else:
+            # 检查是否所有任务完成
+            if self.task_manager.all_done():
+                break
+            # 等待一段时间后重试
+            await asyncio.sleep(0.1)
+```
+
+### start_spider(spider)
+
+启动指定的爬虫实例。
+
+**参数:**
+- `spider` - 要启动的爬虫实例
+
+### crawl()
+
+启动爬取过程，处理初始请求。
+
+### _crawl(request)
+
+处理单个请求的完整流程。
+
+**参数:**
+- `request` - 要处理的请求对象
+
+### _fetch(request)
+
+获取指定请求的响应。
+
+**参数:**
+- `request` - 要获取响应的请求对象
+
+**返回:**
+- 响应对象
+
+### enqueue_request(request)
+
+将请求添加到调度器队列。
+
+**参数:**
+- `request` - 要排队的请求对象
+
+### _get_next_request()
+
+从调度器获取下一个待处理的请求。
+
+**返回:**
+- 下一个请求对象，如果没有则返回 None
+
+## 配置选项
+
+引擎的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| CONCURRENCY | int | 16 | 并发请求数 |
+| DOWNLOAD_DELAY | float | 0.5 | 下载延迟（秒） |
+| DOWNLOAD_TIMEOUT | int | 30 | 下载超时时间（秒） |
+| MAX_RETRY_TIMES | int | 3 | 最大重试次数 |
+
+## 性能优化
+
+### 并发控制
+
+引擎通过任务管理器控制并发请求数，避免对目标网站造成过大压力：
+
+```python
+# 限制并发数
+semaphore = asyncio.Semaphore(self.settings.CONCURRENCY)
+async with semaphore:
+    response = await self._fetch(request)
+```
+
+### 背压机制
+
+当任务管理器负载过高时，引擎会自动暂停请求生成：
+
+```python
+# 检查任务管理器状态
+if not self.task_manager.all_done():
+    # 等待任务完成
+    await self.task_manager.wait_for_done()
+```
+
+## 错误处理
+
+### 异常捕获
+
+引擎在处理请求时会捕获并处理各种异常：
+
+```python
+try:
+    response = await self._fetch(request)
+except asyncio.TimeoutError:
+    # 处理超时
+    self.logger.warning(f"请求超时: {request.url}")
+except Exception as e:
+    # 处理其他异常
+    self.logger.error(f"请求失败: {request.url}, 错误: {e}")
+```
+
+### 重试机制
+
+对于失败的请求，引擎支持自动重试：
+
+```python
+# 增加重试次数
+request.retry_times += 1
+if request.retry_times < self.settings.MAX_RETRY_TIMES:
+    # 重新排队
+    await self.enqueue_request(request)
+else:
+    # 记录失败请求
+    self.logger.error(f"请求重试次数已达上限: {request.url}")
+```
+
+## 监控和日志
+
+引擎集成了详细的日志记录和监控功能：
+
+```python
+# 记录请求处理日志
+self.logger.info(f"开始处理请求: {request.url}")
+self.logger.debug(f"请求详情: {request.to_dict()}")
+
+# 记录响应信息
+self.logger.info(f"响应状态码: {response.status_code}")
+self.logger.debug(f"响应内容大小: {len(response.content)} bytes")
+```
+
+## 最佳实践
+
+### 合理配置并发数
+
+根据目标网站的承受能力和本地资源情况设置合适的并发数：
+
+```python
+# 对于高负载网站，降低并发数
+config = CrawloConfig.standalone(concurrency=5)
+
+# 对于低负载网站，可以提高并发数
+config = CrawloConfig.standalone(concurrency=20)
+```
+
+### 设置适当的延迟
+
+设置下载延迟以避免对目标网站造成过大压力：
+
+```python
+# 设置1秒延迟
+config = CrawloConfig.standalone(download_delay=1.0)
+```
+
+### 监控引擎状态
+
+定期监控引擎运行状态和性能指标：
+
+```python
+# 获取引擎状态
+status = engine.get_status()
+print(f"当前并发数: {status['concurrency']}")
+print(f"待处理请求数: {status['pending_requests']}")
+```
+
+**code file end: docs/modules/core/engine.md**
+
+---
+
+
+### code file start: docs/modules/core/engine_en.md 
+
+# Engine
+
+The engine is the core coordinator of the Crawlo framework, responsible for scheduling requests, managing downloads and processing flows, and serves as the central execution unit of the entire crawling process.
+
+## Overview
+
+The engine acts as the core execution unit of Crawlo, driving the crawling process by coordinating request fetching, response processing, and item processing. It is the central hub connecting the scheduler, downloader, and processor, ensuring data flows correctly between components.
+
+### Core Responsibilities
+
+1. **Request Scheduling** - Get the next request to process from the scheduler
+2. **Page Downloading** - Call the downloader to fetch web content
+3. **Response Processing** - Pass the downloaded response to the processor for parsing
+4. **Task Management** - Manage concurrent tasks and resource allocation
+5. **Lifecycle Management** - Control the spider's start, run, and close processes
+
+## Class Structure
+
+```mermaid
+classDiagram
+class Engine {
++running : bool
++normal : bool
++crawler : Crawler
++settings : Settings
++spider : Spider
++downloader : DownloaderBase
++scheduler : Scheduler
++processor : Processor
++task_manager : TaskManager
++engine_start()
++start_spider(spider)
++crawl()
++_crawl(request)
++_fetch(request)
++enqueue_request(request)
++_schedule_request(request)
++_get_next_request()
++_handle_spider_output(outputs)
++close_spider()
+}
+class Crawler {
++settings : Settings
++subscriber : Subscriber
++close()
+}
+class Scheduler {
++enqueue_request(request)
++next_request()
++idle()
++close()
+}
+class DownloaderBase {
++fetch(request)
++idle()
++close()
+}
+class Processor {
++enqueue(output)
++idle()
++open()
++close()
+}
+class TaskManager {
++create_task(coro)
++all_done()
+}
+Engine --> Crawler : "Holds"
+Engine --> Scheduler : "Uses"
+Engine --> DownloaderBase : "Uses"
+Engine --> Processor : "Uses"
+Engine --> TaskManager : "Uses"
+```
+
+## Workflow
+
+### Request Processing Flow
+
+```mermaid
+sequenceDiagram
+participant Engine as "Engine"
+participant Scheduler as "Scheduler"
+participant Downloader as "Downloader"
+participant Spider as "Spider"
+participant Processor as "Processor"
+Engine->>Scheduler : Get next request
+Scheduler-->>Engine : Return request
+Engine->>Downloader : Initiate download
+Downloader-->>Engine : Return response
+Engine->>Spider : Call parsing function
+Spider-->>Engine : Generate output requests/items
+Engine->>Processor : Submit output
+Processor->>Processor : Distribute to pipelines
+```
+
+### Startup Flow
+
+1. **Initialization** - Create engine instance and initialize related components
+2. **Start Spider** - Call [start_spider()](#start_spider) method to start the specified spider
+3. **Engine Start** - Call [engine_start()](#engine_start) method to start the engine main loop
+4. **Task Execution** - Continuously get requests, download pages, and process responses in the main loop
+5. **Shutdown Process** - Execute shutdown process after crawling is complete to release resources
+
+## Core Methods
+
+### engine_start()
+
+Start the engine main loop to begin processing requests.
+
+```python
+async def engine_start(self):
+    """Start the engine main loop"""
+    self.running = True
+    while self.running:
+        # Get the next request
+        request = await self._get_next_request()
+        if request:
+            # Process request
+            await self._crawl(request)
+        else:
+            # Check if all tasks are complete
+            if self.task_manager.all_done():
+                break
+            # Wait for a while and retry
+            await asyncio.sleep(0.1)
+```
+
+### start_spider(spider)
+
+Start the specified spider instance.
+
+**Parameters:**
+- `spider` - The spider instance to start
+
+### crawl()
+
+Start the crawling process and handle initial requests.
+
+### _crawl(request)
+
+Process the complete flow of a single request.
+
+**Parameters:**
+- `request` - The request object to process
+
+### _fetch(request)
+
+Get the response for the specified request.
+
+**Parameters:**
+- `request` - The request object to get response for
+
+**Returns:**
+- Response object
+
+### enqueue_request(request)
+
+Add a request to the scheduler queue.
+
+**Parameters:**
+- `request` - The request object to queue
+
+### _get_next_request()
+
+Get the next request to process from the scheduler.
+
+**Returns:**
+- The next request object, or None if no requests available
+
+## Configuration Options
+
+The engine's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| CONCURRENCY | int | 16 | Concurrent requests |
+| DOWNLOAD_DELAY | float | 0.5 | Download delay (seconds) |
+| DOWNLOAD_TIMEOUT | int | 30 | Download timeout (seconds) |
+| MAX_RETRY_TIMES | int | 3 | Maximum retry times |
+
+## Performance Optimization
+
+### Concurrency Control
+
+The engine controls concurrent requests through the task manager to avoid putting excessive pressure on the target website:
+
+```python
+# Limit concurrency
+semaphore = asyncio.Semaphore(self.settings.CONCURRENCY)
+async with semaphore:
+    response = await self._fetch(request)
+```
+
+### Backpressure Mechanism
+
+When the task manager is overloaded, the engine automatically pauses request generation:
+
+```python
+# Check task manager status
+if not self.task_manager.all_done():
+    # Wait for tasks to complete
+    await self.task_manager.wait_for_done()
+```
+
+## Error Handling
+
+### Exception Capture
+
+The engine captures and handles various exceptions when processing requests:
+
+```python
+try:
+    response = await self._fetch(request)
+except asyncio.TimeoutError:
+    # Handle timeout
+    self.logger.warning(f"Request timeout: {request.url}")
+except Exception as e:
+    # Handle other exceptions
+    self.logger.error(f"Request failed: {request.url}, Error: {e}")
+```
+
+### Retry Mechanism
+
+For failed requests, the engine supports automatic retry:
+
+```python
+# Increase retry count
+request.retry_times += 1
+if request.retry_times < self.settings.MAX_RETRY_TIMES:
+    # Re-queue
+    await self.enqueue_request(request)
+else:
+    # Log failed request
+    self.logger.error(f"Request retry limit reached: {request.url}")
+```
+
+## Monitoring and Logging
+
+The engine integrates detailed logging and monitoring features:
+
+```python
+# Log request processing
+self.logger.info(f"Starting to process request: {request.url}")
+self.logger.debug(f"Request details: {request.to_dict()}")
+
+# Log response information
+self.logger.info(f"Response status code: {response.status_code}")
+self.logger.debug(f"Response content size: {len(response.content)} bytes")
+```
+
+## Best Practices
+
+### Reasonable Concurrency Configuration
+
+Set appropriate concurrency based on the target website's capacity and local resources:
+
+```python
+# For high-load websites, reduce concurrency
+config = CrawloConfig.standalone(concurrency=5)
+
+# For low-load websites, increase concurrency
+config = CrawloConfig.standalone(concurrency=20)
+```
+
+### Set Appropriate Delays
+
+Set download delays to avoid putting excessive pressure on the target website:
+
+```python
+# Set 1 second delay
+config = CrawloConfig.standalone(download_delay=1.0)
+```
+
+### Monitor Engine Status
+
+Regularly monitor engine runtime status and performance metrics:
+
+```python
+# Get engine status
+status = engine.get_status()
+print(f"Current concurrency: {status['concurrency']}")
+print(f"Pending requests: {status['pending_requests']}")
+```
+
+**code file end: docs/modules/core/engine_en.md**
+
+---
+
+
+### code file start: docs/modules/core/index.md 
+
+# 核心模块
+
+核心模块是 Crawlo 框架的基础，包含引擎、调度器和处理器等关键组件，它们协同工作以执行网络爬取任务。
+
+## 模块概述
+
+Crawlo 的核心模块采用模块化、基于组件的设计，具有明确的关注点分离。系统基于事件驱动模型构建，能够实现响应式的生命周期管理和组件协调。
+
+### 核心组件
+
+1. [引擎 (Engine)](engine.md) - 中央执行单元，通过协调请求获取、响应处理和项目处理来驱动爬取过程
+2. [调度器 (Scheduler)](scheduler.md) - 管理请求队列，实现基于优先级的调度和重复请求过滤
+3. [处理器 (Processor)](processor.md) - 负责解析响应并将提取的数据转换为结构化项目
+4. [爬虫基类 (Spider)](spider.md) - 爬虫基础类，定义爬虫的生命周期和接口
+
+## 架构图
+
+```mermaid
+graph TB
+subgraph "核心模块"
+Engine[引擎]
+Scheduler[调度器]
+Downloader[下载器]
+Processor[处理器]
+end
+subgraph "数据流组件"
+Queue[队列管理]
+Filter[去重过滤]
+Pipeline[数据管道]
+end
+subgraph "配置与工具"
+Settings[配置系统]
+Utils[工具库]
+Extension[扩展组件]
+end
+Engine --> Scheduler
+Engine --> Downloader
+Engine --> Processor
+Scheduler --> Queue
+Scheduler --> Filter
+Processor --> Pipeline
+Engine --> Settings
+Engine --> Utils
+Engine --> Extension
+style Engine fill:#bbf,stroke:#333
+style Scheduler fill:#f96,stroke:#333
+style Processor fill:#6f9,stroke:#333
+```
+
+## 设计原则
+
+### 模块化设计
+核心模块采用模块化设计，各组件职责清晰，便于扩展和维护。每个组件都有明确的接口和职责，降低了组件间的耦合度。
+
+### 异步非阻塞
+基于 asyncio 实现异步非阻塞 I/O，充分利用系统资源，实现高并发处理能力。
+
+### 可扩展性
+通过中间件、管道和扩展机制，用户可以轻松定制和扩展框架功能。
+
+### 事件驱动
+采用事件驱动架构，组件通过事件进行通信和协调，提高了系统的灵活性和响应性。
+
+## 组件交互
+
+核心模块中的组件通过明确定义的接口进行交互，实现松耦合和可扩展性：
+
+1. **Crawler** 作为主要协调器，管理爬取作业的生命周期并协调各组件
+2. **Engine** 作为中央执行单元，通过协调请求获取、响应处理和项目处理来驱动爬取过程
+3. **Scheduler** 管理请求队列，实现基于优先级的调度和重复请求过滤
+4. **Processor** 负责解析响应并将提取的数据转换为结构化项目
+
+## 性能特征
+
+- **高并发处理** - 基于 asyncio 实现高并发请求处理
+- **低延迟响应** - 异步非阻塞 I/O 减少等待时间
+- **资源优化** - 智能并发控制和背压机制优化资源使用
+- **可扩展架构** - 支持水平扩展以处理大规模数据采集
+
+## 使用指南
+
+### 初始化核心组件
+
+```python
+from crawlo.crawler import Crawler
+from crawlo.config import CrawloConfig
+
+# 创建配置
+config = CrawloConfig.standalone(
+    project_name='my_project',
+    concurrency=10
+)
+
+# 初始化爬虫
+crawler = Crawler(config)
+```
+
+### 启动爬取过程
+
+```python
+# 启动爬虫
+await crawler.start_spider(my_spider)
+```
+
+## 最佳实践
+
+### 组件配置
+
+1. **合理设置并发数** - 根据目标网站的承受能力和本地资源情况设置合适的并发数
+2. **配置适当的延迟** - 设置下载延迟以避免对目标网站造成过大压力
+3. **调整超时时间** - 根据网络环境和目标网站响应速度调整超时时间
+
+### 错误处理
+
+1. **异常捕获** - 在关键组件中实现适当的异常捕获和处理机制
+2. **重试机制** - 配置合理的重试次数和重试间隔
+3. **日志记录** - 详细记录组件运行状态和错误信息
+
+### 性能优化
+
+1. **资源监控** - 监控系统资源使用情况，及时调整配置
+2. **瓶颈识别** - 识别性能瓶颈并针对性优化
+3. **扩展策略** - 根据业务需求选择合适的扩展策略
+
+**code file end: docs/modules/core/index.md**
+
+---
+
+
+### code file start: docs/modules/core/index_en.md 
+
+# Core Modules
+
+The core modules are the foundation of the Crawlo framework, containing key components such as the engine, scheduler, and processor that work together to perform web crawling tasks.
+
+## Module Overview
+
+Crawlo's core modules adopt a modular, component-based design with clear separation of concerns. The system is built on an event-driven model that enables responsive lifecycle management and component coordination.
+
+### Core Components
+
+1. [Engine](engine_en.md) - Central execution unit that drives the crawling process by coordinating request fetching, response processing, and item processing
+2. [Scheduler](scheduler_en.md) - Manages request queues, implements priority-based scheduling and duplicate request filtering
+3. [Processor](processor_en.md) - Responsible for parsing responses and converting extracted data into structured items
+4. [Spider Base Class](spider_en.md) - Spider base class that defines the spider's lifecycle and interface
+
+## Architecture Diagram
+
+```mermaid
+graph TB
+subgraph "Core Modules"
+Engine[Engine]
+Scheduler[Scheduler]
+Downloader[Downloader]
+Processor[Processor]
+end
+subgraph "Data Flow Components"
+Queue[Queue Management]
+Filter[Deduplication Filter]
+Pipeline[Data Pipeline]
+end
+subgraph "Configuration & Tools"
+Settings[Configuration System]
+Utils[Utility Library]
+Extension[Extension Components]
+end
+Engine --> Scheduler
+Engine --> Downloader
+Engine --> Processor
+Scheduler --> Queue
+Scheduler --> Filter
+Processor --> Pipeline
+Engine --> Settings
+Engine --> Utils
+Engine --> Extension
+style Engine fill:#bbf,stroke:#333
+style Scheduler fill:#f96,stroke:#333
+style Processor fill:#6f9,stroke:#333
+```
+
+## Design Principles
+
+### Modular Design
+The core modules adopt a modular design with clear component responsibilities, making them easy to extend and maintain. Each component has a clear interface and responsibility, reducing coupling between components.
+
+### Asynchronous Non-blocking
+Based on asyncio to implement asynchronous non-blocking I/O, fully utilizing system resources to achieve high-concurrency processing capabilities.
+
+### Extensibility
+Through middleware, pipeline, and extension mechanisms, users can easily customize and extend framework functionality.
+
+### Event-driven
+Adopting an event-driven architecture, components communicate and coordinate through events, improving system flexibility and responsiveness.
+
+## Component Interaction
+
+Components in the core modules interact through clearly defined interfaces, achieving loose coupling and extensibility:
+
+1. **Crawler** acts as the main coordinator, managing the lifecycle of crawling jobs and coordinating components
+2. **Engine** acts as the central execution unit, driving the crawling process by coordinating request fetching, response processing, and item processing
+3. **Scheduler** manages request queues, implementing priority-based scheduling and duplicate request filtering
+4. **Processor** is responsible for parsing responses and converting extracted data into structured items
+
+## Performance Characteristics
+
+- **High-concurrency Processing** - High-concurrency request processing based on asyncio
+- **Low-latency Response** - Asynchronous non-blocking I/O reduces waiting time
+- **Resource Optimization** - Intelligent concurrency control and backpressure mechanisms optimize resource usage
+- **Scalable Architecture** - Supports horizontal scaling to handle large-scale data collection
+
+## Usage Guide
+
+### Initializing Core Components
+
+```python
+from crawlo.crawler import Crawler
+from crawlo.config import CrawloConfig
+
+# Create configuration
+config = CrawloConfig.standalone(
+    project_name='my_project',
+    concurrency=10
+)
+
+# Initialize crawler
+crawler = Crawler(config)
+```
+
+### Starting the Crawling Process
+
+```python
+# Start the spider
+await crawler.start_spider(my_spider)
+```
+
+## Best Practices
+
+### Component Configuration
+
+1. **Reasonable Concurrency Settings** - Set appropriate concurrency based on the target website's capacity and local resources
+2. **Appropriate Delay Configuration** - Set download delays to avoid putting excessive pressure on the target website
+3. **Timeout Adjustment** - Adjust timeout settings based on network environment and target website response speed
+
+### Error Handling
+
+1. **Exception Capture** - Implement appropriate exception capture and handling mechanisms in key components
+2. **Retry Mechanism** - Configure reasonable retry attempts and intervals
+3. **Logging** - Detailed logging of component runtime status and error information
+
+### Performance Optimization
+
+1. **Resource Monitoring** - Monitor system resource usage and adjust configurations in a timely manner
+2. **Bottleneck Identification** - Identify performance bottlenecks and optimize them specifically
+3. **Scaling Strategy** - Choose appropriate scaling strategies based on business requirements
+
+**code file end: docs/modules/core/index_en.md**
+
+---
+
+
+### code file start: docs/modules/core/processor.md 
+
+# 处理器 (Processor)
+
+处理器是 Crawlo 框架中负责解析响应并将提取的数据转换为结构化项目的核心组件。它连接了下载器和数据管道，是数据流转的关键环节。
+
+## 概述
+
+处理器作为响应处理的核心，负责调用用户定义的解析函数，处理解析函数生成的输出（请求或数据项），并将数据项传递给数据管道进行存储。
+
+### 核心职责
+
+1. **响应解析** - 调用爬虫的解析函数处理响应
+2. **输出处理** - 处理解析函数生成的请求和数据项
+3. **数据路由** - 将数据项路由到相应的数据管道
+4. **错误处理** - 处理解析过程中的异常
+
+## 类结构
+
+```mermaid
+classDiagram
+class Processor {
++settings : Settings
++pipelines : list
++logger : Logger
++open() None
++close() None
++enqueue(output) None
++_process_item(item, spider) Item
++_process_request(request, spider) Request
++process(spider, response) list
+}
+class Item {
++fields : dict
++validate() bool
+}
+class Request {
++url : str
++callback : callable
++priority : int
+}
+class Pipeline {
++process_item(item, spider) Item
+}
+Processor --> Item : "处理"
+Processor --> Request : "处理"
+Processor --> Pipeline : "使用"
+```
+
+## 工作流程
+
+### 响应处理流程
+
+```mermaid
+flowchart TD
+Start([开始]) --> CallParse["调用解析函数"]
+CallParse --> ProcessOutputs["处理输出"]
+ProcessOutputs --> IsItem{"是数据项?"}
+IsItem --> |是| RouteToPipeline["路由到管道"]
+IsItem --> |否| IsRequest{"是请求?"}
+IsRequest --> |是| EnqueueRequest["加入队列"]
+IsRequest --> |否| LogWarning["记录警告"]
+RouteToPipeline --> End([完成])
+EnqueueRequest --> End
+LogWarning --> End
+```
+
+### 数据项处理流程
+
+```mermaid
+flowchart TD
+Start([开始]) --> ProcessItem["处理数据项"]
+ProcessItem --> Pipeline1["管道1"]
+Pipeline1 --> Pipeline2["管道2"]
+Pipeline2 --> PipelineN["管道N"]
+PipelineN --> End([完成])
+```
+
+## 核心方法
+
+### process(spider, response)
+
+处理爬虫对响应的解析。
+
+**参数:**
+- `spider` - 爬虫实例
+- `response` - 响应对象
+
+**返回:**
+- 解析函数生成的输出列表
+
+```python
+async def process(self, spider, response):
+    """处理爬虫对响应的解析"""
+    outputs = []
+    
+    # 调用爬虫的解析函数
+    try:
+        parse_output = spider.parse(response)
+        if inspect.isasyncgen(parse_output):
+            # 异步生成器
+            async for output in parse_output:
+                outputs.append(output)
+        elif inspect.isgenerator(parse_output):
+            # 同步生成器
+            for output in parse_output:
+                outputs.append(output)
+        else:
+            # 单个输出
+            if parse_output is not None:
+                outputs.append(parse_output)
+    except Exception as e:
+        self.logger.error(f"解析函数执行失败: {e}")
+        return []
+    
+    return outputs
+```
+
+### enqueue(output)
+
+将输出加入处理队列。
+
+**参数:**
+- `output` - 解析函数生成的输出（请求或数据项）
+
+```python
+def enqueue(self, output):
+    """将输出加入处理队列"""
+    if isinstance(output, Item):
+        # 处理数据项
+        self._process_item(output)
+    elif isinstance(output, Request):
+        # 处理请求
+        self._process_request(output)
+    else:
+        self.logger.warning(f"未知的输出类型: {type(output)}")
+```
+
+### _process_item(item)
+
+处理数据项并路由到管道。
+
+**参数:**
+- `item` - 要处理的数据项
+
+```python
+def _process_item(self, item):
+    """处理数据项并路由到管道"""
+    # 验证数据项
+    if not item.validate():
+        self.logger.warning(f"数据项验证失败: {item}")
+        return
+    
+    # 通过管道处理
+    for pipe in self.pipelines:
+        try:
+            item = pipe.process_item(item, self.spider)
+            if item is None:
+                # 管道返回 None 表示丢弃该数据项
+                return
+        except Exception as e:
+            self.logger.error(f"管道处理失败: {e}")
+            return
+```
+
+### _process_request(request)
+
+处理请求并加入调度器队列。
+
+**参数:**
+- `request` - 要处理的请求
+
+```python
+def _process_request(self, request):
+    """处理请求并加入调度器队列"""
+    # 可以在这里对请求进行额外处理
+    # 例如：添加默认头部、设置优先级等
+    
+    # 加入调度器队列
+    self.scheduler.enqueue_request(request)
+```
+
+### open()
+
+打开处理器，初始化相关资源。
+
+### close()
+
+关闭处理器，释放相关资源。
+
+## 管道集成
+
+处理器与数据管道紧密集成，支持多种类型的管道：
+
+### 内置管道
+
+1. **ConsolePipeline** - 将数据项输出到控制台
+2. **JsonPipeline** - 将数据项保存为 JSON 格式
+3. **CsvPipeline** - 将数据项保存为 CSV 格式
+4. **MySQLPipeline** - 将数据项存储到 MySQL 数据库
+5. **MongoPipeline** - 将数据项存储到 MongoDB 数据库
+
+### 自定义管道
+
+用户可以创建自定义管道来处理特定的数据处理需求：
+
+```python
+class CustomPipeline:
+    def process_item(self, item, spider):
+        """处理数据项"""
+        # 自定义处理逻辑
+        item.processed = True
+        return item
+```
+
+## 错误处理
+
+### 解析函数异常
+
+处理器会捕获并处理解析函数执行中的异常：
+
+```python
+try:
+    parse_output = spider.parse(response)
+except Exception as e:
+    self.logger.error(f"解析函数执行失败: {response.url}, 错误: {e}")
+    # 可以选择重试或记录失败
+```
+
+### 管道处理异常
+
+处理器会捕获并处理管道处理中的异常：
+
+```python
+for pipe in self.pipelines:
+    try:
+        item = pipe.process_item(item, self.spider)
+    except Exception as e:
+        self.logger.error(f"管道处理失败: {pipe.__class__.__name__}, 错误: {e}")
+        # 继续处理下一个管道
+```
+
+## 配置选项
+
+处理器的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| PIPELINES | list | [] | 数据管道列表 |
+| ITEM_PROCESSOR_DEBUG | bool | False | 是否启用数据项处理调试模式 |
+
+## 性能优化
+
+### 批量处理
+
+对于大量数据项的场景，可以使用批量处理提高效率：
+
+```python
+# 批量处理数据项
+items = [Item(data=i) for i in range(100)]
+for item in items:
+    processor.enqueue(item)
+```
+
+### 异步处理
+
+支持异步解析函数以提高处理效率：
+
+```python
+class MySpider(Spider):
+    async def parse(self, response):
+        # 异步处理逻辑
+        async for item in self.extract_items(response):
+            yield item
+```
+
+## 监控和日志
+
+处理器集成了详细的日志记录功能：
+
+```python
+# 记录解析结果
+self.logger.info(f"解析完成: {response.url}, 生成 {len(outputs)} 个输出")
+
+# 记录数据项处理
+self.logger.debug(f"数据项已处理: {item}")
+
+# 记录请求处理
+self.logger.debug(f"请求已加入队列: {request.url}")
+```
+
+## 最佳实践
+
+### 管道配置
+
+合理配置数据管道以满足不同的数据存储需求：
+
+```python
+# 配置多个管道
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+    'crawlo.pipelines.JsonPipeline',
+    'crawlo.pipelines.MySQLPipeline',
+]
+```
+
+### 数据项验证
+
+在数据项中实现验证逻辑确保数据质量：
+
+```python
+class ProductItem(Item):
+    def validate(self):
+        """验证数据项"""
+        if not self.get('name'):
+            return False
+        if not self.get('price'):
+            return False
+        return True
+```
+
+### 异常处理
+
+在解析函数中实现适当的异常处理：
+
+```python
+def parse(self, response):
+    """解析响应"""
+    try:
+        # 解析逻辑
+        yield ProductItem(
+            name=response.extract_text('h1'),
+            price=response.extract_text('.price')
+        )
+    except Exception as e:
+        self.logger.error(f"解析失败: {response.url}, 错误: {e}")
+        # 可以选择重试或跳过
+```
+
+**code file end: docs/modules/core/processor.md**
+
+---
+
+
+### code file start: docs/modules/core/processor_en.md 
+
+# Processor
+
+The processor is the core component in the Crawlo framework responsible for parsing responses and converting extracted data into structured items. It connects the downloader and data pipelines, serving as a key link in data flow.
+
+## Overview
+
+The processor acts as the core of response processing, responsible for calling user-defined parsing functions, processing the outputs generated by parsing functions (requests or data items), and passing data items to data pipelines for storage.
+
+### Core Responsibilities
+
+1. **Response Parsing** - Call the spider's parsing function to process responses
+2. **Output Processing** - Process requests and data items generated by parsing functions
+3. **Data Routing** - Route data items to appropriate data pipelines
+4. **Error Handling** - Handle exceptions during the parsing process
+
+## Class Structure
+
+```mermaid
+classDiagram
+class Processor {
++settings : Settings
++pipelines : list
++logger : Logger
++open() None
++close() None
++enqueue(output) None
++_process_item(item, spider) Item
++_process_request(request, spider) Request
++process(spider, response) list
+}
+class Item {
++fields : dict
++validate() bool
+}
+class Request {
++url : str
++callback : callable
++priority : int
+}
+class Pipeline {
++process_item(item, spider) Item
+}
+Processor --> Item : "Processes"
+Processor --> Request : "Processes"
+Processor --> Pipeline : "Uses"
+```
+
+## Workflow
+
+### Response Processing Flow
+
+```mermaid
+flowchart TD
+Start([Start]) --> CallParse["Call Parsing Function"]
+CallParse --> ProcessOutputs["Process Outputs"]
+ProcessOutputs --> IsItem{"Is Item?"}
+IsItem --> |Yes| RouteToPipeline["Route to Pipeline"]
+IsItem --> |No| IsRequest{"Is Request?"}
+IsRequest --> |Yes| EnqueueRequest["Enqueue Request"]
+IsRequest --> |No| LogWarning["Log Warning"]
+RouteToPipeline --> End([Complete])
+EnqueueRequest --> End
+LogWarning --> End
+```
+
+### Item Processing Flow
+
+```mermaid
+flowchart TD
+Start([Start]) --> ProcessItem["Process Item"]
+ProcessItem --> Pipeline1["Pipeline 1"]
+Pipeline1 --> Pipeline2["Pipeline 2"]
+Pipeline2 --> PipelineN["Pipeline N"]
+PipelineN --> End([Complete])
+```
+
+## Core Methods
+
+### process(spider, response)
+
+Process the spider's parsing of the response.
+
+**Parameters:**
+- `spider` - Spider instance
+- `response` - Response object
+
+**Returns:**
+- List of outputs generated by the parsing function
+
+```python
+async def process(self, spider, response):
+    """Process the spider's parsing of the response"""
+    outputs = []
+    
+    # Call the spider's parsing function
+    try:
+        parse_output = spider.parse(response)
+        if inspect.isasyncgen(parse_output):
+            # Async generator
+            async for output in parse_output:
+                outputs.append(output)
+        elif inspect.isgenerator(parse_output):
+            # Sync generator
+            for output in parse_output:
+                outputs.append(output)
+        else:
+            # Single output
+            if parse_output is not None:
+                outputs.append(parse_output)
+    except Exception as e:
+        self.logger.error(f"Parsing function execution failed: {e}")
+        return []
+    
+    return outputs
+```
+
+### enqueue(output)
+
+Enqueue the output for processing.
+
+**Parameters:**
+- `output` - Output generated by the parsing function (request or item)
+
+```python
+def enqueue(self, output):
+    """Enqueue the output for processing"""
+    if isinstance(output, Item):
+        # Process item
+        self._process_item(output)
+    elif isinstance(output, Request):
+        # Process request
+        self._process_request(output)
+    else:
+        self.logger.warning(f"Unknown output type: {type(output)}")
+```
+
+### _process_item(item)
+
+Process the item and route it to pipelines.
+
+**Parameters:**
+- `item` - The item to process
+
+```python
+def _process_item(self, item):
+    """Process the item and route it to pipelines"""
+    # Validate item
+    if not item.validate():
+        self.logger.warning(f"Item validation failed: {item}")
+        return
+    
+    # Process through pipelines
+    for pipe in self.pipelines:
+        try:
+            item = pipe.process_item(item, self.spider)
+            if item is None:
+                # Pipeline returning None means discarding the item
+                return
+        except Exception as e:
+            self.logger.error(f"Pipeline processing failed: {e}")
+            return
+```
+
+### _process_request(request)
+
+Process the request and add it to the scheduler queue.
+
+**Parameters:**
+- `request` - The request to process
+
+```python
+def _process_request(self, request):
+    """Process the request and add it to the scheduler queue"""
+    # Additional processing can be done here
+    # For example: add default headers, set priority, etc.
+    
+    # Add to scheduler queue
+    self.scheduler.enqueue_request(request)
+```
+
+### open()
+
+Open the processor and initialize related resources.
+
+### close()
+
+Close the processor and release related resources.
+
+## Pipeline Integration
+
+The processor is tightly integrated with data pipelines, supporting multiple types of pipelines:
+
+### Built-in Pipelines
+
+1. **ConsolePipeline** - Output items to the console
+2. **JsonPipeline** - Save items in JSON format
+3. **CsvPipeline** - Save items in CSV format
+4. **MySQLPipeline** - Store items in MySQL database
+5. **MongoPipeline** - Store items in MongoDB database
+
+### Custom Pipelines
+
+Users can create custom pipelines to handle specific data processing needs:
+
+```python
+class CustomPipeline:
+    def process_item(self, item, spider):
+        """Process item"""
+        # Custom processing logic
+        item.processed = True
+        return item
+```
+
+## Error Handling
+
+### Parsing Function Exceptions
+
+The processor captures and handles exceptions during parsing function execution:
+
+```python
+try:
+    parse_output = spider.parse(response)
+except Exception as e:
+    self.logger.error(f"Parsing function execution failed: {response.url}, Error: {e}")
+    # Can choose to retry or log failure
+```
+
+### Pipeline Processing Exceptions
+
+The processor captures and handles exceptions during pipeline processing:
+
+```python
+for pipe in self.pipelines:
+    try:
+        item = pipe.process_item(item, self.spider)
+    except Exception as e:
+        self.logger.error(f"Pipeline processing failed: {pipe.__class__.__name__}, Error: {e}")
+        # Continue processing next pipeline
+```
+
+## Configuration Options
+
+The processor's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| PIPELINES | list | [] | List of data pipelines |
+| ITEM_PROCESSOR_DEBUG | bool | False | Whether to enable item processing debug mode |
+
+## Performance Optimization
+
+### Batch Processing
+
+For scenarios with large numbers of items, batch processing can improve efficiency:
+
+```python
+# Batch process items
+items = [Item(data=i) for i in range(100)]
+for item in items:
+    processor.enqueue(item)
+```
+
+### Async Processing
+
+Support async parsing functions to improve processing efficiency:
+
+```python
+class MySpider(Spider):
+    async def parse(self, response):
+        # Async processing logic
+        async for item in self.extract_items(response):
+            yield item
+```
+
+## Monitoring and Logging
+
+The processor integrates detailed logging functionality:
+
+```python
+# Log parsing results
+self.logger.info(f"Parsing completed: {response.url}, Generated {len(outputs)} outputs")
+
+# Log item processing
+self.logger.debug(f"Item processed: {item}")
+
+# Log request processing
+self.logger.debug(f"Request queued: {request.url}")
+```
+
+## Best Practices
+
+### Pipeline Configuration
+
+Configure data pipelines appropriately to meet different data storage needs:
+
+```python
+# Configure multiple pipelines
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+    'crawlo.pipelines.JsonPipeline',
+    'crawlo.pipelines.MySQLPipeline',
+]
+```
+
+### Item Validation
+
+Implement validation logic in items to ensure data quality:
+
+```python
+class ProductItem(Item):
+    def validate(self):
+        """Validate item"""
+        if not self.get('name'):
+            return False
+        if not self.get('price'):
+            return False
+        return True
+```
+
+### Exception Handling
+
+Implement appropriate exception handling in parsing functions:
+
+```python
+def parse(self, response):
+    """Parse response"""
+    try:
+        # Parsing logic
+        yield ProductItem(
+            name=response.extract_text('h1'),
+            price=response.extract_text('.price')
+        )
+    except Exception as e:
+        self.logger.error(f"Parsing failed: {response.url}, Error: {e}")
+        # Can choose to retry or skip
+```
+
+**code file end: docs/modules/core/processor_en.md**
+
+---
+
+
+### code file start: docs/modules/core/scheduler.md 
+
+# 调度器 (Scheduler)
+
+调度器是 Crawlo 框架中负责管理请求队列和实现重复请求过滤的核心组件。它确保请求按正确的顺序处理，并防止重复爬取相同的 URL。
+
+## 概述
+
+调度器作为请求管理的核心，负责将爬虫生成的请求添加到队列中，并按优先级顺序提供给引擎处理。它与队列管理器和过滤器紧密协作，实现高效的请求调度和去重功能。
+
+### 核心职责
+
+1. **请求排队** - 将新生成的请求添加到队列中
+2. **请求调度** - 按优先级顺序提供请求给引擎处理
+3. **重复过滤** - 防止重复请求被添加到队列中
+4. **队列管理** - 管理请求队列的状态和大小
+
+## 类结构
+
+```mermaid
+classDiagram
+class Scheduler {
++settings : Settings
++queue_manager : QueueManager
++filter : BaseFilter
++logger : Logger
++enqueue_request(request) bool
++next_request() Request
++has_pending_requests() bool
++close() None
++idle() bool
++_is_duplicate(request) bool
++_schedule_request(request) bool
+}
+class QueueManager {
++get_queue() BaseQueue
++enqueue_request(request) bool
++next_request() Request
++has_pending_requests() bool
+}
+class BaseFilter {
++check_duplicate(request) bool
++add_request(request) None
++close() None
+}
+Scheduler --> QueueManager : "使用"
+Scheduler --> BaseFilter : "使用"
+```
+
+## 工作流程
+
+### 请求入队流程
+
+```mermaid
+flowchart TD
+Start([开始]) --> CheckDup["检查重复"]
+CheckDup --> |重复| End1([丢弃请求])
+CheckDup --> |不重复| AddFilter["添加到过滤器"]
+AddFilter --> Enqueue["加入队列"]
+Enqueue --> |成功| End2([入队成功])
+Enqueue --> |失败| End3([入队失败])
+```
+
+### 请求出队流程
+
+```mermaid
+flowchart TD
+Start([开始]) --> HasPending["有待处理请求"]
+HasPending --> |是| GetNext["获取下一个请求"]
+GetNext --> End([返回请求])
+HasPending --> |否| End2([返回None])
+```
+
+## 核心方法
+
+### enqueue_request(request)
+
+将请求添加到调度器队列中。
+
+**参数:**
+- `request` - 要排队的请求对象
+
+**返回:**
+- 布尔值，表示请求是否成功入队
+
+```python
+def enqueue_request(self, request):
+    """将请求添加到调度器队列"""
+    # 检查是否为重复请求
+    if self._is_duplicate(request):
+        self.logger.debug(f"重复请求已过滤: {request.url}")
+        return False
+    
+    # 将请求添加到队列
+    result = self.queue_manager.enqueue_request(request)
+    if result:
+        self.logger.debug(f"请求已入队: {request.url}")
+    else:
+        self.logger.warning(f"请求入队失败: {request.url}")
+    
+    return result
+```
+
+### next_request()
+
+获取下一个待处理的请求。
+
+**返回:**
+- 下一个请求对象，如果没有待处理请求则返回 None
+
+```python
+def next_request(self):
+    """获取下一个待处理的请求"""
+    return self.queue_manager.next_request()
+```
+
+### has_pending_requests()
+
+检查是否有待处理的请求。
+
+**返回:**
+- 布尔值，表示是否有待处理请求
+
+### close()
+
+关闭调度器，释放相关资源。
+
+### idle()
+
+检查调度器是否空闲。
+
+**返回:**
+- 布尔值，表示调度器是否空闲
+
+### _is_duplicate(request)
+
+检查请求是否重复。
+
+**参数:**
+- `request` - 要检查的请求对象
+
+**返回:**
+- 布尔值，表示请求是否重复
+
+## 队列管理
+
+调度器通过队列管理器与不同类型的队列进行交互，支持内存队列和 Redis 队列。
+
+### 内存队列
+
+适用于单机模式，使用内存存储请求队列：
+
+```python
+# 内存队列配置
+QUEUE_TYPE = 'memory'
+SCHEDULER_MAX_QUEUE_SIZE = 10000
+```
+
+### Redis 队列
+
+适用于分布式模式，使用 Redis 存储请求队列：
+
+```python
+# Redis 队列配置
+QUEUE_TYPE = 'redis'
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_PASSWORD = 'password'
+```
+
+## 过滤机制
+
+调度器使用过滤器实现请求去重功能，防止重复爬取相同的 URL。
+
+### 内存过滤器
+
+适用于单机模式，使用内存中的集合存储已处理请求的指纹：
+
+```python
+# 内存过滤器配置
+FILTER_TYPE = 'memory'
+```
+
+### Redis 过滤器
+
+适用于分布式模式，使用 Redis 集合存储已处理请求的指纹：
+
+```python
+# Redis 过滤器配置
+FILTER_TYPE = 'redis'
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+```
+
+## 优先级调度
+
+调度器支持基于优先级的请求调度，确保高优先级的请求优先处理：
+
+```python
+# 设置请求优先级
+request = Request(
+    url='http://example.com',
+    priority=10  # 数值越大优先级越高
+)
+```
+
+## 配置选项
+
+调度器的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| QUEUE_TYPE | str | 'memory' | 队列类型（memory/redis） |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | 调度器最大队列大小 |
+| FILTER_TYPE | str | 'memory' | 过滤器类型（memory/redis） |
+| REDIS_HOST | str | '127.0.0.1' | Redis 主机地址 |
+| REDIS_PORT | int | 6379 | Redis 端口 |
+
+## 性能优化
+
+### 队列大小控制
+
+通过配置 [SCHEDULER_MAX_QUEUE_SIZE](#配置选项) 控制队列大小，防止内存溢出：
+
+```python
+# 设置最大队列大小
+SCHEDULER_MAX_QUEUE_SIZE = 50000
+```
+
+### 批量操作
+
+对于大量请求的场景，可以使用批量操作提高效率：
+
+```python
+# 批量入队
+requests = [Request(url=f"http://example.com/{i}") for i in range(100)]
+for request in requests:
+    scheduler.enqueue_request(request)
+```
+
+## 错误处理
+
+### 队列异常处理
+
+调度器会捕获并处理队列操作中的异常：
+
+```python
+try:
+    result = self.queue_manager.enqueue_request(request)
+except QueueFullException:
+    self.logger.warning("队列已满")
+except QueueConnectionException:
+    self.logger.error("队列连接失败")
+```
+
+### 过滤器异常处理
+
+调度器会捕获并处理过滤器操作中的异常：
+
+```python
+try:
+    is_duplicate = self.filter.check_duplicate(request)
+except FilterConnectionException:
+    self.logger.error("过滤器连接失败")
+    # 可以选择跳过过滤直接入队
+    is_duplicate = False
+```
+
+## 监控和日志
+
+调度器集成了详细的日志记录功能：
+
+```python
+# 记录请求入队日志
+self.logger.info(f"请求入队: {request.url}, 优先级: {request.priority}")
+
+# 记录重复请求日志
+self.logger.debug(f"重复请求已过滤: {request.url}")
+
+# 记录队列状态
+self.logger.debug(f"当前队列大小: {self.queue_manager.size()}")
+```
+
+## 最佳实践
+
+### 合理配置队列类型
+
+根据运行模式选择合适的队列类型：
+
+```python
+# 单机模式使用内存队列
+config = CrawloConfig.standalone(queue_type='memory')
+
+# 分布式模式使用 Redis 队列
+config = CrawloConfig.distributed(queue_type='redis')
+```
+
+### 设置适当的队列大小
+
+根据内存资源和爬取需求设置合适的队列大小：
+
+```python
+# 小规模爬取
+SCHEDULER_MAX_QUEUE_SIZE = 1000
+
+# 大规模爬取
+SCHEDULER_MAX_QUEUE_SIZE = 100000
+```
+
+### 使用优先级调度
+
+对于重要的 URL，设置较高的优先级：
+
+```python
+# 首页设置高优先级
+homepage_request = Request(url='http://example.com', priority=100)
+
+# 列表页设置中等优先级
+list_request = Request(url='http://example.com/list', priority=50)
+
+# 详情页设置低优先级
+detail_request = Request(url='http://example.com/detail', priority=10)
+```
+
+**code file end: docs/modules/core/scheduler.md**
+
+---
+
+
+### code file start: docs/modules/core/scheduler_en.md 
+
+# Scheduler
+
+The scheduler is the core component in the Crawlo framework responsible for managing request queues and implementing duplicate request filtering. It ensures requests are processed in the correct order and prevents crawling the same URLs repeatedly.
+
+## Overview
+
+The scheduler acts as the core of request management, responsible for adding requests generated by spiders to the queue and providing them to the engine for processing in priority order. It works closely with the queue manager and filter to implement efficient request scheduling and deduplication.
+
+### Core Responsibilities
+
+1. **Request Queuing** - Add newly generated requests to the queue
+2. **Request Scheduling** - Provide requests to the engine for processing in priority order
+3. **Duplicate Filtering** - Prevent duplicate requests from being added to the queue
+4. **Queue Management** - Manage the status and size of the request queue
+
+## Class Structure
+
+```mermaid
+classDiagram
+class Scheduler {
++settings : Settings
++queue_manager : QueueManager
++filter : BaseFilter
++logger : Logger
++enqueue_request(request) bool
++next_request() Request
++has_pending_requests() bool
++close() None
++idle() bool
++_is_duplicate(request) bool
++_schedule_request(request) bool
+}
+class QueueManager {
++get_queue() BaseQueue
++enqueue_request(request) bool
++next_request() Request
++has_pending_requests() bool
+}
+class BaseFilter {
++check_duplicate(request) bool
++add_request(request) None
++close() None
+}
+Scheduler --> QueueManager : "Uses"
+Scheduler --> BaseFilter : "Uses"
+```
+
+## Workflow
+
+### Request Enqueueing Flow
+
+```mermaid
+flowchart TD
+Start([Start]) --> CheckDup["Check Duplicate"]
+CheckDup --> |Duplicate| End1([Discard Request])
+CheckDup --> |Not Duplicate| AddFilter["Add to Filter"]
+AddFilter --> Enqueue["Add to Queue"]
+Enqueue --> |Success| End2([Enqueue Success])
+Enqueue --> |Failure| End3([Enqueue Failed])
+```
+
+### Request Dequeueing Flow
+
+```mermaid
+flowchart TD
+Start([Start]) --> HasPending["Has Pending Requests"]
+HasPending --> |Yes| GetNext["Get Next Request"]
+GetNext --> End([Return Request])
+HasPending --> |No| End2([Return None])
+```
+
+## Core Methods
+
+### enqueue_request(request)
+
+Add a request to the scheduler queue.
+
+**Parameters:**
+- `request` - The request object to queue
+
+**Returns:**
+- Boolean indicating whether the request was successfully queued
+
+```python
+def enqueue_request(self, request):
+    """Add a request to the scheduler queue"""
+    # Check if it's a duplicate request
+    if self._is_duplicate(request):
+        self.logger.debug(f"Duplicate request filtered: {request.url}")
+        return False
+    
+    # Add request to queue
+    result = self.queue_manager.enqueue_request(request)
+    if result:
+        self.logger.debug(f"Request queued: {request.url}")
+    else:
+        self.logger.warning(f"Failed to queue request: {request.url}")
+    
+    return result
+```
+
+### next_request()
+
+Get the next request to process.
+
+**Returns:**
+- The next request object, or None if no pending requests
+
+```python
+def next_request(self):
+    """Get the next request to process"""
+    return self.queue_manager.next_request()
+```
+
+### has_pending_requests()
+
+Check if there are pending requests.
+
+**Returns:**
+- Boolean indicating whether there are pending requests
+
+### close()
+
+Close the scheduler and release related resources.
+
+### idle()
+
+Check if the scheduler is idle.
+
+**Returns:**
+- Boolean indicating whether the scheduler is idle
+
+### _is_duplicate(request)
+
+Check if the request is a duplicate.
+
+**Parameters:**
+- `request` - The request object to check
+
+**Returns:**
+- Boolean indicating whether the request is a duplicate
+
+## Queue Management
+
+The scheduler interacts with different types of queues through the queue manager, supporting both memory queues and Redis queues.
+
+### Memory Queue
+
+Suitable for standalone mode, uses memory to store the request queue:
+
+```python
+# Memory queue configuration
+QUEUE_TYPE = 'memory'
+SCHEDULER_MAX_QUEUE_SIZE = 10000
+```
+
+### Redis Queue
+
+Suitable for distributed mode, uses Redis to store the request queue:
+
+```python
+# Redis queue configuration
+QUEUE_TYPE = 'redis'
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_PASSWORD = 'password'
+```
+
+## Filtering Mechanism
+
+The scheduler uses filters to implement request deduplication, preventing crawling the same URLs repeatedly.
+
+### Memory Filter
+
+Suitable for standalone mode, uses an in-memory set to store fingerprints of processed requests:
+
+```python
+# Memory filter configuration
+FILTER_TYPE = 'memory'
+```
+
+### Redis Filter
+
+Suitable for distributed mode, uses a Redis set to store fingerprints of processed requests:
+
+```python
+# Redis filter configuration
+FILTER_TYPE = 'redis'
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+```
+
+## Priority Scheduling
+
+The scheduler supports priority-based request scheduling, ensuring high-priority requests are processed first:
+
+```python
+# Set request priority
+request = Request(
+    url='http://example.com',
+    priority=10  # Higher number means higher priority
+)
+```
+
+## Configuration Options
+
+The scheduler's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| QUEUE_TYPE | str | 'memory' | Queue type (memory/redis) |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | Maximum scheduler queue size |
+| FILTER_TYPE | str | 'memory' | Filter type (memory/redis) |
+| REDIS_HOST | str | '127.0.0.1' | Redis host address |
+| REDIS_PORT | int | 6379 | Redis port |
+
+## Performance Optimization
+
+### Queue Size Control
+
+Control queue size through [SCHEDULER_MAX_QUEUE_SIZE](#configuration-options) configuration to prevent memory overflow:
+
+```python
+# Set maximum queue size
+SCHEDULER_MAX_QUEUE_SIZE = 50000
+```
+
+### Batch Operations
+
+For scenarios with large numbers of requests, batch operations can improve efficiency:
+
+```python
+# Batch enqueueing
+requests = [Request(url=f"http://example.com/{i}") for i in range(100)]
+for request in requests:
+    scheduler.enqueue_request(request)
+```
+
+## Error Handling
+
+### Queue Exception Handling
+
+The scheduler captures and handles exceptions in queue operations:
+
+```python
+try:
+    result = self.queue_manager.enqueue_request(request)
+except QueueFullException:
+    self.logger.warning("Queue is full")
+except QueueConnectionException:
+    self.logger.error("Queue connection failed")
+```
+
+### Filter Exception Handling
+
+The scheduler captures and handles exceptions in filter operations:
+
+```python
+try:
+    is_duplicate = self.filter.check_duplicate(request)
+except FilterConnectionException:
+    self.logger.error("Filter connection failed")
+    # Can choose to skip filtering and enqueue directly
+    is_duplicate = False
+```
+
+## Monitoring and Logging
+
+The scheduler integrates detailed logging functionality:
+
+```python
+# Log request enqueueing
+self.logger.info(f"Request queued: {request.url}, Priority: {request.priority}")
+
+# Log duplicate requests
+self.logger.debug(f"Duplicate request filtered: {request.url}")
+
+# Log queue status
+self.logger.debug(f"Current queue size: {self.queue_manager.size()}")
+```
+
+## Best Practices
+
+### Reasonable Queue Type Configuration
+
+Choose the appropriate queue type based on running mode:
+
+```python
+# Use memory queue for standalone mode
+config = CrawloConfig.standalone(queue_type='memory')
+
+# Use Redis queue for distributed mode
+config = CrawloConfig.distributed(queue_type='redis')
+```
+
+### Set Appropriate Queue Size
+
+Set appropriate queue size based on memory resources and crawling needs:
+
+```python
+# Small-scale crawling
+SCHEDULER_MAX_QUEUE_SIZE = 1000
+
+# Large-scale crawling
+SCHEDULER_MAX_QUEUE_SIZE = 100000
+```
+
+### Use Priority Scheduling
+
+Set higher priorities for important URLs:
+
+```python
+# Set high priority for homepage
+homepage_request = Request(url='http://example.com', priority=100)
+
+# Set medium priority for list page
+list_request = Request(url='http://example.com/list', priority=50)
+
+# Set low priority for detail page
+detail_request = Request(url='http://example.com/detail', priority=10)
+```
+
+**code file end: docs/modules/core/scheduler_en.md**
+
+---
+
+
+### code file start: docs/modules/core/spider.md 
+
+# 爬虫基类 (Spider)
+
+爬虫基类是 Crawlo 框架中所有爬虫的基类，定义了爬虫的基本结构、生命周期和核心接口。它为用户提供了创建自定义爬虫的框架。
+
+## 概述
+
+爬虫基类作为所有爬虫的父类，提供了统一的接口和生命周期管理。用户通过继承该类并实现相应的解析方法来创建自定义爬虫。
+
+### 核心职责
+
+1. **生命周期管理** - 管理爬虫的启动、运行和关闭过程
+2. **请求生成** - 提供生成初始请求的接口
+3. **响应解析** - 定义解析响应的接口
+4. **配置管理** - 管理爬虫的配置和元数据
+
+## 类结构
+
+```mermaid
+classDiagram
+class Spider {
++name : str
++settings : Settings
++logger : Logger
++start_requests() list
++parse(response) generator
++closed(reason) None
++_make_request(url, callback, **kwargs) Request
++extract_text(selector) str
++extract_texts(selector) list
++extract_attr(selector, attr) str
++extract_attrs(selector, attr) list
+}
+class Response {
++url : str
++status_code : int
++content : bytes
++text : str
++css(selector) list
++xpath(selector) list
+}
+Spider --> Response : "处理"
+```
+
+## 生命周期
+
+### 启动阶段
+
+1. **初始化** - 创建爬虫实例并初始化配置
+2. **开始请求** - 调用 [start_requests()](#start_requests) 方法生成初始请求
+3. **引擎启动** - 引擎开始处理请求
+
+### 运行阶段
+
+1. **请求处理** - 引擎下载请求并获取响应
+2. **响应解析** - 调用 [parse()](#parse) 方法解析响应
+3. **输出生成** - 解析函数生成新的请求或数据项
+4. **循环处理** - 重复上述过程直到所有请求处理完成
+
+### 关闭阶段
+
+1. **关闭通知** - 调用 [closed()](#closed) 方法通知爬虫关闭
+2. **资源释放** - 释放爬虫占用的资源
+
+## 核心方法
+
+### __init__(name, **kwargs)
+
+初始化爬虫实例。
+
+**参数:**
+- `name` - 爬虫名称
+- `**kwargs` - 其他配置参数
+
+```python
+def __init__(self, name, **kwargs):
+    """初始化爬虫实例"""
+    self.name = name
+    self.settings = kwargs.get('settings', {})
+    self.logger = get_logger(f"spider.{name}")
+```
+
+### start_requests()
+
+生成爬虫的初始请求。
+
+**返回:**
+- 初始请求列表
+
+```python
+def start_requests(self):
+    """生成爬虫的初始请求"""
+    # 默认实现，用户可以重写
+    urls = getattr(self, 'start_urls', [])
+    return [Request(url=url) for url in urls]
+```
+
+### parse(response)
+
+解析响应并生成输出（请求或数据项）。
+
+**参数:**
+- `response` - 响应对象
+
+**返回:**
+- 生成器，产生请求或数据项
+
+```python
+def parse(self, response):
+    """解析响应并生成输出"""
+    # 用户必须实现此方法
+    raise NotImplementedError("爬虫必须实现 parse 方法")
+```
+
+### closed(reason)
+
+爬虫关闭时调用的回调方法。
+
+**参数:**
+- `reason` - 关闭原因
+
+```python
+def closed(self, reason):
+    """爬虫关闭时调用的回调方法"""
+    self.logger.info(f"爬虫 {self.name} 已关闭，原因: {reason}")
+```
+
+### _make_request(url, callback, **kwargs)
+
+创建请求对象的辅助方法。
+
+**参数:**
+- `url` - 请求 URL
+- `callback` - 回调函数
+- `**kwargs` - 其他请求参数
+
+**返回:**
+- 请求对象
+
+## 内置方法
+
+### extract_text(selector)
+
+从响应中提取单个元素的文本内容。
+
+**参数:**
+- `selector` - CSS 或 XPath 选择器
+
+**返回:**
+- 提取的文本内容
+
+```python
+def extract_text(self, selector):
+    """提取单个元素的文本内容"""
+    elements = self.css(selector) if not selector.startswith('/') else self.xpath(selector)
+    return elements[0].text.strip() if elements else ''
+```
+
+### extract_texts(selector)
+
+从响应中提取多个元素的文本内容。
+
+**参数:**
+- `selector` - CSS 或 XPath 选择器
+
+**返回:**
+- 提取的文本内容列表
+
+### extract_attr(selector, attr)
+
+从响应中提取单个元素的属性值。
+
+**参数:**
+- `selector` - CSS 或 XPath 选择器
+- `attr` - 属性名称
+
+**返回:**
+- 提取的属性值
+
+### extract_attrs(selector, attr)
+
+从响应中提取多个元素的属性值。
+
+**参数:**
+- `selector` - CSS 或 XPath 选择器
+- `attr` - 属性名称
+
+**返回:**
+- 提取的属性值列表
+
+## 使用示例
+
+### 基本爬虫
+
+```python
+from crawlo.spider import Spider
+from crawlo.items import Item
+
+class MySpider(Spider):
+    name = 'my_spider'
+    start_urls = ['http://example.com']
+    
+    def parse(self, response):
+        # 提取数据
+        title = response.extract_text('h1')
+        links = response.extract_attrs('a', 'href')
+        
+        # 生成数据项
+        yield Item(
+            title=title,
+            links=links
+        )
+        
+        # 生成新请求
+        for link in links:
+            yield Request(url=link, callback=self.parse_detail)
+    
+    def parse_detail(self, response):
+        # 解析详情页
+        content = response.extract_text('.content')
+        yield Item(
+            content=content
+        )
+```
+
+### 异步爬虫
+
+```python
+class AsyncSpider(Spider):
+    name = 'async_spider'
+    
+    async def parse(self, response):
+        # 异步处理
+        async for item in self.process_response_async(response):
+            yield item
+    
+    async def process_response_async(self, response):
+        # 异步处理逻辑
+        await asyncio.sleep(0.1)
+        yield Item(data=response.text)
+```
+
+## 配置选项
+
+爬虫的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| SPIDER_NAME | str | '' | 爬虫名称 |
+| START_URLS | list | [] | 初始 URL 列表 |
+| CUSTOM_SETTINGS | dict | {} | 自定义配置 |
+
+## 最佳实践
+
+### 爬虫命名
+
+为爬虫提供有意义的名称：
+
+```python
+class ProductSpider(Spider):
+    name = 'product_spider'  # 清晰描述爬虫功能
+```
+
+### 错误处理
+
+在解析函数中实现适当的错误处理：
+
+```python
+def parse(self, response):
+    try:
+        # 解析逻辑
+        yield Item(data=response.text)
+    except Exception as e:
+        self.logger.error(f"解析失败: {response.url}, 错误: {e}")
+```
+
+### 请求去重
+
+合理使用请求优先级和去重机制：
+
+```python
+# 重要页面设置高优先级
+request = Request(url='http://example.com/important', priority=100)
+
+# 使用指纹去重
+request.dont_filter = False  # 默认值，启用去重
+```
+
+### 资源管理
+
+在爬虫关闭时释放资源：
+
+```python
+def closed(self, reason):
+    """释放资源"""
+    if hasattr(self, 'file'):
+        self.file.close()
+    super().closed(reason)
+```
+
+**code file end: docs/modules/core/spider.md**
+
+---
+
+
+### code file start: docs/modules/core/spider_en.md 
+
+# Spider Base Class
+
+The spider base class is the base class for all spiders in the Crawlo framework, defining the basic structure, lifecycle, and core interfaces of spiders. It provides a framework for users to create custom spiders.
+
+## Overview
+
+The spider base class acts as the parent class for all spiders, providing unified interfaces and lifecycle management. Users create custom spiders by inheriting this class and implementing corresponding parsing methods.
+
+### Core Responsibilities
+
+1. **Lifecycle Management** - Manage the spider's start, run, and close processes
+2. **Request Generation** - Provide interfaces for generating initial requests
+3. **Response Parsing** - Define interfaces for parsing responses
+4. **Configuration Management** - Manage the spider's configuration and metadata
+
+## Class Structure
+
+```mermaid
+classDiagram
+class Spider {
++name : str
++settings : Settings
++logger : Logger
++start_requests() list
++parse(response) generator
++closed(reason) None
++_make_request(url, callback, **kwargs) Request
++extract_text(selector) str
++extract_texts(selector) list
++extract_attr(selector, attr) str
++extract_attrs(selector, attr) list
+}
+class Response {
++url : str
++status_code : int
++content : bytes
++text : str
++css(selector) list
++xpath(selector) list
+}
+Spider --> Response : "Processes"
+```
+
+## Lifecycle
+
+### Startup Phase
+
+1. **Initialization** - Create spider instance and initialize configuration
+2. **Start Requests** - Call [start_requests()](#start_requests) method to generate initial requests
+3. **Engine Start** - Engine begins processing requests
+
+### Running Phase
+
+1. **Request Processing** - Engine downloads requests and gets responses
+2. **Response Parsing** - Call [parse()](#parse) method to parse responses
+3. **Output Generation** - Parsing function generates new requests or items
+4. **Loop Processing** - Repeat the above process until all requests are processed
+
+### Shutdown Phase
+
+1. **Shutdown Notification** - Call [closed()](#closed) method to notify spider shutdown
+2. **Resource Release** - Release resources occupied by the spider
+
+## Core Methods
+
+### __init__(name, **kwargs)
+
+Initialize the spider instance.
+
+**Parameters:**
+- `name` - Spider name
+- `**kwargs` - Other configuration parameters
+
+```python
+def __init__(self, name, **kwargs):
+    """Initialize the spider instance"""
+    self.name = name
+    self.settings = kwargs.get('settings', {})
+    self.logger = get_logger(f"spider.{name}")
+```
+
+### start_requests()
+
+Generate the spider's initial requests.
+
+**Returns:**
+- List of initial requests
+
+```python
+def start_requests(self):
+    """Generate the spider's initial requests"""
+    # Default implementation, users can override
+    urls = getattr(self, 'start_urls', [])
+    return [Request(url=url) for url in urls]
+```
+
+### parse(response)
+
+Parse the response and generate outputs (requests or items).
+
+**Parameters:**
+- `response` - Response object
+
+**Returns:**
+- Generator that yields requests or items
+
+```python
+def parse(self, response):
+    """Parse the response and generate outputs"""
+    # Users must implement this method
+    raise NotImplementedError("Spider must implement parse method")
+```
+
+### closed(reason)
+
+Callback method called when the spider is closed.
+
+**Parameters:**
+- `reason` - Reason for closing
+
+```python
+def closed(self, reason):
+    """Callback method called when the spider is closed"""
+    self.logger.info(f"Spider {self.name} closed, reason: {reason}")
+```
+
+### _make_request(url, callback, **kwargs)
+
+Helper method to create request objects.
+
+**Parameters:**
+- `url` - Request URL
+- `callback` - Callback function
+- `**kwargs` - Other request parameters
+
+**Returns:**
+- Request object
+
+## Built-in Methods
+
+### extract_text(selector)
+
+Extract text content from a single element in the response.
+
+**Parameters:**
+- `selector` - CSS or XPath selector
+
+**Returns:**
+- Extracted text content
+
+```python
+def extract_text(self, selector):
+    """Extract text content from a single element"""
+    elements = self.css(selector) if not selector.startswith('/') else self.xpath(selector)
+    return elements[0].text.strip() if elements else ''
+```
+
+### extract_texts(selector)
+
+Extract text content from multiple elements in the response.
+
+**Parameters:**
+- `selector` - CSS or XPath selector
+
+**Returns:**
+- List of extracted text content
+
+### extract_attr(selector, attr)
+
+Extract attribute value from a single element in the response.
+
+**Parameters:**
+- `selector` - CSS or XPath selector
+- `attr` - Attribute name
+
+**Returns:**
+- Extracted attribute value
+
+### extract_attrs(selector, attr)
+
+Extract attribute values from multiple elements in the response.
+
+**Parameters:**
+- `selector` - CSS or XPath selector
+- `attr` - Attribute name
+
+**Returns:**
+- List of extracted attribute values
+
+## Usage Examples
+
+### Basic Spider
+
+```python
+from crawlo.spider import Spider
+from crawlo.items import Item
+
+class MySpider(Spider):
+    name = 'my_spider'
+    start_urls = ['http://example.com']
+    
+    def parse(self, response):
+        # Extract data
+        title = response.extract_text('h1')
+        links = response.extract_attrs('a', 'href')
+        
+        # Generate items
+        yield Item(
+            title=title,
+            links=links
+        )
+        
+        # Generate new requests
+        for link in links:
+            yield Request(url=link, callback=self.parse_detail)
+    
+    def parse_detail(self, response):
+        # Parse detail page
+        content = response.extract_text('.content')
+        yield Item(
+            content=content
+        )
+```
+
+### Async Spider
+
+```python
+class AsyncSpider(Spider):
+    name = 'async_spider'
+    
+    async def parse(self, response):
+        # Async processing
+        async for item in self.process_response_async(response):
+            yield item
+    
+    async def process_response_async(self, response):
+        # Async processing logic
+        await asyncio.sleep(0.1)
+        yield Item(data=response.text)
+```
+
+## Configuration Options
+
+Spider behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| SPIDER_NAME | str | '' | Spider name |
+| START_URLS | list | [] | Initial URL list |
+| CUSTOM_SETTINGS | dict | {} | Custom configuration |
+
+## Best Practices
+
+### Spider Naming
+
+Provide meaningful names for spiders:
+
+```python
+class ProductSpider(Spider):
+    name = 'product_spider'  # Clear description of spider functionality
+```
+
+### Error Handling
+
+Implement appropriate error handling in parsing functions:
+
+```python
+def parse(self, response):
+    try:
+        # Parsing logic
+        yield Item(data=response.text)
+    except Exception as e:
+        self.logger.error(f"Parsing failed: {response.url}, Error: {e}")
+```
+
+### Request Deduplication
+
+Use request priorities and deduplication mechanisms appropriately:
+
+```python
+# Set high priority for important pages
+request = Request(url='http://example.com/important', priority=100)
+
+# Use fingerprint deduplication
+request.dont_filter = False  # Default value, enable deduplication
+```
+
+### Resource Management
+
+Release resources when the spider closes:
+
+```python
+def closed(self, reason):
+    """Release resources"""
+    if hasattr(self, 'file'):
+        self.file.close()
+    super().closed(reason)
+```
+
+**code file end: docs/modules/core/spider_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/aiohttp.md 
+
+# AioHttpDownloader
+
+AioHttpDownloader是基于aiohttp库的高性能下载器。它是Crawlo的默认下载器，为大多数网页爬取任务提供出色的性能。
+
+## 概述
+
+AioHttpDownloader利用aiohttp库提供异步HTTP客户端功能。它针对以下方面进行了优化：
+
+- 高并发
+- 连接池
+- 高效的内存使用
+- HTTP/1.1支持
+
+## 主要特性
+
+### 性能优化
+
+- **连接池**：重用连接以减少开销
+- **Keep-Alive支持**：维护持久连接
+- **并发请求**：同时处理多个请求
+- **高效内存使用**：每个请求的内存占用最小
+
+### 配置选项
+
+AioHttpDownloader支持各种配置选项：
+
+```python
+# 在settings.py中
+DOWNLOADER = "crawlo.downloader.aiohttp_downloader.AioHttpDownloader"
+
+# AioHttp特定设置
+CONNECTION_POOL_LIMIT = 50
+CONNECTION_TTL_DNS_CACHE = 300
+CONNECTION_KEEPALIVE_TIMEOUT = 15
+AIOHTTP_AUTO_DECOMPRESS = True
+AIOHTTP_FORCE_CLOSE = False
+```
+
+### 中间件集成
+
+AioHttpDownloader与中间件系统集成以提供：
+
+- 请求预处理
+- 响应后处理
+- 异常处理
+- 统计跟踪
+
+## API参考
+
+### `AioHttpDownloader(crawler)`
+
+创建一个新的AioHttpDownloader实例。
+
+**参数：**
+- `crawler`：拥有此下载器的爬虫实例
+
+### `async download(request)`
+
+使用aiohttp客户端下载请求。
+
+**参数：**
+- `request`：要下载的请求
+
+**返回：**
+- `Response`：下载的响应
+
+### `open()`
+
+初始化下载器并创建aiohttp客户端会话。
+
+### `async close()`
+
+清理资源并关闭aiohttp客户端会话。
+
+### `idle()`
+
+检查下载器是否空闲（无活动请求）。
+
+**返回：**
+- `bool`：如果下载器空闲则为True
+
+## 配置设置
+
+| 设置 | 描述 | 默认值 |
+|------|------|--------|
+| `CONNECTION_POOL_LIMIT` | 连接池中的最大连接数 | 50 |
+| `CONNECTION_TTL_DNS_CACHE` | DNS缓存TTL（秒） | 300 |
+| `CONNECTION_KEEPALIVE_TIMEOUT` | Keep-alive超时（秒） | 15 |
+| `AIOHTTP_AUTO_DECOMPRESS` | 自动解压缩响应 | True |
+| `AIOHTTP_FORCE_CLOSE` | 每个请求后强制关闭连接 | False |
+
+## 使用示例
+
+```python
+from crawlo.downloader import AioHttpDownloader
+
+# 在settings.py中配置
+DOWNLOADER = "crawlo.downloader.aiohttp_downloader.AioHttpDownloader"
+
+# 或直接创建（不推荐用于生产环境）
+downloader = AioHttpDownloader(crawler)
+await downloader.open()
+
+# 下载请求
+response = await downloader.download(request)
+
+# 检查是否空闲
+if downloader.idle():
+    print("无活动下载")
+
+# 清理
+await downloader.close()
+```
+
+## 性能考虑
+
+- 根据目标服务器容量调整[CONNECTION_POOL_LIMIT](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/downloader/aiohttp_downloader.py#L23)
+- 使用适当的超时设置以避免挂起请求
+- 为压缩内容启用[AIOHTTP_AUTO_DECOMPRESS](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/downloader/aiohttp_downloader.py#L26)
+- 监控连接重用统计信息以优化性能
+
+## 何时使用AioHttpDownloader
+
+推荐在以下情况下使用AioHttpDownloader：
+
+- 通用网页爬取
+- 高并发场景
+- 静态内容下载
+- 需要最大性能时
+- 大多数标准网页爬取任务
+
+可能不适用于：
+
+- JavaScript密集型网站（请改用Selenium或Playwright）
+- 需要浏览器指纹识别的情况（请改用CurlCffi）
+- 具有严格反机器人措施的网站（请考虑替代方案）
+
+**code file end: docs/modules/downloader/aiohttp.md**
+
+---
+
+
+### code file start: docs/modules/downloader/aiohttp_en.md 
+
+# AioHttpDownloader
+
+The AioHttpDownloader is a high-performance downloader based on the aiohttp library. It is the default downloader for Crawlo and provides excellent performance for most web scraping tasks.
+
+## Overview
+
+The AioHttpDownloader leverages the aiohttp library to provide asynchronous HTTP client functionality. It is optimized for:
+
+- High concurrency
+- Connection pooling
+- Efficient memory usage
+- HTTP/1.1 support
+
+## Key Features
+
+### Performance Optimizations
+
+- **Connection Pooling**: Reuses connections to reduce overhead
+- **Keep-Alive Support**: Maintains persistent connections
+- **Concurrent Requests**: Handles multiple requests simultaneously
+- **Efficient Memory Usage**: Minimal memory footprint per request
+
+### Configuration Options
+
+The AioHttpDownloader supports various configuration options:
+
+```python
+# In settings.py
+DOWNLOADER = "crawlo.downloader.aiohttp_downloader.AioHttpDownloader"
+
+# AioHttp specific settings
+CONNECTION_POOL_LIMIT = 50
+CONNECTION_TTL_DNS_CACHE = 300
+CONNECTION_KEEPALIVE_TIMEOUT = 15
+AIOHTTP_AUTO_DECOMPRESS = True
+AIOHTTP_FORCE_CLOSE = False
+```
+
+### Middleware Integration
+
+The AioHttpDownloader integrates with the middleware system to provide:
+
+- Request preprocessing
+- Response postprocessing
+- Exception handling
+- Statistics tracking
+
+## API Reference
+
+### `AioHttpDownloader(crawler)`
+
+Creates a new AioHttpDownloader instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this downloader
+
+### `async download(request)`
+
+Downloads a request using the aiohttp client.
+
+**Parameters:**
+- `request`: The request to download
+
+**Returns:**
+- `Response`: The downloaded response
+
+### `open()`
+
+Initializes the downloader and creates the aiohttp client session.
+
+### `async close()`
+
+Cleans up resources and closes the aiohttp client session.
+
+### `idle()`
+
+Checks if the downloader is idle (no active requests).
+
+**Returns:**
+- `bool`: True if downloader is idle
+
+## Configuration Settings
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `CONNECTION_POOL_LIMIT` | Maximum number of connections in the pool | 50 |
+| `CONNECTION_TTL_DNS_CACHE` | DNS cache TTL in seconds | 300 |
+| `CONNECTION_KEEPALIVE_TIMEOUT` | Keep-alive timeout in seconds | 15 |
+| `AIOHTTP_AUTO_DECOMPRESS` | Automatically decompress responses | True |
+| `AIOHTTP_FORCE_CLOSE` | Force close connections after each request | False |
+
+## Example Usage
+
+```python
+from crawlo.downloader import AioHttpDownloader
+
+# Configure in settings.py
+DOWNLOADER = "crawlo.downloader.aiohttp_downloader.AioHttpDownloader"
+
+# Or create directly (not recommended for production)
+downloader = AioHttpDownloader(crawler)
+await downloader.open()
+
+# Download a request
+response = await downloader.download(request)
+
+# Check if idle
+if downloader.idle():
+    print("No active downloads")
+
+# Cleanup
+await downloader.close()
+```
+
+## Performance Considerations
+
+- Adjust `CONNECTION_POOL_LIMIT` based on target server capacity
+- Use appropriate timeout settings to avoid hanging requests
+- Enable `AIOHTTP_AUTO_DECOMPRESS` for compressed content
+- Monitor connection reuse statistics to optimize performance
+
+## When to Use AioHttpDownloader
+
+The AioHttpDownloader is recommended for:
+
+- General-purpose web scraping
+- High-concurrency scenarios
+- Static content downloading
+- When maximum performance is required
+- Most standard web scraping tasks
+
+It may not be suitable for:
+
+- JavaScript-heavy websites (use Selenium or Playwright instead)
+- Cases requiring browser fingerprinting (use CurlCffi instead)
+- Sites with strict anti-bot measures (consider alternatives)
+
+**code file end: docs/modules/downloader/aiohttp_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/curl_cffi.md 
+
+# CurlCffiDownloader
+
+CurlCffiDownloader是基于curl-cffi的下载器，提供浏览器指纹模拟功能。它特别适用于绕过检测自动化请求的反机器人措施。
+
+## 概述
+
+CurlCffiDownloader使用curl-cffi库提供具有浏览器指纹模拟功能的HTTP客户端。它针对以下方面进行了优化：
+
+- 浏览器指纹模拟
+- 绕过反机器人措施
+- 类JavaScript的请求行为
+- 与真实浏览器的高度兼容性
+
+## 主要特性
+
+### 浏览器指纹模拟
+
+CurlCffiDownloader可以模拟各种浏览器指纹：
+
+- Chrome、Edge、Safari、Firefox浏览器签名
+- TLS指纹识别
+- HTTP/2指纹识别
+- JA3指纹识别抵抗
+
+### 配置选项
+
+CurlCffiDownloader支持各种配置选项：
+
+```python
+# 在settings.py中
+DOWNLOADER = "crawlo.downloader.cffi_downloader.CurlCffiDownloader"
+
+# CurlCffi特定设置
+CURL_BROWSER_TYPE = "chrome"
+CURL_BROWSER_VERSION_MAP = {
+    "chrome": "chrome136",
+    "edge": "edge101",
+    "safari": "safari184",
+    "firefox": "firefox135",
+}
+```
+
+### 中间件集成
+
+CurlCffiDownloader与中间件系统集成以提供：
+
+- 请求预处理
+- 响应后处理
+- 异常处理
+- 统计跟踪
+
+## API参考
+
+### `CurlCffiDownloader(crawler)`
+
+创建一个新的CurlCffiDownloader实例。
+
+**参数：**
+- `crawler`：拥有此下载器的爬虫实例
+
+### `async download(request)`
+
+使用curl-cffi客户端下载请求。
+
+**参数：**
+- `request`：要下载的请求
+
+**返回：**
+- `Response`：下载的响应
+
+### `open()`
+
+初始化下载器并创建curl-cffi客户端。
+
+### `async close()`
+
+清理资源并关闭curl-cffi客户端。
+
+### `idle()`
+
+检查下载器是否空闲（无活动请求）。
+
+**返回：**
+- `bool`：如果下载器空闲则为True
+
+## 配置设置
+
+| 设置 | 描述 | 默认值 |
+|------|------|--------|
+| `CURL_BROWSER_TYPE` | 要模拟的浏览器类型 | "chrome" |
+| `CURL_BROWSER_VERSION_MAP` | 浏览器版本映射 | 见上文 |
+
+## 使用示例
+
+```python
+from crawlo.downloader import CurlCffiDownloader
+
+# 在settings.py中配置
+DOWNLOADER = "crawlo.downloader.cffi_downloader.CurlCffiDownloader"
+
+# 配置浏览器类型
+CURL_BROWSER_TYPE = "chrome136"
+
+# 或直接创建（不推荐用于生产环境）
+downloader = CurlCffiDownloader(crawler)
+await downloader.open()
+
+# 下载请求
+response = await downloader.download(request)
+
+# 检查是否空闲
+if downloader.idle():
+    print("无活动下载")
+
+# 清理
+await downloader.close()
+```
+
+## 浏览器模拟
+
+CurlCffiDownloader可以模拟不同的浏览器：
+
+```python
+# 模拟Chrome
+CURL_BROWSER_TYPE = "chrome"
+
+# 模拟Firefox
+CURL_BROWSER_TYPE = "firefox"
+
+# 模拟Safari
+CURL_BROWSER_TYPE = "safari"
+
+# 模拟Edge
+CURL_BROWSER_TYPE = "edge"
+```
+
+## 性能考虑
+
+- 浏览器指纹模拟会增加一些开销
+- 连接重用可能不如纯HTTP客户端高效
+- 内存使用量可能比简单下载器更高
+- 某些高级功能可能不可用
+
+## 何时使用CurlCffiDownloader
+
+推荐在以下情况下使用CurlCffiDownloader：
+
+- 具有强反机器人措施的网站
+- 关注浏览器指纹检测的情况
+- 阻止标准HTTP客户端的网站
+- 当您需要更像真实浏览器时
+- 具有高级机器人保护的电子商务网站
+
+可能不适用于：
+
+- 没有反机器人措施的简单网站
+- 需要最大性能的情况
+- 偏好最小依赖的情况
+- 内部API或简单Web服务
+
+**code file end: docs/modules/downloader/curl_cffi.md**
+
+---
+
+
+### code file start: docs/modules/downloader/curl_cffi_en.md 
+
+# CurlCffiDownloader
+
+The CurlCffiDownloader is a downloader based on curl-cffi that provides browser fingerprint simulation capabilities. It is particularly useful for bypassing anti-bot measures that detect automated requests.
+
+## Overview
+
+The CurlCffiDownloader uses the curl-cffi library to provide HTTP client functionality with browser fingerprint simulation. It is optimized for:
+
+- Browser fingerprint simulation
+- Bypassing anti-bot measures
+- JavaScript-like request behavior
+- High compatibility with real browsers
+
+## Key Features
+
+### Browser Fingerprint Simulation
+
+The CurlCffiDownloader can simulate various browser fingerprints:
+
+- Chrome, Edge, Safari, Firefox browser signatures
+- TLS fingerprinting
+- HTTP/2 fingerprinting
+- JA3 fingerprinting resistance
+
+### Configuration Options
+
+The CurlCffiDownloader supports various configuration options:
+
+```python
+# In settings.py
+DOWNLOADER = "crawlo.downloader.cffi_downloader.CurlCffiDownloader"
+
+# CurlCffi specific settings
+CURL_BROWSER_TYPE = "chrome"
+CURL_BROWSER_VERSION_MAP = {
+    "chrome": "chrome136",
+    "edge": "edge101",
+    "safari": "safari184",
+    "firefox": "firefox135",
+}
+```
+
+### Middleware Integration
+
+The CurlCffiDownloader integrates with the middleware system to provide:
+
+- Request preprocessing
+- Response postprocessing
+- Exception handling
+- Statistics tracking
+
+## API Reference
+
+### `CurlCffiDownloader(crawler)`
+
+Creates a new CurlCffiDownloader instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this downloader
+
+### `async download(request)`
+
+Downloads a request using the curl-cffi client.
+
+**Parameters:**
+- `request`: The request to download
+
+**Returns:**
+- `Response`: The downloaded response
+
+### `open()`
+
+Initializes the downloader and creates the curl-cffi client.
+
+### `async close()`
+
+Cleans up resources and closes the curl-cffi client.
+
+### `idle()`
+
+Checks if the downloader is idle (no active requests).
+
+**Returns:**
+- `bool`: True if downloader is idle
+
+## Configuration Settings
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `CURL_BROWSER_TYPE` | Browser type to simulate | "chrome" |
+| `CURL_BROWSER_VERSION_MAP` | Browser version mappings | See above |
+
+## Example Usage
+
+```python
+from crawlo.downloader import CurlCffiDownloader
+
+# Configure in settings.py
+DOWNLOADER = "crawlo.downloader.cffi_downloader.CurlCffiDownloader"
+
+# Configure browser type
+CURL_BROWSER_TYPE = "chrome136"
+
+# Or create directly (not recommended for production)
+downloader = CurlCffiDownloader(crawler)
+await downloader.open()
+
+# Download a request
+response = await downloader.download(request)
+
+# Check if idle
+if downloader.idle():
+    print("No active downloads")
+
+# Cleanup
+await downloader.close()
+```
+
+## Browser Simulation
+
+The CurlCffiDownloader can simulate different browsers:
+
+```python
+# Simulate Chrome
+CURL_BROWSER_TYPE = "chrome"
+
+# Simulate Firefox
+CURL_BROWSER_TYPE = "firefox"
+
+# Simulate Safari
+CURL_BROWSER_TYPE = "safari"
+
+# Simulate Edge
+CURL_BROWSER_TYPE = "edge"
+```
+
+## Performance Considerations
+
+- Browser fingerprint simulation adds some overhead
+- Connection reuse may be less efficient than pure HTTP clients
+- Memory usage may be higher than simpler downloaders
+- Some advanced features may not be available
+
+## When to Use CurlCffiDownloader
+
+The CurlCffiDownloader is recommended for:
+
+- Websites with strong anti-bot measures
+- Cases where browser fingerprint detection is a concern
+- Sites that block standard HTTP clients
+- When you need to appear more like a real browser
+- E-commerce sites with advanced bot protection
+
+It may not be suitable for:
+
+- Simple websites without anti-bot measures
+- Cases where maximum performance is required
+- When minimal dependencies are preferred
+- Internal APIs or simple web services
+
+**code file end: docs/modules/downloader/curl_cffi_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/httpx.md 
+
+# HttpXDownloader
+
+HttpXDownloader是基于httpx库的下载器，提供HTTP/2支持和出色的异步功能。当需要HTTP/2支持时，它是AioHttpDownloader的良好替代品。
+
+## 概述
+
+HttpXDownloader使用httpx库提供具有HTTP/2支持的高级HTTP客户端功能。它针对以下方面进行了优化：
+
+- HTTP/2协议支持
+- 现代化的async/await接口
+- 全面的HTTP功能
+- 出色的兼容性
+
+## 主要特性
+
+### HTTP/2支持
+
+HttpXDownloader支持HTTP/2协议，提供：
+
+- 在单个连接上多路复用请求
+- 头部压缩
+- 服务器推送（当支持时）
+- 为现代网站提供改进的性能
+
+### 配置选项
+
+HttpXDownloader支持各种配置选项：
+
+```python
+# 在settings.py中
+DOWNLOADER = "crawlo.downloader.httpx_downloader.HttpXDownloader"
+
+# HttpX特定设置
+HTTPX_HTTP2 = True
+HTTPX_FOLLOW_REDIRECTS = True
+CONNECTION_POOL_LIMIT = 50
+CONNECTION_TTL_DNS_CACHE = 300
+```
+
+### 中间件集成
+
+HttpXDownloader与中间件系统集成以提供：
+
+- 请求预处理
+- 响应后处理
+- 异常处理
+- 统计跟踪
+
+## API参考
+
+### `HttpXDownloader(crawler)`
+
+创建一个新的HttpXDownloader实例。
+
+**参数：**
+- `crawler`：拥有此下载器的爬虫实例
+
+### `async download(request)`
+
+使用httpx客户端下载请求。
+
+**参数：**
+- `request`：要下载的请求
+
+**返回：**
+- `Response`：下载的响应
+
+### `open()`
+
+初始化下载器并创建httpx客户端。
+
+### `async close()`
+
+清理资源并关闭httpx客户端。
+
+### `idle()`
+
+检查下载器是否空闲（无活动请求）。
+
+**返回：**
+- `bool`：如果下载器空闲则为True
+
+## 配置设置
+
+| 设置 | 描述 | 默认值 |
+|------|------|--------|
+| `HTTPX_HTTP2` | 启用HTTP/2支持 | True |
+| `HTTPX_FOLLOW_REDIRECTS` | 自动跟随重定向 | True |
+| `CONNECTION_POOL_LIMIT` | 连接池中的最大连接数 | 50 |
+| `CONNECTION_TTL_DNS_CACHE` | DNS缓存TTL（秒） | 300 |
+
+## 使用示例
+
+```python
+from crawlo.downloader import HttpXDownloader
+
+# 在settings.py中配置
+DOWNLOADER = "crawlo.downloader.httpx_downloader.HttpXDownloader"
+
+# 或直接创建（不推荐用于生产环境）
+downloader = HttpXDownloader(crawler)
+await downloader.open()
+
+# 下载请求
+response = await downloader.download(request)
+
+# 检查是否空闲
+if downloader.idle():
+    print("无活动下载")
+
+# 清理
+await downloader.close()
+```
+
+## 性能考虑
+
+- HTTP/2可以显著提高支持它的网站的性能
+- 连接池有助于减少多个请求的开销
+- 根据目标服务器容量调整[CONNECTION_POOL_LIMIT](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/downloader/httpx_downloader.py#L22)
+- 监控HTTP/2连接重用统计信息
+
+## 何时使用HttpXDownloader
+
+推荐在以下情况下使用HttpXDownloader：
+
+- 支持HTTP/2的网站
+- 需要HTTP/2性能优势的情况
+- 现代Web应用程序
+- 当您需要最新的HTTP功能时
+- 从HTTP/2多路复用中受益的API
+
+可能不适用于：
+
+- 仅支持HTTP/1.1的旧网站
+- 需要最大原始性能的情况（AioHttp可能更快）
+- 具有特定兼容性要求的网站
+
+**code file end: docs/modules/downloader/httpx.md**
+
+---
+
+
+### code file start: docs/modules/downloader/httpx_en.md 
+
+# HttpXDownloader
+
+The HttpXDownloader is a downloader based on the httpx library that provides HTTP/2 support and excellent async capabilities. It is a good alternative to AioHttpDownloader when HTTP/2 support is needed.
+
+## Overview
+
+The HttpXDownloader uses the httpx library to provide advanced HTTP client functionality with HTTP/2 support. It is optimized for:
+
+- HTTP/2 protocol support
+- Modern async/await interface
+- Comprehensive HTTP features
+- Excellent compatibility
+
+## Key Features
+
+### HTTP/2 Support
+
+The HttpXDownloader supports HTTP/2 protocol which provides:
+
+- Multiplexing of requests over a single connection
+- Header compression
+- Server push (when supported)
+- Improved performance for modern websites
+
+### Configuration Options
+
+The HttpXDownloader supports various configuration options:
+
+```python
+# In settings.py
+DOWNLOADER = "crawlo.downloader.httpx_downloader.HttpXDownloader"
+
+# HttpX specific settings
+HTTPX_HTTP2 = True
+HTTPX_FOLLOW_REDIRECTS = True
+CONNECTION_POOL_LIMIT = 50
+CONNECTION_TTL_DNS_CACHE = 300
+```
+
+### Middleware Integration
+
+The HttpXDownloader integrates with the middleware system to provide:
+
+- Request preprocessing
+- Response postprocessing
+- Exception handling
+- Statistics tracking
+
+## API Reference
+
+### `HttpXDownloader(crawler)`
+
+Creates a new HttpXDownloader instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this downloader
+
+### `async download(request)`
+
+Downloads a request using the httpx client.
+
+**Parameters:**
+- `request`: The request to download
+
+**Returns:**
+- `Response`: The downloaded response
+
+### `open()`
+
+Initializes the downloader and creates the httpx client.
+
+### `async close()`
+
+Cleans up resources and closes the httpx client.
+
+### `idle()`
+
+Checks if the downloader is idle (no active requests).
+
+**Returns:**
+- `bool`: True if downloader is idle
+
+## Configuration Settings
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `HTTPX_HTTP2` | Enable HTTP/2 support | True |
+| `HTTPX_FOLLOW_REDIRECTS` | Automatically follow redirects | True |
+| `CONNECTION_POOL_LIMIT` | Maximum number of connections in the pool | 50 |
+| `CONNECTION_TTL_DNS_CACHE` | DNS cache TTL in seconds | 300 |
+
+## Example Usage
+
+```python
+from crawlo.downloader import HttpXDownloader
+
+# Configure in settings.py
+DOWNLOADER = "crawlo.downloader.httpx_downloader.HttpXDownloader"
+
+# Or create directly (not recommended for production)
+downloader = HttpXDownloader(crawler)
+await downloader.open()
+
+# Download a request
+response = await downloader.download(request)
+
+# Check if idle
+if downloader.idle():
+    print("No active downloads")
+
+# Cleanup
+await downloader.close()
+```
+
+## Performance Considerations
+
+- HTTP/2 can significantly improve performance for sites that support it
+- Connection pooling helps reduce overhead for multiple requests
+- Adjust `CONNECTION_POOL_LIMIT` based on target server capacity
+- Monitor HTTP/2 connection reuse statistics
+
+## When to Use HttpXDownloader
+
+The HttpXDownloader is recommended for:
+
+- Websites that support HTTP/2
+- Cases where HTTP/2 performance benefits are needed
+- Modern web applications
+- When you need the latest HTTP features
+- APIs that benefit from HTTP/2 multiplexing
+
+It may not be suitable for:
+
+- Older websites that only support HTTP/1.1
+- Cases where maximum raw performance is needed (AioHttp may be faster)
+- Sites with specific compatibility requirements
+
+**code file end: docs/modules/downloader/httpx_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/index.md 
+
+# 下载器模块
+
+下载器模块是 Crawlo 框架中负责获取网页内容的核心组件。它提供了多种 HTTP 客户端实现，支持不同的使用场景和需求。
+
+## 模块概述
+
+下载器模块采用插件化设计，支持多种 HTTP 客户端实现，包括 aiohttp、httpx 和 curl-cffi。用户可以根据具体需求选择合适的下载器。
+
+### 核心组件
+
+1. [AioHttpDownloader](aiohttp.md) - 基于 aiohttp 的高性能下载器
+2. [HttpXDownloader](httpx.md) - 支持 HTTP/2 的下载器
+3. [CurlCffiDownloader](curl_cffi.md) - 支持浏览器指纹模拟的下载器
+4. [SeleniumDownloader](selenium.md) - 基于 Selenium 的浏览器自动化下载器
+5. [PlaywrightDownloader](playwright.md) - 基于 Playwright 的现代浏览器自动化下载器
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "下载器模块"
+DownloaderBase[DownloaderBase<br/>基础下载器类]
+AioHttpDownloader[AioHttpDownloader<br/>aiohttp 实现]
+HttpXDownloader[HttpXDownloader<br/>httpx 实现]
+CurlCffiDownloader[CurlCffiDownloader<br/>curl-cffi 实现]
+SeleniumDownloader[SeleniumDownloader<br/>Selenium 实现]
+PlaywrightDownloader[PlaywrightDownloader<br/>Playwright 实现]
+end
+Engine[引擎] --> DownloaderBase
+DownloaderBase --> AioHttpDownloader
+DownloaderBase --> HttpXDownloader
+DownloaderBase --> CurlCffiDownloader
+DownloaderBase --> SeleniumDownloader
+DownloaderBase --> PlaywrightDownloader
+style DownloaderBase fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+```
+
+## 下载器选择指南
+
+### AioHttpDownloader
+
+**适用场景:**
+- 高性能、高并发的简单网页抓取
+- 不需要浏览器指纹模拟的场景
+- 对资源消耗有严格要求的环境
+
+**特点:**
+- 基于 asyncio，性能优异
+- 资源消耗低
+- 支持连接池和会话复用
+
+### HttpXDownloader
+
+**适用场景:**
+- 需要 HTTP/2 支持的网站
+- 需要更好的异步支持
+- 对现代 HTTP 特性有要求的场景
+
+**特点:**
+- 支持 HTTP/1.1 和 HTTP/2
+- 更好的异步支持
+- 现代化的 API 设计
+
+### CurlCffiDownloader
+
+**适用场景:**
+- 需要绕过基本反爬虫机制
+- 需要模拟真实浏览器指纹
+- 目标网站有严格的请求头检查
+
+**特点:**
+- 模拟真实浏览器指纹
+- 绕过基本反爬虫检测
+- 支持 TLS 指纹模拟
+
+### SeleniumDownloader
+
+**适用场景:**
+- 需要执行 JavaScript 的复杂网页
+- 需要模拟用户交互的场景
+- 需要完整浏览器环境的爬取任务
+
+**特点:**
+- 完整的浏览器环境
+- 支持 JavaScript 执行
+- 支持用户交互模拟
+
+### PlaywrightDownloader
+
+**适用场景:**
+- 需要现代浏览器功能的爬取任务
+- 需要更好的性能和稳定性
+- 需要跨浏览器支持的场景
+
+**特点:**
+- 现代化的浏览器自动化
+- 更好的性能和稳定性
+- 支持多种浏览器
+
+## 配置选项
+
+下载器模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| DOWNLOADER_TYPE | str | 'aiohttp' | 下载器类型 |
+| DOWNLOAD_TIMEOUT | int | 30 | 下载超时时间（秒） |
+| DOWNLOAD_DELAY | float | 0.5 | 下载延迟（秒） |
+| DOWNLOADER_MIDDLEWARES | list | [] | 下载器中间件列表 |
+| USER_AGENT | str | '' | 用户代理字符串 |
+
+## 使用示例
+
+### 基本使用
+
+```python
+from crawlo.config import CrawloConfig
+from crawlo.downloader import AioHttpDownloader
+
+# 配置使用 aiohttp 下载器
+config = CrawloConfig.standalone(
+    downloader_type='aiohttp',
+    download_timeout=30
+)
+
+# 创建下载器实例
+downloader = AioHttpDownloader(config)
+```
+
+### 切换下载器
+
+```python
+# 切换到 httpx 下载器
+config = CrawloConfig.standalone(downloader_type='httpx')
+
+# 切换到 curl-cffi 下载器
+config = CrawloConfig.standalone(downloader_type='curl-cffi')
+```
+
+## 性能对比
+
+| 下载器 | 性能 | 资源消耗 | 反爬虫绕过 | JavaScript 支持 |
+|--------|------|----------|------------|-----------------|
+| AioHttpDownloader | 高 | 低 | 基本 | 不支持 |
+| HttpXDownloader | 高 | 低 | 基本 | 不支持 |
+| CurlCffiDownloader | 中 | 中 | 强 | 不支持 |
+| SeleniumDownloader | 低 | 高 | 强 | 完整 |
+| PlaywrightDownloader | 中 | 高 | 强 | 完整 |
+
+## 最佳实践
+
+### 根据需求选择下载器
+
+```python
+# 简单网页抓取使用 aiohttp
+config = CrawloConfig.standalone(downloader_type='aiohttp')
+
+# 需要绕过反爬虫使用 curl-cffi
+config = CrawloConfig.standalone(downloader_type='curl-cffi')
+
+# 需要执行 JavaScript 使用 playwright
+config = CrawloConfig.standalone(downloader_type='playwright')
+```
+
+### 合理配置超时和延迟
+
+```python
+# 配置适当的超时时间
+config = CrawloConfig.standalone(
+    download_timeout=60,  # 60秒超时
+    download_delay=1.0    # 1秒延迟
+)
+```
+
+### 使用中间件增强功能
+
+```python
+# 配置下载器中间件
+DOWNLOADER_MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+**code file end: docs/modules/downloader/index.md**
+
+---
+
+
+### code file start: docs/modules/downloader/index_en.md 
+
+# Downloader Module
+
+The downloader module is the core component in the Crawlo framework responsible for fetching web content. It provides multiple HTTP client implementations to support different use cases and requirements.
+
+## Module Overview
+
+The downloader module adopts a plugin-based design, supporting multiple HTTP client implementations including aiohttp, httpx, and curl-cffi. Users can choose the appropriate downloader based on specific needs.
+
+### Core Components
+
+1. [AioHttpDownloader](aiohttp_en.md) - High-performance downloader based on aiohttp
+2. [HttpXDownloader](httpx_en.md) - Downloader supporting HTTP/2
+3. [CurlCffiDownloader](curl_cffi_en.md) - Downloader supporting browser fingerprint simulation
+4. [SeleniumDownloader](selenium_en.md) - Browser automation downloader based on Selenium
+5. [PlaywrightDownloader](playwright_en.md) - Modern browser automation downloader based on Playwright
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Downloader Module"
+DownloaderBase[DownloaderBase<br/>Base Downloader Class]
+AioHttpDownloader[AioHttpDownloader<br/>aiohttp Implementation]
+HttpXDownloader[HttpXDownloader<br/>httpx Implementation]
+CurlCffiDownloader[CurlCffiDownloader<br/>curl-cffi Implementation]
+SeleniumDownloader[SeleniumDownloader<br/>Selenium Implementation]
+PlaywrightDownloader[PlaywrightDownloader<br/>Playwright Implementation]
+end
+Engine[Engine] --> DownloaderBase
+DownloaderBase --> AioHttpDownloader
+DownloaderBase --> HttpXDownloader
+DownloaderBase --> CurlCffiDownloader
+DownloaderBase --> SeleniumDownloader
+DownloaderBase --> PlaywrightDownloader
+style DownloaderBase fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+```
+
+## Downloader Selection Guide
+
+### AioHttpDownloader
+
+**Use Cases:**
+- High-performance, high-concurrency simple web scraping
+- Scenarios that don't require browser fingerprint simulation
+- Environments with strict resource consumption requirements
+
+**Features:**
+- Based on asyncio, excellent performance
+- Low resource consumption
+- Supports connection pooling and session reuse
+
+### HttpXDownloader
+
+**Use Cases:**
+- Websites requiring HTTP/2 support
+- Need for better asynchronous support
+- Scenarios requiring modern HTTP features
+
+**Features:**
+- Supports HTTP/1.1 and HTTP/2
+- Better asynchronous support
+- Modern API design
+
+### CurlCffiDownloader
+
+**Use Cases:**
+- Need to bypass basic anti-crawling mechanisms
+- Need to simulate real browser fingerprints
+- Target websites with strict request header checks
+
+**Features:**
+- Simulates real browser fingerprints
+- Bypasses basic anti-crawling detection
+- Supports TLS fingerprint simulation
+
+### SeleniumDownloader
+
+**Use Cases:**
+- Complex web pages requiring JavaScript execution
+- Scenarios requiring user interaction simulation
+- Crawling tasks requiring a complete browser environment
+
+**Features:**
+- Complete browser environment
+- Supports JavaScript execution
+- Supports user interaction simulation
+
+### PlaywrightDownloader
+
+**Use Cases:**
+- Crawling tasks requiring modern browser features
+- Need for better performance and stability
+- Scenarios requiring cross-browser support
+
+**Features:**
+- Modern browser automation
+- Better performance and stability
+- Supports multiple browsers
+
+## Configuration Options
+
+The behavior of the downloader module can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| DOWNLOADER_TYPE | str | 'aiohttp' | Downloader type |
+| DOWNLOAD_TIMEOUT | int | 30 | Download timeout (seconds) |
+| DOWNLOAD_DELAY | float | 0.5 | Download delay (seconds) |
+| DOWNLOADER_MIDDLEWARES | list | [] | Downloader middleware list |
+| USER_AGENT | str | '' | User agent string |
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from crawlo.config import CrawloConfig
+from crawlo.downloader import AioHttpDownloader
+
+# Configure to use aiohttp downloader
+config = CrawloConfig.standalone(
+    downloader_type='aiohttp',
+    download_timeout=30
+)
+
+# Create downloader instance
+downloader = AioHttpDownloader(config)
+```
+
+### Switching Downloaders
+
+```python
+# Switch to httpx downloader
+config = CrawloConfig.standalone(downloader_type='httpx')
+
+# Switch to curl-cffi downloader
+config = CrawloConfig.standalone(downloader_type='curl-cffi')
+```
+
+## Performance Comparison
+
+| Downloader | Performance | Resource Consumption | Anti-crawling Bypass | JavaScript Support |
+|------------|-------------|---------------------|---------------------|-------------------|
+| AioHttpDownloader | High | Low | Basic | Not supported |
+| HttpXDownloader | High | Low | Basic | Not supported |
+| CurlCffiDownloader | Medium | Medium | Strong | Not supported |
+| SeleniumDownloader | Low | High | Strong | Full |
+| PlaywrightDownloader | Medium | High | Strong | Full |
+
+## Best Practices
+
+### Choosing Downloaders Based on Requirements
+
+```python
+# Use aiohttp for simple web scraping
+config = CrawloConfig.standalone(downloader_type='aiohttp')
+
+# Use curl-cffi to bypass anti-crawling
+config = CrawloConfig.standalone(downloader_type='curl-cffi')
+
+# Use playwright for JavaScript execution
+config = CrawloConfig.standalone(downloader_type='playwright')
+```
+
+### Reasonable Timeout and Delay Configuration
+
+```python
+# Configure appropriate timeout
+config = CrawloConfig.standalone(
+    download_timeout=60,  # 60 second timeout
+    download_delay=1.0    # 1 second delay
+)
+```
+
+### Using Middleware to Enhance Functionality
+
+```python
+# Configure downloader middleware
+DOWNLOADER_MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+**code file end: docs/modules/downloader/index_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/playwright.md 
+
+# PlaywrightDownloader
+
+PlaywrightDownloader 是 Crawlo 框架中基于 Playwright 的现代浏览器自动化下载器，提供了比 Selenium 更好的性能和更简单的 API。
+
+## 概述
+
+PlaywrightDownloader 基于 Microsoft 的 Playwright 框架，支持多种浏览器（Chromium、Firefox、WebKit），具有更快的执行速度和更低的资源消耗。
+
+### 核心特性
+
+1. **多浏览器支持** - 支持 Chromium、Firefox、WebKit
+2. **高性能** - 比 Selenium 更快的执行速度
+3. **低资源消耗** - 相比 Selenium 消耗更少资源
+4. **现代化 API** - 简洁易用的 API 设计
+5. **移动端支持** - 支持设备模拟和移动端浏览器
+
+## 配置选项
+
+PlaywrightDownloader 的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| PLAYWRIGHT_BROWSER | str | 'chromium' | 浏览器类型 (chromium/firefox/webkit) |
+| PLAYWRIGHT_HEADLESS | bool | True | 是否启用无头模式 |
+| PLAYWRIGHT_VIEWPORT | dict | {'width': 1920, 'height': 1080} | 浏览器视口大小 |
+| PLAYWRIGHT_TIMEOUT | int | 30000 | 操作超时时间（毫秒） |
+| PLAYWRIGHT_SLOW_MO | int | 0 | 慢动作模式延迟（毫秒） |
+
+## 使用示例
+
+### 基本使用
+
+```python
+from crawlo.config import CrawloConfig
+
+# 配置使用 Playwright 下载器
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    playwright_browser='chromium',
+    playwright_headless=True
+)
+```
+
+### 高级配置
+
+```python
+# 配置浏览器选项
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    playwright_browser='firefox',
+    playwright_headless=False,
+    playwright_viewport={'width': 1366, 'height': 768},
+    playwright_timeout=60000
+)
+```
+
+## 性能优势
+
+### 与 Selenium 对比
+
+| 特性 | Playwright | Selenium |
+|------|------------|----------|
+| 启动时间 | 1-2 秒 | 5-10 秒 |
+| 内存消耗 | 低 | 高 |
+| 执行速度 | 快 | 中等 |
+| API 复杂度 | 简单 | 复杂 |
+| 移动端支持 | 原生支持 | 需要额外配置 |
+
+### 资源管理
+
+```python
+# Playwright 的资源管理更加高效
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    concurrency=5,  # 可以使用更高并发
+    download_delay=1.0
+)
+```
+
+## 最佳实践
+
+### 1. 浏览器选择
+
+```python
+# 根据需求选择合适的浏览器
+# Chromium - 性能最佳，兼容性好
+config = CrawloConfig.standalone(playwright_browser='chromium')
+
+# Firefox - 开源选择
+config = CrawloConfig.standalone(playwright_browser='firefox')
+
+# WebKit - 用于 Safari 兼容性测试
+config = CrawloConfig.standalone(playwright_browser='webkit')
+```
+
+### 2. 设备模拟
+
+```python
+# 移动端设备模拟
+config = CrawloConfig.standalone(
+    playwright_browser='chromium',
+    playwright_viewport={
+        'width': 375,
+        'height': 812,
+        'isMobile': True,
+        'hasTouch': True
+    }
+)
+```
+
+### 3. 错误处理
+
+```python
+# 处理 Playwright 相关异常
+def parse_with_playwright(self, response):
+    try:
+        # 浏览器操作
+        yield self.extract_data(response)
+    except TimeoutError as e:
+        self.logger.error(f"操作超时: {e}")
+        # 可以选择重试
+    except Error as e:
+        self.logger.error(f"Playwright 错误: {e}")
+        # 处理其他 Playwright 错误
+```
+
+### 4. 上下文管理
+
+```python
+# 合理使用浏览器上下文
+class EfficientSpider(Spider):
+    async def parse(self, response):
+        # 创建新的浏览器上下文
+        context = await self.playwright.new_context(
+            user_agent='Custom User Agent',
+            viewport={'width': 1920, 'height': 1080}
+        )
+        
+        try:
+            # 在上下文中执行操作
+            page = await context.new_page()
+            await page.goto(response.url)
+            # 提取数据
+            yield self.extract_data(page)
+        finally:
+            # 确保上下文被关闭
+            await context.close()
+```
+
+**code file end: docs/modules/downloader/playwright.md**
+
+---
+
+
+### code file start: docs/modules/downloader/playwright_en.md 
+
+# PlaywrightDownloader
+
+PlaywrightDownloader is a modern browser automation downloader based on Playwright in the Crawlo framework, offering better performance and a simpler API than Selenium.
+
+## Overview
+
+PlaywrightDownloader is based on Microsoft's Playwright framework, supporting multiple browsers (Chromium, Firefox, WebKit), with faster execution speed and lower resource consumption.
+
+### Core Features
+
+1. **Multi-browser Support** - Supports Chromium, Firefox, WebKit
+2. **High Performance** - Faster execution speed than Selenium
+3. **Low Resource Consumption** - Consumes fewer resources than Selenium
+4. **Modern API** - Clean and easy-to-use API design
+5. **Mobile Support** - Supports device emulation and mobile browsers
+
+## Configuration Options
+
+The behavior of PlaywrightDownloader can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| PLAYWRIGHT_BROWSER | str | 'chromium' | Browser type (chromium/firefox/webkit) |
+| PLAYWRIGHT_HEADLESS | bool | True | Whether to enable headless mode |
+| PLAYWRIGHT_VIEWPORT | dict | {'width': 1920, 'height': 1080} | Browser viewport size |
+| PLAYWRIGHT_TIMEOUT | int | 30000 | Operation timeout (milliseconds) |
+| PLAYWRIGHT_SLOW_MO | int | 0 | Slow motion mode delay (milliseconds) |
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from crawlo.config import CrawloConfig
+
+# Configure to use Playwright downloader
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    playwright_browser='chromium',
+    playwright_headless=True
+)
+```
+
+### Advanced Configuration
+
+```python
+# Configure browser options
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    playwright_browser='firefox',
+    playwright_headless=False,
+    playwright_viewport={'width': 1366, 'height': 768},
+    playwright_timeout=60000
+)
+```
+
+## Performance Advantages
+
+### Comparison with Selenium
+
+| Feature | Playwright | Selenium |
+|---------|------------|----------|
+| Startup Time | 1-2 seconds | 5-10 seconds |
+| Memory Consumption | Low | High |
+| Execution Speed | Fast | Medium |
+| API Complexity | Simple | Complex |
+| Mobile Support | Native support | Requires additional configuration |
+
+### Resource Management
+
+```python
+# Playwright's resource management is more efficient
+config = CrawloConfig.standalone(
+    downloader_type='playwright',
+    concurrency=5,  # Can use higher concurrency
+    download_delay=1.0
+)
+```
+
+## Best Practices
+
+### 1. Browser Selection
+
+```python
+# Choose the appropriate browser based on requirements
+# Chromium - Best performance, good compatibility
+config = CrawloConfig.standalone(playwright_browser='chromium')
+
+# Firefox - Open source choice
+config = CrawloConfig.standalone(playwright_browser='firefox')
+
+# WebKit - For Safari compatibility testing
+config = CrawloConfig.standalone(playwright_browser='webkit')
+```
+
+### 2. Device Emulation
+
+```python
+# Mobile device emulation
+config = CrawloConfig.standalone(
+    playwright_browser='chromium',
+    playwright_viewport={
+        'width': 375,
+        'height': 812,
+        'isMobile': True,
+        'hasTouch': True
+    }
+)
+```
+
+### 3. Error Handling
+
+```python
+# Handle Playwright-related exceptions
+def parse_with_playwright(self, response):
+    try:
+        # Browser operations
+        yield self.extract_data(response)
+    except TimeoutError as e:
+        self.logger.error(f"Operation timeout: {e}")
+        # Can choose to retry
+    except Error as e:
+        self.logger.error(f"Playwright error: {e}")
+        # Handle other Playwright errors
+```
+
+### 4. Context Management
+
+```python
+# Properly use browser contexts
+class EfficientSpider(Spider):
+    async def parse(self, response):
+        # Create a new browser context
+        context = await self.playwright.new_context(
+            user_agent='Custom User Agent',
+            viewport={'width': 1920, 'height': 1080}
+        )
+        
+        try:
+            # Perform operations in the context
+            page = await context.new_page()
+            await page.goto(response.url)
+            # Extract data
+            yield self.extract_data(page)
+        finally:
+            # Ensure context is closed
+            await context.close()
+```
+
+**code file end: docs/modules/downloader/playwright_en.md**
+
+---
+
+
+### code file start: docs/modules/downloader/selenium.md 
+
+# SeleniumDownloader
+
+SeleniumDownloader 是 Crawlo 框架中基于 Selenium 的浏览器自动化下载器，适用于需要执行 JavaScript 或模拟用户交互的复杂网页爬取场景。
+
+## 概述
+
+SeleniumDownloader 提供了完整的浏览器环境，能够执行 JavaScript、处理 AJAX 请求、模拟用户交互操作，适用于现代 Web 应用的爬取需求。
+
+### 核心特性
+
+1. **完整浏览器环境** - 提供真实的浏览器环境
+2. **JavaScript 执行** - 支持复杂的 JavaScript 执行
+3. **用户交互模拟** - 支持点击、输入、滚动等用户操作
+4. **等待机制** - 支持显式和隐式等待
+5. **多浏览器支持** - 支持 Chrome、Firefox 等主流浏览器
+
+## 配置选项
+
+SeleniumDownloader 的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| SELENIUM_BROWSER | str | 'chrome' | 浏览器类型 (chrome/firefox) |
+| SELENIUM_HEADLESS | bool | True | 是否启用无头模式 |
+| SELENIUM_WINDOW_SIZE | tuple | (1920, 1080) | 浏览器窗口大小 |
+| SELENIUM_TIMEOUT | int | 30 | 页面加载超时时间 |
+| SELENIUM_IMPLICIT_WAIT | int | 10 | 隐式等待时间 |
+
+## 使用示例
+
+### 基本使用
+
+```python
+from crawlo.config import CrawloConfig
+
+# 配置使用 Selenium 下载器
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    selenium_browser='chrome',
+    selenium_headless=True
+)
+```
+
+### 高级配置
+
+```python
+# 配置浏览器选项
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    selenium_browser='firefox',
+    selenium_headless=False,
+    selenium_window_size=(1366, 768),
+    selenium_timeout=60
+)
+```
+
+## 性能考虑
+
+### 资源消耗
+
+SeleniumDownloader 相比其他下载器资源消耗较高：
+
+- **内存使用** - 每个浏览器实例消耗 100-200MB 内存
+- **CPU 使用** - 启动和运行时 CPU 使用率较高
+- **启动时间** - 浏览器启动需要 5-10 秒
+
+### 并发限制
+
+由于资源消耗较高，建议限制并发数：
+
+```python
+# 限制并发数
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    concurrency=2,  # 低并发
+    download_delay=2.0  # 增加延迟
+)
+```
+
+## 最佳实践
+
+### 1. 选择性使用
+
+```python
+# 只对需要的请求使用 Selenium
+class SelectiveSpider(Spider):
+    def parse(self, response):
+        # 检查是否需要浏览器环境
+        if self.needs_browser(response):
+            # 使用 Selenium 请求
+            yield Request(
+                url=response.url,
+                callback=self.parse_with_browser,
+                meta={'use_selenium': True}
+            )
+        else:
+            # 使用普通请求
+            yield Request(
+                url=response.url,
+                callback=self.parse_normal
+            )
+```
+
+### 2. 资源管理
+
+```python
+# 合理管理浏览器实例
+class EfficientSpider(Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.browser_pool = []
+    
+    def closed(self, reason):
+        # 关闭所有浏览器实例
+        for browser in self.browser_pool:
+            browser.quit()
+        super().closed(reason)
+```
+
+### 3. 错误处理
+
+```python
+# 处理浏览器相关异常
+def parse_with_browser(self, response):
+    try:
+        # 浏览器操作
+        yield self.extract_data(response)
+    except WebDriverException as e:
+        self.logger.error(f"浏览器操作失败: {e}")
+        # 可以选择重启浏览器或跳过
+    except TimeoutException as e:
+        self.logger.warning(f"页面加载超时: {e}")
+        # 可以选择重试
+```
+
+**code file end: docs/modules/downloader/selenium.md**
+
+---
+
+
+### code file start: docs/modules/downloader/selenium_en.md 
+
+# SeleniumDownloader
+
+SeleniumDownloader is a browser automation downloader based on Selenium in the Crawlo framework, suitable for complex web crawling scenarios that require JavaScript execution or user interaction simulation.
+
+## Overview
+
+SeleniumDownloader provides a complete browser environment that can execute JavaScript, handle AJAX requests, and simulate user interaction operations, making it suitable for crawling modern web applications.
+
+### Core Features
+
+1. **Complete Browser Environment** - Provides a real browser environment
+2. **JavaScript Execution** - Supports complex JavaScript execution
+3. **User Interaction Simulation** - Supports click, input, scroll and other user operations
+4. **Waiting Mechanism** - Supports explicit and implicit waiting
+5. **Multi-browser Support** - Supports mainstream browsers like Chrome and Firefox
+
+## Configuration Options
+
+The behavior of SeleniumDownloader can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| SELENIUM_BROWSER | str | 'chrome' | Browser type (chrome/firefox) |
+| SELENIUM_HEADLESS | bool | True | Whether to enable headless mode |
+| SELENIUM_WINDOW_SIZE | tuple | (1920, 1080) | Browser window size |
+| SELENIUM_TIMEOUT | int | 30 | Page loading timeout |
+| SELENIUM_IMPLICIT_WAIT | int | 10 | Implicit wait time |
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from crawlo.config import CrawloConfig
+
+# Configure to use Selenium downloader
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    selenium_browser='chrome',
+    selenium_headless=True
+)
+```
+
+### Advanced Configuration
+
+```python
+# Configure browser options
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    selenium_browser='firefox',
+    selenium_headless=False,
+    selenium_window_size=(1366, 768),
+    selenium_timeout=60
+)
+```
+
+## Performance Considerations
+
+### Resource Consumption
+
+SeleniumDownloader consumes more resources compared to other downloaders:
+
+- **Memory Usage** - Each browser instance consumes 100-200MB memory
+- **CPU Usage** - High CPU usage during startup and operation
+- **Startup Time** - Browser startup takes 5-10 seconds
+
+### Concurrency Limitations
+
+Due to high resource consumption, it's recommended to limit concurrency:
+
+```python
+# Limit concurrency
+config = CrawloConfig.standalone(
+    downloader_type='selenium',
+    concurrency=2,  # Low concurrency
+    download_delay=2.0  # Increase delay
+)
+```
+
+## Best Practices
+
+### 1. Selective Usage
+
+```python
+# Use Selenium only for necessary requests
+class SelectiveSpider(Spider):
+    def parse(self, response):
+        # Check if browser environment is needed
+        if self.needs_browser(response):
+            # Use Selenium request
+            yield Request(
+                url=response.url,
+                callback=self.parse_with_browser,
+                meta={'use_selenium': True}
+            )
+        else:
+            # Use normal request
+            yield Request(
+                url=response.url,
+                callback=self.parse_normal
+            )
+```
+
+### 2. Resource Management
+
+```python
+# Properly manage browser instances
+class EfficientSpider(Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.browser_pool = []
+    
+    def closed(self, reason):
+        # Close all browser instances
+        for browser in self.browser_pool:
+            browser.quit()
+        super().closed(reason)
+```
+
+### 3. Error Handling
+
+```python
+# Handle browser-related exceptions
+def parse_with_browser(self, response):
+    try:
+        # Browser operations
+        yield self.extract_data(response)
+    except WebDriverException as e:
+        self.logger.error(f"Browser operation failed: {e}")
+        # Can choose to restart browser or skip
+    except TimeoutException as e:
+        self.logger.warning(f"Page loading timeout: {e}")
+        # Can choose to retry
+```
+
+**code file end: docs/modules/downloader/selenium_en.md**
+
+---
+
+
+### code file start: docs/modules/extension/built_in.md 
+
+# 内置扩展
+
+Crawlo提供了几个内置扩展组件，为爬取过程添加额外功能。这些扩展组件可以通过配置启用或禁用。
+
+## 概述
+
+内置扩展为网页爬取提供辅助功能：
+
+- 日志记录和监控
+- 性能分析
+- 健康检查
+- 统计信息收集
+- 调试辅助
+
+## LogIntervalExtension
+
+定期记录爬取进度以监控正在进行的操作。
+
+### 特性
+
+- 可配置的日志记录间隔
+- 进度报告
+- 性能指标
+- 实时监控
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.log_interval.LogIntervalExtension',
+]
+
+# 日志间隔设置
+LOG_INTERVAL = 60  # 每60秒记录一次
+```
+
+## LogStats
+
+爬取完成时记录最终统计信息以提供操作摘要。
+
+### 特性
+
+- 全面的统计信息收集
+- 最终摘要报告
+- 性能指标
+- 资源使用跟踪
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.log_stats.LogStats',
+]
+
+# 日志统计设置
+STATS_DUMP = True
+```
+
+## CustomLoggerExtension
+
+为特殊日志记录需求提供自定义日志功能。
+
+### 特性
+
+- 自定义日志格式
+- 多日志输出
+- 可配置的日志级别
+- 结构化日志
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.logging_extension.CustomLoggerExtension',
+]
+
+# 自定义日志设置
+CUSTOM_LOGGER_ENABLED = True
+CUSTOM_LOGGER_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+```
+
+## MemoryMonitorExtension
+
+在爬取过程中监控内存使用以检测内存泄漏或过度使用。
+
+### 特性
+
+- 实时内存监控
+- 内存使用警报
+- 定期报告
+- 基于阈值的警告
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+]
+
+# 内存监控设置
+MEMORY_MONITOR_ENABLED = True
+MEMORY_MONITOR_INTERVAL = 60  # 每60秒检查一次
+MEMORY_WARNING_THRESHOLD = 80.0  # 内存使用率达到80%时警告
+MEMORY_CRITICAL_THRESHOLD = 90.0  # 内存使用率达到90%时严重警告
+```
+
+## RequestRecorderExtension
+
+记录所有请求用于调试和分析目的。
+
+### 特性
+
+- 请求日志记录
+- 响应元数据记录
+- 基于文件的存储
+- 可配置的记录选项
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+]
+
+# 请求记录器设置
+REQUEST_RECORDER_ENABLED = True
+REQUEST_RECORDER_OUTPUT_DIR = 'requests_log'
+REQUEST_RECORDER_MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+```
+
+## PerformanceProfilerExtension
+
+分析爬取过程的性能以识别瓶颈和优化机会。
+
+### 特性
+
+- 性能分析
+- 函数计时
+- 资源使用跟踪
+- 定期分析报告
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+]
+
+# 性能分析器设置
+PERFORMANCE_PROFILER_ENABLED = True
+PERFORMANCE_PROFILER_OUTPUT_DIR = 'profiling'
+PERFORMANCE_PROFILER_INTERVAL = 300  # 每5分钟分析一次
+```
+
+## HealthCheckExtension
+
+监控爬取过程的健康状况以确保正常运行。
+
+### 特性
+
+- 健康状态监控
+- 组件健康检查
+- 警报机制
+- 恢复操作
+
+### 配置
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+
+# 健康检查设置
+HEALTH_CHECK_ENABLED = True
+HEALTH_CHECK_INTERVAL = 60  # 每60秒检查一次
+```
+
+## 使用示例
+
+要启用多个内置扩展：
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    # 日志扩展
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    'crawlo.extension.logging_extension.CustomLoggerExtension',
+    
+    # 监控扩展
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+    
+    # 实用扩展
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+```
+
+## 性能考虑
+
+- 仅启用必要的扩展以最小化开销
+- 为周期性扩展配置适当的间隔
+- 监控扩展资源使用
+- 在生产环境中禁用调试扩展
+- 为高频事件使用轻量级实现
+
+## 扩展集成
+
+内置扩展通过事件钩子与爬虫集成：
+
+```python
+class ExampleExtension:
+    def __init__(self, crawler):
+        # 初始化扩展
+        pass
+        
+    def spider_opened(self, spider):
+        # 处理爬虫打开事件
+        pass
+        
+    def response_received(self, response, spider):
+        # 处理响应接收事件
+        pass
+        
+    def item_successful(self, item, spider):
+        # 处理数据项处理事件
+        pass
+        
+    def spider_closed(self, spider, reason):
+        # 处理爬虫关闭事件
+        pass
+```
+
+## 最佳实践
+
+1. **选择性启用**：仅启用您需要的扩展
+2. **性能监控**：监控扩展对爬取性能的影响
+3. **配置**：为您的用例正确配置扩展设置
+4. **生产环境vs开发环境**：为不同环境使用不同的扩展集
+5. **错误处理**：扩展应优雅地处理错误而不影响爬取
+
+**code file end: docs/modules/extension/built_in.md**
+
+---
+
+
+### code file start: docs/modules/extension/built_in_en.md 
+
+# Built-in Extensions
+
+Crawlo provides several built-in extension components that add additional functionality to the crawling process. These extension components can be enabled or disabled through configuration.
+
+## Overview
+
+Built-in extensions provide auxiliary functionality for web crawling:
+
+- Logging and monitoring
+- Performance profiling
+- Health checking
+- Statistics collection
+- Debugging assistance
+
+## LogIntervalExtension
+
+Logs crawling progress at regular intervals to monitor ongoing operations.
+
+### Features
+
+- Configurable logging intervals
+- Progress reporting
+- Performance metrics
+- Real-time monitoring
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.log_interval.LogIntervalExtension',
+]
+
+# Log interval settings
+LOG_INTERVAL = 60  # Log every 60 seconds
+```
+
+## LogStats
+
+Logs final statistics when crawling completes to provide a summary of operations.
+
+### Features
+
+- Comprehensive statistics collection
+- Final summary reporting
+- Performance metrics
+- Resource usage tracking
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.log_stats.LogStats',
+]
+
+# Log stats settings
+STATS_DUMP = True
+```
+
+## CustomLoggerExtension
+
+Provides custom logging functionality for specialized logging requirements.
+
+### Features
+
+- Custom log formats
+- Multiple log outputs
+- Configurable log levels
+- Structured logging
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.logging_extension.CustomLoggerExtension',
+]
+
+# Custom logger settings
+CUSTOM_LOGGER_ENABLED = True
+CUSTOM_LOGGER_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+```
+
+## MemoryMonitorExtension
+
+Monitors memory usage during crawling to detect memory leaks or excessive usage.
+
+### Features
+
+- Real-time memory monitoring
+- Memory usage alerts
+- Periodic reporting
+- Threshold-based warnings
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+]
+
+# Memory monitor settings
+MEMORY_MONITOR_ENABLED = True
+MEMORY_MONITOR_INTERVAL = 60  # Check every 60 seconds
+MEMORY_WARNING_THRESHOLD = 80.0  # Warn at 80% memory usage
+MEMORY_CRITICAL_THRESHOLD = 90.0  # Critical at 90% memory usage
+```
+
+## RequestRecorderExtension
+
+Records all requests for debugging and analysis purposes.
+
+### Features
+
+- Request logging
+- Response metadata recording
+- File-based storage
+- Configurable recording options
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+]
+
+# Request recorder settings
+REQUEST_RECORDER_ENABLED = True
+REQUEST_RECORDER_OUTPUT_DIR = 'requests_log'
+REQUEST_RECORDER_MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+```
+
+## PerformanceProfilerExtension
+
+Profiles performance of the crawling process to identify bottlenecks and optimization opportunities.
+
+### Features
+
+- Performance profiling
+- Function timing
+- Resource usage tracking
+- Periodic profiling reports
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+]
+
+# Performance profiler settings
+PERFORMANCE_PROFILER_ENABLED = True
+PERFORMANCE_PROFILER_OUTPUT_DIR = 'profiling'
+PERFORMANCE_PROFILER_INTERVAL = 300  # Profile every 5 minutes
+```
+
+## HealthCheckExtension
+
+Monitors the health of the crawling process to ensure proper operation.
+
+### Features
+
+- Health status monitoring
+- Component health checks
+- Alerting mechanisms
+- Recovery actions
+
+### Configuration
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+
+# Health check settings
+HEALTH_CHECK_ENABLED = True
+HEALTH_CHECK_INTERVAL = 60  # Check every 60 seconds
+```
+
+## Usage Example
+
+To enable multiple built-in extensions:
+
+```python
+# In settings.py
+EXTENSIONS = [
+    # Logging extensions
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    'crawlo.extension.logging_extension.CustomLoggerExtension',
+    
+    # Monitoring extensions
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+    
+    # Utility extensions
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+```
+
+## Performance Considerations
+
+- Enable only necessary extensions to minimize overhead
+- Configure appropriate intervals for periodic extensions
+- Monitor extension resource usage
+- Disable debugging extensions in production
+- Use lightweight implementations for high-frequency events
+
+## Extension Integration
+
+Built-in extensions integrate with the crawler through event hooks:
+
+```python
+class ExampleExtension:
+    def __init__(self, crawler):
+        # Initialize extension
+        pass
+        
+    def spider_opened(self, spider):
+        # Handle spider opened event
+        pass
+        
+    def response_received(self, response, spider):
+        # Handle response received event
+        pass
+        
+    def item_successful(self, item, spider):
+        # Handle item processed event
+        pass
+        
+    def spider_closed(self, spider, reason):
+        # Handle spider closed event
+        pass
+```
+
+## Best Practices
+
+1. **Selective Enablement**: Only enable extensions you need
+2. **Performance Monitoring**: Monitor extension impact on crawling performance
+3. **Configuration**: Properly configure extension settings for your use case
+4. **Production vs Development**: Use different extension sets for different environments
+5. **Error Handling**: Extensions should handle errors gracefully without affecting crawling
+
+**code file end: docs/modules/extension/built_in_en.md**
+
+---
+
+
+### code file start: docs/modules/extension/custom.md 
+
+# 自定义扩展
+
+扩展是 Crawlo 框架中用于添加额外功能的组件。通过自定义扩展，您可以实现各种功能，如监控、统计、日志记录等。
+
+## 创建自定义扩展
+
+要创建自定义扩展，需要继承 `crawlo.extensions.Extension` 基类并实现相应的方法。
+
+### 基本结构
+
+```python
+from crawlo.extensions import Extension
+
+class CustomExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        # 初始化扩展
+    
+    def open(self):
+        # 扩展启用时调用
+        pass
+    
+    def close(self):
+        # 扩展关闭时调用
+        pass
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        # 从爬虫实例创建扩展实例
+        return cls(crawler)
+```
+
+### 方法说明
+
+#### __init__(self, crawler)
+
+- **作用**: 初始化扩展
+- **参数**:
+  - `crawler`: 爬虫实例
+
+#### open(self)
+
+- **作用**: 在扩展启用时调用，用于初始化资源
+- **返回值**: 无
+
+#### close(self)
+
+- **作用**: 在扩展关闭时调用，用于释放资源
+- **返回值**: 无
+
+#### from_crawler(cls, crawler)
+
+- **作用**: 从爬虫实例创建扩展实例的类方法
+- **参数**:
+  - `crawler`: 爬虫实例
+- **返回值**: 扩展实例
+
+## 示例
+
+### 统计扩展
+
+```python
+from crawlo.extensions import Extension
+from collections import defaultdict
+
+class StatsExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.stats = defaultdict(int)
+    
+    def open(self):
+        # 注册事件监听器
+        self.crawler.signals.connect(self.on_request_sent, signal='request_sent')
+        self.crawler.signals.connect(self.on_response_received, signal='response_received')
+        self.crawler.signals.connect(self.on_item_scraped, signal='item_scraped')
+    
+    def close(self):
+        # 输出统计信息
+        print("Crawling Statistics:")
+        for key, value in self.stats.items():
+            print(f"  {key}: {value}")
+    
+    def on_request_sent(self, request):
+        self.stats['requests_sent'] += 1
+    
+    def on_response_received(self, response):
+        self.stats['responses_received'] += 1
+        self.stats[f'status_{response.status_code}'] += 1
+    
+    def on_item_scraped(self, item):
+        self.stats['items_scraped'] += 1
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+### 日志扩展
+
+```python
+from crawlo.extensions import Extension
+import logging
+
+class LoggingExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.logger = logging.getLogger(__name__)
+    
+    def open(self):
+        # 注册事件监听器
+        self.crawler.signals.connect(self.on_spider_opened, signal='spider_opened')
+        self.crawler.signals.connect(self.on_spider_closed, signal='spider_closed')
+        self.crawler.signals.connect(self.on_request_sent, signal='request_sent')
+    
+    def on_spider_opened(self, spider):
+        self.logger.info(f"Spider {spider.name} opened")
+    
+    def on_spider_closed(self, spider):
+        self.logger.info(f"Spider {spider.name} closed")
+    
+    def on_request_sent(self, request):
+        self.logger.debug(f"Sending request to {request.url}")
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+### 内存监控扩展
+
+```python
+from crawlo.extensions import Extension
+import psutil
+import threading
+import time
+
+class MemoryMonitorExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.monitoring = False
+        self.monitor_thread = None
+        self.threshold = 500 * 1024 * 1024  # 500MB
+    
+    def open(self):
+        self.monitoring = True
+        self.monitor_thread = threading.Thread(target=self._monitor_memory)
+        self.monitor_thread.daemon = True
+        self.monitor_thread.start()
+    
+    def close(self):
+        self.monitoring = False
+        if self.monitor_thread:
+            self.monitor_thread.join()
+    
+    def _monitor_memory(self):
+        while self.monitoring:
+            memory_usage = psutil.Process().memory_info().rss
+            if memory_usage > self.threshold:
+                self.crawler.logger.warning(f"High memory usage: {memory_usage / 1024 / 1024:.2f} MB")
+            time.sleep(10)  # 每10秒检查一次
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+## 配置扩展
+
+在配置文件中启用自定义扩展：
+
+```python
+# settings.py
+EXTENSIONS = {
+    'myproject.extensions.StatsExtension': 100,
+    'myproject.extensions.LoggingExtension': 200,
+    'myproject.extensions.MemoryMonitorExtension': 300,
+}
+```
+
+扩展的数字表示优先级，数字越小优先级越高。
+
+## 最佳实践
+
+1. **单一职责**: 每个扩展应该只负责一个功能
+2. **事件驱动**: 利用信号系统监听和响应事件
+3. **资源管理**: 正确打开和关闭资源
+4. **性能考虑**: 避免在扩展中执行耗时操作
+5. **异常处理**: 在扩展中妥善处理异常
+6. **测试**: 为扩展编写单元测试
+
+**code file end: docs/modules/extension/custom.md**
+
+---
+
+
+### code file start: docs/modules/extension/custom_en.md 
+
+# Custom Extensions
+
+Extensions are components in the Crawlo framework used to add additional functionality. Through custom extensions, you can implement various functions such as monitoring, statistics, logging, etc.
+
+## Creating Custom Extensions
+
+To create a custom extension, you need to inherit from the `crawlo.extensions.Extension` base class and implement the corresponding methods.
+
+### Basic Structure
+
+```python
+from crawlo.extensions import Extension
+
+class CustomExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        # Initialize extension
+    
+    def open(self):
+        # Called when the extension is enabled
+        pass
+    
+    def close(self):
+        # Called when the extension is closed
+        pass
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        # Create extension instance from crawler instance
+        return cls(crawler)
+```
+
+### Method Descriptions
+
+#### __init__(self, crawler)
+
+- **Purpose**: Initialize the extension
+- **Parameters**:
+  - `crawler`: Crawler instance
+
+#### open(self)
+
+- **Purpose**: Called when the extension is enabled, used for initializing resources
+- **Return Value**: None
+
+#### close(self)
+
+- **Purpose**: Called when the extension is closed, used for releasing resources
+- **Return Value**: None
+
+#### from_crawler(cls, crawler)
+
+- **Purpose**: Class method to create extension instance from crawler instance
+- **Parameters**:
+  - `crawler`: Crawler instance
+- **Return Value**: Extension instance
+
+## Examples
+
+### Statistics Extension
+
+```python
+from crawlo.extensions import Extension
+from collections import defaultdict
+
+class StatsExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.stats = defaultdict(int)
+    
+    def open(self):
+        # Register event listeners
+        self.crawler.signals.connect(self.on_request_sent, signal='request_sent')
+        self.crawler.signals.connect(self.on_response_received, signal='response_received')
+        self.crawler.signals.connect(self.on_item_scraped, signal='item_scraped')
+    
+    def close(self):
+        # Output statistics
+        print("Crawling Statistics:")
+        for key, value in self.stats.items():
+            print(f"  {key}: {value}")
+    
+    def on_request_sent(self, request):
+        self.stats['requests_sent'] += 1
+    
+    def on_response_received(self, response):
+        self.stats['responses_received'] += 1
+        self.stats[f'status_{response.status_code}'] += 1
+    
+    def on_item_scraped(self, item):
+        self.stats['items_scraped'] += 1
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+### Logging Extension
+
+```python
+from crawlo.extensions import Extension
+import logging
+
+class LoggingExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.logger = logging.getLogger(__name__)
+    
+    def open(self):
+        # Register event listeners
+        self.crawler.signals.connect(self.on_spider_opened, signal='spider_opened')
+        self.crawler.signals.connect(self.on_spider_closed, signal='spider_closed')
+        self.crawler.signals.connect(self.on_request_sent, signal='request_sent')
+    
+    def on_spider_opened(self, spider):
+        self.logger.info(f"Spider {spider.name} opened")
+    
+    def on_spider_closed(self, spider):
+        self.logger.info(f"Spider {spider.name} closed")
+    
+    def on_request_sent(self, request):
+        self.logger.debug(f"Sending request to {request.url}")
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+### Memory Monitor Extension
+
+```python
+from crawlo.extensions import Extension
+import psutil
+import threading
+import time
+
+class MemoryMonitorExtension(Extension):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.monitoring = False
+        self.monitor_thread = None
+        self.threshold = 500 * 1024 * 1024  # 500MB
+    
+    def open(self):
+        self.monitoring = True
+        self.monitor_thread = threading.Thread(target=self._monitor_memory)
+        self.monitor_thread.daemon = True
+        self.monitor_thread.start()
+    
+    def close(self):
+        self.monitoring = False
+        if self.monitor_thread:
+            self.monitor_thread.join()
+    
+    def _monitor_memory(self):
+        while self.monitoring:
+            memory_usage = psutil.Process().memory_info().rss
+            if memory_usage > self.threshold:
+                self.crawler.logger.warning(f"High memory usage: {memory_usage / 1024 / 1024:.2f} MB")
+            time.sleep(10)  # Check every 10 seconds
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+```
+
+## Configuring Extensions
+
+Enable custom extensions in the configuration file:
+
+```python
+# settings.py
+EXTENSIONS = {
+    'myproject.extensions.StatsExtension': 100,
+    'myproject.extensions.LoggingExtension': 200,
+    'myproject.extensions.MemoryMonitorExtension': 300,
+}
+```
+
+The number for extensions represents the priority, with smaller numbers having higher priority.
+
+## Best Practices
+
+1. **Single Responsibility**: Each extension should only be responsible for one function
+2. **Event-Driven**: Use the signal system to listen for and respond to events
+3. **Resource Management**: Correctly open and close resources
+4. **Performance Considerations**: Avoid performing time-consuming operations in extensions
+5. **Exception Handling**: Properly handle exceptions in extensions
+6. **Testing**: Write unit tests for extensions
+
+**code file end: docs/modules/extension/custom_en.md**
+
+---
+
+
+### code file start: docs/modules/extension/index.md 
+
+# 扩展模块
+
+扩展模块是 Crawlo 框架中用于增强功能和监控的组件。它提供了一个插件机制，允许用户在爬虫生命周期的关键节点执行自定义逻辑。
+
+## 模块概述
+
+扩展模块采用插件化设计，支持多种扩展实现。用户可以通过配置扩展列表来增强框架功能，实现监控、统计、日志记录等附加功能。
+
+### 核心组件
+
+1. [ExtensionManager](manager.md) - 扩展管理器
+2. [内置扩展](built_in.md) - 框架提供的内置扩展
+3. [自定义扩展](custom.md) - 用户自定义的扩展
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "扩展模块"
+ExtensionBase[ExtensionBase<br/>基础扩展类]
+StatsExtension[StatsExtension<br/>统计扩展]
+LogStatsExtension[LogStatsExtension<br/>日志统计扩展]
+MemoryUsageExtension[MemoryUsageExtension<br/>内存使用扩展]
+CustomExtension[CustomExtension<br/>自定义扩展]
+ExtensionManager[ExtensionManager<br/>扩展管理器]
+end
+Crawler[Crawler] --> ExtensionManager
+ExtensionManager --> ExtensionBase
+ExtensionBase --> StatsExtension
+ExtensionBase --> LogStatsExtension
+ExtensionBase --> MemoryUsageExtension
+ExtensionBase --> CustomExtension
+style ExtensionBase fill:#f9f,stroke:#333
+style Crawler fill:#bbf,stroke:#333
+```
+
+## 扩展类型
+
+### StatsExtension
+
+**功能:**
+- 收集爬虫运行统计信息
+- 提供详细的性能指标
+
+**配置选项:**
+```python
+# 统计扩展无需特殊配置
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+]
+```
+
+### LogStatsExtension
+
+**功能:**
+- 定期记录统计信息到日志
+- 提供运行状态监控
+
+**配置选项:**
+```python
+# 设置日志统计间隔（秒）
+LOG_STATS_INTERVAL = 60
+
+# 配置扩展
+EXTENSIONS = [
+    'crawlo.extensions.LogStatsExtension',
+]
+```
+
+### MemoryUsageExtension
+
+**功能:**
+- 监控内存使用情况
+- 提供内存使用警告
+
+**配置选项:**
+```python
+# 设置内存使用警告阈值（MB）
+MEMORY_USAGE_WARNING_THRESHOLD = 100
+
+# 设置内存使用检查间隔（秒）
+MEMORY_USAGE_CHECK_INTERVAL = 30
+
+# 配置扩展
+EXTENSIONS = [
+    'crawlo.extensions.MemoryUsageExtension',
+]
+```
+
+## 配置选项
+
+扩展模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| EXTENSIONS | list | [] | 扩展列表 |
+| LOG_STATS_INTERVAL | int | 60 | 日志统计间隔（秒） |
+| MEMORY_USAGE_WARNING_THRESHOLD | int | 100 | 内存使用警告阈值（MB） |
+| MEMORY_USAGE_CHECK_INTERVAL | int | 30 | 内存使用检查间隔（秒） |
+| STATS_DUMP_INTERVAL | int | 300 | 统计信息转储间隔（秒） |
+
+## 使用示例
+
+### 配置扩展
+
+```python
+# 在配置文件中配置扩展
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+    'crawlo.extensions.MemoryUsageExtension',
+]
+
+# 配置扩展参数
+LOG_STATS_INTERVAL = 30
+MEMORY_USAGE_WARNING_THRESHOLD = 200
+```
+
+### 创建自定义扩展
+
+```python
+from crawlo.extensions import ExtensionBase
+
+class CustomExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.counter = 0
+    
+    def open(self):
+        """扩展启动时调用"""
+        self.logger.info("自定义扩展已启动")
+        # 注册事件监听器
+        self.crawler.subscribe('request_sent', self.on_request_sent)
+        self.crawler.subscribe('item_scraped', self.on_item_scraped)
+    
+    def close(self):
+        """扩展关闭时调用"""
+        self.logger.info(f"自定义扩展已关闭，总共处理了 {self.counter} 个事件")
+    
+    def on_request_sent(self, request):
+        """请求发送事件处理"""
+        self.counter += 1
+        self.logger.debug(f"请求已发送: {request.url}")
+    
+    def on_item_scraped(self, item):
+        """数据项抓取事件处理"""
+        self.counter += 1
+        self.logger.debug(f"数据项已抓取: {item}")
+```
+
+## 生命周期钩子
+
+扩展可以实现以下生命周期钩子方法：
+
+1. **[open()](../../api/crawlo_extension.md)** - 扩展启动时调用
+2. **[close()](../../api/crawlo_extension.md)** - 扩展关闭时调用
+3. **[from_crawler()](../../api/crawlo_extension.md)** - 从爬虫创建扩展实例
+
+## 事件系统
+
+扩展可以通过事件系统监听爬虫运行过程中的各种事件：
+
+```python
+class EventExtension(ExtensionBase):
+    def open(self):
+        # 订阅事件
+        self.crawler.subscribe('spider_opened', self.on_spider_opened)
+        self.crawler.subscribe('spider_closed', self.on_spider_closed)
+        self.crawler.subscribe('request_scheduled', self.on_request_scheduled)
+        self.crawler.subscribe('response_received', self.on_response_received)
+        self.crawler.subscribe('item_scraped', self.on_item_scraped)
+    
+    def on_spider_opened(self, spider):
+        """爬虫启动事件"""
+        self.logger.info(f"爬虫已启动: {spider.name}")
+    
+    def on_spider_closed(self, spider, reason):
+        """爬虫关闭事件"""
+        self.logger.info(f"爬虫已关闭: {spider.name}, 原因: {reason}")
+    
+    def on_request_scheduled(self, request):
+        """请求调度事件"""
+        self.logger.debug(f"请求已调度: {request.url}")
+    
+    def on_response_received(self, response):
+        """响应接收事件"""
+        self.logger.debug(f"响应已接收: {response.url}, 状态码: {response.status_code}")
+    
+    def on_item_scraped(self, item):
+        """数据项抓取事件"""
+        self.logger.debug(f"数据项已抓取: {item}")
+```
+
+## 性能监控
+
+### 内置监控扩展
+
+```python
+# 启用性能监控扩展
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # 基础统计
+    'crawlo.extensions.LogStatsExtension',     # 日志统计
+    'crawlo.extensions.MemoryUsageExtension',  # 内存使用监控
+]
+```
+
+### 自定义监控扩展
+
+```python
+class PerformanceMonitorExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.start_time = None
+        self.request_times = []
+    
+    def open(self):
+        self.start_time = time.time()
+        self.crawler.subscribe('request_sent', self.on_request_sent)
+        self.crawler.subscribe('response_received', self.on_response_received)
+    
+    def close(self):
+        elapsed_time = time.time() - self.start_time
+        avg_response_time = sum(self.request_times) / len(self.request_times) if self.request_times else 0
+        
+        self.logger.info(f"爬取总耗时: {elapsed_time:.2f}秒")
+        self.logger.info(f"平均响应时间: {avg_response_time:.2f}秒")
+    
+    def on_request_sent(self, request):
+        request.start_time = time.time()
+    
+    def on_response_received(self, response):
+        if hasattr(response.request, 'start_time'):
+            response_time = time.time() - response.request.start_time
+            self.request_times.append(response_time)
+```
+
+## 错误处理
+
+### 扩展异常处理
+
+```python
+def open(self):
+    try:
+        # 初始化逻辑
+        self.initialize_resources()
+    except Exception as e:
+        self.logger.error(f"扩展初始化失败: {e}")
+        # 可以选择继续运行或抛出异常
+```
+
+## 监控和日志
+
+扩展模块集成了详细的监控和日志功能：
+
+```python
+# 记录扩展操作日志
+logger.info(f"扩展已启动: {extension_name}")
+logger.debug(f"扩展处理事件: {event_type}")
+
+# 记录异常日志
+logger.error(f"扩展执行失败: {e}")
+```
+
+## 最佳实践
+
+### 合理配置扩展
+
+```python
+# 生产环境配置
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # 基础统计
+    'crawlo.extensions.LogStatsExtension',     # 日志统计
+    'crawlo.extensions.MemoryUsageExtension',  # 内存监控
+]
+
+# 开发环境配置
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # 基础统计
+]
+```
+
+### 扩展性能优化
+
+```python
+class EfficientExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        # 使用高效的数据结构
+        self.stats = collections.defaultdict(int)
+        # 缓存计算结果
+        self.cache = {}
+    
+    def on_event(self, event):
+        # 避免重复计算
+        if event.type not in self.cache:
+            self.cache[event.type] = self.expensive_calculation(event)
+        result = self.cache[event.type]
+        # 更新统计
+        self.stats[event.type] += 1
+```
+
+### 资源管理最佳实践
+
+```python
+class ResourceExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.resources = []
+    
+    def open(self):
+        """初始化资源"""
+        try:
+            resource = self.create_resource()
+            self.resources.append(resource)
+        except Exception as e:
+            self.logger.error(f"资源初始化失败: {e}")
+    
+    def close(self):
+        """释放资源"""
+        for resource in self.resources:
+            try:
+                resource.close()
+            except Exception as e:
+                self.logger.error(f"资源释放失败: {e}")
+        self.resources.clear()
+```
+
+**code file end: docs/modules/extension/index.md**
+
+---
+
+
+### code file start: docs/modules/extension/index_en.md 
+
+# Extension Module
+
+The extension module is the component in the Crawlo framework used to enhance functionality and monitoring. It provides a plugin mechanism that allows users to execute custom logic at key points in the crawler lifecycle.
+
+## Module Overview
+
+The extension module adopts a plugin-based design, supporting multiple extension implementations. Users can enhance framework functionality by configuring an extension list to implement monitoring, statistics, logging, and other additional features.
+
+### Core Components
+
+1. [ExtensionManager](manager_en.md) - Extension manager
+2. [Built-in Extensions](built_in_en.md) - Built-in extensions provided by the framework
+3. [Custom Extensions](custom_en.md) - User-defined extensions
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Extension Module"
+ExtensionBase[ExtensionBase<br/>Base Extension Class]
+StatsExtension[StatsExtension<br/>Statistics Extension]
+LogStatsExtension[LogStatsExtension<br/>Log Statistics Extension]
+MemoryUsageExtension[MemoryUsageExtension<br/>Memory Usage Extension]
+CustomExtension[CustomExtension<br/>Custom Extension]
+ExtensionManager[ExtensionManager<br/>Extension Manager]
+end
+Crawler[Crawler] --> ExtensionManager
+ExtensionManager --> ExtensionBase
+ExtensionBase --> StatsExtension
+ExtensionBase --> LogStatsExtension
+ExtensionBase --> MemoryUsageExtension
+ExtensionBase --> CustomExtension
+style ExtensionBase fill:#f9f,stroke:#333
+style Crawler fill:#bbf,stroke:#333
+```
+
+## Extension Types
+
+### StatsExtension
+
+**Function:**
+- Collect crawler runtime statistics
+- Provide detailed performance metrics
+
+**Configuration Options:**
+```python
+# Statistics extension requires no special configuration
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+]
+```
+
+### LogStatsExtension
+
+**Function:**
+- Periodically log statistics to logs
+- Provide runtime status monitoring
+
+**Configuration Options:**
+```python
+# Set log statistics interval (seconds)
+LOG_STATS_INTERVAL = 60
+
+# Configure extension
+EXTENSIONS = [
+    'crawlo.extensions.LogStatsExtension',
+]
+```
+
+### MemoryUsageExtension
+
+**Function:**
+- Monitor memory usage
+- Provide memory usage warnings
+
+**Configuration Options:**
+```python
+# Set memory usage warning threshold (MB)
+MEMORY_USAGE_WARNING_THRESHOLD = 100
+
+# Set memory usage check interval (seconds)
+MEMORY_USAGE_CHECK_INTERVAL = 30
+
+# Configure extension
+EXTENSIONS = [
+    'crawlo.extensions.MemoryUsageExtension',
+]
+```
+
+## Configuration Options
+
+The extension module's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| EXTENSIONS | list | [] | Extension list |
+| LOG_STATS_INTERVAL | int | 60 | Log statistics interval (seconds) |
+| MEMORY_USAGE_WARNING_THRESHOLD | int | 100 | Memory usage warning threshold (MB) |
+| MEMORY_USAGE_CHECK_INTERVAL | int | 30 | Memory usage check interval (seconds) |
+| STATS_DUMP_INTERVAL | int | 300 | Statistics dump interval (seconds) |
+
+## Usage Examples
+
+### Configure Extensions
+
+```python
+# Configure extensions in configuration file
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',
+    'crawlo.extensions.LogStatsExtension',
+    'crawlo.extensions.MemoryUsageExtension',
+]
+
+# Configure extension parameters
+LOG_STATS_INTERVAL = 30
+MEMORY_USAGE_WARNING_THRESHOLD = 200
+```
+
+### Create Custom Extension
+
+```python
+from crawlo.extensions import ExtensionBase
+
+class CustomExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.counter = 0
+    
+    def open(self):
+        """Called when extension starts"""
+        self.logger.info("Custom extension started")
+        # Register event listeners
+        self.crawler.subscribe('request_sent', self.on_request_sent)
+        self.crawler.subscribe('item_scraped', self.on_item_scraped)
+    
+    def close(self):
+        """Called when extension closes"""
+        self.logger.info(f"Custom extension closed, processed {self.counter} events in total")
+    
+    def on_request_sent(self, request):
+        """Handle request sent event"""
+        self.counter += 1
+        self.logger.debug(f"Request sent: {request.url}")
+    
+    def on_item_scraped(self, item):
+        """Handle item scraped event"""
+        self.counter += 1
+        self.logger.debug(f"Item scraped: {item}")
+```
+
+## Lifecycle Hooks
+
+Extensions can implement the following lifecycle hook methods:
+
+1. **[open()](../../api/crawlo_extension.md)** - Called when extension starts
+2. **[close()](../../api/crawlo_extension.md)** - Called when extension closes
+3. **[from_crawler()](../../api/crawlo_extension.md)** - Create extension instance from crawler
+
+## Event System
+
+Extensions can listen to various events during crawler runtime through the event system:
+
+```python
+class EventExtension(ExtensionBase):
+    def open(self):
+        # Subscribe to events
+        self.crawler.subscribe('spider_opened', self.on_spider_opened)
+        self.crawler.subscribe('spider_closed', self.on_spider_closed)
+        self.crawler.subscribe('request_scheduled', self.on_request_scheduled)
+        self.crawler.subscribe('response_received', self.on_response_received)
+        self.crawler.subscribe('item_scraped', self.on_item_scraped)
+    
+    def on_spider_opened(self, spider):
+        """Spider opened event"""
+        self.logger.info(f"Spider opened: {spider.name}")
+    
+    def on_spider_closed(self, spider, reason):
+        """Spider closed event"""
+        self.logger.info(f"Spider closed: {spider.name}, Reason: {reason}")
+    
+    def on_request_scheduled(self, request):
+        """Request scheduled event"""
+        self.logger.debug(f"Request scheduled: {request.url}")
+    
+    def on_response_received(self, response):
+        """Response received event"""
+        self.logger.debug(f"Response received: {response.url}, Status code: {response.status_code}")
+    
+    def on_item_scraped(self, item):
+        """Item scraped event"""
+        self.logger.debug(f"Item scraped: {item}")
+```
+
+## Performance Monitoring
+
+### Built-in Monitoring Extensions
+
+```python
+# Enable performance monitoring extensions
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # Basic statistics
+    'crawlo.extensions.LogStatsExtension',     # Log statistics
+    'crawlo.extensions.MemoryUsageExtension',  # Memory usage monitoring
+]
+```
+
+### Custom Monitoring Extension
+
+```python
+class PerformanceMonitorExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.start_time = None
+        self.request_times = []
+    
+    def open(self):
+        self.start_time = time.time()
+        self.crawler.subscribe('request_sent', self.on_request_sent)
+        self.crawler.subscribe('response_received', self.on_response_received)
+    
+    def close(self):
+        elapsed_time = time.time() - self.start_time
+        avg_response_time = sum(self.request_times) / len(self.request_times) if self.request_times else 0
+        
+        self.logger.info(f"Total crawling time: {elapsed_time:.2f} seconds")
+        self.logger.info(f"Average response time: {avg_response_time:.2f} seconds")
+    
+    def on_request_sent(self, request):
+        request.start_time = time.time()
+    
+    def on_response_received(self, response):
+        if hasattr(response.request, 'start_time'):
+            response_time = time.time() - response.request.start_time
+            self.request_times.append(response_time)
+```
+
+## Error Handling
+
+### Extension Exception Handling
+
+```python
+def open(self):
+    try:
+        # Initialization logic
+        self.initialize_resources()
+    except Exception as e:
+        self.logger.error(f"Extension initialization failed: {e}")
+        # Can choose to continue running or raise exception
+```
+
+## Monitoring and Logging
+
+The extension module integrates detailed monitoring and logging functionality:
+
+```python
+# Log extension operations
+logger.info(f"Extension started: {extension_name}")
+logger.debug(f"Extension processing event: {event_type}")
+
+# Log exception information
+logger.error(f"Extension execution failed: {e}")
+```
+
+## Best Practices
+
+### Reasonable Extension Configuration
+
+```python
+# Production environment configuration
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # Basic statistics
+    'crawlo.extensions.LogStatsExtension',     # Log statistics
+    'crawlo.extensions.MemoryUsageExtension',  # Memory monitoring
+]
+
+# Development environment configuration
+EXTENSIONS = [
+    'crawlo.extensions.StatsExtension',        # Basic statistics
+]
+```
+
+### Extension Performance Optimization
+
+```python
+class EfficientExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        # Use efficient data structures
+        self.stats = collections.defaultdict(int)
+        # Cache calculation results
+        self.cache = {}
+    
+    def on_event(self, event):
+        # Avoid repeated calculations
+        if event.type not in self.cache:
+            self.cache[event.type] = self.expensive_calculation(event)
+        result = self.cache[event.type]
+        # Update statistics
+        self.stats[event.type] += 1
+```
+
+### Resource Management Best Practices
+
+```python
+class ResourceExtension(ExtensionBase):
+    def __init__(self, crawler):
+        super().__init__(crawler)
+        self.resources = []
+    
+    def open(self):
+        """Initialize resources"""
+        try:
+            resource = self.create_resource()
+            self.resources.append(resource)
+        except Exception as e:
+            self.logger.error(f"Resource initialization failed: {e}")
+    
+    def close(self):
+        """Release resources"""
+        for resource in self.resources:
+            try:
+                resource.close()
+            except Exception as e:
+                self.logger.error(f"Resource release failed: {e}")
+        self.resources.clear()
+```
+
+**code file end: docs/modules/extension/index_en.md**
+
+---
+
+
+### code file start: docs/modules/extension/manager.md 
+
+# 扩展管理器
+
+扩展管理器是Crawlo框架中管理扩展加载和生命周期的核心组件。它在各种爬虫事件期间协调扩展的执行。
+
+## 概述
+
+扩展管理器负责：
+
+- 加载和初始化扩展组件
+- 箨理扩展生命周期事件
+- 协调扩展执行
+- 与爬虫和爬虫组件集成
+
+## 架构
+
+扩展管理器编排扩展执行：
+
+```mermaid
+graph TD
+    A[爬虫] --> B[扩展管理器]
+    B --> C[扩展1]
+    B --> D[扩展2]
+    B --> E[扩展3]
+    F[爬虫] --> A
+```
+
+## 主要特性
+
+### 动态扩展加载
+
+扩展组件根据配置动态加载：
+
+```python
+# 在settings.py中
+EXTENSIONS = [
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    # ... 更多扩展
+]
+```
+
+### 事件驱动执行
+
+扩展响应各种爬虫事件：
+
+- 爬虫初始化
+- 爬虫打开/关闭
+- 请求调度
+- 响应接收
+- 数据项处理
+- 爬虫关闭
+
+### 异步处理
+
+所有扩展处理都是异步执行以保持性能：
+
+- 非阻塞扩展执行
+- 并发事件处理
+- 适当的异常处理和传播
+
+## API参考
+
+### `ExtensionManager(crawler)`
+
+创建一个新的扩展管理器实例。
+
+**参数：**
+- `crawler`：拥有此管理器的爬虫实例
+
+### `create_instance(*args, **kwargs)`
+
+创建扩展管理器实例的类方法。
+
+### `async _add_extensions(extensions)`
+
+加载和初始化扩展组件。
+
+**参数：**
+- `extensions`：扩展类路径列表
+
+## 扩展生命周期事件
+
+### 爬虫事件
+
+1. **爬虫初始化**：爬虫创建时
+2. **爬虫启动**：爬虫开始处理时
+3. **爬虫关闭**：爬虫关闭时
+
+### 爬虫事件
+
+1. **爬虫打开**：爬虫开始爬取时
+2. **爬虫关闭**：爬虫完成爬取时
+
+### 处理事件
+
+1. **请求调度**：请求添加到队列时
+2. **响应接收**：响应接收时
+3. **数据项成功**：数据项成功处理时
+4. **数据项丢弃**：数据项丢弃时
+
+## 配置
+
+扩展管理器使用[EXTENSIONS](https://github.com/crawl-coder/Crawlo/blob/master/examples/api_data_collection/api_data_collection/settings.py#L46)设置来确定要加载的扩展：
+
+```python
+EXTENSIONS = [
+    # 日志扩展
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    
+    # 监控扩展
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+    
+    # 实用扩展
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+```
+
+## 使用示例
+
+```python
+from crawlo.extension import ExtensionManager
+
+# 扩展管理器通常由爬虫自动创建，但也可以手动创建：
+
+manager = ExtensionManager.create_instance(crawler)
+
+# 扩展根据配置自动加载并响应爬虫事件
+```
+
+## 错误处理
+
+扩展管理器处理各种错误情况：
+
+- **加载错误**：扩展类加载失败
+- **初始化错误**：扩展初始化失败
+- **执行错误**：扩展执行期间的异常
+- **优雅降级**：即使扩展失败也继续操作
+
+## 性能考虑
+
+- 扩展执行应该是轻量级的，以避免影响爬取性能
+- 最小化扩展事件处理程序中的阻塞操作
+- 为扩展状态使用高效的数据结构
+- 监控扩展执行时间以识别瓶颈
+
+**code file end: docs/modules/extension/manager.md**
+
+---
+
+
+### code file start: docs/modules/extension/manager_en.md 
+
+# ExtensionManager
+
+The ExtensionManager is the core component that manages extension loading and lifecycle in the Crawlo framework. It coordinates the execution of extensions during various crawler events.
+
+## Overview
+
+The ExtensionManager is responsible for:
+
+- Loading and initializing extension components
+- Managing extension lifecycle events
+- Coordinating extension execution
+- Integrating with the crawler and spider components
+
+## Architecture
+
+The ExtensionManager orchestrates extension execution:
+
+```mermaid
+graph TD
+    A[Crawler] --> B[ExtensionManager]
+    B --> C[Extension 1]
+    B --> D[Extension 2]
+    B --> E[Extension 3]
+    F[Spider] --> A
+```
+
+## Key Features
+
+### Dynamic Extension Loading
+
+Extension components are loaded dynamically based on configuration:
+
+```python
+# In settings.py
+EXTENSIONS = [
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    # ... more extensions
+]
+```
+
+### Event-Driven Execution
+
+Extensions respond to various crawler events:
+
+- Crawler initialization
+- Spider opened/closed
+- Request scheduled
+- Response received
+- Item processed
+- Crawler closed
+
+### Asynchronous Processing
+
+All extension processing is performed asynchronously to maintain performance:
+
+- Non-blocking extension execution
+- Concurrent event handling
+- Proper exception handling and propagation
+
+## API Reference
+
+### `ExtensionManager(crawler)`
+
+Creates a new ExtensionManager instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this manager
+
+### `create_instance(*args, **kwargs)`
+
+Class method to create an ExtensionManager instance.
+
+### `async _add_extensions(extensions)`
+
+Loads and initializes extension components.
+
+**Parameters:**
+- `extensions`: List of extension class paths
+
+## Extension Lifecycle Events
+
+### Crawler Events
+
+1. **Crawler Initialization**: When the crawler is created
+2. **Crawler Started**: When the crawler begins processing
+3. **Crawler Closed**: When the crawler shuts down
+
+### Spider Events
+
+1. **Spider Opened**: When a spider begins crawling
+2. **Spider Closed**: When a spider finishes crawling
+
+### Processing Events
+
+1. **Request Scheduled**: When a request is added to the queue
+2. **Response Received**: When a response is received
+3. **Item Successful**: When an item is successfully processed
+4. **Item Discard**: When an item is discarded
+
+## Configuration
+
+The ExtensionManager uses the `EXTENSIONS` setting to determine which extensions to load:
+
+```python
+EXTENSIONS = [
+    # Logging extensions
+    'crawlo.extension.log_interval.LogIntervalExtension',
+    'crawlo.extension.log_stats.LogStats',
+    
+    # Monitoring extensions
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+    
+    # Utility extensions
+    'crawlo.extension.request_recorder.RequestRecorderExtension',
+    'crawlo.extension.health_check.HealthCheckExtension',
+]
+```
+
+## Example Usage
+
+```python
+from crawlo.extension import ExtensionManager
+
+# The ExtensionManager is typically created automatically
+# by the crawler, but can be created manually:
+
+manager = ExtensionManager.create_instance(crawler)
+
+# Extensions are automatically loaded based on configuration
+# and respond to crawler events
+```
+
+## Error Handling
+
+The ExtensionManager handles various error conditions:
+
+- **Loading Errors**: Failed to load extension classes
+- **Initialization Errors**: Failed to initialize extensions
+- **Execution Errors**: Exceptions during extension execution
+- **Graceful Degradation**: Continue operation even if extensions fail
+
+## Performance Considerations
+
+- Extension execution should be lightweight to avoid impacting crawling performance
+- Minimize blocking operations in extension event handlers
+- Use efficient data structures for extension state
+- Monitor extension execution times to identify bottlenecks
+
+**code file end: docs/modules/extension/manager_en.md**
+
+---
+
+
+### code file start: docs/modules/extension/memory_monitor.md 
+
+# 内存监控扩展 (MemoryMonitorExtension)
+
+## 概述
+
+MemoryMonitorExtension是一个用于监控爬虫进程内存使用情况的扩展组件。它定期检查进程的内存使用率，并在超过预设阈值时发出警告或严重警告，帮助开发者及时发现内存泄漏或内存使用过高的问题。
+
+## 功能特性
+
+1. **实时监控**：定期监控爬虫进程的内存使用情况
+2. **阈值告警**：支持设置警告和严重阈值
+3. **详细日志**：提供详细的内存使用信息
+4. **灵活配置**：支持多种配置选项
+5. **异常处理**：具备良好的异常处理机制
+
+## 配置选项
+
+```python
+# 是否启用内存监控扩展
+MEMORY_MONITOR_ENABLED = False  # 默认不启用
+
+# 内存监控检查间隔（秒）
+MEMORY_MONITOR_INTERVAL = 60  # 默认60秒检查一次
+
+# 内存使用率警告阈值（百分比）
+MEMORY_WARNING_THRESHOLD = 80.0  # 默认80%警告阈值
+
+# 内存使用率严重阈值（百分比）
+MEMORY_CRITICAL_THRESHOLD = 90.0  # 默认90%严重阈值
+```
+
+## 使用方法
+
+### 1. 启用扩展
+
+在项目的[settings.py](https://github.com/crawl-coder/Crawlo/blob/master/examples/api_data_collection/api_data_collection/settings.py)中启用内存监控扩展：
+
+```python
+# settings.py
+EXTENSIONS = [
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    # ... 其他扩展
+]
+
+# 启用内存监控
+MEMORY_MONITOR_ENABLED = True
+
+# 可选：自定义配置
+MEMORY_MONITOR_INTERVAL = 30  # 每30秒检查一次
+MEMORY_WARNING_THRESHOLD = 75.0  # 75%警告阈值
+MEMORY_CRITICAL_THRESHOLD = 85.0  # 85%严重阈值
+```
+
+### 2. 运行爬虫
+
+启用扩展后，爬虫启动时会自动开始内存监控：
+
+```bash
+python run.py
+```
+
+### 3. 查看日志
+
+内存监控扩展会输出不同级别的日志信息：
+
+```log
+[INFO] Memory monitor started. Interval: 60s, Warning threshold: 80.0%, Critical threshold: 90.0%
+[DEBUG] Memory usage: 45.20% (RSS: 78.34 MB, VMS: 456.12 MB)
+[WARNING] Memory usage high: 82.50% (RSS: 142.67 MB)
+[CRITICAL] Memory usage critical: 92.30% (RSS: 159.82 MB)
+[INFO] Memory monitor stopped.
+```
+
+## 日志级别说明
+
+1. **INFO**：扩展启动和停止信息
+2. **DEBUG**：详细的内存使用情况（定期输出）
+3. **WARNING**：内存使用率超过警告阈值
+4. **CRITICAL**：内存使用率超过严重阈值
+
+## 监控指标
+
+内存监控扩展会监控以下指标：
+
+- **RSS (Resident Set Size)**：物理内存使用量
+- **VMS (Virtual Memory Size)**：虚拟内存使用量
+- **内存使用率**：进程内存占系统总内存的百分比
+
+## 最佳实践
+
+### 1. 合理设置阈值
+
+根据项目的实际需求和运行环境合理设置阈值：
+
+```python
+# 开发环境：宽松的阈值
+MEMORY_WARNING_THRESHOLD = 85.0
+MEMORY_CRITICAL_THRESHOLD = 95.0
+
+# 生产环境：严格的阈值
+MEMORY_WARNING_THRESHOLD = 70.0
+MEMORY_CRITICAL_THRESHOLD = 80.0
+```
+
+### 2. 调整监控频率
+
+根据项目的特点调整监控频率：
+
+```python
+# 高频爬虫：更频繁的监控
+MEMORY_MONITOR_INTERVAL = 10
+
+# 低频爬虫：较低频率的监控
+MEMORY_MONITOR_INTERVAL = 120
+```
+
+### 3. 结合其他监控工具
+
+内存监控扩展可以与其他监控工具结合使用：
+
+```python
+EXTENSIONS = [
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+    'crawlo.extension.performance_profiler.PerformanceProfilerExtension',
+    # ... 其他扩展
+]
+```
+
+## 故障排除
+
+### 1. 扩展未启动
+
+检查是否正确启用了扩展：
+
+```python
+# 确保在EXTENSIONS中添加了扩展
+EXTENSIONS = [
+    'crawlo.extension.memory_monitor.MemoryMonitorExtension',
+]
+
+# 确保启用了扩展
+MEMORY_MONITOR_ENABLED = True
+```
+
+### 2. 没有日志输出
+
+检查日志级别设置：
+
+```python
+# 确保日志级别设置为DEBUG或更低
+LOG_LEVEL = 'DEBUG'
+```
+
+### 3. 监控频率不正确
+
+检查配置项是否正确：
+
+```python
+# 确保配置项名称正确
+MEMORY_MONITOR_INTERVAL = 30  # 而不是 MEMORY_MONITOR_INTERVAL_SECONDS
+```
+
+## 性能影响
+
+内存监控扩展对性能的影响非常小：
+
+- **CPU占用**：几乎可以忽略不计
+- **内存占用**：监控本身占用的内存很少
+- **I/O操作**：无磁盘I/O操作
+
+## 适用场景
+
+1. **长时间运行的爬虫**：监控内存泄漏
+2. **高并发爬虫**：监控内存使用峰值
+3. **生产环境部署**：实时监控系统健康状况
+4. **调试和优化**：分析内存使用模式
+
+## 注意事项
+
+1. 内存监控扩展依赖[psutil](https://github.com/giampaolo/psutil)库，请确保已安装
+2. 在容器化环境中，监控的是容器的内存使用情况
+3. 扩展只监控当前进程的内存使用，不包括子进程
+4. 阈值设置应考虑系统的整体内存情况
+
+**code file end: docs/modules/extension/memory_monitor.md**
+
+---
+
+
+### code file start: docs/modules/filter/base.md 
+
+# 基础过滤器
+
+基础过滤器是定义Crawlo框架中所有过滤器实现接口的抽象基类。它提供所有过滤器必须遵循的通用功能和结构。
+
+## 概述
+
+基础过滤器定义了请求去重功能的契约。所有过滤器实现都必须继承此类并实现所需的方法。
+
+## 架构
+
+基础过滤器为所有过滤器实现提供基础：
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[MemoryFilter]
+    A --> C[AioRedisFilter]
+    D[调度器] --> A
+```
+
+## 主要特性
+
+### 抽象接口
+
+基础过滤器定义了所有过滤器必须实现的抽象接口：
+
+- [requested(request)](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L34)：检查请求是否之前见过
+- [add_fingerprint(fp)](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L47)：向过滤器添加指纹
+- [close()](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L71)：过滤器不再需要时清理资源
+
+### 通用功能
+
+基础过滤器为所有过滤器提供通用功能：
+
+- 请求指纹识别
+- 统计跟踪
+- 日志记录
+- 调试模式支持
+
+### 可扩展性
+
+基础过滤器设计为易于扩展：
+
+- 简单的继承模型
+- 清晰的方法签名
+- 一致的错误处理
+- 灵活的配置
+
+## API参考
+
+### `BaseFilter(logger, stats, debug=False)`
+
+创建一个新的基础过滤器实例。
+
+**参数：**
+- `logger`：用于记录消息的日志记录器实例
+- `stats`：用于跟踪过滤器性能的统计收集器
+- `debug`：启用调试模式以获得额外日志
+
+### `async requested(request)`
+
+检查请求是否之前见过。
+
+**参数：**
+- `request`：要检查的请求
+
+**返回：**
+- `bool`：如果请求之前见过则为True，否则为False
+
+### `async add_fingerprint(fp)`
+
+向过滤器添加指纹。
+
+**参数：**
+- `fp`：要添加的指纹
+
+**返回：**
+- `bool`：如果指纹已添加则为True，如果已存在则为False
+
+### `create_instance(crawler)`
+
+从爬虫创建过滤器实例的类方法。
+
+**参数：**
+- `crawler`：爬虫实例
+
+**返回：**
+- 新的过滤器实例
+
+### `async close(reason=None)`
+
+过滤器不再需要时清理资源。
+
+**参数：**
+- `reason`：关闭过滤器的原因
+
+### `get_stats()`
+
+获取过滤器统计信息。
+
+**返回：**
+- `dict`：关于过滤器性能的统计信息
+
+## 实现要求
+
+所有过滤器实现必须：
+
+1. 继承基础过滤器
+2. 实现[requested](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L34)方法
+3. 实现[add_fingerprint](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L47)方法
+4. 实现[create_instance](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/filters/base.py#L57)类方法
+5. 调用父构造函数
+6. 适当处理异常
+
+## 实现示例
+
+```python
+from crawlo.filters import BaseFilter
+
+class CustomFilter(BaseFilter):
+    def __init__(self, logger, stats, debug=False):
+        super().__init__(logger, stats, debug)
+        # 初始化自定义过滤器状态
+        
+    @classmethod
+    def create_instance(cls, crawler):
+        # 从爬虫配置创建实例
+        return cls(
+            logger=crawler.logger,
+            stats=crawler.stats,
+            debug=crawler.settings.get_bool('FILTER_DEBUG', False)
+        )
+        
+    async def requested(self, request):
+        # 检查请求是否见过
+        fp = self._request_fingerprint(request)
+        if await self._exists(fp):
+            return True
+        await self.add_fingerprint(fp)
+        return False
+        
+    async def add_fingerprint(self, fp):
+        # 向过滤器添加指纹
+        # 如果添加则返回True，如果已存在则返回False
+        pass
+        
+    async def _exists(self, fp):
+        # 检查指纹是否存在
+        pass
+```
+
+## 性能考虑
+
+- 最小化过滤器方法中的阻塞操作
+- 为指纹存储使用高效的数据结构
+- 实现适当的缓存机制
+- 监控过滤器性能和内存使用
+- 适当处理大规模场景
+
+## 错误处理
+
+基础过滤器提供基本的错误处理：
+
+- 错误和异常的日志记录
+- 可能时的优雅降级
+- 适当的资源清理
+- 错误的统计跟踪
+
+## 扩展点
+
+基础过滤器可以通过以下几种方式扩展：
+
+1. **存储后端**：实现不同的存储机制
+2. **指纹识别**：自定义请求指纹识别算法
+3. **过期**：添加TTL或过期机制
+4. **统计**：增强统计收集
+5. **配置**：添加自定义配置选项
+
+**code file end: docs/modules/filter/base.md**
+
+---
+
+
+### code file start: docs/modules/filter/base_en.md 
+
+# BaseFilter
+
+The BaseFilter is the abstract base class that defines the interface for all filter implementations in the Crawlo framework. It provides the common functionality and structure that all filters must follow.
+
+## Overview
+
+The BaseFilter defines the contract for request deduplication functionality. All filter implementations must inherit from this class and implement the required methods.
+
+## Architecture
+
+The BaseFilter provides the foundation for all filter implementations:
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[MemoryFilter]
+    A --> C[AioRedisFilter]
+    D[Scheduler] --> A
+```
+
+## Key Features
+
+### Abstract Interface
+
+The BaseFilter defines the abstract interface that all filters must implement:
+
+- `requested(request)`: Check if a request has been seen before
+- `add_fingerprint(fp)`: Add a fingerprint to the filter
+- `close()`: Clean up resources when the filter is no longer needed
+
+### Common Functionality
+
+The BaseFilter provides common functionality for all filters:
+
+- Request fingerprinting
+- Statistics tracking
+- Logging
+- Debug mode support
+
+### Extensibility
+
+The BaseFilter is designed to be easily extended:
+
+- Simple inheritance model
+- Clear method signatures
+- Consistent error handling
+- Flexible configuration
+
+## API Reference
+
+### `BaseFilter(logger, stats, debug=False)`
+
+Creates a new BaseFilter instance.
+
+**Parameters:**
+- `logger`: Logger instance for logging messages
+- `stats`: Statistics collector for tracking filter performance
+- `debug`: Enable debug mode for additional logging
+
+### `async requested(request)`
+
+Checks if a request has been seen before.
+
+**Parameters:**
+- `request`: The request to check
+
+**Returns:**
+- `bool`: True if the request has been seen before, False otherwise
+
+### `async add_fingerprint(fp)`
+
+Adds a fingerprint to the filter.
+
+**Parameters:**
+- `fp`: The fingerprint to add
+
+**Returns:**
+- `bool`: True if the fingerprint was added, False if it already existed
+
+### `create_instance(crawler)`
+
+Class method to create a filter instance from a crawler.
+
+**Parameters:**
+- `crawler`: The crawler instance
+
+**Returns:**
+- A new filter instance
+
+### `async close(reason=None)`
+
+Cleans up resources when the filter is no longer needed.
+
+**Parameters:**
+- `reason`: Reason for closing the filter
+
+### `get_stats()`
+
+Gets filter statistics.
+
+**Returns:**
+- `dict`: Statistics about filter performance
+
+## Implementation Requirements
+
+All filter implementations must:
+
+1. Inherit from BaseFilter
+2. Implement the `requested` method
+3. Implement the `add_fingerprint` method
+4. Implement the `create_instance` class method
+5. Call the parent constructor
+6. Handle exceptions appropriately
+
+## Example Implementation
+
+```python
+from crawlo.filters import BaseFilter
+
+class CustomFilter(BaseFilter):
+    def __init__(self, logger, stats, debug=False):
+        super().__init__(logger, stats, debug)
+        # Initialize custom filter state
+        
+    @classmethod
+    def create_instance(cls, crawler):
+        # Create instance from crawler configuration
+        return cls(
+            logger=crawler.logger,
+            stats=crawler.stats,
+            debug=crawler.settings.get_bool('FILTER_DEBUG', False)
+        )
+        
+    async def requested(self, request):
+        # Check if request has been seen
+        fp = self._request_fingerprint(request)
+        if await self._exists(fp):
+            return True
+        await self.add_fingerprint(fp)
+        return False
+        
+    async def add_fingerprint(self, fp):
+        # Add fingerprint to filter
+        # Return True if added, False if already existed
+        pass
+        
+    async def _exists(self, fp):
+        # Check if fingerprint exists
+        pass
+```
+
+## Performance Considerations
+
+- Minimize blocking operations in filter methods
+- Use efficient data structures for fingerprint storage
+- Implement proper caching mechanisms
+- Monitor filter performance and memory usage
+- Handle large-scale scenarios appropriately
+
+## Error Handling
+
+The BaseFilter provides basic error handling:
+
+- Logging of errors and exceptions
+- Graceful degradation when possible
+- Proper resource cleanup
+- Statistics tracking of errors
+
+## Extension Points
+
+The BaseFilter can be extended in several ways:
+
+1. **Storage Backend**: Implement different storage mechanisms
+2. **Fingerprinting**: Customize request fingerprinting algorithms
+3. **Expiration**: Add TTL or expiration mechanisms
+4. **Statistics**: Enhance statistics collection
+5. **Configuration**: Add custom configuration options
+
+**code file end: docs/modules/filter/base_en.md**
+
+---
+
+
+### code file start: docs/modules/filter/bloom.md 
+
+# BloomFilter
+
+BloomFilter 是 Crawlo 框架中基于布隆过滤器的高效去重组件，适用于处理大规模 URL 的场景。
+
+## 概述
+
+BloomFilter 使用布隆过滤器算法实现请求去重，具有极低的内存使用和快速的查询速度，特别适合处理超大规模的爬取任务。
+
+### 核心特性
+
+1. **极低内存使用** - 相比其他过滤器内存使用量极小
+2. **快速查询** - O(k) 时间复杂度的查询速度
+3. **可配置精度** - 支持配置误判率
+4. **大规模支持** - 支持处理数亿级别的 URL
+
+## 配置选项
+
+BloomFilter 的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| BLOOM_FILTER_CAPACITY | int | 1000000 | 过滤器容量 |
+| BLOOM_FILTER_ERROR_RATE | float | 0.001 | 误判率 |
+| BLOOM_FILTER_PERSISTENCE | bool | True | 是否持久化 |
+| BLOOM_FILTER_FILENAME | str | 'bloom_filter.dat' | 持久化文件名 |
+
+## 使用示例
+
+### 基本使用
+
+```python
+from crawlo.config import CrawloConfig
+
+# 配置使用 Bloom 过滤器
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_capacity=10000000,  # 1000万容量
+    bloom_filter_error_rate=0.0001   # 0.01% 误判率
+)
+```
+
+### 高级配置
+
+```python
+# 配置持久化
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_persistence=True,
+    bloom_filter_filename='my_filter.dat'
+)
+```
+
+## 性能特点
+
+### 内存使用对比
+
+| 过滤器类型 | 100万URL内存使用 | 1亿URL内存使用 |
+|------------|----------------|---------------|
+| MemoryFilter | 100MB | 10GB |
+| AioRedisFilter | 50MB | 5GB |
+| BloomFilter | 1MB | 100MB |
+
+### 查询性能
+
+```python
+# BloomFilter 查询性能
+import time
+
+# 测试查询性能
+start_time = time.time()
+for i in range(1000000):
+    filter.check_duplicate(Request(url=f"http://example.com/{i}"))
+end_time = time.time()
+
+print(f"BloomFilter 查询100万次耗时: {end_time - start_time:.2f}秒")
+# 通常小于1秒
+```
+
+## 误判率管理
+
+### 误判率配置
+
+```python
+# 不同误判率的内存使用
+config_low_error = CrawloConfig.standalone(
+    bloom_filter_capacity=1000000,
+    bloom_filter_error_rate=0.0001  # 0.01% 误判率，内存使用约 2MB
+)
+
+config_high_error = CrawloConfig.standalone(
+    bloom_filter_capacity=1000000,
+    bloom_filter_error_rate=0.01   # 1% 误判率，内存使用约 1MB
+)
+```
+
+### 误判处理
+
+```python
+class BloomSpider(Spider):
+    def parse(self, response):
+        # 处理可能的误判
+        if self.is_likely_duplicate(response.url):
+            # 可能是误判，进行二次验证
+            if not self.secondary_check(response.url):
+                return
+        
+        # 正常处理逻辑
+        yield Item(data=response.text)
+    
+    def is_likely_duplicate(self, url):
+        # 基于业务逻辑判断是否可能是误判
+        return False
+    
+    def secondary_check(self, url):
+        # 二次验证逻辑
+        return True
+```
+
+## 最佳实践
+
+### 1. 容量规划
+
+```python
+# 根据预期URL数量规划容量
+expected_urls = 50000000  # 预期5000万URL
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_capacity=int(expected_urls * 1.2),  # 预留20%空间
+    bloom_filter_error_rate=0.001
+)
+```
+
+### 2. 误判率选择
+
+```python
+# 根据业务需求选择误判率
+# 对准确性要求高的场景
+config_strict = CrawloConfig.standalone(
+    bloom_filter_error_rate=0.0001  # 0.01% 误判率
+)
+
+# 对性能要求高的场景
+config_performance = CrawloConfig.standalone(
+    bloom_filter_error_rate=0.01    # 1% 误判率
+)
+```
+
+### 3. 持久化配置
+
+```python
+# 生产环境启用持久化
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_persistence=True,
+    bloom_filter_filename=f'bloom_filter_{int(time.time())}.dat'
+)
+
+# 定期备份过滤器
+import shutil
+shutil.copy('bloom_filter.dat', f'backup/bloom_filter_{int(time.time())}.dat')
+```
+
+## 故障排除
+
+### 常见问题
+
+1. **内存不足**
+   ```python
+   # 问题: MemoryError
+   # 解决: 降低容量或提高误判率
+   config = CrawloConfig.standalone(
+       bloom_filter_capacity=5000000,   # 降低容量
+       bloom_filter_error_rate=0.01     # 提高误判率
+   )
+   ```
+
+2. **误判率过高**
+   ```python
+   # 问题: 过多误判导致数据丢失
+   # 解决: 降低误判率或添加二次验证
+   config = CrawloConfig.standalone(
+       bloom_filter_error_rate=0.0001   # 降低误判率
+   )
+   ```
+
+3. **持久化文件损坏**
+   ```python
+   # 问题: 持久化文件损坏
+   # 解决: 删除损坏文件重新创建
+   import os
+   if os.path.exists('bloom_filter.dat'):
+       os.remove('bloom_filter.dat')
+   # 重启爬虫会自动创建新文件
+   ```
+
+### 性能调优
+
+```python
+# 监控 BloomFilter 性能
+class PerformanceMonitor:
+    def __init__(self):
+        self.check_count = 0
+        self.duplicate_count = 0
+    
+    def monitor_filter(self, filter):
+        # 监控过滤器性能
+        stats = filter.get_stats()
+        self.logger.info(f"过滤器统计: {stats}")
+        
+        # 计算实际误判率
+        if self.check_count > 0:
+            actual_error_rate = self.duplicate_count / self.check_count
+            self.logger.info(f"实际误判率: {actual_error_rate:.4f}")
+```
+
+**code file end: docs/modules/filter/bloom.md**
+
+---
+
+
+### code file start: docs/modules/filter/bloom_en.md 
+
+# BloomFilter
+
+BloomFilter is an efficient deduplication component based on the Bloom filter algorithm in the Crawlo framework, suitable for scenarios handling large-scale URLs.
+
+## Overview
+
+BloomFilter implements request deduplication using the Bloom filter algorithm, featuring extremely low memory usage and fast query speed, particularly suitable for handling ultra-large-scale crawling tasks.
+
+### Core Features
+
+1. **Extremely Low Memory Usage** - Much lower memory usage compared to other filters
+2. **Fast Query** - O(k) time complexity query speed
+3. **Configurable Accuracy** - Supports configurable false positive rate
+4. **Large-scale Support** - Supports processing hundreds of millions of URLs
+
+## Configuration Options
+
+The behavior of BloomFilter can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| BLOOM_FILTER_CAPACITY | int | 1000000 | Filter capacity |
+| BLOOM_FILTER_ERROR_RATE | float | 0.001 | False positive rate |
+| BLOOM_FILTER_PERSISTENCE | bool | True | Whether to persist |
+| BLOOM_FILTER_FILENAME | str | 'bloom_filter.dat' | Persistence filename |
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from crawlo.config import CrawloConfig
+
+# Configure to use Bloom filter
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_capacity=10000000,  # 10 million capacity
+    bloom_filter_error_rate=0.0001   # 0.01% false positive rate
+)
+```
+
+### Advanced Configuration
+
+```python
+# Configure persistence
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_persistence=True,
+    bloom_filter_filename='my_filter.dat'
+)
+```
+
+## Performance Characteristics
+
+### Memory Usage Comparison
+
+| Filter Type | Memory Usage for 1M URLs | Memory Usage for 100M URLs |
+|-------------|-------------------------|---------------------------|
+| MemoryFilter | 100MB | 10GB |
+| AioRedisFilter | 50MB | 5GB |
+| BloomFilter | 1MB | 100MB |
+
+### Query Performance
+
+```python
+# BloomFilter query performance
+import time
+
+# Test query performance
+start_time = time.time()
+for i in range(1000000):
+    filter.check_duplicate(Request(url=f"http://example.com/{i}"))
+end_time = time.time()
+
+print(f"BloomFilter 1 million queries time: {end_time - start_time:.2f} seconds")
+# Usually less than 1 second
+```
+
+## False Positive Rate Management
+
+### False Positive Rate Configuration
+
+```python
+# Memory usage with different false positive rates
+config_low_error = CrawloConfig.standalone(
+    bloom_filter_capacity=1000000,
+    bloom_filter_error_rate=0.0001  # 0.01% false positive rate, memory usage ~2MB
+)
+
+config_high_error = CrawloConfig.standalone(
+    bloom_filter_capacity=1000000,
+    bloom_filter_error_rate=0.01   # 1% false positive rate, memory usage ~1MB
+)
+```
+
+### False Positive Handling
+
+```python
+class BloomSpider(Spider):
+    def parse(self, response):
+        # Handle possible false positives
+        if self.is_likely_duplicate(response.url):
+            # Might be a false positive, perform secondary verification
+            if not self.secondary_check(response.url):
+                return
+        
+        # Normal processing logic
+        yield Item(data=response.text)
+    
+    def is_likely_duplicate(self, url):
+        # Judge if it's likely a false positive based on business logic
+        return False
+    
+    def secondary_check(self, url):
+        # Secondary verification logic
+        return True
+```
+
+## Best Practices
+
+### 1. Capacity Planning
+
+```python
+# Plan capacity based on expected URL count
+expected_urls = 50000000  # Expected 50 million URLs
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_capacity=int(expected_urls * 1.2),  # Reserve 20% space
+    bloom_filter_error_rate=0.001
+)
+```
+
+### 2. False Positive Rate Selection
+
+```python
+# Choose false positive rate based on business requirements
+# For scenarios requiring high accuracy
+config_strict = CrawloConfig.standalone(
+    bloom_filter_error_rate=0.0001  # 0.01% false positive rate
+)
+
+# For scenarios requiring high performance
+config_performance = CrawloConfig.standalone(
+    bloom_filter_error_rate=0.01    # 1% false positive rate
+)
+```
+
+### 3. Persistence Configuration
+
+```python
+# Enable persistence in production environment
+config = CrawloConfig.standalone(
+    filter_type='bloom',
+    bloom_filter_persistence=True,
+    bloom_filter_filename=f'bloom_filter_{int(time.time())}.dat'
+)
+
+# Regularly backup filter
+import shutil
+shutil.copy('bloom_filter.dat', f'backup/bloom_filter_{int(time.time())}.dat')
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Insufficient Memory**
+   ```python
+   # Issue: MemoryError
+   # Solution: Reduce capacity or increase false positive rate
+   config = CrawloConfig.standalone(
+       bloom_filter_capacity=5000000,   # Reduce capacity
+       bloom_filter_error_rate=0.01     # Increase false positive rate
+   )
+   ```
+
+2. **High False Positive Rate**
+   ```python
+   # Issue: Too many false positives causing data loss
+   # Solution: Reduce false positive rate or add secondary verification
+   config = CrawloConfig.standalone(
+       bloom_filter_error_rate=0.0001   # Reduce false positive rate
+   )
+   ```
+
+3. **Persistence File Corruption**
+   ```python
+   # Issue: Persistence file corruption
+   # Solution: Delete corrupted file and recreate
+   import os
+   if os.path.exists('bloom_filter.dat'):
+       os.remove('bloom_filter.dat')
+   # Restart spider will automatically create new file
+   ```
+
+### Performance Tuning
+
+```python
+# Monitor BloomFilter performance
+class PerformanceMonitor:
+    def __init__(self):
+        self.check_count = 0
+        self.duplicate_count = 0
+    
+    def monitor_filter(self, filter):
+        # Monitor filter performance
+        stats = filter.get_stats()
+        self.logger.info(f"Filter statistics: {stats}")
+        
+        # Calculate actual false positive rate
+        if self.check_count > 0:
+            actual_error_rate = self.duplicate_count / self.check_count
+            self.logger.info(f"Actual false positive rate: {actual_error_rate:.4f}")
+```
+
+**code file end: docs/modules/filter/bloom_en.md**
+
+---
+
+
+### code file start: docs/modules/filter/index.md 
+
+# 过滤器模块
+
+过滤器模块是 Crawlo 框架中负责请求去重的核心组件。它通过维护已处理请求的指纹集合，防止重复爬取相同的 URL，提高爬取效率。
+
+## 模块概述
+
+过滤器模块采用抽象设计，支持多种过滤器实现，包括内存过滤器、Redis 过滤器和布隆过滤器。用户可以根据具体需求选择合适的过滤器。
+
+### 核心组件
+
+1. [BaseFilter](base.md) - 基础过滤器接口
+2. [MemoryFilter](memory.md) - 内存过滤器实现
+3. [AioRedisFilter](redis.md) - Redis 过滤器实现
+4. [BloomFilter](bloom.md) - 布隆过滤器实现
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "过滤器模块"
+BaseFilter[BaseFilter<br/>基础过滤器接口]
+MemoryFilter[MemoryFilter<br/>内存过滤器实现]
+AioRedisFilter[AioRedisFilter<br/>Redis过滤器实现]
+BloomFilter[BloomFilter<br/>布隆过滤器实现]
+end
+Scheduler[调度器] --> BaseFilter
+BaseFilter --> MemoryFilter
+BaseFilter --> AioRedisFilter
+BaseFilter --> BloomFilter
+style BaseFilter fill:#f9f,stroke:#333
+style Scheduler fill:#bbf,stroke:#333
+```
+
+## 过滤器类型
+
+### 内存过滤器 (MemoryFilter)
+
+**适用场景:**
+- 单机模式下的简单爬取任务
+- 开发和测试环境
+- 不需要持久化过滤数据的场景
+
+**特点:**
+- 基于内存存储，访问速度快
+- 实现简单，资源消耗低
+- 不支持持久化，进程重启后数据丢失
+
+### Redis 过滤器 (AioRedisFilter)
+
+**适用场景:**
+- 分布式模式下的大规模爬取任务
+- 需要过滤数据持久化的场景
+- 多节点协同工作的环境
+
+**特点:**
+- 基于 Redis 存储，支持持久化
+- 支持分布式部署
+- 支持大规模数据去重
+
+### 布隆过滤器 (BloomFilter)
+
+**适用场景:**
+- 需要处理超大规模 URL 的场景
+- 对内存使用有严格要求的环境
+- 可以接受一定误判率的场景
+
+**特点:**
+- 极低的内存使用
+- 支持超大规模数据
+- 存在一定的误判率
+
+## 配置选项
+
+过滤器模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| FILTER_TYPE | str | 'memory' | 过滤器类型（memory/redis/bloom） |
+| REDIS_HOST | str | '127.0.0.1' | Redis 主机地址 |
+| REDIS_PORT | int | 6379 | Redis 端口 |
+| REDIS_PASSWORD | str | None | Redis 密码 |
+| REDIS_DB | int | 0 | Redis 数据库编号 |
+| BLOOM_FILTER_CAPACITY | int | 1000000 | 布隆过滤器容量 |
+| BLOOM_FILTER_ERROR_RATE | float | 0.001 | 布隆过滤器误判率 |
+
+## 使用示例
+
+### 基本使用
+
+```python
+from crawlo.filter import MemoryFilter
+from crawlo.network import Request
+
+# 创建过滤器实例
+filter = MemoryFilter()
+
+# 检查请求是否重复
+request = Request(url='http://example.com')
+is_duplicate = filter.check_duplicate(request)
+
+# 添加请求到过滤器
+if not is_duplicate:
+    filter.add_request(request)
+```
+
+### 切换过滤器类型
+
+```python
+from crawlo.config import CrawloConfig
+from crawlo.filter import FilterFactory
+
+# 配置使用 Redis 过滤器
+config = CrawloConfig.distributed(filter_type='redis')
+
+# 创建过滤器实例
+filter = FilterFactory.create_filter(config)
+```
+
+## 性能对比
+
+| 过滤器 | 内存使用 | 持久化支持 | 分布式支持 | 误判率 |
+|--------|----------|------------|------------|--------|
+| MemoryFilter | 高 | 不支持 | 不支持 | 0% |
+| AioRedisFilter | 低 | 支持 | 支持 | 0% |
+| BloomFilter | 极低 | 不支持 | 不支持 | 可配置 |
+
+## 错误处理
+
+### 连接异常处理
+
+```python
+try:
+    is_duplicate = filter.check_duplicate(request)
+except FilterConnectionException:
+    logger.error("过滤器连接失败")
+    # 可以选择跳过过滤直接处理请求
+```
+
+### 存储异常处理
+
+```python
+try:
+    filter.add_request(request)
+except FilterStorageException:
+    logger.error("过滤器存储失败")
+    # 可以选择重试或记录日志
+```
+
+## 监控和日志
+
+过滤器模块集成了详细的监控和日志功能：
+
+```python
+# 记录过滤操作日志
+logger.info(f"请求去重检查: {request.url}, 结果: {is_duplicate}")
+logger.debug(f"当前过滤器大小: {filter.size()}")
+
+# 记录异常日志
+logger.error(f"过滤器操作失败: {e}")
+```
+
+## 最佳实践
+
+### 根据模式选择过滤器类型
+
+```python
+# 单机模式使用内存过滤器
+config = CrawloConfig.standalone(filter_type='memory')
+
+# 分布式模式使用 Redis 过滤器
+config = CrawloConfig.distributed(filter_type='redis')
+
+# 超大规模使用布隆过滤器
+config = CrawloConfig.standalone(filter_type='bloom')
+```
+
+### 合理配置布隆过滤器参数
+
+```python
+# 预估需要处理的 URL 数量
+BLOOM_FILTER_CAPACITY = 10000000  # 1000万
+
+# 设置可接受的误判率
+BLOOM_FILTER_ERROR_RATE = 0.0001  # 0.01%
+```
+
+### 启用过滤器监控
+
+```python
+# 监控过滤器性能
+stats = filter.get_stats()
+print(f"过滤器检查次数: {stats['checks']}")
+print(f"重复请求数: {stats['duplicates']}")
+print(f"去重率: {stats['dedup_rate']:.2%}")
+```
+
+**code file end: docs/modules/filter/index.md**
+
+---
+
+
+### code file start: docs/modules/filter/index_en.md 
+
+# Filter Module
+
+The filter module is the core component in the Crawlo framework responsible for request deduplication. It prevents crawling the same URLs repeatedly by maintaining a collection of fingerprints of processed requests, improving crawling efficiency.
+
+## Module Overview
+
+The filter module adopts an abstract design, supporting multiple filter implementations including memory filter, Redis filter, and Bloom filter. Users can choose the appropriate filter based on specific needs.
+
+### Core Components
+
+1. [BaseFilter](base_en.md) - Base filter interface
+2. [MemoryFilter](memory_en.md) - Memory filter implementation
+3. [AioRedisFilter](redis_en.md) - Redis filter implementation
+4. [BloomFilter](bloom_en.md) - Bloom filter implementation
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Filter Module"
+BaseFilter[BaseFilter<br/>Base Filter Interface]
+MemoryFilter[MemoryFilter<br/>Memory Filter Implementation]
+AioRedisFilter[AioRedisFilter<br/>Redis Filter Implementation]
+BloomFilter[BloomFilter<br/>Bloom Filter Implementation]
+end
+Scheduler[Scheduler] --> BaseFilter
+BaseFilter --> MemoryFilter
+BaseFilter --> AioRedisFilter
+BaseFilter --> BloomFilter
+style BaseFilter fill:#f9f,stroke:#333
+style Scheduler fill:#bbf,stroke:#333
+```
+
+## Filter Types
+
+### Memory Filter (MemoryFilter)
+
+**Use Cases:**
+- Simple crawling tasks in standalone mode
+- Development and testing environments
+- Scenarios that don't require persistent filter data
+
+**Features:**
+- Memory-based storage, fast access
+- Simple implementation, low resource consumption
+- No persistence support, data lost on process restart
+
+### Redis Filter (AioRedisFilter)
+
+**Use Cases:**
+- Large-scale crawling tasks in distributed mode
+- Scenarios requiring persistent filter data
+- Multi-node collaborative environments
+
+**Features:**
+- Redis-based storage, supports persistence
+- Supports distributed deployment
+- Supports large-scale data deduplication
+
+### Bloom Filter (BloomFilter)
+
+**Use Cases:**
+- Scenarios requiring processing of ultra-large scale URLs
+- Environments with strict memory usage requirements
+- Scenarios where a certain false positive rate is acceptable
+
+**Features:**
+- Extremely low memory usage
+- Supports ultra-large scale data
+- Has a certain false positive rate
+
+## Configuration Options
+
+The filter module's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| FILTER_TYPE | str | 'memory' | Filter type (memory/redis/bloom) |
+| REDIS_HOST | str | '127.0.0.1' | Redis host address |
+| REDIS_PORT | int | 6379 | Redis port |
+| REDIS_PASSWORD | str | None | Redis password |
+| REDIS_DB | int | 0 | Redis database number |
+| BLOOM_FILTER_CAPACITY | int | 1000000 | Bloom filter capacity |
+| BLOOM_FILTER_ERROR_RATE | float | 0.001 | Bloom filter false positive rate |
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from crawlo.filter import MemoryFilter
+from crawlo.network import Request
+
+# Create filter instance
+filter = MemoryFilter()
+
+# Check if request is duplicate
+request = Request(url='http://example.com')
+is_duplicate = filter.check_duplicate(request)
+
+# Add request to filter
+if not is_duplicate:
+    filter.add_request(request)
+```
+
+### Switching Filter Types
+
+```python
+from crawlo.config import CrawloConfig
+from crawlo.filter import FilterFactory
+
+# Configure to use Redis filter
+config = CrawloConfig.distributed(filter_type='redis')
+
+# Create filter instance
+filter = FilterFactory.create_filter(config)
+```
+
+## Performance Comparison
+
+| Filter | Memory Usage | Persistence Support | Distributed Support | False Positive Rate |
+|--------|--------------|---------------------|---------------------|---------------------|
+| MemoryFilter | High | Not supported | Not supported | 0% |
+| AioRedisFilter | Low | Supported | Supported | 0% |
+| BloomFilter | Extremely low | Not supported | Not supported | Configurable |
+
+## Error Handling
+
+### Connection Exception Handling
+
+```python
+try:
+    is_duplicate = filter.check_duplicate(request)
+except FilterConnectionException:
+    logger.error("Filter connection failed")
+    # Can choose to skip filtering and process request directly
+```
+
+### Storage Exception Handling
+
+```python
+try:
+    filter.add_request(request)
+except FilterStorageException:
+    logger.error("Filter storage failed")
+    # Can choose to retry or log
+```
+
+## Monitoring and Logging
+
+The filter module integrates detailed monitoring and logging functionality:
+
+```python
+# Log filter operations
+logger.info(f"Request deduplication check: {request.url}, Result: {is_duplicate}")
+logger.debug(f"Current filter size: {filter.size()}")
+
+# Log exception information
+logger.error(f"Filter operation failed: {e}")
+```
+
+## Best Practices
+
+### Choose Filter Type Based on Mode
+
+```python
+# Use memory filter for standalone mode
+config = CrawloConfig.standalone(filter_type='memory')
+
+# Use Redis filter for distributed mode
+config = CrawloConfig.distributed(filter_type='redis')
+
+# Use Bloom filter for ultra-large scale
+config = CrawloConfig.standalone(filter_type='bloom')
+```
+
+### Configure Bloom Filter Parameters Appropriately
+
+```python
+# Estimate the number of URLs to process
+BLOOM_FILTER_CAPACITY = 10000000  # 10 million
+
+# Set acceptable false positive rate
+BLOOM_FILTER_ERROR_RATE = 0.0001  # 0.01%
+```
+
+### Enable Filter Monitoring
+
+```python
+# Monitor filter performance
+stats = filter.get_stats()
+print(f"Filter checks: {stats['checks']}")
+print(f"Duplicate requests: {stats['duplicates']}")
+print(f"Deduplication rate: {stats['dedup_rate']:.2%}")
+```
+
+**code file end: docs/modules/filter/index_en.md**
+
+---
+
+
+### code file start: docs/modules/filter/memory.md 
+
+# 内存过滤器
+
+内存过滤器是用于请求去重的过滤器接口的内存实现。它提供快速、轻量级的去重功能，无需外部依赖。
+
+## 概述
+
+内存过滤器设计用于：
+
+- 独立爬取（单节点）
+- 开发和测试环境
+- 不需要外部依赖的场景
+- 带去重功能的高性能本地爬取
+
+## 架构
+
+内存过滤器使用Python的内置数据结构进行高效去重：
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[MemoryFilter]
+    B --> C[Set]
+    B --> D[请求指纹识别]
+```
+
+## 主要特性
+
+### 高性能
+
+- 快速的内存操作
+- 最小开销
+- O(1)平均查找时间
+- 高效的内存使用
+
+### 简单实现
+
+- 直接的基于集合的存储
+- 无外部依赖
+- 易于理解和调试
+- 所需配置最少
+
+### 请求指纹识别
+
+- 一致的指纹生成
+- 高效的哈希算法
+- 可配置的指纹组件
+- 抗碰撞
+
+## 实现细节
+
+### 存储后端
+
+内存过滤器使用Python的内置[set](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/utils/datatypes.py#L67)数据结构：
+
+- 将请求指纹存储为字符串
+- 提供O(1)平均查找时间
+- 自动去重
+- 内存高效存储
+
+### 指纹识别
+
+内存过滤器使用请求指纹识别生成唯一标识符：
+
+- 基于URL的指纹识别
+- 基于方法的区分
+- 参数处理
+- 可配置的组件
+
+## 配置
+
+内存过滤器通过爬虫设置配置：
+
+```python
+# 在settings.py中
+FILTER_CLASS = 'crawlo.filters.memory_filter.MemoryFilter'
+FILTER_DEBUG = False
+
+# 内存过滤器没有特定设置
+```
+
+## API参考
+
+### `MemoryFilter(logger, stats, debug=False)`
+
+创建一个新的内存过滤器实例。
+
+**参数：**
+- `logger`：用于记录消息的日志记录器实例
+- `stats`：用于跟踪过滤器性能的统计收集器
+- `debug`：启用调试模式以获得额外日志
+
+### `async requested(request)`
+
+检查请求是否之前见过。
+
+**参数：**
+- `request`：要检查的请求
+
+**返回：**
+- `bool`：如果请求之前见过则为True，否则为False
+
+### `async add_fingerprint(fp)`
+
+向过滤器添加指纹。
+
+**参数：**
+- `fp`：要添加的指纹
+
+**返回：**
+- `bool`：如果指纹已添加则为True，如果已存在则为False
+
+### `create_instance(crawler)`
+
+从爬虫创建过滤器实例的类方法。
+
+**参数：**
+- `crawler`：爬虫实例
+
+**返回：**
+- 新的内存过滤器实例
+
+### `async close(reason=None)`
+
+过滤器不再需要时清理资源。
+
+**参数：**
+- `reason`：关闭过滤器的原因
+
+### `get_stats()`
+
+获取过滤器统计信息。
+
+**返回：**
+- `dict`：关于过滤器性能的统计信息
+
+## 使用示例
+
+```python
+from crawlo.filters import MemoryFilter
+
+# 在settings.py中配置
+FILTER_CLASS = 'crawlo.filters.memory_filter.MemoryFilter'
+
+# 或直接创建（不推荐用于生产环境）
+filter_instance = MemoryFilter(logger, stats, debug=False)
+
+# 检查请求是否见过
+if await filter_instance.requested(request):
+    print("请求是重复的")
+else:
+    print("请求是新的")
+
+# 手动添加指纹
+fp = "unique_fingerprint"
+await filter_instance.add_fingerprint(fp)
+
+# 获取统计信息
+stats = filter_instance.get_stats()
+print(f"总请求数: {stats['total_requests']}")
+print(f"重复请求数: {stats['duplicate_requests']}")
+```
+
+## 性能考虑
+
+### 内存使用
+
+- 集合大小直接影响内存使用
+- 大量唯一请求可能导致内存压力
+- 在操作期间监控内存使用
+- 考虑生产环境中的内存限制
+
+### 速度
+
+- O(1)平均查找时间
+- 每次操作的开销最小
+- 对于中等规模爬取很高效
+- 在非常大的数据集上可能较慢
+
+### 限制
+
+- 不适用于分布式爬取
+- 重启后无持久性
+- 内存受限
+- 仅限单节点
+
+## 最佳实践
+
+1. **内存监控**：在大数据集上监控内存使用
+2. **规模考虑**：考虑生产环境的规模限制
+3. **测试**：适用于开发和测试场景
+4. **部署**：仅用于独立部署
+5. **调试**：启用调试模式进行故障排除
+
+## 何时使用内存过滤器
+
+推荐在以下情况下使用内存过滤器：
+
+- 开发和测试
+- 独立爬取场景
+- 带去重功能的高性能本地爬取
+- 无外部依赖的环境
+- 简单的单节点部署
+
+不适用于：
+
+- 分布式爬取
+- 有大规模要求的生产环境
+- 需要持久性的场景
+- 有大数据集的内存受限环境
+
+**code file end: docs/modules/filter/memory.md**
+
+---
+
+
+### code file start: docs/modules/filter/memory_en.md 
+
+# MemoryFilter
+
+The MemoryFilter is an in-memory implementation of the filter interface for request deduplication. It provides fast, lightweight deduplication without external dependencies.
+
+## Overview
+
+The MemoryFilter is designed for:
+
+- Standalone crawling (single node)
+- Development and testing environments
+- Scenarios where external dependencies are not desired
+- High-performance local crawling with deduplication
+
+## Architecture
+
+The MemoryFilter uses Python's built-in data structures for efficient deduplication:
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[MemoryFilter]
+    B --> C[Set]
+    B --> D[Request Fingerprinting]
+```
+
+## Key Features
+
+### High Performance
+
+- Fast in-memory operations
+- Minimal overhead
+- O(1) average case lookup time
+- Efficient memory usage
+
+### Simple Implementation
+
+- Straightforward set-based storage
+- No external dependencies
+- Easy to understand and debug
+- Minimal configuration required
+
+### Request Fingerprinting
+
+- Consistent fingerprint generation
+- Efficient hashing algorithms
+- Configurable fingerprint components
+- Collision resistance
+
+## Implementation Details
+
+### Storage Backend
+
+The MemoryFilter uses Python's built-in `set` data structure:
+
+- Stores request fingerprints as strings
+- Provides O(1) average case lookup
+- Automatic deduplication
+- Memory-efficient storage
+
+### Fingerprinting
+
+The MemoryFilter uses request fingerprinting to generate unique identifiers:
+
+- URL-based fingerprinting
+- Method-based differentiation
+- Parameter handling
+- Configurable components
+
+## Configuration
+
+The MemoryFilter is configured through crawler settings:
+
+```python
+# In settings.py
+FILTER_CLASS = 'crawlo.filters.memory_filter.MemoryFilter'
+FILTER_DEBUG = False
+
+# MemoryFilter has no specific settings
+```
+
+## API Reference
+
+### `MemoryFilter(logger, stats, debug=False)`
+
+Creates a new MemoryFilter instance.
+
+**Parameters:**
+- `logger`: Logger instance for logging messages
+- `stats`: Statistics collector for tracking filter performance
+- `debug`: Enable debug mode for additional logging
+
+### `async requested(request)`
+
+Checks if a request has been seen before.
+
+**Parameters:**
+- `request`: The request to check
+
+**Returns:**
+- `bool`: True if the request has been seen before, False otherwise
+
+### `async add_fingerprint(fp)`
+
+Adds a fingerprint to the filter.
+
+**Parameters:**
+- `fp`: The fingerprint to add
+
+**Returns:**
+- `bool`: True if the fingerprint was added, False if it already existed
+
+### `create_instance(crawler)`
+
+Class method to create a filter instance from a crawler.
+
+**Parameters:**
+- `crawler`: The crawler instance
+
+**Returns:**
+- A new MemoryFilter instance
+
+### `async close(reason=None)`
+
+Cleans up resources when the filter is no longer needed.
+
+**Parameters:**
+- `reason`: Reason for closing the filter
+
+### `get_stats()`
+
+Gets filter statistics.
+
+**Returns:**
+- `dict`: Statistics about filter performance
+
+## Example Usage
+
+```python
+from crawlo.filters import MemoryFilter
+
+# Configure in settings.py
+FILTER_CLASS = 'crawlo.filters.memory_filter.MemoryFilter'
+
+# Or create directly (not recommended for production)
+filter_instance = MemoryFilter(logger, stats, debug=False)
+
+# Check if request was seen
+if await filter_instance.requested(request):
+    print("Request is a duplicate")
+else:
+    print("Request is new")
+
+# Add fingerprint manually
+fp = "unique_fingerprint"
+await filter_instance.add_fingerprint(fp)
+
+# Get statistics
+stats = filter_instance.get_stats()
+print(f"Total requests: {stats['total_requests']}")
+print(f"Duplicate requests: {stats['duplicate_requests']}")
+```
+
+## Performance Considerations
+
+### Memory Usage
+
+- Set size directly affects memory usage
+- Large numbers of unique requests can cause memory pressure
+- Monitor memory usage during operation
+- Consider memory constraints in production
+
+### Speed
+
+- O(1) average case lookup time
+- Minimal overhead per operation
+- Efficient for moderate-scale crawling
+- May be slower with very large datasets
+
+### Limitations
+
+- Not suitable for distributed crawling
+- No persistence across restarts
+- Memory constrained
+- Single node only
+
+## Best Practices
+
+1. **Memory Monitoring**: Monitor memory usage with large datasets
+2. **Scale Considerations**: Consider scale limitations for production
+3. **Testing**: Ideal for development and testing scenarios
+4. **Deployment**: Use for standalone deployments only
+5. **Debugging**: Enable debug mode for troubleshooting
+
+## When to Use MemoryFilter
+
+The MemoryFilter is recommended for:
+
+- Development and testing
+- Standalone crawling scenarios
+- High-performance local crawling with deduplication
+- Environments without external dependencies
+- Simple, single-node deployments
+
+It is not suitable for:
+
+- Distributed crawling
+- Production environments with large-scale requirements
+- Scenarios requiring persistence
+- Memory-constrained environments with large datasets
+
+**code file end: docs/modules/filter/memory_en.md**
+
+---
+
+
+### code file start: docs/modules/filter/redis.md 
+
+# AioRedis过滤器
+
+AioRedis过滤器是基于Redis的分布式过滤器实现，支持跨多个爬虫节点的请求去重。它为分布式爬取场景提供持久化、共享的去重功能。
+
+## 概述
+
+AioRedis过滤器设计用于：
+
+- 分布式爬取（多节点）
+- 生产环境
+- 需要持久化的场景
+- 带去重功能的高可用爬取设置
+
+## 架构
+
+AioRedis过滤器使用Redis数据结构进行分布式去重：
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[AioRedisFilter]
+    B --> C[Redis服务器]
+    B --> D[Redis连接池]
+    B --> E[请求指纹识别]
+```
+
+## 主要特性
+
+### 分布式操作
+
+- 跨多个节点的共享去重
+- 持久化存储
+- 容错性
+- 水平扩展
+
+### 性能优化
+
+- 连接池
+- 管道操作
+- 批处理
+- 懒连接建立
+- 高效的Redis数据结构
+
+### TTL支持
+
+- 旧指纹的自动过期
+- 可配置的TTL设置
+- 内存管理
+- 定期清理
+
+### 请求指纹识别
+
+- 一致的指纹生成
+- 高效的哈希算法
+- 可配置的指纹组件
+- 抗碰撞
+
+## 实现细节
+
+### 存储后端
+
+AioRedis过滤器使用Redis集合进行高效去重：
+
+- 在Redis集合中存储请求指纹
+- 提供O(1)平均查找时间
+- 自动去重
+- 持久化存储
+
+### 指纹识别
+
+AioRedis过滤器使用请求指纹识别生成唯一标识符：
+
+- 基于URL的指纹识别
+- 基于方法的区分
+- 参数处理
+- 可配置的组件
+
+## 配置
+
+AioRedis过滤器通过爬虫设置配置：
+
+```python
+# 在settings.py中
+FILTER_CLASS = 'crawlo.filters.aioredis_filter.AioRedisFilter'
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_PASSWORD = ''
+REDIS_DB = 0
+REDIS_TTL = 86400  # 24小时
+CLEANUP_FP = False
+FILTER_DEBUG = False
+
+# Redis特定设置
+REDIS_URL = 'redis://localhost:6379/0'
+DECODE_RESPONSES = True
+```
+
+## API参考
+
+### `AioRedisFilter(redis_key, client, stats, debug=False, cleanup_fp=False, ttl=None)`
+
+创建一个新的AioRedis过滤器实例。
+
+**参数：**
+- `redis_key`：存储指纹的Redis键
+- `client`：Redis客户端实例
+- `stats`：用于跟踪过滤器性能的统计收集器
+- `debug`：启用调试模式以获得额外日志
+- `cleanup_fp`：关闭时清理指纹
+- `ttl`：指纹的生存时间（秒）
+
+### `async requested(request)`
+
+检查请求是否之前见过。
+
+**参数：**
+- `request`：要检查的请求
+
+**返回：**
+- `bool`：如果请求之前见过则为True，否则为False
+
+### `async add_fingerprint(fp)`
+
+向过滤器添加指纹。
+
+**参数：**
+- `fp`：要添加的指纹
+
+**返回：**
+- `bool`：如果指纹已添加则为True，如果已存在则为False
+
+### `create_instance(crawler)`
+
+从爬虫创建过滤器实例的类方法。
+
+**参数：**
+- `crawler`：爬虫实例
+
+**返回：**
+- 新的AioRedis过滤器实例
+
+### `async close(reason=None)`
+
+过滤器不再需要时清理资源。
+
+**参数：**
+- `reason`：关闭过滤器的原因
+
+### `get_stats()`
+
+获取过滤器统计信息。
+
+**返回：**
+- `dict`：关于过滤器性能的统计信息
+
+## 使用示例
+
+```python
+from crawlo.filters import AioRedisFilter
+
+# 在settings.py中配置
+FILTER_CLASS = 'crawlo.filters.aioredis_filter.AioRedisFilter'
+REDIS_URL = 'redis://localhost:6379/0'
+REDIS_TTL = 86400  # 24小时
+
+# 或直接创建（不推荐用于生产环境）
+filter_instance = AioRedisFilter(
+    redis_key='crawlo:dedup:fingerprints',
+    client=redis_client,
+    stats=stats,
+    debug=False,
+    ttl=86400
+)
+
+# 检查请求是否见过
+if await filter_instance.requested(request):
+    print("请求是重复的")
+else:
+    print("请求是新的")
+
+# 手动添加指纹
+fp = "unique_fingerprint"
+await filter_instance.add_fingerprint(fp)
+
+# 获取统计信息
+stats = await filter_instance.get_stats()
+print(f"总指纹数: {stats['指纹总数']}")
+```
+
+## 性能考虑
+
+### 连接管理
+
+- 使用连接池以减少开销
+- 配置适当的池大小
+- 监控连接使用情况
+- 优雅地处理连接失败
+
+### Redis配置
+
+- 优化Redis服务器设置
+- 使用适当的Redis数据类型
+- 监控Redis内存使用
+- 配置Redis持久化设置
+
+### TTL管理
+
+- 为您的用例设置适当的TTL值
+- 使用TTL监控内存使用
+- 考虑清理策略
+- 在内存使用和去重效果之间取得平衡
+
+## 最佳实践
+
+1. **连接池**：使用连接池以获得更好的性能
+2. **错误处理**：实现健壮的错误处理和重试
+3. **监控**：监控过滤器性能和内存使用
+4. **TTL配置**：为您的用例设置适当的TTL值
+5. **清理**：适当地配置清理选项
+6. **安全性**：使用带认证的安全Redis配置
+
+## 何时使用AioRedis过滤器
+
+推荐在以下情况下使用AioRedis过滤器：
+
+- 分布式爬取场景
+- 生产环境
+- 高可用性要求
+- 持久化去重存储
+- 多节点部署
+- 大规模爬取操作
+
+需要：
+
+- Redis服务器安装和配置
+- 到Redis服务器的网络连接
+- 适当的Redis安全配置
+- Redis实例的监控和维护
+
+**code file end: docs/modules/filter/redis.md**
+
+---
+
+
+### code file start: docs/modules/filter/redis_en.md 
+
+# AioRedisFilter
+
+The AioRedisFilter is a distributed filter implementation based on Redis that enables request deduplication across multiple crawler nodes. It provides persistent, shared deduplication functionality for distributed crawling scenarios.
+
+## Overview
+
+The AioRedisFilter is designed for:
+
+- Distributed crawling (multi-node)
+- Production environments
+- Scenarios requiring persistence
+- High availability crawling setups with deduplication
+
+## Architecture
+
+The AioRedisFilter uses Redis data structures for distributed deduplication:
+
+```mermaid
+graph TD
+    A[BaseFilter] --> B[AioRedisFilter]
+    B --> C[Redis Server]
+    B --> D[Redis Connection Pool]
+    B --> E[Request Fingerprinting]
+```
+
+## Key Features
+
+### Distributed Operation
+
+- Shared deduplication across multiple nodes
+- Persistent storage
+- Fault tolerance
+- Horizontal scaling
+
+### Performance Optimizations
+
+- Connection pooling
+- Pipeline operations
+- Batch processing
+- Lazy connection establishment
+- Efficient Redis data structures
+
+### TTL Support
+
+- Automatic expiration of old fingerprints
+- Configurable TTL settings
+- Memory management
+- Periodic cleanup
+
+### Request Fingerprinting
+
+- Consistent fingerprint generation
+- Efficient hashing algorithms
+- Configurable fingerprint components
+- Collision resistance
+
+## Implementation Details
+
+### Storage Backend
+
+The AioRedisFilter uses Redis sets for efficient deduplication:
+
+- Stores request fingerprints in Redis sets
+- Provides O(1) average case lookup time
+- Automatic deduplication
+- Persistent storage
+
+### Fingerprinting
+
+The AioRedisFilter uses request fingerprinting to generate unique identifiers:
+
+- URL-based fingerprinting
+- Method-based differentiation
+- Parameter handling
+- Configurable components
+
+## Configuration
+
+The AioRedisFilter is configured through crawler settings:
+
+```python
+# In settings.py
+FILTER_CLASS = 'crawlo.filters.aioredis_filter.AioRedisFilter'
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_PASSWORD = ''
+REDIS_DB = 0
+REDIS_TTL = 86400  # 24 hours
+CLEANUP_FP = False
+FILTER_DEBUG = False
+
+# Redis-specific settings
+REDIS_URL = 'redis://localhost:6379/0'
+DECODE_RESPONSES = True
+```
+
+## API Reference
+
+### `AioRedisFilter(redis_key, client, stats, debug=False, cleanup_fp=False, ttl=None)`
+
+Creates a new AioRedisFilter instance.
+
+**Parameters:**
+- `redis_key`: Redis key for storing fingerprints
+- `client`: Redis client instance
+- `stats`: Statistics collector for tracking filter performance
+- `debug`: Enable debug mode for additional logging
+- `cleanup_fp`: Clean up fingerprints on close
+- `ttl`: Time-to-live for fingerprints in seconds
+
+### `async requested(request)`
+
+Checks if a request has been seen before.
+
+**Parameters:**
+- `request`: The request to check
+
+**Returns:**
+- `bool`: True if the request has been seen before, False otherwise
+
+### `async add_fingerprint(fp)`
+
+Adds a fingerprint to the filter.
+
+**Parameters:**
+- `fp`: The fingerprint to add
+
+**Returns:**
+- `bool`: True if the fingerprint was added, False if it already existed
+
+### `create_instance(crawler)`
+
+Class method to create a filter instance from a crawler.
+
+**Parameters:**
+- `crawler`: The crawler instance
+
+**Returns:**
+- A new AioRedisFilter instance
+
+### `async close(reason=None)`
+
+Cleans up resources when the filter is no longer needed.
+
+**Parameters:**
+- `reason`: Reason for closing the filter
+
+### `get_stats()`
+
+Gets filter statistics.
+
+**Returns:**
+- `dict`: Statistics about filter performance
+
+## Example Usage
+
+```python
+from crawlo.filters import AioRedisFilter
+
+# Configure in settings.py
+FILTER_CLASS = 'crawlo.filters.aioredis_filter.AioRedisFilter'
+REDIS_URL = 'redis://localhost:6379/0'
+REDIS_TTL = 86400  # 24 hours
+
+# Or create directly (not recommended for production)
+filter_instance = AioRedisFilter(
+    redis_key='crawlo:dedup:fingerprints',
+    client=redis_client,
+    stats=stats,
+    debug=False,
+    ttl=86400
+)
+
+# Check if request was seen
+if await filter_instance.requested(request):
+    print("Request is a duplicate")
+else:
+    print("Request is new")
+
+# Add fingerprint manually
+fp = "unique_fingerprint"
+await filter_instance.add_fingerprint(fp)
+
+# Get statistics
+stats = await filter_instance.get_stats()
+print(f"Total fingerprints: {stats['指纹总数']}")
+```
+
+## Performance Considerations
+
+### Connection Management
+
+- Use connection pooling to reduce overhead
+- Configure appropriate pool sizes
+- Monitor connection usage
+- Handle connection failures gracefully
+
+### Redis Configuration
+
+- Optimize Redis server settings
+- Use appropriate Redis data types
+- Monitor Redis memory usage
+- Configure Redis persistence settings
+
+### TTL Management
+
+- Set appropriate TTL values for your use case
+- Monitor memory usage with TTL
+- Consider cleanup strategies
+- Balance between memory usage and deduplication effectiveness
+
+## Best Practices
+
+1. **Connection Pooling**: Use connection pools for better performance
+2. **Error Handling**: Implement robust error handling and retries
+3. **Monitoring**: Monitor filter performance and memory usage
+4. **TTL Configuration**: Set appropriate TTL values for your use case
+5. **Cleanup**: Configure cleanup options appropriately
+6. **Security**: Use secure Redis configurations with authentication
+
+## When to Use AioRedisFilter
+
+The AioRedisFilter is recommended for:
+
+- Distributed crawling scenarios
+- Production environments
+- High availability requirements
+- Persistent deduplication storage
+- Multi-node deployments
+- Large-scale crawling operations
+
+It requires:
+
+- Redis server installation and configuration
+- Network connectivity to Redis server
+- Proper Redis security configuration
+- Monitoring and maintenance of Redis instance
+
+**code file end: docs/modules/filter/redis_en.md**
+
+---
+
+
+### code file start: docs/modules/installation/index.md 
+
+# �安装指南
+
+本指南将详细介绍如何安装和配置 Crawlo 框架，以便您可以在本地环境中使用它进行网络爬虫开发。
+
+## 系统要求
+
+Crawlo 框架支持以下操作系统：
+
+- Windows 7 及以上版本
+- macOS 10.12 及以上版本
+- Linux (Ubuntu 16.04+, CentOS 7+, 等)
+
+需要的 Python 版本：
+
+- Python 3.7 及以上版本
+
+## 安装方式
+
+### 1. 使用 pip 安装（推荐）
+
+这是安装 Crawlo 最简单的方式：
+
+```bash
+pip install crawlo
+```
+
+### 2. 从 PyPI 安装特定版本
+
+```bash
+pip install crawlo==1.0.0
+```
+
+### 3. 从源码安装
+
+如果您需要最新的开发版本，可以从 GitHub 克隆源码并安装：
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install .
+```
+
+### 4. 开发模式安装
+
+如果您计划对 Crawlo 框架进行开发或修改，可以使用开发模式安装：
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install -e .
+```
+
+## 依赖项
+
+Crawlo 框架会自动安装以下依赖项：
+
+- aiohttp - 异步 HTTP 客户端
+- httpx - 现代化的 HTTP 客户端
+- curl-cffi - 基于 curl 的 HTTP 客户端
+- redis - Redis 客户端（用于分布式爬取）
+- lxml - XML 和 HTML 解析库
+- cssselect - CSS 选择器支持
+- pyyaml - YAML 配置文件支持
+
+## 可选依赖项
+
+根据您的具体需求，您可能还需要安装以下可选依赖项：
+
+### 浏览器自动化
+
+```bash
+# Selenium 支持
+pip install selenium
+
+# Playwright 支持
+pip install playwright
+playwright install
+```
+
+### 数据存储
+
+```bash
+# MySQL 支持
+pip install aiomysql
+
+# PostgreSQL 支持
+pip install asyncpg
+
+# MongoDB 支持
+pip install motor
+
+# Elasticsearch 支持
+pip install elasticsearch
+```
+
+### 文档构建
+
+```bash
+# 文档构建工具
+pip install mkdocs mkdocs-material
+```
+
+## 验证安装
+
+安装完成后，您可以通过以下方式验证安装是否成功：
+
+```bash
+# 检查版本
+crawlo --version
+
+# 查看帮助信息
+crawlo --help
+```
+
+您也可以在 Python 环境中导入 Crawlo：
+
+```python
+import crawlo
+print(crawlo.__version__)
+```
+
+## 配置环境
+
+### 设置 Python 虚拟环境（推荐）
+
+为了隔离项目依赖，建议使用 Python 虚拟环境：
+
+```bash
+# 创建虚拟环境
+python -m venv crawlo_env
+
+# 激活虚拟环境
+# Windows:
+crawlo_env\Scripts\activate
+# macOS/Linux:
+source crawlo_env/bin/activate
+
+# 使用 conda 创建和激活环境（推荐）
+conda create -n crawlo python=3.9
+conda activate crawlo
+
+# 安装 Crawlo
+pip install crawlo
+```
+
+### 配置代理（可选）
+
+如果您需要使用代理服务器，可以设置环境变量：
+
+```bash
+# Windows (PowerShell)
+$env:HTTP_PROXY="http://proxy.example.com:8080"
+$env:HTTPS_PROXY="https://proxy.example.com:8080"
+
+# macOS/Linux
+export HTTP_PROXY=http://proxy.example.com:8080
+export HTTPS_PROXY=https://proxy.example.com:8080
+```
+
+## 常见问题
+
+### 1. 安装过程中出现权限错误
+
+如果您在安装过程中遇到权限错误，可以尝试以下解决方案：
+
+```bash
+# 使用 --user 参数安装到用户目录
+pip install --user crawlo
+
+# 或者使用虚拟环境（推荐）
+python -m venv crawlo_env
+crawlo_env\Scripts\activate
+pip install crawlo
+
+# 或者使用 conda 环境（推荐）
+conda create -n crawlo python=3.9
+conda activate crawlo
+pip install crawlo
+```
+
+### 2. 依赖项安装失败
+
+如果某些依赖项安装失败，可以尝试：
+
+```bash
+# 升级 pip
+pip install --upgrade pip
+
+# 单独安装失败的依赖项
+pip install <package_name>
+```
+
+### 3. Python 版本不兼容
+
+确保您使用的是 Python 3.7 或更高版本：
+
+```bash
+python --version
+```
+
+## 升级 Crawlo
+
+要升级到最新版本的 Crawlo：
+
+```bash
+pip install --upgrade crawlo
+```
+
+要升级到特定版本：
+
+```bash
+pip install --upgrade crawlo==1.0.0
+```
+
+## 卸载 Crawlo
+
+要卸载 Crawlo：
+
+```bash
+pip uninstall crawlo
+```
+
+## 下一步
+
+- 阅读[快速开始](../quickstart/index.md)指南创建您的第一个项目
+- 了解 Crawlo 的[核心概念](../architecture/index.md)
+- 探索[配置系统](../configuration/index.md)
+
+**code file end: docs/modules/installation/index.md**
+
+---
+
+
+### code file start: docs/modules/installation/index_en.md 
+
+# Installation Guide
+
+This guide provides detailed instructions on how to install and configure the Crawlo framework so you can use it for web crawling development in your local environment.
+
+## System Requirements
+
+The Crawlo framework supports the following operating systems:
+
+- Windows 7 and above
+- macOS 10.12 and above
+- Linux (Ubuntu 16.04+, CentOS 7+, etc.)
+
+Required Python version:
+
+- Python 3.7 and above
+
+## Installation Methods
+
+### 1. Installing with pip (Recommended)
+
+This is the simplest way to install Crawlo:
+
+```bash
+pip install crawlo
+```
+
+### 2. Installing a Specific Version from PyPI
+
+```bash
+pip install crawlo==1.0.0
+```
+
+### 3. Installing from Source
+
+If you need the latest development version, you can clone the source code from GitHub and install it:
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install .
+```
+
+### 4. Development Mode Installation
+
+If you plan to develop or modify the Crawlo framework, you can use development mode installation:
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install -e .
+```
+
+## Dependencies
+
+The Crawlo framework will automatically install the following dependencies:
+
+- aiohttp - Asynchronous HTTP client
+- httpx - Modern HTTP client
+- curl-cffi - curl-based HTTP client
+- redis - Redis client (for distributed crawling)
+- lxml - XML and HTML parsing library
+- cssselect - CSS selector support
+- pyyaml - YAML configuration file support
+
+## Optional Dependencies
+
+Depending on your specific needs, you may also need to install the following optional dependencies:
+
+### Browser Automation
+
+```bash
+# Selenium support
+pip install selenium
+
+# Playwright support
+pip install playwright
+playwright install
+```
+
+### Data Storage
+
+```bash
+# MySQL support
+pip install aiomysql
+
+# PostgreSQL support
+pip install asyncpg
+
+# MongoDB support
+pip install motor
+
+# Elasticsearch support
+pip install elasticsearch
+```
+
+### Documentation Building
+
+```bash
+# Documentation building tools
+pip install mkdocs mkdocs-material
+```
+
+## Verifying Installation
+
+After installation, you can verify that the installation was successful in the following ways:
+
+```bash
+# Check version
+crawlo --version
+
+# View help information
+crawlo --help
+```
+
+You can also import Crawlo in a Python environment:
+
+```python
+import crawlo
+print(crawlo.__version__)
+```
+
+## Environment Configuration
+
+### Setting up a Python Virtual Environment (Recommended)
+
+To isolate project dependencies, it is recommended to use a Python virtual environment:
+
+```bash
+# Create virtual environment
+python -m venv crawlo_env
+
+# Activate virtual environment
+# Windows:
+crawlo_env\Scripts\activate
+# macOS/Linux:
+source crawlo_env/bin/activate
+
+# Using conda to create and activate environment (Recommended)
+conda create -n crawlo python=3.9
+conda activate crawlo
+
+# Install Crawlo
+pip install crawlo
+```
+
+### Configuring Proxy (Optional)
+
+If you need to use a proxy server, you can set environment variables:
+
+```bash
+# Windows (PowerShell)
+$env:HTTP_PROXY="http://proxy.example.com:8080"
+$env:HTTPS_PROXY="https://proxy.example.com:8080"
+
+# macOS/Linux
+export HTTP_PROXY=http://proxy.example.com:8080
+export HTTPS_PROXY=https://proxy.example.com:8080
+```
+
+## Common Issues
+
+### 1. Permission Errors During Installation
+
+If you encounter permission errors during installation, you can try the following solutions:
+
+```bash
+# Install to user directory with --user parameter
+pip install --user crawlo
+
+# Or use virtual environment (recommended)
+python -m venv crawlo_env
+crawlo_env\Scripts\activate
+pip install crawlo
+
+# Or use conda environment (recommended)
+conda create -n crawlo python=3.9
+conda activate crawlo
+pip install crawlo
+```
+
+### 2. Dependency Installation Failures
+
+If some dependencies fail to install, you can try:
+
+```bash
+# Upgrade pip
+pip install --upgrade pip
+
+# Install failed dependencies separately
+pip install <package_name>
+```
+
+### 3. Python Version Incompatibility
+
+Make sure you are using Python 3.7 or higher:
+
+```bash
+python --version
+```
+
+## Upgrading Crawlo
+
+To upgrade to the latest version of Crawlo:
+
+```bash
+pip install --upgrade crawlo
+```
+
+To upgrade to a specific version:
+
+```bash
+pip install --upgrade crawlo==1.0.0
+```
+
+## Uninstalling Crawlo
+
+To uninstall Crawlo:
+
+```bash
+pip uninstall crawlo
+```
+
+## Next Steps
+
+- Read the [Quick Start](../quickstart/index_en.md) guide to create your first project
+- Learn about Crawlo's [Core Concepts](../architecture/index_en.md)
+- Explore the [Configuration System](../configuration/index_en.md)
+
+**code file end: docs/modules/installation/index_en.md**
+
+---
+
+
+### code file start: docs/modules/middleware/built_in.md 
+
+# 内置中间件
+
+Crawlo提供了几个内置中间件组件来处理常见的网页爬取任务。这些中间件组件可以通过配置启用或禁用。
+
+## 概述
+
+内置中间件为网页爬取提供基本功能：
+
+- 请求过滤和预处理
+- 响应处理和后处理
+- 错误处理和重试逻辑
+- 性能优化
+
+## RequestIgnoreMiddleware
+
+根据各种条件过滤不需要的请求。
+
+### 特性
+
+- URL模式匹配
+- 域名过滤
+- 请求方法过滤
+- 自定义过滤规则
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+]
+
+# 请求忽略设置
+IGNORE_DOMAINS = ['example.com']
+IGNORE_URLS = [r'/admin/.*']
+IGNORE_METHODS = ['POST']
+```
+
+## DownloadDelayMiddleware
+
+在请求之间添加延迟以尊重目标服务器。
+
+### 特性
+
+- 可配置的延迟时间
+- 随机延迟范围
+- 每域名延迟设置
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+]
+
+# 延迟设置
+DOWNLOAD_DELAY = 1.0
+RANDOM_RANGE = (0.8, 1.2)
+RANDOMNESS = True
+```
+
+## DefaultHeaderMiddleware
+
+为所有请求添加默认头部，使其看起来更像浏览器请求。
+
+### 特性
+
+- 可自定义的默认头部
+- User-Agent轮换
+- 常用头部预设
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+]
+
+# 默认头部
+DEFAULT_REQUEST_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+}
+```
+
+## ProxyMiddleware
+
+处理请求的代理配置。
+
+### 特性
+
+- 代理轮换
+- 认证支持
+- 代理故障检测
+- 回退机制
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.proxy.ProxyMiddleware',
+]
+
+# 代理设置
+PROXY_ENABLED = True
+PROXY_API_URL = "http://proxy-service.com/api"
+PROXY_EXTRACTOR = "proxy"
+PROXY_REFRESH_INTERVAL = 60
+```
+
+## RetryMiddleware
+
+为失败请求实现重试逻辑。
+
+### 特性
+
+- 可配置的重试次数
+- 基于HTTP状态码的重试
+- 指数退避
+- 重试优先级调整
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.retry.RetryMiddleware',
+]
+
+# 重试设置
+MAX_RETRY_TIMES = 3
+RETRY_PRIORITY = -1
+RETRY_HTTP_CODES = [408, 429, 500, 502, 503, 504]
+```
+
+## ResponseCodeMiddleware
+
+处理HTTP响应码并处理特殊情况。
+
+### 特性
+
+- 状态码分类
+- 错误响应处理
+- 重定向处理
+- 自定义状态码操作
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+]
+
+# 响应码设置
+IGNORE_HTTP_CODES = [403, 404]
+ALLOWED_CODES = [200, 201, 202]
+```
+
+## ResponseFilterMiddleware
+
+根据内容或其他条件过滤响应。
+
+### 特性
+
+- 基于内容的过滤
+- 基于大小的过滤
+- MIME类型过滤
+- 自定义过滤函数
+
+### 配置
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.response_filter.ResponseFilterMiddleware',
+]
+
+# 响应过滤设置
+MIN_RESPONSE_SIZE = 1024
+MAX_RESPONSE_SIZE = 10 * 1024 * 1024
+ALLOWED_CONTENT_TYPES = ['text/html', 'application/json']
+```
+
+## 使用示例
+
+要启用多个内置中间件：
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+    'crawlo.middleware.proxy.ProxyMiddleware',
+    'crawlo.middleware.retry.RetryMiddleware',
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+    'crawlo.middleware.response_filter.ResponseFilterMiddleware',
+]
+```
+
+## 性能考虑
+
+- 适当排序中间件 - 将轻量级过滤器放在前面
+- 禁用未使用的中间件以减少开销
+- 配置适当的重试限制以避免过多请求
+- 使用高效的过滤模式以最小化处理时间
+
+**code file end: docs/modules/middleware/built_in.md**
+
+---
+
+
+### code file start: docs/modules/middleware/built_in_en.md 
+
+# Built-in Middlewares
+
+Crawlo provides several built-in middleware components that handle common web scraping tasks. These middleware components can be enabled or disabled through configuration.
+
+## Overview
+
+Built-in middlewares provide essential functionality for web scraping:
+
+- Request filtering and preprocessing
+- Response handling and postprocessing
+- Error handling and retry logic
+- Performance optimization
+
+## RequestIgnoreMiddleware
+
+Filters out unwanted requests based on various criteria.
+
+### Features
+
+- URL pattern matching
+- Domain filtering
+- Request method filtering
+- Custom filtering rules
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+]
+
+# Request ignore settings
+IGNORE_DOMAINS = ['example.com']
+IGNORE_URLS = [r'/admin/.*']
+IGNORE_METHODS = ['POST']
+```
+
+## DownloadDelayMiddleware
+
+Adds delays between requests to be respectful to target servers.
+
+### Features
+
+- Configurable delay times
+- Random delay ranges
+- Per-domain delay settings
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+]
+
+# Delay settings
+DOWNLOAD_DELAY = 1.0
+RANDOM_RANGE = (0.8, 1.2)
+RANDOMNESS = True
+```
+
+## DefaultHeaderMiddleware
+
+Adds default headers to all requests to make them appear more like browser requests.
+
+### Features
+
+- Customizable default headers
+- User-Agent rotation
+- Common header presets
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+]
+
+# Default headers
+DEFAULT_REQUEST_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+}
+```
+
+## ProxyMiddleware
+
+Handles proxy configuration for requests.
+
+### Features
+
+- Proxy rotation
+- Authentication support
+- Proxy failure detection
+- Fallback mechanisms
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.proxy.ProxyMiddleware',
+]
+
+# Proxy settings
+PROXY_ENABLED = True
+PROXY_API_URL = "http://proxy-service.com/api"
+PROXY_EXTRACTOR = "proxy"
+PROXY_REFRESH_INTERVAL = 60
+```
+
+## RetryMiddleware
+
+Implements retry logic for failed requests.
+
+### Features
+
+- Configurable retry counts
+- HTTP status code based retry
+- Exponential backoff
+- Retry priority adjustment
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.retry.RetryMiddleware',
+]
+
+# Retry settings
+MAX_RETRY_TIMES = 3
+RETRY_PRIORITY = -1
+RETRY_HTTP_CODES = [408, 429, 500, 502, 503, 504]
+```
+
+## ResponseCodeMiddleware
+
+Processes HTTP response codes and handles special cases.
+
+### Features
+
+- Status code categorization
+- Error response handling
+- Redirect processing
+- Custom status code actions
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+]
+
+# Response code settings
+IGNORE_HTTP_CODES = [403, 404]
+ALLOWED_CODES = [200, 201, 202]
+```
+
+## ResponseFilterMiddleware
+
+Filters responses based on content or other criteria.
+
+### Features
+
+- Content-based filtering
+- Size-based filtering
+- MIME type filtering
+- Custom filter functions
+
+### Configuration
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.response_filter.ResponseFilterMiddleware',
+]
+
+# Response filter settings
+MIN_RESPONSE_SIZE = 1024
+MAX_RESPONSE_SIZE = 10 * 1024 * 1024
+ALLOWED_CONTENT_TYPES = ['text/html', 'application/json']
+```
+
+## Usage Example
+
+To enable multiple built-in middlewares:
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+    'crawlo.middleware.proxy.ProxyMiddleware',
+    'crawlo.middleware.retry.RetryMiddleware',
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+    'crawlo.middleware.response_filter.ResponseFilterMiddleware',
+]
+```
+
+## Performance Considerations
+
+- Order middleware appropriately - place lightweight filters first
+- Disable unused middleware to reduce overhead
+- Configure appropriate retry limits to avoid excessive requests
+- Use efficient filtering patterns to minimize processing time
+
+**code file end: docs/modules/middleware/built_in_en.md**
+
+---
+
+
+### code file start: docs/modules/middleware/custom.md 
+
+# 自定义中间件
+
+中间件是 Crawlo 框架中用于处理请求和响应的钩子框架。通过自定义中间件，您可以实现各种功能，如请求修改、响应处理、错误处理等。
+
+## 创建自定义中间件
+
+要创建自定义中间件，需要继承 `crawlo.middleware.Middleware` 基类并实现相应的方法。
+
+### 基本结构
+
+```python
+from crawlo.middleware import Middleware
+
+class CustomMiddleware(Middleware):
+    def process_request(self, request, spider):
+        # 在请求发送之前处理请求
+        return request
+    
+    def process_response(self, request, response, spider):
+        # 在响应返回之后处理响应
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        # 处理请求过程中发生的异常
+        pass
+```
+
+### 方法说明
+
+#### process_request(request, spider)
+
+- **作用**: 在请求发送之前处理请求
+- **参数**:
+  - `request`: 请求对象
+  - `spider`: 爬虫实例
+- **返回值**:
+  - 返回 `None` 或不返回：继续处理请求
+  - 返回 `Request` 对象：替换原始请求
+  - 返回 `Response` 对象：中止请求，直接返回响应
+
+#### process_response(request, response, spider)
+
+- **作用**: 在响应返回之后处理响应
+- **参数**:
+  - `request`: 请求对象
+  - `response`: 响应对象
+  - `spider`: 爬虫实例
+- **返回值**:
+  - 返回 `Response` 对象：替换原始响应
+  - 返回 `Request` 对象：重试请求
+  - 返回 `None` 或不返回：继续处理响应
+
+#### process_exception(request, exception, spider)
+
+- **作用**: 处理请求过程中发生的异常
+- **参数**:
+  - `request`: 请求对象
+  - `exception`: 异常对象
+  - `spider`: 爬虫实例
+- **返回值**:
+  - 返回 `None` 或不返回：继续处理异常
+  - 返回 `Response` 对象：忽略异常，返回响应
+  - 返回 `Request` 对象：重试请求
+
+## 示例
+
+### 请求头中间件
+
+```python
+from crawlo.middleware import Middleware
+
+class UserAgentMiddleware(Middleware):
+    def __init__(self, user_agent='Crawlo'):
+        self.user_agent = user_agent
+    
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = self.user_agent
+        return request
+```
+
+### 代理中间件
+
+```python
+from crawlo.middleware import Middleware
+
+class ProxyMiddleware(Middleware):
+    def __init__(self, proxy=None):
+        self.proxy = proxy
+    
+    def process_request(self, request, spider):
+        if self.proxy:
+            request.proxy = self.proxy
+        return request
+```
+
+### 重试中间件
+
+```python
+from crawlo.middleware import Middleware
+from crawlo.request import Request
+
+class RetryMiddleware(Middleware):
+    def __init__(self, max_retry_times=3):
+        self.max_retry_times = max_retry_times
+    
+    def process_response(self, request, response, spider):
+        if response.status_code in [500, 502, 503, 504, 408]:
+            retry_times = request.meta.get('retry_times', 0)
+            if retry_times < self.max_retry_times:
+                request.meta['retry_times'] = retry_times + 1
+                return request
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        retry_times = request.meta.get('retry_times', 0)
+        if retry_times < self.max_retry_times:
+            request.meta['retry_times'] = retry_times + 1
+            return request
+```
+
+## 配置中间件
+
+在配置文件中启用自定义中间件：
+
+```python
+# settings.py
+MIDDLEWARES = {
+    'myproject.middlewares.CustomMiddleware': 543,
+    'myproject.middlewares.UserAgentMiddleware': 400,
+    'myproject.middlewares.ProxyMiddleware': 350,
+    'myproject.middlewares.RetryMiddleware': 300,
+}
+```
+
+中间件的数字表示优先级，数字越小优先级越高。
+
+## 最佳实践
+
+1. **保持中间件简单**：每个中间件应该只负责一个功能
+2. **正确处理返回值**：确保返回正确的对象类型
+3. **异常处理**：在中间件中妥善处理异常
+4. **性能考虑**：避免在中间件中执行耗时操作
+5. **测试**：为中间件编写单元测试
+
+**code file end: docs/modules/middleware/custom.md**
+
+---
+
+
+### code file start: docs/modules/middleware/custom_en.md 
+
+# Custom Middleware
+
+Middleware is a hook framework in the Crawlo framework used to process requests and responses. Through custom middleware, you can implement various functions such as request modification, response processing, error handling, etc.
+
+## Creating Custom Middleware
+
+To create custom middleware, you need to inherit from the `crawlo.middleware.Middleware` base class and implement the corresponding methods.
+
+### Basic Structure
+
+```python
+from crawlo.middleware import Middleware
+
+class CustomMiddleware(Middleware):
+    def process_request(self, request, spider):
+        # Process the request before it is sent
+        return request
+    
+    def process_response(self, request, response, spider):
+        # Process the response after it is returned
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        # Handle exceptions that occur during the request process
+        pass
+```
+
+### Method Descriptions
+
+#### process_request(request, spider)
+
+- **Purpose**: Process the request before it is sent
+- **Parameters**:
+  - `request`: Request object
+  - `spider`: Spider instance
+- **Return Value**:
+  - Return `None` or nothing: Continue processing the request
+  - Return a `Request` object: Replace the original request
+  - Return a `Response` object: Abort the request and return the response directly
+
+#### process_response(request, response, spider)
+
+- **Purpose**: Process the response after it is returned
+- **Parameters**:
+  - `request`: Request object
+  - `response`: Response object
+  - `spider`: Spider instance
+- **Return Value**:
+  - Return a `Response` object: Replace the original response
+  - Return a `Request` object: Retry the request
+  - Return `None` or nothing: Continue processing the response
+
+#### process_exception(request, exception, spider)
+
+- **Purpose**: Handle exceptions that occur during the request process
+- **Parameters**:
+  - `request`: Request object
+  - `exception`: Exception object
+  - `spider`: Spider instance
+- **Return Value**:
+  - Return `None` or nothing: Continue processing the exception
+  - Return a `Response` object: Ignore the exception and return the response
+  - Return a `Request` object: Retry the request
+
+## Examples
+
+### User Agent Middleware
+
+```python
+from crawlo.middleware import Middleware
+
+class UserAgentMiddleware(Middleware):
+    def __init__(self, user_agent='Crawlo'):
+        self.user_agent = user_agent
+    
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = self.user_agent
+        return request
+```
+
+### Proxy Middleware
+
+```python
+from crawlo.middleware import Middleware
+
+class ProxyMiddleware(Middleware):
+    def __init__(self, proxy=None):
+        self.proxy = proxy
+    
+    def process_request(self, request, spider):
+        if self.proxy:
+            request.proxy = self.proxy
+        return request
+```
+
+### Retry Middleware
+
+```python
+from crawlo.middleware import Middleware
+from crawlo.request import Request
+
+class RetryMiddleware(Middleware):
+    def __init__(self, max_retry_times=3):
+        self.max_retry_times = max_retry_times
+    
+    def process_response(self, request, response, spider):
+        if response.status_code in [500, 502, 503, 504, 408]:
+            retry_times = request.meta.get('retry_times', 0)
+            if retry_times < self.max_retry_times:
+                request.meta['retry_times'] = retry_times + 1
+                return request
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        retry_times = request.meta.get('retry_times', 0)
+        if retry_times < self.max_retry_times:
+            request.meta['retry_times'] = retry_times + 1
+            return request
+```
+
+## Configuring Middleware
+
+Enable custom middleware in the configuration file:
+
+```python
+# settings.py
+MIDDLEWARES = {
+    'myproject.middlewares.CustomMiddleware': 543,
+    'myproject.middlewares.UserAgentMiddleware': 400,
+    'myproject.middlewares.ProxyMiddleware': 350,
+    'myproject.middlewares.RetryMiddleware': 300,
+}
+```
+
+The number for middleware represents the priority, with smaller numbers having higher priority.
+
+## Best Practices
+
+1. **Keep middleware simple**: Each middleware should only be responsible for one function
+2. **Handle return values correctly**: Ensure the correct object types are returned
+3. **Exception handling**: Properly handle exceptions in middleware
+4. **Performance considerations**: Avoid performing time-consuming operations in middleware
+5. **Testing**: Write unit tests for middleware
+
+**code file end: docs/modules/middleware/custom_en.md**
+
+---
+
+
+### code file start: docs/modules/middleware/index.md 
+
+# 中间件模块
+
+中间件模块是 Crawlo 框架中负责处理请求和响应的组件。它提供了一个钩子机制，允许用户在请求发送前和响应返回后执行自定义逻辑。
+
+## 模块概述
+
+中间件模块采用插件化设计，支持多种中间件实现。用户可以通过配置中间件列表来扩展框架功能，实现请求处理、响应处理、错误处理等自定义逻辑。
+
+### 核心组件
+
+1. [MiddlewareManager](manager.md) - 中间件管理器
+2. [内置中间件](built_in.md) - 框架提供的内置中间件
+3. [自定义中间件](custom.md) - 用户自定义的中间件
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "中间件模块"
+MiddlewareBase[MiddlewareBase<br/>基础中间件类]
+UserAgentMiddleware[UserAgentMiddleware<br/>用户代理中间件]
+ProxyMiddleware[ProxyMiddleware<br/>代理中间件]
+RetryMiddleware[RetryMiddleware<br/>重试中间件]
+CustomMiddleware[CustomMiddleware<br/>自定义中间件]
+MiddlewareManager[MiddlewareManager<br/>中间件管理器]
+end
+Engine[引擎] --> MiddlewareManager
+Downloader[下载器] --> MiddlewareManager
+MiddlewareManager --> MiddlewareBase
+MiddlewareBase --> UserAgentMiddleware
+MiddlewareBase --> ProxyMiddleware
+MiddlewareBase --> RetryMiddleware
+MiddlewareBase --> CustomMiddleware
+style MiddlewareBase fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+style Downloader fill:#6f9,stroke:#333
+```
+
+## 中间件类型
+
+### UserAgentMiddleware
+
+**功能:**
+- 为请求添加用户代理头部
+- 支持随机用户代理
+
+**配置选项:**
+```python
+# 设置用户代理
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+
+# 使用随机用户代理
+RANDOM_USER_AGENT = True
+```
+
+### ProxyMiddleware
+
+**功能:**
+- 为请求添加代理支持
+- 支持代理轮换
+
+**配置选项:**
+```python
+# 设置代理
+PROXY = 'http://127.0.0.1:8080'
+
+# 使用代理列表
+PROXY_LIST = [
+    'http://proxy1:8080',
+    'http://proxy2:8080',
+    'http://proxy3:8080'
+]
+```
+
+### RetryMiddleware
+
+**功能:**
+- 自动重试失败的请求
+- 支持多种重试条件
+
+**配置选项:**
+```python
+# 设置最大重试次数
+MAX_RETRY_TIMES = 3
+
+# 设置重试状态码
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+```
+
+## 配置选项
+
+中间件模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| MIDDLEWARES | list | [] | 中间件列表 |
+| USER_AGENT | str | '' | 用户代理字符串 |
+| RANDOM_USER_AGENT | bool | False | 是否使用随机用户代理 |
+| PROXY | str | None | 代理地址 |
+| PROXY_LIST | list | [] | 代理列表 |
+| MAX_RETRY_TIMES | int | 3 | 最大重试次数 |
+| RETRY_STATUS_CODES | list | [500, 502, 503, 504, 429] | 重试状态码 |
+
+## 使用示例
+
+### 配置中间件
+
+```python
+# 在配置文件中配置中间件
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+# 配置中间件参数
+USER_AGENT = 'MyCrawler/1.0'
+PROXY = 'http://proxy.example.com:8080'
+MAX_RETRY_TIMES = 5
+```
+
+### 创建自定义中间件
+
+```python
+from crawlo.middleware import MiddlewareBase
+
+class CustomMiddleware(MiddlewareBase):
+    def process_request(self, request, spider):
+        """处理请求"""
+        # 在请求发送前执行自定义逻辑
+        request.headers['X-Custom-Header'] = 'custom-value'
+        return request
+    
+    def process_response(self, request, response, spider):
+        """处理响应"""
+        # 在响应返回后执行自定义逻辑
+        if response.status_code == 403:
+            # 处理 403 错误
+            self.logger.warning(f"访问被拒绝: {request.url}")
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        """处理异常"""
+        # 处理请求异常
+        self.logger.error(f"请求异常: {request.url}, 错误: {exception}")
+        return None
+```
+
+## 执行顺序
+
+中间件按照配置列表中的顺序执行：
+
+1. **请求处理阶段** - 从上到下执行 [process_request](../../api/crawlo_middleware.md) 方法
+2. **响应处理阶段** - 从下到上执行 [process_response](../../api/crawlo_middleware.md) 方法
+3. **异常处理阶段** - 从下到上执行 [process_exception](../../api/crawlo_middleware.md) 方法
+
+## 性能优化
+
+### 中间件选择
+
+```python
+# 只配置需要的中间件
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',  # 只有需要时才配置
+    'crawlo.middleware.RetryMiddleware',      # 只有需要重试时才配置
+]
+```
+
+### 异步支持
+
+```python
+class AsyncMiddleware(MiddlewareBase):
+    async def process_request(self, request, spider):
+        """异步处理请求"""
+        # 异步操作
+        await self.async_operation()
+        return request
+```
+
+## 错误处理
+
+### 中间件异常处理
+
+```python
+def process_request(self, request, spider):
+    try:
+        # 处理逻辑
+        return request
+    except Exception as e:
+        self.logger.error(f"中间件处理失败: {e}")
+        # 可以选择继续处理或抛出异常
+        return request
+```
+
+## 监控和日志
+
+中间件模块集成了详细的监控和日志功能：
+
+```python
+# 记录中间件操作日志
+logger.info(f"中间件处理请求: {request.url}")
+logger.debug(f"中间件添加头部: {request.headers}")
+
+# 记录异常日志
+logger.error(f"中间件执行失败: {e}")
+```
+
+## 最佳实践
+
+### 合理配置中间件
+
+```python
+# 生产环境配置
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+# 开发环境配置
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+]
+```
+
+### 中间件性能优化
+
+```python
+class EfficientMiddleware(MiddlewareBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        # 预处理配置，避免重复计算
+        self.cached_data = self.preprocess_settings()
+    
+    def process_request(self, request, spider):
+        # 使用缓存数据，避免重复计算
+        request.metadata['cached'] = self.cached_data
+        return request
+```
+
+### 异常处理最佳实践
+
+```python
+def process_exception(self, request, exception, spider):
+    """处理异常的最佳实践"""
+    # 记录详细错误信息
+    self.logger.error(f"请求失败: {request.url}", exc_info=True)
+    
+    # 根据异常类型采取不同措施
+    if isinstance(exception, asyncio.TimeoutError):
+        # 超时异常处理
+        request.retry_times += 1
+        if request.retry_times < self.settings.MAX_RETRY_TIMES:
+            return request  # 重新入队重试
+    
+    # 其他异常直接返回 None，不重试
+    return None
+```
+
+**code file end: docs/modules/middleware/index.md**
+
+---
+
+
+### code file start: docs/modules/middleware/index_en.md 
+
+# Middleware Module
+
+The middleware module is the component in the Crawlo framework responsible for processing requests and responses. It provides a hook mechanism that allows users to execute custom logic before requests are sent and after responses are returned.
+
+## Module Overview
+
+The middleware module adopts a plugin-based design, supporting multiple middleware implementations. Users can extend framework functionality by configuring a middleware list to implement custom logic for request processing, response processing, error handling, etc.
+
+### Core Components
+
+1. [MiddlewareManager](manager_en.md) - Middleware manager
+2. [Built-in Middlewares](built_in_en.md) - Built-in middlewares provided by the framework
+3. [Custom Middlewares](custom_en.md) - User-defined middlewares
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Middleware Module"
+MiddlewareBase[MiddlewareBase<br/>Base Middleware Class]
+UserAgentMiddleware[UserAgentMiddleware<br/>User Agent Middleware]
+ProxyMiddleware[ProxyMiddleware<br/>Proxy Middleware]
+RetryMiddleware[RetryMiddleware<br/>Retry Middleware]
+CustomMiddleware[CustomMiddleware<br/>Custom Middleware]
+MiddlewareManager[MiddlewareManager<br/>Middleware Manager]
+end
+Engine[Engine] --> MiddlewareManager
+Downloader[Downloader] --> MiddlewareManager
+MiddlewareManager --> MiddlewareBase
+MiddlewareBase --> UserAgentMiddleware
+MiddlewareBase --> ProxyMiddleware
+MiddlewareBase --> RetryMiddleware
+MiddlewareBase --> CustomMiddleware
+style MiddlewareBase fill:#f9f,stroke:#333
+style Engine fill:#bbf,stroke:#333
+style Downloader fill:#6f9,stroke:#333
+```
+
+## Middleware Types
+
+### UserAgentMiddleware
+
+**Function:**
+- Add user agent headers to requests
+- Support random user agents
+
+**Configuration Options:**
+```python
+# Set user agent
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+
+# Use random user agent
+RANDOM_USER_AGENT = True
+```
+
+### ProxyMiddleware
+
+**Function:**
+- Add proxy support to requests
+- Support proxy rotation
+
+**Configuration Options:**
+```python
+# Set proxy
+PROXY = 'http://127.0.0.1:8080'
+
+# Use proxy list
+PROXY_LIST = [
+    'http://proxy1:8080',
+    'http://proxy2:8080',
+    'http://proxy3:8080'
+]
+```
+
+### RetryMiddleware
+
+**Function:**
+- Automatically retry failed requests
+- Support multiple retry conditions
+
+**Configuration Options:**
+```python
+# Set maximum retry times
+MAX_RETRY_TIMES = 3
+
+# Set retry status codes
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+```
+
+## Configuration Options
+
+The middleware module's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| MIDDLEWARES | list | [] | Middleware list |
+| USER_AGENT | str | '' | User agent string |
+| RANDOM_USER_AGENT | bool | False | Whether to use random user agent |
+| PROXY | str | None | Proxy address |
+| PROXY_LIST | list | [] | Proxy list |
+| MAX_RETRY_TIMES | int | 3 | Maximum retry times |
+| RETRY_STATUS_CODES | list | [500, 502, 503, 504, 429] | Retry status codes |
+
+## Usage Examples
+
+### Configure Middlewares
+
+```python
+# Configure middlewares in configuration file
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+# Configure middleware parameters
+USER_AGENT = 'MyCrawler/1.0'
+PROXY = 'http://proxy.example.com:8080'
+MAX_RETRY_TIMES = 5
+```
+
+### Create Custom Middleware
+
+```python
+from crawlo.middleware import MiddlewareBase
+
+class CustomMiddleware(MiddlewareBase):
+    def process_request(self, request, spider):
+        """Process request"""
+        # Execute custom logic before request is sent
+        request.headers['X-Custom-Header'] = 'custom-value'
+        return request
+    
+    def process_response(self, request, response, spider):
+        """Process response"""
+        # Execute custom logic after response is returned
+        if response.status_code == 403:
+            # Handle 403 error
+            self.logger.warning(f"Access denied: {request.url}")
+        return response
+    
+    def process_exception(self, request, exception, spider):
+        """Process exception"""
+        # Handle request exceptions
+        self.logger.error(f"Request exception: {request.url}, Error: {exception}")
+        return None
+```
+
+## Execution Order
+
+Middlewares are executed in the order of the configuration list:
+
+1. **Request Processing Phase** - Execute [process_request](../../api/crawlo_middleware.md) method from top to bottom
+2. **Response Processing Phase** - Execute [process_response](../../api/crawlo_middleware.md) method from bottom to top
+3. **Exception Processing Phase** - Execute [process_exception](../../api/crawlo_middleware.md) method from bottom to top
+
+## Performance Optimization
+
+### Middleware Selection
+
+```python
+# Only configure needed middlewares
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',  # Only configure when needed
+    'crawlo.middleware.RetryMiddleware',      # Only configure when retry is needed
+]
+```
+
+### Async Support
+
+```python
+class AsyncMiddleware(MiddlewareBase):
+    async def process_request(self, request, spider):
+        """Async process request"""
+        # Async operations
+        await self.async_operation()
+        return request
+```
+
+## Error Handling
+
+### Middleware Exception Handling
+
+```python
+def process_request(self, request, spider):
+    try:
+        # Processing logic
+        return request
+    except Exception as e:
+        self.logger.error(f"Middleware processing failed: {e}")
+        # Can choose to continue processing or raise exception
+        return request
+```
+
+## Monitoring and Logging
+
+The middleware module integrates detailed monitoring and logging functionality:
+
+```python
+# Log middleware operations
+logger.info(f"Middleware processing request: {request.url}")
+logger.debug(f"Middleware adding headers: {request.headers}")
+
+# Log exception information
+logger.error(f"Middleware execution failed: {e}")
+```
+
+## Best Practices
+
+### Reasonable Middleware Configuration
+
+```python
+# Production environment configuration
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+    'crawlo.middleware.ProxyMiddleware',
+    'crawlo.middleware.RetryMiddleware',
+]
+
+# Development environment configuration
+MIDDLEWARES = [
+    'crawlo.middleware.UserAgentMiddleware',
+]
+```
+
+### Middleware Performance Optimization
+
+```python
+class EfficientMiddleware(MiddlewareBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        # Preprocess settings to avoid repeated calculations
+        self.cached_data = self.preprocess_settings()
+    
+    def process_request(self, request, spider):
+        # Use cached data to avoid repeated calculations
+        request.metadata['cached'] = self.cached_data
+        return request
+```
+
+### Exception Handling Best Practices
+
+```python
+def process_exception(self, request, exception, spider):
+    """Best practices for exception handling"""
+    # Log detailed error information
+    self.logger.error(f"Request failed: {request.url}", exc_info=True)
+    
+    # Take different measures based on exception type
+    if isinstance(exception, asyncio.TimeoutError):
+        # Handle timeout exception
+        request.retry_times += 1
+        if request.retry_times < self.settings.MAX_RETRY_TIMES:
+            return request  # Re-queue for retry
+    
+    # Return None for other exceptions, no retry
+    return None
+```
+
+**code file end: docs/modules/middleware/index_en.md**
+
+---
+
+
+### code file start: docs/modules/middleware/manager.md 
+
+# 中间件管理器
+
+中间件管理器是Crawlo框架中管理中间件处理的核心组件。它在请求/响应生命周期中协调中间件组件的执行。
+
+## 概述
+
+中间件管理器负责：
+
+- 加载和初始化中间件组件
+- 按正确顺序执行中间件链
+- 处理中间件响应和异常
+- 与下载器和引擎组件集成
+
+## 架构
+
+中间件管理器编排中间件执行：
+
+```mermaid
+graph TD
+    A[引擎] --> B[下载器]
+    B --> C[中间件管理器]
+    C --> D[请求处理链]
+    D --> E[下载器实现]
+    E --> F[响应处理链]
+    F --> G[异常处理链]
+```
+
+## 主要特性
+
+### 中间件链管理
+
+中间件管理器为不同的处理阶段维护单独的链：
+
+- **请求处理链**：在请求发送前执行
+- **响应处理链**：在响应接收后执行
+- **异常处理链**：在异常发生时执行
+
+### 动态中间件加载
+
+中间件组件根据配置动态加载：
+
+```python
+# 在settings.py中
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    # ... 更多中间件
+]
+```
+
+### 异步处理
+
+所有中间件处理都是异步执行以保持性能：
+
+- 非阻塞中间件执行
+- 尽可能并发处理
+- 适当的异常处理和传播
+
+## API参考
+
+### `MiddlewareManager(crawler)`
+
+创建一个新的中间件管理器实例。
+
+**参数：**
+- `crawler`：拥有此管理器的爬虫实例
+
+### `async download(request)`
+
+通过中间件链处理请求并下载。
+
+**参数：**
+- `request`：要处理和下载的请求
+
+**返回：**
+- `Response`：下载的响应
+
+### `create_instance(*args, **kwargs)`
+
+创建中间件管理器实例的类方法。
+
+## 中间件处理流程
+
+### 请求处理
+
+1. 按顺序调用每个中间件的[process_request](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/middleware/base.py#L22)方法
+2. 如果中间件返回响应，则处理短路
+3. 如果中间件返回请求，则替换原始请求
+4. 如果所有中间件都返回None，则请求发送到下载器
+
+### 响应处理
+
+1. 按相反顺序调用每个中间件的[process_response](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/middleware/base.py#L28)方法
+2. 如果中间件返回请求，则安排重新下载
+3. 如果中间件返回响应，则替换当前响应
+4. 最终响应返回给引擎
+
+### 异常处理
+
+1. 当异常发生时，调用中间件的[process_exception](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/middleware/base.py#L35)方法
+2. 如果中间件返回响应，则用作结果
+3. 如果中间件返回请求，则安排重新下载
+4. 如果没有中间件处理异常，则重新抛出
+
+## 配置
+
+中间件管理器使用[MIDDLEWARES](https://github.com/crawl-coder/Crawlo/blob/master/examples/api_data_collection/api_data_collection/settings.py#L24)设置来确定要加载的中间件：
+
+```python
+MIDDLEWARES = [
+    # 请求处理中间件
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+    
+    # 响应处理中间件
+    'crawlo.middleware.retry.RetryMiddleware',
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+    
+    # 异常处理中间件
+    'crawlo.middleware.proxy.ProxyMiddleware',
+]
+```
+
+## 使用示例
+
+```python
+from crawlo.middleware.middleware_manager import MiddlewareManager
+
+# 中间件管理器通常由下载器自动创建，但也可以手动创建：
+
+manager = MiddlewareManager(crawler)
+
+# 处理并下载请求
+response = await manager.download(request)
+```
+
+## 性能考虑
+
+- 中间件顺序影响性能 - 将轻量级中间件放在前面
+- 最小化中间件方法中的阻塞操作
+- 为中间件状态使用高效的数据结构
+- 监控中间件处理时间以识别瓶颈
+
+**code file end: docs/modules/middleware/manager.md**
+
+---
+
+
+### code file start: docs/modules/middleware/manager_en.md 
+
+# MiddlewareManager
+
+The MiddlewareManager is the core component that manages middleware processing in the Crawlo framework. It coordinates the execution of middleware components during the request/response lifecycle.
+
+## Overview
+
+The MiddlewareManager is responsible for:
+
+- Loading and initializing middleware components
+- Executing middleware chains in the correct order
+- Handling middleware responses and exceptions
+- Integrating with the downloader and engine components
+
+## Architecture
+
+The MiddlewareManager orchestrates middleware execution:
+
+```mermaid
+graph TD
+    A[Engine] --> B[Downloader]
+    B --> C[MiddlewareManager]
+    C --> D[Process Request Chain]
+    D --> E[Downloader Implementation]
+    E --> F[Process Response Chain]
+    F --> G[Process Exception Chain]
+```
+
+## Key Features
+
+### Middleware Chain Management
+
+The MiddlewareManager maintains separate chains for different processing phases:
+
+- **Request Processing Chain**: Executes before requests are sent
+- **Response Processing Chain**: Executes after responses are received
+- **Exception Processing Chain**: Executes when exceptions occur
+
+### Dynamic Middleware Loading
+
+Middleware components are loaded dynamically based on configuration:
+
+```python
+# In settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    # ... more middleware
+]
+```
+
+### Asynchronous Processing
+
+All middleware processing is performed asynchronously to maintain performance:
+
+- Non-blocking middleware execution
+- Concurrent processing when possible
+- Proper exception handling and propagation
+
+## API Reference
+
+### `MiddlewareManager(crawler)`
+
+Creates a new MiddlewareManager instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this manager
+
+### `async download(request)`
+
+Processes a request through the middleware chain and downloads it.
+
+**Parameters:**
+- `request`: The request to process and download
+
+**Returns:**
+- `Response`: The downloaded response
+
+### `create_instance(*args, **kwargs)`
+
+Class method to create a MiddlewareManager instance.
+
+## Middleware Processing Flow
+
+### Request Processing
+
+1. Each middleware's `process_request` method is called in order
+2. If a middleware returns a Response, processing short-circuits
+3. If a middleware returns a Request, it replaces the original request
+4. If all middleware return None, the request is sent to the downloader
+
+### Response Processing
+
+1. Each middleware's `process_response` method is called in reverse order
+2. If a middleware returns a Request, it's scheduled for redownload
+3. If a middleware returns a Response, it replaces the current response
+4. The final response is returned to the engine
+
+### Exception Processing
+
+1. When an exception occurs, middleware `process_exception` methods are called
+2. If a middleware returns a Response, it's used as the result
+3. If a middleware returns a Request, it's scheduled for redownload
+4. If no middleware handles the exception, it's re-raised
+
+## Configuration
+
+The MiddlewareManager uses the `MIDDLEWARES` setting to determine which middleware to load:
+
+```python
+MIDDLEWARES = [
+    # Request processing middleware
+    'crawlo.middleware.request_ignore.RequestIgnoreMiddleware',
+    'crawlo.middleware.download_delay.DownloadDelayMiddleware',
+    'crawlo.middleware.default_header.DefaultHeaderMiddleware',
+    
+    # Response processing middleware
+    'crawlo.middleware.retry.RetryMiddleware',
+    'crawlo.middleware.response_code.ResponseCodeMiddleware',
+    
+    # Exception processing middleware
+    'crawlo.middleware.proxy.ProxyMiddleware',
+]
+```
+
+## Example Usage
+
+```python
+from crawlo.middleware.middleware_manager import MiddlewareManager
+
+# The MiddlewareManager is typically created automatically
+# by the downloader, but can be created manually:
+
+manager = MiddlewareManager(crawler)
+
+# Process and download a request
+response = await manager.download(request)
+```
+
+## Performance Considerations
+
+- Middleware order affects performance - place lightweight middleware first
+- Minimize blocking operations in middleware methods
+- Use efficient data structures for middleware state
+- Monitor middleware processing times to identify bottlenecks
+
+**code file end: docs/modules/middleware/manager_en.md**
+
+---
+
+
+### code file start: docs/modules/middleware/proxy.md 
+
+# 代理中间件
+
+Crawlo框架提供了两种代理中间件实现，以满足不同场景的需求：
+
+1. [ProxyMiddleware (复杂版)](#proxy-middleware-复杂版) - 复杂版，功能丰富但实现复杂
+2. [SimpleProxyMiddleware (简化版)](#simpleproxy-middleware-简化版) - 简化版，功能基础但实现简洁
+
+## ProxyMiddleware (复杂版)
+
+### 概述
+
+ProxyMiddleware是一个功能丰富的代理中间件，支持动态代理获取、代理池管理、健康检查等功能。它适用于需要高级代理管理功能的场景。
+
+### 功能特性
+
+1. **动态代理获取**：通过API动态获取代理服务器
+2. **代理池管理**：维护代理池列表，支持多个代理
+3. **健康检查**：跟踪代理健康状态，统计成功率
+4. **多种下载器支持**：兼容aiohttp、httpx、curl-cffi等多种下载器
+5. **灵活配置**：支持多种配置选项
+
+### 配置选项
+
+```python
+# 启用代理中间件
+PROXY_ENABLED = True
+
+# 代理API配置
+PROXY_API_URL = "http://proxy-api.example.com/get"  # 代理获取接口
+PROXY_EXTRACTOR = "data.proxy.list"  # 代理提取方式
+PROXY_REFRESH_INTERVAL = 60  # 代理刷新间隔（秒）
+PROXY_API_TIMEOUT = 10  # 请求代理API超时时间
+
+# 代理池配置
+PROXY_POOL_SIZE = 5  # 代理池大小
+PROXY_HEALTH_CHECK_THRESHOLD = 0.5  # 健康检查阈值
+```
+
+### 使用示例
+
+```python
+# settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.proxy.ProxyMiddleware',
+    # ... 其他中间件
+]
+
+# 代理配置
+PROXY_ENABLED = True
+PROXY_API_URL = "http://proxy-api.example.com/get"
+PROXY_EXTRACTOR = "data.proxy.list"
+PROXY_REFRESH_INTERVAL = 60
+```
+
+### 适用场景
+
+1. 需要从API动态获取代理
+2. 需要代理健康检查和成功率统计
+3. 需要复杂的代理提取逻辑
+4. 有大量代理需要管理
+5. 对代理的可用性有较高要求
+
+## SimpleProxyMiddleware (简化版)
+
+### 概述
+
+SimpleProxyMiddleware是一个轻量级的代理中间件，基于固定代理列表实现。它代码简洁，易于配置和使用，适用于只需要基本代理功能的场景。
+
+### 功能特性
+
+1. **简单实现**：基于固定代理列表
+2. **轻量级**：代码量少，性能开销低
+3. **易于配置**：只需要提供代理列表
+4. **易于理解**：逻辑清晰，便于维护
+
+### 配置选项
+
+```python
+# 启用简化版代理中间件
+PROXY_ENABLED = True
+
+# 代理列表配置
+PROXY_LIST = [
+    "http://proxy1.example.com:8080",
+    "http://proxy2.example.com:8080",
+    "http://proxy3.example.com:8080",
+]
+```
+
+### 使用示例
+
+```python
+# settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.simple_proxy.SimpleProxyMiddleware',
+    # ... 其他中间件
+]
+
+# 简化版代理配置
+PROXY_ENABLED = True
+PROXY_LIST = [
+    "http://proxy1.example.com:8080",
+    "http://proxy2.example.com:8080",
+]
+```
+
+### 适用场景
+
+1. 有固定的代理列表
+2. 不需要动态获取代理
+3. 对代理的健康状况没有特殊要求
+4. 希望配置和使用更简单
+5. 对性能有较高要求
+6. 初学者或简单项目
+
+## 复杂性对比
+
+| 特性 | ProxyMiddleware (复杂版) | SimpleProxyMiddleware (简化版) |
+|------|-------------------------|-------------------------------|
+| 功能丰富度 | 高 | 基础 |
+| 配置复杂度 | 高 | 低 |
+| 代码行数 | ~380行 | ~80行 |
+| 依赖复杂度 | 高 | 低 |
+| 性能开销 | 中等 | 低 |
+| 维护难度 | 高 | 低 |
+| 适用场景 | 高级代理管理需求 | 基础代理需求 |
+
+## 选择建议
+
+### 选择ProxyMiddleware的场景
+
+1. 项目需要从API动态获取代理服务器
+2. 需要维护代理池并进行健康检查
+3. 对代理的成功率有统计需求
+4. 使用多种不同类型的下载器
+5. 项目规模较大，对代理管理有较高要求
+
+### 选择SimpleProxyMiddleware的场景
+
+1. 项目有固定的代理服务器列表
+2. 不需要动态获取代理
+3. 对代理的健康状况没有特殊要求
+4. 希望简化配置和使用
+5. 项目规模较小或处于初期开发阶段
+6. 对性能有较高要求，希望减少不必要的开销
+
+## 最佳实践
+
+### 1. 根据需求选择
+
+在选择代理中间件时，应根据项目的实际需求进行选择：
+
+- 评估是否真的需要动态代理获取功能
+- 考虑项目的规模和复杂度
+- 避免过度设计，选择满足需求的最简实现
+
+### 2. 渐进式升级
+
+建议采用渐进式的方式使用代理中间件：
+
+1. 项目初期使用SimpleProxyMiddleware
+2. 当需要高级功能时再升级到ProxyMiddleware
+3. 保持配置的兼容性，便于切换
+
+### 3. 配置管理
+
+- 将代理配置集中管理，便于维护
+- 使用环境变量配置敏感信息（如API密钥）
+- 提供清晰的配置文档和示例
+
+### 4. 监控和日志
+
+- 启用适当的日志级别，便于调试
+- 监控代理的使用情况和成功率
+- 定期检查代理配置的有效性
+
+## 总结
+
+Crawlo框架提供的两种代理中间件实现各有优势：
+
+- **ProxyMiddleware**适用于需要高级代理管理功能的复杂场景
+- **SimpleProxyMiddleware**适用于只需要基本代理功能的简单场景
+
+开发者应根据项目的实际需求选择合适的代理中间件实现，避免不必要的复杂性，同时确保满足项目的功能要求。
+
+**code file end: docs/modules/middleware/proxy.md**
+
+---
+
+
+### code file start: docs/modules/middleware/proxy_en.md 
+
+# Proxy Middleware
+
+The Crawlo framework provides two proxy middleware implementations to meet different scenario requirements:
+
+1. [ProxyMiddleware (Advanced Version)](#proxy-middleware-advanced-version) - Advanced version with rich features but complex implementation
+2. [SimpleProxyMiddleware (Basic Version)](#simpleproxy-middleware-basic-version) - Basic version with fundamental features but simple implementation
+
+## ProxyMiddleware (Advanced Version)
+
+### Overview
+
+ProxyMiddleware is a feature-rich proxy middleware that supports dynamic proxy acquisition, proxy pool management, health checks, and more. It is suitable for scenarios requiring advanced proxy management features.
+
+### Features
+
+1. **Dynamic Proxy Acquisition**: Dynamically obtain proxy servers through API
+2. **Proxy Pool Management**: Maintain proxy pool list, support multiple proxies
+3. **Health Check**: Track proxy health status, statistics success rate
+4. **Multiple Downloader Support**: Compatible with aiohttp, httpx, curl-cffi and other downloaders
+5. **Flexible Configuration**: Support multiple configuration options
+
+### Configuration Options
+
+```python
+# Enable proxy middleware
+PROXY_ENABLED = True
+
+# Proxy API configuration
+PROXY_API_URL = "http://proxy-api.example.com/get"  # Proxy acquisition interface
+PROXY_EXTRACTOR = "data.proxy.list"  # Proxy extraction method
+PROXY_REFRESH_INTERVAL = 60  # Proxy refresh interval (seconds)
+PROXY_API_TIMEOUT = 10  # Request proxy API timeout
+
+# Proxy pool configuration
+PROXY_POOL_SIZE = 5  # Proxy pool size
+PROXY_HEALTH_CHECK_THRESHOLD = 0.5  # Health check threshold
+```
+
+### Usage Example
+
+```python
+# settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.proxy.ProxyMiddleware',
+    # ... other middleware
+]
+
+# Proxy configuration
+PROXY_ENABLED = True
+PROXY_API_URL = "http://proxy-api.example.com/get"
+PROXY_EXTRACTOR = "data.proxy.list"
+PROXY_REFRESH_INTERVAL = 60
+```
+
+### Applicable Scenarios
+
+1. Need to dynamically obtain proxies from API
+2. Need proxy pool management and health checking
+3. Need statistics on proxy success rates
+4. Have a large number of proxies to manage
+5. Have high requirements for proxy availability
+
+## SimpleProxyMiddleware (Basic Version)
+
+### Overview
+
+SimpleProxyMiddleware is a lightweight proxy middleware based on a fixed proxy list implementation. It has simple code, is easy to configure and use, and is suitable for scenarios that only require basic proxy functionality.
+
+### Features
+
+1. **Simple Implementation**: Based on fixed proxy list
+2. **Lightweight**: Less code, low performance overhead
+3. **Easy Configuration**: Only need to provide proxy list
+4. **Easy to Understand**: Clear logic, easy to maintain
+
+### Configuration Options
+
+```python
+# Enable simple proxy middleware
+PROXY_ENABLED = True
+
+# Proxy list configuration
+PROXY_LIST = [
+    "http://proxy1.example.com:8080",
+    "http://proxy2.example.com:8080",
+    "http://proxy3.example.com:8080",
+]
+```
+
+### Usage Example
+
+```python
+# settings.py
+MIDDLEWARES = [
+    'crawlo.middleware.simple_proxy.SimpleProxyMiddleware',
+    # ... other middleware
+]
+
+# Simple proxy configuration
+PROXY_ENABLED = True
+PROXY_LIST = [
+    "http://proxy1.example.com:8080",
+    "http://proxy2.example.com:8080",
+]
+```
+
+### Applicable Scenarios
+
+1. Have a fixed list of proxy servers
+2. Do not need to dynamically obtain proxies
+3. Have no special requirements for proxy health status
+4. Want simpler configuration and usage
+5. Have high performance requirements
+6. Beginners or simple projects
+
+## Complexity Comparison
+
+| Feature | ProxyMiddleware (Advanced) | SimpleProxyMiddleware (Basic) |
+|---------|----------------------------|-------------------------------|
+| Feature Richness | High | Basic |
+| Configuration Complexity | High | Low |
+| Code Lines | ~380 lines | ~80 lines |
+| Dependency Complexity | High | Low |
+| Performance Overhead | Medium | Low |
+| Maintenance Difficulty | High | Low |
+| Applicable Scenarios | Advanced proxy management needs | Basic proxy needs |
+
+## Selection Recommendations
+
+### Choose ProxyMiddleware When
+
+1. Project needs to dynamically obtain proxy servers from API
+2. Need to maintain proxy pool and perform health checks
+3. Need statistics on proxy success rates
+4. Using multiple different types of downloaders
+5. Large project scale with high proxy management requirements
+
+### Choose SimpleProxyMiddleware When
+
+1. Project has a fixed list of proxy servers
+2. Do not need to dynamically obtain proxies
+3. Have no special requirements for proxy health status
+4. Want to simplify configuration and usage
+5. Project scale is small or in early development stage
+6. Have high performance requirements and want to reduce unnecessary overhead
+
+## Best Practices
+
+### 1. Choose Based on Requirements
+
+When selecting a proxy middleware, choose based on the project's actual requirements:
+
+- Evaluate whether you really need dynamic proxy acquisition functionality
+- Consider the project's scale and complexity
+- Avoid over-engineering, choose the simplest implementation that meets requirements
+
+### 2. Progressive Upgrade
+
+It is recommended to use proxy middleware in a progressive way:
+
+1. Use SimpleProxyMiddleware in early project stages
+2. Upgrade to ProxyMiddleware when advanced features are needed
+3. Maintain configuration compatibility for easy switching
+
+### 3. Configuration Management
+
+- Centralize proxy configuration management for easy maintenance
+- Use environment variables to configure sensitive information (such as API keys)
+- Provide clear configuration documentation and examples
+
+### 4. Monitoring and Logging
+
+- Enable appropriate log levels for debugging
+- Monitor proxy usage and success rates
+- Regularly check the validity of proxy configurations
+
+## Summary
+
+The two proxy middleware implementations provided by the Crawlo framework each have their advantages:
+
+- **ProxyMiddleware** is suitable for complex scenarios requiring advanced proxy management features
+- **SimpleProxyMiddleware** is suitable for simple scenarios requiring only basic proxy functionality
+
+Developers should choose the appropriate proxy middleware implementation based on the project's actual requirements, avoid unnecessary complexity, and ensure that functional requirements are met.
+
+**code file end: docs/modules/middleware/proxy_en.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/built_in.md 
+
+# 内置管道
+
+Crawlo提供了几个内置管道组件来处理常见的数据处理和存储任务。这些管道组件可以通过配置启用或禁用。
+
+## 概述
+
+内置管道为数据处理提供基本功能：
+
+- 数据输出和存储
+- 数据项去重
+- 数据转换
+- 验证和清理
+
+## ConsolePipeline
+
+将数据项输出到控制台用于调试和开发。
+
+### 特性
+
+- 简单的数据项显示
+- JSON格式化
+- 彩色输出
+- 可配置的详细程度
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+]
+
+# 控制台管道设置
+CONSOLE_PIPELINE_ENABLED = True
+CONSOLE_PIPELINE_FORMAT = 'json'  # 或 'pretty'
+```
+
+## JsonPipeline
+
+将数据项保存到JSON文件用于持久化存储。
+
+### 特性
+
+- JSON文件输出
+- 可配置的文件命名
+- 追加或覆盖模式
+- 美化打印支持
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+]
+
+# JSON管道设置
+JSON_PIPELINE_ENABLED = True
+JSON_PIPELINE_FILENAME = 'items.json'
+JSON_PIPELINE_MODE = 'append'  # 或 'overwrite'
+JSON_PIPELINE_INDENT = 2
+```
+
+## CsvPipeline
+
+将数据项保存到CSV文件用于电子表格兼容性。
+
+### 特性
+
+- CSV文件输出
+- 自动字段检测
+- 自定义字段映射
+- 编码支持
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.csv_pipeline.CsvPipeline',
+]
+
+# CSV管道设置
+CSV_PIPELINE_ENABLED = True
+CSV_PIPELINE_FILENAME = 'items.csv'
+CSV_PIPELINE_ENCODING = 'utf-8'
+CSV_PIPELINE_DELIMITER = ','
+```
+
+## MemoryDedupPipeline
+
+使用内存存储对数据项去重。
+
+### 特性
+
+- 快速的内存去重
+- 可配置的指纹识别
+- 内存高效存储
+- 适用于独立模式
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+]
+
+# 内存去重管道设置
+MEMORY_DEDUP_ENABLED = True
+MEMORY_DEDUP_FIELD = None  # 使用整个数据项，或指定字段
+```
+
+## RedisDedupPipeline
+
+使用Redis存储进行分布式去重。
+
+### 特性
+
+- 分布式去重
+- 持久化存储
+- 可配置的TTL
+- 节点间共享
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.redis_dedup_pipeline.RedisDedupPipeline',
+]
+
+# Redis去重管道设置
+REDIS_DEDUP_ENABLED = True
+REDIS_DEDUP_KEY = 'crawlo:dedup:items'
+REDIS_DEDUP_TTL = 86400  # 24小时
+REDIS_URL = 'redis://localhost:6379'
+```
+
+## BloomDedupPipeline
+
+使用布隆过滤器进行内存高效去重。
+
+### 特性
+
+- 内存高效去重
+- 概率数据结构
+- 可配置的错误率
+- 高性能
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.bloom_dedup_pipeline.BloomDedupPipeline',
+]
+
+# 布隆去重管道设置
+BLOOM_DEDUP_ENABLED = True
+BLOOM_DEDUP_CAPACITY = 1000000
+BLOOM_DEDUP_ERROR_RATE = 0.001
+```
+
+## AsyncmyMySQLPipeline
+
+使用asyncmy驱动将数据项存储到MySQL数据库。
+
+### 特性
+
+- 异步MySQL操作
+- 连接池
+- 批量插入
+- 事务支持
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+
+# MySQL管道设置
+MYSQL_PIPELINE_ENABLED = True
+MYSQL_HOST = 'localhost'
+MYSQL_PORT = 3306
+MYSQL_USER = 'user'
+MYSQL_PASSWORD = 'password'
+MYSQL_DB = 'database'
+MYSQL_TABLE = 'items'
+MYSQL_BATCH_SIZE = 100
+```
+
+## MongoPipeline
+
+将数据项存储到MongoDB数据库。
+
+### 特性
+
+- 异步MongoDB操作
+- 连接池
+- 批量插入
+- 灵活的文档结构
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.mongo_pipeline.MongoPipeline',
+]
+
+# MongoDB管道设置
+MONGO_PIPELINE_ENABLED = True
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'database'
+MONGO_COLLECTION = 'items'
+MONGO_BATCH_SIZE = 100
+```
+
+## DatabaseDedupPipeline
+
+使用数据库存储对数据项去重。
+
+### 特性
+
+- 基于数据库的去重
+- 多数据库支持
+- 可配置的指纹识别
+- 持久化存储
+
+### 配置
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.database_dedup_pipeline.DatabaseDedupPipeline',
+]
+
+# 数据库去重管道设置
+DATABASE_DEDUP_ENABLED = True
+DATABASE_DEDUP_TABLE = 'dedup_fingerprints'
+DATABASE_DEDUP_FIELD = 'fingerprint'
+```
+
+## 使用示例
+
+要启用多个内置管道：
+
+```python
+# 在settings.py中
+PIPELINES = [
+    # 去重（通常在最前面）
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # 调试输出
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    
+    # 文件存储
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    
+    # 数据库存储（通常在最后）
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## 管道顺序考虑
+
+管道顺序对正确功能很重要：
+
+1. **去重管道**通常应该在最前面
+2. **处理管道**在中间
+3. **存储管道**通常应该在最后
+
+推荐的顺序示例：
+```python
+PIPELINES = [
+    # 1. 去重
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # 2. 数据处理
+    'crawlo.pipelines.validation_pipeline.ValidationPipeline',
+    'crawlo.pipelines.cleaning_pipeline.CleaningPipeline',
+    
+    # 3. 输出和存储
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## 性能考虑
+
+- 将轻量级管道放在前面以早期过滤
+- 禁用未使用的管道以减少开销
+- 对数据库管道使用批处理
+- 监控管道处理时间以识别瓶颈
+- 考虑为您的规模使用适当的去重方法
+
+**code file end: docs/modules/pipeline/built_in.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/built_in_en.md 
+
+# Built-in Pipelines
+
+Crawlo provides several built-in pipeline components that handle common data processing and storage tasks. These pipeline components can be enabled or disabled through configuration.
+
+## Overview
+
+Built-in pipelines provide essential functionality for data processing:
+
+- Data output and storage
+- Item deduplication
+- Data transformation
+- Validation and cleaning
+
+## ConsolePipeline
+
+Outputs items to the console for debugging and development.
+
+### Features
+
+- Simple item display
+- JSON formatting
+- Colorized output
+- Configurable verbosity
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+]
+
+# Console pipeline settings
+CONSOLE_PIPELINE_ENABLED = True
+CONSOLE_PIPELINE_FORMAT = 'json'  # or 'pretty'
+```
+
+## JsonPipeline
+
+Saves items to JSON files for persistent storage.
+
+### Features
+
+- JSON file output
+- Configurable file naming
+- Append or overwrite modes
+- Pretty printing support
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+]
+
+# JSON pipeline settings
+JSON_PIPELINE_ENABLED = True
+JSON_PIPELINE_FILENAME = 'items.json'
+JSON_PIPELINE_MODE = 'append'  # or 'overwrite'
+JSON_PIPELINE_INDENT = 2
+```
+
+## CsvPipeline
+
+Saves items to CSV files for spreadsheet compatibility.
+
+### Features
+
+- CSV file output
+- Automatic field detection
+- Custom field mapping
+- Encoding support
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.csv_pipeline.CsvPipeline',
+]
+
+# CSV pipeline settings
+CSV_PIPELINE_ENABLED = True
+CSV_PIPELINE_FILENAME = 'items.csv'
+CSV_PIPELINE_ENCODING = 'utf-8'
+CSV_PIPELINE_DELIMITER = ','
+```
+
+## MemoryDedupPipeline
+
+Deduplicates items using in-memory storage.
+
+### Features
+
+- Fast in-memory deduplication
+- Configurable fingerprinting
+- Memory-efficient storage
+- Suitable for standalone mode
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+]
+
+# Memory dedup pipeline settings
+MEMORY_DEDUP_ENABLED = True
+MEMORY_DEDUP_FIELD = None  # Use entire item, or specify field
+```
+
+## RedisDedupPipeline
+
+Deduplicates items using Redis storage for distributed deduplication.
+
+### Features
+
+- Distributed deduplication
+- Persistent storage
+- Configurable TTL
+- Shared across nodes
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.redis_dedup_pipeline.RedisDedupPipeline',
+]
+
+# Redis dedup pipeline settings
+REDIS_DEDUP_ENABLED = True
+REDIS_DEDUP_KEY = 'crawlo:dedup:items'
+REDIS_DEDUP_TTL = 86400  # 24 hours
+REDIS_URL = 'redis://localhost:6379'
+```
+
+## BloomDedupPipeline
+
+Deduplicates items using Bloom filters for memory-efficient deduplication.
+
+### Features
+
+- Memory-efficient deduplication
+- Probabilistic data structure
+- Configurable error rates
+- High performance
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.bloom_dedup_pipeline.BloomDedupPipeline',
+]
+
+# Bloom dedup pipeline settings
+BLOOM_DEDUP_ENABLED = True
+BLOOM_DEDUP_CAPACITY = 1000000
+BLOOM_DEDUP_ERROR_RATE = 0.001
+```
+
+## AsyncmyMySQLPipeline
+
+Stores items in MySQL database using asyncmy driver.
+
+### Features
+
+- Asynchronous MySQL operations
+- Connection pooling
+- Batch inserts
+- Transaction support
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+
+# MySQL pipeline settings
+MYSQL_PIPELINE_ENABLED = True
+MYSQL_HOST = 'localhost'
+MYSQL_PORT = 3306
+MYSQL_USER = 'user'
+MYSQL_PASSWORD = 'password'
+MYSQL_DB = 'database'
+MYSQL_TABLE = 'items'
+MYSQL_BATCH_SIZE = 100
+```
+
+## MongoPipeline
+
+Stores items in MongoDB database.
+
+### Features
+
+- Asynchronous MongoDB operations
+- Connection pooling
+- Batch inserts
+- Flexible document structure
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.mongo_pipeline.MongoPipeline',
+]
+
+# MongoDB pipeline settings
+MONGO_PIPELINE_ENABLED = True
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'database'
+MONGO_COLLECTION = 'items'
+MONGO_BATCH_SIZE = 100
+```
+
+## DatabaseDedupPipeline
+
+Deduplicates items using database storage.
+
+### Features
+
+- Database-based deduplication
+- Multiple database support
+- Configurable fingerprinting
+- Persistent storage
+
+### Configuration
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.database_dedup_pipeline.DatabaseDedupPipeline',
+]
+
+# Database dedup pipeline settings
+DATABASE_DEDUP_ENABLED = True
+DATABASE_DEDUP_TABLE = 'dedup_fingerprints'
+DATABASE_DEDUP_FIELD = 'fingerprint'
+```
+
+## Usage Example
+
+To enable multiple built-in pipelines:
+
+```python
+# In settings.py
+PIPELINES = [
+    # Deduplication (typically first)
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # Output for debugging
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    
+    # File storage
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    
+    # Database storage (typically last)
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## Pipeline Order Considerations
+
+Pipeline order is important for proper functionality:
+
+1. **Deduplication pipelines** should typically be first
+2. **Processing pipelines** come in the middle
+3. **Storage pipelines** should typically be last
+
+Example recommended order:
+```python
+PIPELINES = [
+    # 1. Deduplication
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # 2. Data processing
+    'crawlo.pipelines.validation_pipeline.ValidationPipeline',
+    'crawlo.pipelines.cleaning_pipeline.CleaningPipeline',
+    
+    # 3. Output and storage
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## Performance Considerations
+
+- Place lightweight pipelines first to filter early
+- Disable unused pipelines to reduce overhead
+- Use batch processing for database pipelines
+- Monitor pipeline processing times to identify bottlenecks
+- Consider using appropriate deduplication for your scale
+
+**code file end: docs/modules/pipeline/built_in_en.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/custom.md 
+
+# 自定义管道
+
+管道是 Crawlo 框架中用于处理爬取数据的组件。通过自定义管道，您可以实现各种数据处理功能，如数据清洗、验证、存储等。
+
+## 创建自定义管道
+
+要创建自定义管道，需要继承 `crawlo.pipelines.Pipeline` 基类并实现相应的方法。
+
+### 基本结构
+
+```python
+from crawlo.pipelines import Pipeline
+
+class CustomPipeline(Pipeline):
+    def open_spider(self, spider):
+        # 爬虫启动时调用
+        pass
+    
+    def close_spider(self, spider):
+        # 爬虫关闭时调用
+        pass
+    
+    def process_item(self, item, spider):
+        # 处理数据项
+        return item
+```
+
+### 方法说明
+
+#### open_spider(spider)
+
+- **作用**: 在爬虫启动时调用，用于初始化资源
+- **参数**:
+  - `spider`: 爬虫实例
+- **返回值**: 无
+
+#### close_spider(spider)
+
+- **作用**: 在爬虫关闭时调用，用于释放资源
+- **参数**:
+  - `spider`: 爬虫实例
+- **返回值**: 无
+
+#### process_item(item, spider)
+
+- **作用**: 处理数据项
+- **参数**:
+  - `item`: 数据项对象
+  - `spider`: 爬虫实例
+- **返回值**:
+  - 返回处理后的数据项
+  - 抛出 `DropItem` 异常以丢弃数据项
+
+### DropItem 异常
+
+要丢弃数据项，可以抛出 `DropItem` 异常：
+
+```python
+from crawlo.pipelines import Pipeline, DropItem
+
+class ValidationPipeline(Pipeline):
+    def process_item(self, item, spider):
+        if not item.get('title'):
+            raise DropItem(f"Missing title in {item}")
+        return item
+```
+
+## 示例
+
+### 数据库存储管道
+
+```python
+from crawlo.pipelines import Pipeline
+import sqlite3
+
+class DatabasePipeline(Pipeline):
+    def open_spider(self, spider):
+        self.connection = sqlite3.connect('data.db')
+        self.cursor = self.connection.cursor()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT,
+                url TEXT,
+                content TEXT
+            )
+        ''')
+        self.connection.commit()
+    
+    def close_spider(self, spider):
+        self.connection.close()
+    
+    def process_item(self, item, spider):
+        self.cursor.execute('''
+            INSERT INTO items (title, url, content)
+            VALUES (?, ?, ?)
+        ''', (item.get('title'), item.get('url'), item.get('content')))
+        self.connection.commit()
+        return item
+```
+
+### JSON 文件存储管道
+
+```python
+from crawlo.pipelines import Pipeline
+import json
+import os
+
+class JsonPipeline(Pipeline):
+    def open_spider(self, spider):
+        self.file = open('items.json', 'w', encoding='utf-8')
+        self.file.write('[\n')
+        self.first_item = True
+    
+    def close_spider(self, spider):
+        self.file.write('\n]')
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        if not self.first_item:
+            self.file.write(',\n')
+        else:
+            self.first_item = False
+        
+        line = json.dumps(dict(item), ensure_ascii=False, indent=2)
+        self.file.write(line)
+        return item
+```
+
+### 数据清洗管道
+
+```python
+from crawlo.pipelines import Pipeline
+import re
+
+class CleaningPipeline(Pipeline):
+    def process_item(self, item, spider):
+        # 清洗标题
+        if 'title' in item:
+            item['title'] = re.sub(r'\s+', ' ', item['title']).strip()
+        
+        # 清洗内容
+        if 'content' in item:
+            item['content'] = re.sub(r'<[^>]+>', '', item['content'])  # 移除HTML标签
+            item['content'] = re.sub(r'\s+', ' ', item['content']).strip()
+        
+        # 验证URL
+        if 'url' in item:
+            if not item['url'].startswith(('http://', 'https://')):
+                item['url'] = 'http://' + item['url']
+        
+        return item
+```
+
+## 配置管道
+
+在配置文件中启用自定义管道：
+
+```python
+# settings.py
+PIPELINES = {
+    'myproject.pipelines.CleaningPipeline': 300,
+    'myproject.pipelines.ValidationPipeline': 400,
+    'myproject.pipelines.DatabasePipeline': 500,
+}
+```
+
+管道的数字表示执行顺序，数字越小优先级越高。
+
+## 最佳实践
+
+1. **单一职责**: 每个管道应该只负责一个功能
+2. **异常处理**: 在管道中妥善处理异常
+3. **资源管理**: 正确打开和关闭资源（如文件、数据库连接等）
+4. **性能考虑**: 避免在管道中执行耗时操作，考虑批量处理
+5. **数据一致性**: 确保数据在管道处理过程中保持一致性
+6. **测试**: 为管道编写单元测试
+
+**code file end: docs/modules/pipeline/custom.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/custom_en.md 
+
+# Custom Pipeline
+
+Pipelines are components in the Crawlo framework used to process crawled data. Through custom pipelines, you can implement various data processing functions such as data cleaning, validation, storage, etc.
+
+## Creating Custom Pipelines
+
+To create a custom pipeline, you need to inherit from the `crawlo.pipelines.Pipeline` base class and implement the corresponding methods.
+
+### Basic Structure
+
+```python
+from crawlo.pipelines import Pipeline
+
+class CustomPipeline(Pipeline):
+    def open_spider(self, spider):
+        # Called when the spider starts
+        pass
+    
+    def close_spider(self, spider):
+        # Called when the spider closes
+        pass
+    
+    def process_item(self, item, spider):
+        # Process data items
+        return item
+```
+
+### Method Descriptions
+
+#### open_spider(spider)
+
+- **Purpose**: Called when the spider starts, used for initializing resources
+- **Parameters**:
+  - `spider`: Spider instance
+- **Return Value**: None
+
+#### close_spider(spider)
+
+- **Purpose**: Called when the spider closes, used for releasing resources
+- **Parameters**:
+  - `spider`: Spider instance
+- **Return Value**: None
+
+#### process_item(item, spider)
+
+- **Purpose**: Process data items
+- **Parameters**:
+  - `item`: Data item object
+  - `spider`: Spider instance
+- **Return Value**:
+  - Return the processed data item
+  - Raise a `DropItem` exception to discard the data item
+
+### DropItem Exception
+
+To discard a data item, you can raise the `DropItem` exception:
+
+```python
+from crawlo.pipelines import Pipeline, DropItem
+
+class ValidationPipeline(Pipeline):
+    def process_item(self, item, spider):
+        if not item.get('title'):
+            raise DropItem(f"Missing title in {item}")
+        return item
+```
+
+## Examples
+
+### Database Storage Pipeline
+
+```python
+from crawlo.pipelines import Pipeline
+import sqlite3
+
+class DatabasePipeline(Pipeline):
+    def open_spider(self, spider):
+        self.connection = sqlite3.connect('data.db')
+        self.cursor = self.connection.cursor()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT,
+                url TEXT,
+                content TEXT
+            )
+        ''')
+        self.connection.commit()
+    
+    def close_spider(self, spider):
+        self.connection.close()
+    
+    def process_item(self, item, spider):
+        self.cursor.execute('''
+            INSERT INTO items (title, url, content)
+            VALUES (?, ?, ?)
+        ''', (item.get('title'), item.get('url'), item.get('content')))
+        self.connection.commit()
+        return item
+```
+
+### JSON File Storage Pipeline
+
+```python
+from crawlo.pipelines import Pipeline
+import json
+import os
+
+class JsonPipeline(Pipeline):
+    def open_spider(self, spider):
+        self.file = open('items.json', 'w', encoding='utf-8')
+        self.file.write('[\n')
+        self.first_item = True
+    
+    def close_spider(self, spider):
+        self.file.write('\n]')
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        if not self.first_item:
+            self.file.write(',\n')
+        else:
+            self.first_item = False
+        
+        line = json.dumps(dict(item), ensure_ascii=False, indent=2)
+        self.file.write(line)
+        return item
+```
+
+### Data Cleaning Pipeline
+
+```python
+from crawlo.pipelines import Pipeline
+import re
+
+class CleaningPipeline(Pipeline):
+    def process_item(self, item, spider):
+        # Clean title
+        if 'title' in item:
+            item['title'] = re.sub(r'\s+', ' ', item['title']).strip()
+        
+        # Clean content
+        if 'content' in item:
+            item['content'] = re.sub(r'<[^>]+>', '', item['content'])  # Remove HTML tags
+            item['content'] = re.sub(r'\s+', ' ', item['content']).strip()
+        
+        # Validate URL
+        if 'url' in item:
+            if not item['url'].startswith(('http://', 'https://')):
+                item['url'] = 'http://' + item['url']
+        
+        return item
+```
+
+## Configuring Pipelines
+
+Enable custom pipelines in the configuration file:
+
+```python
+# settings.py
+PIPELINES = {
+    'myproject.pipelines.CleaningPipeline': 300,
+    'myproject.pipelines.ValidationPipeline': 400,
+    'myproject.pipelines.DatabasePipeline': 500,
+}
+```
+
+The number for pipelines represents the execution order, with smaller numbers having higher priority.
+
+## Best Practices
+
+1. **Single Responsibility**: Each pipeline should only be responsible for one function
+2. **Exception Handling**: Properly handle exceptions in pipelines
+3. **Resource Management**: Correctly open and close resources (such as files, database connections, etc.)
+4. **Performance Considerations**: Avoid performing time-consuming operations in pipelines, consider batch processing
+5. **Data Consistency**: Ensure data remains consistent during pipeline processing
+6. **Testing**: Write unit tests for pipelines
+
+**code file end: docs/modules/pipeline/custom_en.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/index.md 
+
+# 管道模块
+
+管道模块是 Crawlo 框架中负责处理和存储爬取数据的组件。它提供了一个数据处理流水线，允许用户对爬取的数据进行清洗、验证和存储等操作。
+
+## 模块概述
+
+管道模块采用流水线设计，支持多种管道实现。用户可以通过配置管道列表来定义数据处理流程，实现数据的清洗、验证、转换和存储等功能。
+
+### 核心组件
+
+1. [PipelineManager](manager.md) - 管道管理器
+2. [内置管道](built_in.md) - 框架提供的内置管道
+3. [自定义管道](custom.md) - 用户自定义的管道
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "管道模块"
+PipelineBase[PipelineBase<br/>基础管道类]
+ConsolePipeline[ConsolePipeline<br/>控制台输出管道]
+JsonPipeline[JsonPipeline<br/>JSON文件管道]
+CsvPipeline[CsvPipeline<br/>CSV文件管道]
+MySQLPipeline[MySQLPipeline<br/>MySQL数据库管道]
+MongoPipeline[MongoPipeline<br/>MongoDB数据库管道]
+CustomPipeline[CustomPipeline<br/>自定义管道]
+PipelineManager[PipelineManager<br/>管道管理器]
+end
+Processor[处理器] --> PipelineManager
+PipelineManager --> PipelineBase
+PipelineBase --> ConsolePipeline
+PipelineBase --> JsonPipeline
+PipelineBase --> CsvPipeline
+PipelineBase --> MySQLPipeline
+PipelineBase --> MongoPipeline
+PipelineBase --> CustomPipeline
+style PipelineBase fill:#f9f,stroke:#333
+style Processor fill:#bbf,stroke:#333
+```
+
+## 管道类型
+
+### ConsolePipeline
+
+**功能:**
+- 将数据项输出到控制台
+- 适用于调试和开发阶段
+
+**配置选项:**
+```python
+# 控制台管道无需特殊配置
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+]
+```
+
+### JsonPipeline
+
+**功能:**
+- 将数据项保存为 JSON 格式文件
+- 支持数据持久化存储
+
+**配置选项:**
+```python
+# 设置 JSON 文件路径
+JSON_PIPELINE_FILE = 'output.json'
+
+# 设置是否追加模式
+JSON_PIPELINE_APPEND = True
+```
+
+### CsvPipeline
+
+**功能:**
+- 将数据项保存为 CSV 格式文件
+- 适用于表格数据存储
+
+**配置选项:**
+```python
+# 设置 CSV 文件路径
+CSV_PIPELINE_FILE = 'output.csv'
+
+# 设置 CSV 字段分隔符
+CSV_PIPELINE_DELIMITER = ','
+```
+
+### MySQLPipeline
+
+**功能:**
+- 将数据项存储到 MySQL 数据库
+- 支持数据持久化和查询
+
+**配置选项:**
+```python
+# MySQL 数据库配置
+MYSQL_HOST = '127.0.0.1'
+MYSQL_PORT = 3306
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'password'
+MYSQL_DATABASE = 'crawlo'
+```
+
+### MongoPipeline
+
+**功能:**
+- 将数据项存储到 MongoDB 数据库
+- 支持非结构化数据存储
+
+**配置选项:**
+```python
+# MongoDB 配置
+MONGO_URI = 'mongodb://127.0.0.1:27017'
+MONGO_DATABASE = 'crawlo'
+```
+
+## 配置选项
+
+管道模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| PIPELINES | list | [] | 管道列表 |
+| JSON_PIPELINE_FILE | str | 'output.json' | JSON 管道文件路径 |
+| JSON_PIPELINE_APPEND | bool | True | JSON 管道是否追加模式 |
+| CSV_PIPELINE_FILE | str | 'output.csv' | CSV 管道文件路径 |
+| CSV_PIPELINE_DELIMITER | str | ',' | CSV 管道字段分隔符 |
+| MYSQL_HOST | str | '127.0.0.1' | MySQL 主机地址 |
+| MYSQL_PORT | int | 3306 | MySQL 端口 |
+| MYSQL_USER | str | 'root' | MySQL 用户名 |
+| MYSQL_PASSWORD | str | '' | MySQL 密码 |
+| MYSQL_DATABASE | str | 'crawlo' | MySQL 数据库名 |
+| MONGO_URI | str | 'mongodb://127.0.0.1:27017' | MongoDB 连接 URI |
+| MONGO_DATABASE | str | 'crawlo' | MongoDB 数据库名 |
+
+## 使用示例
+
+### 配置管道
+
+```python
+# 在配置文件中配置管道
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+    'crawlo.pipelines.JsonPipeline',
+    'crawlo.pipelines.MySQLPipeline',
+]
+
+# 配置管道参数
+JSON_PIPELINE_FILE = 'products.json'
+MYSQL_HOST = '127.0.0.1'
+MYSQL_DATABASE = 'product_db'
+```
+
+### 创建自定义管道
+
+```python
+from crawlo.pipelines import PipelineBase
+
+class CustomPipeline(PipelineBase):
+    def open_spider(self, spider):
+        """爬虫启动时调用"""
+        # 初始化资源
+        self.file = open('custom_output.txt', 'w')
+    
+    def close_spider(self, spider):
+        """爬虫关闭时调用"""
+        # 释放资源
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        """处理数据项"""
+        # 数据处理逻辑
+        processed_item = self.clean_data(item)
+        
+        # 保存数据
+        self.file.write(f"{processed_item}\n")
+        
+        # 返回处理后的数据项（可以是原数据项或新数据项）
+        return processed_item
+    
+    def clean_data(self, item):
+        """数据清洗"""
+        # 实现数据清洗逻辑
+        item['name'] = item['name'].strip()
+        item['price'] = float(item['price'])
+        return item
+```
+
+## 执行顺序
+
+管道按照配置列表中的顺序执行：
+
+1. **数据项处理** - 依次执行每个管道的 [process_item](../../api/crawlo_pipelines.md) 方法
+2. **返回值处理** - 每个管道可以返回原数据项、新数据项或 None
+3. **流水线传递** - 如果返回数据项，则传递给下一个管道；如果返回 None，则丢弃该数据项
+
+## 性能优化
+
+### 管道选择
+
+```python
+# 只配置需要的管道
+PIPELINES = [
+    'crawlo.pipelines.JsonPipeline',      # 只有需要 JSON 输出时才配置
+    'crawlo.pipelines.MySQLPipeline',     # 只有需要存储到 MySQL 时才配置
+]
+```
+
+### 批量处理
+
+```python
+class BatchPipeline(PipelineBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        self.batch_size = 100
+        self.buffer = []
+    
+    def process_item(self, item, spider):
+        """批量处理数据项"""
+        self.buffer.append(item)
+        
+        if len(self.buffer) >= self.batch_size:
+            self.flush_buffer()
+        
+        return item
+    
+    def flush_buffer(self):
+        """刷新缓冲区"""
+        # 批量写入数据库或文件
+        self.batch_write(self.buffer)
+        self.buffer.clear()
+    
+    def close_spider(self, spider):
+        """关闭爬虫时刷新剩余数据"""
+        if self.buffer:
+            self.flush_buffer()
+```
+
+## 错误处理
+
+### 管道异常处理
+
+```python
+def process_item(self, item, spider):
+    try:
+        # 处理逻辑
+        return item
+    except Exception as e:
+        self.logger.error(f"管道处理失败: {e}")
+        # 可以选择丢弃数据项或重新处理
+        return item  # 继续传递给下一个管道
+```
+
+## 监控和日志
+
+管道模块集成了详细的监控和日志功能：
+
+```python
+# 记录管道操作日志
+logger.info(f"管道处理数据项: {item}")
+logger.debug(f"管道处理结果: {processed_item}")
+
+# 记录异常日志
+logger.error(f"管道执行失败: {e}")
+```
+
+## 最佳实践
+
+### 合理配置管道
+
+```python
+# 开发阶段配置
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',   # 控制台输出便于调试
+    'crawlo.pipelines.JsonPipeline',      # JSON 文件备份
+]
+
+# 生产环境配置
+PIPELINES = [
+    'crawlo.pipelines.MySQLPipeline',     # 存储到数据库
+    'crawlo.pipelines.JsonPipeline',      # JSON 文件备份
+]
+```
+
+### 管道性能优化
+
+```python
+class EfficientPipeline(PipelineBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        # 使用连接池
+        self.connection_pool = self.create_connection_pool()
+        # 缓存常用数据
+        self.cache = {}
+    
+    def process_item(self, item, spider):
+        # 使用连接池和缓存提高性能
+        connection = self.connection_pool.get_connection()
+        # 处理逻辑
+        return item
+```
+
+### 数据验证最佳实践
+
+```python
+def process_item(self, item, spider):
+    """数据验证的最佳实践"""
+    # 验证必填字段
+    if not item.get('name'):
+        self.logger.warning(f"数据项缺少名称字段: {item}")
+        return None  # 丢弃无效数据项
+    
+    # 验证数据格式
+    try:
+        price = float(item['price'])
+        if price < 0:
+            self.logger.warning(f"价格不能为负数: {item}")
+            return None
+    except ValueError:
+        self.logger.warning(f"价格格式错误: {item}")
+        return None
+    
+    # 验证通过，继续处理
+    return item
+```
+
+**code file end: docs/modules/pipeline/index.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/index_en.md 
+
+# Pipeline Module
+
+The pipeline module is the component in the Crawlo framework responsible for processing and storing crawled data. It provides a data processing pipeline that allows users to clean, validate, and store crawled data.
+
+## Module Overview
+
+The pipeline module adopts a pipeline design, supporting multiple pipeline implementations. Users can define data processing workflows by configuring a pipeline list to implement data cleaning, validation, transformation, and storage functions.
+
+### Core Components
+
+1. [PipelineManager](manager_en.md) - Pipeline manager
+2. [Built-in Pipelines](built_in_en.md) - Built-in pipelines provided by the framework
+3. [Custom Pipelines](custom_en.md) - User-defined pipelines
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Pipeline Module"
+PipelineBase[PipelineBase<br/>Base Pipeline Class]
+ConsolePipeline[ConsolePipeline<br/>Console Output Pipeline]
+JsonPipeline[JsonPipeline<br/>JSON File Pipeline]
+CsvPipeline[CsvPipeline<br/>CSV File Pipeline]
+MySQLPipeline[MySQLPipeline<br/>MySQL Database Pipeline]
+MongoPipeline[MongoPipeline<br/>MongoDB Database Pipeline]
+CustomPipeline[CustomPipeline<br/>Custom Pipeline]
+PipelineManager[PipelineManager<br/>Pipeline Manager]
+end
+Processor[Processor] --> PipelineManager
+PipelineManager --> PipelineBase
+PipelineBase --> ConsolePipeline
+PipelineBase --> JsonPipeline
+PipelineBase --> CsvPipeline
+PipelineBase --> MySQLPipeline
+PipelineBase --> MongoPipeline
+PipelineBase --> CustomPipeline
+style PipelineBase fill:#f9f,stroke:#333
+style Processor fill:#bbf,stroke:#333
+```
+
+## Pipeline Types
+
+### ConsolePipeline
+
+**Function:**
+- Output items to the console
+- Suitable for debugging and development phases
+
+**Configuration Options:**
+```python
+# Console pipeline requires no special configuration
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+]
+```
+
+### JsonPipeline
+
+**Function:**
+- Save items as JSON format files
+- Supports data persistence storage
+
+**Configuration Options:**
+```python
+# Set JSON file path
+JSON_PIPELINE_FILE = 'output.json'
+
+# Set whether to use append mode
+JSON_PIPELINE_APPEND = True
+```
+
+### CsvPipeline
+
+**Function:**
+- Save items as CSV format files
+- Suitable for tabular data storage
+
+**Configuration Options:**
+```python
+# Set CSV file path
+CSV_PIPELINE_FILE = 'output.csv'
+
+# Set CSV field delimiter
+CSV_PIPELINE_DELIMITER = ','
+```
+
+### MySQLPipeline
+
+**Function:**
+- Store items in MySQL database
+- Supports data persistence and querying
+
+**Configuration Options:**
+```python
+# MySQL database configuration
+MYSQL_HOST = '127.0.0.1'
+MYSQL_PORT = 3306
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'password'
+MYSQL_DATABASE = 'crawlo'
+```
+
+### MongoPipeline
+
+**Function:**
+- Store items in MongoDB database
+- Supports unstructured data storage
+
+**Configuration Options:**
+```python
+# MongoDB configuration
+MONGO_URI = 'mongodb://127.0.0.1:27017'
+MONGO_DATABASE = 'crawlo'
+```
+
+## Configuration Options
+
+The pipeline module's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| PIPELINES | list | [] | Pipeline list |
+| JSON_PIPELINE_FILE | str | 'output.json' | JSON pipeline file path |
+| JSON_PIPELINE_APPEND | bool | True | Whether JSON pipeline uses append mode |
+| CSV_PIPELINE_FILE | str | 'output.csv' | CSV pipeline file path |
+| CSV_PIPELINE_DELIMITER | str | ',' | CSV pipeline field delimiter |
+| MYSQL_HOST | str | '127.0.0.1' | MySQL host address |
+| MYSQL_PORT | int | 3306 | MySQL port |
+| MYSQL_USER | str | 'root' | MySQL username |
+| MYSQL_PASSWORD | str | '' | MySQL password |
+| MYSQL_DATABASE | str | 'crawlo' | MySQL database name |
+| MONGO_URI | str | 'mongodb://127.0.0.1:27017' | MongoDB connection URI |
+| MONGO_DATABASE | str | 'crawlo' | MongoDB database name |
+
+## Usage Examples
+
+### Configure Pipelines
+
+```python
+# Configure pipelines in configuration file
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',
+    'crawlo.pipelines.JsonPipeline',
+    'crawlo.pipelines.MySQLPipeline',
+]
+
+# Configure pipeline parameters
+JSON_PIPELINE_FILE = 'products.json'
+MYSQL_HOST = '127.0.0.1'
+MYSQL_DATABASE = 'product_db'
+```
+
+### Create Custom Pipeline
+
+```python
+from crawlo.pipelines import PipelineBase
+
+class CustomPipeline(PipelineBase):
+    def open_spider(self, spider):
+        """Called when spider starts"""
+        # Initialize resources
+        self.file = open('custom_output.txt', 'w')
+    
+    def close_spider(self, spider):
+        """Called when spider closes"""
+        # Release resources
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        """Process item"""
+        # Data processing logic
+        processed_item = self.clean_data(item)
+        
+        # Save data
+        self.file.write(f"{processed_item}\n")
+        
+        # Return processed item (can be original item or new item)
+        return processed_item
+    
+    def clean_data(self, item):
+        """Data cleaning"""
+        # Implement data cleaning logic
+        item['name'] = item['name'].strip()
+        item['price'] = float(item['price'])
+        return item
+```
+
+## Execution Order
+
+Pipelines are executed in the order of the configuration list:
+
+1. **Item Processing** - Execute each pipeline's [process_item](../../api/crawlo_pipelines.md) method in sequence
+2. **Return Value Processing** - Each pipeline can return the original item, a new item, or None
+3. **Pipeline Passing** - If an item is returned, it's passed to the next pipeline; if None is returned, the item is discarded
+
+## Performance Optimization
+
+### Pipeline Selection
+
+```python
+# Only configure needed pipelines
+PIPELINES = [
+    'crawlo.pipelines.JsonPipeline',      # Only configure when JSON output is needed
+    'crawlo.pipelines.MySQLPipeline',     # Only configure when storing to MySQL is needed
+]
+```
+
+### Batch Processing
+
+```python
+class BatchPipeline(PipelineBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        self.batch_size = 100
+        self.buffer = []
+    
+    def process_item(self, item, spider):
+        """Batch process items"""
+        self.buffer.append(item)
+        
+        if len(self.buffer) >= self.batch_size:
+            self.flush_buffer()
+        
+        return item
+    
+    def flush_buffer(self):
+        """Flush buffer"""
+        # Batch write to database or file
+        self.batch_write(self.buffer)
+        self.buffer.clear()
+    
+    def close_spider(self, spider):
+        """Flush remaining data when spider closes"""
+        if self.buffer:
+            self.flush_buffer()
+```
+
+## Error Handling
+
+### Pipeline Exception Handling
+
+```python
+def process_item(self, item, spider):
+    try:
+        # Processing logic
+        return item
+    except Exception as e:
+        self.logger.error(f"Pipeline processing failed: {e}")
+        # Can choose to discard item or reprocess
+        return item  # Continue passing to next pipeline
+```
+
+## Monitoring and Logging
+
+The pipeline module integrates detailed monitoring and logging functionality:
+
+```python
+# Log pipeline operations
+logger.info(f"Pipeline processing item: {item}")
+logger.debug(f"Pipeline processing result: {processed_item}")
+
+# Log exception information
+logger.error(f"Pipeline execution failed: {e}")
+```
+
+## Best Practices
+
+### Reasonable Pipeline Configuration
+
+```python
+# Development phase configuration
+PIPELINES = [
+    'crawlo.pipelines.ConsolePipeline',   # Console output for debugging
+    'crawlo.pipelines.JsonPipeline',      # JSON file backup
+]
+
+# Production environment configuration
+PIPELINES = [
+    'crawlo.pipelines.MySQLPipeline',     # Store to database
+    'crawlo.pipelines.JsonPipeline',      # JSON file backup
+]
+```
+
+### Pipeline Performance Optimization
+
+```python
+class EfficientPipeline(PipelineBase):
+    def __init__(self, settings):
+        super().__init__(settings)
+        # Use connection pool
+        self.connection_pool = self.create_connection_pool()
+        # Cache common data
+        self.cache = {}
+    
+    def process_item(self, item, spider):
+        # Use connection pool and cache to improve performance
+        connection = self.connection_pool.get_connection()
+        # Processing logic
+        return item
+```
+
+### Data Validation Best Practices
+
+```python
+def process_item(self, item, spider):
+    """Best practices for data validation"""
+    # Validate required fields
+    if not item.get('name'):
+        self.logger.warning(f"Item missing name field: {item}")
+        return None  # Discard invalid item
+    
+    # Validate data format
+    try:
+        price = float(item['price'])
+        if price < 0:
+            self.logger.warning(f"Price cannot be negative: {item}")
+            return None
+    except ValueError:
+        self.logger.warning(f"Price format error: {item}")
+        return None
+    
+    # Validation passed, continue processing
+    return item
+```
+
+**code file end: docs/modules/pipeline/index_en.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/manager.md 
+
+# 管道管理器
+
+管道管理器是Crawlo框架中管理管道处理的核心组件。它在数据项处理生命周期中协调管道组件的执行。
+
+## 概述
+
+管道管理器负责：
+
+- 加载和初始化管道组件
+- 按正确顺序执行管道链
+- 处理数据项处理和转换
+- 与处理器和引擎组件集成
+
+## 架构
+
+管道管理器编排管道执行：
+
+```mermaid
+graph TD
+    A[处理器] --> B[管道管理器]
+    B --> C[管道1]
+    C --> D[管道2]
+    D --> E[管道3]
+    E --> F[数据存储]
+```
+
+## 主要特性
+
+### 管道链管理
+
+管道管理器维护管道组件的顺序链：
+
+- 数据项按配置的顺序流经管道
+- 每个管道可以转换、过滤或处理数据项
+- 管道可以通过抛出ItemDiscard异常来丢弃数据项
+
+### 动态管道加载
+
+管道组件根据配置动态加载：
+
+```python
+# 在settings.py中
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    # ... 更多管道
+]
+```
+
+### 异步处理
+
+所有管道处理都是异步执行以保持性能：
+
+- 非阻塞管道执行
+- 尽可能并发处理
+- 适当的异常处理和传播
+
+## API参考
+
+### `PipelineManager(crawler)`
+
+创建一个新的管道管理器实例。
+
+**参数：**
+- `crawler`：拥有此管理器的爬虫实例
+
+### `async process_item(item)`
+
+通过管道链处理数据项。
+
+**参数：**
+- `item`：要处理的数据项
+
+### `from_crawler(*args, **kwargs)`
+
+创建管道管理器实例的类方法。
+
+## 管道处理流程
+
+1. 数据项传递给链中的第一个管道
+2. 按顺序调用每个管道的[process_item](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/pipelines/base.py#L15)方法
+3. 管道可以：
+   - 返回数据项（可能已修改）以继续处理
+   - 抛出ItemDiscard以丢弃数据项
+   - 返回新数据项以替换当前数据项
+4. 完成管道链的数据项被视为已成功处理
+
+## 配置
+
+管道管理器使用[PIPELINES](https://github.com/crawl-coder/Crawlo/blob/master/examples/api_data_collection/api_data_collection/settings.py#L33)设置来确定要加载的管道：
+
+```python
+PIPELINES = [
+    # 去重管道（通常在最前面）
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # 处理管道
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    
+    # 存储管道（通常在最后）
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## 使用示例
+
+```python
+from crawlo.pipelines.pipeline_manager import PipelineManager
+
+# 管道管理器通常由处理器自动创建，但也可以手动创建：
+
+manager = PipelineManager.from_crawler(crawler)
+
+# 处理数据项
+await manager.process_item(item)
+```
+
+## 错误处理
+
+管道管理器处理各种错误情况：
+
+- **ItemDiscard**：当管道决定丢弃数据项时
+- **处理错误**：当管道遇到错误时
+- **验证错误**：当数据项验证失败时
+
+## 性能考虑
+
+- 管道顺序影响性能 - 将轻量级管道放在前面
+- 最小化管道方法中的阻塞操作
+- 为管道状态使用高效的数据结构
+- 监控管道处理时间以识别瓶颈
+- 考虑为存储管道使用批处理
+
+**code file end: docs/modules/pipeline/manager.md**
+
+---
+
+
+### code file start: docs/modules/pipeline/manager_en.md 
+
+# PipelineManager
+
+The PipelineManager is the core component that manages pipeline processing in the Crawlo framework. It coordinates the execution of pipeline components during the item processing lifecycle.
+
+## Overview
+
+The PipelineManager is responsible for:
+
+- Loading and initializing pipeline components
+- Executing pipeline chains in the correct order
+- Handling item processing and transformation
+- Integrating with the processor and engine components
+
+## Architecture
+
+The PipelineManager orchestrates pipeline execution:
+
+```mermaid
+graph TD
+    A[Processor] --> B[PipelineManager]
+    B --> C[Pipeline 1]
+    C --> D[Pipeline 2]
+    D --> E[Pipeline 3]
+    E --> F[Data Storage]
+```
+
+## Key Features
+
+### Pipeline Chain Management
+
+The PipelineManager maintains a sequential chain of pipeline components:
+
+- Items flow through pipelines in the configured order
+- Each pipeline can transform, filter, or process items
+- Pipelines can drop items by raising ItemDiscard exceptions
+
+### Dynamic Pipeline Loading
+
+Pipeline components are loaded dynamically based on configuration:
+
+```python
+# In settings.py
+PIPELINES = [
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    # ... more pipelines
+]
+```
+
+### Asynchronous Processing
+
+All pipeline processing is performed asynchronously to maintain performance:
+
+- Non-blocking pipeline execution
+- Concurrent processing when possible
+- Proper exception handling and propagation
+
+## API Reference
+
+### `PipelineManager(crawler)`
+
+Creates a new PipelineManager instance.
+
+**Parameters:**
+- `crawler`: The crawler instance that owns this manager
+
+### `async process_item(item)`
+
+Processes an item through the pipeline chain.
+
+**Parameters:**
+- `item`: The item to process
+
+### `from_crawler(*args, **kwargs)`
+
+Class method to create a PipelineManager instance.
+
+## Pipeline Processing Flow
+
+1. Items are passed to the first pipeline in the chain
+2. Each pipeline's `process_item` method is called in order
+3. Pipelines can:
+   - Return the item (possibly modified) to continue processing
+   - Raise ItemDiscard to drop the item
+   - Return a new item to replace the current one
+4. Items that complete the pipeline chain are considered successfully processed
+
+## Configuration
+
+The PipelineManager uses the `PIPELINES` setting to determine which pipelines to load:
+
+```python
+PIPELINES = [
+    # Deduplication pipelines (typically first)
+    'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    
+    # Processing pipelines
+    'crawlo.pipelines.console_pipeline.ConsolePipeline',
+    'crawlo.pipelines.json_pipeline.JsonPipeline',
+    
+    # Storage pipelines (typically last)
+    'crawlo.pipelines.mysql_pipeline.AsyncmyMySQLPipeline',
+]
+```
+
+## Example Usage
+
+```python
+from crawlo.pipelines.pipeline_manager import PipelineManager
+
+# The PipelineManager is typically created automatically
+# by the processor, but can be created manually:
+
+manager = PipelineManager.from_crawler(crawler)
+
+# Process an item
+await manager.process_item(item)
+```
+
+## Error Handling
+
+The PipelineManager handles various error conditions:
+
+- **ItemDiscard**: When a pipeline decides to drop an item
+- **Processing Errors**: When a pipeline encounters an error
+- **Validation Errors**: When items fail validation
+
+## Performance Considerations
+
+- Pipeline order affects performance - place lightweight pipelines first
+- Minimize blocking operations in pipeline methods
+- Use efficient data structures for pipeline state
+- Monitor pipeline processing times to identify bottlenecks
+- Consider batch processing for storage pipelines
+
+**code file end: docs/modules/pipeline/manager_en.md**
+
+---
+
+
+### code file start: docs/modules/queue/index.md 
+
+# 队列模块
+
+队列模块是 Crawlo 框架中负责管理请求队列的核心组件。它提供了统一的队列接口，支持内存队列和 Redis 队列，是实现分布式爬取的关键模块。
+
+## 模块概述
+
+队列模块采用抽象设计，通过队列管理器提供统一的接口来操作不同类型的队列。这种设计使得 Crawlo 能够在单机模式和分布式模式之间无缝切换。
+
+### 核心组件
+
+1. [QueueManager](manager.md) - 统一队列管理器
+2. [MemoryQueue](memory.md) - 内存队列实现
+3. [RedisQueue](redis.md) - Redis 队列实现
+
+## 架构设计
+
+```mermaid
+graph TB
+subgraph "队列模块"
+BaseQueue[BaseQueue<br/>基础队列接口]
+MemoryQueue[MemoryQueue<br/>内存队列实现]
+RedisQueue[RedisQueue<br/>Redis队列实现]
+QueueManager[QueueManager<br/>队列管理器]
+end
+Scheduler[调度器] --> QueueManager
+QueueManager --> BaseQueue
+BaseQueue --> MemoryQueue
+BaseQueue --> RedisQueue
+style BaseQueue fill:#f9f,stroke:#333
+style Scheduler fill:#bbf,stroke:#333
+```
+
+## 队列类型
+
+### 内存队列 (MemoryQueue)
+
+**适用场景:**
+- 单机模式下的简单爬取任务
+- 开发和测试环境
+- 不需要持久化队列数据的场景
+
+**特点:**
+- 基于内存存储，访问速度快
+- 实现简单，资源消耗低
+- 不支持持久化，进程重启后数据丢失
+
+### Redis 队列 (RedisQueue)
+
+**适用场景:**
+- 分布式模式下的大规模爬取任务
+- 需要队列数据持久化的场景
+- 多节点协同工作的环境
+
+**特点:**
+- 基于 Redis 存储，支持持久化
+- 支持分布式部署
+- 支持优先级队列
+
+## 队列管理器
+
+[QueueManager](manager.md) 是队列模块的核心，负责根据配置创建和管理相应的队列实例。
+
+### 主要功能
+
+1. **队列创建** - 根据配置创建合适的队列实例
+2. **队列代理** - 代理所有队列操作到实际的队列实例
+3. **配置管理** - 管理队列相关的配置参数
+
+### 使用示例
+
+```python
+from crawlo.queue import QueueManager
+from crawlo.config import CrawloConfig
+
+# 创建配置
+config = CrawloConfig.standalone(queue_type='memory')
+
+# 创建队列管理器
+queue_manager = QueueManager(config)
+
+# 获取队列实例
+queue = queue_manager.get_queue()
+
+# 使用队列
+queue.enqueue_request(request)
+request = queue.next_request()
+```
+
+## 配置选项
+
+队列模块的行为可以通过以下配置项进行调整：
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| QUEUE_TYPE | str | 'memory' | 队列类型（memory/redis） |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | 调度器最大队列大小 |
+| REDIS_HOST | str | '127.0.0.1' | Redis 主机地址 |
+| REDIS_PORT | int | 6379 | Redis 端口 |
+| REDIS_PASSWORD | str | None | Redis 密码 |
+| REDIS_DB | int | 0 | Redis 数据库编号 |
+| QUEUE_PERSISTENCE | bool | True | 是否启用队列持久化 |
+
+## 性能优化
+
+### 内存队列优化
+
+```python
+# 限制队列大小防止内存溢出
+SCHEDULER_MAX_QUEUE_SIZE = 50000
+
+# 使用高效的内存数据结构
+# 内部使用 collections.deque 实现队列
+```
+
+### Redis 队列优化
+
+```python
+# 配置连接池
+REDIS_CONNECTION_POOL_SIZE = 20
+
+# 使用管道批量操作
+# 内部使用 Redis pipeline 提高性能
+```
+
+## 错误处理
+
+### 连接异常处理
+
+```python
+try:
+    queue.enqueue_request(request)
+except QueueConnectionException:
+    logger.error("队列连接失败")
+    # 可以选择重试或使用备用队列
+```
+
+### 队列满异常处理
+
+```python
+try:
+    queue.enqueue_request(request)
+except QueueFullException:
+    logger.warning("队列已满，等待处理")
+    # 可以选择等待或丢弃请求
+```
+
+## 监控和日志
+
+队列模块集成了详细的监控和日志功能：
+
+```python
+# 记录队列操作日志
+logger.info(f"请求入队: {request.url}")
+logger.debug(f"当前队列大小: {queue.size()}")
+
+# 记录异常日志
+logger.error(f"队列操作失败: {e}")
+```
+
+## 最佳实践
+
+### 根据模式选择队列类型
+
+```python
+# 单机模式使用内存队列
+config = CrawloConfig.standalone(queue_type='memory')
+
+# 分布式模式使用 Redis 队列
+config = CrawloConfig.distributed(queue_type='redis')
+```
+
+### 合理配置队列大小
+
+```python
+# 小规模爬取任务
+SCHEDULER_MAX_QUEUE_SIZE = 1000
+
+# 大规模爬取任务
+SCHEDULER_MAX_QUEUE_SIZE = 100000
+```
+
+### 启用队列持久化
+
+```python
+# 启用 Redis 队列持久化
+QUEUE_PERSISTENCE = True
+```
+
+**code file end: docs/modules/queue/index.md**
+
+---
+
+
+### code file start: docs/modules/queue/index_en.md 
+
+# Queue Module
+
+The queue module is the core component in the Crawlo framework responsible for managing request queues. It provides a unified queue interface, supporting both memory queues and Redis queues, and is a key module for implementing distributed crawling.
+
+## Module Overview
+
+The queue module adopts an abstract design, providing a unified interface to operate different types of queues through the queue manager. This design allows Crawlo to seamlessly switch between standalone and distributed modes.
+
+### Core Components
+
+1. [QueueManager](manager_en.md) - Unified queue manager
+2. [MemoryQueue](memory_en.md) - Memory queue implementation
+3. [RedisQueue](redis_en.md) - Redis queue implementation
+
+## Architecture Design
+
+```mermaid
+graph TB
+subgraph "Queue Module"
+BaseQueue[BaseQueue<br/>Base Queue Interface]
+MemoryQueue[MemoryQueue<br/>Memory Queue Implementation]
+RedisQueue[RedisQueue<br/>Redis Queue Implementation]
+QueueManager[QueueManager<br/>Queue Manager]
+end
+Scheduler[Scheduler] --> QueueManager
+QueueManager --> BaseQueue
+BaseQueue --> MemoryQueue
+BaseQueue --> RedisQueue
+style BaseQueue fill:#f9f,stroke:#333
+style Scheduler fill:#bbf,stroke:#333
+```
+
+## Queue Types
+
+### Memory Queue (MemoryQueue)
+
+**Use Cases:**
+- Simple crawling tasks in standalone mode
+- Development and testing environments
+- Scenarios that don't require queue data persistence
+
+**Features:**
+- Memory-based storage, fast access
+- Simple implementation, low resource consumption
+- No persistence support, data lost on process restart
+
+### Redis Queue (RedisQueue)
+
+**Use Cases:**
+- Large-scale crawling tasks in distributed mode
+- Scenarios requiring queue data persistence
+- Multi-node collaborative environments
+
+**Features:**
+- Redis-based storage, supports persistence
+- Supports distributed deployment
+- Supports priority queues
+
+## Queue Manager
+
+[QueueManager](manager_en.md) is the core of the queue module, responsible for creating and managing queue instances based on configuration.
+
+### Main Functions
+
+1. **Queue Creation** - Create appropriate queue instances based on configuration
+2. **Queue Proxy** - Proxy all queue operations to the actual queue instance
+3. **Configuration Management** - Manage queue-related configuration parameters
+
+### Usage Example
+
+```python
+from crawlo.queue import QueueManager
+from crawlo.config import CrawloConfig
+
+# Create configuration
+config = CrawloConfig.standalone(queue_type='memory')
+
+# Create queue manager
+queue_manager = QueueManager(config)
+
+# Get queue instance
+queue = queue_manager.get_queue()
+
+# Use queue
+queue.enqueue_request(request)
+request = queue.next_request()
+```
+
+## Configuration Options
+
+The queue module's behavior can be adjusted through the following configuration options:
+
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| QUEUE_TYPE | str | 'memory' | Queue type (memory/redis) |
+| SCHEDULER_MAX_QUEUE_SIZE | int | 10000 | Maximum scheduler queue size |
+| REDIS_HOST | str | '127.0.0.1' | Redis host address |
+| REDIS_PORT | int | 6379 | Redis port |
+| REDIS_PASSWORD | str | None | Redis password |
+| REDIS_DB | int | 0 | Redis database number |
+| QUEUE_PERSISTENCE | bool | True | Whether to enable queue persistence |
+
+## Performance Optimization
+
+### Memory Queue Optimization
+
+```python
+# Limit queue size to prevent memory overflow
+SCHEDULER_MAX_QUEUE_SIZE = 50000
+
+# Use efficient memory data structures
+# Internally uses collections.deque to implement queue
+```
+
+### Redis Queue Optimization
+
+```python
+# Configure connection pool
+REDIS_CONNECTION_POOL_SIZE = 20
+
+# Use pipeline for batch operations
+# Internally uses Redis pipeline to improve performance
+```
+
+## Error Handling
+
+### Connection Exception Handling
+
+```python
+try:
+    queue.enqueue_request(request)
+except QueueConnectionException:
+    logger.error("Queue connection failed")
+    # Can choose to retry or use backup queue
+```
+
+### Queue Full Exception Handling
+
+```python
+try:
+    queue.enqueue_request(request)
+except QueueFullException:
+    logger.warning("Queue is full, waiting for processing")
+    # Can choose to wait or discard request
+```
+
+## Monitoring and Logging
+
+The queue module integrates detailed monitoring and logging functionality:
+
+```python
+# Log queue operations
+logger.info(f"Request queued: {request.url}")
+logger.debug(f"Current queue size: {queue.size()}")
+
+# Log exception information
+logger.error(f"Queue operation failed: {e}")
+```
+
+## Best Practices
+
+### Choose Queue Type Based on Mode
+
+```python
+# Use memory queue for standalone mode
+config = CrawloConfig.standalone(queue_type='memory')
+
+# Use Redis queue for distributed mode
+config = CrawloConfig.distributed(queue_type='redis')
+```
+
+### Configure Queue Size Appropriately
+
+```python
+# Small-scale crawling tasks
+SCHEDULER_MAX_QUEUE_SIZE = 1000
+
+# Large-scale crawling tasks
+SCHEDULER_MAX_QUEUE_SIZE = 100000
+```
+
+### Enable Queue Persistence
+
+```python
+# Enable Redis queue persistence
+QUEUE_PERSISTENCE = True
+```
+
+**code file end: docs/modules/queue/index_en.md**
+
+---
+
+
+### code file start: docs/modules/queue/manager.md 
+
+# 队列管理器
+
+队列管理器是Crawlo框架中为管理请求队列提供统一接口的核心组件。它抽象了各种队列实现之间的差异，并提供一致的操作。
+
+## 概述
+
+队列管理器负责：
+
+- 初始化和管理队列实例
+- 提供统一的队列操作（put、get、size等）
+- 处理不同类型的队列（内存、Redis等）
+- 管理队列健康和统计信息
+
+## 架构
+
+队列管理器为不同的队列实现提供统一接口：
+
+```mermaid
+graph TD
+    A[队列管理器] --> B[队列配置]
+    A --> C[队列类型.AUTO]
+    A --> D[队列类型.MEMORY]
+    A --> E[队列类型.REDIS]
+    D --> F[爬虫优先级队列]
+    E --> G[Redis优先级队列]
+```
+
+## 主要特性
+
+### 统一队列接口
+
+队列管理器提供一致的操作，无论底层实现如何：
+
+- [put(request, priority)](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/base.py#L25)：将请求添加到队列
+- [get(timeout)](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/base.py#L34)：从队列检索请求
+- [size()](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/base.py#L40)：获取队列大小
+- [empty()](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/base.py#L43)：检查队列是否为空
+- [close()](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/base.py#L49)：清理资源
+
+### 自动队列选择
+
+队列管理器可以根据配置和可用性自动选择适当的队列类型：
+
+- 如果可用且已配置则使用Redis
+- 如果Redis不可用则回退到内存队列
+- 在不同环境中提供一致的行为
+
+### 背压控制
+
+队列管理器实现背压机制以防止队列溢出：
+
+- 队列大小限制
+- 基于信号量的内存队列流控制
+- 队列满时自动暂停
+
+## API参考
+
+### `QueueManager(config)`
+
+创建一个新的队列管理器实例。
+
+**参数：**
+- `config`：包含队列设置的QueueConfig实例
+
+### `async initialize()`
+
+初始化队列管理器和底层队列实现。
+
+**返回：**
+- `bool`：如果初始化成功则为True
+
+### `async put(request, priority=0)`
+
+将请求添加到队列。
+
+**参数：**
+- `request`：要入队的请求
+- `priority`：优先级（数字越大优先级越高）
+
+**返回：**
+- `bool`：如果请求已入队则为True
+
+### `async get(timeout=5.0)`
+
+从队列检索请求。
+
+**参数：**
+- `timeout`：等待请求的最大时间
+
+**返回：**
+- `Request`：出队的请求，如果超时则为None
+
+### `async size()`
+
+获取当前队列大小。
+
+**返回：**
+- `int`：队列中的请求数量
+
+### `empty()`
+
+检查队列是否为空。
+
+**返回：**
+- `bool`：如果队列为空则为True
+
+### `async close()`
+
+清理资源并关闭队列。
+
+### `get_status()`
+
+获取队列状态信息。
+
+**返回：**
+- `dict`：状态信息，包括类型、健康和配置
+
+## 配置
+
+队列管理器使用QueueConfig进行配置：
+
+```python
+from crawlo.queue.queue_manager import QueueConfig
+
+config = QueueConfig(
+    queue_type='auto',  # 'auto', 'memory', 或 'redis'
+    redis_url='redis://localhost:6379',
+    queue_name='crawlo:requests',
+    max_queue_size=2000,
+    max_retries=3,
+    timeout=300
+)
+
+queue_manager = QueueManager(config)
+await queue_manager.initialize()
+```
+
+## 使用示例
+
+```python
+from crawlo.queue.queue_manager import QueueManager, QueueConfig
+
+# 创建配置
+config = QueueConfig.from_settings(crawler.settings)
+
+# 创建队列管理器
+queue_manager = QueueManager(config)
+await queue_manager.initialize()
+
+# 将请求添加到队列
+await queue_manager.put(request, priority=5)
+
+# 从队列获取请求
+request = await queue_manager.get(timeout=10.0)
+
+# 检查队列大小
+size = await queue_manager.size()
+
+# 清理
+await queue_manager.close()
+```
+
+## 错误处理
+
+队列管理器处理各种错误情况：
+
+- **初始化错误**：队列实现初始化失败
+- **连接错误**：Redis连接失败
+- **超时错误**：队列操作超时
+- **序列化错误**：请求序列化/反序列化失败
+
+## 性能考虑
+
+- 监控队列大小以避免内存问题
+- 根据系统资源调整[max_queue_size](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/config.py#L18)
+- 为队列操作使用适当的超时值
+- 启用统计信息收集以进行性能监控
+- 考虑为分布式爬取使用Redis队列
+
+**code file end: docs/modules/queue/manager.md**
+
+---
+
+
+### code file start: docs/modules/queue/manager_en.md 
+
+# QueueManager
+
+The QueueManager is the core component that provides a unified interface for managing request queues in the Crawlo framework. It abstracts the differences between various queue implementations and provides consistent operations.
+
+## Overview
+
+The QueueManager is responsible for:
+
+- Initializing and managing queue instances
+- Providing unified queue operations (put, get, size, etc.)
+- Handling different queue types (memory, Redis, etc.)
+- Managing queue health and statistics
+
+## Architecture
+
+The QueueManager provides a unified interface for different queue implementations:
+
+```mermaid
+graph TD
+    A[QueueManager] --> B[QueueConfig]
+    A --> C[QueueType.AUTO]
+    A --> D[QueueType.MEMORY]
+    A --> E[QueueType.REDIS]
+    D --> F[SpiderPriorityQueue]
+    E --> G[RedisPriorityQueue]
+```
+
+## Key Features
+
+### Unified Queue Interface
+
+The QueueManager provides consistent operations regardless of the underlying implementation:
+
+- `put(request, priority)`: Add request to queue
+- `get(timeout)`: Retrieve request from queue
+- `size()`: Get queue size
+- `empty()`: Check if queue is empty
+- `close()`: Clean up resources
+
+### Automatic Queue Selection
+
+The QueueManager can automatically select the appropriate queue type based on configuration and availability:
+
+- Uses Redis if available and configured
+- Falls back to memory queues if Redis is unavailable
+- Provides consistent behavior across different environments
+
+### Backpressure Control
+
+The QueueManager implements backpressure mechanisms to prevent queue overflow:
+
+- Queue size limits
+- Semaphore-based flow control for memory queues
+- Automatic pausing when queues are full
+
+## API Reference
+
+### `QueueManager(config)`
+
+Creates a new QueueManager instance.
+
+**Parameters:**
+- `config`: QueueConfig instance with queue settings
+
+### `async initialize()`
+
+Initializes the queue manager and underlying queue implementation.
+
+**Returns:**
+- `bool`: True if initialization was successful
+
+### `async put(request, priority=0)`
+
+Adds a request to the queue.
+
+**Parameters:**
+- `request`: The request to enqueue
+- `priority`: Priority level (higher numbers = higher priority)
+
+**Returns:**
+- `bool`: True if request was enqueued
+
+### `async get(timeout=5.0)`
+
+Retrieves a request from the queue.
+
+**Parameters:**
+- `timeout`: Maximum time to wait for a request
+
+**Returns:**
+- `Request`: The dequeued request, or None if timeout
+
+### `async size()`
+
+Gets the current queue size.
+
+**Returns:**
+- `int`: Number of requests in the queue
+
+### `empty()`
+
+Checks if the queue is empty.
+
+**Returns:**
+- `bool`: True if queue is empty
+
+### `async close()`
+
+Cleans up resources and closes the queue.
+
+### `get_status()`
+
+Gets queue status information.
+
+**Returns:**
+- `dict`: Status information including type, health, and config
+
+## Configuration
+
+The QueueManager uses QueueConfig for configuration:
+
+```python
+from crawlo.queue.queue_manager import QueueConfig
+
+config = QueueConfig(
+    queue_type='auto',  # 'auto', 'memory', or 'redis'
+    redis_url='redis://localhost:6379',
+    queue_name='crawlo:requests',
+    max_queue_size=2000,
+    max_retries=3,
+    timeout=300
+)
+
+queue_manager = QueueManager(config)
+await queue_manager.initialize()
+```
+
+## Example Usage
+
+```python
+from crawlo.queue.queue_manager import QueueManager, QueueConfig
+
+# Create configuration
+config = QueueConfig.from_settings(crawler.settings)
+
+# Create queue manager
+queue_manager = QueueManager(config)
+await queue_manager.initialize()
+
+# Add request to queue
+await queue_manager.put(request, priority=5)
+
+# Get request from queue
+request = await queue_manager.get(timeout=10.0)
+
+# Check queue size
+size = await queue_manager.size()
+
+# Cleanup
+await queue_manager.close()
+```
+
+## Error Handling
+
+The QueueManager handles various error conditions:
+
+- **Initialization Errors**: Failed to initialize queue implementation
+- **Connection Errors**: Redis connection failures
+- **Timeout Errors**: Queue operations timing out
+- **Serialization Errors**: Failed to serialize/deserialize requests
+
+## Performance Considerations
+
+- Monitor queue sizes to avoid memory issues
+- Adjust `max_queue_size` based on system resources
+- Use appropriate timeout values for queue operations
+- Enable statistics collection for performance monitoring
+- Consider using Redis queues for distributed crawling
+
+**code file end: docs/modules/queue/manager_en.md**
+
+---
+
+
+### code file start: docs/modules/queue/memory.md 
+
+# 内存队列
+
+内存队列是用于独立爬取场景的队列接口的内存实现。它提供快速、轻量级的队列操作，无需外部依赖。
+
+## 概述
+
+内存队列设计用于：
+
+- 独立爬取（单节点）
+- 开发和测试环境
+- 不需要外部依赖的场景
+- 高性能本地爬取
+
+## 架构
+
+内存队列使用Python的内置队列实现：
+
+```mermaid
+graph TD
+    A[队列管理器] --> B[爬虫优先级队列]
+    B --> C[优先级队列]
+    B --> D[asyncio.Queue]
+```
+
+## 主要特性
+
+### 高性能
+
+- 快速的内存操作
+- 最小开销
+- 高效的优先级处理
+- 低延迟队列操作
+
+### 背压控制
+
+- 可配置的队列大小限制
+- 基于信号量的流控制
+- 满时自动暂停
+- 内存使用监控
+
+### 优先级支持
+
+- 基于优先级的请求排序
+- 高效的优先级队列实现
+- 可配置的优先级处理
+
+## 实现细节
+
+### 爬虫优先级队列
+
+主要的内存队列实现是[SpiderPriorityQueue](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/pqueue.py#L15)，它提供：
+
+- 优先级队列功能
+- 异步/同步操作支持
+- 大小限制
+- 线程安全操作
+
+### 队列操作
+
+1. **Put**：按优先级将请求添加到队列
+2. **Get**：检索最高优先级的请求
+3. **Size**：获取当前队列大小
+4. **Empty**：检查队列是否为空
+
+## 配置
+
+内存队列通过QueueConfig配置：
+
+```python
+# 在settings.py或QueueConfig中
+QUEUE_TYPE = 'memory'
+SCHEDULER_MAX_QUEUE_SIZE = 2000
+
+# 内存特定设置
+REQUEST_GENERATION_BATCH_SIZE = 10
+REQUEST_GENERATION_INTERVAL = 0.05
+BACKPRESSURE_RATIO = 0.8
+```
+
+## API参考
+
+### `SpiderPriorityQueue`
+
+主要的内存队列实现。
+
+#### `put(request)`
+
+将请求添加到队列。
+
+**参数：**
+- `request`：要入队的请求
+
+#### `get(timeout=None)`
+
+从队列检索请求。
+
+**参数：**
+- `timeout`：等待请求的最大时间
+
+**返回：**
+- 出队的请求
+
+#### `qsize()`
+
+获取当前队列大小。
+
+**返回：**
+- `int`：队列中的请求数量
+
+#### `empty()`
+
+检查队列是否为空。
+
+**返回：**
+- `bool`：如果队列为空则为True
+
+## 使用示例
+
+```python
+from crawlo.queue.pqueue import SpiderPriorityQueue
+
+# 创建内存队列
+queue = SpiderPriorityQueue()
+
+# 添加请求
+await queue.put(request)
+
+# 获取请求
+request = await queue.get(timeout=5.0)
+
+# 检查大小
+size = queue.qsize()
+```
+
+## 性能考虑
+
+### 内存使用
+
+- 队列大小直接影响内存使用
+- 大队列可能导致内存压力
+- 在操作期间监控队列大小
+- 根据可用内存调整[SCHEDULER_MAX_QUEUE_SIZE](https://github.com/crawl-coder/Crawlo/blob/master/crawlo/queue/config.py#L18)
+
+### 并发
+
+- 内存队列适用于中等并发
+- 非常高的并发可能需要更复杂的解决方案
+- 考虑队列大小和并发之间的权衡
+
+### 限制
+
+- 不适用于分布式爬取
+- 重启后无持久性
+- 内存受限
+- 仅限单节点
+
+## 最佳实践
+
+1. **大小管理**：设置适当的队列大小限制
+2. **监控**：监控队列大小和处理速率
+3. **背压**：使用背压机制防止溢出
+4. **测试**：适用于开发和测试场景
+5. **部署**：仅用于独立部署
+
+## 何时使用内存队列
+
+推荐在以下情况下使用内存队列：
+
+- 开发和测试
+- 独立爬取场景
+- 高性能本地爬取
+- 无外部依赖的环境
+- 简单的单节点部署
+
+不适用于：
+
+- 分布式爬取
+- 对高可靠性有要求的生产环境
+- 需要持久性的场景
+- 有内存约束的大规模爬取
+
+**code file end: docs/modules/queue/memory.md**
+
+---
+
+
+### code file start: docs/modules/queue/memory_en.md 
+
+# Memory Queue
+
+The Memory Queue is an in-memory implementation of the queue interface for standalone crawling scenarios. It provides fast, lightweight queue operations without external dependencies.
+
+## Overview
+
+The Memory Queue is designed for:
+
+- Standalone crawling (single node)
+- Development and testing environments
+- Scenarios where external dependencies are not desired
+- High-performance local crawling
+
+## Architecture
+
+The Memory Queue uses Python's built-in queue implementations:
+
+```mermaid
+graph TD
+    A[QueueManager] --> B[SpiderPriorityQueue]
+    B --> C[PriorityQueue]
+    B --> D[asyncio.Queue]
+```
+
+## Key Features
+
+### High Performance
+
+- Fast in-memory operations
+- Minimal overhead
+- Efficient priority handling
+- Low latency queue operations
+
+### Backpressure Control
+
+- Configurable queue size limits
+- Semaphore-based flow control
+- Automatic pausing when full
+- Memory usage monitoring
+
+### Priority Support
+
+- Priority-based request ordering
+- Efficient priority queue implementation
+- Configurable priority handling
+
+## Implementation Details
+
+### SpiderPriorityQueue
+
+The main memory queue implementation is `SpiderPriorityQueue` which provides:
+
+- Priority queue functionality
+- Async/sync operation support
+- Size limiting
+- Thread-safe operations
+
+### Queue Operations
+
+1. **Put**: Add request to queue with priority
+2. **Get**: Retrieve highest priority request
+3. **Size**: Get current queue size
+4. **Empty**: Check if queue is empty
+
+## Configuration
+
+The Memory Queue is configured through QueueConfig:
+
+```python
+# In settings.py or QueueConfig
+QUEUE_TYPE = 'memory'
+SCHEDULER_MAX_QUEUE_SIZE = 2000
+
+# Memory-specific settings
+REQUEST_GENERATION_BATCH_SIZE = 10
+REQUEST_GENERATION_INTERVAL = 0.05
+BACKPRESSURE_RATIO = 0.8
+```
+
+## API Reference
+
+### `SpiderPriorityQueue`
+
+The main memory queue implementation.
+
+#### `put(request)`
+
+Adds a request to the queue.
+
+**Parameters:**
+- `request`: The request to enqueue
+
+#### `get(timeout=None)`
+
+Retrieves a request from the queue.
+
+**Parameters:**
+- `timeout`: Maximum time to wait for a request
+
+**Returns:**
+- The dequeued request
+
+#### `qsize()`
+
+Gets the current queue size.
+
+**Returns:**
+- `int`: Number of requests in the queue
+
+#### `empty()`
+
+Checks if the queue is empty.
+
+**Returns:**
+- `bool`: True if queue is empty
+
+## Example Usage
+
+```python
+from crawlo.queue.pqueue import SpiderPriorityQueue
+
+# Create memory queue
+queue = SpiderPriorityQueue()
+
+# Add request
+await queue.put(request)
+
+# Get request
+request = await queue.get(timeout=5.0)
+
+# Check size
+size = queue.qsize()
+```
+
+## Performance Considerations
+
+### Memory Usage
+
+- Queue size directly affects memory usage
+- Large queues can cause memory pressure
+- Monitor queue sizes during operation
+- Adjust `SCHEDULER_MAX_QUEUE_SIZE` based on available memory
+
+### Concurrency
+
+- Memory queues are suitable for moderate concurrency
+- Very high concurrency may require more sophisticated solutions
+- Consider the trade-off between queue size and concurrency
+
+### Limitations
+
+- Not suitable for distributed crawling
+- No persistence across restarts
+- Memory constrained
+- Single node only
+
+## Best Practices
+
+1. **Size Management**: Set appropriate queue size limits
+2. **Monitoring**: Monitor queue sizes and processing rates
+3. **Backpressure**: Use backpressure mechanisms to prevent overflow
+4. **Testing**: Ideal for development and testing scenarios
+5. **Deployment**: Use for standalone deployments only
+
+## When to Use Memory Queue
+
+The Memory Queue is recommended for:
+
+- Development and testing
+- Standalone crawling scenarios
+- High-performance local crawling
+- Environments without external dependencies
+- Simple, single-node deployments
+
+It is not suitable for:
+
+- Distributed crawling
+- Production environments with high reliability requirements
+- Scenarios requiring persistence
+- Large-scale crawling with memory constraints
+
+**code file end: docs/modules/queue/memory_en.md**
+
+---
+
+
+### code file start: docs/modules/queue/redis.md 
+
+# Redis队列
+
+Redis队列是基于Redis的分布式队列实现，支持多节点爬取场景。它在多个爬虫实例间提供持久化、共享的队列操作。
+
+## 概述
+
+Redis队列设计用于：
+
+- 分布式爬取（多节点）
+- 生产环境
+- 需要持久化的场景
+- 高可用爬取设置
+
+## 架构
+
+Redis队列使用Redis数据结构进行分布式队列操作：
+
+```mermaid
+graph TD
+    A[队列管理器] --> B[Redis优先级队列]
+    B --> C[Redis服务器]
+    B --> D[Redis连接池]
+    B --> E[请求序列化]
+```
+
+## 主要特性
+
+### 分布式操作
+
+- 跨多个节点的共享队列
+- 持久化存储
+- 容错性
+- 水平扩展
+
+### 优先级支持
+
+- 基于优先级的请求排序
+- 高效的优先级队列实现
+- 可配置的优先级处理
+- 使用Redis有序集合进行优先级管理
+
+### 性能优化
+
+- 连接池
+- 管道操作
+- 批处理
+- 懒连接建立
+
+## 实现细节
+
+### RedisPriorityQueue
+
+主要的Redis队列实现提供：
+
+- 使用Redis有序集合的优先级队列功能
+- 请求序列化/反序列化
+- 连接管理
+- 错误处理和重试
+
+### 队列操作
+
+1. **Put**：按优先级将请求添加到Redis有序集合
+2. **Get**：检索最高优先级的请求
+3. **Size**：获取当前队列大小
+4. **Empty**：检查队列是否为空
+
+## 配置
+
+Redis队列通过QueueConfig配置：
+
+```python
+# 在settings.py或QueueConfig中
+QUEUE_TYPE = 'redis'
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_PASSWORD = ''
+REDIS_DB = 0
+SCHEDULER_QUEUE_NAME = 'crawlo:myproject:queue:requests'
+QUEUE_MAX_RETRIES = 3
+QUEUE_TIMEOUT = 300
+
+# Redis特定设置
+REDIS_URL = 'redis://localhost:6379/0'
+```
+
+## API参考
+
+### `RedisPriorityQueue`
+
+主要的Redis队列实现。
+
+#### `__init__(redis_url, queue_name, max_retries=3, timeout=300)`
+
+创建一个新的RedisPriorityQueue实例。
+
+**参数：**
+- `redis_url`：Redis连接URL
+- `queue_name`：Redis队列名称
+- `max_retries`：最大重试次数
+- `timeout`：操作超时时间（秒）
+
+#### `async put(request, priority=0)`
+
+将请求添加到队列。
+
+**参数：**
+- `request`：要入队的请求
+- `priority`：优先级（数字越大优先级越高）
+
+**返回：**
+- `bool`：如果请求已入队则为True
+
+#### `async get(timeout=5.0)`
+
+从队列检索请求。
+
+**参数：**
+- `timeout`：等待请求的最大时间
+
+**返回：**
+- 出队的请求，如果超时则为None
+
+#### `async qsize()`
+
+获取当前队列大小。
+
+**返回：**
+- `int`：队列中的请求数量
+
+#### `async empty()`
+
+检查队列是否为空。
+
+**返回：**
+- `bool`：如果队列为空则为True
+
+#### `async close()`
+
+清理资源并关闭连接。
+
+## 使用示例
+
+```python
+from crawlo.queue.redis_priority_queue import RedisPriorityQueue
+
+# 创建Redis队列
+queue = RedisPriorityQueue(
+    redis_url='redis://localhost:6379/0',
+    queue_name='crawlo:myproject:queue:requests'
+)
+
+# 添加请求
+await queue.put(request, priority=5)
+
+# 获取请求
+request = await queue.get(timeout=10.0)
+
+# 检查大小
+size = await queue.qsize()
+
+# 清理
+await queue.close()
+```
+
+## 性能考虑
+
+### 连接管理
+
+- 使用连接池以减少开销
+- 配置适当的池大小
+- 监控连接使用情况
+- 优雅地处理连接失败
+
+### 序列化
+
+- 请求序列化会增加开销
+- 使用高效的序列化格式
+- 最小化请求中的数据大小
+- 在可能时缓存序列化数据
+
+### Redis配置
+
+- 优化Redis服务器设置
+- 使用适当的Redis数据类型
+- 监控Redis内存使用
+- 配置Redis持久化设置
+
+## 最佳实践
+
+1. **连接池**：使用连接池以获得更好的性能
+2. **错误处理**：实现健壮的错误处理和重试
+3. **监控**：监控队列大小和处理速率
+4. **序列化**：优化请求序列化
+5. **清理**：正确关闭连接并清理资源
+
+## 何时使用Redis队列
+
+推荐在以下情况下使用Redis队列：
+
+- 分布式爬取场景
+- 生产环境
+- 高可用性要求
+- 持久化队列存储
+- 多节点部署
+- 大规模爬取操作
+
+需要：
+
+- Redis服务器安装和配置
+- 到Redis服务器的网络连接
+- 适当的Redis安全配置
+- Redis实例的监控和维护
+
+**code file end: docs/modules/queue/redis.md**
+
+---
+
+
+### code file start: docs/modules/queue/redis_en.md 
+
+# Redis Queue
+
+The Redis Queue is a distributed queue implementation based on Redis that enables multi-node crawling scenarios. It provides persistent, shared queue operations across multiple crawler instances.
+
+## Overview
+
+The Redis Queue is designed for:
+
+- Distributed crawling (multi-node)
+- Production environments
+- Scenarios requiring persistence
+- High availability crawling setups
+
+## Architecture
+
+The Redis Queue uses Redis data structures for distributed queue operations:
+
+```mermaid
+graph TD
+    A[QueueManager] --> B[RedisPriorityQueue]
+    B --> C[Redis Server]
+    B --> D[Redis Connection Pool]
+    B --> E[Request Serialization]
+```
+
+## Key Features
+
+### Distributed Operation
+
+- Shared queue across multiple nodes
+- Persistent storage
+- Fault tolerance
+- Horizontal scaling
+
+### Priority Support
+
+- Priority-based request ordering
+- Efficient priority queue implementation
+- Configurable priority handling
+- Redis sorted sets for priority management
+
+### Performance Optimizations
+
+- Connection pooling
+- Pipeline operations
+- Batch processing
+- Lazy connection establishment
+
+## Implementation Details
+
+### RedisPriorityQueue
+
+The main Redis queue implementation provides:
+
+- Priority queue functionality using Redis sorted sets
+- Request serialization/deserialization
+- Connection management
+- Error handling and retries
+
+### Queue Operations
+
+1. **Put**: Add request to Redis sorted set with priority
+2. **Get**: Retrieve highest priority request
+3. **Size**: Get current queue size
+4. **Empty**: Check if queue is empty
+
+## Configuration
+
+The Redis Queue is configured through QueueConfig:
+
+```python
+# In settings.py or QueueConfig
+QUEUE_TYPE = 'redis'
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_PASSWORD = ''
+REDIS_DB = 0
+SCHEDULER_QUEUE_NAME = 'crawlo:myproject:queue:requests'
+QUEUE_MAX_RETRIES = 3
+QUEUE_TIMEOUT = 300
+
+# Redis-specific settings
+REDIS_URL = 'redis://localhost:6379/0'
+```
+
+## API Reference
+
+### `RedisPriorityQueue`
+
+The main Redis queue implementation.
+
+#### `__init__(redis_url, queue_name, max_retries=3, timeout=300)`
+
+Creates a new RedisPriorityQueue instance.
+
+**Parameters:**
+- `redis_url`: Redis connection URL
+- `queue_name`: Name of the Redis queue
+- `max_retries`: Maximum retry attempts
+- `timeout`: Operation timeout in seconds
+
+#### `async put(request, priority=0)`
+
+Adds a request to the queue.
+
+**Parameters:**
+- `request`: The request to enqueue
+- `priority`: Priority level (higher numbers = higher priority)
+
+**Returns:**
+- `bool`: True if request was enqueued
+
+#### `async get(timeout=5.0)`
+
+Retrieves a request from the queue.
+
+**Parameters:**
+- `timeout`: Maximum time to wait for a request
+
+**Returns:**
+- The dequeued request, or None if timeout
+
+#### `async qsize()`
+
+Gets the current queue size.
+
+**Returns:**
+- `int`: Number of requests in the queue
+
+#### `async empty()`
+
+Checks if the queue is empty.
+
+**Returns:**
+- `bool`: True if queue is empty
+
+#### `async close()`
+
+Cleans up resources and closes connections.
+
+## Example Usage
+
+```python
+from crawlo.queue.redis_priority_queue import RedisPriorityQueue
+
+# Create Redis queue
+queue = RedisPriorityQueue(
+    redis_url='redis://localhost:6379/0',
+    queue_name='crawlo:myproject:queue:requests'
+)
+
+# Add request
+await queue.put(request, priority=5)
+
+# Get request
+request = await queue.get(timeout=10.0)
+
+# Check size
+size = await queue.qsize()
+
+# Cleanup
+await queue.close()
+```
+
+## Performance Considerations
+
+### Connection Management
+
+- Use connection pooling to reduce overhead
+- Configure appropriate pool sizes
+- Monitor connection usage
+- Handle connection failures gracefully
+
+### Serialization
+
+- Request serialization adds overhead
+- Use efficient serialization formats
+- Minimize data size in requests
+- Cache serialized data when possible
+
+### Redis Configuration
+
+- Optimize Redis server settings
+- Use appropriate Redis data types
+- Monitor Redis memory usage
+- Configure Redis persistence settings
+
+## Best Practices
+
+1. **Connection Pooling**: Use connection pools for better performance
+2. **Error Handling**: Implement robust error handling and retries
+3. **Monitoring**: Monitor queue sizes and processing rates
+4. **Serialization**: Optimize request serialization
+5. **Cleanup**: Properly close connections and clean up resources
+
+## When to Use Redis Queue
+
+The Redis Queue is recommended for:
+
+- Distributed crawling scenarios
+- Production environments
+- High availability requirements
+- Persistent queue storage
+- Multi-node deployments
+- Large-scale crawling operations
+
+It requires:
+
+- Redis server installation and configuration
+- Network connectivity to Redis server
+- Proper Redis security configuration
+- Monitoring and maintenance of Redis instance
+
+**code file end: docs/modules/queue/redis_en.md**
+
+---
+
+
+### code file start: docs/modules/quickstart/index.md 
+
+# 快速开始
+
+本指南将帮助您快速上手 Crawlo 框架，创建您的第一个爬虫项目并运行它。
+
+## 安装 Crawlo
+
+### 使用 pip 安装
+
+```bash
+pip install crawlo
+```
+
+### 从源码安装
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install .
+```
+
+## 创建第一个项目
+
+使用 Crawlo 的命令行工具创建新项目：
+
+```bash
+crawlo startproject myproject
+```
+
+这将创建以下项目结构：
+
+```
+myproject/
+├── crawlo.cfg           # 项目配置文件
+├── run.py               # 启动脚本
+├── logs/                # 日志目录
+└── myproject/           # 项目模块目录
+    ├── __init__.py
+    ├── settings.py       # 项目配置
+    ├── items.py         # 数据项定义
+    ├── middlewares.py   # 中间件
+    ├── pipelines.py     # 数据管道
+    └── spiders/         # 爬虫目录
+        ├── __init__.py
+        └── example.py   # 示例爬虫
+```
+
+## 创建第一个爬虫
+
+进入项目目录并生成新的爬虫：
+
+```bash
+cd myproject
+crawlo genspider myspider example.com
+```
+
+这将在 `spiders/` 目录下创建一个新的爬虫文件 `myspider.py`：
+
+```python
+from crawlo import Spider
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    
+    def parse(self, response):
+        # 在这里实现解析逻辑
+        pass
+```
+
+## 编写爬虫逻辑
+
+编辑 `spiders/myspider.py` 文件，添加您的爬虫逻辑：
+
+```python
+from crawlo import Spider
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    start_urls = ['http://example.com']
+    
+    def parse(self, response):
+        # 提取页面标题
+        title = response.extract_text('title')
+        
+        # 提取所有链接
+        links = response.extract_attrs('a', 'href')
+        
+        yield {
+            'title': title,
+            'links': links,
+            'url': response.url
+        }
+        
+        # 跟随链接继续爬取
+        for link in links:
+            if link.startswith('http'):
+                yield response.follow(link, callback=self.parse)
+```
+
+## 运行爬虫
+
+进入项目目录并运行爬虫：
+
+```bash
+cd myproject
+crawlo run example
+```
+
+你也可以使用以下参数来控制爬虫运行：
+
+```bash
+# 设置日志级别为DEBUG以查看更多详细信息
+crawlo run example --log-level DEBUG
+
+# 设置并发数为32
+crawlo run example --concurrency 32
+
+# 组合使用多个参数
+crawlo run example --log-level INFO --concurrency 16
+```
+
+## 查看结果
+
+爬虫运行完成后，您可以在控制台看到输出的结果，或者在配置的管道中查看存储的数据。
+
+## 下一步
+
+- 学习更多关于[爬虫基类](../core/spider.md)的知识
+- 了解[下载器](../downloader/index.md)的使用
+- 探索[中间件](../middleware/index.md)的功能
+- 掌握[管道](../pipeline/index.md)的使用
+
+**code file end: docs/modules/quickstart/index.md**
+
+---
+
+
+### code file start: docs/modules/quickstart/index_en.md 
+
+# Quick Start
+
+This guide will help you quickly get started with the Crawlo framework, create your first crawler project, and run it.
+
+## Installing Crawlo
+
+### Installing with pip
+
+```bash
+pip install crawlo
+```
+
+### Installing from source
+
+```bash
+git clone https://github.com/crawl-coder/Crawlo.git
+cd crawlo
+pip install -r requirements.txt
+pip install .
+```
+
+## Creating Your First Project
+
+Use Crawlo's command-line tool to create a new project:
+
+```bash
+crawlo startproject myproject
+```
+
+This will create the following project structure:
+
+```
+myproject/
+├── crawlo.cfg           # Project configuration file
+├── run.py               # Startup script
+├── logs/                # Log directory
+└── myproject/           # Project modules directory
+    ├── __init__.py
+    ├── settings.py       # Project configuration
+    ├── items.py         # Data item definition
+    ├── middlewares.py   # Middleware
+    ├── pipelines.py     # Data pipeline
+    └── spiders/         # Spider directory
+        ├── __init__.py
+        └── example.py   # Example spider
+```
+
+## Creating Your First Spider
+
+Navigate to the project directory and generate a new spider:
+
+```bash
+cd myproject
+crawlo genspider myspider example.com
+```
+
+This will create a new spider file `myspider.py` in the `spiders/` directory:
+
+```python
+from crawlo import Spider
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    
+    def parse(self, response):
+        # Implement parsing logic here
+        pass
+```
+
+## Writing Spider Logic
+
+Edit the `spiders/myspider.py` file and add your spider logic:
+
+```python
+from crawlo import Spider
+
+class MyspiderSpider(Spider):
+    name = 'myspider'
+    start_urls = ['http://example.com']
+    
+    def parse(self, response):
+        # Extract page title
+        title = response.extract_text('title')
+        
+        # Extract all links
+        links = response.extract_attrs('a', 'href')
+        
+        yield {
+            'title': title,
+            'links': links,
+            'url': response.url
+        }
+        
+        # Follow links to continue crawling
+        for link in links:
+            if link.startswith('http'):
+                yield response.follow(link, callback=self.parse)
+```
+
+## Run the Spider
+
+Navigate to the project directory and run the spider:
+
+```bash
+cd myproject
+crawlo run example
+```
+
+You can also use the following arguments to control the spider execution:
+
+```bash
+# Set log level to DEBUG to see more detailed information
+crawlo run example --log-level DEBUG
+
+# Set concurrency to 32
+crawlo run example --concurrency 32
+
+# Combine multiple arguments
+crawlo run example --log-level INFO --concurrency 16
+```
+
+## Viewing Results
+
+After the spider finishes running, you can see the output results in the console, or view the stored data in the configured pipelines.
+
+## Next Steps
+
+- Learn more about the [Spider Base Class](../core/spider_en.md)
+- Understand the usage of [Downloaders](../downloader/index_en.md)
+- Explore the functionality of [Middleware](../middleware/index_en.md)
+- Master the use of [Pipelines](../pipeline/index_en.md)
+
+**code file end: docs/modules/quickstart/index_en.md**
+
+---
+
+
+### code file start: docs/tutorials/configuration_modes.md 
+
+# Crawlo 配置模式完全指南
+
+> 本文档详细介绍 Crawlo 框架的三种配置模式（Standalone、Distributed、Auto）及其运行机制。
+
+## 快速导航
+
+- [三种模式对比](#三种模式对比)
+- [Standalone 模式](#standalone-模式)
+- [Distributed 模式](#distributed-模式)
+- [Auto 模式](#auto-模式)
+- [配置更新机制](#配置更新机制)
+- [最佳实践](#最佳实践)
+- [常见问题](#常见问题)
+
+---
+
+## 三种模式对比
+
+### 核心区别一览表
+
+| 配置项 | Standalone | Distributed | Auto |
+|--------|-----------|-------------|------|
+| **RUN_MODE** | `standalone` | `distributed` | `auto` |
+| **QUEUE_TYPE（配置阶段）** | `memory` | `redis` | `auto` |
+| **QUEUE_TYPE（运行时）** | 固定 `memory` | 必须 `redis` | 自动检测 |
+| **Redis 检测** | ❌ 不检测 | ✅ 检测（必须可用） | ✅ 检测并回退 |
+| **Redis 不可用时** | N/A | 🚫 **报错退出** | 降级到 Memory |
+| **配置自动更新** | ❌ 否 | ❌ 否 | ✅ 是 |
+| **过滤器** | 固定 Memory | 固定 Redis | Redis/Memory |
+| **去重管道** | 固定 Memory | 固定 Redis | Redis/Memory |
+| **适用场景** | 开发测试 | 多节点部署 | 生产环境 |
+| **并发数默认值** | 8 | 16 | 12 |
+| **最大爬虫数** | 1 | 10 | 1 |
+
+### 关键发现
+
+**⚠️ Distributed 模式的严格要求**：
+- 🚫 必须使用 Redis，**不允许降级**到 Memory 模式
+- ✅ 启动时会验证 Redis 连接
+- 🚫 Redis 不可用时会**抛出 `RuntimeError` 并退出**
+- 🛡️ 这确保了多节点部署时的一致性和数据安全性
+
+**✨ Auto 模式的智能性**：
+- 配置阶段不依赖 Redis
+- 运行时才检测 Redis 可用性
+- 根据检测结果动态选择最佳配置
+- Redis 不可用时自动降级，保证系统可用性
+
+---
+
+## Standalone 模式
+
+单机模式，最简单直接，适合开发测试和中小规模爬取。
+
+### 配置示例
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.standalone(
+    project_name='my_project',
+    concurrency=8,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+```
+
+### 生成的配置
+
+```python
+{
+    'RUN_MODE': 'standalone',
+    'QUEUE_TYPE': 'memory',  # 固定为内存队列
+    'FILTER_CLASS': 'crawlo.filters.memory_filter.MemoryFilter',
+    'DEFAULT_DEDUP_PIPELINE': 'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    'PROJECT_NAME': 'my_project',
+    'CONCURRENCY': 8,
+    'MAX_RUNNING_SPIDERS': 1,
+    'DOWNLOAD_DELAY': 1.0,
+}
+```
+
+### 运行时行为
+
+- ✅ **队列**: 始终使用 `MemoryQueue`
+- ✅ **过滤器**: 始终使用 `MemoryFilter`
+- ✅ **去重管道**: 始终使用 `MemoryDedupPipeline`
+- ❌ **Redis 检测**: 不进行检测
+- ❌ **配置更新**: 不会更新
+
+### 适用场景
+
+- 本地开发调试
+- 学习框架特性
+- 中小规模数据采集（< 10万条）
+- 无需分布式部署
+
+---
+
+## Distributed 模式
+
+分布式模式，严格要求 Redis 可用，适合多节点协同工作。
+
+### 配置示例
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.distributed(
+    project_name='my_distributed_project',
+    redis_host='redis.example.com',
+    redis_port=6379,
+    redis_password='your_password',
+    redis_db=0,
+    concurrency=16,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+```
+
+### 生成的配置
+
+```python
+{
+    'RUN_MODE': 'distributed',
+    'QUEUE_TYPE': 'redis',  # 必须使用 Redis
+    'FILTER_CLASS': 'crawlo.filters.aioredis_filter.AioRedisFilter',
+    'DEFAULT_DEDUP_PIPELINE': 'crawlo.pipelines.redis_dedup_pipeline.RedisDedupPipeline',
+    'REDIS_HOST': 'redis.example.com',
+    'REDIS_PORT': 6379,
+    'REDIS_PASSWORD': 'your_password',
+    'REDIS_DB': 0,
+    'REDIS_URL': 'redis://:your_password@redis.example.com:6379/0',
+    'PROJECT_NAME': 'my_distributed_project',
+    'SCHEDULER_QUEUE_NAME': 'crawlo:my_distributed_project:queue:requests',
+    'CONCURRENCY': 16,
+    'MAX_RUNNING_SPIDERS': 10,
+    'DOWNLOAD_DELAY': 1.0,
+}
+```
+
+### 运行时行为
+
+- ✅ **Redis 检测**: 启动时强制检查 Redis 连接
+- 🚫 **不允许降级**: Redis 不可用时抛出 `RuntimeError` 并退出
+- ✅ **队列**: 必须使用 `RedisPriorityQueue`
+- ✅ **过滤器**: 必须使用 `AioRedisFilter`
+- ✅ **去重管道**: 必须使用 `RedisDedupPipeline`
+
+### Redis 不可用时的错误信息
+
+```bash
+$ crawlo run my_spider
+
+2025-10-25 22:00:00 - [queue_manager] - ERROR: Distributed 模式要求 Redis 可用，但无法连接到 Redis 服务器。
+错误信息: Connection refused
+Redis URL: redis://127.0.0.1:6379/0
+请检查：
+  1. Redis 服务是否正在运行
+  2. Redis 连接配置是否正确
+  3. 网络连接是否正常
+
+RuntimeError: Distributed 模式要求 Redis 可用，但无法连接到 Redis 服务器。
+```
+
+### 为什么要严格要求 Redis？
+
+1. **数据一致性**: 防止不同节点使用不同的队列类型
+2. **去重有效性**: 确保多节点间的去重功能正常工作
+3. **任务分配**: 防止任务被重复执行
+4. **问题早发现**: 启动失败比运行时失败更容易发现和修复
+5. **明确的意图**: 分布式模式就应该是分布式的，不应该静默降级
+
+### 适用场景
+
+- 多服务器协同采集
+- 大规模数据采集（> 百万条）
+- 需要严格保证分布式一致性
+- 生产环境多节点部署
+
+---
+
+## Auto 模式
+
+自动检测模式，智能选择最佳运行方式，推荐用于生产环境。
+
+### 配置示例
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.auto(
+    project_name='my_auto_project',
+    concurrency=12,
+    download_delay=1.0
+)
+
+locals().update(config.to_dict())
+
+# 可选：配置 Redis（如果可用会自动使用）
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_URL = 'redis://127.0.0.1:6379/0'
+```
+
+### 初始配置
+
+```python
+{
+    'RUN_MODE': 'auto',
+    'QUEUE_TYPE': 'auto',  # 运行时自动检测
+    'FILTER_CLASS': 'crawlo.filters.memory_filter.MemoryFilter',  # 默认值
+    'DEFAULT_DEDUP_PIPELINE': 'crawlo.pipelines.memory_dedup_pipeline.MemoryDedupPipeline',
+    'PROJECT_NAME': 'my_auto_project',
+    'CONCURRENCY': 12,
+    'MAX_RUNNING_SPIDERS': 1,
+    'DOWNLOAD_DELAY': 1.0,
+}
+```
+
+### 运行时检测逻辑
+
+```
+Scheduler 初始化时
+  └─ 检查 REDIS_URL 是否配置
+      │
+      ├─ [已配置 Redis] → 尝试连接
+      │   │
+      │   ├─ [连接成功] ✓
+      │   │   ├─ 使用 RedisPriorityQueue
+      │   │   ├─ 更新为 AioRedisFilter
+      │   │   ├─ 更新为 RedisDedupPipeline
+      │   │   └─ 配置自动更新
+      │   │
+      │   └─ [连接失败] ✗
+      │       ├─ 使用 MemoryQueue
+      │       ├─ 使用 MemoryFilter
+      │       └─ 使用 MemoryDedupPipeline
+      │
+      └─ [未配置 Redis]
+          ├─ 使用 MemoryQueue
+          ├─ 使用 MemoryFilter
+          └─ 使用 MemoryDedupPipeline
+```
+
+### 运行示例
+
+**场景 1: Redis 可用**
+
+```bash
+$ crawlo run my_spider
+
+2025-10-25 22:00:00 - [crawlo.framework] - INFO: Run mode: auto
+2025-10-25 22:00:00 - [queue_manager] - DEBUG: Auto-detection: Redis available, using distributed queue
+2025-10-25 22:00:00 - [scheduler] - INFO: enabled filters: 
+  crawlo.filters.aioredis_filter.AioRedisFilter
+```
+
+**场景 2: Redis 不可用**
+
+```bash
+$ crawlo run my_spider
+
+2025-10-25 22:00:00 - [crawlo.framework] - INFO: Run mode: auto
+2025-10-25 22:00:00 - [queue_manager] - DEBUG: Auto-detection: Redis not configured, using memory queue
+2025-10-25 22:00:00 - [scheduler] - INFO: enabled filters: 
+  crawlo.filters.memory_filter.MemoryFilter
+```
+
+### 适用场景
+
+- 生产环境单节点部署
+- 需要容错性的场景
+- 开发和生产环境共用配置
+- 不确定 Redis 可用性的场景
+
+---
+
+## 配置更新机制
+
+### 更新时机
+
+配置更新发生在 Scheduler 初始化阶段：
+
+```python
+# crawlo/core/scheduler.py
+async def open(self, spider):
+    """打开调度器"""
+    self.spider = spider
+    
+    # 初始化队列管理器（可能触发 Redis 检测）
+    needs_config_update = await self.queue_manager.initialize()
+    
+    # 如果检测到 Redis 可用，更新相关配置
+    if needs_config_update:
+        updated_configs = self._check_filter_config()
+        await self._process_filter_updates(needs_config_update, updated_configs)
+```
+
+### 更新内容
+
+当从 Memory 切换到 Redis 时，会自动更新：
+
+1. **FILTER_CLASS**: `MemoryFilter` → `AioRedisFilter`
+2. **DEFAULT_DEDUP_PIPELINE**: `MemoryDedupPipeline` → `RedisDedupPipeline`
+3. **PIPELINES**: 自动替换去重管道
+
+### 哪些模式会触发配置更新？
+
+- ✅ **Auto 模式**: 检测到 Redis 可用时会更新
+- ❌ **Standalone 模式**: 不会更新
+- ❌ **Distributed 模式**: 不会更新（配置已确定）
+
+---
+
+## 最佳实践
+
+### 开发环境
+
+```python
+# 使用 standalone 模式，简单快速
+config = CrawloConfig.standalone(
+    project_name='dev_project',
+    concurrency=4,
+    download_delay=2.0
+)
+```
+
+**优点**：
+- 无需安装 Redis
+- 启动速度快
+- 调试方便
+
+### 测试环境
+
+```python
+# 使用 auto 模式，可以测试两种场景
+config = CrawloConfig.auto(
+    project_name='test_project',
+    concurrency=8,
+    download_delay=1.5
+)
+
+# 可选：配置 Redis 用于测试分布式场景
+REDIS_URL = 'redis://127.0.0.1:6379/1'  # 使用不同的 DB
+```
+
+**优点**：
+- 可以测试 Redis 和 Memory 两种场景
+- 配置灵活
+- 接近生产环境
+
+### 生产环境（单节点）
+
+```python
+# 使用 auto 模式，享受 Redis 性能提升
+# 同时保证 Redis 故障时能够降级运行
+config = CrawloConfig.auto(
+    project_name='prod_project',
+    concurrency=16,
+    download_delay=1.0
+)
+
+# 配置 Redis
+REDIS_HOST = 'redis.internal.com'
+REDIS_PORT = 6379
+REDIS_PASSWORD = 'your_password'
+REDIS_DB = 0
+```
+
+**优点**：
+- 自动使用 Redis 提升性能
+- Redis 故障时自动降级
+- 容错性好
+
+### 生产环境（多节点）
+
+```python
+# 使用 distributed 模式，明确声明分布式部署
+config = CrawloConfig.distributed(
+    project_name='prod_distributed',
+    redis_host='redis-cluster.internal.com',
+    redis_port=6379,
+    redis_password='your_password',
+    redis_db=0,
+    concurrency=32,
+    download_delay=0.5
+)
+```
+
+**优点**：
+- 严格保证分布式一致性
+- 多节点协同工作
+- 问题早发现
+- 数据安全性高
+
+---
+
+## 常见问题
+
+### Q1: Auto 模式下，如何确保一定使用 Redis？
+
+**A**: Auto 模式会优先使用 Redis（如果可用），但如果需要确保使用 Redis，建议：
+
+1. 使用 `distributed` 模式（Redis 不可用时会报错）
+2. 在启动前检查 Redis 连接（`crawlo run` 会自动检查）
+3. 监控日志中的 "Queue type: redis" 信息
+
+### Q2: Distributed 模式下 Redis 不可用会怎样？
+
+**A**: Distributed 模式下 Redis 必须可用：
+- 🚫 不会降级到 Memory 模式
+- 🚫 会抛出 `RuntimeError` 并退出
+- ✅ 错误信息会提示具体的检查步骤
+- 🎯 这确保了多节点部署时的一致性
+
+### Q3: 配置更新会影响哪些组件？
+
+**A**: 配置更新主要影响：
+1. **过滤器（Filter）**: MemoryFilter ↔ AioRedisFilter
+2. **去重管道（Dedup Pipeline）**: MemoryDedupPipeline ↔ RedisDedupPipeline
+3. **其他使用这些配置的组件**
+
+队列（Queue）本身在初始化时就已经确定，不会在运行中切换。
+
+### Q4: 如何在代码中判断当前使用的是哪种模式？
+
+**A**: 可以通过以下方式判断：
+
+```python
+# 在爬虫中
+run_mode = self.crawler.settings.get('RUN_MODE')
+queue_type = self.crawler.settings.get('QUEUE_TYPE')
+
+# 通过队列管理器获取实际使用的类型
+status = self.crawler.engine.scheduler.queue_manager.get_status()
+actual_queue_type = status['type']  # 'memory' 或 'redis'
+print(f"实际队列类型: {actual_queue_type}")
+print(f"健康状态: {status['health']}")
+```
+
+### Q5: 为什么 Distributed 模式要严格要求 Redis 可用？
+
+**A**: 严格要求的原因：
+1. **数据一致性**: 防止不同节点使用不同的队列类型
+2. **去重有效性**: 确保多节点间的去重功能正常工作
+3. **任务分配**: 防止任务被重复执行
+4. **问题早发现**: 启动失败比运行时失败更容易发现和修复
+5. **明确的意图**: 分布式模式就应该是分布式的，不应该静默降级
+
+如果需要容错性，应该使用 `auto` 模式而非 `distributed` 模式。
+
+---
+
+## 快速命令参考
+
+```bash
+# 查看爬虫列表（会显示运行模式）
+crawlo list
+
+# 运行爬虫（会自动检测 Redis）
+crawlo run my_spider
+
+# 查看实际使用的队列类型（观察日志）
+crawlo run my_spider | grep "Queue type"
+```
+
+---
+
+## 推荐使用场景总结
+
+| 场景 | 推荐模式 | 理由 |
+|------|---------|------|
+| 本地开发 | `standalone` | 简单快速，无需 Redis |
+| CI/CD 测试 | `auto` | 可测试两种场景 |
+| 生产单节点 | `auto` | 智能选择，容错性好 |
+| 生产多节点 | `distributed` | 严格保证一致性 |
+
+---
+
+## 相关文档
+
+- [分布式爬虫教程](./distributed_crawling.md)
+- [第一个爬虫](./first_spider.md)
+
+---
+
+**文档版本**: 1.0  
+**更新时间**: 2025-10-25  
+**适用版本**: Crawlo 1.4.7+
+
+
+**code file end: docs/tutorials/configuration_modes.md**
+
+---
+
+
+### code file start: docs/tutorials/distributed_crawling.md 
+
+# 分布式爬虫教程
+
+本教程将介绍如何使用 Crawlo 框架设置和运行分布式爬虫系统。
+
+## 概述
+
+分布式爬虫系统通过多个工作节点并行处理任务，能够显著提高爬取效率和处理大规模数据的能力。Crawlo 使用 Redis 作为任务队列和状态共享的中间件。
+
+## 环境准备
+
+### 安装 Redis
+
+在控制节点和所有工作节点上安装 Redis：
+
+```bash
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install redis-server
+
+# CentOS/RHEL
+sudo yum install redis
+
+# macOS
+brew install redis
+```
+
+### 启动 Redis
+
+```bash
+# 启动 Redis 服务
+sudo systemctl start redis
+
+# 设置开机自启
+sudo systemctl enable redis
+```
+
+## 配置分布式环境
+
+### 控制节点配置
+
+创建控制节点的配置文件 `settings_control.py`：
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.distributed(
+    project_name='distributed_example',
+    redis_host='192.168.1.100',      # Redis 服务器地址
+    redis_port=6379,                 # Redis 端口
+    redis_password='your_password',  # Redis 密码（如果设置）
+    redis_db=0,                      # Redis 数据库编号
+    concurrency=5,                   # 控制节点并发数
+    download_delay=1.0               # 下载延迟
+)
+```
+
+### 工作节点配置
+
+创建工作节点的配置文件 `settings_worker.py`：
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.distributed(
+    project_name='distributed_example',
+    redis_host='192.168.1.100',      # Redis 服务器地址
+    redis_port=6379,                 # Redis 端口
+    redis_password='your_password',  # Redis 密码（如果设置）
+    redis_db=0,                      # Redis 数据库编号
+    concurrency=20,                  # 工作节点并发数
+    download_delay=0.5               # 下载延迟
+)
+```
+
+## 创建爬虫
+
+创建一个简单的分布式爬虫 `spiders/distributed_example.py`：
+
+```python
+from crawlo import Spider
+
+class DistributedExampleSpider(Spider):
+    name = 'distributed_example'
+    start_urls = [
+        'http://httpbin.org/get',
+        'http://httpbin.org/headers',
+        'http://httpbin.org/user-agent',
+        # 添加更多URL...
+    ]
+    
+    def parse(self, response):
+        yield {
+            'url': response.url,
+            'status_code': response.status_code,
+            'content_length': len(response.text),
+            'timestamp': response.meta.get('download_latency', 0)
+        }
+```
+
+## 部署控制节点
+
+在控制节点上执行以下步骤：
+
+```bash
+# 创建项目
+crawlo startproject distributed_crawling
+cd distributed_crawling
+
+# 复制配置文件
+cp settings_control.py settings.py
+
+# 启动控制节点
+crawlo run distributed_example --config settings.py
+```
+
+## 部署工作节点
+
+在每个工作节点上执行以下步骤：
+
+```bash
+# 克隆项目代码
+git clone https://github.com/your-org/distributed_crawling.git
+cd distributed_crawling
+
+# 复制配置文件
+cp settings_worker.py settings.py
+
+# 启动工作节点
+crawlo run distributed_example --config settings.py
+```
+
+## 启动多个工作节点
+
+可以在同一台机器上启动多个工作节点，或在多台机器上部署：
+
+```bash
+# 终端 1
+crawlo run distributed_example --config settings_worker.py
+
+# 终端 2
+crawlo run distributed_example --config settings_worker.py
+
+# 终端 3
+crawlo run distributed_example --config settings_worker.py
+```
+
+## 监控和管理
+
+### 查看统计信息
+
+```bash
+# 查看爬虫统计信息
+crawlo stats distributed_example
+
+# 查看所有爬虫列表
+crawlo list
+```
+
+### Redis 监控
+
+```bash
+# 监控 Redis 性能
+redis-cli info
+
+# 监控 Redis 内存使用
+redis-cli info memory
+
+# 监控 Redis 连接数
+redis-cli info clients
+```
+
+## 性能优化
+
+### 调整并发数
+
+根据网络环境和目标网站的承受能力调整并发数：
+
+```python
+# 控制节点 - 较低并发数
+config = CrawloConfig.distributed(concurrency=5)
+
+# 工作节点 - 较高并发数
+config = CrawloConfig.distributed(concurrency=30)
+```
+
+### 负载均衡
+
+为不同性能的工作节点配置不同的参数：
+
+```python
+# 高性能节点
+config = CrawloConfig.distributed(
+    concurrency=50,
+    download_delay=0.1
+)
+
+# 中等性能节点
+config = CrawloConfig.distributed(
+    concurrency=20,
+    download_delay=0.5
+)
+
+# 低性能节点（避免被封）
+config = CrawloConfig.distributed(
+    concurrency=5,
+    download_delay=2.0
+)
+```
+
+## 故障排除
+
+### Redis 连接问题
+
+```bash
+# 检查 Redis 服务状态
+sudo systemctl status redis
+
+# 测试 Redis 连接
+redis-cli -h 192.168.1.100 -p 6379 ping
+
+# 检查防火墙设置
+sudo ufw status
+```
+
+### 网络问题
+
+```python
+# 启用详细日志
+LOG_LEVEL = 'DEBUG'
+
+# 检查网络连接
+import socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+result = sock.connect_ex(('192.168.1.100', 6379))
+if result == 0:
+    print("端口开放")
+else:
+    print("端口关闭")
+sock.close()
+```
+
+## 最佳实践
+
+### 安全配置
+
+```python
+# 使用强密码
+REDIS_PASSWORD = 'strong_password_here'
+
+# 限制 Redis 访问
+BIND_ADDRESS = '192.168.1.100'  # 只绑定内网地址
+
+# 启用 Redis 认证
+REQUIREPASS = 'your_strong_password'
+```
+
+### 资源管理
+
+```python
+# 合理设置并发数
+# 控制节点
+config = CrawloConfig.distributed(concurrency=5)
+
+# 工作节点
+config = CrawloConfig.distributed(concurrency=20)
+
+# 设置内存限制
+MEMORY_LIMIT = '2GB'
+```
+
+### 容错处理
+
+```python
+# 配置重试机制
+MAX_RETRY_TIMES = 5
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+
+# 启用自动重试扩展
+EXTENSIONS = [
+    'crawlo.extensions.RetryExtension',
+]
+```
+
+## 扩展部署
+
+### Docker 部署
+
+创建 Dockerfile：
+
+```dockerfile
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["crawlo", "run", "distributed_example"]
+```
+
+构建和运行容器：
+
+```bash
+# 构建镜像
+docker build -t crawlo-distributed .
+
+# 运行控制节点
+docker run -d --name control-node crawlo-distributed crawlo run distributed_example --config settings_control.py
+
+# 运行工作节点
+docker run -d --name worker-node1 crawlo-distributed crawlo run distributed_example --config settings_worker.py
+docker run -d --name worker-node2 crawlo-distributed crawlo run distributed_example --config settings_worker.py
+```
+
+### Kubernetes 部署
+
+创建部署配置：
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawlo-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawlo-worker
+  template:
+    metadata:
+      labels:
+        app: crawlo-worker
+    spec:
+      containers:
+      - name: worker
+        image: crawlo-distributed:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: CONCURRENCY
+          value: "20"
+```
+
+通过以上步骤，您可以成功部署和运行一个分布式爬虫系统，充分利用多节点的计算资源来提高爬取效率。
+
+**code file end: docs/tutorials/distributed_crawling.md**
+
+---
+
+
+### code file start: docs/tutorials/distributed_crawling_en.md 
+
+# Distributed Crawling Tutorial
+
+This tutorial introduces how to set up and run a distributed crawler system using the Crawlo framework.
+
+## Overview
+
+A distributed crawler system processes tasks in parallel across multiple worker nodes, significantly improving crawling efficiency and the ability to handle large-scale data. Crawlo uses Redis as middleware for task queues and state sharing.
+
+## Environment Setup
+
+### Install Redis
+
+Install Redis on the control node and all worker nodes:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install redis-server
+
+# CentOS/RHEL
+sudo yum install redis
+
+# macOS
+brew install redis
+```
+
+### Start Redis
+
+```bash
+# Start Redis service
+sudo systemctl start redis
+
+# Enable auto-start on boot
+sudo systemctl enable redis
+```
+
+## Configure Distributed Environment
+
+### Control Node Configuration
+
+Create a configuration file for the control node `settings_control.py`:
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.distributed(
+    project_name='distributed_example',
+    redis_host='192.168.1.100',      # Redis server address
+    redis_port=6379,                 # Redis port
+    redis_password='your_password',  # Redis password (if set)
+    redis_db=0,                      # Redis database number
+    concurrency=5,                   # Control node concurrency
+    download_delay=1.0               # Download delay
+)
+```
+
+### Worker Node Configuration
+
+Create a configuration file for worker nodes `settings_worker.py`:
+
+```python
+from crawlo.config import CrawloConfig
+
+config = CrawloConfig.distributed(
+    project_name='distributed_example',
+    redis_host='192.168.1.100',      # Redis server address
+    redis_port=6379,                 # Redis port
+    redis_password='your_password',  # Redis password (if set)
+    redis_db=0,                      # Redis database number
+    concurrency=20,                  # Worker node concurrency
+    download_delay=0.5               # Download delay
+)
+```
+
+## Create a Spider
+
+Create a simple distributed spider `spiders/distributed_example.py`:
+
+```python
+from crawlo import Spider
+
+class DistributedExampleSpider(Spider):
+    name = 'distributed_example'
+    start_urls = [
+        'http://httpbin.org/get',
+        'http://httpbin.org/headers',
+        'http://httpbin.org/user-agent',
+        # Add more URLs...
+    ]
+    
+    def parse(self, response):
+        yield {
+            'url': response.url,
+            'status_code': response.status_code,
+            'content_length': len(response.text),
+            'timestamp': response.meta.get('download_latency', 0)
+        }
+```
+
+## Deploy Control Node
+
+Execute the following steps on the control node:
+
+```bash
+# Create project
+crawlo startproject distributed_crawling
+cd distributed_crawling
+
+# Copy configuration file
+cp settings_control.py settings.py
+
+# Start control node
+crawlo run distributed_example --config settings.py
+```
+
+## Deploy Worker Nodes
+
+Execute the following steps on each worker node:
+
+```bash
+# Clone project code
+git clone https://github.com/your-org/distributed_crawling.git
+cd distributed_crawling
+
+# Copy configuration file
+cp settings_worker.py settings.py
+
+# Start worker node
+crawlo run distributed_example --config settings.py
+```
+
+## Start Multiple Worker Nodes
+
+You can start multiple worker nodes on the same machine or deploy across multiple machines:
+
+```bash
+# Terminal 1
+crawlo run distributed_example --config settings_worker.py
+
+# Terminal 2
+crawlo run distributed_example --config settings_worker.py
+
+# Terminal 3
+crawlo run distributed_example --config settings_worker.py
+```
+
+## Monitoring and Management
+
+### View Statistics
+
+```bash
+# View spider statistics
+crawlo stats distributed_example
+
+# View all spider list
+crawlo list
+```
+
+### Redis Monitoring
+
+```bash
+# Monitor Redis performance
+redis-cli info
+
+# Monitor Redis memory usage
+redis-cli info memory
+
+# Monitor Redis connections
+redis-cli info clients
+```
+
+## Performance Optimization
+
+### Adjust Concurrency
+
+Adjust concurrency based on network environment and target website capacity:
+
+```python
+# Control node - lower concurrency
+config = CrawloConfig.distributed(concurrency=5)
+
+# Worker node - higher concurrency
+config = CrawloConfig.distributed(concurrency=30)
+```
+
+### Load Balancing
+
+Configure different parameters for worker nodes with different performance:
+
+```python
+# High-performance node
+config = CrawloConfig.distributed(
+    concurrency=50,
+    download_delay=0.1
+)
+
+# Medium-performance node
+config = CrawloConfig.distributed(
+    concurrency=20,
+    download_delay=0.5
+)
+
+# Low-performance node (avoid being blocked)
+config = CrawloConfig.distributed(
+    concurrency=5,
+    download_delay=2.0
+)
+```
+
+## Troubleshooting
+
+### Redis Connection Issues
+
+```bash
+# Check Redis service status
+sudo systemctl status redis
+
+# Test Redis connection
+redis-cli -h 192.168.1.100 -p 6379 ping
+
+# Check firewall settings
+sudo ufw status
+```
+
+### Network Issues
+
+```python
+# Enable detailed logging
+LOG_LEVEL = 'DEBUG'
+
+# Check network connection
+import socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+result = sock.connect_ex(('192.168.1.100', 6379))
+if result == 0:
+    print("Port open")
+else:
+    print("Port closed")
+sock.close()
+```
+
+## Best Practices
+
+### Security Configuration
+
+```python
+# Use strong password
+REDIS_PASSWORD = 'strong_password_here'
+
+# Restrict Redis access
+BIND_ADDRESS = '192.168.1.100'  # Bind to internal network address only
+
+# Enable Redis authentication
+REQUIREPASS = 'your_strong_password'
+```
+
+### Resource Management
+
+```python
+# Reasonable concurrency settings
+# Control node
+config = CrawloConfig.distributed(concurrency=5)
+
+# Worker node
+config = CrawloConfig.distributed(concurrency=20)
+
+# Set memory limit
+MEMORY_LIMIT = '2GB'
+```
+
+### Fault Tolerance
+
+```python
+# Configure retry mechanism
+MAX_RETRY_TIMES = 5
+RETRY_STATUS_CODES = [500, 502, 503, 504, 429]
+
+# Enable auto-retry extension
+EXTENSIONS = [
+    'crawlo.extensions.RetryExtension',
+]
+```
+
+## Extended Deployment
+
+### Docker Deployment
+
+Create a Dockerfile:
+
+```dockerfile
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["crawlo", "run", "distributed_example"]
+```
+
+Build and run containers:
+
+```bash
+# Build image
+docker build -t crawlo-distributed .
+
+# Run control node
+docker run -d --name control-node crawlo-distributed crawlo run distributed_example --config settings_control.py
+
+# Run worker nodes
+docker run -d --name worker-node1 crawlo-distributed crawlo run distributed_example --config settings_worker.py
+docker run -d --name worker-node2 crawlo-distributed crawlo run distributed_example --config settings_worker.py
+```
+
+### Kubernetes Deployment
+
+Create deployment configuration:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawlo-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawlo-worker
+  template:
+    metadata:
+      labels:
+        app: crawlo-worker
+    spec:
+      containers:
+      - name: worker
+        image: crawlo-distributed:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: CONCURRENCY
+          value: "20"
+```
+
+Through the above steps, you can successfully deploy and run a distributed crawler system, fully utilizing multi-node computing resources to improve crawling efficiency.
+
+**code file end: docs/tutorials/distributed_crawling_en.md**
+
+---
+
+
+### code file start: docs/tutorials/first_spider.md 
+
+# 创建第一个爬虫
+
+本教程将引导您创建第一个 Crawlo 爬虫，从安装到运行的完整过程。
+
+## 环境准备
+
+### 安装 Python
+确保您的系统已安装 Python 3.7 或更高版本：
+
+```bash
+python --version
+```
+
+### 安装 Crawlo
+使用 pip 安装 Crawlo：
+
+```bash
+pip install crawlo
+```
+
+## 创建项目
+
+使用 Crawlo 命令行工具创建新项目：
+
+```bash
+crawlo startproject my_first_spider
+cd my_first_spider
+```
+
+这将创建以下项目结构：
+
+```
+my_first_spider/
+├── settings.py          # 项目配置文件
+├── spiders/             # 爬虫目录
+│   ├── __init__.py
+│   └── example.py       # 示例爬虫
+├── pipelines/           # 数据管道目录
+│   └── __init__.py
+├── middlewares/         # 中间件目录
+│   └── __init__.py
+└── items/               # 数据项定义目录
+    └── __init__.py
+```
+
+## 编写爬虫
+
+编辑 `spiders/example.py` 文件，创建您的第一个爬虫：
+
+```python
+from crawlo import Spider
+
+class ExampleSpider(Spider):
+    name = 'example'
+    start_urls = ['http://httpbin.org/get']
+    
+    def parse(self, response):
+        # 提取页面信息
+        yield {
+            'url': response.url,
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'text': response.text[:100] + '...' if len(response.text) > 100 else response.text
+        }
+```
+
+## 运行爬虫
+
+在项目目录中运行爬虫：
+
+```bash
+crawlo run example
+```
+
+您将看到类似以下的输出：
+
+```
+2023-01-01 12:00:00 [crawlo] INFO: Spider opened: example
+2023-01-01 12:00:01 [crawlo] INFO: Received response: 200 http://httpbin.org/get
+2023-01-01 12:00:01 [crawlo] INFO: Spider closed: example
+```
+
+## 进阶示例
+
+让我们创建一个更复杂的爬虫，爬取新闻网站的标题和链接：
+
+```python
+from crawlo import Spider
+
+class NewsSpider(Spider):
+    name = 'news'
+    start_urls = ['https://news.ycombinator.com/']
+    
+    def parse(self, response):
+        # 提取新闻标题和链接
+        for item in response.css('.storylink'):
+            yield {
+                'title': item.css('::text').get(),
+                'url': item.css('::attr(href)').get()
+            }
+        
+        # 跟随下一页链接
+        next_page = response.css('.morelink::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, callback=self.parse)
+```
+
+## 配置爬虫
+
+您可以通过 `settings.py` 文件配置爬虫行为：
+
+```python
+# settings.py
+CONCURRENCY = 10           # 并发请求数
+DOWNLOAD_DELAY = 1.0       # 下载延迟（秒）
+DOWNLOAD_TIMEOUT = 30      # 下载超时（秒）
+DOWNLOADER_TYPE = 'httpx'  # 下载器类型
+
+# 自定义请求头
+DEFAULT_REQUEST_HEADERS = {
+    'User-Agent': 'Crawlo/1.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+}
+```
+
+## 使用管道处理数据
+
+创建一个简单的管道来处理爬取的数据：
+
+```python
+# pipelines.py
+class JsonWriterPipeline:
+    def open_spider(self, spider):
+        self.file = open('items.json', 'w')
+    
+    def close_spider(self, spider):
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item)) + "\n"
+        self.file.write(line)
+        return item
+```
+
+在 `settings.py` 中启用管道：
+
+```python
+# settings.py
+PIPELINES = {
+    'my_first_spider.pipelines.JsonWriterPipeline': 300,
+}
+```
+
+## 使用中间件
+
+创建一个简单的中间件来处理请求和响应：
+
+```python
+# middlewares.py
+class UserAgentMiddleware:
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = 'MyBot/1.0'
+        return request
+```
+
+在 `settings.py` 中启用中间件：
+
+```python
+# settings.py
+MIDDLEWARES = {
+    'my_first_spider.middlewares.UserAgentMiddleware': 400,
+}
+```
+
+## 运行带参数的爬虫
+
+```bash
+# 设置日志级别
+crawlo run example --log-level DEBUG
+
+# 指定配置文件
+crawlo run example --config settings.py
+
+# 设置并发数
+crawlo run example --concurrency 20
+```
+
+## 查看统计信息
+
+运行完成后，查看爬虫统计信息：
+
+```bash
+crawlo stats example
+```
+
+## 下一步
+
+- 学习更多关于[下载器](../modules/downloader/index.md)的知识
+- 探索[中间件](../modules/middleware/index.md)的功能
+- 掌握[管道](../modules/pipeline/index.md)的使用
+- 了解[分布式部署](../modules/advanced/distributed.md)
+
+**code file end: docs/tutorials/first_spider.md**
+
+---
+
+
+### code file start: docs/tutorials/first_spider_en.md 
+
+# Creating Your First Spider
+
+This tutorial will guide you through creating your first Crawlo spider, from installation to running the complete process.
+
+## Environment Setup
+
+### Install Python
+Make sure your system has Python 3.7 or higher installed:
+
+```bash
+python --version
+```
+
+### Install Crawlo
+Install Crawlo using pip:
+
+```bash
+pip install crawlo
+```
+
+## Create a Project
+
+Use the Crawlo command-line tool to create a new project:
+
+```bash
+crawlo startproject my_first_spider
+cd my_first_spider
+```
+
+This will create the following project structure:
+
+```
+my_first_spider/
+├── settings.py          # Project configuration file
+├── spiders/             # Spider directory
+│   ├── __init__.py
+│   └── example.py       # Example spider
+├── pipelines/           # Data pipeline directory
+│   └── __init__.py
+├── middlewares/         # Middleware directory
+│   └── __init__.py
+└── items/               # Data item definition directory
+    └── __init__.py
+```
+
+## Write a Spider
+
+Edit the `spiders/example.py` file to create your first spider:
+
+```python
+from crawlo import Spider
+
+class ExampleSpider(Spider):
+    name = 'example'
+    start_urls = ['http://httpbin.org/get']
+    
+    def parse(self, response):
+        # Extract page information
+        yield {
+            'url': response.url,
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'text': response.text[:100] + '...' if len(response.text) > 100 else response.text
+        }
+```
+
+## Run the Spider
+
+Run the spider in the project directory:
+
+```bash
+crawlo run example
+```
+
+You will see output similar to the following:
+
+```
+2023-01-01 12:00:00 [crawlo] INFO: Spider opened: example
+2023-01-01 12:00:01 [crawlo] INFO: Received response: 200 http://httpbin.org/get
+2023-01-01 12:00:01 [crawlo] INFO: Spider closed: example
+```
+
+## Advanced Example
+
+Let's create a more complex spider to crawl news website titles and links:
+
+```python
+from crawlo import Spider
+
+class NewsSpider(Spider):
+    name = 'news'
+    start_urls = ['https://news.ycombinator.com/']
+    
+    def parse(self, response):
+        # Extract news titles and links
+        for item in response.css('.storylink'):
+            yield {
+                'title': item.css('::text').get(),
+                'url': item.css('::attr(href)').get()
+            }
+        
+        # Follow next page link
+        next_page = response.css('.morelink::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, callback=self.parse)
+```
+
+## Configure the Spider
+
+You can configure spider behavior through the `settings.py` file:
+
+```python
+# settings.py
+CONCURRENCY = 10           # Concurrent requests
+DOWNLOAD_DELAY = 1.0       # Download delay (seconds)
+DOWNLOAD_TIMEOUT = 30      # Download timeout (seconds)
+DOWNLOADER_TYPE = 'httpx'  # Downloader type
+
+# Custom request headers
+DEFAULT_REQUEST_HEADERS = {
+    'User-Agent': 'Crawlo/1.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+}
+```
+
+## Use Pipelines to Process Data
+
+Create a simple pipeline to process crawled data:
+
+```python
+# pipelines.py
+class JsonWriterPipeline:
+    def open_spider(self, spider):
+        self.file = open('items.json', 'w')
+    
+    def close_spider(self, spider):
+        self.file.close()
+    
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item)) + "\n"
+        self.file.write(line)
+        return item
+```
+
+Enable the pipeline in `settings.py`:
+
+```python
+# settings.py
+PIPELINES = {
+    'my_first_spider.pipelines.JsonWriterPipeline': 300,
+}
+```
+
+## Use Middleware
+
+Create a simple middleware to handle requests and responses:
+
+```python
+# middlewares.py
+class UserAgentMiddleware:
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = 'MyBot/1.0'
+        return request
+```
+
+Enable the middleware in `settings.py`:
+
+```python
+# settings.py
+MIDDLEWARES = {
+    'my_first_spider.middlewares.UserAgentMiddleware': 400,
+}
+```
+
+## Run Spider with Parameters
+
+```bash
+# Set log level
+crawlo run example --log-level DEBUG
+
+# Specify configuration file
+crawlo run example --config settings.py
+
+# Set concurrency
+crawlo run example --concurrency 20
+```
+
+## View Statistics
+
+After running, view spider statistics:
+
+```bash
+crawlo stats example
+```
+
+## Next Steps
+
+- Learn more about [Downloaders](../modules/downloader/index_en.md)
+- Explore [Middleware](../modules/middleware/index_en.md) functionality
+- Master [Pipelines](../modules/pipeline/index_en.md) usage
+- Learn about [Distributed Deployment](../modules/advanced/distributed_en.md)
+
+**code file end: docs/tutorials/first_spider_en.md**
+
+---
+

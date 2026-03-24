@@ -1,0 +1,27379 @@
+# feapder 项目教程大全 
+
+
+### 代码文件: docs\question\setting不生效问题.md
+ 
+# setting不生效问题
+
+## 问题
+
+以下面这个项目结构为例，在`spiders`目录下运行`spider_test.py`读取不到`setting.py`，所以`setting`的配置不生效。
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/11/01/16672715088563.jpg)
+
+读取不到是因为python的环境变量问题，在spiders目录下运行，只会找spides目录下的文件
+
+## 解决方式
+
+### 方法1：在setting同级目录下运行
+
+在main.py中导入spider_test， 然后运行main.py
+
+### 方法2：设置工作区间
+
+设置工作区间方式（以pycharm为例）：项目->右键->Mark Directory as -> Sources Root
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/11/01/16672717483410.jpg)
+
+### 方法3：设置PYTHONPATH
+
+以mac或linux举例，执行如下命令
+
+```shell
+export PYTHONPATH=$PYTHONPATH:/绝对路径/spider-project
+```
+注：这个命令设置的环境变量只在当前终端有效
+
+然后即可在spiders目录下运行
+
+```shell
+python spider_test.py
+```
+
+window如何添加环境变量大家自行探索，搞定了可在评论区留言
+ 
+
+### 代码文件: docs\_navbar.md
+ 
+
+  * [爬虫管理系统](feapder_platform/feaplat.md)
+  * [爬虫工具库](https://spidertools.cn)
+  * [知识星球](https://t.zsxq.com/mmAmAuF)
+  * [微信公众号](https://open.weixin.qq.com/qr/code?username=gh_870ffb1242a7)
+  * [知乎](https://www.zhihu.com/people/boris-97-17/posts)
+  * [讨论](https://gitter.im/feapder/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+ 
+
+### 代码文件: docs\source_code\BaseParser.md
+ 
+
+# BaseParser
+
+BaseParser为Spider的基类，用来定义任务下发与数据解析，是面向用户提供的接口
+
+## 源码
+
+
+```python
+class BaseParser(object):
+    def start_requests(self):
+        """
+        @summary: 添加初始url
+        ---------
+        ---------
+        @result: yield Request()
+        """
+
+        pass
+
+    def download_midware(self, request):
+        """
+        @summary: 下载中间件 可修改请求的一些参数, 或可自定义下载，然后返回 request, response
+        ---------
+        @param request:
+        ---------
+        @result: return request / request, response
+        """
+
+        pass
+
+    def validate(self, request, response):
+        """
+        @summary: 校验函数, 可用于校验response是否正确
+        若函数内抛出异常，则重试请求
+        若返回True 或 None，则进入解析函数
+        若返回False，则抛弃当前请求
+        可通过request.callback_name 区分不同的回调函数，编写不同的校验逻辑
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result: True / None / False
+        """
+
+        pass
+
+    def parse(self, request, response):
+        """
+        @summary: 默认的解析函数
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result:
+        """
+
+        pass
+
+    def exception_request(self, request, response):
+        """
+        @summary: 请求或者parser里解析出异常的request
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result: request / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def failed_request(self, request, response):
+        """
+        @summary: 超过最大重试次数的request
+        可返回修改后的request  若不返回request，则将传进来的request直接人redis的failed表。否则将修改后的request入failed表
+        ---------
+        @param request:
+        ---------
+        @result: request / item / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def start_callback(self):
+        """
+        @summary: 程序开始的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    def end_callback(self):
+        """
+        @summary: 程序结束的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    def close(self):
+        pass
+```
+
+## 使用
+
+以程序开始结束回调举例：
+
+```python
+import feapder
+
+
+class TestSpider(feapder.Spider):
+    def start_callback(self):
+        print("爬虫开始了")
+
+    def end_callback(self):
+        print("爬虫结束了")
+```
+ 
+
+### 代码文件: docs\source_code\custom_downloader.md
+ 
+# 自定义下载器
+
+下载器一共分为三种：**普通下载器**、**支持保持session的下载器**以及**浏览器渲染下载器**。默认已经在框架中内置，setting中的配置如下
+
+```
+DOWNLOADER = "feapder.network.downloader.RequestsDownloader"  # 请求下载器
+SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"  # 渲染下载器
+```
+
+- session下载器当配置中`USE_SESSION = True`时会启用
+- 渲染下载器当使用浏览器下载功能时会启用
+
+这些下载器均为插件的形式，我们可以自定义
+
+## 自定义普通下载器
+
+1. 编写下载器。如在 `xxx-spider/downloader/my_downloader.py `下自定义了如下下载器
+
+    ```
+    import requests
+    
+    from feapder.network.downloader.base import Downloader
+    from feapder.network.response import Response
+    
+    class RequestsDownloader(Downloader):
+        def download(self, request) -> Response:
+            response = requests.request(
+                request.method, request.url, **request.requests_kwargs
+            )
+            # 将requests的response转化为feapder的Response 对象，方便后续解析时使用xpath、re等方法
+            response = Response(response)
+            return response
+    ```
+    
+    注：这里返回的response对象不强制要求为是feapder的Response。返回值会传到解析函数的response参数里，若返回的是文本，则接收到的也是文本。
+    
+    但为了代码可读性，建议将返回值转为feapder的Response后再返回。
+    
+    转feapder的Response的方式有如下几种
+    
+    ```
+    # 方式1
+    # response参数为reqeusts的response
+    Response(response)
+    
+    # 方式2
+    Response.from_text(text="html内容")
+    ```    
+
+2. 在settings中指定下载器
+
+    ```
+    DOWNLOADER = "downloader.my_downloader.RequestsDownloader"
+    ```
+
+## 自定义session下载器
+
+1. 和普通下载器一样，都是继承`Downloader`，如何保持session，可自定义。代码示例 `xxx-spider/downloader/my_downloader.py `
+
+    ```
+    class RequestsSessionDownloader(Downloader):
+        session = None
+    
+        @property
+        def _session(self):
+            if not self.__class__.session:
+                self.__class__.session = requests.Session()
+                # pool_connections – 缓存的 urllib3 连接池个数  pool_maxsize – 连接池中保存的最大连接数
+                http_adapter = HTTPAdapter(pool_connections=1000, pool_maxsize=1000)
+                # 任何使用该session会话的 HTTP 请求，只要其 URL 是以给定的前缀开头，该传输适配器就会被使用到。
+                self.__class__.session.mount("http", http_adapter)
+    
+            return self.__class__.session
+    
+        def download(self, request) -> Response:
+            response = self._session.request(
+                request.method, request.url, **request.requests_kwargs
+            )
+            response = Response(response)
+            return response
+    ```
+
+2. 在settings中指定下载器
+
+    ```
+    SESSION_DOWNLOADER = "downloader.my_downloader.RequestsSessionDownloader"
+    ```
+
+注意，这里要配置 `SESSION_DOWNLOADER`
+
+## 自定义浏览器渲染下载器
+
+1. 编写下载器 `xxx-spider/downloader/my_downloader.py `
+
+**若浏览器框架本身不支持多线程，但想在多线程中使用，如playwright使用，参考如下：**
+
+```
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, PlaywrightDriver
+
+
+class MyDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.PLAYWRIGHT, driver_cls=PlaywrightDriver, thread_safe=True
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.PLAYWRIGHT.get("proxy"):
+            proxy = setting.PLAYWRIGHT.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.PLAYWRIGHT.get("user_agent"):
+            user_agent = setting.PLAYWRIGHT.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.PLAYWRIGHT.get("render_time")
+        wait_until = setting.PLAYWRIGHT.get("wait_until") or "domcontentloaded"
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        driver: PlaywrightDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            if cookies:
+                driver.url = url
+                driver.cookies = cookies
+            driver.page.goto(url, wait_until=wait_until)
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = driver.page.content()
+            response = Response.from_dict(
+                {
+                    "url": driver.page.url,
+                    "cookies": driver.cookies,
+                    "_content": html.encode(),
+                    "status_code": 200,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": driver.user_agent,
+                        "Cookie": tools.cookies2str(driver.cookies),
+                    },
+                }
+            )
+
+            response.driver = driver
+            response.browser = driver
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(driver)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        # 不支持
+        # self._webdriver_pool.close()
+        pass
+```
+
+这里使用了WebDriverPool，参数`thread_safe=True`，即要保证使用时的线程安全，确保同个浏览器对象只能被同一个线程调用
+
+**若浏览器框架本身支持多线程，如selenium，则参考如下**
+
+```
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, SeleniumDriver
+
+
+class MyDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.WEBDRIVER, driver=SeleniumDriver
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.WEBDRIVER.get("proxy"):
+            proxy = setting.WEBDRIVER.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.WEBDRIVER.get("user_agent"):
+            user_agent = setting.WEBDRIVER.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.WEBDRIVER.get("render_time")
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        browser: SeleniumDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            browser.get(url)
+            if cookies:
+                browser.cookies = cookies
+                # 刷新使cookie生效
+                browser.get(url)
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = browser.page_source
+            response = Response.from_dict(
+                {
+                    "url": browser.current_url,
+                    "cookies": browser.cookies,
+                    "_content": html.encode(),
+                    "status_code": 200,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": browser.user_agent,
+                        "Cookie": tools.cookies2str(browser.cookies),
+                    },
+                }
+            )
+
+            response.driver = browser
+            response.browser = browser
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(browser)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        self._webdriver_pool.close()
+```
+
+2. 在settings中指定下载器
+
+```
+RENDER_DOWNLOADER = "downloader.my_downloader.MyDownloader"
+```
+
+注，这里要写`RENDER_DOWNLOADER`
+ 
+
+### 代码文件: docs\source_code\Item.md
+ 
+# Item
+
+有关Item的简介及创建，可参考[命令行工具](command/cmdline?id=_3-创建-item)
+
+## 数据入库
+
+数据自动入库，除了根据mysql表生产item外，也可以直接给item赋值，示例如下：
+
+```
+from feapder import Item
+
+item = Item()
+item.table_name = "spider_data" # 表名
+item.title = title
+yield item
+```
+
+等价于：
+ 
+1. 生成item
+    
+    ```
+    from feapder import Item
+    
+    class SpiderDataItem(Item):
+        """
+        This class was generated by feapder.
+        command: feapder create -i spider_data.
+        """
+    
+        def __init__(self, *args, **kwargs):
+            # self.id = None
+            self.title = None
+    ```
+
+1. 使用
+
+    ```         
+    item = SpiderDataItem()
+    item.title = title
+    yield item
+    ```
+    
+## Item指纹
+
+item指纹用于数据入库前的去重，默认为所有字段值排序后计算的md5，但当数据中有采集时间时，这种指纹计算方式明显不合理。因此我们可以通过如下方法指定参与去重的key
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    
+    __unique_key__ = ["title", "url"] # 指定去重的key为 title、url，最后的指纹为title与url值联合计算的md5
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+        self.crawl_time = None
+```
+
+或可通过如下方式指定`__unique_key__`
+
+```
+item = SpiderDataItem()
+item.unique_key =  ["title", "url"] # 支持列表、元组、字符串
+```
+
+或者重写指纹函数
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    ...
+
+    @property
+    def fingerprint(self):
+        return "我是指纹"
+```
+
+## 入库前对item进行处理
+
+pre_to_db函数为每个item入库前的回调函数，可通过此函数对数据进行处理
+
+```python
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+
+    def pre_to_db(self):
+        """
+        入库前的处理
+        """
+        self.title = self.title.strip()
+```
+
+## 更新数据
+
+采集过程中，往往会有些数据漏采或解析出错，如果我们想更新已入库的数据，可将Item转为UpdateItem
+
+    item = SpiderDataItem.to_UpdateItem()
+    
+或直接修改继承类
+
+```
+from feapder import Item, UpdateItem
+
+class SpiderDataItem(UpdateItem):
+    ...
+```
+
+关于UpdateItem使用，详见[UpdateItem](source_code/UpdateItem)
+
+ 
+
+### 代码文件: docs\source_code\Spider进阶.md
+ 
+# Spider进阶
+
+## Spider参数：
+
+```python
+def __init__(
+    self,
+    redis_key=None,
+    min_task_count=1,
+    check_task_interval=5,
+    thread_count=None,
+    begin_callback=None,
+    end_callback=None,
+    delete_keys=(),
+    keep_alive=None,
+    auto_start_requests=None,
+    send_run_time=False,
+    batch_interval=0,
+    wait_lock=True
+):
+    """
+    @param redis_key: 任务等数据存放在redis中的key前缀
+    @param min_task_count: 任务队列中最少任务数, 少于这个数量才会添加任务，默认1。start_monitor_task 模式下生效
+    @param check_task_interval: 检查是否还有任务的时间间隔；默认5秒
+    @param thread_count: 线程数，默认为配置文件中的线程数
+    @param begin_callback: 爬虫开始回调函数
+    @param end_callback: 爬虫结束回调函数
+    @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+    @param keep_alive: 爬虫是否常驻
+    @param auto_start_requests: 爬虫是否自动添加任务
+    @param send_run_time: 发送运行时间
+    @param batch_interval: 抓取时间间隔 默认为0 天为单位 多次启动时，只有当前时间与第一次抓取结束的时间间隔大于指定的时间间隔时，爬虫才启动
+    @param wait_lock: 下发任务时否等待锁，若不等待锁，可能会存在多进程同时在下发一样的任务，因此分布式环境下请将该值设置True
+    """
+    
+```
+
+下面介绍下理解起来可能有疑惑的参数
+
+### 1. redis_key
+
+redis_key为redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+key的命名方式为[配置文件](source_code/配置文件.md)中定义的
+
+    # 任务表模版
+    TAB_REQUESTS = "{redis_key}:z_requsets"
+    # 任务失败模板
+    TAB_FAILED_REQUESTS = "{redis_key}:z_failed_requsets"
+    # 爬虫状态表模版
+    TAB_SPIDER_STATUS = "{redis_key}:z_spider_status"
+    # item 表模版
+    TAB_ITEM = "{redis_key}:s_{item_name}"
+    # 爬虫时间记录表
+    TAB_SPIDER_TIME = "{redis_key}:h_spider_time"
+    
+    
+### 2. min_task_count
+
+这个参数用于控制最小任务数的，少于这个数量再下发任务，防止redis中堆积任务太多，内存撑爆，通常用于从数据库中取任务，下发。
+
+此参数需要使用`start_monitor_task`方式才会生效，示例如下：
+
+```python
+import feapder
+from feapder.db.mysqldb import MysqlDB
+
+
+class SpiderTest(feapder.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = MysqlDB()
+
+    def start_requests(self):
+        sql = "select url from feapder_test where state = 0 limit 1000"
+        result = self.db.find(sql)
+        for url, in result:
+            yield feapder.Request(url)
+
+    def parser(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    spider = SpiderTest(
+        redis_key="feapder:spider_test", min_task_count=100
+    )
+    # 监控任务，若任务数小于min_task_count，则调用start_requests下发一批，注start_requests产生的任务会一次下发完，比如本例，会一次下发1000个任务，然后任务队列中少于100条任务时，再下发1000条
+    spider.start_monitor_task()
+    # 采集
+    # spider.start()
+```
+
+`spider.start_monitor_task()` 与 `spider.start()` 分开运行，属于master、worker两种进程
+
+### 3. delete_keys
+
+通常在开发阶段使用，如想清空任务队列重新抓取，或防止由于任务防丢策略导致爬虫需等待10分钟才能取到任务的情况。使用场景见[运行问题](question/运行问题?id=_1-二次运行时卡住，不继续抓取)
+
+delete_keys 接收类型为tuple/bool/string，支持正则，拿以下的key举例
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+删除`feapder:spider_test_z_requests` 可写为 `delete_keys="*z_requests"`
+
+删除全部可写为`delete_keys="*"`
+
+### 4. keep_alive
+
+用于`spider.start_monitor_task()` 与 `spider.start()` 这种master、worker模式。
+
+`keep_alive=True`时，爬虫做完任务后不会退出，继续等待任务。
+
+### 5. send_run_time
+
+是否将运行时间作为报警信息发送
+
+### 6. batch_interval
+
+设置每次采集的时间间隔，如我们设置7天，当爬虫正常结束后，7天内我们二次运行爬虫时会自动退出，不执行采集逻辑
+
+```
+def spider_test():
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider", batch_interval=7)
+    spider.start()
+    
+```
+运行：
+
+    上次运行结束时间为 2021-03-15 14:42:31 与当前时间间隔 为 3秒, 小于规定的抓取时间间隔 7天。爬虫不执行，退出～
+
+## Spider方法
+
+Spider继承至BaseParser，并且BaseParser是对开发者暴露的常用方法接口，因此推荐先看[BaseParser](source_code/BaseParser)，Spider方法如下：
+
+### 1. start_monitor_task
+
+下发及监控任务，与`keep_alive`参数配合使用，用于常驻进程的爬虫
+
+使用：
+
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider", keep_alive=True)
+    # 下发及监控任务
+    spider.start_monitor_task()
+    # 采集（进程常驻）
+    # spider.start()
+    
+`spider.start_monitor_task()` 与 `spider.start()` 分开运行，属于master、worker两种进程
+
+## 其他细节
+
+### 1. 任务防丢
+
+Spider爬虫支持任务防丢，断点续爬，实现原理如下：
+
+Spider利用了redis有序集合来存储任务，有序集合有个分数，爬虫取任务时，只取小于当前时间戳分数的任务，同时将任务分数修改为当前时间戳+10分钟，（这个取任务与改分数是原子性的操作）。**当任务做完时，且数据已入库后，再主动将任务删除。**
+
+目的：将取到的任务分数修改成10分钟后，可防止其他爬虫节点取到同样的任务，同时当爬虫意外退出后，任务也不会丢失，10分钟后还可以取到。
+
+10分钟是可配置的，为配置文件中的`REQUEST_LOST_TIMEOUT`参数
+
+### 2. 任务重试
+
+任务请求失败或解析函数抛出异常时，会自动重试，默认重试次数为100次，可通过配置文件`SPIDER_MAX_RETRY_TIMES`参数修改。当任务超过最大重试次数时，默认会将失败的任务存储到Redis的`{redis_key}:z_failed_requsets`里，供人工排查。
+
+相关配置为：
+
+```python
+# 每个请求最大重试次数
+SPIDER_MAX_RETRY_TIMES = 100 
+# 重新尝试失败的requests 当requests重试次数超过允许的最大重试次数算失败
+RETRY_FAILED_REQUESTS = False
+# 保存失败的request
+SAVE_FAILED_REQUEST = True
+# 任务失败数 超过WARNING_FAILED_COUNT则报警
+WARNING_FAILED_COUNT = 1000
+```
+
+当`RETRY_FAILED_REQUESTS=True`时，爬虫再次启动时会将失败的任务重新下发到任务队列中，重新抓取
+
+### 3. 去重
+
+支持任务去重和数据去重，任务默认是临时去重，去重库保留1个月，即只去重1个月内的任务，数据是永久去重。默认去重是关闭的，相关配置为：
+
+```
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+修改默认去重库：
+
+```
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.dedup import Dedup
+
+RequestBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+ItemBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+```
+
+RequestBuffer 为任务入库前缓冲的buffer，ItemBuffer为数据入库前缓冲的buffer
+
+关于去重库详情见：[海量数据去重](source_code/dedup)
+
+### 4. 加速采集
+
+与爬虫采集速度的相关配置为：
+
+```python
+# 爬虫相关
+# COLLECTOR
+COLLECTOR_SLEEP_TIME = 1 # 从任务队列中获取任务到内存队列的间隔
+COLLECTOR_TASK_COUNT = 10 # 每次获取任务数量
+
+# SPIDER
+SPIDER_THREAD_COUNT = 1 # 爬虫并发数
+SPIDER_SLEEP_TIME = 0 # 下载时间间隔（解析完一个response后休眠时间）
+SPIDER_MAX_RETRY_TIMES = 100 # 每个请求最大重试次数
+```
+
+COLLECTOR 为从任务队列中取任务到内存队列的线程，SPIDER为实际采集的线程
+
+`COLLECTOR_TASK_COUNT` 建议 >= `SPIDER_THREAD_COUNT`, 这样每个线程的爬虫才有任务可做。但COLLECTOR_TASK_COUNT不建议过大，不然分布式时，一个池子里的任务都被节点A取走了，其他节点取不到任务了。
+
+### 了解更多
+
+更多配置，详见[配置文件](source_code/配置文件)
+
+ 
+
+### 代码文件: docs\source_code\配置文件.md
+ 
+# 配置文件
+
+配置文件支持全局配置及某个爬虫自定义配置
+
+## 全局配置
+
+在项目的根目录下创建 setting.py, 全部的参数如下，按需选择
+![-w378](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/30/16093189206589.jpg)
+
+```python
+# -*- coding: utf-8 -*-
+"""爬虫配置文件"""
+# import os
+# import sys
+#
+# # MYSQL
+# MYSQL_IP = "localhost"
+# MYSQL_PORT = 3306
+# MYSQL_DB = ""
+# MYSQL_USER_NAME = ""
+# MYSQL_USER_PASS = ""
+#
+# # MONGODB
+# MONGO_IP = "localhost"
+# MONGO_PORT = 27017
+# MONGO_DB = ""
+# MONGO_USER_NAME = ""
+# MONGO_USER_PASS = ""
+#
+# # REDIS
+# # ip:port 多个可写为列表或者逗号隔开 如 ip1:port1,ip2:port2 或 ["ip1:port1", "ip2:port2"]
+# REDISDB_IP_PORTS = "localhost:6379"
+# REDISDB_USER_PASS = ""
+# REDISDB_DB = 0
+# # 适用于redis哨兵模式
+# REDISDB_SERVICE_NAME = ""
+#
+# # 数据入库的pipeline，可自定义，默认MysqlPipeline
+# ITEM_PIPELINES = [
+#     "feapder.pipelines.mysql_pipeline.MysqlPipeline",
+#     # "feapder.pipelines.mongo_pipeline.MongoPipeline",
+#     # "feapder.pipelines.console_pipeline.ConsolePipeline",
+# ]
+# EXPORT_DATA_MAX_FAILED_TIMES = 10  # 导出数据时最大的失败次数，包括保存和更新，超过这个次数报警
+# EXPORT_DATA_MAX_RETRY_TIMES = 10  # 导出数据时最大的重试次数，包括保存和更新，超过这个次数则放弃重试
+#
+# # 爬虫相关
+# # COLLECTOR
+# COLLECTOR_TASK_COUNT = 32  # 每次获取任务数量，追求速度推荐32
+#
+# # SPIDER
+# SPIDER_THREAD_COUNT = 1  # 爬虫并发数，追求速度推荐32
+# # 下载时间间隔 单位秒。 支持随机 如 SPIDER_SLEEP_TIME = [2, 5] 则间隔为 2~5秒之间的随机数，包含2和5
+# SPIDER_SLEEP_TIME = 0
+# SPIDER_MAX_RETRY_TIMES = 10  # 每个请求最大重试次数
+# KEEP_ALIVE = False  # 爬虫是否常驻
+
+# 下载
+# DOWNLOADER = "feapder.network.downloader.RequestsDownloader"
+# SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+# RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"
+# # RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+# MAKE_ABSOLUTE_LINKS = True  # 自动转成绝对连接
+
+# # 浏览器渲染
+# WEBDRIVER = dict(
+#     pool_size=1,  # 浏览器的数量
+#     load_images=True,  # 是否加载图片
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     custom_argument=[
+#         "--ignore-certificate-errors",
+#         "--disable-blink-features=AutomationControlled",
+#     ],  # 自定义浏览器渲染参数
+#     xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+#     auto_install_driver=True,  # 自动下载浏览器驱动 支持chrome 和 firefox
+#     download_path=None,  # 下载文件的路径
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+# )
+#
+# PLAYWRIGHT = dict(
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="chromium",  # chromium、firefox、webkit
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     download_path=None,  # 下载文件的路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+#     page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+#     storage_state_path=None,  # 保存浏览器状态的路径
+#     url_regexes=None,  # 拦截接口，支持正则，数组类型
+#     save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+# )
+#
+# # 爬虫启动时，重新抓取失败的requests
+# RETRY_FAILED_REQUESTS = False
+# # 保存失败的request
+# SAVE_FAILED_REQUEST = True
+# # request防丢机制。（指定的REQUEST_LOST_TIMEOUT时间内request还没做完，会重新下发 重做）
+# REQUEST_LOST_TIMEOUT = 600  # 10分钟
+# # request网络请求超时时间
+# REQUEST_TIMEOUT = 22  # 等待服务器响应的超时时间，浮点数，或(connect timeout, read timeout)元组
+# # item在内存队列中最大缓存数量
+# ITEM_MAX_CACHED_COUNT = 5000
+# # item每批入库的最大数量
+# ITEM_UPLOAD_BATCH_MAX_SIZE = 1000
+# # item入库时间间隔
+# ITEM_UPLOAD_INTERVAL = 1
+# # 内存任务队列最大缓存的任务数，默认不限制；仅对AirSpider有效。
+# TASK_MAX_CACHED_SIZE = 0
+#
+# # 下载缓存 利用redis缓存，但由于内存大小限制，所以建议仅供开发调试代码时使用，防止每次debug都需要网络请求
+# RESPONSE_CACHED_ENABLE = False  # 是否启用下载缓存 成本高的数据或容易变需求的数据，建议设置为True
+# RESPONSE_CACHED_EXPIRE_TIME = 3600  # 缓存时间 秒
+# RESPONSE_CACHED_USED = False  # 是否使用缓存 补采数据时可设置为True
+#
+# # 设置代理
+# PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+# PROXY_ENABLE = True
+#
+# # 随机headers
+# RANDOM_HEADERS = True
+# # UserAgent类型 支持 'chrome', 'opera', 'firefox', 'internetexplorer', 'safari'，'mobile' 若不指定则随机类型
+# USER_AGENT_TYPE = "chrome"
+# # 默认使用的浏览器头
+# DEFAULT_USERAGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+# # requests 使用session
+# USE_SESSION = False
+#
+# # 去重
+# ITEM_FILTER_ENABLE = False  # item 去重
+# REQUEST_FILTER_ENABLE = False  # request 去重
+# ITEM_FILTER_SETTING = dict(
+#     filter_type=1  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、轻量去重（LiteFilter）= 4
+# )
+# REQUEST_FILTER_SETTING = dict(
+#     filter_type=3,  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、 轻量去重（LiteFilter）= 4
+#     expire_time=2592000,  # 过期时间1个月
+# )
+#
+# # 报警 支持钉钉、飞书、企业微信、邮件
+# # 钉钉报警
+# DINGDING_WARNING_URL = ""  # 钉钉机器人api
+# DINGDING_WARNING_PHONE = ""  # 报警人 支持列表，可指定多个
+# DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 飞书报警
+# # https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+# FEISHU_WARNING_URL = ""  # 飞书机器人api
+# FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+# FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 邮件报警
+# EMAIL_SENDER = ""  # 发件人
+# EMAIL_PASSWORD = ""  # 授权码
+# EMAIL_RECEIVER = ""  # 收件人 支持列表，可指定多个
+# EMAIL_SMTPSERVER = "smtp.163.com"  # 邮件服务器 默认为163邮箱
+# # 企业微信报警
+# WECHAT_WARNING_URL = ""  # 企业微信机器人api
+# WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+# WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 时间间隔
+# WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏; 0表示不去重
+# WARNING_LEVEL = "DEBUG"  # 报警级别， DEBUG / INFO / ERROR
+# WARNING_FAILED_COUNT = 1000  # 任务失败数 超过WARNING_FAILED_COUNT则报警
+#
+# LOG_NAME = os.path.basename(os.getcwd())
+# LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+# LOG_LEVEL = "DEBUG"
+# LOG_COLOR = True  # 是否带有颜色
+# LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+# LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+# LOG_MODE = "w"  # 写文件的模式
+# LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+# LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+# LOG_ENCODING = "utf8"  # 日志文件编码
+# OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+#
+# # 切换工作路径为当前项目路径
+# project_path = os.path.abspath(os.path.dirname(__file__))
+# os.chdir(project_path)  # 切换工作路经
+# sys.path.insert(0, project_path)
+# print("当前工作路径为 " + os.getcwd())
+
+```
+
+- 数据库连接信息默认读取的环境变量，因此若不想将自己的账号暴露给其他同事，建议写在环境变量里，环境变量的`key`与配置文件的`key`相同
+
+- `LOG_LEVEL`为`DEBUG`时，日志输出比较详细，开发阶段使用。线上部署时，可将`LOG_LEVEL`改为`INFO`
+
+## 自定义配置
+
+常用于一个项目下有多个爬虫，不同的爬虫使用不同的配置。我们可以使用类变量`__custom_setting__`自定义配置，示例如下：
+
+```python
+import feapder
+
+
+class SpiderTest(feapder.AirSpider):
+    __custom_setting__ = dict(
+        SPIDER_MAX_RETRY_TIMES=20,
+    )
+```
+
+ 
+
+### 代码文件: docs\foreword\10分钟上手.md
+ 
+
+
+<!--
+ * @Author: Boris
+ * @Date: 2021-02-09 15:03:53
+ * @Description:
+-->
+
+# 糗事百科抓取
+
+
+
+https://www.qiushibaike.com/8hr/page/1/
+
+![-w843](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101267651625.jpg)
+
+我们以糗事百科抓取抓取为例，先抓推荐列表，然后抓详情，带领大家10分钟快速入门
+
+## 1. 抓列表
+
+![-w1485](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101239769142.jpg)
+
+列表是html里直接返回的，我们打开检查工具，观察标题所在的标签，可写出如下xpath表达式
+
+    //a[@class="recmd-content"]
+
+创建爬虫
+
+    feapder create -s spider_test
+
+开始写代码
+
+1. 下发任务：下发1~14页列表任务
+
+        def start_requests(self):
+            for i in range(1, 15):
+                yield feapder.Request("https://www.qiushibaike.com/8hr/page/{}/".format(i))
+
+1. 解析标题及详情页链接
+
+        def parse(self, request, response):
+            article_list = response.xpath('//a[@class="recmd-content"]')
+            for article in article_list:
+                title = article.xpath("./text()").extract_first()
+                url = article.xpath("./@href").extract_first()
+                print(title, url)
+
+3. 运行，打印如下：
+
+    ![-w1183](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101251846542.jpg)
+
+    细心的你，会发现连接也自动补全了，网页源代码如下：
+    ![-w671](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101252789007.jpg)
+
+## 2. 抓详情
+
+抓详情需要将列表采集到的url作为新任务，然后请求，解析。写法很简单，代码如下：
+
+派发详情任务：
+
+    yield feapder.Request(url, callback=self.parser_detail)  # callback 为回调函数
+
+若我们需要携带title字段，写法如下
+
+    yield feapder.Request(url, callback=self.parser_detail, title=title)  # title 为携带的字段，直接携带就行，不用放到一个meta里
+
+解析详情
+
+![-w1470](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101256627827.jpg)
+
+    def parse_detail(self, request, response):
+        """
+        解析详情
+        """
+        # 取url
+        url = request.url
+        # 取title
+        title = request.title
+        # 解析正文
+        content = response.xpath('string(//div[@class="content"])').extract_first() # string 表达式是取某个标签下的文本，包括子标签文本
+
+        print("url", url)
+        print("title", title)
+        print("content", content)
+
+## 整体代码如下
+
+
+    import feapder
+
+
+    class SpiderTest(feapder.AirSpider):
+        def start_requests(self):
+            for i in range(1, 15):
+                yield feapder.Request("https://www.qiushibaike.com/8hr/page/{}/".format(i))
+
+        def parse(self, request, response):
+            article_list = response.xpath('//a[@class="recmd-content"]')
+            for article in article_list:
+                title = article.xpath("./text()").extract_first()
+                url = article.xpath("./@href").extract_first()
+                # print(title, url)
+
+                yield feapder.Request(
+                    url, callback=self.parse_detail, title=title
+                )  # callback 为回调函数
+
+        def parse_detail(self, request, response):
+            """
+            解析详情
+            """
+            # 取url
+            url = request.url
+            # 取title
+            title = request.title
+            # 解析正文
+            content = response.xpath(
+                'string(//div[@class="content"])'
+            ).extract_first()  # string 表达式是取某个标签下的文本，包括子标签文本
+
+            print("url", url)
+            print("title", title)
+            print("content", content)
+
+
+    if __name__ == "__main__":
+        SpiderTest().start()
+
+嫌弃跑的太慢? 我们可以加一个参数轻松解决
+
+
+    if __name__ == "__main__":
+        SpiderTest(thread_count=15).start()
+
+thread_count 为线程数
+
+
+## 采集中可能需要如下问题：
+
+编码错误
+
+![-w1444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101262462057.jpg)
+
+这是因为框架解析解析text时默认使用了`strict`模式，我们可以加如下一行代码将其改成`ignore`模式，这样遇到不支持的字符便忽略
+
+    response.encoding_errors = 'ignore'
+
+![-w718](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/17/16159888418946.jpg)
+
+
+我们还可以指定编码，来解决。写法如下
+
+    response.code = '网页编码' #  已将encoding简写为code
+
+ 
+
+### 代码文件: docs\usage\爬虫集成.md
+ 
+# 爬虫集成
+
+ > 本功能可以将多个爬虫以插件的形式集成为一个爬虫，常用于采集周期一致，需求一致的，但需要采集多个数据源的项目
+ 
+ 
+## 使用场景举例
+
+如我们需要做舆情数据，需要采集多个新闻网站，如何开发爬虫呢？
+
+### 常规做法
+
+每个新闻源写一个或多个爬虫，如下：
+![-w526](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16146986664270.jpg)
+这样每个爬虫之间比较独立，如果有上百个数据源，需要启动上百个爬虫脚本，不便于管理
+
+### 本框架做法
+
+本框架支持上述的常规做法同时，支持了更友好的管理方式，可将这些爬虫集成为一个爬虫，我们只需维护这一个爬虫即可，当然也支持分布式。
+
+![-w528](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16146992324366.jpg)
+
+注： Spider爬虫与BatchSpider爬虫支持集成，AirSpider不支持
+
+## Spider 集成
+
+> 支持分布式采集
+
+以采集新浪和腾讯新闻为例
+
+### 1. 编写解析器
+
+新浪解析器
+```
+import feapder
+
+
+class SinaNewsParser(feapder.BaseParser):
+    def start_requests(self):
+        """
+        注意 这里继承的是BaseParser，而不是Spider
+        """
+        yield feapder.Request("https://news.sina.com.cn/")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+腾讯解析器
+```
+import feapder
+
+
+class TencentNewsParser(feapder.BaseParser):
+    """
+    注意 这里继承的是BaseParser，而不是Spider
+    """
+    def start_requests(self):
+        yield feapder.Request("https://news.qq.com/")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+注意：之前我们爬虫继承的是`Spider`，这里因为要集成，所以要继承`BaseParser`
+
+`BaseParser`只是一个解析器，不具备任何调度功能，我们写好每个网站的解析器，然后集成到爬虫中，由这个爬虫调度这些解析器去解析对应的网站
+
+`BaseParser` 所支持的函数与`Spider`一致，因此集成时爬虫代码无需更改，只需要将继承类改为`BaseParser`即可
+
+### 2. 集成解析器
+
+```python
+from feapder import Spider
+
+spider = Spider(redis_key="feapder:test_spider_integration")
+# 集成
+spider.add_parser(SinaNewsParser)
+spider.add_parser(TencentNewsParser)
+
+spider.start()
+``` 
+
+`add_parser`方法可以集成解析器，只需要将每个解析器的类名传进来即可
+
+完整代码示例：[Spider集成](https://github.com/Boris-code/feapder/tree/master/tests/spider-integration)
+
+## BatchSpider 集成
+
+> 支持批次采集、支持分布式
+
+以采集新浪和腾讯新闻为例
+
+### 1. 编写解析器
+
+新浪解析器
+
+```python
+import feapder
+
+
+class SinaNewsParser(feapder.BatchParser):
+    """
+    注意 这里继承的是BatchParser，而不是BatchSpider
+    """
+    
+    def start_requests(self, task):
+        task_id = task[0]
+        url = task[1]
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(self.name, title)
+        yield self.update_task_batch(request.task_id, 1)
+```
+
+腾讯解析器
+
+```python
+import feapder
+
+
+class TencentNewsParser(feapder.BatchParser):
+    """
+    注意 这里继承的是BatchParser，而不是BatchSpider
+    """
+
+    def start_requests(self, task):
+        task_id = task[0]
+        url = task[1]
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(self.name, title)
+        yield self.update_task_batch(request.task_id, 1)
+```
+
+注意：之前我们爬虫继承的是`BatchSpider`，这里因为要集成，所以要继承`BatchParser`
+
+`BatchParser`只是一个解析器，不具备任何调度功能，我们写好每个网站的解析器，然后集成到爬虫中，由这个爬虫调度这些解析器去解析对应的网站
+
+`BatchParser` 所支持的常用函数与`BatchSpider`一致，但`BatchParser`不支持任务初始化函数`init_task`。任务初始化为`BatchSpider`的每个批次开始时的逻辑，所有批次解析器共用一个`init_task`
+
+### 2.集成
+
+```python
+from feapder import BatchSpider
+
+
+def batch_spider_integration_test(args):
+    """
+    BatchSpider集成测试
+    """
+
+    spider = BatchSpider(
+        task_table="batch_spider_integration_task",  # mysql中的任务表
+        batch_record_table="batch_spider_integration_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫集成测试",  # 批次名字
+        batch_interval=7,  # 批次时间 天为单位 若为小时 可写 1 / 24
+        task_keys=["id", "url", "parser_name"],  # 集成批次爬虫，需要将批次爬虫的名字取出来，任务分发时才知道分发到哪个模板上
+        redis_key="feapder:test_batch_spider_integration",  # redis中存放request等信息的根key
+        task_state="state",  # mysql中任务状态字段
+    )
+
+    # 集成
+    spider.add_parser(SinaNewsParser)
+    spider.add_parser(TencentNewsParser)
+
+    if args == 1:
+        spider.start_monitor_task()
+    elif args == 2:
+        spider.start()
+```
+
+任务表：
+
+![-w444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16147423559139.jpg)
+
+任务表里需要有一个字段存储解析器的类名，与对应的任务关联，在我们取任务时携带这个类名，这样框架才知道这条任务归属于哪个解析器
+
+这里存储解析器名字的字段为`parser_name`
+
+完整代码示例：[批次爬虫集成](https://github.com/Boris-code/feapder/tree/master/tests/batch-spider-integration)
+ 
+
+### 代码文件: docs\source_code\报警及监控.md
+ 
+# 报警及监控
+
+支持钉钉、飞书、企业微信、邮件报警
+
+## 钉钉报警
+
+条件：需要有钉钉群，需要获取钉钉机器人的Webhook地址
+
+获取方式参考官方文档：https://developers.dingtalk.com/document/app/custom-robot-access
+
+安全设置选择自定义关键词，填入**feapder**
+
+![-w547](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167753030324.jpg)
+
+或使用加签方式，然后在setting中设置密钥
+
+相关配置：
+
+```python
+# 钉钉报警
+DINGDING_WARNING_URL = ""  # 钉钉机器人api
+DINGDING_WARNING_PHONE = ""  # 报警人 支持列表，可指定多个
+DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+DINGDING_WARNING_SECRET = None  # 加签密钥
+```
+
+## 企业微信报警
+
+条件：需要企业微信群，并获取企业微信机器人的Webhook地址
+
+获取方式：https://weibanzhushou.com/blog/330
+
+报警简介：
+
+- 仅支持文本模式
+- 当用户手机号码为空字符串或`WECHAT_WARNING_ALL`为`True`时将会`@全体成员`
+
+
+相关设置：
+
+```python
+# 企业微信报警
+WECHAT_WARNING_URL = ""  # 企业微信机器人api
+WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+```
+
+## 飞书报警
+
+可参考文档设置机器人：https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+
+然后在feapder的setting文件中修改如下配置
+
+```
+FEISHU_WARNING_URL = ""  # 飞书机器人api
+FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+```
+
+## 邮件报警
+
+相关配置：
+
+```
+# 邮件报警
+EMAIL_SENDER = ""  # 发件人
+EMAIL_PASSWORD = ""  # 授权码
+EMAIL_RECEIVER = "" # 收件人 支持列表，可指定多个
+```
+
+邮件报警目前支持163邮箱作为发送者，`EMAIL_SENDER`为邮箱账号，如`feapder@163.com`, `EMAIL_PASSWORD`为授权码，不是登录密码，获取授权码的流程如下：
+
+1. 设置 -> POP3/SMTP/IMAP
+
+    ![-w258](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719328720.jpg)
+
+2. 开启SMTP服务
+
+    ![-w444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719490656.jpg)
+    
+    开启后，会弹出授权码，该授权码即为EMAIL_PASSWORD
+    
+3. 设置反垃圾规则为高级
+    
+    ![-w1112](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719655644.jpg)
+
+4. 将本邮箱账号添加到白名单中
+
+## 报警间隔及报警级别
+
+框架会对相同的报警进行过滤，防止刷屏，默认的报警时间间隔为1小时，可通过以下配置修改：
+
+```python
+WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏
+WARNING_LEVEL = "DEBUG" # 报警级别， DEBUG / ERROR
+```
+
+DEBUG级别的报警包含一些运行信息，ERROR级别的报警都是有问题的报警，需要及时处理
+
+
+## 可视化监控
+
+支持对爬虫运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+需 feapder>=1.6.6, 需配合feaplat爬虫管理平台
+ 
+
+### 代码文件: docs\question\安装问题.md
+ 
+# 安装问题
+
+## 1. bitarray问题
+
+> window下pip 安装报错
+
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/09/16128685646774.jpg)
+
+解决办法：安装 Microsoft Visual C++ 工具，工具下载地址如下所示：
+https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe
+
+## 2. AttributeError 'str' object has not attribute 'decode'
+
+> window下pip 安装报错
+
+![670479264](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/670479264.jpg)
+
+下载bitarray离线包，版本要求`bitarray>=1.5.3`
+
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#bitarray
+
+![-w722](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158992617537.jpg)
+
+
+解压，进入目录下执行：
+
+    python setup.py install
+
+ 
+
+### 代码文件: docs\usage\AirSpider.md
+ 
+# AirSpider
+
+AirSpider是一款轻量爬虫，学习成本低。面对一些数据量较少，无需断点续爬，无需分布式采集的需求，可采用此爬虫。
+
+## 1. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例
+
+```python
+feapder create -s air_spider_test
+
+请选择爬虫模板
+> AirSpider
+  Spider
+  TaskSpider
+  BatchSpider
+```
+
+生成如下
+
+
+    import feapder
+
+
+    class AirSpiderTest(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+
+        def parse(self, request, response):
+            print(response)
+
+
+    if __name__ == "__main__":
+        AirSpiderTest().start()
+
+
+可直接运行
+
+## 2. 代码讲解
+
+默认生成的代码继承了feapder.AirSpider，包含 `start_requests` 及 `parser` 两个函数，含义如下：
+
+1. feapder.AirSpider：轻量爬虫基类
+2. start_requests：初始任务下发入口
+3. feapder.Request：基于requests库类似，表示一个请求，支持requests所有参数，同时也可携带些自定义的参数，详情可参考[Request](source_code/Request.md)
+4. parser：数据解析函数
+5. response：请求响应的返回体，支持xpath、re、css等解析方式，详情可参考[Response](source_code/Response.md)
+
+除了start_requests、parser两个函数。系统还内置了下载中间件等函数，具体支持可参考[BaseParser](source_code/BaseParser.md)
+
+## 3. 自定义解析函数
+
+开发过程中解析函数往往不止有一个，除了系统默认的parser外，还支持自定义解析函数，写法如下
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", callback=self.parser_xxx)
+
+    def parser_xxx(self, request, response):
+        print(response)
+
+即feapder.Request支持指定callback函数，不指定时默认回调parser
+
+## 4. 携带参数
+
+有时我们需要把前面请求到的数据携带到下一级，写法如下
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com",  xxx="我是携带的数据")
+
+    def parse(self, request, response):
+        xxx = request.xxx
+        print(xxx)
+
+直接在feapder.Request中携带即可，xxx为携带数据的key，可以随意写，只要不和feapder.Request默认参数冲突即可。默认参数参考[Request](source_code/Request.md)。可以携带任意类型的值，如字典、类等
+
+取值：如何携带就如何取值，如上我们携带xxx， 那么`request.xxx` 可将xxx值取出，取出的值和携带的值类型一致。
+
+## 5. 下发新任务
+
+parser中支持下发新任务，写法与start_requests一致，只需要`yield feapder.Request`即可。示例如下：
+
+    def parse(self, request, response):
+        yield feapder.Request("url1") # 不指定callback，任务会调度默认的parser上
+        yield feapder.Request("url2", callback=self.parser_detail) # 指定了callback，任务由callback指定的函数解析
+
+## 6. 下载中间件
+
+下载中间件用于在请求之前，对请求做一些处理，如添加cookie、header等。写法如下：
+
+
+    def download_midware(self, request):
+        request.headers = {'User-Agent':"lalala"}
+        return request
+
+request.参数， 这里的参数支持requests所有参数，同时也可携带些自定义的参数，详情可参考[Request](source_code/Request.md)
+
+默认所有的解析函数在请求之前都会经过此下载中间件
+
+## 7. 自定义下载中间件
+
+与自定义解析函数类似，下载中间件也支持自定义，只需要在feapder.Request参数里指定个`download_midware`回调即可，写法如下：
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", download_midware=self.xxx)
+
+    def xxx(self, request):
+        """
+        我是自定义的下载中间件
+        :param request:
+        :return:
+        """
+        request.headers = {'User-Agent':"lalala"}
+        return request
+
+自定义的下载中间件只有指定的请求才会经过。其他未指定下载中间件的请求，还是会经过默认的下载中间件
+
+## 8. 校验
+
+```python
+def validate(self, request, response):
+    """
+    @summary: 校验函数, 可用于校验response是否正确
+    若函数内抛出异常，则重试请求
+    若返回True 或 None，则进入解析函数
+    若返回False，则抛弃当前请求
+    可通过request.callback_name 区分不同的回调函数，编写不同的校验逻辑
+    ---------
+    @param request:
+    @param response:
+    ---------
+    @result: True / None / False
+    """
+    pass
+```
+
+例如：
+
+```python
+def validate(self, request, response):
+    if response.status_code != 200:
+        raise Exception("response code not 200") # 重试
+
+    # if "哈哈" not in response.text:
+    #     return False # 抛弃当前请求
+```
+
+## 9. 失败重试
+
+框架支持重试机制，下载失败或解析函数抛出异常会自动重试请求。
+
+例如下面代码，校验了返回的code是否为200，非200抛出异常，触发重试
+
+    def parse(self, request, response):
+        if response.status_code != 200:
+            raise Exception("非法页面")
+
+默认最大重试次数为100次，我们可以引入配置文件或自定义配置来修改重试次数，详情参考[配置文件](source_code/配置文件.md)
+
+
+## 10. 爬虫配置
+
+爬虫配置支持自定义配置或引入配置文件`setting.py`的方式。
+
+配置文件：在工作区间的根目录下引入`setting.py`，具体参考[配置文件](source_code/配置文件.md)
+
+![-w261](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16138971894815.jpg)
+
+
+自定义配置：
+使用类变量`__custom_setting__`：
+
+    class AirSpiderTest(feapder.AirSpider):
+        __custom_setting__ = dict(
+            PROXY_EXTRACT_API="代理提取地址",
+        )
+
+上例是配置代理提取地址，以便爬虫使用代理，自定义配置支持配置文件中的所有参数。
+
+配置优先级： 自定义配置 > 配置文件，即自定义配置会覆盖配置文件里的配置信息，不过自定义配置只对自己有效，配置文件可以是多个爬虫公用的
+
+AirSpider不支持去重，因此配置文件中的去重配置无效
+
+## 11. 加快采集速度
+
+默认爬虫为1线程，我们可通过修改线程数来加快采集速度。除了在配置文件中修改或使用自定义配置外，可以在启动函数中传递线程数
+
+
+    if __name__ == "__main__":
+        AirSpiderTest(thread_count=10).start()
+
+## 12. 数据入库
+
+框架内封装了`MysqlDB`、`RedisDB`，与pymysql不同的是，MysqlDB 使用了线程池，且对方法进行了封装，使用起来更方便。RedisDB 支持 哨兵模式、集群模式。使用方法如下：
+
+导入
+
+    from feapder.db.mysqldb import MysqlDB
+    from feapder.db.redisdb import RedisDB
+
+以mysql为例，获取mysql对象
+
+方式1：若`setting.py` 或 `__custom_setting__`中指定了数据库连接信息，则可以直接以`db = MysqlDB()`方式获取
+
+    class AirSpiderTest(feapder.AirSpider):
+        __custom_setting__ = dict(
+            MYSQL_IP="localhost",
+            MYSQL_PORT = 3306,
+            MYSQL_DB = "feapder",
+            MYSQL_USER_NAME = "feapder",
+            MYSQL_USER_PASS = "feapder123"
+
+        )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = MysqlDB()
+
+方式2：若没配置文件，则MysqlDB需要传递连接信息
+
+    db = MysqlDB(
+            ip="localhost",
+            port=3306,
+            user_name="feapder",
+            user_pass="feapder123",
+            db="feapder"
+        )
+
+MysqlDB 的具体使用方法见 [MysqlDB](source_code/MysqlDB.md)
+
+RedisDB 的具体使用方法见 [RedisDB](source_code/RedisDB.md)
+
+框架也支持数据自动入库，详见[数据自动入库](usage/Spider?id=_5-数据自动入库)
+
+## 13. 浏览器渲染下载
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+使用方式：
+```python
+def start_requests(self):
+    yield feapder.Request("https://news.qq.com/", render=True)
+```
+在返回的Request中传递`render=True`即可
+
+框架支持`CHROME`、`EDGE`和`PHANTOMJS`浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+# 浏览器渲染
+WEBDRIVER = dict(
+    pool_size=1,  # 浏览器的数量
+    load_images=True,  # 是否加载图片
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="CHROME",  # CHROME、EDGE或PHANTOMJS,
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    render_time=0, # 渲染时长，即打开网页等待指定时间后再获取源码
+)
+```
+
+## 14. 自定义下载器
+
+自定义下载器即在下载中间件里下载，然后返回response即可，如使用httpx库下载以便支持http2
+
+
+```python
+import feapder
+import httpx
+
+
+class AirSpeedTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def download_midware(self, request):
+        with httpx.Client(http2=True) as client:
+            response = client.get(request.url)
+
+        return request, response
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    AirSpeedTest(thread_count=1).start()
+```
+
+注意，解析函数里的response已经变成了下载中间件返回的response，而非默认的。若想用xpath、css等解析功能，写法如下
+
+```python
+
+import feapder
+import httpx
+from feapder.network.selector import Selector
+
+
+class AirSpeedTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def download_midware(self, request):
+        with httpx.Client(http2=True) as client:
+            response = client.get(request.url)
+
+        return request, response
+
+    def parse(self, request, response):
+        selector = Selector(response.text)
+        title = selector.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+## 15. 主动停止爬虫
+
+```
+import feapder
+
+
+class AirTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def parse(self, request, response):
+        self.stop_spider() # 停止爬虫，可以在任意地方调用该方法
+
+
+if __name__ == "__main__":
+    AirTest().start()
+```
+
+## 16. 完整的代码示例
+
+AirSpider：https://github.com/Boris-code/feapder/blob/master/tests/air-spider/test_air_spider.py
+
+浏览器渲染：https://github.com/Boris-code/feapder/blob/master/tests/test_rander.py
+
+ 
+
+### 代码文件: docs\usage\BatchSpider.md
+ 
+# BatchSpider
+
+BatchSpider是一款分布式批次爬虫，对于需要周期性采集的数据，优先考虑使用本爬虫。
+
+## 1. 创建项目
+
+参考 [Spider](usage/Spider?id=_1-创建项目)
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例:
+
+```python
+feapder create -s batch_spider_test
+
+请选择爬虫模板
+  AirSpider
+  Spider
+  TaskSpider
+> BatchSpider
+```
+
+生成如下
+
+```
+import feapder
+
+
+class BatchSpiderTest(feapder.BatchSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="feapder",
+        MYSQL_USER_NAME="feapder",
+        MYSQL_USER_PASS="feapder123",
+    )
+
+    def start_requests(self, task):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    spider = BatchSpiderTest(
+        redis_key="xxx:xxxx",  # 分布式爬虫调度信息存储位置
+        task_table="",  # mysql中的任务表
+        task_keys=["id", "xxx"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="xxx_batch_record",  # mysql中的批次记录表
+        batch_name="xxx(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    # spider.start_monitor_task() # 下发及监控任务
+    spider.start() # 采集
+```
+
+因BatchSpider是基于redis做的分布式，mysql来维护任务种子及批次信息，因此模板代码默认给了redis及mysql的配置方式，连接信息需按真实情况修改
+
+## 3. 代码讲解
+
+配置信息：
+
+- REDISDB_IP_PORTS： 连接地址，若为集群或哨兵模式，多个连接地址用逗号分开，若为哨兵模式，需要加个REDISDB_SERVICE_NAME参数
+- REDISDB_USER_PASS： 连接密码
+- REDISDB_DB：数据库
+
+BatchSpider参数：
+
+1. redis_key：redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+    ![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+1. task_table：mysql中的任务表，为抓取的任务种子，需要运行前手动创建好
+2. task_keys：任务表里需要获取的字段，框架会将这些字段的数据查询出来，传递给爬虫，然后拼接请求
+3. task_state：任务表里表示任务完成状态的字段，默认是state。字段为整形，有4种状态（0 待抓取，1抓取完毕，2抓取中，-1抓取失败）
+4. batch_record_table：批次信息表，用于记录批次信息，由爬虫自动创建
+5. batch_name： 批次名称，可以理解成爬虫的名字，用于报警等
+6. batch_interval：批次周期 天为单位 若为小时 可写 1 / 24
+
+启动：BatchSpider分为master及work两种程序
+
+1. master负责下发任务，监控批次进度，创建批次等功能，启动方式：
+
+        spider.start_monitor_task()
+
+2. worker负责消费任务，抓取数据，启动方式：
+
+        spider.start()
+
+
+更详细的说明可查看 [BatchSpider进阶](source_code/BatchSpider进阶.md)
+
+## 4. 声明
+
+[Spider](usage/Spider.md)支持的方法BatchSpider都支持，使用方式一致，下面重点讲解不同之处
+
+## 5. 任务表
+
+任务表为存储任务种子的，表结构需要包含`id`、`任务状态`两个字段，如我们需要对某些地址进行采集，设计如下
+
+![-w752](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/22/16139762922842.jpg)
+
+建表语句：
+
+```sql
+CREATE TABLE `batch_spider_task` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) DEFAULT NULL,
+  `state` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
+
+也许有人会问，为什么要弄个任务表，直接把种子任务写到代码里不行么。答：可以的，可以用`AirSpider`或`Spider`这么搞。`BatchSpider`面向的场景是周期性抓取，如我们有1亿个商品需要更新，不可能把这1亿个商品id都写代码里，还是需要存储到一张表里，这个表即为任务表。
+
+为了保证每个商品都得以更新，需要引入抓取状态字段，本例为`state`字段。`state`字段有4种状态（0 待抓取，1抓取完毕，2抓取中，-1抓取失败）。框架下发任务时，会优先分批下发状态为0的任务到redis任务队列，并将这些已下发的任务状态更新为2，当0都下发完毕且redis任务队列中无任务，这时框架会检查任务表里是否还有状态为2的任务，若有则将这些任务视为丢失的任务，然后将这些状态为2的任务置为0，再次分批下发到redis任务队列。直到任务表里任务状态只有1和-1两种状态，才算采集完毕
+
+1 和 -1 两种状态是开发人员在代码里自己维护的。当任务做完时将任务状态更新为1，当任务无效时，将任务状态更新为-1。更新方法见[更新任务状态](usage/BatchSpider?id=_8-更新任务状态)
+
+注意：每个批次开始时，框架默认会重置状态非-1的任务为0，然后重新抓取。-1的任务永远不会抓取
+
+## 7. 拼接任务
+
+```
+def start_requests(self, task):
+    pass
+```
+        
+任务拼接在`start_requests`里处理。这里的task参数为BatchSpider启动参数中指定的`task_keys`对应的值
+
+如表`batch_spider_task`，现有任务信息如下：
+![-w398](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/22/16139773315622.jpg)
+
+启动参数配置如下，注意`task_keys=["id", "url"]`：
+
+```
+def crawl_test(args):
+    spider = test_spider.TestSpider(
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    if args == 1:
+        spider.start_monitor_task()  # 下发及监控任务
+    else:
+        spider.start()  # 采集
+```
+
+这时，start_requests的task参数值即为任务表里id与url对应的值。
+
+```
+    def start_requests(self, task):
+        # task 为在任务表中取出的每一条任务
+        id, url = task  # id， url为所取的字段，main函数中指定的
+        yield feapder.Request(url, task_id=id)
+
+```
+task值的获取方式，支持以下几种：
+
+```python
+# 列表方式
+id, url = task
+id = task[0]
+url = task[1]
+# 字典方式
+id, url = task.id, task.url
+id, url = task.get("id"), task.get("url")
+id, url = task["id"], task["url"]
+```
+
+
+## 8. 更新任务状态
+
+任务的完成状态与失败状态需要自己维护，为了更新这个状态，我们需要在请求中携带任务id，常规写法为 
+
+    yield feapder.Request(url, task_id=id)
+    
+当任务解析完毕后，可使用如下方法更新
+
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+    
+这个更新不是实时的，也会先流经ItemBuffer，然后在数据入库后批量更新
+
+## 9. 处理无效任务
+
+有些任务，可能就是有问题的，我们需要将其更新为-1，防止爬虫一直重试。除了在解析函数中判断当前任务是否有效外，框架还提供了两个函数
+
+```
+def exception_request(self, request, response):
+    """
+    @summary: 请求或者parser里解析出异常的request
+    ---------
+    @param request:
+    @param response:
+    ---------
+    @result: request / callback / None (返回值必须可迭代)
+    """
+
+    pass
+
+def failed_request(self, request, response):
+    """
+    @summary: 超过最大重试次数的request
+    ---------
+    @param request:
+    ---------
+    @result: request / item / callback / None (返回值必须可迭代)
+    """
+
+    pass
+```
+
+`exception_request`：处理请求失败或解析出异常的request，我们可以在这里切换request的cookie等，然后再`yield request`返回处理后的request
+
+`failed_request`：处理超过最大重试次数的request。我们可以在这里将任务状态更新为-1
+
+    def failed_request(self, request, response):
+        """
+        @summary: 超过最大重试次数的request
+        ---------
+        @param request:
+        ---------
+        @result: request / item / callback / None (返回值必须可迭代)
+        """
+
+        yield request
+        yield self.update_task_batch(request.task_id, -1) # 更新任务状态为-1
+
+超过最大重试次数的request会保存到redis里，key名以`z_failed_requsets`结尾。我们可以查看这个表里的失败任务，观察失败原因，以此来调整爬虫
+
+## 10.增量采集
+
+每个批次开始时，框架默认会重置状态非-1的任务为0，然后重新抓取。但是有些需求是增量采集的，做过的任务无需再次处理。重置任务是`init_task`方法实现的，我们可以将`init_task`方法置空来实现增量采集
+
+```
+    def init_task(self):
+        pass
+```
+
+## 11. 调试
+
+与[Spider调试](usage/Spider?id=_6-调试)类似。BatchSpider可以通过`to_DebugBatchSpider`转为调试爬虫，写法如下：
+
+```
+def test_debug():
+    spider = test_spider.TestSpider.to_DebugBatchSpider(
+        task_id=1,
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    spider.start()  # 采集
+```
+
+DebugBatchSpider爬虫支持传递`task_id`或直接传递`task`来指定任务。还支持其他参数，全部参数如下：
+
+    @param task_id:  任务id
+    @param task:  任务  task 与 task_id 二者选一即可
+    @param save_to_db: 数据是否入库 默认否
+    @param update_stask: 是否更新任务 默认否
+
+
+## 12. 运行BatchSpider
+
+与[Spider](usage/Spider?id=_7-运行多个spider)运行方式类似。但因每个爬虫都有maser和work两个入口，因此框架提供一种更方便的方式，写法如下
+
+```
+from spiders import *
+from feapder import ArgumentParser
+
+
+def crawl_test(args):
+    spider = test_spider.TestSpider(
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    if args == 1:
+        spider.start_monitor_task()  # 下发及监控任务
+    else:
+        spider.start()  # 采集
+        
+if __name__ == "__main__":
+
+    parser = ArgumentParser(description="批次爬虫测试")
+
+    parser.add_argument(
+        "--crawl_test", type=int, nargs=1, help="BatchSpider demo(1|2）", function=crawl_test
+    )
+
+    parser.start()
+    
+```
+
+运行master
+
+    python3 main.py --crawl_test 1
+
+运行worker
+
+    python3 main.py --crawl_test 2
+    
+crawl_test的args参数会接收1或2两个参数，以此来运行不同的程序
+
+## 13. 完整的代码示例
+
+[https://github.com/Boris-code/feapder/tree/master/tests/batch-spider](https://github.com/Boris-code/feapder/tree/master/tests/batch-spider)
+ 
+
+### 代码文件: docs\source_code\UserPool.md
+ 
+# 用户池使用说明
+
+用户池分为三种，使用场景如下
+1. `GuestUserPool`：游客用户池，用于从不需要登录的页面获取cookie
+2. `NormalUserPool`：普通用户池，管理大量账号的信息，从需要登录的页面获取cookie
+3. `GoldUserPool`：昂贵的用户池，用于账号单价较高，需要限制使用频率、使用时间的场景
+
+## GuestUserPool使用方式
+> 环境：redis
+
+### 导包
+```
+from typing import Optional
+
+from feapder.network.user_pool import GuestUser
+from feapder.network.user_pool import GuestUserPool
+```
+
+### 默认的用户池
+使用webdriver访问page_url生产cookie
+```
+user_pool = GuestUserPool(
+    "test:user_pool", page_url="https://www.baidu.com"
+)
+
+```
+
+### 自定义登录方法
+```
+class CustomGuestUserPool(GuestUserPool):
+    def login(self) -> Optional[GuestUser]:
+        # 此处为假数据，正常需通过网站获取cookie
+        user = GuestUser(
+            user_agent="xxx",
+            proxies="yyy",
+            cookies={"some_key": "some_value{}".format(time.time())},
+        )
+        return user
+
+user_pool = CustomGuestUserPool(
+    "test:user_pool", min_users=10, keep_alive=True
+)
+```
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user(block=True)
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+## NormalUserPool使用方式
+> 环境：redis、mysql
+
+### 导包
+```
+from feapder.network.user_pool import NormalUser
+from feapder.network.user_pool import NormalUserPool
+```
+
+### 自定义登录的方法
+```
+class CustomNormalUserPool(NormalUserPool):
+    def login(self, user: NormalUser) -> NormalUser:
+        # 此处为假数据，正常需通过登录网站获取cookie
+        username = user.username
+        password = user.password
+
+        # 登录获取cookie
+        cookie = "xxx"
+        user.cookies = cookie
+
+        return user
+
+user_pool = CustomNormalUserPool(
+    "test:user_pool",
+    table_userbase="test_userbase",
+    login_retry_times=0,
+    keep_alive=True,
+)
+```
+- table_userbase 为mysql里存储用户信息的表，此表会自动创建，需手动录入用户账密
+
+    例如：
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/12/22/16401504359853.jpg)
+
+
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user()
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+### 标记账号被封
+以后不再使用
+```
+user_pool.tag_user_locked(user.user_id)
+```
+
+## GoldUserPool使用方式
+> 环境：redis
+
+### 导包
+```
+from feapder.network.user_pool import GoldUser
+from feapder.network.user_pool import GoldUserPool
+```
+
+### 定义用户信息
+```
+users = [
+    GoldUser(
+        username="zhangsan",
+        password="1234",
+        max_use_times=10,
+        use_interval=5,
+    ),
+    GoldUser(
+        username="lisi",
+        password="1234",
+        max_use_times=10,
+        use_interval=5,
+        login_interval=50,
+    ),
+]
+```
+
+### 自定义登录的方法
+```
+class CustomGoldUserPool(GoldUserPool):
+    def login(self, user: GoldUser) -> GoldUser:
+        # 此处为假数据，正常需通过登录网站获取cookie
+        username = user.username
+        password = user.password
+
+        # 登录获取cookie
+        cookie = "zzzz"
+        user.cookies = cookie
+
+        return user
+
+user_pool = CustomGoldUserPool(
+    "test:user_pool",
+    users=users,
+    keep_alive=True,
+)
+```
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user()
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+
+### 获取指定用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user(username="用户名")
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+### 用户延时使用
+```
+user_pool.delay_use(user.user_id, delay_seconds)
+```
+
+### 用户独占使用
+某个用户被指定的爬虫独占使用，独占时间内其他爬虫不可使用
+```
+user = user_pool.get_user(
+    username="用户名",
+    used_for_spider_name="爬虫名"
+)
+```
+ 
+
+### 代码文件: docs\foreword\功能概览.md
+ 
+# FEAPDER
+
+## 1. 支持周期性采集
+
+周期性抓取是爬虫中常见的需求，如每日抓取一次商品的销量等，我们把每个周期称为一个批次。
+
+本框架支持批次采集，引入了批次表的概念，详细记录了每一批次的抓取状态
+
+![-w899](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084680404224.jpg)
+
+## 2. 支持分布式采集
+
+面对海量的数据，分布式采集必不可少的，本框架支持分布式，且可随时重启爬虫，任务不丢失
+
+## 3. 支持爬虫集成
+
+本功能可以将多个爬虫以插件的形式集成为一个爬虫，常用于采集周期一致，需求一致的，但需要采集多个数据源的项目
+
+## 4. 支持海量数据去重
+
+框架内置3种去重机制，通过简单的配置可对任务及数据自动去重，也可拿出来单独作为模块使用，支持批量去重。
+
+1. 临时去重：处理一万条数据约0.26秒。 去重一亿条数据占用内存约1.43G，可指定去重的失效周期
+2. 内存去重：处理一万条数据约0.5秒。 去重一亿条数据占用内存约285MB
+3. 永久去重：处理一万条数据约3.5秒。去重一亿条数据占用内存约285MB
+
+## 5. 数据采集完整性
+
+feapder对于每一条URL数据的抓取采取了强状态的控制，做到采集任务中URL抓取100%不丢失，即使多次尝试失败的URL也会进入错误队列并记录失败原因日志。这一特性对于很多强依赖采集数据的业务场景非常重要，保证数据用的放心。
+
+## 6. 数据自动入库
+
+只需要根据数据库表自动生成item，然后给item属性赋值，直接yield 返回即可批量入库
+
+## 7. 支持Debug模式
+
+爬虫支持debug模式，debug模式下默认数据不入库、不修改任务状态。可针对某个任务进行调试，方便开发
+
+## 8. 完善的报警机制
+
+为了保证数据的全量性、准确性、时效性，本框架内置报警机制，有了这些报警，我们可以实时掌握爬虫状态
+
+1. 实时计算爬虫抓取速度，估算剩余时间，在指定的抓取周期内预判是否会超时
+
+    ![-w657](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084718683378.jpg)
+
+
+2. 爬虫卡死报警
+
+    ![-w501](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084718974597.jpg)
+
+3. 爬虫任务失败数过多报警，可能是由于网站模板改动或封堵导致
+
+    ![-w416](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/29/16092335882158.jpg)
+
+## 9. 下载监控
+
+框架对请求总数、成功数、失败数、解析异常数进行监控，将数据点打入到infuxdb，结合Grafana面板，可方便掌握抓取情况
+
+![-w1299](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/09/16128568548280.jpg)
+
+
+
+ 
+
+### 代码文件: docs\source_code\logger.md
+ 
+# 日志配置及使用
+
+## 日志配置
+
+见配置文件，相关配置如下：
+
+```python
+LOG_NAME = os.path.basename(os.getcwd())
+LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+LOG_LEVEL = "DEBUG"
+LOG_COLOR = True  # 是否带有颜色
+LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+LOG_MODE = "w"  # 写文件的模式
+LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+LOG_ENCODING = "utf8"  # 日志文件编码
+OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+```
+
+框架屏蔽了requests、selenium等一些第三方库的日志，OTHERS_LOG_LEVAL是用来控制这些第三库日志等级的。
+
+## 使用日志工具
+
+
+```python
+from feapder.utils.log import log
+
+log.debug("xxx")
+log.info("xxx")
+log.warning("xxx")
+log.error("xxx")
+log.critical("xxx")
+```
+
+默认是带有颜色的日志：
+
+![-w583](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/08/06/16282311862710.jpg)
+
+日志等级：CRITICAL > ERROR > WARNING > INFO > DEBUG
+
+ 
+
+### 代码文件: docs\source_code\MysqlDB.md
+ 
+# MysqlDB
+
+MysqlDB具有断开自动重连特性，支持多线程下操作，内置连接池，最大连接数100
+
+## 连接
+
+```python
+from feapder.db.mysqldb import MysqlDB
+
+
+db = MysqlDB(
+    ip="localhost", port=3306, db="feapder", user_name="feapder", user_pass="feapder123"
+)
+```
+
+若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+```python
+db = MysqlDB()
+```
+    
+或者可以根据url连接
+
+```python
+db = MysqlDB.from_url("mysql://username:password@ip:port/db?charset=utf8mb4")
+```
+    
+## 方法
+
+> MysqlDB封装了增删改查等方法，方便使用
+
+### 查
+
+```python
+def find(self, sql, limit=0, to_json=False):
+    """
+    @summary:
+    无数据： 返回()
+    有数据： 若limit == 1 则返回 (data1, data2)
+            否则返回 ((data1, data2),)
+    ---------
+    @param sql:
+    @param limit:
+    @param to_json 是否将查询结果转为json
+    ---------
+    @result:
+    """
+```
+    
+
+### 增
+
+```python
+def add(self, sql, exception_callfunc=None):
+    """
+    Args:
+        sql:
+        exception_callfunc: 异常回调
+
+    Returns:添加行数
+
+    """
+```
+
+```python
+def add_smart(self, table, data: Dict, **kwargs):
+    """
+    添加数据, 直接传递json格式的数据，不用拼sql
+    Args:
+        table: 表名
+        data: 字典 {"xxx":"xxx"}
+        **kwargs:
+
+    Returns:添加行数
+
+    """
+```
+
+
+```python
+def add_batch(self, sql, datas: List[Dict]):
+    """
+    @summary: 批量添加数据
+    ---------
+    @ param sql: insert ignore into (xxx, xxx) values (%s, %s, %s)
+    @ param datas: 列表 [{}, {}, {}]
+    ---------
+    @result:添加行数
+    """
+```
+
+```python
+def add_batch_smart(self, table, datas: List[Dict], **kwargs):
+    """
+    批量添加数据, 直接传递list格式的数据，不用拼sql
+    Args:
+        table: 表名
+        datas: 列表 [{}, {}, {}]
+        **kwargs:
+
+    Returns: 添加行数
+
+    """
+```
+
+### 更新
+
+```python
+def update(self, sql):
+    pass
+```
+
+```python
+def update_smart(self, table, data: Dict, condition):
+    """
+    更新, 不用拼sql
+    Args:
+        table: 表名 
+        data: 数据 {"xxx":"xxx"}
+        condition: 更新条件 where后面的条件，如 condition='status=1'
+
+    Returns: True / False
+    
+    """
+```
+
+### 删除
+
+```python
+def delete(self, sql):
+    """
+    删除
+    Args:
+        sql: 
+
+    Returns: True / False
+
+    """
+```
+
+### 执行其他sql
+
+```python
+def execute(self, sql):
+    pass
+```
+ 
+
+### 代码文件: docs\question\运行问题.md
+ 
+# 运行问题
+
+## 1. 二次运行时卡住，不继续抓取
+
+![1779423237](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/11/1779423237.jpg)
+
+**原因：**
+
+因爬虫支持分布式和任务防丢，为防止任务抢占和任务丢失，巧妙的利用了redis有序集合来存储任务。
+
+策略：有序集合有个分数，爬虫取任务时，只取小于当前时间戳分数的任务，同时将任务分数修改为当前时间戳+10分钟，当任务做完时，再主动将任务删除。
+
+目的：将取到的任务分数修改成10分钟后，可防止其他爬虫节点取到同样的任务，同时当爬虫意外退出后，任务也不会丢失，10分钟后还可以取到。但也会导致有时爬虫启动时，明明有任务，却处于等待任务的情况。
+
+应对等待情况：
+
+1. 可将任务清空，重新抓取，可直接操作redis清空，或通过传参方式
+
+        spider = test_spider.TestSpider(redis_key="feapder:test_spider", delete_keys="*z_requsets")
+        spider.start()
+        
+    delete_keys为需要删除的key，类型: 元组/bool/string，支持正则; 常用于清空任务队列，否则重启时会断点续爬，如写成`delete_keys=True`也是可以的
+
+1. 手动修改任务分数为小于当前时间搓的分数
+
+    ![-w917](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/11/16154327722622.jpg)
+
+1. 等10分钟就好了
+
+2. 用debug模式开发
+
+ 
+
+### 代码文件: docs\source_code\RedisDB.md
+ 
+# RedisDB
+
+RedisDB支持**哨兵模式**、**集群模式**与单节点的**普通模式**，封装了操作redis的常用的方法
+
+## 连接
+
+> 若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+### 普通模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="localhost:6379", db=0, user_pass=None)
+```
+
+使用地址连接
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB.from_url("redis://[[username]:[password]]@[host]:[port]/[db]")
+```
+
+### 哨兵模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379", db=0, user_pass=None, service_name="my_master")
+```
+
+注意：多个地址用逗号分隔，需传递`service_name`
+
+对应setting配置文件，配置方式为：
+
+```python
+REDISDB_IP_PORTS = "172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379"
+REDISDB_USER_PASS = ""
+REDISDB_DB = 0
+REDISDB_SERVICE_NAME = "my_master"
+```
+
+### 集群模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379", db=0, user_pass=None)
+```
+
+注意：多个地址用逗号分隔，不用传递`service_name`
+
+对应setting配置文件，配置方式为：
+
+```python
+REDISDB_IP_PORTS = "172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379"
+REDISDB_USER_PASS = ""
+REDISDB_DB = 0
+```
+
+## 方法：
+
+详见源码，此处不一一列举， 源码：`feapder.db.redisdb`
+ 
+
+### 代码文件: docs\source_code\Response.md
+ 
+
+
+# Response
+
+Response 对 requests 返回的response进行了封装，因此支持response所有方法
+
+## 功能点
+
+### 1. 智能解码
+
+Response 对返回的文本进行了智能解码，可解决绝大多数乱码问题
+
+### 2. 智能转为绝对连接
+
+若网页源码里的连接是相对连接，会自动转为绝对连接
+
+### 3. 支持xpath选择器
+
+例如：
+
+定位a标签连接，返回SelectorList
+```python
+response.xpath("//a/@href")
+```
+
+取第一个连接文本
+
+```python
+response.xpath("//a/@href").extract_first()
+```
+
+取全部连接文本列表
+```python
+response.xpath("//a/@href").extract()
+```
+
+### 4. 支持css选择器
+
+例如：
+
+定位a标签连接，返回SelectorList
+```python
+response.css("a::attr(href)")
+```
+
+取第一个连接文本
+
+```python
+response.css("a::attr(href)").extract_first()
+```
+
+取全部连接文本列表
+```python
+response.css("a::attr(href)").extract()
+```
+
+### 5. 支持正则
+
+获取全部
+```python
+def re(self, regex, replace_entities=False):
+    """
+    @summary: 正则匹配
+    ---------
+    @param regex: 正则或者re.compile
+    @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+    ---------
+    @result: 列表
+    """
+```
+
+获取第一个
+```python
+def re_first(self, regex, default=None, replace_entities=False):
+    """
+    @summary: 正则匹配
+    ---------
+    @param regex: 正则或者re.compile
+    @param default: 未匹配到， 默认值
+    @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+    ---------
+    @result: 第一个值或默认值
+    """
+```
+
+例如获取全部连接：
+
+```
+response.re("<a.*?href='(.*?)'")
+```
+
+### 6. 支持BeautifulSoup
+
+默认的features为`html.parser`
+
+```python
+def bs4(self, features="html.parser"):
+    pass
+```
+
+例如获取标题：
+
+```python
+response.bs4().title
+```
+
+
+### 7. 定位混用
+
+xpath、css两种定位方式可混用，如：
+
+```
+response.css("a").xpath("./@href").extract()
+```
+
+### 8. 取文本
+
+取文本有两种方式
+
+方式1：这种直接取的源码
+
+```
+response.text
+```
+
+方式2：这种会将源码转为dom树，然后获取转换之后的文本
+
+```
+response.extract()
+```
+
+如：网页源码`<a class='page-numbers'...`  会被处理成`<a class="page-numbers"`
+
+### 9. 取json
+
+```
+response.json
+```
+
+### 10. 查看下载内容
+
+```
+response.open()
+```
+
+这个函数会打开浏览器，渲染下载内容，方便查看下载内容是否与数据源一致
+
+### 11. 更新response.text的值
+
+```
+response.text = ""
+```
+常用于浏览器渲染模式，如页面有变化，可以取最新的页面内容更新到response.text里，然后使用response的选择器提取内容
+
+### 12. 将普通response转为feapder.Response
+
+```
+response = feapder.Response(response)
+```
+
+### 13. 将源码转为feapder.Response
+
+```
+response = feapder.Response.from_text(text=html, url="", cookies={}, headers={})
+```
+
+url是网页的地址，用来将html里的链接转为绝对链接，若不提供，则无法转换
+
+示例：
+```
+import feapder
+
+html = "<a href='/666'>hello word</a>"
+response = feapder.Response.from_text(text=html, url="https://www.feapder.com", cookies={}, headers={})
+print(response.xpath("//a/@href").extract_first())
+
+输出：https://www.feapder.com/666
+```
+
+### 14. 序列化与反序列化
+
+序列化 
+
+    response_dict = response.to_dict
+
+反序列化 
+
+    feapder.Response.from_dict(response_dict)
+    
+
+### 其他
+
+其他方法与requests的response一致，但有如下差异
+
+## 差异
+
+feapder.Response 与 requests的response有以下几点差异，使用时需要注意
+
+### 1. json方法
+
+获取json数据时，常规的response写法如下：
+
+```
+response.json()
+```
+
+feapder.Response写法如下
+
+```
+response.json
+```
+
+做到了与response.text使用方式保持一致
+
+### 2. 设置编码
+
+常规的response写法如下：
+
+```
+response.enconding="utf-8"
+```
+
+feapder.Response写法如下
+```
+response.code="utf-8"
+```
+做了简化，不过`response.enconding`也支持
+
+### 3. 解码方式(二进制转字符串方式)
+
+
+解码方式有3种 `strict`、`replace`、`ignore`
+
+1. strict：严格模式，一旦有某个字符解不出来，就会报错
+2. replace：替换模式，某个字符解不出来时，替换为乱码字符
+3. ignore：忽略模式，某个字符解不出来时，忽略这个字符
+
+例如：
+
+```shell
+>>>content = b'\xe4\x3f\xa0\xe5\xa5\xbd'
+>>>str(content, errors='replace')
+'�?�好'
+>>>str(content, errors='strict')
+Traceback (most recent call last):
+  File "/Users/Boris/workspace/feapder/venv2/lib/python3.6/site-packages/IPython/core/interactiveshell.py", line 3343, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "<ipython-input-11-a129a2aa6283>", line 1, in <module>
+    str(content, errors='strict')
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe4 in position 0: invalid continuation byte
+>>>str(content, errors='ignore')
+'?好'
+```
+
+常规的response在解码时，使用了`replace`模式，这样会导致数据中可能混杂着乱码，我们不能及时发现.
+
+feapder.Response默认使用了`strict`默认，一旦某个字符解析失败，就会抛异常，防止乱码混入。然后通过人工指定编码，解决乱码问题。
+
+若想修改feapder.Response的解码方式，可通过如下方式指定
+
+```
+response.encoding_errors = "strict"  # strict / replace / ignore
+```
+
+
+
+ 
+
+### 代码文件: docs\usage\TaskSpider.md
+ 
+# TaskSpider
+
+TaskSpider是一款分布式爬虫，内部封装了取种子任务的逻辑，内置支持从redis或者mysql获取任务，也可通过自定义实现从其他来源获取任务
+
+## 1. 创建项目
+
+参考 [Spider](usage/Spider?id=_1-创建项目)
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例:
+
+```python
+feapder create -s task_spider_test
+
+请选择爬虫模板
+  AirSpider
+  Spider
+> TaskSpider
+  BatchSpider
+```
+
+示例代码：
+
+```python
+import feapder
+from feapder import ArgumentParser
+
+
+class TaskSpiderTest(feapder.TaskSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    # redis 必须，mysql可选
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="feapder",
+        MYSQL_USER_NAME="feapder",
+        MYSQL_USER_PASS="feapder123",
+    )
+    
+    def add_task(self):
+        # 加种子任务 框架会调用这个函数，方便往redis里塞任务，但不能写成死循环。实际业务中可以自己写个脚本往redis里塞任务
+        self._redisdb.zadd(self._task_table, {"id": 1, "url": "https://www.baidu.com"})
+
+    def start_requests(self, task):
+        task_id, url = task
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+        # mysql 需要更新任务状态为做完 即 state=1
+        # yield self.update_task_batch(request.task_id)
+        
+def start(args):
+    """
+    用mysql做种子表
+    """
+    spider = TaskSpiderTest(
+        task_table="spider_task", # 任务表名
+        task_keys=["id", "url"], # 表里查询的字段
+        redis_key="test:task_spider", # redis里做任务队列的key
+        keep_alive=True, # 是否常驻
+    )
+    if args == 1:
+        spider.start_monitor_task()
+    else:
+        spider.start()
+
+
+def start2(args):
+    """
+    用redis做种子表
+    """
+    spider = TaskSpiderTest(
+        task_table="spider_task2", # 任务表名
+        task_table_type="redis", # 任务表类型为redis
+        redis_key="test:task_spider", # redis里做任务队列的key
+        keep_alive=True, # 是否常驻
+        use_mysql=False, # 若用不到mysql，可以不使用
+    )
+    if args == 1:
+        spider.start_monitor_task()
+    else:
+        spider.start()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="测试TaskSpider")
+
+    parser.add_argument("--start", type=int, nargs=1, help="用mysql做种子表 (1|2）", function=start)
+    parser.add_argument("--start2", type=int, nargs=1, help="用redis做种子表 (1|2）", function=start2)
+
+    parser.start()
+
+    # 下发任务  python3 task_spider_test.py --start 1
+    # 采集  python3 task_spider_test.py --start 2
+```
+
+## 3. 代码讲解
+
+#### 3.1 main
+
+main函数为命令行参数解析，分别定义了两种获取任务的方式。start函数为从mysql里获取任务，前提是需要有任务表。start2函数为从redis里获取任务，指定了根任务的key为`spider_task2`，key的类型为zset
+
+启动：TaskSpider分为master及work两种程序
+
+1. master负责下发任务，监控批次进度，创建批次等功能，启动方式：
+
+        spider.start_monitor_task()
+
+2. worker负责消费任务，抓取数据，启动方式：
+
+        spider.start()
+
+#### 3.1 add_task: 
+
+框架内置的函数，在调用start_monitor_task时会自动调度此函数，用于初始化任务种子，若不需要，可直接删除此函数
+
+本代码示例为向redis的`spider_task2`的key加了个值为`{"id": 1, "url": "https://www.baidu.com"}`的种子
+
+
+
+
+
+ 
+
+### 代码文件: docs\usage\使用前必读.md
+ 
+# 使用前必读
+
+## 爬虫种类简介
+
+feapder爬虫框架内置三种爬虫
+
+1. AirSpider - 轻量级爬虫
+2. Spider - 分布式爬虫
+3. BatchSpider - 分布式批次爬虫
+
+**一、AirSpider :**
+
+轻量爬虫，学习成本低。面对一些数据量较少，无需断点续爬，无需分布式采集的需求，可采用此爬虫。
+ 
+**二、Spider :**
+
+分布式爬虫，适用于海量数据采集，支持断点续爬、爬虫报警、数据自动入库等功能
+
+
+**三、BatchSpider**
+
+分布式批次爬虫，对于需要周期性采集的数据，优先考虑使用本爬虫。
+
+本爬虫会自动维护个批次信息表，详细的记录了每个批次时间、任务完成情况、批次周期等信息，示例数据如下
+![-w899](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084680404224.jpg)
+
+另外本爬虫与其他爬虫最大的区别是，会维护个批次时间信息，本批次未完成下一批次不会开始。
+
+举个例子
+
+> 需求：每7天全量抓取一次商品价格信息。表结构需要包含每个批次信息
+
+表设计如下：
+
+| 字段 | 说明 |
+| --- | --- |
+| id | 主键 |
+| item_id | 商品id |
+| price | 价格 |
+| crawl_time | 采集时间 |
+| batch_date | 批次时间 |
+
+数据示例
+
+| id | item_id | price | crawl_time | batch_date |
+| --- | --- | --- | --- | --- |
+| 1 | 3213 | 99 | 2021-01-01 | 2021-01-01 |
+| 2 | 3214 | 90 | 2021-01-05 | 2021-01-01 |
+| 3 | 3213 | 95 | 2021-01-08 | 2021-01-08 |
+| 4 | 3214 | 92 | 2021-01-20| 2021-01-08 |
+
+从数据示例中可以看到
+- id（1，2） 两条数据虽然是不同天采集的，但都归属于2021-01-01这个批次。
+- id（3，4） 为7天后抓取的新一批数据，归属于2021-01-08这个批次。
+- id为4的数琚，采集时间为20号，虽然已经超出了7天这个维度，但因是采集超时等某种原因导致，为了保证每个批次数据的完整性，仍会归属于2021-01-08这个批次。
+
+BatchSpider爬虫会自动维护这个batch_date， 有了这个batch_date，方便业务做时序数据展示
+
+并且在采集过程中，可随时重启爬虫，若本批次还有剩余任务，会继续抓取，若本批次结束了，下一批次未到时，爬虫会自动退出
+
+## 学习路线
+
+feapder虽然内置三种爬虫，但对于开发者暴露的接口一致。只需要继承不同的类即可，使用方式雷同。
+
+建议学习路线为 AirSpider->Spider->BatchSpider。因为后一个爬虫是基于前一个爬虫丰富而来的，与我们读书 小学->初中->高中这个路线类似
+
+ 
+
+### 代码文件: docs\source_code\dedup.md
+ 
+# Dedup
+
+Dedup是feapder大数据去重模块，不同于BloomFilter，去重受槽位数量影响，Dedup使用了弹性的去重机制，可容纳海量的数据去重。
+
+
+## 去重方式
+
+### 临时去重
+
+> 基于redis，支持批量，去重有时效性。去重一万条数据约0.26秒，一亿条数据占用内存约1.43G
+
+```python
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_ExpireFilter():
+    dedup = Dedup(
+        Dedup.ExpireFilter, expire_time=10, redis_url="redis://@localhost:6379/0"
+    )
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+
+### 内存去重
+
+> 基于内存，支持批量。去重一万条数据约0.5秒，一亿条数据占用内存约285MB
+
+```python
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_MemoryFilter():
+    dedup = Dedup(Dedup.MemoryFilter)  # 表名为test 历史数据3秒有效期
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+### 永久去重
+
+> 基于redis，支持批量，永久去重。 去重一万条数据约3.5秒，一亿条数据占用内存约285MB
+
+```python
+from feapder.dedup import Dedup
+
+def test_BloomFilter():
+    dedup = Dedup(Dedup.BloomFilter, redis_url="redis://@localhost:6379/0")
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+## 过滤数据
+
+Dedup可以通过如下方法，过滤掉已存在的数据
+
+
+```python
+from feapder.dedup import Dedup
+
+def test_filter():
+    dedup = Dedup(Dedup.BloomFilter, redis_url="redis://@localhost:6379/0")
+
+    # 制造已存在数据
+    datas = ["xxx", "bbb"]
+    dedup.add(datas)
+
+    # 过滤掉已存在数据 "xxx", "bbb"
+    datas = ["xxx", "bbb", "ccc"]
+    dedup.filter_exist_data(datas)
+    assert datas == ["ccc"]
+```
+
+## Dedup参数
+
+- **filter_type**：去重类型，支持BloomFilter、MemoryFilter、ExpireFilter三种
+- **redis_url**不是必须传递的，若项目中存在setting.py文件，且已配置redis连接方式，则可以不传递redis_url
+
+    ![-w294](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/07/16151133801599.jpg)
+
+    ```
+    import feapder
+    from feapder.dedup import Dedup
+
+    class TestSpider(feapder.Spider):
+        def __init__(self, *args, **kwargs):
+            self.dedup = Dedup() # 默认是永久去重
+    ```
+
+- **name**: 过滤器名称 该名称会默认以dedup作为前缀 `dedup:expire_set:[name]`或`dedup:bloomfilter:[name]`。 默认ExpireFilter name=过期时间，BloomFilter name=`dedup:bloomfilter:bloomfilter`
+
+ ![-w499](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/07/16151136442498.jpg)
+
+ 若对不同数据源去重，可通过name参数来指定不同去重库
+
+- **absolute_name**：过滤器绝对名称 不会加dedup前缀
+- **expire_time**：ExpireFilter的过期时间 单位为秒，其他两种过滤器不用指定
+- **error_rate**：BloomFilter/MemoryFilter的误判率 默认为0.00001
+- **to_md5**：去重前是否将数据转为MD5，默认是
+
+## 爬虫中使用
+
+框架支持对请求和入库的数据进行去重，仅需要在[配置文件](source_code/配置文件)中进行配置即可
+
+```python
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+或者可以直接导入此去重模块使用
+
+```python
+from feapder.dedup import Dedup
+```
+
+
+ 
+
+### 代码文件: docs\index.html
+```html
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <title>feapder官方文档|feapder-document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="feapder官方文档">
+  <meta name="keywords" content="feapder官方文档,feapder文档,feapder document,feapder教程,feapder">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="baidu-site-verification" content="code-5vXrzaZgX6" />
+  <link rel="stylesheet" href="./lib/docsify/lib/themes/vue.css">
+
+  <meta name="robots" content="all" />
+
+  <meta name="author" content="Boris" />
+  <meta property="og:title" content="feapder官方文档|feapder-document" />
+  <meta property="og:url" content="https://www.feapder.com" />
+  <meta property="og:image" content="http://www.spidertools.cn/img/feapder.5d54c199.png" />
+  <meta property="og:description" content="feapder爬虫框架官方文档" />
+  <meta property="og:site_name" content="feapder爬虫框架官方文档" />
+
+  <!-- 谷歌统计 -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KS7S55K3YN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || []
+    function gtag() { dataLayer.push(arguments) }
+    gtag('js', new Date())
+
+    gtag('config', 'G-KS7S55K3YN');
+  </script>
+
+  <!-- 百度统计 -->
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script")
+      hm.src = "https://hm.baidu.com/hm.js?f45b875b62fd14ec127215dd2057b3cd"
+      var s = document.getElementsByTagName("script")[0]
+      s.parentNode.insertBefore(hm, s)
+    })();
+  </script>
+
+
+</head>
+
+<body>
+  <div id="app"></div>
+  <!-- docsify-edit-on-github -->
+  <script src="./lib/docsify/lib/plugins/docsify-edit-on-github.js"></script>
+
+  <script>
+    window.$docsify = {
+      name: 'feapder-document',
+      repo: 'https://github.com/Boris-code/feapder',
+      loadNavbar: true,
+      loadSidebar: true,
+      coverpage: true,
+      auto2top: true,
+      maxLevel: 2,
+      subMaxLevel: 3,
+      search: {
+        placeholder: '搜索',
+        noData: '找不到结果!',
+        depth: 3
+      },
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',//防止意外回退
+        '/.*/_navbar.md': '/_navbar.md'
+      },
+      ga: 'UA-144208445-1',
+      plugins: [
+        function (hook) {
+          var header = [
+            '<p>',
+            '<a href="https://www.qg.net/product/proxyip.html?web=feapder&keyword=%E4%BB%A3%E7%90%86ip&campaign=w-1" target="_blank">',
+            '<img src="/images/qingguo.jpg" alt="青果代理" width="640px" height="60px">',
+            '</a>',
+            '</p>'
+          ].join('')
+          var footer = [
+            '<hr/>',
+            '<footer style="text-align: center">',
+            '<span><a href="https://beian.miit.gov.cn/" target="_blank">辽ICP备2021010524号-2</a></span>',
+            '</footer>'
+          ].join('')
+          hook.afterEach(function (html) {
+            // var isReadme = window.location.href.indexOf("README");
+            var isReadme = 0 // 可以投放广告
+            if (isReadme === 1) {
+              return header + html + footer
+            } else {
+              return html + footer
+            }
+          })
+        },
+        // docsify-edit-on-github
+        EditOnGithubPlugin.create("https://github.com/Boris-code/feapder/tree/master/docs/",
+          null,
+          '修正此页'
+        )
+      ]
+    }
+  </script>
+
+  <!--gitter 聊天室  -->
+  <script>
+      ((window.gitter = {}).chat = {}).options = {
+      //需要在gitter上创建rootm
+      room: 'feapder/community',
+      preload: true,
+      activation: true
+    };
+  </script>
+  <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
+  <!-- 评论 -->
+  <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+  <script>
+    function loadGitalk() {
+      console.log("load gitalk")
+      var path = location.href.match(/(?<=#)[^?]*/g)
+      path = path ? path[0] : "/"
+      var gitalk = new Gitalk({
+        clientID: '9bbc1bce85637dc3fd74',
+        clientSecret: 'fff857ba856732b11b0e38e18103ff3444c667d6',
+        repo: 'feapder',
+        owner: 'Boris-code',
+        admin: 'Boris-code',
+        proxy: 'https://shielded-brushlands-08810.herokuapp.com/https://github.com/login/oauth/access_token',
+        id: decodeURI(path), // 取地址#xxx? 中的xxx， 防止默认的评论id超过50字
+        // facebook-like distraction free mode
+        distractionFreeMode: false
+      })
+      return gitalk
+    }
+    var gitalk = loadGitalk()
+
+    // 监听URL中hash的变化，如果发现换了一个MD文件，那么刷新页面，解决整个网站使用一个gitalk评论issues的问题。
+    window.onhashchange = function (event) {
+      if (event.newURL.indexOf("#") !== -1 && event.oldURL.indexOf("#") !== -1) {
+        if (event.newURL.match(/(?<=#)[^?]*/g)[0] !== event.oldURL.match(/(?<=#)[^?]*/g)[0]) {
+          if (event.newURL.indexOf("?") === -1) {
+            gitalk = loadGitalk()
+          }
+        }
+      }
+    }
+        // 由于docsify/lib/plugins/gitalk.min.js文件中已经有下面代码了，所以不需要在写一次了
+        // gitalk.render('gitalk-container');    // 渲染Gitalk评论组件
+  </script> -->
+
+  <!-- 其他插件 -->
+  <script src="./lib/docsify/lib/docsify.min.js"></script>
+  <script src="./lib/docsify/lib/plugins/ga.js"></script>
+  <script src="./lib/docsify/lib/plugins/search.js"></script>
+  <script src="./lib/docsify-copy-code/docsify-copy-code.min.js"></script>
+  <script src="./lib/prismjs/components/prism-bash.js"></script>
+  <script src="./lib/prismjs/components/prism-java.js"></script>
+  <script src="./lib/prismjs/components/prism-sql.js"></script>
+  <script src="./lib/prismjs/components/prism-yaml.js"></script>
+  <script src="./lib/prismjs/components/prism-python.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <!-- 分页导航 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+
+</body>
+
+</html>
+```
+
+### 代码文件: docs\robots.txt
+```txt
+User-agent: *
+```
+
+### 代码文件: docs\usage\Spider.md
+ 
+# Spider
+
+Spider是一款基于redis的分布式爬虫，适用于海量数据采集，支持断点续爬、爬虫报警、数据自动入库等功能
+
+## 1. 创建项目
+
+创建项目这一步不是必须的，一个脚本可以解决的需求，可直接创建爬虫。若需求比较复杂，需要写多个爬虫，那么最好用项目形式把这些脚本管理起来。
+
+命令参考：[命令行工具](command/cmdline.md?id=_1-创建爬虫项目)
+
+示例:
+
+    feapder create -p spider-project
+    
+创建好项目后，开发时我们需要将项目设置为工作区间，否则引入非同级目录下的文件时，编译器会报错。不过因为main.py在项目的根目录下，因此不影响正常运行。
+
+![-w925](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139218044066.jpg)
+
+设置工作区间方式（以pycharm为例）：项目->右键->Mark Directory as -> Sources Root
+
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例: 
+
+```python
+feapder create -s spider_test
+
+请选择爬虫模板
+  AirSpider
+> Spider
+  TaskSpider
+  BatchSpider
+```
+
+生成如下
+
+
+    import feapder
+
+
+    class SpiderTest(feapder.Spider):
+        # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+        __custom_setting__ = dict(
+            REDISDB_IP_PORTS="localhost:6379", REDISDB_USER_PASS="", REDISDB_DB=0
+        )
+    
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+    
+        def parse(self, request, response):
+            print(response)
+    
+    
+    if __name__ == "__main__":
+        SpiderTest(redis_key="xxx:xxx").start()
+
+
+因Spider是基于redis做的分布式，因此模板代码默认给了redis的配置方式，连接信息需按真实情况修改
+
+## 3. 代码讲解
+
+配置信息：
+
+- REDISDB_IP_PORTS： 连接地址，若为集群或哨兵模式，多个连接地址用逗号分开，若为哨兵模式，需要加个REDISDB_SERVICE_NAME参数
+- REDISDB_USER_PASS： 连接密码
+- REDISDB_DB：数据库
+
+Spider参数：
+
+redis_key为redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+更详细的说明可查看 [Spider进阶](source_code/Spider进阶.md)
+
+## 4. 声明
+
+[AirSpider](usage/AirSpider.md)支持的方法Spider都支持，使用方式一致，下面重点讲解不同之处
+
+## 5. 数据自动入库
+
+除了导入MysqlDB这种方式外，Spider支持数据自动批量入库。我们需要将数据封装为一个item，然后返回给框架即可。步骤如下：
+
+1.创建item，命令参考[命令行工具](command/cmdline.md?id=_3-创建-item)。这里我们创建了个SpiderDataItem， 生成的代码如下：
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None  # type : int(10) unsigned | allow_null : NO | key : PRI | default_value : None | extra : auto_increment | column_comment : 
+        self.title = None  # type : varchar(255) | allow_null : YES | key :  | default_value : None | extra : | column_comment :
+```
+
+
+2.给item赋值，然后yield返回即可
+
+代码示例：
+
+![-w682](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139031333228.jpg)
+
+返回item后，item会流经到框架的ItemBuffer, ItemBuffer每.05秒或当item数量积攒到5000个，便会批量将这些item批量入库。表名为类名去掉Item的小写，如SpiderDataItem数据会落入到spider_data表。
+
+Item详细介绍参考[Item](source_code/Item.md)
+
+[comment]: <> (ItemBuffer详细介绍请参考[ItemBuffer]&#40;source_code/ItemBuffer.md&#41;)
+
+## 6. 调试
+
+开发过程中，我们可能需要针对某个请求进行调试，常规的做法是修改下发任务的代码。但这样并不好，改来改去可能把之前写好的逻辑搞乱了，或者忘记改回来直接发布了，又或者调试的数据入库了，污染了库里已有的数据，造成了很多本来不应该发生的问题。
+
+本框架支持Debug爬虫，可针对某条任务进行调试，写法如下：
+
+    if __name__ == "__main__":
+        spider = SpiderTest.to_DebugSpider(
+            redis_key="feapder:spider_test", request=feapder.Request("http://www.baidu.com")
+        )
+        spider.start()
+    
+对比下之前的启动方式
+
+    spider = SpiderTest(redis_key="feapder:spider_test")
+    spider.start()
+    
+可以看到，代码中 `to_DebugSpider`方法可以将原爬虫直接转为debug爬虫，然后通过传递request参数抓取指定的任务。
+
+通常结合断点来进行调试，debug模式下，运行产生的数据默认不入库
+
+除了指定request参数外，还可以指定`request_dict`参数，request_dict接收字典类型，如`request_dict={"url":"http://www.baidu.com"}`, 其作用于传递request一致。request 与 request_dict 二者选一传递即可
+
+## 7. 运行多个Spider
+
+通常，一个项目下可能存在多个爬虫，为了规范，建议启动入口统一放到项目下的main.py中，然后以命令行的方式运行指定的文件。
+
+例如如下项目：
+
+![-w300](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139224711465.jpg)
+
+项目中包含了两个spider，main.py写法如下：
+
+```
+from spiders import *
+from feapder import Request
+from feapder import ArgumentParser
+
+
+def test_spider():
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider")
+    spider.start()
+
+
+def test_spider2():
+    spider = test_spider.TestSpider2(redis_key="feapder:test_spider2")
+    spider.start()
+
+
+def test_debug_spider():
+    # debug爬虫
+    spider = test_spider.TestSpider.to_DebugSpider(
+        redis_key="feapder:test_spider", request=Request("http://www.baidu.com")
+    )
+    spider.start()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Spider测试")
+
+    parser.add_argument(
+        "--test_spider", action="store_true", help="测试Spider", function=test_spider
+    )
+    parser.add_argument(
+        "--test_spider2", action="store_true", help="测试Spider2", function=test_spider2
+    )
+    parser.add_argument(
+        "--test_debug_spider",
+        action="store_true",
+        help="测试DebugSpider",
+        function=test_debug_spider,
+    )
+
+    parser.start()
+```
+
+这里使用了`ArgumentParser`模块，使其支持命令行参数，如运行test_spider
+
+    python3 main.py --test_spider
+    
+## 8. 分布式
+
+分布式说白了就是启动多个进程，处理同一批任务。`Spider`支持启动多份，且不会重复发下任务，我们可以在多个服务器上部署启动，也可以在同一个机器上启动多次。
+    
+## 9. 完整的代码示例
+
+[https://github.com/Boris-code/feapder/tree/master/tests/spider](https://github.com/Boris-code/feapder/tree/master/tests/spider)
+
+ 
+
+### 代码文件: docs\README.md
+ 
+# FEAPDER
+
+![](https://img.shields.io/badge/python-3.6-brightgreen)
+![](https://img.shields.io/github/watchers/Boris-code/feapder?style=social)
+![](https://img.shields.io/github/stars/Boris-code/feapder?style=social)
+![](https://img.shields.io/github/forks/Boris-code/feapder?style=social)
+[![Downloads](https://pepy.tech/badge/feapder)](https://pepy.tech/project/feapder)
+[![Downloads](https://pepy.tech/badge/feapder/month)](https://pepy.tech/project/feapder)
+[![Downloads](https://pepy.tech/badge/feapder/week)](https://pepy.tech/project/feapder)
+
+## 简介
+
+1. feapder是一款上手简单，功能强大的Python爬虫框架，内置AirSpider、Spider、TaskSpider、BatchSpider四种爬虫解决不同场景的需求。
+2. 支持断点续爬、监控报警、浏览器渲染、海量数据去重等功能。
+3. 更有功能强大的爬虫管理系统feaplat为其提供方便的部署及调度
+
+读音: `[ˈfiːpdə]`
+
+![feapder](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/09/04/feapder.jpg)
+
+## 文档地址
+
+- 官方文档：https://feapder.com
+- github：https://github.com/Boris-code/feapder
+- 更新日志：https://github.com/Boris-code/feapder/releases
+- 爬虫管理系统：http://feapder.com/#/feapder_platform/feaplat
+
+
+## 环境要求：
+
+- Python 3.6.0+
+- Works on Linux, Windows, macOS
+
+## 安装
+
+From PyPi:
+
+精简版
+
+```shell
+pip install feapder
+```
+
+浏览器渲染版：
+```shell
+pip install "feapder[render]"
+```
+
+完整版：
+
+```shell
+pip install "feapder[all]"
+```
+
+三个版本区别：
+
+1. 精简版：不支持浏览器渲染、不支持基于内存去重、不支持入库mongo
+2. 浏览器渲染版：不支持基于内存去重、不支持入库mongo
+3. 完整版：支持所有功能
+
+
+完整版可能会安装出错，若安装出错，请参考[安装问题](question/安装问题)
+
+## 小试一下
+
+创建爬虫
+
+```shell
+feapder create -s first_spider
+```
+
+创建后的爬虫代码如下：
+
+```python
+
+import feapder
+
+
+class FirstSpider(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    FirstSpider().start()
+
+```
+
+直接运行，打印如下：
+
+```shell
+Thread-2|2021-02-09 14:55:11,373|request.py|get_response|line:283|DEBUG|
+                -------------- FirstSpider.parse request for ----------------
+                url  = https://www.baidu.com
+                method = GET
+                body = {'timeout': 22, 'stream': True, 'verify': False, 'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36'}}
+
+<Response [200]>
+Thread-2|2021-02-09 14:55:11,610|parser_control.py|run|line:415|DEBUG| parser 等待任务...
+FirstSpider|2021-02-09 14:55:14,620|air_spider.py|run|line:80|INFO| 无任务，爬虫结束
+```
+
+代码解释如下：
+
+1. start_requests： 生产任务
+2. parse： 解析数据
+
+## 爬虫工具推荐
+
+1. 爬虫在线工具库：http://www.spidertools.cn
+2. 爬虫管理系统：http://feapder.com/#/feapder_platform/feaplat
+3. 验证码识别库：https://github.com/sml2h3/ddddocr
+
+
+<!-- ## 微信赞赏
+
+如果您觉得这个项目帮助到了您，您可以帮作者买一杯咖啡表示鼓励 🍹
+
+也可和作者交个朋友，解决您在使用过程中遇到的问题
+
+
+![赞赏码](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/zan-shang-ma.png) -->
+
+## 学习交流
+
+<table border="0">
+    <tr>
+     <td> 知识星球：17321694 </td>
+     <td> 作者微信： boris_tm </td>
+     <td> QQ群号：521494615</td>
+    </tr>
+    <tr>
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg?x-oss-process=style/markdown-media" width="250px" /> </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2024/04/28/17142933285892.jpg" width="250px" /> </td>
+    </tr>
+  </table>
+
+
+  加好友备注：feapder
+ 
+
+### 代码文件: docs\source_code\UpdateItem.md
+ 
+# UpdateItem
+
+UpdateItem用于更新数据，继承至Item，所以使用方式基本与Item一致，下载只说不同之处
+
+## 更新逻辑
+
+更新逻辑借助了数据库的唯一索引，即插入数据时发现数据已存在，则更新。因此要求数据表必须存在唯一索引，才能使用UpdateItem
+
+比如将title设置唯一，要求每条数据的title都不能重复
+
+![-w781](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158245077159.jpg)
+
+或联合索引，要求title与url不能同时重复
+
+![-w761](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158245648750.jpg)
+
+
+## 指定更新的字段
+
+方式1：指定`__update_key__`
+
+```python
+from feapder import UpdateItem
+
+
+class SpiderDataItem(UpdateItem):
+    
+    __update_key__ = ["title"] # 更新title字段
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+```
+
+方式2：赋值`update_key`
+
+```python
+from feapder import UpdateItem
+
+
+class SpiderDataItem(UpdateItem):
+
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+
+item = SpiderDataItem()
+item.update_key = "title" # 支持列表、元组、字符串
+```
+
+方式3：将普通的item转为UpdateItem，然后再指定更新的key
+
+```python
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+
+item = SpiderDataItem()
+item = item.to_UpdateItem()
+item.update_key = "title"
+```
+
+**推荐方式1，直接改Item类，不用修改爬虫代码**
+ 
+
+### 代码文件: docs\feapder_platform\usage.md
+ 
+# FEAPLAT使用说明
+
+## 首次运行须知
+
+1. 管理系统默认账号密码：admin / admin
+
+## 添加项目
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318800747189.jpg)
+
+1. 使用git方式上传项目时，需要使用SSH协议，若拉取私有项目，可在feaplat的设置页面添加 SSH 密钥。使用git方式，每次运行前会拉取默认分支最新的代码
+2. 项目会被放到爬虫`worker`容器的根目录下 即 `/项目文件`
+3. 工作路径：是指你的项目路径，比如下面的项目结构：
+    
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315322995977.jpg)
+    
+    工作路径为 `/spider-project`，feaplat会进入到这个目录，后续的代码执行命令都是在这个路径下运行的 
+    
+1. requirements.txt：用于安装依赖包，填写依赖包的绝对路径
+
+## 运行
+
+1. 启动命令：启动命令是在您添加项目时配置的工作路径下执行的
+2. 定时类型：
+    1. cron：crontab表达式，参考：https://tool.lu/crontab/
+    2. interval：时间间隔
+    3. date：指定日期
+    4. once：立即运行，且只运行一次
+
+## 示例
+
+1. 准备项目，项目结构如下：
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343707944750.jpg)
+2. 压缩后上传：（推荐使用 `feapder zip` 命令压缩）
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343709590040.jpg)
+   - 工作路径：上传的项目会被放到docker里的根目录下（跟你本机项目路径没关系），然后解压运行。因`feapder_demo.zip`解压后为`feapder_demo`，所以工作路径配置`/feapder_demo`
+   - 本项目没依赖，可以不配置`requirements.txt`
+   - 若需要第三放库，则在项目下创建requirements.txt文件，把依赖库写进去，然后路径指向这个文件即可，如`/feaplat_demo/requirements.txt`
+1. 点击项目进入任务列表，添加任务
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343712604864.jpg)
+   启动命令的执行位置是在上面配置的工作路径下执行的，定时类型为once时点击确认添加会自动执行
+1. 查看任务实例：
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343720658671.jpg)
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343720862217.jpg)
+    
+   可以看到已经运行完毕 
+   
+## git方式拉取私有项目
+
+拉取私有项目需在git仓库里添加如下公钥
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd/k/tjbcMislEunjtYQNXxz5tgEDc/fSvuLHBNUX4PtfmMQ07TuUX2XJIIzLRPaqv3nsMn3+QZrV0xQd545FG1Cq83JJB98ATTW7k5Q0eaWXkvThdFeG5+n85KeVV2W4BpdHHNZ5h9RxBUmVZPpAZacdC6OUSBYTyCblPfX9DvjOk+KfwAZVwpJSkv4YduwoR3DNfXrmK5P+wrYW9z/VHUf0hcfWEnsrrHktCKgohZn9Fe8uS3B5wTNd9GgVrLGRk85ag+CChoqg80DjgFt/IhzMCArqwLyMn7rGG4Iu2Ie0TcdMc0TlRxoBhqrfKkN83cfQ3gDf41tZwp67uM9ZN feapder@qq.com
+```
+
+或在系统设置页面配置您的SSH私钥，然后在git仓库里添加您的公钥，例如：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/19/16346353514967.jpg)
+
+注意，公私钥加密方式为RSA，其他的可能会有问题
+
+生成RSA公私钥方式如下：
+```shell
+ssh-keygen -t rsa -C "备注" -f 生成路径/文件名
+```
+如：
+`ssh-keygen -t rsa -C "feaplat" -f id_rsa`
+然后一路回车，不要输密码
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/11/17/16371210640228.jpg)
+最终生成 `id_rsa`、`id_rsa.pub` 文件，复制`id_rsa.pub`文件内容到git仓库，复制`id_rsa`文件内容到feaplat爬虫管理系统
+
+
+
+## 爬虫监控
+
+> 若您使用的是feapder爬虫或者使用了自定义打点，监控才会有对应的数据
+
+1. 表名：以 task_id 命名
+2. 保留策略：这是influxdb的概念，监控数据默认保留180天，滚动更新，这个保留策略为`feapder_180d`，同时也被设置成了默认策略`default`。所以直接用`default`就可以。
+
+## 系统设置
+
+1. GIT_SSH_PRIVATE_KEY：可以在自己的笔记本上使用`cat .ssh/id_rsa`查看，然后把内容复制到进来。不了解git ssh协议的，自行查资料
+
+## 更新版本
+
+```
+git pull
+docker-compose up -d
+```
+依次执行以上命令即可
+
+ 
+
+### 代码文件: docs\_coverpage.md
+ 
+![feapder](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/feapder.png)
+
+#  feapder 爬虫框架文档
+
+> [ˈfiːpdə]
+
+feapder 命名源于 fast-easy-air-pro-spider 缩写
+
+秉承着开发快速、抓取快速、简单、轻量且功能强大的原则，倾心打造。
+
+支持轻量级爬虫、分布式爬虫、批次爬虫、爬虫集成，以及完善的报警等。
+
+
+[GitHub](https://github.com/Boris-code/feapder)
+[Get Started](README.md)
+
+ 
+
+### 代码文件: docs\command\cmdline.md
+ 
+
+
+<!--
+ * @Author: Boris
+ * @Date: 2020-06-21 22:32:55
+ * @Description:
+-->
+
+# 命令行工具
+
+命令行工具为**feapder**内置支持的，可方便快速的创建项目、爬虫、item、以及调试请求等，使用方法如下：
+
+## 1.查看支持的命令行
+
+打开命令行窗口，输入feapder
+
+    >feapder
+
+    feapder 1.1.3
+
+    Usage:
+      feapder <command> [options] [args]
+
+    Available commands:
+      create        create project、feapder、item and so on
+      shell         debug response
+      zip           zip project
+
+    Use "feapder <command> -h" to see more info about a command
+
+
+可见feapder支持`create`、`shell`及`zip`三种命令
+
+## 2. feapder create
+
+使用feapder create 可快速创建项目、爬虫、item等，具体支持的命令可输入`feapder create -h` 查看使用帮助
+
+    > feapder create -h
+    usage: cmdline.py [-h] [-p] [-s] [-i] [-t] [-init] [-j] [-sj] [-c] [--params] [--setting] [--host] [--port] [--username] [--password] [--db]
+
+    生成器
+    
+    optional arguments:
+      -h, --help        show this help message and exit
+      -p , --project    创建项目 如 feapder create -p <project_name>
+      -s , --spider     创建爬虫 如 feapder create -s <spider_name>
+      -i , --item       创建item 如 feapder create -i <table_name> 支持模糊匹配 如 feapder create -i %table_name%
+      -t , --table      根据json创建表 如 feapder create -t <table_name>
+      -init             创建__init__.py 如 feapder create -init
+      -j, --json        创建json
+      -sj, --sort_json  创建有序json
+      -c, --cookies     创建cookie
+      --params          解析地址中的参数
+      --setting         创建全局配置文件feapder create --setting
+      --host            mysql 连接地址
+      --port            mysql 端口
+      --username        mysql 用户名
+      --password        mysql 密码
+      --db              mysql 数据库名
+
+具体使用方法如下：
+
+### 1. 创建爬虫项目
+
+命令
+
+    feapder create -p <project_name>
+
+示例：
+
+    feapder create -p first-project
+
+生成如下：
+
+![-w354](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127822246620.jpg)
+
+* items： 文件夹存放与数据库表映射的item
+* spiders： 文件夹存放爬虫脚本
+* main.py： 运行入口
+* setting.py： 爬虫配置文件
+
+若项目比较简单，不需要这个层次结构管理，也可不创建项目，直接创建爬虫
+
+### 2. 创建爬虫
+
+命令
+
+    feapder create -s <spider_name>
+    
+示例：创建名为first_spider的爬虫
+
+```shell
+feapder create -s first_spider
+
+请选择爬虫模板
+> AirSpider
+  Spider
+  TaskSpider
+  BatchSpider
+``` 
+    
+输入命令后，可以按上下键选择爬虫模板，如选择 AirSpider爬虫模板，生成first_spider.py, 内容如下：
+
+    import feapder
+
+
+    class FirstSpider(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+
+        def parse(self, request, response):
+            print(response)
+
+
+    if __name__ == "__main__":
+        FirstSpider().start()
+
+
+若在项目下创建，建议先进入到spiders目录下，再创建爬虫
+
+### 3. 创建 item
+
+item为与数据库表的映射，与数据入库的逻辑相关。
+在使用此命令前，需在数据库中创建好表，且setting.py中配置好数据库连接地址
+
+命令
+
+    feapder create -i <item_name>
+    
+输出：
+
+```
+请选择Item类型
+> Item
+  Item 支持字典赋值
+  UpdateItem
+  UpdateItem 支持字典赋值
+```
+
+示例
+
+1. 建表
+
+        CREATE TABLE `spider_data` (
+          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `title` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+2. 配置setting.py， 连接方式换成自己数据库的
+
+    ![-w799](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127839359771.jpg)
+
+
+3. 进入items目录，执行命令
+
+        feapder create -i spider_data
+
+生成如下:
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+
+```
+
+若字段有默认值或者自增，则默认注释掉，可按需打开
+
+若不配置setting.py, 可在命令行中指定数据库连接信息
+
+     feapder create -i spider_data --host localhost --db feapder --username feapder --password feapder123
+
+也可在环境变量中配置数据库连接信息, 以mac电脑为例
+
+    > vim ~/.bash_profile
+
+    export MYSQL_IP='xxx'
+    export MYSQL_PORT='xxx'
+    export MYSQL_DB='xxx'
+    export MYSQL_USER_NAME='xxx'
+    export MYSQL_USER_PASS='xxx'
+
+    > source ~/.bash_profile
+
+这样，以后所有的项目setting.py中均可不配置mysql连接信息
+
+**若item字段过多，不想逐一赋值，可选择支持字典赋值的Item类型创建**
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/09/09/16626945562298.jpg)
+
+生成：
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data 1.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = kwargs.get('id')
+        self.title = kwargs.get('title')
+```
+
+这样当我们请求回来的json数据时，可直接赋值，如
+
+```
+response_data = {"title":" 测试"} # 模拟请求回来的数据
+item = SpiderDataItem(**response_data)
+```
+
+
+### 4. 创建json或有序json
+
+此命令和快速将 `xxx:xxx` 这种字符串格式转为json格式，常用于将网页或者抓包工具抓取出来的header、cookie转为json
+
+用法示例：
+
+1. 输入命令，回车
+
+        > feapder create -j
+        请输入需要转换的内容： （xxx:xxx格式，支持多行）
+
+
+1. copy 请求头，粘贴到提示下方
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127849396722.jpg)
+
+1. 输出如下：
+
+    ![-w1394](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127850065269.jpg)
+
+**sort_json** 与json命令类似，只不过该命令生成的json是按照key排序的有序字典， 命令为
+
+    feapder create -sj
+
+### 5. 根据json创建表
+
+有时，我们需要解析的字段特别多，手动建表太麻烦，此命令可根据json内容的key创建表，根据value推断字段类型
+
+运行前，请参考**创建item**过程，将数据库配置好
+
+命令：
+
+    feapder create -t <table_name>
+
+用的示例：
+
+    > feapder create -t test
+
+    请输入表数据 json格式 如 {"name":"张三"}
+    等待输入：
+
+     {"name":"张三"}
+
+    请设置注释 回车跳过
+    name : varchar(255)  -> comment：
+
+    是否添加batch_date 字段 （y/n）:n
+
+    请设置唯一索引, 多个逗号间隔
+    等待输入：
+    id
+
+                CREATE TABLE `feapder`.`test` (
+                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id 自动递增',
+                    `name` varchar(255) COMMENT '',
+
+                    `gtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '抓取时间',
+                    PRIMARY KEY (`id`),
+                    UNIQUE `idx` USING BTREE (`id`) comment ''
+                ) COMMENT='';
+
+
+    test 创建成功
+
+创建过程会提示添加字段注释、唯一索引等。batch_date用于记录采集批次的，不用可输入n。看到创建成功后，我们去数据库里就可以看到表了
+
+### 6. 创建init
+
+该命令用于创建\__init__.py的，并自动会引入当前目录下的所有py文件到\__all__中
+
+示例如下：
+
+    feapder create -init
+
+观察生成的\__init__.py文件，已自动包含当前目录下的py文件
+![-w880](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127859798201.jpg)
+
+
+## 3. feapder shell
+
+下载调试器，可方便测试抽取规则是否正确，输入`feapder shell -h`查看使用帮助
+
+    > feapder shell -h
+
+    下载调试器
+
+    usage: feapder shell [options] [args]
+
+    optional arguments:
+      -u, --url     抓取指定url
+      -c, --curl    抓取curl格式的请求
+
+由提示可以看出，支持url及curl两种方式
+
+1. 以url为例，请求百度：
+
+    请求
+
+        > feapder shell -u https://www.baidu.com
+        MainThread|2020-06-21 23:21:37,208|request.py|get_response|line:283|DEBUG|
+                        -------------- None.parser request for ----------------
+                        url  = https://www.baidu.com
+                        method = GET
+                        body = {'proxies': None, 'timeout': 22, 'stream': True, 'verify': False, 'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1866.237 Safari/537.36'}}
+
+        <Response [200]>
+        Python 3.6.3 (v3.6.3:2c5fed86e0, Oct  3 2017, 00:32:08)
+        Type 'copyright', 'credits' or 'license' for more information
+        IPython 7.14.0 -- An enhanced Interactive Python. Type '?' for help.
+
+
+        now you can use response
+
+        In [1]:
+
+    测试抽取title的xpath是否正确
+
+        In [1]: response.xpath('//title/text()').extract_first()
+        Out[1]: '百度一下，你就知道'
+
+    可以看出，我们可以直接使用response， response支持xpath表达式
+
+    若想查看都支持哪些函数，可输入`response.` 然后敲两次`tab键`，如下：
+    ![-w1738](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/21/15927532396490.jpg)
+
+1. 以curl为例，请求百度（通常用来测试post接口比较方便）
+
+    1. 打开浏览器检查工具，复制需要测试的接口为curl格式
+    ![-w569](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/21/15927533333272.jpg)
+
+    1. 测试 输入`feapder shell --`, 粘贴刚刚复制的curl
+
+            > feapder shell --curl 'https://www.baidu.com/' \
+              -H 'Connection: keep-alive' \
+              -H 'Pragma: no-cache' \
+              -H 'Cache-Control: no-cache' \
+              -H 'Upgrade-Insecure-Requests: 1' \
+              -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36' \
+              -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+              -H 'Sec-Fetch-Site: none' \
+              -H 'Sec-Fetch-Mode: navigate' \
+              -H 'Sec-Fetch-User: ?1' \
+              -H 'Sec-Fetch-Dest: document' \
+              -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' \
+              -H 'Cookie: PSTM=1589621705; BAIDUID=BC3B63E7833EB3D77970A2CF9AE7F4A2:FG=1; BIDUPSID=016405978E2364A4AFD0227A36DA60DE; BD_UPN=123253; BDUSS=nl2a3EzNGp-aGdham5xanhVYjZLbXNWTENBRWl0VTJuLTVEUGJOa2VodjhGTzVlRVFBQUFBJCQAAAAAAAAAAAEAAACCgXjpQm9yaXMwNjIxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPyHxl78h8ZeW; delPer=0; BD_CK_SAM=1; BD_HOME=1; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; PSINO=1; ZD_ENTRY=google; H_PS_PSSID=1442_31672_21102_32046_31321_30823_32107_26350; BDRCVFR[dG2JNJb_ajR]=mk3SLVN4HKm; BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm' \
+              --compressed
+            MainThread|2020-06-21 23:29:48,773|request.py|get_response|line:283|DEBUG|
+                            -------------- None.parser request for ----------------
+                            url  = https://www.baidu.com/
+                            method = POST
+                            body = {'data': {}, 'headers': {'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Sec-Fetch-Site': 'none', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1', 'Sec-Fetch-Dest': 'document', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8', 'Cookie': 'PSTM=1589621705; BAIDUID=BC3B63E7833EB3D77970A2CF9AE7F4A2:FG=1; BIDUPSID=016405978E2364A4AFD0227A36DA60DE; BD_UPN=123253; BDUSS=nl2a3EzNGp-aGdham5xanhVYjZLbXNWTENBRWl0VTJuLTVEUGJOa2VodjhGTzVlRVFBQUFBJCQAAAAAAAAAAAEAAACCgXjpQm9yaXMwNjIxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPyHxl78h8ZeW; delPer=0; BD_CK_SAM=1; BD_HOME=1; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; PSINO=1; ZD_ENTRY=google; H_PS_PSSID=1442_31672_21102_32046_31321_30823_32107_26350; BDRCVFR[dG2JNJb_ajR]=mk3SLVN4HKm; BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm'}, 'proxies': None, 'timeout': 22, 'stream': True, 'verify': False}
+
+            <Response [200]>
+            Python 3.6.3 (v3.6.3:2c5fed86e0, Oct  3 2017, 00:32:08)
+            Type 'copyright', 'credits' or 'license' for more information
+            IPython 7.14.0 -- An enhanced Interactive Python. Type '?' for help.
+            now you can use response
+
+            In [1]:
+
+
+ 
+
+### 代码文件: docs\feapder_platform\question.md
+ 
+# FEAPLAT常见问题
+
+## 常用命令
+
+1. 运行：`docker-compose up -d`
+2. 停止：`docker-compose stop`
+3. 查看后端日志：`docker logs -f feapder_backend`
+4. 查看爬虫日志：
+    1. 查看爬虫实例：`docker service ps task_任务id`
+    2. 查看爬虫实例日志：`docker service logs -n 行数 -f ID`
+
+    举例：
+    
+    ```
+    docker service ps task_9
+    ```
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318829484192.jpg)
+    
+    ```
+    docker service logs -n 20 -f u6qhyu2dauiu
+    ```
+    
+6. 查看正在运行的容器：`docker ps` 
+5. 进入容器：`docker exec -it 容器ID bash`
+    
+
+## 修改端口
+
+默认端口如下：
+
+```
+# 前端端口
+FRONT_PORT=6385
+# 后端端口
+BACKEND_PORT=8000
+# MYSQL端口
+MYSQL_PORT=33306
+# REDIS 端口
+REDIS_PORT=6379
+# 监控系统端口配置
+INFLUXDB_PORT_TCP=8086
+INFLUXDB_PORT_UDP=8089
+```
+
+通过 `vim .env` 敲击`i` 进入编辑模式，修改完按 `esc`退出编辑，敲击 `:wq` 保存
+
+
+## 启动失败
+
+> 以下列的是几种可能原因，可按照这个顺序排查，但不是所有步骤都需要走一遍
+
+1. 查看后端日志，观察报错
+    1. 若是docker版本问题，参考部署一节安装最新版本，
+    2. 若是报 `This node is not a swarm manager`，则是部署环境没准备好，执行`docker swarm init`，可参考参考部署一节
+2. 查看worker状态：
+    ```
+    docker service ps task_任务id --no-trunc
+    ```
+    看看error信息
+
+4. 查看镜像`docker images`，若不存在爬虫镜像`registry.cn-hangzhou.aliyuncs.com/feapderd/feapder`，可能自动拉取失败了，可手动拉取，拉取命令：`docker pull registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:版本号`，版本号在`.env`里查看
+5. 重启docker服务，Centos对应的命令为：`service docker restart`，其他自行查资料
+
+## 依赖包安装失败，可手动安装包
+
+1. 在项目配置处将 requirements.txt 一栏置空，使其不自动安装依赖
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318840168908.jpg)
+
+
+2. 添加一个常驻任务：执行命令可填写 `while true; do echo hello world; sleep 1; done`
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16303761085876.jpg)
+
+1. 查看容器id`docker ps`（若您有多台worker服务器，该任务会被随机分配到一台机器上，您需要在对应的机器上查看）
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318842799082.jpg)
+2. 进入容器 `docker exec -it 容器ID bash`
+
+3. 接来下就和在centos服务器上操作一样了，你可以`pip`安装依赖
+
+## 授权问题
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/02/21/16454346779741.jpg)
+
+此问题为服务器时间和时区问题, 可以在服务器上输入 `date` ，命令检查时间及时区是否正确
+
+正常应该为 `Mon Feb 21 17:03:11 CST 2022` 注意是 CST 不是 UTC
+
+修改时区及矫正时间命令
+
+```
+# 改时区
+rm -f /etc/localtime
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+# 校对时间 方式1
+clock --hctosys
+# 校对时间 方式2
+ntpdate 0.asia.pool.ntp.org
+```
+
+## 我搭建了个集群，如何让主节点不跑任务
+
+在主节点上执行下面命令，将其设置成drain状态即可
+
+    docker node update --availability drain 节点id
+ 
+ ## Network 问题
+
+attaching to network failed, make sure your network options are correct and check manager logs: context deadline exceeded
+ ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/02/16/16765140608308.jpg)
+
+1. 确定当前节点是不是Drain节点：docker node ls
+    
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/02/16/16765145635622.jpg)
+    
+    是则继续往下看，不是则在评论区留言
+    
+1. 修复
+
+    ```
+    docker node update --availability active 节点id
+    docker node update --availability drain 节点id
+    ```    
+    
+原因是Drain节点，不能为其分配网络资源，需要先改成active，然后启动，之后在改回drain
+
+**若不是以上情况，可能是network内的可分配的ip满了（老版本feaplat会有这个问题），那么可继续往下看**
+
+1. 先检查feaplat目录下的docker-compost.yaml，翻到最后，看network相关配置是否为如下。若不是，则改成下面这样的。若下面指定的11 ip段和主机有冲突，可以写12、13等
+
+    ```
+    networks:
+      default:
+        name: feaplat
+        driver: overlay
+        attachable: true
+        ipam:
+          config:
+            - subnet: 11.0.0.0/8
+              gateway: 11.0.0.1
+    ```
+    
+    完整配置见：https://github.com/Boris-code/feaplat/blob/develop/docker-compose.yaml
+
+
+2. 改完后，需要删除之前的network，使其重新创建，命令如下：
+
+    ```
+    docker service ls -q | xargs docker service rm # 注意 这个会停止掉所有任务。
+    docker network rm feaplat # 删除网络
+    docker compose rm # 删除之前feaplat运行环境
+    docker compose up -d # 启动
+    ```
+ 
+
+### 代码文件: docs\source_code\pipeline.md
+ 
+# Pipeline
+
+Pipeline是数据入库时流经的管道，用户可自定义，以便对接其他数据库。
+
+框架已内置mysql及mongo管道，其他管道作为扩展方式提供，可从[feapder_pipelines](https://github.com/Boris-code/feapder_pipelines)项目中按需安装
+
+项目地址：https://github.com/Boris-code/feapder_pipelines
+
+## 使用方式
+
+注：item会被聚合成多条一起流经pipeline，方便批量入库
+
+### 1. 编写pipeline
+
+```python
+from feapder.pipelines import BasePipeline
+from typing import Dict, List, Tuple
+
+
+class Pipeline(BasePipeline):
+    """
+    pipeline 是单线程的，批量保存数据的操作，不建议在这里写网络请求代码，如下载图片等
+    """
+
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        print("自定义pipeline， 保存数据 >>>>", table, items)
+
+        return True
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据, 与UpdateItem配合使用，若爬虫中没使用UpdateItem，则可不实现此接口
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        print("自定义pipeline， 更新数据 >>>>", table, items, update_keys)
+
+        return True
+```
+
+`Pipeline`需继承`BasePipeline`，类名和存放位置随意，需要实现`save_items`接口。一定要有返回值，返回`False`表示数据没保存成功，会触发重试逻辑
+
+`update_items`接口与`UpdateItem`配合使用，更新数据时使用，若爬虫中没使用UpdateItem，则可不实现此接口
+
+### 2. 编写配置文件
+
+```python
+# 数据入库的pipeline，支持多个
+ITEM_PIPELINES = [
+    "pipeline.Pipeline"
+]
+``` 
+
+将编写好的pipeline配置进来，值为类的模块路径，需要指定到具体的类名
+
+## 示例
+
+地址：https://github.com/Boris-code/feapder/tree/master/tests/test-pipeline
+
+ 
+
+### 代码文件: docs\source_code\监控打点.md
+ 
+# 监控打点
+
+需配合爬虫管理系统 **feaplat**
+
+监控数据默认保留180天，滚动删除
+
+## 爬虫中使用
+
+> 需feapder>=1.6.6
+
+feapder内置了监控打点，只需要部署到feaplat爬虫管理系统即可实现对请求和数据监控
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+- 注意使用 `yield item` 的方式入库的数据，才能看到数据监控的指标，图表的title是表名，折线图展示了每个字段是否有值的情况以及数据总量（total count）
+
+- document为下载情况
+
+若想监控些其他的指标，参考自定义监控：
+
+
+## 自定义监控
+
+举例：编写`test_metrics.py`代码如下：
+
+```python
+from feapder.utils import metrics
+
+# 初始化打点系统
+metrics.init()
+
+metrics.emit_counter("key", count=1, classify="test")
+
+metrics.close()
+```
+
+部署到feaplat：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315065474223.jpg)
+
+查看监控：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315067391666.jpg)
+
+再来解释下
+```
+metrics.emit_counter("key", count=1, classify="test")
+```
+- key 对应上图中的折线
+- count 对应上图中的点数
+- classify 对应上图中的图表标题
+
+若代码如下：
+```python
+from feapder.utils import metrics
+
+# 初始化打点系统
+metrics.init()
+
+metrics.emit_counter("key", count=1, classify="test")
+metrics.emit_counter("key2", count=1, classify="test")
+metrics.emit_counter("key3", count=1, classify="test")
+
+metrics.emit_counter("哈哈", count=1, classify="test2")
+
+metrics.close()
+```
+
+应该生成两张图表，第一个图表3条折线，实际生成如下：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315071385604.jpg)
+
+
+如在feapder爬虫中使用，示例如下：
+
+```python
+import feapder
+from feapder.utils import metrics
+
+
+class TestSpider(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        # 自定义监控
+        metrics.emit_counter("success", count=1, classify="自定义的监控指标")
+
+
+if __name__ == "__main__":
+    TestSpider().start()
+```
+
+我们只需要导包，然后`metrics.emit_counter`即可，不需要关心 `metrics.init`和`metrics.close`， 若在scrapy或其他python脚本中使用，必须调用`metrics.init`和`metrics.close`
+
+ 
+
+### 代码文件: docs\_sidebar.md
+ 
+* 序章
+  * [简介及安装](README.md)
+  * [10分钟快速上手](foreword/10分钟上手.md)
+  * [架构设计](foreword/架构设计.md)
+  * [功能概览](foreword/功能概览.md)
+
+* 常用工具
+  * [命令行工具](command/cmdline.md)
+
+* 使用说明
+  * [使用前必读](usage/使用前必读.md)
+  * [轻量爬虫-AirSpider](usage/AirSpider.md)
+  * [分布式爬虫-Spider](usage/Spider.md)
+  * [任务爬虫-TaskSpider](usage/TaskSpider.md)
+  * [批次爬虫-BatchSpider](usage/BatchSpider.md)
+  * [爬虫集成](usage/爬虫集成.md)
+
+* 使用进阶
+  * [请求-Request](source_code/Request.md)
+  * [响应-Response](source_code/Response.md)
+  * [代理使用说明](source_code/proxy.md)
+  * [用户池说明](source_code/UserPool.md)
+  * [浏览器渲染-Selenium](source_code/浏览器渲染-Selenium.md)
+  * [浏览器渲染-Playwright](source_code/浏览器渲染-Playwright)
+  * [解析器-BaseParser](source_code/BaseParser.md)
+  * [批次解析器-BatchParser](source_code/BatchParser.md)
+  * [Spider进阶](source_code/Spider进阶.md)
+  * [BatchSpider进阶](source_code/BatchSpider进阶.md)
+  * [配置文件](source_code/配置文件.md)
+  * [Item](source_code/Item.md)
+  * [UpdateItem](source_code/UpdateItem.md)
+  * [数据管道-pipeline](source_code/pipeline.md)
+  * [MysqlDB](source_code/MysqlDB.md)
+  * [MongoDB](source_code/MongoDB.md)
+  * [RedisDB](source_code/RedisDB.md)
+  * [工具库-tools](source_code/tools.md)
+  * [日志配置及使用](source_code/logger.md)
+  * [海量数据去重-dedup](source_code/dedup.md)
+  * [报警及监控](source_code/报警及监控.md)
+  * [监控打点](source_code/监控打点.md)
+  * [自定义下载器](source_code/custom_downloader.md)
+
+* 爬虫管理系统
+  * [简介及部署](feapder_platform/feaplat.md)
+  * [使用说明](feapder_platform/usage.md)
+  * [常见问题](feapder_platform/question.md)
+
+* 常见问题
+  * [安装问题](question/安装问题.md)
+  * [运行问题](question/运行问题.md)
+  * [请求问题](question/请求问题.md)
+  * [setting不生效问题](question/setting不生效问题.md)
+ 
+
+### 代码文件: docs\feapder_platform\feaplat.md
+ 
+# 爬虫管理系统 - FEAPLAT
+
+> 生而为虫，不止于虫
+
+**feaplat**命名源于 feapder 与 platform 的缩写
+
+读音： `[ˈfiːplæt] `
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655602840534.jpg)
+
+
+## 特性
+
+1. 支持部署任何程序，包括不限于`feapder`、`scrapy`
+2. 支持集群管理，部署分布式爬虫可一键扩展进程数
+3. 支持部署服务，且可自动实现服务负载均衡
+4. 支持程序异常报警、重启、保活
+5. 支持监控，监控内容可自定义
+6. 支持4种定时调度模式
+7. 自动从git仓库拉取最新的代码运行，支持指定分支
+8. 支持多人协同
+9. 支持浏览器渲染，支持有头模式。浏览器支持`playwright`、`selenium`
+10. 支持弹性伸缩
+12. 支持自定义worker镜像，如自定义java的运行环境、node运行环境等，即根据自己的需求自定义（feaplat分为`master-调度端`和`worker-运行任务端`）
+13. docker一键部署，架设在docker swarm集群上
+
+## 功能概览
+
+暂时不支持 苹果电脑的Apple芯片
+
+### 1. 项目管理
+
+添加/编辑项目
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655603474851.jpg)
+
+- 支持 git和zip两种方式上传项目
+- 根据requirements.txt自动安装依赖包 
+- 可选择多个人参与项目
+
+### 2. 任务管理
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655604191030.jpg)
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655604736752.jpg)
+
+- 支持一键启动多个任务实例（分布式爬虫场景或者需要启动多个进程的场景）
+- 支持4种调度模式
+- 标签：给任务分类使用
+- 强制运行：（上一次任务没结束，本次是否运行，是则会停止上一次任务，然后运行本次调度）
+- 异常重启：当部署的程序异常退出，是否自动重启，且会报警
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655607031254.jpg)
+- 支持限制程序运行的CPU、内存等。
+
+
+### 3. 任务实例
+
+一键部署了20份程序，每个程序独占一个进程，可从列表看每个进程部署到哪台服务器上了，运行状态是什么
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655608218525.jpg)
+
+实时查看日志
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655618630971.jpg)
+
+### 4. 爬虫监控
+
+feaplat支持对feapder爬虫的运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+若scrapy爬虫或其他python脚本使用监控功能，也可通过自定义监控的功能来支持，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+注：需 feapder>=1.6.6
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655595870715.jpg)
+
+### 5. 报警
+
+调度异常、程序异常自动报警
+支持钉钉、企业微信、飞书、邮箱
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655607031254.jpg)
+
+## 为什么用feaplat爬虫管理系统
+
+**稳！很稳！！相当稳！！！**
+
+### 市面上的爬虫管理系统
+
+![feapderd](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/feapderd.png)
+
+worker节点常驻，且运行多个任务，不能弹性伸缩，任务之前会相互影响，稳定性得不到保障
+
+### feaplat爬虫管理系统
+
+![pic](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/pic.gif)
+
+worker节点根据任务动态生成，一个worker只运行一个任务实例，任务做完worker销毁，稳定性高；多个服务器间自动均衡分配，弹性伸缩
+
+## 部署
+
+> 安装方式参考docker官方文档：https://docs.docker.com/compose/install/
+
+### 1. 安装docker
+
+#### 1.1 centos系统
+
+> docker --version
+> 作者的docker版本为 20.10.12，低于此版本的可能会存在问题
+
+删除旧版本（可选，需要重装升级docker时执行）
+
+```shell
+yum remove docker  docker-common docker-selinux docker-engine
+```
+
+安装：
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+国内用户推荐使用
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+或者使用国内 daocloud 一键安装命令
+```
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+启动docker服务
+
+```shell
+systemctl enable docker
+systemctl start docker
+```
+
+验证: 打开终端，输入
+
+```shell
+docker ps
+```
+
+#### 1.2 ubuntu系统
+
+```
+sudo apt update
+sudo apt install docker.io docker-compose
+```
+
+启动docker服务
+
+```shell
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+验证: 打开终端，输入
+
+```shell
+sudo docker ps
+```
+
+#### 1.3 window系统
+
+访问下面的链接，下载Docker Desktop, 然后安装即可
+
+<a href="https://docs.docker.com/desktop/setup/install/windows-install/" target="_blank">https://docs.docker.com/desktop/setup/install/windows-install/ </a>
+
+
+运行安装好的Docker Desktop
+
+验证: 打开cmd终端，输入
+
+```shell
+docker ps
+```
+
+#### 1.4 mac系统
+
+访问下面的链接，下载Docker Desktop, 然后安装即可
+
+<a href="https://docs.docker.com/desktop/setup/install/mac-install/" target="_blank">https://docs.docker.com/desktop/setup/install/mac-install/</a>
+
+
+运行安装好的Docker Desktop
+
+验证: 打开终端，输入
+```shell
+docker ps
+```
+
+
+### 2. 安装 docker swarm
+    
+    docker swarm init
+    
+    # 如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 --advertise-addr 指定 IP
+    docker swarm init --advertise-addr 192.168.99.100
+
+### 3. 安装docker-compose(非必须)
+一般安装完docker后，会自带 docker compose。可先输入下面的命令验证是否有改环境，若有则不需要安装
+``` shell
+docker compose
+```
+若无`docker compose`命令，则按照下面的安装
+
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+国内用户推荐使用
+```shell
+sudo curl -L "https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+安装后输入`docker-compose`验证是否成功
+
+注：`docker-compose` 与 `docker compose` 两种命令用法一样，是一个东西，只不过不同版本的docker可能叫法不一
+
+### 4. 部署feaplat爬虫管理系统
+#### 预备项
+安装git(1.8.3的版本已够用)
+```shell
+yum -y install git
+```
+#### 1. 下载项目
+
+> 先按照下面命令拉取develop分支代码运行。
+> master分支不支持urllib3>=2.0版本，现在已经运行不起来了，但之前老用户不受影响。待后续测试好兼容性，不影响老用户后，会将develop分支合并到master
+
+gitub
+```shell
+git clone -b develop https://github.com/Boris-code/feaplat.git
+```
+gitee
+```shell
+git clone -b develop https://gitee.com/Boris-code/feaplat.git
+```
+
+#### 2. 运行 
+
+首次运行需拉取镜像，时间比较久，且运行可能会报错，再次运行下就好了
+
+```shell
+cd feaplat
+docker compose up -d
+或者
+docker-compose up -d
+```
+
+- 若端口冲突，可修改.env文件，参考[常见问题](feapder_platform/question?id=修改端口)
+
+#### 3. 访问爬虫管理系统
+
+默认地址：`http://localhost`
+默认账密：admin / admin
+
+- 若未成功，参考[常见问题](feapder_platform/question)
+- 使用说明，参考[使用说明](feapder_platform/usage)
+
+#### 4. 停止（可选）
+
+```shell
+docker-compose stop
+```
+
+### 5. 添加服务器（可选）
+
+> 用于搭建集群，扩展爬虫（worker）节点服务器
+
+#### 1. 安装docker
+
+参考部署步骤1
+
+#### 2. 部署
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令，查看token
+
+```shell
+docker swarm join-token worker
+```
+
+输出举例如下
+
+```shell
+docker swarm join --token SWMTKN-1-1mix1x7noormwig1pjqzmrvgnw2m8zxqdzctqa8t3o8s25fjgg-9ot0h1gatxfh0qrxiee38xxxx 172.17.5.110:2377
+```
+
+**在需扩充的服务器上执行**
+
+```shell
+docker swarm join --token [token] [ip]
+```
+
+若服务器彼此之间不是内网，为公网环境，则需要将ip改成公网，且开放端口2377
+
+开启并检查2377端口
+```shell
+firewall-cmd --zone=public --add-port=2377/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --query-port=2377/tcp
+```
+
+#### 3. 验证是否成功
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令
+
+```shell
+docker node ls
+```
+
+若打印结果包含刚加入的服务器，则添加服务器成功
+
+#### 4. 下线服务器（可选）
+
+在需要下线的服务器上执行
+
+```shell
+docker swarm leave
+```
+
+## 使用
+
+见 [FEAPLAT使用说明](feapder_platform/usage)
+
+## 自定义爬虫镜像
+
+默认的爬虫镜像只打包了`feapder`、`scrapy`框架，若需要其它环境，可基于`.env`文件里的`SPIDER_IMAGE`镜像自行构建
+
+如自定义python版本，安装常用的库等，需修改feaplat下的`feapder_dockerfile`
+
+```
+# 基于最新的版本，若需要自定义python版本，则要求feapder版本号>=2.4
+FROM registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:2.4
+
+# 安装自定义的python版本，3.10.8
+RUN set -ex \
+    && wget https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz \
+    && tar -zxvf Python-3.10.8.tgz \
+    && cd Python-3.10.8 \
+    && ./configure prefix=/usr/local/python-3.10.8 \
+    && make \
+    && make install \
+    && make clean \
+    && rm -rf /Python-3.10.8* \
+    # 配置软链接
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python3.10.8 \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip3.10.8
+
+# 删除之前的默认python版本
+RUN set -ex \
+    && rm -rf /usr/bin/python3 \
+    && rm -rf /usr/bin/pip3 \
+    && rm -rf /usr/bin/python \
+    && rm -rf /usr/bin/pip
+
+# 设置默认为python3.10.8
+RUN set -ex \
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python \
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python3 \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip3
+
+# 将python3.10.8加入到环境变量
+ENV PATH=$PATH:/usr/local/python-3.10.8/bin/
+
+# 安装依赖
+RUN pip3 install feapder \
+    && pip3 install scrapy
+    
+# 安装node依赖包，内置的node为v10.15.3版本
+# RUN npm install packageName -g
+
+```
+
+改好后要打包镜像，打包命令：
+```
+docker build -f feapder_dockerfile -t 镜像名:版本号 .
+```
+如
+```
+docker build -f feapder_dockerfile -t my_feapder:1.0 .
+```
+
+打包好后修改下 `.env`文件里的 SPIDER_IMAGE 的值即可如：
+```
+SPIDER_IMAGE=my_feapder:1.0
+```
+
+注：
+1. 若有多个worker服务器，且没将镜像传到镜像服务，则需要手动将镜像推到其他服务器上，否则无法拉取此镜像运行
+2. 若自定义了python版本，则需要添加挂载，否则feaplat上自动安装的依赖库不会保留。挂载方式：修改`docker-compose.yaml`的        SPIDER_RUN_ARGS参数。如
+   ```
+   SPIDER_RUN_ARGS=["--mount type=volume,source=feapder_python3.10,destination=/usr/local/python-3.10.8"]
+   ```
+
+## 价格
+
+可免费部署20个任务，超出额度时，需购买授权码，在授权有效期内不限额度，可换绑服务器
+
+| 授权时长   | 价格   | 说明 |
+|------|------|---------------------|
+| 1个月  | 168元   | 无折扣|
+| 6个月| 666元   | 原价1008元，减免342元|
+| 1年 | 888元 | 原价2016元，减免1128元|
+| 2年 | 1500元 | 原价4032元，减免2532元|
+
+**删除任务不可恢复额度**
+
+购买方式：添加微信 `boris_tm`
+
+随着功能的完善，价格会逐步调整
+
+## 学习交流
+
+<table border="0">
+    <tr>
+     <td> 知识星球：17321694 </td>
+     <td> 作者微信： boris_tm </td>
+     <td> QQ群号：521494615</td>
+    </tr>
+    <tr>
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg?x-oss-process=style/markdown-media" width="250px" /> </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2024/04/28/17142933285892.jpg" width="250px" /> </td>
+    </tr>
+  </table>
+
+  加好友备注：feapder
+
+ 
+
+### 代码文件: docs\feapder_platform\feaplat_bak.md
+ 
+# 爬虫管理系统 - FEAPLAT
+
+> 生而为虫，不止于虫
+
+**feaplat**命名源于 feapder 与 platform 的缩写
+
+读音： `[ˈfiːplæt] `
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+## 特性
+
+1. 支持任何python脚本，包括不限于`feapder`、`scrapy`
+2. 支持浏览器渲染，支持有头模式。浏览器支持`playwright`、`selenium`
+3. 支持部署服务，可自动负载均衡
+4. 支持服务器集群管理
+5. 支持监控，监控内容可自定义
+6. 支持起多个实例，如分布式爬虫场景
+7. 支持弹性伸缩
+8. 支持4种定时启动方式
+9. 支持自定义worker镜像，如自定义java的运行环境、机器学习环境等，即根据自己的需求自定义（feaplat分为`master-调度端`和`worker-运行任务端`）
+10. docker一键部署，架设在docker swarm集群上
+
+
+## 为什么用feaplat爬虫管理系统
+
+**市面上的爬虫管理系统**
+
+![feapderd](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/feapderd.png)
+
+worker节点常驻，且运行多个任务，不能弹性伸缩，任务之前会相互影响，稳定性得不到保障
+
+**feaplat爬虫管理系统**
+
+![pic](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/pic.gif)
+
+worker节点根据任务动态生成，一个worker只运行一个任务实例，任务做完worker销毁，稳定性高；多个服务器间自动均衡分配，弹性伸缩
+
+
+## 功能概览
+
+### 1. 项目管理
+
+添加/编辑项目
+![-w1785](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/06/16254968151490.jpg)
+
+### 2. 任务管理
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/03/03/16463109796998.jpg)
+
+
+### 3. 任务实例
+
+日志
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/03/03/16463117042527.jpg)
+
+
+### 4. 爬虫监控
+
+feaplat支持对feapder爬虫的运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+若scrapy爬虫或其他python脚本使用监控功能，也可通过自定义监控的功能来支持，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+注：需 feapder>=1.6.6
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+
+
+## 部署
+
+> 下面部署以centos为例， 其他平台docker安装方式可参考docker官方文档：https://docs.docker.com/compose/install/
+
+### 1. 安装docker
+
+删除旧版本（可选，需要重装升级时执行）
+
+```shell
+yum remove docker  docker-common docker-selinux docker-engine
+```
+
+安装：
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+国内用户推荐使用
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+或者使用国内 daocloud 一键安装命令
+```
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+
+
+启动
+```shell
+systemctl enable docker
+systemctl start docker
+```
+
+### 2. 安装 docker swarm
+    
+    docker swarm init
+    
+    # 如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 --advertise-addr 指定 IP
+    docker swarm init --advertise-addr 192.168.99.100
+
+### 3. 安装docker-compose
+
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+国内用户推荐使用
+```shell
+sudo curl -L "https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### 4. 部署feaplat爬虫管理系统
+#### 预备项
+安装git(1.8.3的版本已够用)
+```shell
+yum -y install git
+```
+#### 1. 下载项目
+
+gitub
+```shell
+git clone https://github.com/Boris-code/feaplat.git
+```
+gitee
+```shell
+git clone https://gitee.com/Boris-code/feaplat.git
+```
+
+#### 2. 运行 
+
+首次运行需拉取镜像，时间比较久，且运行可能会报错，再次运行下就好了
+
+```shell
+cd feaplat
+docker-compose up -d
+```
+
+- 若端口冲突，可修改.env文件，参考[常见问题](feapder_platform/question?id=修改端口)
+
+#### 3. 访问爬虫管理系统
+
+默认地址：`http://localhost`
+默认账密：admin / admin
+
+- 若未成功，参考[常见问题](feapder_platform/question)
+- 使用说明，参考[使用说明](feapder_platform/usage)
+
+#### 4. 停止（可选）
+
+```shell
+docker-compose stop
+```
+
+### 5. 添加服务器（可选）
+
+> 用于搭建集群，扩展爬虫（worker）节点服务器
+
+#### 1. 安装docker
+
+参考部署步骤1
+
+#### 2. 部署
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令，查看token
+
+```shell
+docker swarm join-token worker
+```
+
+输出举例如下
+
+```shell
+docker swarm join --token SWMTKN-1-1mix1x7noormwig1pjqzmrvgnw2m8zxqdzctqa8t3o8s25fjgg-9ot0h1gatxfh0qrxiee38xxxx 172.17.5.110:2377
+```
+
+**在需扩充的服务器上执行**
+
+```shell
+docker swarm join --token [token] [ip]
+```
+
+若服务器彼此之间不是内网，为公网环境，则需要将ip改成公网，且开放端口2377
+
+开启并检查2377端口
+```shell
+firewall-cmd --zone=public --add-port=2377/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --query-port=2377/tcp
+```
+
+#### 3. 验证是否成功
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令
+
+```shell
+docker node ls
+```
+
+若打印结果包含刚加入的服务器，则添加服务器成功
+
+#### 4. 下线服务器（可选）
+
+在需要下线的服务器上执行
+
+```shell
+docker swarm leave
+```
+
+## 拉取私有项目
+
+拉取私有项目需在git仓库里添加如下公钥
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd/k/tjbcMislEunjtYQNXxz5tgEDc/fSvuLHBNUX4PtfmMQ07TuUX2XJIIzLRPaqv3nsMn3+QZrV0xQd545FG1Cq83JJB98ATTW7k5Q0eaWXkvThdFeG5+n85KeVV2W4BpdHHNZ5h9RxBUmVZPpAZacdC6OUSBYTyCblPfX9DvjOk+KfwAZVwpJSkv4YduwoR3DNfXrmK5P+wrYW9z/VHUf0hcfWEnsrrHktCKgohZn9Fe8uS3B5wTNd9GgVrLGRk85ag+CChoqg80DjgFt/IhzMCArqwLyMn7rGG4Iu2Ie0TcdMc0TlRxoBhqrfKkN83cfQ3gDf41tZwp67uM9ZN feapder@qq.com
+```
+
+或在系统设置页面配置您的SSH私钥，然后在git仓库里添加您的公钥，例如：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/19/16346353514967.jpg)
+
+注意，公私钥加密方式为RSA，其他的可能会有问题
+
+生成RSA公私钥方式如下：
+```shell
+ssh-keygen -t rsa -C "备注" -f 生成路径/文件名
+```
+如：
+`ssh-keygen -t rsa -C "feaplat" -f id_rsa`
+然后一路回车，不要输密码
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/11/17/16371210640228.jpg)
+最终生成 `id_rsa`、`id_rsa.pub` 文件，复制`id_rsa.pub`文件内容到git仓库，复制`id_rsa`文件内容到feaplat爬虫管理系统
+
+## 自定义爬虫镜像
+
+默认的爬虫镜像只打包了`feapder`、`scrapy`框架，若需要其它环境，可基于`.env`文件里的`SPIDER_IMAGE`镜像自行构建
+
+如将常用的python库打包到镜像
+```
+FROM registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:[最新版本号]
+
+# 安装依赖
+RUN pip3 install feapder \
+    && pip3 install scrapy
+
+```
+
+自己随便搞事情，搞完修改下 `.env`文件里的 SPIDER_IMAGE 的值即可
+
+
+## 价格
+
+| 类型   | 价格   | 说明                  |
+|------|------|---------------------|
+| 试用版  | 0元   | 可部署20个任务，删除任务不可恢复额度 |
+| 正式版 | 888元 | 有效期一年，可换绑服务器        |
+
+**部署后默认为试用版，购买授权码后配置到系统里即为正式版**
+
+购买方式：添加微信 `boris_tm`
+
+随着功能的完善，价格会逐步调整
+
+## 学习交流
+
+<table border="0"> 
+    <tr> 
+     <td> 知识星球：17321694 </td> 
+     <td> 作者微信： boris_tm </td> 
+     <td> QQ群号：750614606 </td> 
+    </tr> 
+    <tr> 
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td> 
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg" width="250px" /> </td> 
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/16260897330897.jpg" width="250px" /> </td> 
+    </tr> 
+  </table> 
+  
+  加好友备注：feaplat
+
+ 
+
+### 代码文件: docs\source_code\BatchSpider进阶.md
+ 
+# BatchSpider
+
+## BatchSpider参数
+
+```python
+def __init__(
+    self,
+    task_table,
+    batch_record_table,
+    batch_name,
+    batch_interval,
+    task_keys,
+    task_state="state",
+    min_task_count=10000,
+    check_task_interval=5,
+    task_limit=10000,
+    related_redis_key=None,
+    related_batch_record=None,
+    task_condition="",
+    task_order_by="",
+    redis_key=None,
+    thread_count=None,
+    begin_callback=None,
+    end_callback=None,
+    delete_keys=(),
+    keep_alive=None,
+    send_run_time=False,
+):
+    """
+    @summary: 批次爬虫
+    必要条件
+    1、需有任务表
+        任务表中必须有id 及 任务状态字段 如 state。如指定parser_name字段，则任务会自动下发到对应的parser下, 否则会下发到所有的parser下。其他字段可根据爬虫需要的参数自行扩充
+
+        参考建表语句如下：
+        CREATE TABLE `table_name` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `param` varchar(1000) DEFAULT NULL COMMENT '爬虫需要的抓取数据需要的参数',
+          `state` int(11) DEFAULT NULL COMMENT '任务状态',
+          `parser_name` varchar(255) DEFAULT NULL COMMENT '任务解析器的脚本类名',
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `nui` (`param`) USING BTREE
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+    2、需有批次记录表 不存在自动创建
+    ---------
+    @param task_table: mysql中的任务表
+    @param batch_record_table: mysql 中的批次记录表
+    @param batch_name: 批次采集程序名称
+    @param batch_interval: 批次间隔 天为单位。 如想一小时一批次，可写成1/24
+    @param task_keys: 需要获取的任务字段 列表 [] 如需指定解析的parser，则需将parser_name字段取出来。
+    @param task_state: mysql中任务表的任务状态字段
+    @param min_task_count: redis 中最少任务数, 少于这个数量会从mysql的任务表取任务
+    @param check_task_interval: 检查是否还有任务的时间间隔；
+    @param task_limit: 从数据库中取任务的数量
+    @param redis_key: 任务等数据存放在redis中的key前缀
+    @param thread_count: 线程数，默认为配置文件中的线程数
+    @param begin_callback: 爬虫开始回调函数
+    @param end_callback: 爬虫结束回调函数
+    @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+    @param keep_alive: 爬虫是否常驻，默认否
+    @param send_run_time: 发送运行时间
+    @param related_redis_key: 有关联的其他爬虫任务表（redis）注意：要避免环路 如 A -> B & B -> A 。
+    @param related_batch_record: 有关联的其他爬虫批次表（mysql）注意：要避免环路 如 A -> B & B -> A 。
+        related_redis_key 与 related_batch_record 选其一配置即可；用于相关联的爬虫没结束时，本爬虫也不结束
+        若相关连的爬虫为批次爬虫，推荐以related_batch_record配置，
+        若相关连的爬虫为普通爬虫，无批次表，可以以related_redis_key配置
+    @param task_condition: 任务条件 用于从一个大任务表中挑选出数据自己爬虫的任务，即where后的条件语句
+    @param task_order_by: 取任务时的排序条件 如 id desc
+    ---------
+    @result:
+    """
+```
+
+下面介绍下理解起来可能有疑惑的参数
+
+### 1. related_redis_key 与 related_batch_record
+
+这两个参数用于采集之间有关联的爬虫，比如列表爬虫和详情爬虫，详情的任务需依赖列表爬虫生产，列表爬虫没采集完毕，详情爬虫要处于等待状态。
+
+举例说明：BatchSpider依赖Spider
+
+```
+
+def crawl_list():
+    """
+    普通爬虫 Spider
+    """
+    spider = spider_test.SpiderTest(redis_key="feapder:list")
+    spider.start()
+
+
+def crawl_detail(args):
+    """
+    批次爬虫 BatchSpider
+    @param args: 1 / 2 / init
+    """
+    spider = batch_spider_test.BatchSpiderTest(
+        task_table="list_task",  # mysql中的任务表
+        batch_record_table="list_batch_record",  # mysql中的批次记录表
+        batch_name="详情爬虫(周全)",  # 批次名字
+        batch_interval=7,  # 批次时间 天为单位 若为小时 可写 1 / 24
+        task_keys=["id", "item_id"],  # 需要获取任务表里的字段名，可添加多个
+        redis_key="feapder:detail",  # redis中存放request等信息的根key
+        task_state="state",  # mysql中任务状态字段
+        related_redis_key="feapder:list:z_requsets"
+    )
+
+    if args == 1:
+        spider.start_monitor_task()
+    elif args == 2:
+        spider.start()
+```
+
+若批次爬虫和批次爬虫之间有依赖，除了设置related_redis_key参数外，还支持设置related_batch_record参数，指定对方的批次记录表即可。两个参数二选一
+
+### 2. task_condition
+
+取任务的条件，可以理解为sql后面的where条件。如获取url不为空的任务且id大于10的任务
+
+    task_condition="url is not null and id > 10"
+
+
+## BatchSpider方法
+
+BatchSpider继承至BatchParser，并且BatchParser是对开发者暴露的常用方法接口，因此推荐先看[BatchParser](source_code/BatchParser)，BatchSpider方法如下：
+
+### init_task 任务初始化
+
+init_task函数会在每个批次开始时调用，用于将已完成的任务状态重置为0。
+
+因此当本函数被重写为空时，可实现增量抓取
+
+```
+def init_task(self):
+    pass
+```
+
+当手动调用本函数时，可将任务状态刷新为0，开发阶段经常使用
+
+    spider.init_task()
+    
+
+## 其他细节
+
+### 1. 任务防丢
+
+BatchSpider除了支持Spider的[任务防丢机制](source_code/Spider进阶?id=_1-任务防丢)外，还多了一层mysql任务表的保障，mysql任务表中每条任务都有任务状态，BatchSpider有任务丢失重发机制，直到所有任务都处于成功或者失败两种状态，才算采集结束。
+
+### 2. 任务重试
+
+> 与Spider相同
+
+任务请求失败或解析函数抛出异常时，会自动重试，默认重试次数为100次，可通过配置文件`SPIDER_MAX_RETRY_TIMES`参数修改。当任务超过最大重试次数时，默认会将失败的任务存储到Redis的`{redis_key}:z_failed_requsets`里，供人工排查。
+
+相关配置为：
+
+```python
+# 每个请求最大重试次数
+SPIDER_MAX_RETRY_TIMES = 100 
+# 重新尝试失败的requests 当requests重试次数超过允许的最大重试次数算失败
+RETRY_FAILED_REQUESTS = False
+# 保存失败的request
+SAVE_FAILED_REQUEST = True
+# 任务失败数 超过WARNING_FAILED_COUNT则报警
+WARNING_FAILED_COUNT = 1000
+```
+
+当`RETRY_FAILED_REQUESTS=True`时，爬虫再次启动时会将失败的任务重新下发到任务队列中，重新抓取
+
+### 3. 去重
+
+> 与Spider相同
+
+支持任务去重和数据去重，任务默认是临时去重，去重库保留1个月，即只去重1个月内的任务，数据是永久去重。默认去重是关闭的，相关配置为：
+
+```
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+修改默认去重库：
+
+```
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.dedup import Dedup
+
+RequestBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+ItemBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+```
+
+RequestBuffer 为任务入库前缓冲的buffer，ItemBuffer为数据入库前缓冲的buffer
+
+关于去重库详情见：[海量数据去重](source_code/dedup)
+
+### 4. 加速采集
+
+> 与Spider相同
+
+与爬虫采集速度的相关配置为：
+
+```python
+# 爬虫相关
+# COLLECTOR
+COLLECTOR_SLEEP_TIME = 1 # 从任务队列中获取任务到内存队列的间隔
+COLLECTOR_TASK_COUNT = 10 # 每次获取任务数量
+
+# SPIDER
+SPIDER_THREAD_COUNT = 1 # 爬虫并发数
+SPIDER_SLEEP_TIME = 0 # 下载时间间隔（解析完一个response后休眠时间）
+SPIDER_MAX_RETRY_TIMES = 100 # 每个请求最大重试次数
+# 是否主动执行添加 设置为False 需要手动调用start_monitor_task，适用于多进程情况下
+
+```
+
+COLLECTOR 为从任务队列中取任务到内存队列的线程，SPIDER为实际采集的线程
+
+`COLLECTOR_TASK_COUNT` 建议 >= `SPIDER_THREAD_COUNT`, 这样每个线程的爬虫才有任务可做。但COLLECTOR_TASK_COUNT不建议过大，不然分布式时，一个池子里的任务都被节点A取走了，其他节点取不到任务了。
+
+### 了解更多
+
+更多配置，详见[配置文件](source_code/配置文件)
+
+ 
+
+### 代码文件: docs\source_code\Request.md
+ 
+# Request
+
+## 简介
+
+Request为feapder的下载器，基于requests进行了封装，因此支持requests的所有参数
+
+我们可以直接调用框架中的Request发起请求，使用示例：
+
+```
+from feapder import Request
+
+request = Request("https://www.baidu.com", data={}, params=None)
+response = request.get_response()
+print(response)
+```
+
+返回的response支持xpath、css等表达式，具体用法见[Response](source_code/Response)
+
+Request除了支持requests的所有参数外，更需要关心的是框架中支持的参数
+
+## 参数详解
+
+```python
+@summary: Request参数
+---------
+框架参数
+@param url: 待抓取url
+@param retry_times: 当前重试次数
+@param priority: 请求优先级 越小越优先 默认300
+@param parser_name: 回调函数所在的类名 默认为当前类
+@param callback: 回调函数 可以是函数 也可是函数名（如想跨类回调时，parser_name指定那个类名，callback指定那个类想回调的方法名即可）
+@param filter_repeat: 是否需要去重 (True/False) 当setting中的REQUEST_FILTER_ENABLE设置为True时该参数生效 默认True
+@param auto_request: 是否需要自动请求下载网页 默认是。设置为False时返回的response为空，需要自己去请求网页
+@param request_sync: 是否同步请求下载网页，默认异步。如果该请求url过期时间快，可设置为True，相当于yield的reqeust会立即响应，而不是去排队
+@param use_session: 是否使用session方式
+@param random_user_agent: 是否随机User-Agent (True/False) 当setting中的RANDOM_HEADERS设置为True时该参数生效 默认True
+@param download_midware: 下载中间件。默认为parser中的download_midware
+@param is_abandoned: 当发生异常时是否放弃重试 True/False. 默认False
+@param render: 是否用浏览器渲染
+@param render_time: 渲染时长，即打开网页等待指定时间后再获取源码
+--
+以下参数于requests参数使用方式一致
+@param method: 请求方式，如POST或GET，默认根据data值是否为空来判断
+@param params: 请求参数
+@param data: 请求body
+@param json: 请求json字符串，同 json.dumps(data)
+@param headers:
+@param cookies: 字典 或 CookieJar 对象
+@param files: 
+@param auth: 
+@param timeout: (浮点或元组)等待服务器数据的超时限制，是一个浮点数，或是一个(connect timeout, read timeout) 元组
+@param allow_redirects : Boolean. True 表示允许跟踪 POST/PUT/DELETE 方法的重定向
+@param proxies: 代理 {"http":"http://xxx", "https":"https://xxx"}
+@param verify: 为 True 时将会验证 SSL 证书
+@param stream: 如果为 False，将会立即下载响应内容
+@param cert: 
+--
+@param **kwargs: 其他值: 如 Request(item=item) 则item可直接用 request.item 取出
+---------
+```
+
+举例说明：如果我们不想用内置的下载器，写法如下：
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", auto_request=False)
+
+    def parse(self, request, response):
+        # response 为None， 需要自己去下载
+        pass
+        
+        
+## 方法详解
+
+### 1. 发起请求，获取响应
+
+```
+def get_response(self, save_cached=False):
+    """
+    获取带有selector功能的response
+    @param save_cached: 保存缓存 方便调试时不用每次都重新下载
+    @return:
+    """
+```
+
+save_cached 参数用于设置是否把响应缓存到redis，若为True, 需要配置redis连接信息。redis连接信息会读取setting.py文件，所以需要保证工作区间下有setting.py。
+
+或者可以将连接信息设置为环境变量
+以mac电脑为例
+
+```
+> vim ~/.bash_profile
+
+export REDISDB_IP_PORTS='ip:port' # 多个地址用逗号隔开
+export REDISDB_USER_PASS='xxx'
+export REDISDB_DB='xxx' # 默认是0, 可不设置
+export REDISDB_SERVICE_NAME='xxx' # 用于redis的哨兵模式，单节点或集群模式可不设置
+
+```
+
+这样，当框架读取不到setting时，便会取环境变量里的值
+
+### 2. 从缓存中取响应
+
+```
+def get_response_from_cached(self, save_cached=True):
+    pass
+```
+
+用于从上面的缓存中取response。当缓存不存在时，会先下载，然后将响应存入缓存，之后再返回响应。缓存同样依赖redis，因此需要先配置好redis连接信息
+
+### 3. 删除缓存
+
+```
+def del_response_cached(self)
+    pass
+```
+
+### 4. 复制Request
+
+```
+def copy(self):
+    pass
+```
+
+## 缓存机制
+
+### 1. 缓存有效期
+
+缓存使用redis的str结构存储，每条缓存对应一个key，默认有效期20分钟，可以通过 `Request.cached_expire_time=过期时间`来设置
+
+### 2. 缓存key
+
+默认的key为 `response_cached:test:request指纹`
+
+可通过`Request.cached_redis_key`设置，设置后为 `response_cached:自定义的key:request指纹`
+
+## 代理及UserAgent
+
+ 代理及UA的设置优先取传递的参数，若参数没指定，则依赖`setting.py`的配置，默认如下：
+
+```python
+# 设置代理
+PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+PROXY_ENABLE = True
+
+# 随机headers
+RANDOM_HEADERS = True
+# requests 使用session
+USE_SESSION = False
+```
+
+PROXY_EXTRACT_API 为代理的提取地址，如
+
+```python
+PROXY_EXTRACT_API="http://xxxx"
+```
+
+返回的代理格式为：
+
+```
+ip:port
+ip:port
+ip:port
+```
+
+ 
+
+### 代码文件: docs\source_code\浏览器渲染-Selenium.md
+ 
+# 浏览器渲染-Selenium
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+框架内置一个浏览器渲染池，默认的池子大小为1，请求时重复利用浏览器实例，只有当代理失效请求异常时，才会销毁、创建一个新的浏览器实例
+
+内置浏览器渲染支持 **CHROME**、**EDGE**、**PHANTOMJS**、**FIREFOX**
+
+## 使用方式：
+
+```python
+def start_requests(self):
+    yield feapder.Request("https://news.qq.com/", render=True)
+```
+在返回的Request中传递`render=True`即可
+
+框架支持`CHROME`、`EDGE`、`PHANTOMJS`、`FIREFOX` 三种浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+# 浏览器渲染
+WEBDRIVER = dict(
+    pool_size=1,  # 浏览器的数量
+    load_images=True,  # 是否加载图片
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    render_time=0, # 渲染时长，即打开网页等待指定时间后再获取源码
+    custom_argument=["--ignore-certificate-errors"],  # 自定义浏览器渲染参数
+    xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+    auto_install_driver=False,  # 自动下载浏览器驱动 支持chrome 和 firefox
+)
+```
+
+ - `feapder.Request` 也支持`render_time`参数， 优先级大于配置文件中的`render_time`
+
+ - 代理使用优先级：`feapder.Request`指定的代理 > 配置文件中的`PROXY_EXTRACT_API` > webdriver配置文件中的`proxy`
+
+ - user_agent使用优先级：`feapder.Request`指定的header里的`User-Agent` > 框架随机的`User-Agent` > webdriver配置文件中的`user_agent`
+
+## 设置User-Agent
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `user_agent` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "User-Agent": "xxxxxxxx"
+    }
+    return request
+```
+
+## 设置代理
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `proxy` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.proxies = {
+        "https": "https://xxx.xxx.xxx.xxx:xxxx"
+    }
+    return request
+```
+
+## 设置Cookie
+
+通过 `feapder.Request`携带，如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "Cookie": "key=value; key2=value2"
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = {
+        "key": "value",
+        "key2": "value2",
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = [
+        {
+            "domain": "xxx",
+            "name": "xxx",
+            "value": "xxx",
+            "expirationDate": "xxx"
+        },
+    ]
+    return request
+```
+
+## 操作浏览器对象
+
+通过 `response.browser` 获取浏览器对象
+
+代码示例：请求百度，搜索feapder
+
+```python
+import time
+
+import feapder
+from feapder.utils.webdriver import WebDriver
+
+
+class TestRender(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com", render=True)
+
+    def parse(self, request, response):
+        browser: WebDriver = response.browser
+        browser.find_element_by_id("kw").send_keys("feapder")
+        browser.find_element_by_id("su").click()
+        time.sleep(5)
+        print(browser.page_source)
+
+        # response也是可以正常使用的
+        # response.xpath("//title")
+
+        # 若有滚动，可通过如下方式更新response，使其加载滚动后的内容
+        # response.text = browser.page_source
+
+
+if __name__ == "__main__":
+    TestRender().start()
+
+```
+
+## 拦截xhr数据
+
+### 设置拦截规则
+
+```python
+WEBDRIVER = dict(
+    ...
+    xhr_url_regexes=[
+        "接口1正则",
+        "接口2正则",
+    ]
+)
+```
+
+### 获取数据
+
+```python
+browser: WebDriver = response.browser
+text = browser.xhr_text("接口1正则")
+```
+
+### 获取json格式数据
+
+```python
+browser: WebDriver = response.browser
+data = browser.xhr_json("接口1正则")
+```
+
+### 获取response
+
+```python
+browser: WebDriver = response.browser
+xhr_response = browser.xhr_response("接口1正则")
+print("请求接口", xhr_response.request.url)
+print("请求头", xhr_response.request.headers)
+print("请求体", xhr_response.request.data)
+print("返回头", xhr_response.headers)
+print("返回地址", xhr_response.url)
+print("返回内容", xhr_response.content)
+```
+
+
+### 示例：
+
+需求：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/12/30/16408610725756.jpg)
+
+代码：
+
+```python
+import time
+
+import feapder
+from feapder.utils.webdriver import WebDriver
+
+
+class TestRender(feapder.AirSpider):
+    __custom_setting__ = dict(
+        WEBDRIVER=dict(
+            pool_size=1,  # 浏览器的数量
+            load_images=True,  # 是否加载图片
+            user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+            proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless=False,  # 是否为无头浏览器
+            driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+            timeout=30,  # 请求超时时间
+            window_size=(1024, 800),  # 窗口大小
+            executable_path=None,  # 浏览器路径，默认为默认路径
+            render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+            custom_argument=["--ignore-certificate-errors"],  # 自定义浏览器渲染参数
+            xhr_url_regexes=[
+                "/ad",
+            ],  # 拦截 http://www.spidertools.cn/spidertools/ad 接口
+        )
+    )
+
+    def start_requests(self):
+        yield feapder.Request("http://www.spidertools.cn", render=True)
+
+    def parse(self, request, response):
+        browser: WebDriver = response.browser
+        time.sleep(3)
+
+        # 获取接口数据 文本类型
+        ad = browser.xhr_text("/ad")
+        print(ad)
+
+        # 获取接口数据 转成json，本例因为返回的接口是文本，所以不转了
+        # browser.xhr_json("/ad")
+
+        xhr_response = browser.xhr_response("/ad")
+        print("请求接口", xhr_response.request.url)
+        # 请求头目前获取的不完整
+        print("请求头", xhr_response.request.headers)
+        print("请求体", xhr_response.request.data)
+        print("返回头", xhr_response.headers)
+        print("返回地址", xhr_response.url)
+        print("返回内容", xhr_response.content)
+
+
+if __name__ == "__main__":
+    TestRender().start()
+
+```
+
+## 驱动版本自动适配
+
+```python
+WEBDRIVER = dict(
+    ...
+    auto_install_driver=True
+)
+```
+
+即浏览器渲染相关配置 `auto_install_driver` 设置True，让其自动对比驱动版本，版本不符或驱动不存在时自动下载
+
+## 关闭当前浏览器
+
+```python
+def parse(self, request, response):
+    response.close_browser(request)
+```
+
+关闭会自动重开一个新的浏览器实例
+
+ 
+
+### 代码文件: docs\source_code\tools.md
+ 
+
+# tools
+
+`feapder.utils.tools`里封装了爬虫中常用的函数，目前共计**129**个，可通过阅读源码了解使用
+
+## 举例
+
+### 时间格式化
+
+```python
+from feapder.utils import tools
+
+time = "昨天"
+
+date = tools.format_time(time)
+assert date == "2021-03-15 00:00:00"
+```
+
+ 
+
+### 代码文件: docs\foreword\架构设计.md
+ 
+
+# 框架流程图
+
+![boris-spider -1-](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/08/borisspider-1.png)
+
+## 模块说明：
+
+* spider **框架调度核心**
+* parser_control **模版控制器**，负责调度parser
+* collector **任务收集器**，负责从任务队里中批量取任务到内存，以减少爬虫对任务队列数据库的访问频率及并发量
+* parser **数据解析器**
+* start_request 初始任务下发函数
+* item_buffer **数据缓冲队列**，批量将数据存储到数据库中
+* request_buffer **请求任务缓冲队列**，批量将请求任务存储到任务队列中
+* request **数据下载器**，封装了requests，用于从互联网上下载数据
+* response **请求响应**，封装了response, 支持xpath、css、re等解析方式，自动处理中文乱码
+
+## 流程说明：
+
+1. spider调度**start_request**生产任务
+2. **start_request**下发任务到request_buffer中
+3. spider调度**request_buffer**批量将任务存储到任务队列数据库中
+4. spider调度**collector**从任务队列中批量获取任务到内存队列
+5. spider调度**parser_control**从collector的内存队列中获取任务
+6. **parser_control**调度**request**请求数据
+7. **request**请求与下载数据
+8. request将下载后的数据给**response**，进一步封装
+9. 将封装好的**response**返回给**parser_control**（图示为多个parser_control，表示多线程）
+10. parser_control调度对应的**parser**，解析返回的response（图示多组parser表示不同的网站解析器）
+11. parser_control将parser解析到的数据item及新产生的request分发到**item_buffer**与**request_buffer**
+12. spider调度**item_buffer**与**request_buffer**将数据批量入库
+
+
+ 
+
+### 代码文件: docs\source_code\浏览器渲染-Playwright.md
+ 
+# 浏览器渲染-Playwright
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+框架支持playwright渲染下载，每个线程持有一个playwright实例
+
+
+## 使用方式：
+
+1. 修改配置文件的渲染下载器：
+
+    ```
+    RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader"
+    ```
+2. 使用
+
+    ```python
+    def start_requests(self):
+        yield feapder.Request("https://news.qq.com/", render=True)
+    ```
+
+在返回的Request中传递`render=True`即可
+
+框架支持`chromium`、`firefox`、`webkit` 三种浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+PLAYWRIGHT = dict(
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="chromium",  # chromium、firefox、webkit
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    download_path=None,  # 下载文件的路径
+    render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+    wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+    use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+    page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+    storage_state_path=None,  # 保存浏览器状态的路径
+    url_regexes=None,  # 拦截接口，支持正则，数组类型
+    save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+)
+```
+
+ - `feapder.Request` 也支持`render_time`参数， 优先级大于配置文件中的`render_time`
+
+ - 代理使用优先级：`feapder.Request`指定的代理 > 配置文件中的`PROXY_EXTRACT_API` > webdriver配置文件中的`proxy`
+
+ - user_agent使用优先级：`feapder.Request`指定的header里的`User-Agent` > 框架随机的`User-Agent` > webdriver配置文件中的`user_agent`
+
+## 设置User-Agent
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `user_agent` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "User-Agent": "xxxxxxxx"
+    }
+    return request
+```
+
+## 设置代理
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `proxy` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.proxies = {
+        "https": "https://xxx.xxx.xxx.xxx:xxxx"
+    }
+    return request
+```
+    
+## 设置Cookie
+
+通过 `feapder.Request`携带，如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "Cookie": "key=value; key2=value2"
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = {
+        "key": "value",
+        "key2": "value2",
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = [
+        {
+            "domain": "xxx",
+            "name": "xxx",
+            "value": "xxx",
+            "expirationDate": "xxx"
+        },
+    ]
+    return request
+```
+
+## 拦截数据示例
+
+> 注意：主函数使用run方法运行，不能使用start
+
+```python
+from playwright.sync_api import Response
+from feapder.utils.webdriver import (
+    PlaywrightDriver,
+    InterceptResponse,
+    InterceptRequest,
+)
+
+import feapder
+
+
+def on_response(response: Response):
+    print(response.url)
+
+
+class TestPlaywright(feapder.AirSpider):
+    __custom_setting__ = dict(
+        RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+        PLAYWRIGHT=dict(
+            user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+            proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless=False,  # 是否为无头浏览器
+            driver_type="chromium",  # chromium、firefox、webkit
+            timeout=30,  # 请求超时时间
+            window_size=(1024, 800),  # 窗口大小
+            executable_path=None,  # 浏览器路径，默认为默认路径
+            download_path=None,  # 下载文件的路径
+            render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+            wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+            use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+            # page_on_event_callback=dict(response=on_response),  # 监听response事件
+            # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+            storage_state_path=None,  # 保存浏览器状态的路径
+            url_regexes=["wallpaper/list"],  # 拦截接口，支持正则，数组类型
+            save_all=True,  # 是否保存所有拦截的接口
+        ),
+    )
+
+    def start_requests(self):
+        yield feapder.Request(
+            "http://www.soutushenqi.com/image/search/?searchWord=%E6%A0%91%E5%8F%B6",
+            render=True,
+        )
+
+    def parse(self, reqeust, response):
+        driver: PlaywrightDriver = response.driver
+
+        intercept_response: InterceptResponse = driver.get_response("wallpaper/list")
+        intercept_request: InterceptRequest = intercept_response.request
+
+        req_url = intercept_request.url
+        req_header = intercept_request.headers
+        req_data = intercept_request.data
+        print("请求url", req_url)
+        print("请求header", req_header)
+        print("请求data", req_data)
+
+        data = driver.get_json("wallpaper/list")
+        print("接口返回的数据", data)
+
+        print("------ 测试save_all=True ------- ")
+
+        # 测试save_all=True
+        all_intercept_response: list = driver.get_all_response("wallpaper/list")
+        for intercept_response in all_intercept_response:
+            intercept_request: InterceptRequest = intercept_response.request
+            req_url = intercept_request.url
+            req_header = intercept_request.headers
+            req_data = intercept_request.data
+            print("请求url", req_url)
+            print("请求header", req_header)
+            print("请求data", req_data)
+
+        all_intercept_json = driver.get_all_json("wallpaper/list")
+        for intercept_json in all_intercept_json:
+            print("接口返回的数据", intercept_json)
+
+        # 千万别忘了
+        driver.clear_cache()
+
+
+if __name__ == "__main__":
+    TestPlaywright(thread_count=1).run()
+```
+可通过配置的`page_on_event_callback`参数自定义事件的回调，如设置`on_response`的事件回调，亦可直接使用`url_regexes`设置拦截的接口
+
+## 操作浏览器对象示例
+
+> 注意：主函数使用run方法运行，不能使用start
+
+```python
+import time
+
+from playwright.sync_api import Page
+
+import feapder
+from feapder.utils.webdriver import PlaywrightDriver
+
+
+class TestPlaywright(feapder.AirSpider):
+    __custom_setting__ = dict(
+        RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+    )
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", render=True)
+
+    def parse(self, reqeust, response):
+        driver: PlaywrightDriver = response.driver
+        page: Page = driver.page
+
+        page.type("#kw", "feapder")
+        page.click("#su")
+        page.wait_for_load_state("networkidle")
+        time.sleep(1)
+
+        html = page.content()
+        response.text = html  # 使response加载最新的页面
+        for data_container in response.xpath("//div[@class='c-container']"):
+            print(data_container.xpath("string(.//h3)").extract_first())
+
+
+if __name__ == "__main__":
+    TestPlaywright(thread_count=1).run()
+```
+ 
+
+### 代码文件: docs\source_code\proxy.md
+ 
+# 代理使用说明
+
+代理使用有三种方式
+1. 使用框架内置代理池
+2. 自定义代理池
+3. 请求中直接指定
+
+## 方式1. 使用框架内置代理池
+
+### 配置代理
+
+在配置文件中配置代理提取接口
+
+```python
+# 设置代理
+PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+PROXY_ENABLE = True
+PROXY_MAX_FAILED_TIMES = 5  # 代理最大失败次数，超过则不使用，自动删除
+```
+
+要求API返回的代理格式为使用 /r/n 分隔：
+
+```
+ip:port
+ip:port
+ip:port
+```
+
+这样feapder在请求时会自动随机使用上面的代理请求了
+
+## 管理代理
+
+1. 删除代理（默认是请求异常连续5次，再删除代理）
+
+    例如在发生异常时删除代理
+    
+    ```python
+    import feapder
+    class TestProxy(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+        
+        def parse(self, request, response):
+            print(response)
+        
+        def exception_request(self, request, response):
+            request.del_proxy()
+            
+    ```
+    
+## 方式2. 自定义代理池
+
+1. 编写代理池：例如在你的项目下创建个my_proxypool.py，实现下面的函数
+    
+    ```python
+    from feapder.network.proxy_pool import BaseProxyPool 
+        
+    class MyProxyPool(BaseProxyPool):
+        def get_proxy(self):
+            """
+            获取代理
+            Returns:
+                {"http": "xxx", "https": "xxx"}
+            """
+            pass
+        
+        def del_proxy(self, proxy):
+            """
+            @summary: 删除代理
+            ---------
+            @param proxy: xxx
+            """
+            pass
+    ```
+
+3. 修改setting的代理配置
+
+    ```
+    PROXY_POOL = "my_proxypool.MyProxyPool"  # 代理池
+    ```
+    
+    将编写好的代理池配置进来，值为类的模块路径，需要指定到具体的类名
+ 
+
+
+## 方式3. 不使用代理池，直接给请求指定代理
+
+直接给request.proxies赋值即可，例如在下载中间件里使用
+
+```python
+import feapder
+
+class TestProxy(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+        
+    def download_midware(self, request):
+        # 这里使用代理使用即可
+        request.proxies = {"https": "https://ip:port", "http": "http://ip:port"} 
+        return request
+
+    def parse(self, request, response):
+        print(response)
+```
+ 
+
+### 代码文件: docs\source_code\MongoDB.md
+ 
+# MongoDB
+
+## 数据自动入Mongo库使用须知
+
+- 使用`MongoDb`存储数据，需要使用`MongoPipeline`
+
+示例:
+
+```python
+import feapder
+from feapder import Item
+
+
+class TestMongo(feapder.AirSpider):
+    __custom_setting__ = dict(
+        ITEM_PIPELINES=["feapder.pipelines.mongo_pipeline.MongoPipeline"],
+        MONGO_IP="localhost",
+        MONGO_PORT=27017,
+        MONGO_DB="feapder",
+        MONGO_USER_NAME="",
+        MONGO_USER_PASS="",
+    )
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()  # 取标题
+        item = Item()  # 声明一个item
+        item.table_name = "test_mongo" # 指定存储的表名
+        item.title = title  # 给item属性赋值
+        yield item  # 返回item， item会自动批量入库
+
+
+if __name__ == "__main__":
+    TestMongo().start()
+```
+
+
+## 直接使用
+
+### 连接
+
+```python
+from feapder.db.mongodb import MongoDB
+
+
+db = MongoDB(
+    ip="localhost", port=27017, db="feapder", user_name="feapder", user_pass="feapder123"
+)
+```
+
+若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+```python
+db = MongoDB()
+```
+    
+或者可以根据url连接
+
+```python
+db = MongoDB.from_url("mongodb://username:password@ip:port/db")
+```
+    
+### 方法
+
+> MongoDB封装了增删改查等方法，方便使用
+
+#### 查
+
+```python
+def find(self, table, limit=0) -> List[Dict]:
+    """
+    @summary:
+    无数据： 返回()
+    有数据： 若limit == 1 则返回 (data1, data2)
+            否则返回 ((data1, data2),)
+    ---------
+    @param table:
+    @param limit:
+    ---------
+    @result:
+    """
+```
+    
+
+#### 增
+
+```python
+def add(self, table, data, **kwargs):
+    """
+
+    Args:
+        table:
+        data:
+        kwargs:
+            auto_update: 覆盖更新，将替换唯一索引重复的数据，默认False
+            update_columns: 更新指定的列（如果数据的唯一索引存在，则更新指定字段，如 update_columns = ["name", "title"]
+            insert_ignore: 唯一索引冲突时是否忽略，默认为False
+            condition_fields: 用于条件查找的字段，默认以`_id`作为查找条件，默认：['_id']
+            exception_callfunc: 异常回调
+
+    Returns: 添加行数
+
+    """
+```
+
+```python
+def add_batch(self, table: str, datas: List[Dict], **kwargs):
+    """
+    @summary: 批量添加数据
+    ---------
+    @param command: 字典
+    @param datas: 列表 [[..], [...]]
+    @param **kwargs:
+        auto_update: 覆盖更新，将替换唯一索引重复的数据，默认False
+        update_columns: 更新指定的列（如果数据的唯一索引存在，则更新指定字段，如 update_columns = ["name", "title"]
+        update_columns_value: 指定更新的字段对应的值
+        condition_fields: 用于条件查找的字段，默认以`_id`作为查找条件，默认：['_id']
+    ---------
+    @result: 添加行数
+    """
+```
+
+#### 更新
+
+```python
+def update(self, coll_name, data: Dict, condition: Dict, upsert: bool = False):
+    """
+    更新
+    Args:
+        coll_name: 集合名
+        data: 单条数据 {"xxx":"xxx"}
+        condition: 更新条件 {"_id": "xxxx"}
+        upsert: 数据不存在则插入,默认为 False
+
+    Returns: True / False
+    """
+```
+
+#### 删除
+
+```python
+def delete(self, table, condition: Dict):
+    """
+    删除
+    Args:
+        table:
+        condition: 查找条件
+    Returns: True / False
+    """
+```
+
+ 
+
+### 代码文件: docs\source_code\BatchParser.md
+ 
+# BatchParser
+
+BaseParser为BatchSpider的基类，用来定义任务下发与数据解析，是面向用户提供的接口
+
+除了提供[BaseParser](source_code/BaseParser)所有接口外，还提供以下方法
+
+## 方法详解
+
+### 1. 添加任务 add_task
+
+add_task, 每次执行start_monitor都会调用，且在init_task之前调用, 用于在批次爬虫启动前添加任务到数据库
+
+```
+class TestSpider(feapder.BatchSpider):
+    def add_task(self):
+        pass
+```
+
+### 2. 更新任务
+
+#### 方法一：
+
+一条条更新
+
+```python
+def update_task_state(self, task_id, state=1, **kwargs):
+    """
+    @summary: 更新任务表中任务状态，做完每个任务时代码逻辑中要主动调用
+    调用方法为 yield lambda : self.update_task_state(task_id, state)
+    ---------
+    @param task_id: 任务id
+    @param state: 任务状态
+    ---------
+    @result:
+    """
+```
+
+举例说明
+
+```
+def parse(self, request, response):
+    yield item  # 返回item， item会自动批量入库
+    yield lambda : self.update_task_state(request.task_id, 1)
+```
+
+ 在`yield item`后，调用`self.update_task_state`函数实现任务状态更新。
+ 
+ 这里为什么使用`yield lambda`方式呢？因为`yield item`后，item不会马上入库，会存在一个buffer中，批量入库，如果我们直接调用`self.update_task_state`更新任务状态，可能这时item还并未入库，如果此时程序意外退出，那么缓存中的这一部分item数据将会丢失，但是此时任务状态已更新，任务不会重做，这便会导致这个任务所对应的数据丢失
+ 
+ `yield lambda`返回的是一个回调函数，这个函数并不会马上执行，系统会保证item入库后再执行，因此这么写的用意在于item入库后再更新任务状态
+ 
+#### 方法二：
+
+批量更新
+
+```python
+def update_task_batch(self, task_id, state=1, **kwargs):
+    """
+    批量更新任务 多处调用，更新的字段必须一致
+    注意：需要 写成 yield update_task_batch(...) 否则不会更新
+    @param task_id:
+    @param state:
+    @param kwargs:
+    @return:
+    """
+```
+
+举例说明
+
+```python
+def parse(self, request, response):
+    yield item  # 返回item， item会自动批量入库
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+```
+
+在`yield item`后调用`self.update_task_batch`实现批量更新
+
+注意，批量更新必须使用 `yield`, 因为`update_task_batch`函数并未实现更新逻辑，只是返回了`UpdateItem`， `UpdateItem`与`Item`类似，只不过带有更新功能，框架会在Item入库后在调用`UpdateItem`实现批量更新。关于`UpdateItem`详解，请参考[UpdateItem]()
+
+#### 两种方式选取
+
+同一张表，若更新字段相同，推荐使用批量更新的方式，效率更高，若字段不同，用一条条更新的方式。因为批量更新，这一批的更新字段必须一致
+
+比如当请求失败时，将任务更新为-1，同时标记失败原因，成功时将任务更新为1，写法如下：
+
+```python
+def parse(self, request, response):
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+
+def failed_request(self, request, response):
+    """
+    @summary: 超过最大重试次数的request
+    ---------
+    @param request:
+    ---------
+    @result: request / item / callback / None (返回值必须可迭代)
+    """
+
+    yield request
+    yield lambda : self.update_task_state(request.task_id, -1, remark="失败原因") # 更新任务状态为-1
+```
+
+因任务失败时多更新了个remark字段，与任务成功时只更新state字段不同，因此需要将此更新操作单独拆出来，用`update_task_state`方式更新
+
+### 3. 获取批次时间
+
+示例：
+
+    def parse(self, request, response):
+        item = SpiderDataItem()  # 声明一个item
+        item.batch_data = self.batch_date
+        item.title = title  # 给item属性赋值
+        yield item  # 返回item， item会自动批量入库
+        
+使用`self.batch_date`可获取当前批次时间，然后拼接到item入库
+
+数据示例
+
+| id | title | batch_date |
+| --- | --- | --- |
+| 1 | 百度一下 | 2021-01-01 |
+ 
+
+### 代码文件: docs\question\请求问题.md
+ 
+# 请求问题
+
+## ValueError: check_hostname requires server_hostname
+
+    pip install urllib3==1.25.8
+    
+参考：https://stackoverflow.com/questions/66642705/why-requests-raise-this-exception-check-hostname-requires-server-hostname
+ 
+
+### 代码文件: docs\.nojekyll
+```nojekyll
+
+```
+# feapder 项目代码文件大全 
+
+
+### 代码文件: feapder\buffer\item_buffer.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-06-19 17:17
+---------
+@summary: item 管理器， 负责缓冲添加到数据库中的item， 由该manager统一添加。防止多线程同时访问数据库
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import threading
+from queue import Queue
+
+import feapder.utils.tools as tools
+from feapder import setting
+from feapder.db.redisdb import RedisDB
+from feapder.dedup import Dedup
+from feapder.network.item import Item, UpdateItem
+from feapder.pipelines import BasePipeline
+from feapder.pipelines.mysql_pipeline import MysqlPipeline
+from feapder.utils import metrics
+from feapder.utils.log import log
+
+MYSQL_PIPELINE_PATH = "feapder.pipelines.mysql_pipeline.MysqlPipeline"
+
+
+class ItemBuffer(threading.Thread):
+    dedup = None
+    __redis_db = None
+
+    def __init__(self, redis_key, task_table=None):
+        if not hasattr(self, "_table_item"):
+            super(ItemBuffer, self).__init__()
+
+            self._thread_stop = False
+            self._is_adding_to_db = False
+            self._redis_key = redis_key
+            self._task_table = task_table
+
+            self._items_queue = Queue(maxsize=setting.ITEM_MAX_CACHED_COUNT)
+
+            self._table_request = setting.TAB_REQUESTS.format(redis_key=redis_key)
+            self._table_failed_items = setting.TAB_FAILED_ITEMS.format(
+                redis_key=redis_key
+            )
+
+            self._item_tables = {
+                # 'item_name': 'table_name' # 缓存item名与表名对应关系
+            }
+
+            self._item_update_keys = {
+                # 'table_name': ['id', 'name'...] # 缓存table_name与__update_key__的关系
+            }
+
+            self._pipelines = self.load_pipelines()
+
+            self._have_mysql_pipeline = MYSQL_PIPELINE_PATH in setting.ITEM_PIPELINES
+            self._mysql_pipeline = None
+
+            if setting.ITEM_FILTER_ENABLE and not self.__class__.dedup:
+                if setting.ITEM_FILTER_SETTING.get(
+                    "filter_type"
+                ) == Dedup.BloomFilter or setting.ITEM_FILTER_SETTING.get("name"):
+                    self.__class__.dedup = Dedup(
+                        to_md5=False, **setting.ITEM_FILTER_SETTING
+                    )
+                else:
+                    self.__class__.dedup = Dedup(
+                        to_md5=False,
+                        name=self._redis_key,
+                        **setting.ITEM_FILTER_SETTING,
+                    )
+
+            # 导出重试的次数
+            self.export_retry_times = 0
+            # 导出失败的次数 TODO 非air爬虫使用redis统计
+            self.export_falied_times = 0
+
+    @property
+    def redis_db(self):
+        if self.__class__.__redis_db is None:
+            self.__class__.__redis_db = RedisDB()
+
+        return self.__class__.__redis_db
+
+    def load_pipelines(self):
+        pipelines = []
+        for pipeline_path in setting.ITEM_PIPELINES:
+            pipeline = tools.import_cls(pipeline_path)()
+            if not isinstance(pipeline, BasePipeline):
+                raise ValueError(f"{pipeline_path} 需继承 feapder.pipelines.BasePipeline")
+            pipelines.append(pipeline)
+
+        return pipelines
+
+    @property
+    def mysql_pipeline(self):
+        if not self._mysql_pipeline:
+            self._mysql_pipeline = tools.import_cls(MYSQL_PIPELINE_PATH)()
+
+        return self._mysql_pipeline
+
+    def run(self):
+        self._thread_stop = False
+        while not self._thread_stop:
+            self.flush()
+            tools.delay_time(setting.ITEM_UPLOAD_INTERVAL)
+
+        self.close()
+
+    def stop(self):
+        self._thread_stop = True
+        self._started.clear()
+
+    def put_item(self, item):
+        if isinstance(item, Item):
+            # 入库前的回调
+            item.pre_to_db()
+
+        self._items_queue.put(item)
+
+    def flush(self):
+        try:
+            items = []
+            update_items = []
+            requests = []
+            callbacks = []
+            items_fingerprints = []
+            data_count = 0
+
+            while not self._items_queue.empty():
+                data = self._items_queue.get_nowait()
+                data_count += 1
+
+                # data 分类
+                if callable(data):
+                    callbacks.append(data)
+
+                elif isinstance(data, UpdateItem):
+                    update_items.append(data)
+
+                elif isinstance(data, Item):
+                    items.append(data)
+                    if setting.ITEM_FILTER_ENABLE:
+                        items_fingerprints.append(data.fingerprint)
+
+                else:  # request-redis
+                    requests.append(data)
+
+                if data_count >= setting.ITEM_UPLOAD_BATCH_MAX_SIZE:
+                    self.__add_item_to_db(
+                        items, update_items, requests, callbacks, items_fingerprints
+                    )
+
+                    items = []
+                    update_items = []
+                    requests = []
+                    callbacks = []
+                    items_fingerprints = []
+                    data_count = 0
+
+            if data_count:
+                self.__add_item_to_db(
+                    items, update_items, requests, callbacks, items_fingerprints
+                )
+
+        except Exception as e:
+            log.exception(e)
+
+    def get_items_count(self):
+        return self._items_queue.qsize()
+
+    def is_adding_to_db(self):
+        return self._is_adding_to_db
+
+    def __dedup_items(self, items, items_fingerprints):
+        """
+        去重
+        @param items:
+        @param items_fingerprints:
+        @return: 返回去重后的items, items_fingerprints
+        """
+        if not items:
+            return items, items_fingerprints
+
+        is_exists = self.__class__.dedup.get(items_fingerprints)
+        is_exists = is_exists if isinstance(is_exists, list) else [is_exists]
+
+        dedup_items = []
+        dedup_items_fingerprints = []
+        items_count = dedup_items_count = dup_items_count = 0
+
+        while is_exists:
+            item = items.pop(0)
+            items_fingerprint = items_fingerprints.pop(0)
+            is_exist = is_exists.pop(0)
+
+            items_count += 1
+
+            if not is_exist:
+                dedup_items.append(item)
+                dedup_items_fingerprints.append(items_fingerprint)
+                dedup_items_count += 1
+            else:
+                dup_items_count += 1
+
+        log.info(
+            "待入库数据 {} 条， 重复 {} 条，实际待入库数据 {} 条".format(
+                items_count, dup_items_count, dedup_items_count
+            )
+        )
+
+        return dedup_items, dedup_items_fingerprints
+
+    def __pick_items(self, items, is_update_item=False):
+        """
+        将每个表之间的数据分开 拆分后 原items为空
+        @param items:
+        @param is_update_item:
+        @return:
+        """
+        datas_dict = {
+            # 'table_name': [{}, {}]
+        }
+
+        while items:
+            item = items.pop(0)
+            # 取item下划线格式的名
+            # 下划线类的名先从dict中取，没有则现取，然后存入dict。加快下次取的速度
+            item_name = item.item_name
+            table_name = self._item_tables.get(item_name)
+            if not table_name:
+                table_name = item.table_name
+                self._item_tables[item_name] = table_name
+
+            if table_name not in datas_dict:
+                datas_dict[table_name] = []
+
+            datas_dict[table_name].append(item.to_dict)
+
+            if is_update_item and table_name not in self._item_update_keys:
+                self._item_update_keys[table_name] = item.update_key
+
+        return datas_dict
+
+    def __export_to_db(self, table, datas, is_update=False, update_keys=()):
+        for pipeline in self._pipelines:
+            if is_update:
+                if table == self._task_table and not isinstance(
+                    pipeline, MysqlPipeline
+                ):
+                    continue
+
+                if not pipeline.update_items(table, datas, update_keys=update_keys):
+                    log.error(
+                        f"{pipeline.__class__.__name__} 更新数据失败. table: {table}  items: {datas}"
+                    )
+                    return False
+
+            else:
+                if not pipeline.save_items(table, datas):
+                    log.error(
+                        f"{pipeline.__class__.__name__} 保存数据失败. table: {table}  items: {datas}"
+                    )
+                    return False
+
+        # 若是任务表, 且上面的pipeline里没mysql，则需调用mysql更新任务
+        if not self._have_mysql_pipeline and is_update and table == self._task_table:
+            if not self.mysql_pipeline.update_items(
+                table, datas, update_keys=update_keys
+            ):
+                log.error(
+                    f"{self.mysql_pipeline.__class__.__name__} 更新数据失败. table: {table}  items: {datas}"
+                )
+                return False
+
+        self.metric_datas(table=table, datas=datas)
+        return True
+
+    def __add_item_to_db(
+        self, items, update_items, requests, callbacks, items_fingerprints
+    ):
+        export_success = True
+        self._is_adding_to_db = True
+
+        # 去重
+        if setting.ITEM_FILTER_ENABLE:
+            items, items_fingerprints = self.__dedup_items(items, items_fingerprints)
+
+        # 分捡
+        items_dict = self.__pick_items(items)
+        update_items_dict = self.__pick_items(update_items, is_update_item=True)
+
+        # item批量入库
+        failed_items = {"add": [], "update": [], "requests": []}
+        while items_dict:
+            table, datas = items_dict.popitem()
+
+            log.debug(
+                """
+                -------------- item 批量入库 --------------
+                表名: %s
+                datas: %s
+                    """
+                % (table, tools.dumps_json(datas, indent=16))
+            )
+
+            if not self.__export_to_db(table, datas):
+                export_success = False
+                failed_items["add"].append({"table": table, "datas": datas})
+
+        # 执行批量update
+        while update_items_dict:
+            table, datas = update_items_dict.popitem()
+
+            log.debug(
+                """
+                -------------- item 批量更新 --------------
+                表名: %s
+                datas: %s
+                    """
+                % (table, tools.dumps_json(datas, indent=16))
+            )
+
+            update_keys = self._item_update_keys.get(table)
+            if not self.__export_to_db(
+                table, datas, is_update=True, update_keys=update_keys
+            ):
+                export_success = False
+                failed_items["update"].append(
+                    {"table": table, "datas": datas, "update_keys": update_keys}
+                )
+
+        if export_success:
+            # 执行回调
+            while callbacks:
+                try:
+                    callback = callbacks.pop(0)
+                    callback()
+                except Exception as e:
+                    log.exception(e)
+
+            # 删除做过的request
+            if requests:
+                self.redis_db.zrem(self._table_request, requests)
+
+            # 去重入库
+            if setting.ITEM_FILTER_ENABLE:
+                if items_fingerprints:
+                    self.__class__.dedup.add(items_fingerprints, skip_check=True)
+        else:
+            failed_items["requests"] = requests
+
+            if self.export_retry_times > setting.EXPORT_DATA_MAX_RETRY_TIMES:
+                if self._redis_key != "air_spider":
+                    # 失败的item记录到redis
+                    self.redis_db.sadd(self._table_failed_items, failed_items)
+
+                    # 删除做过的request
+                    if requests:
+                        self.redis_db.zrem(self._table_request, requests)
+
+                    log.error(
+                        "入库超过最大重试次数，不再重试，数据记录到redis，items:\n {}".format(
+                            tools.dumps_json(failed_items)
+                        )
+                    )
+                self.export_retry_times = 0
+
+            else:
+                tip = ["入库不成功"]
+                if callbacks:
+                    tip.append("不执行回调")
+                if requests:
+                    tip.append("不删除任务")
+                    exists = self.redis_db.zexists(self._table_request, requests)
+                    for exist, request in zip(exists, requests):
+                        if exist:
+                            self.redis_db.zadd(self._table_request, requests, 300)
+
+                if setting.ITEM_FILTER_ENABLE:
+                    tip.append("数据不入去重库")
+
+                if self._redis_key != "air_spider":
+                    tip.append("将自动重试")
+
+                tip.append("失败items:\n {}".format(tools.dumps_json(failed_items)))
+                log.error("，".join(tip))
+
+                self.export_falied_times += 1
+
+                if self._redis_key != "air_spider":
+                    self.export_retry_times += 1
+
+            if self.export_falied_times > setting.EXPORT_DATA_MAX_FAILED_TIMES:
+                # 报警
+                msg = "《{}》爬虫导出数据失败，失败次数：{}，请检查爬虫是否正常".format(
+                    self._redis_key, self.export_falied_times
+                )
+                log.error(msg)
+                tools.send_msg(
+                    msg=msg,
+                    level="error",
+                    message_prefix="《%s》爬虫导出数据失败" % (self._redis_key),
+                )
+
+        self._is_adding_to_db = False
+
+    def metric_datas(self, table, datas):
+        """
+        打点 记录总条数及每个key情况
+        @param table: 表名
+        @param datas: 数据 列表
+        @return:
+        """
+        total_count = 0
+        for data in datas:
+            total_count += 1
+            for k, v in data.items():
+                metrics.emit_counter(k, int(bool(v)), classify=table)
+        metrics.emit_counter("total count", total_count, classify=table)
+
+    def close(self):
+        # 调用pipeline的close方法
+        for pipeline in self._pipelines:
+            try:
+                pipeline.close()
+            except:
+                pass
+
+```
+
+### 代码文件: feapder\core\scheduler.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2017-01-09 10:38
+---------
+@summary: 组装parser、 parser_control 和 collector
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import threading
+import time
+from collections.abc import Iterable
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.core.base_parser import BaseParser
+from feapder.core.collector import Collector
+from feapder.core.handle_failed_items import HandleFailedItems
+from feapder.core.handle_failed_requests import HandleFailedRequests
+from feapder.core.parser_control import ParserControl
+from feapder.db.redisdb import RedisDB
+from feapder.network.item import Item
+from feapder.network.request import Request
+from feapder.utils import metrics
+from feapder.utils.log import log
+from feapder.utils.redis_lock import RedisLock
+from feapder.utils.tail_thread import TailThread
+
+SPIDER_START_TIME_KEY = "spider_start_time"
+SPIDER_END_TIME_KEY = "spider_end_time"
+SPIDER_LAST_TASK_COUNT_RECORD_TIME_KEY = "last_task_count_record_time"
+HEARTBEAT_TIME_KEY = "heartbeat_time"
+
+
+class Scheduler(TailThread):
+    __custom_setting__ = {}
+
+    def __init__(
+        self,
+        redis_key=None,
+        thread_count=None,
+        begin_callback=None,
+        end_callback=None,
+        delete_keys=(),
+        keep_alive=None,
+        auto_start_requests=None,
+        batch_interval=0,
+        wait_lock=True,
+        task_table=None,
+        **kwargs,
+    ):
+        """
+        @summary: 调度器
+        ---------
+        @param redis_key: 爬虫request及item存放redis中的文件夹
+        @param thread_count: 线程数，默认为配置文件中的线程数
+        @param begin_callback: 爬虫开始回调函数
+        @param end_callback: 爬虫结束回调函数
+        @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则
+        @param keep_alive: 爬虫是否常驻，默认否
+        @param auto_start_requests: 爬虫是否自动添加任务
+        @param batch_interval: 抓取时间间隔 默认为0 天为单位 多次启动时，只有当前时间与第一次抓取结束的时间间隔大于指定的时间间隔时，爬虫才启动
+        @param wait_lock: 下发任务时否等待锁，若不等待锁，可能会存在多进程同时在下发一样的任务，因此分布式环境下请将该值设置True
+        @param task_table: 任务表， 批次爬虫传递
+        ---------
+        @result:
+        """
+
+        super(Scheduler, self).__init__()
+
+        for key, value in self.__class__.__custom_setting__.items():
+            if key == "AUTO_STOP_WHEN_SPIDER_DONE":  # 兼容老版本的配置
+                setattr(setting, "KEEP_ALIVE", not value)
+            else:
+                setattr(setting, key, value)
+
+        self._redis_key = redis_key or setting.REDIS_KEY
+        if not self._redis_key:
+            raise Exception(
+                """
+                redis_key 为redis中存放request与item的目录。不能为空，
+                可在setting中配置，如 REDIS_KEY = 'test'
+                或spider初始化时传参, 如 TestSpider(redis_key='test')
+                """
+            )
+
+        self._request_buffer = RequestBuffer(redis_key)
+        self._item_buffer = ItemBuffer(redis_key, task_table)
+
+        self._collector = Collector(redis_key)
+        self._parsers = []
+        self._parser_controls = []
+        self._parser_control_obj = ParserControl
+
+        # 兼容老版本的参数
+        if "auto_stop_when_spider_done" in kwargs:
+            self._keep_alive = not kwargs.get("auto_stop_when_spider_done")
+        else:
+            self._keep_alive = (
+                keep_alive if keep_alive is not None else setting.KEEP_ALIVE
+            )
+        self._auto_start_requests = (
+            auto_start_requests
+            if auto_start_requests is not None
+            else setting.SPIDER_AUTO_START_REQUESTS
+        )
+        self._batch_interval = batch_interval
+
+        self._begin_callback = (
+            begin_callback
+            if begin_callback
+            else lambda: log.info("\n********** feapder begin **********")
+        )
+        self._end_callback = (
+            end_callback
+            if end_callback
+            else lambda: log.info("\n********** feapder end **********")
+        )
+
+        if thread_count:
+            setattr(setting, "SPIDER_THREAD_COUNT", thread_count)
+        self._thread_count = setting.SPIDER_THREAD_COUNT
+
+        self._spider_name = self.name
+        self._task_table = task_table
+
+        self._tab_spider_status = setting.TAB_SPIDER_STATUS.format(redis_key=redis_key)
+        self._tab_requests = setting.TAB_REQUESTS.format(redis_key=redis_key)
+        self._tab_failed_requests = setting.TAB_FAILED_REQUESTS.format(
+            redis_key=redis_key
+        )
+        self._is_notify_end = False  # 是否已经通知结束
+        self._last_task_count = 0  # 最近一次任务数量
+        self._last_check_task_count_time = 0
+        self._stop_heartbeat = False  # 是否停止心跳
+        self._redisdb = RedisDB()
+
+        # Request 缓存设置
+        Request.cached_redis_key = redis_key
+        Request.cached_expire_time = setting.RESPONSE_CACHED_EXPIRE_TIME
+
+        delete_keys = delete_keys or setting.DELETE_KEYS
+        if delete_keys:
+            self.delete_tables(delete_keys)
+
+        self._last_check_task_status_time = 0
+        self.wait_lock = wait_lock
+
+        self.init_metrics()
+        # 重置丢失的任务
+        self.reset_task()
+
+        self._stop_spider = False
+
+    def init_metrics(self):
+        """
+        初始化打点系统
+        """
+        metrics.init(**setting.METRICS_OTHER_ARGS)
+
+    def add_parser(self, parser, **kwargs):
+        parser = parser(**kwargs)  # parser 实例化
+        if isinstance(parser, BaseParser):
+            self._parsers.append(parser)
+        else:
+            raise ValueError("类型错误，爬虫需继承feapder.BaseParser或feapder.BatchParser")
+
+    def run(self):
+        if not self.is_reach_next_spider_time():
+            return
+
+        self._start()
+
+        while True:
+            try:
+                if self._stop_spider or self.all_thread_is_done():
+                    if not self._is_notify_end:
+                        self.spider_end()  # 跑完一轮
+                        self._is_notify_end = True
+
+                    if not self._keep_alive:
+                        self._stop_all_thread()
+                        break
+
+                else:
+                    self._is_notify_end = False
+
+                self.check_task_status()
+
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+    def __add_task(self):
+        # 判断任务池中属否还有任务，若有接着抓取
+        todo_task_count = self._collector.get_requests_count()
+        if todo_task_count:
+            log.info("检查到有待做任务 %s 条，不重下发新任务，将接着上回异常终止处继续抓取" % todo_task_count)
+        else:
+            for parser in self._parsers:
+                # 启动parser 的 start_requests
+                results = parser.start_requests()
+                # 添加request到请求队列，由请求队列统一入库
+                if results and not isinstance(results, Iterable):
+                    raise Exception("%s.%s返回值必须可迭代" % (parser.name, "start_requests"))
+
+                result_type = 1
+                for result in results or []:
+                    if isinstance(result, Request):
+                        result.parser_name = result.parser_name or parser.name
+                        self._request_buffer.put_request(result)
+                        result_type = 1
+
+                    elif isinstance(result, Item):
+                        self._item_buffer.put_item(result)
+                        result_type = 2
+
+                    elif callable(result):  # callbale的request可能是更新数据库操作的函数
+                        if result_type == 1:
+                            self._request_buffer.put_request(result)
+                        else:
+                            self._item_buffer.put_item(result)
+                    else:
+                        raise TypeError(
+                            "start_requests yield result type error, expect Request、Item、callback func, bug get type: {}".format(
+                                type(result)
+                            )
+                        )
+
+                self._request_buffer.flush()
+                self._item_buffer.flush()
+
+    def _start(self):
+        self.spider_begin()
+
+        # 将失败的item入库
+        if setting.RETRY_FAILED_ITEMS:
+            handle_failed_items = HandleFailedItems(
+                redis_key=self._redis_key,
+                task_table=self._task_table,
+                item_buffer=self._item_buffer,
+            )
+            handle_failed_items.reput_failed_items_to_db()
+
+        # 心跳开始
+        self.heartbeat_start()
+        # 启动request_buffer
+        self._request_buffer.start()
+        # 启动item_buffer
+        self._item_buffer.start()
+        # 启动collector
+        self._collector.start()
+
+        # 启动parser control
+        for i in range(self._thread_count):
+            parser_control = self._parser_control_obj(
+                self._collector,
+                self._redis_key,
+                self._request_buffer,
+                self._item_buffer,
+            )
+
+            for parser in self._parsers:
+                parser_control.add_parser(parser)
+
+            parser_control.start()
+            self._parser_controls.append(parser_control)
+
+        # 下发任务 因为时间可能比较长，放到最后面
+        if setting.RETRY_FAILED_REQUESTS:
+            # 重设失败的任务, 不用加锁，原子性操作
+            handle_failed_requests = HandleFailedRequests(self._redis_key)
+            handle_failed_requests.reput_failed_requests_to_requests()
+
+        # 下发新任务
+        if self._auto_start_requests:  # 自动下发
+            if self.wait_lock:
+                # 将添加任务处加锁，防止多进程之间添加重复的任务
+                with RedisLock(key=self._spider_name) as lock:
+                    if lock.locked:
+                        self.__add_task()
+            else:
+                self.__add_task()
+
+    def all_thread_is_done(self):
+        # 降低偶然性, 因为各个环节不是并发的，很有可能当时状态为假，但检测下一条时该状态为真。一次检测很有可能遇到这种偶然性
+        for i in range(3):
+            # 检测 collector 状态
+            if (
+                self._collector.is_collector_task()
+                or self._collector.get_requests_count() > 0
+            ):
+                return False
+
+            # 检测 parser_control 状态
+            for parser_control in self._parser_controls:
+                if not parser_control.is_not_task():
+                    return False
+
+            # 检测 item_buffer 状态
+            if (
+                self._item_buffer.get_items_count() > 0
+                or self._item_buffer.is_adding_to_db()
+            ):
+                return False
+
+            # 检测 request_buffer 状态
+            if (
+                self._request_buffer.get_requests_count() > 0
+                or self._request_buffer.is_adding_to_db()
+            ):
+                return False
+
+            tools.delay_time(1)
+
+        return True
+
+    @tools.run_safe_model("check_task_status")
+    def check_task_status(self):
+        """
+        检查任务状态 预警
+        """
+        # 每分钟检查一次
+        now_time = time.time()
+        if now_time - self._last_check_task_status_time > 60:
+            self._last_check_task_status_time = now_time
+        else:
+            return
+
+        # 检查失败任务数量 超过1000 报警，
+        failed_count = self._redisdb.zget_count(self._tab_failed_requests)
+        if failed_count > setting.WARNING_FAILED_COUNT:
+            # 发送报警
+            msg = "《%s》爬虫当前失败任务数：%s, 请检查爬虫是否正常" % (self._spider_name, failed_count)
+            log.error(msg)
+            self.send_msg(
+                msg,
+                level="error",
+                message_prefix="《%s》爬虫当前失败任务数报警" % (self._spider_name),
+            )
+
+        # parser_control实时统计已做任务数及失败任务数，若成功率<0.5 则报警
+        (
+            failed_task_count,
+            success_task_count,
+            total_task_count,
+        ) = ParserControl.get_task_status_count()
+        total_count = success_task_count + failed_task_count
+        if total_count > 0:
+            task_success_rate = success_task_count / total_count
+            if task_success_rate < 0.5:
+                # 发送报警
+                msg = "《%s》爬虫当前任务成功数%s, 失败数%s, 成功率 %.2f, 请检查爬虫是否正常" % (
+                    self._spider_name,
+                    success_task_count,
+                    failed_task_count,
+                    task_success_rate,
+                )
+                log.error(msg)
+                self.send_msg(
+                    msg,
+                    level="error",
+                    message_prefix="《%s》爬虫当前任务成功率报警" % (self._spider_name),
+                )
+
+        # 判断任务数是否变化
+        current_time = tools.get_current_timestamp()
+        if (
+            current_time - self._last_check_task_count_time
+            > setting.WARNING_CHECK_TASK_COUNT_INTERVAL
+        ):
+            if (
+                self._last_task_count
+                and self._last_task_count == total_task_count
+                and self._redisdb.zget_count(self._tab_requests) > 0
+            ):
+                # 发送报警
+                msg = "《{}》爬虫停滞 {}，请检查爬虫是否正常".format(
+                    self._spider_name,
+                    tools.format_seconds(
+                        current_time - self._last_check_task_count_time
+                    ),
+                )
+                log.error(msg)
+                self.send_msg(
+                    msg,
+                    level="error",
+                    message_prefix="《{}》爬虫停滞".format(self._spider_name),
+                )
+            else:
+                self._last_task_count = total_task_count
+                self._last_check_task_count_time = current_time
+
+        # 检查入库失败次数
+        if self._item_buffer.export_falied_times > setting.EXPORT_DATA_MAX_FAILED_TIMES:
+            msg = "《{}》爬虫导出数据失败，失败次数：{}， 请检查爬虫是否正常".format(
+                self._spider_name, self._item_buffer.export_falied_times
+            )
+            log.error(msg)
+            self.send_msg(
+                msg, level="error", message_prefix="《%s》爬虫导出数据失败" % (self._spider_name)
+            )
+
+    def delete_tables(self, delete_keys):
+        if delete_keys == True:
+            delete_keys = [self._redis_key + "*"]
+        elif not isinstance(delete_keys, (list, tuple)):
+            delete_keys = [delete_keys]
+
+        for delete_key in delete_keys:
+            if not delete_key.startswith(self._redis_key):
+                delete_key = self._redis_key + delete_key
+            keys = self._redisdb.getkeys(delete_key)
+            for key in keys:
+                log.debug("正在删除key %s" % key)
+                self._redisdb.clear(key)
+
+    def _stop_all_thread(self):
+        self._request_buffer.stop()
+        self._item_buffer.stop()
+        # 停止 collector
+        self._collector.stop()
+        # 停止 parser_controls
+        for parser_control in self._parser_controls:
+            parser_control.stop()
+        self.heartbeat_stop()
+        self._started.clear()
+
+    def send_msg(self, msg, level="debug", message_prefix=""):
+        # log.debug("发送报警 level:{} msg{}".format(level, msg))
+        tools.send_msg(msg=msg, level=level, message_prefix=message_prefix)
+
+    def spider_begin(self):
+        """
+        @summary: start_monitor_task 方式启动，此函数与spider_end不在同一进程内，变量不可共享
+        ---------
+        ---------
+        @result:
+        """
+
+        if self._begin_callback:
+            self._begin_callback()
+
+        for parser in self._parsers:
+            parser.start_callback()
+
+        # 记录开始时间
+        if not self._redisdb.hexists(self._tab_spider_status, SPIDER_START_TIME_KEY):
+            current_timestamp = tools.get_current_timestamp()
+            self._redisdb.hset(
+                self._tab_spider_status, SPIDER_START_TIME_KEY, current_timestamp
+            )
+
+            # 发送消息
+            self.send_msg("《%s》爬虫开始" % self._spider_name)
+
+    def spider_end(self):
+        self.record_end_time()
+
+        if self._end_callback:
+            self._end_callback()
+
+        for parser in self._parsers:
+            if not self._keep_alive:
+                parser.close()
+            parser.end_callback()
+
+        if not self._keep_alive:
+            # 关闭webdirver
+            Request.render_downloader and Request.render_downloader.close_all()
+
+            # 关闭打点
+            metrics.close()
+        else:
+            metrics.flush()
+
+        # 计算抓取时长
+        data = self._redisdb.hget(
+            self._tab_spider_status, SPIDER_START_TIME_KEY, is_pop=True
+        )
+        if data:
+            begin_timestamp = int(data)
+
+            spand_time = tools.get_current_timestamp() - begin_timestamp
+
+            msg = "《%s》爬虫%s，采集耗时 %s" % (
+                self._spider_name,
+                "被终止" if self._stop_spider else "结束",
+                tools.format_seconds(spand_time),
+            )
+            log.info(msg)
+
+            self.send_msg(msg)
+
+        if self._keep_alive:
+            log.info("爬虫不自动结束， 等待下一轮任务...")
+        else:
+            self.delete_tables(self._tab_spider_status)
+
+    def record_end_time(self):
+        # 记录结束时间
+        if self._batch_interval:
+            current_timestamp = tools.get_current_timestamp()
+            self._redisdb.hset(
+                self._tab_spider_status, SPIDER_END_TIME_KEY, current_timestamp
+            )
+
+    def is_reach_next_spider_time(self):
+        if not self._batch_interval:
+            return True
+
+        last_spider_end_time = self._redisdb.hget(
+            self._tab_spider_status, SPIDER_END_TIME_KEY
+        )
+        if last_spider_end_time:
+            last_spider_end_time = int(last_spider_end_time)
+            current_timestamp = tools.get_current_timestamp()
+            time_interval = current_timestamp - last_spider_end_time
+
+            if time_interval < self._batch_interval * 86400:
+                log.info(
+                    "上次运行结束时间为 {} 与当前时间间隔 为 {}, 小于规定的抓取时间间隔 {}。爬虫不执行，退出～".format(
+                        tools.timestamp_to_date(last_spider_end_time),
+                        tools.format_seconds(time_interval),
+                        tools.format_seconds(self._batch_interval * 86400),
+                    )
+                )
+                return False
+
+        return True
+
+    def join(self, timeout=None):
+        """
+        重写线程的join
+        """
+        if not self._started.is_set():
+            return
+
+        super().join()
+
+    def heartbeat(self):
+        while not self._stop_heartbeat:
+            try:
+                self._redisdb.hset(
+                    self._tab_spider_status,
+                    HEARTBEAT_TIME_KEY,
+                    tools.get_current_timestamp(),
+                )
+            except Exception as e:
+                log.error("心跳异常: {}".format(e))
+            time.sleep(5)
+
+    def heartbeat_start(self):
+        threading.Thread(target=self.heartbeat).start()
+
+    def heartbeat_stop(self):
+        self._stop_heartbeat = True
+
+    def have_alive_spider(self, heartbeat_interval=10):
+        heartbeat_time = self._redisdb.hget(self._tab_spider_status, HEARTBEAT_TIME_KEY)
+        if heartbeat_time:
+            heartbeat_time = int(heartbeat_time)
+            current_timestamp = tools.get_current_timestamp()
+            if current_timestamp - heartbeat_time < heartbeat_interval:
+                return True
+        return False
+
+    def reset_task(self, heartbeat_interval=10):
+        """
+        重置丢失的任务
+        Returns:
+
+        """
+        if self.have_alive_spider(heartbeat_interval=heartbeat_interval):
+            current_timestamp = tools.get_current_timestamp()
+            datas = self._redisdb.zrangebyscore_set_score(
+                self._tab_requests,
+                priority_min=current_timestamp,
+                priority_max=current_timestamp + setting.REQUEST_LOST_TIMEOUT,
+                score=300,
+                count=None,
+            )
+            lose_count = len(datas)
+            if lose_count:
+                log.info("重置丢失任务完毕，共{}条".format(len(datas)))
+
+    def stop_spider(self):
+        self._stop_spider = True
+
+```
+
+### 代码文件: feapder\core\spiders\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/22 12:08 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+__all__ = ["AirSpider", "TaskSpider", "Spider", "BatchSpider"]
+
+from feapder.core.spiders.air_spider import AirSpider
+from feapder.core.spiders.spider import Spider
+from feapder.core.spiders.task_spider import TaskSpider
+from feapder.core.spiders.batch_spider import BatchSpider
+
+```
+
+### 代码文件: feapder\network\proxy_pool\base.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2023/7/25 10:03
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import abc
+
+from feapder.utils.log import log
+
+
+class BaseProxyPool:
+    @abc.abstractmethod
+    def get_proxy(self):
+        """
+        获取代理
+        Returns:
+            {"http": "xxx", "https": "xxx"}
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def del_proxy(self, proxy):
+        """
+        @summary: 删除代理
+        ---------
+        @param proxy: ip:port
+        """
+        raise NotImplementedError
+
+    def tag_proxy(self, **kwargs):
+        """
+        @summary: 标记代理
+        ---------
+        @param kwargs:
+        @return:
+        """
+        log.warning("暂不支持标记代理")
+        pass
+
+```
+
+### 代码文件: feapder\commands\create\create_params.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/4/25 10:22 上午
+---------
+@summary: 将浏览器的cookie转为request的cookie
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import sys
+
+from feapder.utils.tools import dumps_json
+
+
+class CreateParams:
+    def get_data(self):
+        """
+        @summary: 从控制台读取多行
+        ---------
+        ---------
+        @result:
+        """
+        print("请输入请求地址")
+        data = []
+        while True:
+            line = sys.stdin.readline().strip()
+            if not line:
+                break
+
+            data.append(line)
+
+        return "".join(data)
+
+    def get_params(self, url):
+        params_json = {}
+        params = url.split("?")[-1].split("&")
+        for param in params:
+            key_value = param.split("=", 1)
+            params_json[key_value[0]] = key_value[1]
+
+        return params_json
+
+    def create(self):
+        data = self.get_data()
+
+        params = self.get_params(data)
+        url = data.split("?")[0]
+
+        print(f'url = "{url}"')
+        print(f"params = {dumps_json(params)}")
+
+```
+
+### 代码文件: feapder\network\selector.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-10-08 15:33:37
+---------
+@summary: 重新定义 selector
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+import re
+
+import parsel
+import six
+from lxml import etree
+from packaging import version
+from parsel import Selector as ParselSelector
+from parsel import SelectorList as ParselSelectorList
+from parsel import selector
+from w3lib.html import replace_entities as w3lib_replace_entities
+
+
+def extract_regex(regex, text, replace_entities=True, flags=0):
+    """Extract a list of unicode strings from the given text/encoding using the following policies:
+    * if the regex contains a named group called "extract" that will be returned
+    * if the regex contains multiple numbered groups, all those will be returned (flattened)
+    * if the regex doesn't contain any group the entire regex matching is returned
+    """
+    if isinstance(regex, six.string_types):
+        regex = re.compile(regex, flags=flags)
+
+    if "extract" in regex.groupindex:
+        # named group
+        try:
+            extracted = regex.search(text).group("extract")
+        except AttributeError:
+            strings = []
+        else:
+            strings = [extracted] if extracted is not None else []
+    else:
+        # full regex or numbered groups
+        strings = regex.findall(text)
+
+    # strings = flatten(strings) # 这东西会把多维列表铺平
+    if not replace_entities:
+        return strings
+
+    values = []
+    for value in strings:
+        if isinstance(value, (list, tuple)):  # w3lib_replace_entities 不能接收list tuple
+            values.append(
+                [w3lib_replace_entities(v, keep=["lt", "amp"]) for v in value]
+            )
+        else:
+            values.append(w3lib_replace_entities(value, keep=["lt", "amp"]))
+
+    return values
+
+
+def create_root_node(text, parser_cls, base_url=None):
+    """Create root node for text using given parser class."""
+    body = text.strip().replace("\x00", "").encode("utf8") or b"<html/>"
+    parser = parser_cls(recover=True, encoding="utf8", huge_tree=True)
+    root = etree.fromstring(body, parser=parser, base_url=base_url)
+    if root is None:
+        root = etree.fromstring(b"<html/>", parser=parser, base_url=base_url)
+    return root
+
+
+if version.parse(parsel.__version__) < version.parse("1.7.0"):
+    selector.create_root_node = create_root_node
+
+
+class SelectorList(ParselSelectorList):
+    """
+    The :class:`SelectorList` class is a subclass of the builtin ``list``
+    class, which provides a few additional methods.
+    """
+
+    def re_first(self, regex, default=None, replace_entities=True, flags=re.S):
+        """
+        Call the ``.re()`` method for the first element in this list and
+        return the result in an unicode string. If the list is empty or the
+        regex doesn't match anything, return the default value (``None`` if
+        the argument is not provided).
+
+        By default, character entity references are replaced by their
+        corresponding character (except for ``&amp;`` and ``&lt;``.
+        Passing ``replace_entities`` as ``False`` switches off these
+        replacements.
+        """
+
+        datas = self.re(regex, replace_entities=replace_entities, flags=flags)
+        return datas[0] if datas else default
+
+    def re(self, regex, replace_entities=True, flags=re.S):
+        """
+        Call the ``.re()`` method for each element in this list and return
+        their results flattened, as a list of unicode strings.
+
+        By default, character entity references are replaced by their
+        corresponding character (except for ``&amp;`` and ``&lt;``.
+        Passing ``replace_entities`` as ``False`` switches off these
+        replacements.
+        """
+        datas = [
+            x.re(regex, replace_entities=replace_entities, flags=flags) for x in self
+        ]
+        return datas[0] if len(datas) == 1 else datas
+
+
+class Selector(ParselSelector):
+    selectorlist_cls = SelectorList
+
+    def __str__(self):
+        data = repr(self.get())
+        return "<%s xpath=%r data=%s>" % (type(self).__name__, self._expr, data)
+
+    __repr__ = __str__
+
+    def __init__(self, text=None, *args, **kwargs):
+        # 先将&nbsp; 转为空格，否则selector 会转为 \xa0
+        if text:
+            text = re.sub("&nbsp;", "\x20", text)
+        super(Selector, self).__init__(text, *args, **kwargs)
+
+    def re_first(self, regex, default=None, replace_entities=True, flags=re.S):
+        """
+        Apply the given regex and return the first unicode string which
+        matches. If there is no match, return the default value (``None`` if
+        the argument is not provided).
+
+        By default, character entity references are replaced by their
+        corresponding character (except for ``&amp;`` and ``&lt;``.
+        Passing ``replace_entities`` as ``False`` switches off these
+        replacements.
+        """
+
+        datas = self.re(regex, replace_entities=replace_entities, flags=flags)
+
+        return datas[0] if datas else default
+
+    def re(self, regex, replace_entities=True, flags=re.S):
+        """
+        Apply the given regex and return a list of unicode strings with the
+        matches.
+
+        ``regex`` can be either a compiled regular expression or a string which
+        will be compiled to a regular expression using ``re.compile(regex)``.
+
+        By default, character entity references are replaced by their
+        corresponding character (except for ``&amp;`` and ``&lt;``.
+        Passing ``replace_entities`` as ``False`` switches off these
+        replacements.
+        """
+
+        return extract_regex(
+            regex, self.get(), replace_entities=replace_entities, flags=flags
+        )
+
+```
+
+### 代码文件: feapder\core\spiders\task_spider.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/22 12:06 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import os
+import time
+import warnings
+from collections.abc import Iterable
+from typing import List, Tuple, Dict, Union
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.core.base_parser import TaskParser
+from feapder.core.scheduler import Scheduler
+from feapder.db.mysqldb import MysqlDB
+from feapder.db.redisdb import RedisDB
+from feapder.network.item import Item
+from feapder.network.item import UpdateItem
+from feapder.network.request import Request
+from feapder.utils.log import log
+from feapder.utils.perfect_dict import PerfectDict
+
+CONSOLE_PIPELINE_PATH = "feapder.pipelines.console_pipeline.ConsolePipeline"
+
+
+class TaskSpider(TaskParser, Scheduler):
+    def __init__(
+        self,
+        redis_key,
+        task_table,
+        task_table_type="mysql",
+        task_keys=None,
+        task_state="state",
+        min_task_count=10000,
+        check_task_interval=5,
+        task_limit=10000,
+        related_redis_key=None,
+        related_batch_record=None,
+        task_condition="",
+        task_order_by="",
+        thread_count=None,
+        begin_callback=None,
+        end_callback=None,
+        delete_keys=(),
+        keep_alive=None,
+        batch_interval=0,
+        use_mysql=True,
+        **kwargs,
+    ):
+        """
+        @summary: 任务爬虫
+        必要条件 需要指定任务表，可以是redis表或者mysql表作为任务种子
+        redis任务种子表：zset类型。值为 {"xxx":xxx, "xxx2":"xxx2"}；若为集成模式，需指定parser_name字段，如{"xxx":xxx, "xxx2":"xxx2", "parser_name":"TestTaskSpider"}
+        mysql任务表：
+            任务表中必须有id及任务状态字段 如 state, 其他字段可根据爬虫需要的参数自行扩充。若为集成模式，需指定parser_name字段。
+
+            参考建表语句如下：
+            CREATE TABLE `table_name` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `param` varchar(1000) DEFAULT NULL COMMENT '爬虫需要的抓取数据需要的参数',
+              `state` int(11) DEFAULT NULL COMMENT '任务状态',
+              `parser_name` varchar(255) DEFAULT NULL COMMENT '任务解析器的脚本类名',
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `nui` (`param`) USING BTREE
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+        ---------
+        @param task_table: mysql中的任务表 或 redis中存放任务种子的key，zset类型
+        @param task_table_type: 任务表类型 支持 redis 、mysql
+        @param task_keys: 需要获取的任务字段 列表 [] 如需指定解析的parser，则需将parser_name字段取出来。
+        @param task_state: mysql中任务表的任务状态字段
+        @param min_task_count: redis 中最少任务数, 少于这个数量会从种子表中取任务
+        @param check_task_interval: 检查是否还有任务的时间间隔；
+        @param task_limit: 每次从数据库中取任务的数量
+        @param redis_key: 任务等数据存放在redis中的key前缀
+        @param thread_count: 线程数，默认为配置文件中的线程数
+        @param begin_callback: 爬虫开始回调函数
+        @param end_callback: 爬虫结束回调函数
+        @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+        @param keep_alive: 爬虫是否常驻，默认否
+        @param related_redis_key: 有关联的其他爬虫任务表（redis）注意：要避免环路 如 A -> B & B -> A 。
+        @param related_batch_record: 有关联的其他爬虫批次表（mysql）注意：要避免环路 如 A -> B & B -> A 。
+            related_redis_key 与 related_batch_record 选其一配置即可；用于相关联的爬虫没结束时，本爬虫也不结束
+            若相关连的爬虫为批次爬虫，推荐以related_batch_record配置，
+            若相关连的爬虫为普通爬虫，无批次表，可以以related_redis_key配置
+        @param task_condition: 任务条件 用于从一个大任务表中挑选出数据自己爬虫的任务，即where后的条件语句
+        @param task_order_by: 取任务时的排序条件 如 id desc
+        @param batch_interval: 抓取时间间隔 默认为0 天为单位 多次启动时，只有当前时间与第一次抓取结束的时间间隔大于指定的时间间隔时，爬虫才启动
+        @param use_mysql: 是否使用mysql数据库
+        ---------
+        @result:
+        """
+        Scheduler.__init__(
+            self,
+            redis_key=redis_key,
+            thread_count=thread_count,
+            begin_callback=begin_callback,
+            end_callback=end_callback,
+            delete_keys=delete_keys,
+            keep_alive=keep_alive,
+            auto_start_requests=False,
+            batch_interval=batch_interval,
+            task_table=task_table,
+            **kwargs,
+        )
+
+        self._redisdb = RedisDB()
+        self._mysqldb = MysqlDB() if use_mysql else None
+
+        self._task_table = task_table  # mysql中的任务表
+        self._task_keys = task_keys  # 需要获取的任务字段
+        self._task_table_type = task_table_type
+
+        if self._task_table_type == "mysql" and not self._task_keys:
+            raise Exception("需指定任务字段 使用task_keys")
+
+        self._task_state = task_state  # mysql中任务表的state字段名
+        self._min_task_count = min_task_count  # redis 中最少任务数
+        self._check_task_interval = check_task_interval
+        self._task_limit = task_limit  # mysql中一次取的任务数量
+        self._related_task_tables = [
+            setting.TAB_REQUESTS.format(redis_key=redis_key)
+        ]  # 自己的task表也需要检查是否有任务
+        if related_redis_key:
+            self._related_task_tables.append(
+                setting.TAB_REQUESTS.format(redis_key=related_redis_key)
+            )
+
+        self._related_batch_record = related_batch_record
+        self._task_condition = task_condition
+        self._task_condition_prefix_and = task_condition and " and {}".format(
+            task_condition
+        )
+        self._task_condition_prefix_where = task_condition and " where {}".format(
+            task_condition
+        )
+        self._task_order_by = task_order_by and " order by {}".format(task_order_by)
+
+        self._is_more_parsers = True  # 多模版类爬虫
+        self.reset_task()
+
+    def add_parser(self, parser, **kwargs):
+        parser = parser(
+            self._task_table,
+            self._task_state,
+            self._mysqldb,
+            **kwargs,
+        )  # parser 实例化
+        self._parsers.append(parser)
+
+    def start_monitor_task(self):
+        """
+        @summary: 监控任务状态
+        ---------
+        ---------
+        @result:
+        """
+        if not self._parsers:  # 不是多模版模式， 将自己注入到parsers，自己为模版
+            self._is_more_parsers = False
+            self._parsers.append(self)
+
+        elif len(self._parsers) <= 1:
+            self._is_more_parsers = False
+
+        # 添加任务
+        for parser in self._parsers:
+            parser.add_task()
+
+        while True:
+            try:
+                # 检查redis中是否有任务 任务小于_min_task_count 则从mysql中取
+                tab_requests = setting.TAB_REQUESTS.format(redis_key=self._redis_key)
+                todo_task_count = self._redisdb.zget_count(tab_requests)
+
+                tasks = []
+                if todo_task_count < self._min_task_count:
+                    tasks = self.get_task(todo_task_count)
+                    if not tasks:
+                        if not todo_task_count:
+                            if self._keep_alive:
+                                log.info("任务均已做完，爬虫常驻, 等待新任务")
+                                time.sleep(self._check_task_interval)
+                                continue
+                            elif self.have_alive_spider():
+                                log.info("任务均已做完，但还有爬虫在运行，等待爬虫结束")
+                                time.sleep(self._check_task_interval)
+                                continue
+                            elif not self.related_spider_is_done():
+                                continue
+                            else:
+                                log.info("任务均已做完，爬虫结束")
+                                break
+
+                else:
+                    log.info("redis 中尚有%s条积压任务，暂时不派发新任务" % todo_task_count)
+
+                if not tasks:
+                    if todo_task_count >= self._min_task_count:
+                        # log.info('任务正在进行 redis中剩余任务 %s' % todo_task_count)
+                        pass
+                    else:
+                        log.info("无待做种子 redis中剩余任务 %s" % todo_task_count)
+                else:
+                    # make start requests
+                    self.distribute_task(tasks)
+                    log.info(f"添加任务到redis成功 共{len(tasks)}条")
+
+            except Exception as e:
+                log.exception(e)
+
+            time.sleep(self._check_task_interval)
+
+    def get_task(self, todo_task_count) -> List[Union[Tuple, Dict]]:
+        """
+        获取任务
+        Args:
+            todo_task_count: redis里剩余的任务数
+
+        Returns:
+
+        """
+        tasks = []
+        if self._task_table_type == "mysql":
+            # 从mysql中取任务
+            log.info("redis 中剩余任务%s 数量过小 从mysql中取任务追加" % todo_task_count)
+            tasks = self.get_todo_task_from_mysql()
+            if not tasks:  # 状态为0的任务已经做完，需要检查状态为2的任务是否丢失
+                # redis 中无待做任务，此时mysql中状态为2的任务为丢失任务。需重新做
+                if todo_task_count == 0:
+                    log.info("无待做任务，尝试取丢失的任务")
+                    tasks = self.get_doing_task_from_mysql()
+        elif self._task_table_type == "redis":
+            log.info("redis 中剩余任务%s 数量过小 从redis种子任务表中取任务追加" % todo_task_count)
+            tasks = self.get_task_from_redis()
+        else:
+            raise Exception(
+                f"task_table_type expect mysql or redis，bug got {self._task_table_type}"
+            )
+
+        return tasks
+
+    def distribute_task(self, tasks):
+        """
+        @summary: 分发任务
+        ---------
+        @param tasks:
+        ---------
+        @result:
+        """
+        if self._is_more_parsers:  # 为多模版类爬虫，需要下发指定的parser
+            for task in tasks:
+                for parser in self._parsers:  # 寻找task对应的parser
+                    if parser.name in task:
+                        if isinstance(task, dict):
+                            task = PerfectDict(_dict=task)
+                        else:
+                            task = PerfectDict(
+                                _dict=dict(zip(self._task_keys, task)),
+                                _values=list(task),
+                            )
+                        requests = parser.start_requests(task)
+                        if requests and not isinstance(requests, Iterable):
+                            raise Exception(
+                                "%s.%s返回值必须可迭代" % (parser.name, "start_requests")
+                            )
+
+                        result_type = 1
+                        for request in requests or []:
+                            if isinstance(request, Request):
+                                request.parser_name = request.parser_name or parser.name
+                                self._request_buffer.put_request(request)
+                                result_type = 1
+
+                            elif isinstance(request, Item):
+                                self._item_buffer.put_item(request)
+                                result_type = 2
+
+                                if (
+                                    self._item_buffer.get_items_count()
+                                    >= setting.ITEM_MAX_CACHED_COUNT
+                                ):
+                                    self._item_buffer.flush()
+
+                            elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                                if result_type == 1:
+                                    self._request_buffer.put_request(request)
+                                else:
+                                    self._item_buffer.put_item(request)
+
+                                    if (
+                                        self._item_buffer.get_items_count()
+                                        >= setting.ITEM_MAX_CACHED_COUNT
+                                    ):
+                                        self._item_buffer.flush()
+
+                            else:
+                                raise TypeError(
+                                    "start_requests yield result type error, expect Request、Item、callback func, bug get type: {}".format(
+                                        type(requests)
+                                    )
+                                )
+
+                        break
+
+        else:  # task没对应的parser 则将task下发到所有的parser
+            for task in tasks:
+                for parser in self._parsers:
+                    if isinstance(task, dict):
+                        task = PerfectDict(_dict=task)
+                    else:
+                        task = PerfectDict(
+                            _dict=dict(zip(self._task_keys, task)), _values=list(task)
+                        )
+                    requests = parser.start_requests(task)
+                    if requests and not isinstance(requests, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, "start_requests")
+                        )
+
+                    result_type = 1
+                    for request in requests or []:
+                        if isinstance(request, Request):
+                            request.parser_name = request.parser_name or parser.name
+                            self._request_buffer.put_request(request)
+                            result_type = 1
+
+                        elif isinstance(request, Item):
+                            self._item_buffer.put_item(request)
+                            result_type = 2
+
+                            if (
+                                self._item_buffer.get_items_count()
+                                >= setting.ITEM_MAX_CACHED_COUNT
+                            ):
+                                self._item_buffer.flush()
+
+                        elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                            if result_type == 1:
+                                self._request_buffer.put_request(request)
+                            else:
+                                self._item_buffer.put_item(request)
+
+                                if (
+                                    self._item_buffer.get_items_count()
+                                    >= setting.ITEM_MAX_CACHED_COUNT
+                                ):
+                                    self._item_buffer.flush()
+
+        self._request_buffer.flush()
+        self._item_buffer.flush()
+
+    def get_task_from_redis(self):
+        tasks = self._redisdb.zget(self._task_table, count=self._task_limit)
+        tasks = [eval(task) for task in tasks]
+        return tasks
+
+    def get_todo_task_from_mysql(self):
+        """
+        @summary: 取待做的任务
+        ---------
+        ---------
+        @result:
+        """
+        # TODO 分批取数据 每批最大取 1000000个，防止内存占用过大
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where %s = 0%s%s limit %s" % (
+            task_keys,
+            self._task_table,
+            self._task_state,
+            self._task_condition_prefix_and,
+            self._task_order_by,
+            self._task_limit,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        if tasks:
+            # 更新任务状态
+            for i in range(0, len(tasks), 10000):  # 10000 一批量更新
+                task_ids = str(
+                    tuple([task[0] for task in tasks[i : i + 10000]])
+                ).replace(",)", ")")
+                sql = "update %s set %s = 2 where id in %s" % (
+                    self._task_table,
+                    self._task_state,
+                    task_ids,
+                )
+                self._mysqldb.update(sql)
+
+        return tasks
+
+    def get_doing_task_from_mysql(self):
+        """
+        @summary: 取正在做的任务
+        ---------
+        ---------
+        @result:
+        """
+
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where %s = 2%s%s limit %s" % (
+            task_keys,
+            self._task_table,
+            self._task_state,
+            self._task_condition_prefix_and,
+            self._task_order_by,
+            self._task_limit,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        return tasks
+
+    def get_lose_task_count(self):
+        sql = "select count(1) from %s where %s = 2%s" % (
+            self._task_table,
+            self._task_state,
+            self._task_condition_prefix_and,
+        )
+        doing_count = self._mysqldb.find(sql)[0][0]
+        return doing_count
+
+    def reset_lose_task_from_mysql(self):
+        """
+        @summary: 重置丢失任务为待做
+        ---------
+        ---------
+        @result:
+        """
+
+        sql = "update {table} set {state} = 0 where {state} = 2{task_condition}".format(
+            table=self._task_table,
+            state=self._task_state,
+            task_condition=self._task_condition_prefix_and,
+        )
+        return self._mysqldb.update(sql)
+
+    def related_spider_is_done(self):
+        """
+        相关连的爬虫是否跑完
+        @return: True / False / None 表示无相关的爬虫 可由自身的total_count 和 done_count 来判断
+        """
+
+        for related_redis_task_table in self._related_task_tables:
+            if self._redisdb.exists_key(related_redis_task_table):
+                log.info(f"依赖的爬虫还未结束，任务表为：{related_redis_task_table}")
+                return False
+
+        if self._related_batch_record:
+            sql = "select is_done from {} order by id desc limit 1".format(
+                self._related_batch_record
+            )
+            is_done = self._mysqldb.find(sql)
+            is_done = is_done[0][0] if is_done else None
+
+            if is_done is None:
+                log.warning("相关联的批次表不存在或无批次信息")
+                return True
+
+            if not is_done:
+                log.info(f"依赖的爬虫还未结束，批次表为：{self._related_batch_record}")
+                return False
+
+        return True
+
+    # -------- 批次结束逻辑 ------------
+
+    def task_is_done(self):
+        """
+        @summary: 检查种子表是否做完
+        ---------
+        ---------
+        @result: True / False （做完 / 未做完）
+        """
+        is_done = False
+        if self._task_table_type == "mysql":
+            sql = "select 1 from %s where (%s = 0 or %s=2)%s limit 1" % (
+                self._task_table,
+                self._task_state,
+                self._task_state,
+                self._task_condition_prefix_and,
+            )
+            count = self._mysqldb.find(sql)  # [(1,)]  / []
+        elif self._task_table_type == "redis":
+            count = self._redisdb.zget_count(self._task_table)
+        else:
+            raise Exception(
+                f"task_table_type expect mysql or redis，bug got {self._task_table_type}"
+            )
+
+        if not count:
+            log.info("种子表中任务均已完成")
+            is_done = True
+
+        return is_done
+
+    def run(self):
+        """
+        @summary: 重写run方法 检查mysql中的任务是否做完， 做完停止
+        ---------
+        ---------
+        @result:
+        """
+        try:
+            if not self.is_reach_next_spider_time():
+                return
+
+            if not self._parsers:  # 不是add_parser 模式
+                self._parsers.append(self)
+
+            self._start()
+
+            while True:
+                try:
+                    if self._stop_spider or (
+                        self.all_thread_is_done()
+                        and self.task_is_done()
+                        and self.related_spider_is_done()
+                    ):  # redis全部的任务已经做完 并且mysql中的任务已经做完（检查各个线程all_thread_is_done，防止任务没做完，就更新任务状态，导致程序结束的情况）
+                        if not self._is_notify_end:
+                            self.spider_end()
+                            self._is_notify_end = True
+
+                        if not self._keep_alive:
+                            self._stop_all_thread()
+                            break
+                        else:
+                            log.info("常驻爬虫，等待新任务")
+                    else:
+                        self._is_notify_end = False
+
+                    self.check_task_status()
+
+                except Exception as e:
+                    log.exception(e)
+
+                tools.delay_time(10)  # 10秒钟检查一次爬虫状态
+
+        except Exception as e:
+            msg = "《%s》主线程异常 爬虫结束 exception: %s" % (self.name, e)
+            log.error(msg)
+            self.send_msg(
+                msg, level="error", message_prefix="《%s》爬虫异常结束".format(self.name)
+            )
+
+            os._exit(137)  # 使退出码为35072 方便爬虫管理器重启
+
+    @classmethod
+    def to_DebugTaskSpider(cls, *args, **kwargs):
+        # DebugBatchSpider 继承 cls
+        DebugTaskSpider.__bases__ = (cls,)
+        DebugTaskSpider.__name__ = cls.__name__
+        return DebugTaskSpider(*args, **kwargs)
+
+
+class DebugTaskSpider(TaskSpider):
+    """
+    Debug批次爬虫
+    """
+
+    __debug_custom_setting__ = dict(
+        COLLECTOR_TASK_COUNT=1,
+        # SPIDER
+        SPIDER_THREAD_COUNT=1,
+        SPIDER_SLEEP_TIME=0,
+        SPIDER_MAX_RETRY_TIMES=10,
+        REQUEST_LOST_TIMEOUT=600,  # 10分钟
+        PROXY_ENABLE=False,
+        RETRY_FAILED_REQUESTS=False,
+        # 保存失败的request
+        SAVE_FAILED_REQUEST=False,
+        # 过滤
+        ITEM_FILTER_ENABLE=False,
+        REQUEST_FILTER_ENABLE=False,
+        OSS_UPLOAD_TABLES=(),
+        DELETE_KEYS=True,
+    )
+
+    def __init__(
+        self,
+        task_id=None,
+        task=None,
+        save_to_db=False,
+        update_task=False,
+        *args,
+        **kwargs,
+    ):
+        """
+        @param task_id:  任务id
+        @param task:  任务  task 与 task_id 二者选一即可。如 task = {"url":""}
+        @param save_to_db: 数据是否入库 默认否
+        @param update_task: 是否更新任务 默认否
+        @param args:
+        @param kwargs:
+        """
+        warnings.warn(
+            "您正处于debug模式下，该模式下不会更新任务状态及数据入库，仅用于调试。正式发布前请更改为正常模式", category=Warning
+        )
+
+        if not task and not task_id:
+            raise Exception("task_id 与 task 不能同时为空")
+
+        kwargs["redis_key"] = kwargs["redis_key"] + "_debug"
+        if not save_to_db:
+            self.__class__.__debug_custom_setting__["ITEM_PIPELINES"] = [
+                CONSOLE_PIPELINE_PATH
+            ]
+        self.__class__.__custom_setting__.update(
+            self.__class__.__debug_custom_setting__
+        )
+
+        super(DebugTaskSpider, self).__init__(*args, **kwargs)
+
+        self._task_id = task_id
+        self._task = task
+        self._update_task = update_task
+
+    def start_monitor_task(self):
+        """
+        @summary: 监控任务状态
+        ---------
+        ---------
+        @result:
+        """
+        if not self._parsers:  # 不是多模版模式， 将自己注入到parsers，自己为模版
+            self._is_more_parsers = False
+            self._parsers.append(self)
+
+        elif len(self._parsers) <= 1:
+            self._is_more_parsers = False
+
+        if self._task:
+            self.distribute_task([self._task])
+        else:
+            tasks = self.get_todo_task_from_mysql()
+            if not tasks:
+                raise Exception("未获取到任务 请检查 task_id: {} 是否存在".format(self._task_id))
+            self.distribute_task(tasks)
+
+        log.debug("下发任务完毕")
+
+    def get_todo_task_from_mysql(self):
+        """
+        @summary: 取待做的任务
+        ---------
+        ---------
+        @result:
+        """
+
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where id=%s" % (
+            task_keys,
+            self._task_table,
+            self._task_id,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        return tasks
+
+    def save_cached(self, request, response, table):
+        pass
+
+    def update_task_state(self, task_id, state=1, *args, **kwargs):
+        """
+        @summary: 更新任务表中任务状态，做完每个任务时代码逻辑中要主动调用。可能会重写
+        调用方法为 yield lambda : self.update_task_state(task_id, state)
+        ---------
+        @param task_id:
+        @param state:
+        ---------
+        @result:
+        """
+        if self._update_task:
+            kwargs["id"] = task_id
+            kwargs[self._task_state] = state
+
+            sql = tools.make_update_sql(
+                self._task_table,
+                kwargs,
+                condition="id = {task_id}".format(task_id=task_id),
+            )
+
+            if self._mysqldb.update(sql):
+                log.debug("置任务%s状态成功" % task_id)
+            else:
+                log.error("置任务%s状态失败  sql=%s" % (task_id, sql))
+
+    def update_task_batch(self, task_id, state=1, *args, **kwargs):
+        """
+        批量更新任务 多处调用，更新的字段必须一致
+        注意：需要 写成 yield update_task_batch(...) 否则不会更新
+        @param task_id:
+        @param state:
+        @param kwargs:
+        @return:
+        """
+        if self._update_task:
+            kwargs["id"] = task_id
+            kwargs[self._task_state] = state
+
+            update_item = UpdateItem(**kwargs)
+            update_item.table_name = self._task_table
+            update_item.name_underline = self._task_table + "_item"
+
+            return update_item
+
+    def run(self):
+        self.start_monitor_task()
+
+        if not self._parsers:  # 不是add_parser 模式
+            self._parsers.append(self)
+
+        self._start()
+
+        while True:
+            try:
+                if self.all_thread_is_done():
+                    self._stop_all_thread()
+                    break
+
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+        self.delete_tables([self._redis_key + "*"])
+
+```
+
+### 代码文件: feapder\network\request.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-07-25 11:49:08
+---------
+@summary: 请求结构体
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import copy
+import os
+import re
+
+import requests
+from requests.cookies import RequestsCookieJar
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.db.redisdb import RedisDB
+from feapder.network import user_agent
+from feapder.network.downloader.base import Downloader, RenderDownloader
+from feapder.network.proxy_pool import BaseProxyPool
+from feapder.network.response import Response
+from feapder.utils.log import log
+
+# 屏蔽warning信息
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
+class Request:
+    user_agent_pool = user_agent
+    proxies_pool: BaseProxyPool = None
+
+    cache_db = None  # redis / pika
+    cached_redis_key = None  # 缓存response的文件文件夹 response_cached:cached_redis_key:md5
+    cached_expire_time = 1200  # 缓存过期时间
+
+    # 下载器
+    downloader: Downloader = None
+    session_downloader: Downloader = None
+    render_downloader: RenderDownloader = None
+
+    __REQUEST_ATTRS__ = {
+        # "method",
+        # "url",
+        "params",
+        "data",
+        "headers",
+        "cookies",
+        "files",
+        "auth",
+        "timeout",
+        "allow_redirects",
+        "proxies",
+        "hooks",
+        "stream",
+        "verify",
+        "cert",
+        "json",
+    }
+
+    _DEFAULT_KEY_VALUE_ = dict(
+        url="",
+        method=None,
+        retry_times=0,
+        priority=300,
+        parser_name=None,
+        callback=None,
+        filter_repeat=True,
+        auto_request=True,
+        request_sync=False,
+        use_session=None,
+        random_user_agent=True,
+        download_midware=None,
+        is_abandoned=False,
+        render=False,
+        render_time=0,
+        make_absolute_links=None,
+    )
+
+    _CUSTOM_PROPERTIES_ = {
+        "requests_kwargs",
+        "custom_ua",
+        "custom_proxies",
+    }
+
+    def __init__(
+        self,
+        url="",
+        retry_times=0,
+        priority=300,
+        parser_name=None,
+        callback=None,
+        filter_repeat=True,
+        auto_request=True,
+        request_sync=False,
+        use_session=None,
+        random_user_agent=True,
+        download_midware=None,
+        is_abandoned=False,
+        render=False,
+        render_time=0,
+        make_absolute_links=None,
+        **kwargs,
+    ):
+        """
+        @summary: Request参数
+        ---------
+        框架参数
+        @param url: 待抓取url
+        @param retry_times: 当前重试次数
+        @param priority: 优先级 越小越优先 默认300
+        @param parser_name: 回调函数所在的类名 默认为当前类
+        @param callback: 回调函数 可以是函数 也可是函数名（如想跨类回调时，parser_name指定那个类名，callback指定那个类想回调的方法名即可）
+        @param filter_repeat: 是否需要去重 (True/False) 当setting中的REQUEST_FILTER_ENABLE设置为True时该参数生效 默认True
+        @param auto_request: 是否需要自动请求下载网页 默认是。设置为False时返回的response为空，需要自己去请求网页
+        @param request_sync: 是否同步请求下载网页，默认异步。如果该请求url过期时间快，可设置为True，相当于yield的reqeust会立即响应，而不是去排队
+        @param use_session: 是否使用session方式
+        @param random_user_agent: 是否随机User-Agent (True/False) 当setting中的RANDOM_HEADERS设置为True时该参数生效 默认True
+        @param download_midware: 下载中间件。默认为parser中的download_midware
+        @param is_abandoned: 当发生异常时是否放弃重试 True/False. 默认False
+        @param render: 是否用浏览器渲染
+        @param render_time: 渲染时长，即打开网页等待指定时间后再获取源码
+        @param make_absolute_links: 是否转成绝对连接，默认是
+        --
+        以下参数与requests参数使用方式一致
+        @param method: 请求方式，如POST或GET，默认根据data值是否为空来判断
+        @param params: 请求参数
+        @param data: 请求body
+        @param json: 请求json字符串，同 json.dumps(data)
+        @param headers:
+        @param cookies: 字典 或 CookieJar 对象
+        @param files:
+        @param auth:
+        @param timeout: (浮点或元组)等待服务器数据的超时限制，是一个浮点数，或是一个(connect timeout, read timeout) 元组
+        @param allow_redirects : Boolean. True 表示允许跟踪 POST/PUT/DELETE 方法的重定向
+        @param proxies: 代理 {"http":"http://xxx", "https":"https://xxx"}
+        @param verify: 为 True 时将会验证 SSL 证书
+        @param stream: 如果为 False，将会立即下载响应内容
+        @param cert:
+        --
+        @param **kwargs: 其他值: 如 Request(item=item) 则item可直接用 request.item 取出
+        ---------
+        @result:
+        """
+
+        self.url = url
+        self.method = None
+        self.retry_times = retry_times
+        self.priority = priority
+        self.parser_name = parser_name
+        self.callback = callback
+        self.filter_repeat = filter_repeat
+        self.auto_request = auto_request
+        self.request_sync = request_sync
+        self.use_session = use_session
+        self.random_user_agent = random_user_agent
+        self.download_midware = download_midware
+        self.is_abandoned = is_abandoned
+        self.render = render
+        self.render_time = render_time
+        self.make_absolute_links = (
+            make_absolute_links
+            if make_absolute_links is not None
+            else setting.MAKE_ABSOLUTE_LINKS
+        )
+
+        # 自定义属性，不参与序列化
+        self.requests_kwargs = {}
+        for key, value in kwargs.items():
+            if key in self.__class__.__REQUEST_ATTRS__:  # 取requests参数
+                self.requests_kwargs[key] = value
+
+            self.__dict__[key] = value
+
+        self.custom_ua = False
+        self.custom_proxies = False
+
+    def __repr__(self):
+        try:
+            return "<Request {}>".format(self.url)
+        except:
+            return "<Request {}>".format(str(self.to_dict)[:40])
+
+    def __setattr__(self, key, value):
+        """
+        针对 request.xxx = xxx 的形式，更新reqeust及内部参数值
+        @param key:
+        @param value:
+        @return:
+        """
+        self.__dict__[key] = value
+
+        if key in self.__class__.__REQUEST_ATTRS__:
+            self.requests_kwargs[key] = value
+
+    # def __getattr__(self, item):
+    #     try:
+    #         return self.__dict__[item]
+    #     except:
+    #         raise AttributeError("Request has no attribute %s" % item)
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+    @property
+    def _proxies_pool(self):
+        if not self.__class__.proxies_pool:
+            self.__class__.proxies_pool = tools.import_cls(setting.PROXY_POOL)()
+
+        return self.__class__.proxies_pool
+
+    @property
+    def _downloader(self):
+        if not self.__class__.downloader:
+            self.__class__.downloader = tools.import_cls(setting.DOWNLOADER)()
+
+        return self.__class__.downloader
+
+    @property
+    def _session_downloader(self):
+        if not self.__class__.session_downloader:
+            self.__class__.session_downloader = tools.import_cls(
+                setting.SESSION_DOWNLOADER
+            )()
+
+        return self.__class__.session_downloader
+
+    @property
+    def _render_downloader(self):
+        if not self.__class__.render_downloader:
+            try:
+                self.__class__.render_downloader = tools.import_cls(
+                    setting.RENDER_DOWNLOADER
+                )()
+            except AttributeError:
+                log.error('当前是渲染模式，请安装 pip install "feapder[render]"')
+                os._exit(0)
+
+        return self.__class__.render_downloader
+
+    @property
+    def to_dict(self):
+        request_dict = {}
+
+        self.callback = (
+            getattr(self.callback, "__name__")
+            if callable(self.callback)
+            else self.callback
+        )
+
+        if isinstance(self.download_midware, (tuple, list)):
+            self.download_midware = [
+                getattr(download_midware, "__name__")
+                if callable(download_midware)
+                and download_midware.__class__.__name__ == "method"
+                else download_midware
+                for download_midware in self.download_midware
+            ]
+        else:
+            self.download_midware = (
+                getattr(self.download_midware, "__name__")
+                if callable(self.download_midware)
+                and self.download_midware.__class__.__name__ == "method"
+                else self.download_midware
+            )
+
+        for key, value in self.__dict__.items():
+            if (
+                key in self.__class__._DEFAULT_KEY_VALUE_
+                and self.__class__._DEFAULT_KEY_VALUE_.get(key) == value
+                or key in self.__class__._CUSTOM_PROPERTIES_
+            ):
+                continue
+
+            if value is not None:
+                if key in self.__class__.__REQUEST_ATTRS__:
+                    if not isinstance(
+                        value, (bool, float, int, str, tuple, list, dict)
+                    ):
+                        value = tools.dumps_obj(value)
+                else:
+                    if not isinstance(value, (bool, float, int, str)):
+                        value = tools.dumps_obj(value)
+
+            request_dict[key] = value
+
+        return request_dict
+
+    @property
+    def callback_name(self):
+        return (
+            getattr(self.callback, "__name__")
+            if callable(self.callback)
+            else self.callback
+        )
+
+    def make_requests_kwargs(self):
+        """
+        处理参数
+        """
+        # 设置超时默认时间
+        self.requests_kwargs.setdefault(
+            "timeout", setting.REQUEST_TIMEOUT
+        )  # connect=22 read=22
+
+        # 设置stream
+        # 默认情况下，当你进行网络请求后，响应体会立即被下载。
+        # stream=True是，调用Response.content 才会下载响应体，默认只返回header。
+        # 缺点： stream 设为 True，Requests 无法将连接释放回连接池，除非消耗了所有的数据，或者调用了 Response.close。 这样会带来连接效率低下的问题。
+        self.requests_kwargs.setdefault("stream", True)
+
+        # 关闭证书验证
+        self.requests_kwargs.setdefault("verify", False)
+
+        # 设置请求方法
+        method = self.__dict__.get("method")
+        if not method:
+            if "data" in self.requests_kwargs or "json" in self.requests_kwargs:
+                method = "POST"
+            else:
+                method = "GET"
+        self.method = method
+
+        # 设置user—agent
+        headers = self.requests_kwargs.get("headers", {})
+        if "user-agent" not in headers and "User-Agent" not in headers:
+            if self.random_user_agent and setting.RANDOM_HEADERS:
+                # 随机user—agent
+                ua = self.__class__.user_agent_pool.get(setting.USER_AGENT_TYPE)
+                headers.update({"User-Agent": ua})
+                self.requests_kwargs.update(headers=headers)
+            else:
+                # 使用默认的user—agent
+                self.requests_kwargs.setdefault(
+                    "headers", {"User-Agent": setting.DEFAULT_USERAGENT}
+                )
+        else:
+            self.custom_ua = True
+
+        # 代理
+        proxies = self.requests_kwargs.get("proxies", -1)
+        if proxies == -1 and setting.PROXY_ENABLE and setting.PROXY_EXTRACT_API:
+            while True:
+                proxies = self._proxies_pool.get_proxy()
+                if proxies:
+                    self.requests_kwargs.update(proxies=proxies)
+                    break
+                else:
+                    log.debug("暂无可用代理 ...")
+        else:
+            self.custom_proxies = True
+
+    def get_response(self, save_cached=False):
+        """
+        获取带有selector功能的response
+        @param save_cached: 保存缓存 方便调试时不用每次都重新下载
+        @return:
+        """
+        self.make_requests_kwargs()
+
+        log.debug(
+            """
+                -------------- %srequest for ----------------
+                url  = %s
+                method = %s
+                args = %s
+                """
+            % (
+                ""
+                if not self.parser_name
+                else "%s.%s "
+                % (
+                    self.parser_name,
+                    (
+                        self.callback
+                        and callable(self.callback)
+                        and getattr(self.callback, "__name__")
+                        or self.callback
+                    )
+                    or "parse",
+                ),
+                self.url,
+                self.method,
+                self.requests_kwargs,
+            )
+        )
+
+        # def hooks(response, *args, **kwargs):
+        #     print(response.url)
+        #
+        # self.requests_kwargs.update(hooks={'response': hooks})
+
+        # self.use_session 优先级高
+        use_session = (
+            setting.USE_SESSION if self.use_session is None else self.use_session
+        )
+
+        if self.render:
+            response = self._render_downloader.download(self)
+        elif use_session:
+            response = self._session_downloader.download(self)
+        else:
+            response = self._downloader.download(self)
+
+        response.make_absolute_links = self.make_absolute_links
+
+        if save_cached:
+            self.save_cached(response, expire_time=self.__class__.cached_expire_time)
+
+        return response
+
+    def get_params(self):
+        return self.requests_kwargs.get("params")
+
+    def get_proxies(self) -> dict:
+        """
+
+        Returns: {"https": "https://ip:port", "http": "http://ip:port"}
+
+        """
+        return self.requests_kwargs.get("proxies")
+
+    def get_proxy(self) -> str:
+        """
+
+        Returns: ip:port
+
+        """
+        proxies = self.get_proxies()
+        if proxies:
+            return re.sub(
+                "http.*?//", "", proxies.get("http", "") or proxies.get("https", "")
+            )
+
+    def del_proxy(self):
+        proxy = self.get_proxy()
+        if proxy:
+            self._proxies_pool.del_proxy(proxy)
+            del self.requests_kwargs["proxies"]
+
+    def get_headers(self) -> dict:
+        return self.requests_kwargs.get("headers", {})
+
+    def get_user_agent(self) -> str:
+        return self.get_headers().get("user_agent") or self.get_headers().get(
+            "User-Agent"
+        )
+
+    def get_cookies(self) -> dict:
+        cookies = self.requests_kwargs.get("cookies")
+        if cookies and isinstance(cookies, RequestsCookieJar):
+            cookies = cookies.get_dict()
+
+        if not cookies:
+            cookie_str = self.get_headers().get("Cookie") or self.get_headers().get(
+                "cookie"
+            )
+            if cookie_str:
+                cookies = tools.get_cookies_from_str(cookie_str)
+        return cookies
+
+    @property
+    def fingerprint(self):
+        """
+        request唯一表识
+        @return:
+        """
+        url = self.__dict__.get("url", "")
+        # url 归一化
+        url = tools.canonicalize_url(url)
+        args = [url]
+
+        for arg in ["params", "data", "files", "auth", "cert", "json"]:
+            if self.requests_kwargs.get(arg):
+                args.append(self.requests_kwargs.get(arg))
+
+        return tools.get_md5(*args)
+
+    @property
+    def _cache_db(self):
+        if not self.__class__.cache_db:
+            self.__class__.cache_db = RedisDB()  # .from_url(setting.pika_spider_1_uri)
+
+        return self.__class__.cache_db
+
+    @property
+    def _cached_redis_key(self):
+        if self.__class__.cached_redis_key:
+            return (
+                f"response_cached:{self.__class__.cached_redis_key}:{self.fingerprint}"
+            )
+        else:
+            return f"response_cached:test:{self.fingerprint}"
+
+    def save_cached(self, response, expire_time=1200):
+        """
+        使用redis保存response 用于调试 不用每回都下载
+        @param response:
+        @param expire_time: 过期时间
+        @return:
+        """
+
+        self._cache_db.strset(self._cached_redis_key, response.to_dict, ex=expire_time)
+
+    def get_response_from_cached(self, save_cached=True):
+        """
+        从缓存中获取response
+        注意：
+            属性值为空：
+                -raw ： urllib3.response.HTTPResponse
+                -connection：requests.adapters.HTTPAdapter
+                -history
+
+            属性含义改变：
+                - request 由requests 改为Request
+        @param: save_cached 当无缓存 直接下载 下载完是否保存缓存
+        @return:
+        """
+        response_dict = self._cache_db.strget(self._cached_redis_key)
+        if not response_dict:
+            log.info("无response缓存  重新下载")
+            response_obj = self.get_response(save_cached=save_cached)
+        else:
+            response_dict = eval(response_dict)
+            response_obj = Response.from_dict(response_dict)
+        return response_obj
+
+    def del_response_cached(self):
+        self._cache_db.clear(self._cached_redis_key)
+
+    @classmethod
+    def from_dict(cls, request_dict):
+        for key, value in request_dict.items():
+            if isinstance(value, bytes):  # 反序列化 如item
+                request_dict[key] = tools.loads_obj(value)
+
+        return cls(**request_dict)
+
+    def copy(self):
+        return self.__class__.from_dict(copy.deepcopy(self.to_dict))
+
+```
+
+### 代码文件: feapder\core\base_parser.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-07-25 11:41:57
+---------
+@summary: parser 的基类
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+import os
+
+import feapder.utils.tools as tools
+from feapder.db.mysqldb import MysqlDB
+from feapder.network.item import UpdateItem
+from feapder.utils.log import log
+from feapder.network.request import Request
+from feapder.network.response import Response
+from feapder.utils.perfect_dict import PerfectDict
+
+
+class BaseParser(object):
+    def start_requests(self):
+        """
+        @summary: 添加初始url
+        ---------
+        ---------
+        @result: yield Request()
+        """
+
+        pass
+
+    def download_midware(self, request: Request):
+        """
+        @summary: 下载中间件 可修改请求的一些参数, 或可自定义下载，然后返回 request, response
+        ---------
+        @param request:
+        ---------
+        @result: return request / request, response
+        """
+
+        pass
+
+    def validate(self, request: Request, response: Response):
+        """
+        @summary: 校验函数, 可用于校验response是否正确
+        若函数内抛出异常，则重试请求
+        若返回True 或 None，则进入解析函数
+        若返回False，则抛弃当前请求
+        可通过request.callback_name 区分不同的回调函数，编写不同的校验逻辑
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result: True / None / False
+        """
+
+        pass
+
+    def parse(self, request: Request, response: Response):
+        """
+        @summary: 默认的解析函数
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result:
+        """
+
+        pass
+
+    def exception_request(self, request: Request, response: Response, e: Exception):
+        """
+        @summary: 请求或者parser里解析出异常的request
+        ---------
+        @param request:
+        @param response:
+        @param e: 异常
+        ---------
+        @result: request / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def failed_request(self, request: Request, response: Response, e: Exception):
+        """
+        @summary: 超过最大重试次数的request
+        可返回修改后的request  若不返回request，则将传进来的request直接人redis的failed表。否则将修改后的request入failed表
+        ---------
+        @param request:
+        @param response:
+        @param e: 异常
+        ---------
+        @result: request / item / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def start_callback(self):
+        """
+        @summary: 程序开始的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    def end_callback(self):
+        """
+        @summary: 程序结束的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    def close(self):
+        pass
+
+
+class TaskParser(BaseParser):
+    def __init__(self, task_table, task_state, mysqldb=None):
+        self._mysqldb = mysqldb or MysqlDB()  # mysqldb
+
+        self._task_state = task_state  # mysql中任务表的state字段名
+        self._task_table = task_table  # mysql中的任务表
+
+    def add_task(self):
+        """
+        @summary: 添加任务, 每次启动start_monitor 都会调用，且在init_task之前调用
+        ---------
+        ---------
+        @result:
+        """
+
+    def start_requests(self, task: PerfectDict):
+        """
+        @summary:
+        ---------
+        @param task: 任务信息 list
+        ---------
+        @result:
+        """
+
+    def update_task_state(self, task_id, state=1, **kwargs):
+        """
+        @summary: 更新任务表中任务状态，做完每个任务时代码逻辑中要主动调用。可能会重写
+        调用方法为 yield lambda : self.update_task_state(task_id, state)
+        ---------
+        @param task_id:
+        @param state:
+        ---------
+        @result:
+        """
+
+        kwargs["id"] = task_id
+        kwargs[self._task_state] = state
+
+        sql = tools.make_update_sql(
+            self._task_table, kwargs, condition="id = {task_id}".format(task_id=task_id)
+        )
+
+        if self._mysqldb.update(sql):
+            log.debug("置任务%s状态成功" % task_id)
+        else:
+            log.error("置任务%s状态失败  sql=%s" % (task_id, sql))
+
+    update_task = update_task_state
+
+    def update_task_batch(self, task_id, state=1, **kwargs):
+        """
+        批量更新任务 多处调用，更新的字段必须一致
+        注意：需要 写成 yield update_task_batch(...) 否则不会更新
+        @param task_id:
+        @param state:
+        @param kwargs:
+        @return:
+        """
+        kwargs["id"] = task_id
+        kwargs[self._task_state] = state
+
+        update_item = UpdateItem(**kwargs)
+        update_item.table_name = self._task_table
+        update_item.name_underline = self._task_table + "_item"
+
+        return update_item
+
+
+class BatchParser(TaskParser):
+    """
+    @summary: 批次爬虫模版
+    ---------
+    """
+
+    def __init__(
+        self, task_table, batch_record_table, task_state, date_format, mysqldb=None
+    ):
+        super(BatchParser, self).__init__(
+            task_table=task_table, task_state=task_state, mysqldb=mysqldb
+        )
+        self._batch_record_table = batch_record_table  # mysql 中的批次记录表
+        self._date_format = date_format  # 批次日期格式
+
+    @property
+    def batch_date(self):
+        """
+        @summary: 获取批次时间
+        ---------
+        ---------
+        @result:
+        """
+
+        batch_date = os.environ.get("batch_date")
+        if not batch_date:
+            sql = 'select date_format(batch_date, "{date_format}") from {batch_record_table} order by id desc limit 1'.format(
+                date_format=self._date_format.replace(":%M", ":%i"),
+                batch_record_table=self._batch_record_table,
+            )
+            batch_info = MysqlDB().find(sql)  # (('2018-08-19'),)
+            if batch_info:
+                os.environ["batch_date"] = batch_date = batch_info[0][0]
+            else:
+                log.error("需先运行 start_monitor_task()")
+                os._exit(137)  # 使退出码为35072 方便爬虫管理器重启
+
+        return batch_date
+
+```
+
+### 代码文件: feapder\templates\task_spider_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+import feapder
+from feapder import ArgumentParser
+
+
+class ${spider_name}(feapder.TaskSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="",
+        MYSQL_USER_NAME="",
+        MYSQL_USER_PASS="",
+    )
+
+    def start_requests(self, task):
+        task_id = task.id
+        url = task.url
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+        # mysql 需要更新任务状态为做完 即 state=1
+        yield self.update_task_batch(request.task_id)
+
+
+if __name__ == "__main__":
+    # 用mysql做任务表，需要先建好任务任务表
+    spider = ${spider_name}(
+        redis_key="xxx:xxx",  # 分布式爬虫调度信息存储位置
+        task_table="",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+    )
+
+    # 用redis做任务表
+    # spider = ${spider_name}(
+    #     redis_key="xxx:xxxx",  # 分布式爬虫调度信息存储位置
+    #     task_table="", # 任务表名
+    #     task_table_type="redis", # 任务表类型为redis
+    # )
+
+    parser = ArgumentParser(description="${spider_name}爬虫")
+
+    parser.add_argument(
+        "--start_master",
+        action="store_true",
+        help="添加任务",
+        function=spider.start_monitor_task,
+    )
+    parser.add_argument(
+        "--start_worker", action="store_true", help="启动爬虫", function=spider.start
+    )
+
+    parser.start()
+
+    # 直接启动
+    # spider.start()  # 启动爬虫
+    # spider.start_monitor_task() # 添加任务
+
+    # 通过命令行启动
+    # python ${file_name} --start_master  # 添加任务
+    # python ${file_name} --start_worker  # 启动爬虫
+```
+
+### 代码文件: feapder\pipelines\mysql_pipeline.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-07-29 22:48:30
+---------
+@summary: 导出数据
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+from typing import Dict, List, Tuple
+
+import feapder.utils.tools as tools
+from feapder.db.mysqldb import MysqlDB
+from feapder.pipelines import BasePipeline
+from feapder.utils.log import log
+
+
+class MysqlPipeline(BasePipeline):
+    def __init__(self):
+        self._to_db = None
+
+    @property
+    def to_db(self):
+        if not self._to_db:
+            self._to_db = MysqlDB()
+
+        return self._to_db
+
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        sql, datas = tools.make_batch_sql(table, items)
+        add_count = self.to_db.add_batch(sql, datas)
+        datas_size = len(datas)
+        if add_count:
+            log.info(
+                "共导出 %s 条数据 到 %s, 重复 %s 条" % (datas_size, table, datas_size - add_count)
+            )
+
+        return add_count != None
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        sql, datas = tools.make_batch_sql(
+            table, items, update_columns=update_keys or list(items[0].keys())
+        )
+        update_count = self.to_db.add_batch(sql, datas)
+        if update_count:
+            msg = "共更新 %s 条数据 到 %s" % (update_count // 2, table)
+            if update_keys:
+                msg += " 更新字段为 {}".format(update_keys)
+            log.info(msg)
+
+        return update_count != None
+
+```
+
+### 代码文件: feapder\templates\batch_spider_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+import feapder
+from feapder import ArgumentParser
+
+
+class ${spider_name}(feapder.BatchSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="",
+        MYSQL_USER_NAME="",
+        MYSQL_USER_PASS="",
+    )
+
+    def start_requests(self, task):
+        yield feapder.Request("https://spidertools.cn")
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+
+if __name__ == "__main__":
+    spider = ${spider_name}(
+        redis_key="xxx:xxxx",  # 分布式爬虫调度信息存储位置
+        task_table="",  # mysql中的任务表
+        task_keys=["id", "xxx"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="xxx_batch_record",  # mysql中的批次记录表
+        batch_name="xxx(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    parser = ArgumentParser(description="${spider_name}爬虫")
+
+    parser.add_argument(
+        "--start_master",
+        action="store_true",
+        help="添加任务",
+        function=spider.start_monitor_task,
+    )
+    parser.add_argument(
+        "--start_worker", action="store_true", help="启动爬虫", function=spider.start
+    )
+
+    parser.start()
+
+    # 直接启动
+    # spider.start()  # 启动爬虫
+    # spider.start_monitor_task() # 添加任务
+
+    # 通过命令行启动
+    # python ${file_name} --start_master  # 添加任务
+    # python ${file_name} --start_worker  # 启动爬虫
+
+```
+
+### 代码文件: feapder\templates\project_template\CHECK_DATA.md
+ 
+# 数据审核 
+## 表说明：
+
+> 表名 含义（更新策略）
+
+## 一、准确性
+
+**字段设计是否满足需求？ 表之间的关联字段是否满足要求？ （需要人工检查）**
+
+> 注意：是否设计了自增 id，id 的类型是否设置为 bigint？
+> 注意：unique index 是否需要设计？
+> 注意：各张表之间是否需要设计关联字段；
+
+* [ ] 是
+* [ ] 否
+
+**各字段采集内容及存储格式是否满足要求？是否与网页一致？是否有信息缺失？**
+
+> 备注：可尝试对每个字段进行升降序排列，然后抽样检查；
+     
+**是否考虑了网站同一类数据可能出现的数据格式不一致情况？**
+
+> 建议：代码对各个字段不做兼容性处理、数据不一致则抛出异常并记录 
+
+* [ ] 是
+* [ ] 否
+
+## 二、全量性
+
+**如果是增量采集，是否最早信息和最晚信息都采集了，同时条目总数是否正确；**
+**如果是批次采集，是否每个批次都有？**
+
+>备注：需要去网页端评估单个批次的总量；
+>参考sql语句：SELECT count(1), batch_date from [table_name] GROUP BY batch_date;
+
+**如果与另外一张表有关联关系，是否信息关联完整？**
+
+## 三、稳定性
+
+* [ ] 是否能够长期稳定采集？ 
+* [ ] 是否加IP代理？
+* [ ] 是否支持断点续跑?
+* [ ] 是否能确保按时启动，定期采集?
+* [ ] 是否已开启报警？ 
+
+## 四、采集频次、类型、存储方式
+
+* [ ] 采集频次是否满足要求？
+* [ ] 采集类型是否满足要求：增量采集 or 批次采集? 
+
+ 
+
+### 代码文件: feapder\templates\update_item_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+from feapder import UpdateItem
+
+
+class ${item_name}Item(UpdateItem):
+    """
+    This class was generated by feapder
+    command: feapder create -i ${command}
+    """
+
+    __table_name__ = "${table_name}"
+
+    def __init__(self, *args, **kwargs):
+        ${propertys}
+
+```
+
+### 代码文件: feapder\commands\create\create_init.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 创建__init__.py
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+from feapder.utils.tools import dumps_json
+
+
+class CreateInit:
+    def create(self):
+        __all__ = []
+
+        import os
+
+        path = os.getcwd()
+        for file in os.listdir(path):
+            if file.endswith(".py") and not file.startswith("__init__"):
+                model = file.split(".")[0]
+                __all__.append(model)
+
+        del os
+
+        with open("__init__.py", "w", encoding="utf-8") as file:
+            text = "__all__ = %s" % dumps_json(__all__)
+            file.write(text)
+
+```
+
+### 代码文件: feapder\network\response.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-07-26 11:40:28
+---------
+@summary:
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import datetime
+import os
+import re
+import tempfile
+import webbrowser
+from urllib.parse import urlparse, urlunparse, urljoin
+
+from bs4 import UnicodeDammit, BeautifulSoup
+from requests.cookies import RequestsCookieJar
+from requests.models import Response as res
+from w3lib.encoding import http_content_type_encoding, html_body_declared_encoding
+
+from feapder import setting
+from feapder.network.selector import Selector
+from feapder.utils.log import log
+
+FAIL_ENCODING = "ISO-8859-1"
+
+# html 源码中的特殊字符，需要删掉，否则会影响etree的构建
+SPECIAL_CHARACTERS = [
+    # 移除控制字符 全部字符列表 https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E5%AD%97%E7%AC%A6
+    "[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]"
+]
+
+SPECIAL_CHARACTER_PATTERNS = [
+    re.compile(special_character) for special_character in SPECIAL_CHARACTERS
+]
+
+
+class Response(res):
+    def __init__(self, response, make_absolute_links=None):
+        """
+
+        Args:
+            response: requests请求返回的response
+            make_absolute_links: 是否自动补全url
+        """
+        super(Response, self).__init__()
+        self.__dict__.update(response.__dict__)
+
+        self.make_absolute_links = (
+            make_absolute_links
+            if make_absolute_links is not None
+            else setting.MAKE_ABSOLUTE_LINKS
+        )
+
+        self._cached_selector = None
+        self._cached_text = None
+        self._cached_json = None
+
+        self._encoding = None
+
+        self.encoding_errors = "strict"  # strict / replace / ignore
+        self.browser = self.driver = None
+
+    @classmethod
+    def from_text(
+        cls,
+        text: str,
+        url: str = "",
+        cookies: dict = None,
+        headers: dict = None,
+        encoding="utf-8",
+    ):
+        response_dict = {
+            "_content": text.encode(encoding=encoding),
+            "cookies": cookies or {},
+            "encoding": encoding,
+            "headers": headers or {},
+            "status_code": 200,
+            "elapsed": 0,
+            "url": url,
+        }
+        return cls.from_dict(response_dict)
+
+    @classmethod
+    def from_dict(cls, response_dict):
+        """
+        利用字典获取Response对象
+        @param response_dict: 原生的response.__dict__
+        @return:
+        """
+        cookie_jar = RequestsCookieJar()
+        cookie_jar.update(other=response_dict["cookies"])
+        response_dict["cookies"] = cookie_jar
+
+        response_dict["elapsed"] = datetime.timedelta(
+            0, 0, response_dict["elapsed"]
+        )  # 耗时
+        response_dict["connection"] = None
+        response_dict["_content_consumed"] = True
+
+        response = res()
+        response.__dict__.update(response_dict)
+        return cls(response)
+
+    @property
+    def to_dict(self):
+        response_dict = {
+            "_content": self.content,
+            "cookies": self.cookies.get_dict(),
+            "encoding": self.encoding,
+            "headers": self.headers,
+            "status_code": self.status_code,
+            "elapsed": self.elapsed.microseconds,  # 耗时
+            "url": self.url,
+        }
+
+        return response_dict
+
+    def __clear_cache(self):
+        self.__dict__["_cached_selector"] = None
+        self.__dict__["_cached_text"] = None
+        self.__dict__["_cached_json"] = None
+
+    @property
+    def encoding(self):
+        """
+        编码优先级：自定义编码 > header中编码 > 页面编码 > 根据content猜测的编码
+        """
+        self._encoding = (
+            self._encoding
+            or self._headers_encoding()
+            or self._body_declared_encoding()
+            or self.apparent_encoding
+        )
+        return self._encoding
+
+    @encoding.setter
+    def encoding(self, val):
+        self.__clear_cache()
+        self._encoding = val
+
+    code = encoding
+
+    def _headers_encoding(self):
+        """
+        从headers获取头部charset编码
+        """
+        content_type = self.headers.get("Content-Type") or self.headers.get(
+            "content-type"
+        )
+        if content_type:
+            return (
+                http_content_type_encoding(content_type) or "utf-8"
+                if "application/json" in content_type
+                else None
+            )
+
+    def _body_declared_encoding(self):
+        """
+        从html xml等获取<meta charset="编码">
+        """
+
+        return html_body_declared_encoding(self.content)
+
+    def _get_unicode_html(self, html):
+        if not html or not isinstance(html, bytes):
+            return html
+
+        converted = UnicodeDammit(html, is_html=True)
+        if not converted.unicode_markup:
+            raise Exception(
+                "Failed to detect encoding of article HTML, tried: %s"
+                % ", ".join(converted.tried_encodings)
+            )
+
+        html = converted.unicode_markup
+        return html
+
+    def _make_absolute(self, link):
+        """Makes a given link absolute."""
+        try:
+
+            link = link.strip()
+
+            # Parse the link with stdlib.
+            parsed = urlparse(link)._asdict()
+
+            # If link is relative, then join it with base_url.
+            if not parsed["netloc"]:
+                return urljoin(self.url, link)
+
+            # Link is absolute; if it lacks a scheme, add one from base_url.
+            if not parsed["scheme"]:
+                parsed["scheme"] = urlparse(self.url).scheme
+
+                # Reconstruct the URL to incorporate the new scheme.
+                parsed = (v for v in parsed.values())
+                return urlunparse(parsed)
+
+        except Exception as e:
+            log.error(
+                "Invalid URL <{}> can't make absolute_link. exception: {}".format(
+                    link, e
+                )
+            )
+
+        # Link is absolute and complete with scheme; nothing to be done here.
+        return link
+
+    def _absolute_links(self, text):
+        regexs = [
+            r'(<a.*?href\s*?=\s*?["\'])(.+?)(["\'])',  # a
+            r'(<img.*?src\s*?=\s*?["\'])(.+?)(["\'])',  # img
+            r'(<link.*?href\s*?=\s*?["\'])(.+?)(["\'])',  # css
+            r'(<script.*?src\s*?=\s*?["\'])(.+?)(["\'])',  # js
+        ]
+
+        for regex in regexs:
+
+            def replace_href(text):
+                # html = text.group(0)
+                link = text.group(2)
+                absolute_link = self._make_absolute(link)
+
+                # return re.sub(regex, r'\1{}\3'.format(absolute_link), html) # 使用正则替换，个别字符不支持。如该网址源代码http://permit.mep.gov.cn/permitExt/syssb/xxgk/xxgk!showImage.action?dataid=0b092f8115ff45c5a50947cdea537726
+                return text.group(1) + absolute_link + text.group(3)
+
+            text = re.sub(regex, replace_href, text, flags=re.S | re.I)
+
+        return text
+
+    def _del_special_character(self, text):
+        """
+        删除特殊字符
+        """
+        for special_character_pattern in SPECIAL_CHARACTER_PATTERNS:
+            text = special_character_pattern.sub("", text)
+
+        return text
+
+    @property
+    def __text(self):
+        """Content of the response, in unicode.
+
+        If Response.encoding is None, encoding will be guessed using
+        ``chardet``.
+
+        The encoding of the response content is determined based solely on HTTP
+        headers, following RFC 2616 to the letter. If you can take advantage of
+        non-HTTP knowledge to make a better guess at the encoding, you should
+        set ``r.encoding`` appropriately before accessing this property.
+        """
+
+        if not self.content:
+            return ""
+
+        # Decode unicode from given encoding.
+        try:
+            content = str(self.content, self.encoding, errors=self.encoding_errors)
+        except (LookupError, TypeError):
+            # A LookupError is raised if the encoding was not found which could
+            # indicate a misspelling or similar mistake.
+            #
+            # A TypeError can be raised if encoding is None
+            #
+            # So we try blindly encoding.
+            content = str(self.content, errors=self.encoding_errors)
+
+        return content
+
+    @property
+    def text(self):
+        if self._cached_text is None:
+            if self.encoding and self.encoding.upper() != FAIL_ENCODING:
+                try:
+                    self._cached_text = self.__text
+                except UnicodeDecodeError:
+                    self._cached_text = self._get_unicode_html(self.content)
+            else:
+                self._cached_text = self._get_unicode_html(self.content)
+
+            if self._cached_text:
+                if self.make_absolute_links:
+                    self._cached_text = self._absolute_links(self._cached_text)
+                self._cached_text = self._del_special_character(self._cached_text)
+
+        return self._cached_text
+
+    @text.setter
+    def text(self, html):
+        self._cached_text = html
+        if self.make_absolute_links:
+            self._cached_text = self._absolute_links(self._cached_text)
+        self._cached_text = self._del_special_character(self._cached_text)
+        self._cached_selector = Selector(self.text)
+
+    @property
+    def json(self, **kwargs):
+        if self._cached_json is None:
+            self.encoding = self.encoding or "utf-8"
+            self._cached_json = super(Response, self).json(**kwargs)
+
+        return self._cached_json
+
+    @property
+    def content(self):
+        content = super(Response, self).content
+        return content
+
+    @property
+    def is_html(self):
+        content_type = self.headers.get("Content-Type", "")
+        if "text/html" in content_type:
+            return True
+        else:
+            return False
+
+    @property
+    def selector(self):
+        if self._cached_selector is None:
+            self._cached_selector = Selector(self.text)
+        return self._cached_selector
+
+    def bs4(self, features="html.parser"):
+        soup = BeautifulSoup(self.text, features)
+        return soup
+
+    def extract(self):
+        return self.selector.get()
+
+    def xpath(self, query, **kwargs):
+        return self.selector.xpath(query, **kwargs)
+
+    def css(self, query):
+        return self.selector.css(query)
+
+    def re(self, regex, replace_entities=False):
+        """
+        @summary: 正则匹配
+        注意：网页源码<a class='page-numbers'...  会被处理成<a class="page-numbers" ； 写正则时要写<a class="(.*?)"。 但不会改非html的文本引号格式
+        为了使用方便，正则单双引号自动处理为不敏感
+        ---------
+        @param regex: 正则或者re.compile
+        @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+        ---------
+        @result: 列表
+        """
+
+        # 将单双引号设置为不敏感
+        if isinstance(regex, str):
+            regex = re.sub("['\"]", "['\"]", regex)
+
+        return self.selector.re(regex, replace_entities)
+
+    def re_first(self, regex, default=None, replace_entities=False):
+        """
+        @summary: 正则匹配
+        注意：网页源码<a class='page-numbers'...  会被处理成<a class="page-numbers" ； 写正则时要写<a class="(.*?)"。 但不会改非html的文本引号格式
+        为了使用方便，正则单双引号自动处理为不敏感
+        ---------
+        @param regex: 正则或者re.compile
+        @param default: 未匹配到， 默认值
+        @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+        ---------
+        @result: 第一个值或默认值
+        """
+
+        # 将单双引号设置为不敏感
+        if isinstance(regex, str):
+            regex = re.sub("['\"]", "['\"]", regex)
+
+        return self.selector.re_first(regex, default, replace_entities)
+
+    def close_browser(self, request):
+        if self.browser:
+            request.render_downloader.close(self.browser)
+
+    def __del__(self):
+        self.close()
+
+    def open(self):
+        body = self.content
+        if b"<base" not in body:
+            # <head> 标签后插入一个<base href="url">标签
+            repl = fr'\1<base href="{self.url}">'
+            body = re.sub(rb"(<head(?:>|\s.*?>))", repl.encode("utf-8"), body)
+
+        fd, fname = tempfile.mkstemp(".html")
+        os.write(fd, body)
+        os.close(fd)
+        return webbrowser.open(f"file://{fname}")
+
+```
+
+### 代码文件: feapder\setting.py
+```python
+# -*- coding: utf-8 -*-
+"""爬虫配置文件"""
+import os
+
+# redis 表名
+# 任务表模版
+TAB_REQUESTS = "{redis_key}:z_requests"
+# 任务失败模板
+TAB_FAILED_REQUESTS = "{redis_key}:z_failed_requests"
+# 数据保存失败模板
+TAB_FAILED_ITEMS = "{redis_key}:s_failed_items"
+# 爬虫状态表模版
+TAB_SPIDER_STATUS = "{redis_key}:h_spider_status"
+# 用户池
+TAB_USER_POOL = "{redis_key}:h_{user_type}_pool"
+
+# MYSQL
+MYSQL_IP = os.getenv("MYSQL_IP")
+MYSQL_PORT = int(os.getenv("MYSQL_PORT", 3306))
+MYSQL_DB = os.getenv("MYSQL_DB")
+MYSQL_USER_NAME = os.getenv("MYSQL_USER_NAME")
+MYSQL_USER_PASS = os.getenv("MYSQL_USER_PASS")
+
+# MONGODB
+MONGO_IP = os.getenv("MONGO_IP", "localhost")
+MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
+MONGO_DB = os.getenv("MONGO_DB")
+MONGO_USER_NAME = os.getenv("MONGO_USER_NAME")
+MONGO_USER_PASS = os.getenv("MONGO_USER_PASS")
+MONGO_URL = os.getenv("MONGO_URL")
+
+# REDIS
+# ip:port 多个可写为列表或者逗号隔开 如 ip1:port1,ip2:port2 或 ["ip1:port1", "ip2:port2"]
+REDISDB_IP_PORTS = os.getenv("REDISDB_IP_PORTS")
+REDISDB_USER_PASS = os.getenv("REDISDB_USER_PASS")
+REDISDB_DB = int(os.getenv("REDISDB_DB", 0))
+# 连接redis时携带的其他参数，如ssl=True
+REDISDB_KWARGS = dict()
+# 适用于redis哨兵模式
+REDISDB_SERVICE_NAME = os.getenv("REDISDB_SERVICE_NAME")
+
+# 数据入库的pipeline，可自定义，默认MysqlPipeline
+ITEM_PIPELINES = [
+    "feapder.pipelines.mysql_pipeline.MysqlPipeline",
+    # "feapder.pipelines.mongo_pipeline.MongoPipeline",
+    # "feapder.pipelines.console_pipeline.ConsolePipeline",
+]
+EXPORT_DATA_MAX_FAILED_TIMES = 10  # 导出数据时最大的失败次数，包括保存和更新，超过这个次数报警
+EXPORT_DATA_MAX_RETRY_TIMES = 10  # 导出数据时最大的重试次数，包括保存和更新，超过这个次数则放弃重试
+
+# 爬虫相关
+# COLLECTOR
+COLLECTOR_TASK_COUNT = 32  # 每次获取任务数量，追求速度推荐32
+
+# SPIDER
+SPIDER_THREAD_COUNT = 1  # 爬虫并发数，追求速度推荐32
+# 下载时间间隔 单位秒。 支持随机 如 SPIDER_SLEEP_TIME = [2, 5] 则间隔为 2~5秒之间的随机数，包含2和5
+SPIDER_SLEEP_TIME = 0
+SPIDER_MAX_RETRY_TIMES = 10  # 每个请求最大重试次数
+# 是否主动执行添加 设置为False 需要手动调用start_monitor_task，适用于多进程情况下
+SPIDER_AUTO_START_REQUESTS = True
+KEEP_ALIVE = False  # 爬虫是否常驻
+
+# 浏览器渲染
+WEBDRIVER = dict(
+    pool_size=1,  # 浏览器的数量
+    load_images=True,  # 是否加载图片
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+    custom_argument=[
+        "--ignore-certificate-errors",
+        "--disable-blink-features=AutomationControlled",
+    ],  # 自定义浏览器渲染参数
+    xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+    auto_install_driver=True,  # 自动下载浏览器驱动 支持chrome 和 firefox
+    download_path=None,  # 下载文件的路径
+    use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+)
+
+PLAYWRIGHT = dict(
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="chromium",  # chromium、firefox、webkit
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    download_path=None,  # 下载文件的路径
+    render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+    wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+    use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+    page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+    storage_state_path=None,  # 保存浏览器状态的路径
+    url_regexes=None,  # 拦截接口，支持正则，数组类型
+    save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+)
+
+# 爬虫启动时，重新抓取失败的requests
+RETRY_FAILED_REQUESTS = False
+# 爬虫启动时，重新入库失败的item
+RETRY_FAILED_ITEMS = False
+# 保存失败的request
+SAVE_FAILED_REQUEST = True
+# request防丢机制。（指定的REQUEST_LOST_TIMEOUT时间内request还没做完，会重新下发 重做）
+REQUEST_LOST_TIMEOUT = 600  # 10分钟
+# request网络请求超时时间
+REQUEST_TIMEOUT = 22  # 等待服务器响应的超时时间，浮点数，或(connect timeout, read timeout)元组
+# item在内存队列中最大缓存数量
+ITEM_MAX_CACHED_COUNT = 5000
+# item每批入库的最大数量
+ITEM_UPLOAD_BATCH_MAX_SIZE = 1000
+# item入库时间间隔
+ITEM_UPLOAD_INTERVAL = 1
+# 内存任务队列最大缓存的任务数，默认不限制；仅对AirSpider有效。
+TASK_MAX_CACHED_SIZE = 0
+
+# 下载缓存 利用redis缓存，但由于内存大小限制，所以建议仅供开发调试代码时使用，防止每次debug都需要网络请求
+RESPONSE_CACHED_ENABLE = False  # 是否启用下载缓存 成本高的数据或容易变需求的数据，建议设置为True
+RESPONSE_CACHED_EXPIRE_TIME = 3600  # 缓存时间 秒
+RESPONSE_CACHED_USED = False  # 是否使用缓存 补采数据时可设置为True
+
+# redis 存放item与request的根目录
+REDIS_KEY = ""
+# 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+DELETE_KEYS = []
+
+# 设置代理
+PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+PROXY_ENABLE = True
+PROXY_MAX_FAILED_TIMES = 5  # 代理最大失败次数，超过则不使用，自动删除
+PROXY_POOL = "feapder.network.proxy_pool.ProxyPool"  # 代理池
+
+# 随机headers
+RANDOM_HEADERS = True
+# UserAgent类型 支持 'chrome', 'opera', 'firefox', 'internetexplorer', 'safari'，'mobile' 若不指定则随机类型
+USER_AGENT_TYPE = "chrome"
+# 默认使用的浏览器头
+DEFAULT_USERAGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+# requests 使用session
+USE_SESSION = False
+
+# 下载
+DOWNLOADER = "feapder.network.downloader.RequestsDownloader"  # 请求下载器
+SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"  # 渲染下载器
+# RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader"
+MAKE_ABSOLUTE_LINKS = True  # 自动转成绝对连接
+
+# 去重
+ITEM_FILTER_ENABLE = False  # item 去重
+ITEM_FILTER_SETTING = dict(
+    filter_type=1  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、轻量去重（LiteFilter）= 4
+)
+REQUEST_FILTER_ENABLE = False  # request 去重
+REQUEST_FILTER_SETTING = dict(
+    filter_type=3,  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、 轻量去重（LiteFilter）= 4
+    expire_time=2592000,  # 过期时间1个月
+)
+
+# 报警 支持钉钉、飞书、企业微信、邮件
+# 钉钉报警
+DINGDING_WARNING_URL = ""  # 钉钉机器人api
+DINGDING_WARNING_PHONE = ""  # 被@的群成员手机号，支持列表，可指定多个。
+DINGDING_WARNING_USER_ID = ""  # 被@的群成员userId，支持列表，可指定多个
+DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+DINGDING_WARNING_SECRET = None  # 加签密钥
+# 飞书报警
+# https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+FEISHU_WARNING_URL = ""  # 飞书机器人api
+FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# 邮件报警
+EMAIL_SENDER = ""  # 发件人
+EMAIL_PASSWORD = ""  # 授权码
+EMAIL_RECEIVER = ""  # 收件人 支持列表，可指定多个
+EMAIL_SMTPSERVER = "smtp.163.com"  # 邮件服务器 默认为163邮箱
+# 企业微信报警
+WECHAT_WARNING_URL = ""  # 企业微信机器人api
+WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# 时间间隔
+WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏; 0表示不去重
+WARNING_LEVEL = "DEBUG"  # 报警级别， DEBUG / INFO / ERROR
+WARNING_FAILED_COUNT = 1000  # 任务失败数 超过WARNING_FAILED_COUNT则报警
+WARNING_CHECK_TASK_COUNT_INTERVAL = 1200  # 检查已做任务数量的时间间隔，若两次时间间隔之间，任务数无变化则报警
+
+# 日志
+LOG_NAME = os.path.basename(os.getcwd())
+LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")  # 日志级别
+LOG_COLOR = True  # 是否带有颜色
+LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+LOG_MODE = "w"  # 写文件的模式
+LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+LOG_ENCODING = "utf8"  # 日志文件编码
+# 是否详细的打印异常
+PRINT_EXCEPTION_DETAILS = True
+# 设置不带颜色的日志格式
+LOG_FORMAT = "%(threadName)s|%(asctime)s|%(filename)s|%(funcName)s|line:%(lineno)d|%(levelname)s| %(message)s"
+# 设置带有颜色的日志格式
+os.environ["LOGURU_FORMAT"] = (
+    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+    "<level>{level: <8}</level> | "
+    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>line:{line}</cyan> | <level>{message}</level>"
+)
+OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+
+# 打点监控 influxdb 配置
+INFLUXDB_HOST = os.getenv("INFLUXDB_HOST", "localhost")
+INFLUXDB_PORT = int(os.getenv("INFLUXDB_PORT", 8086))
+INFLUXDB_UDP_PORT = int(os.getenv("INFLUXDB_UDP_PORT", 8089))
+INFLUXDB_USER = os.getenv("INFLUXDB_USER")
+INFLUXDB_PASSWORD = os.getenv("INFLUXDB_PASSWORD")
+INFLUXDB_DATABASE = os.getenv("INFLUXDB_DB")
+# 监控数据存储的表名，爬虫管理系统上会以task_id命名
+INFLUXDB_MEASUREMENT = "task_" + os.getenv("TASK_ID") if os.getenv("TASK_ID") else None
+# 打点监控其他参数，若这里也配置了influxdb的参数, 则会覆盖外面的配置
+METRICS_OTHER_ARGS = dict(retention_policy_duration="180d", emit_interval=60)
+
+############# 导入用户自定义的setting #############
+try:
+    from setting import *
+
+    # 兼容老版本的配置
+    KEEP_ALIVE = not AUTO_STOP_WHEN_SPIDER_DONE
+except:
+    pass
+
+```
+
+### 代码文件: feapder\commands\retry.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/11/18 12:33 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import argparse
+
+from feapder.core.handle_failed_items import HandleFailedItems
+from feapder.core.handle_failed_requests import HandleFailedRequests
+
+
+def retry_failed_requests(redis_key):
+    handle_failed_requests = HandleFailedRequests(redis_key)
+    handle_failed_requests.reput_failed_requests_to_requests()
+
+
+def retry_failed_items(redis_key):
+    handle_failed_items = HandleFailedItems(redis_key)
+    handle_failed_items.reput_failed_items_to_db()
+    handle_failed_items.close()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="重试失败的请求或入库失败的item",
+        usage="usage: feapder retry [options] [args]",
+    )
+    parser.add_argument(
+        "-r",
+        "--request",
+        help="重试失败的request 如 feapder retry --request <redis_key>",
+        metavar="",
+    )
+    parser.add_argument(
+        "-i", "--item", help="重试失败的item 如 feapder retry --item <redis_key>", metavar=""
+    )
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+    if args.request:
+        retry_failed_requests(args.request)
+    if args.item:
+        retry_failed_items(args.item)
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+### 代码文件: feapder\dedup\litefilter.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/21 11:28 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+from typing import List, Union, Set
+
+from feapder.dedup.basefilter import BaseFilter
+
+
+class LiteFilter(BaseFilter):
+    def __init__(self):
+        self.datas: Set[str] = set()
+
+    def add(
+        self, keys: Union[List[str], str], *args, **kwargs
+    ) -> Union[List[int], int]:
+        """
+
+        Args:
+            keys: list / 单个值
+            *args:
+            **kwargs:
+
+        Returns:
+            list / 单个值 (如果数据已存在 返回 0 否则返回 1, 可以理解为是否添加成功)
+        """
+        if isinstance(keys, list):
+            is_add = []
+            for key in keys:
+                if key not in self.datas:
+                    self.datas.add(key)
+                    is_add.append(1)
+                else:
+                    is_add.append(0)
+        else:
+            if keys not in self.datas:
+                is_add = 1
+                self.datas.add(keys)
+            else:
+                is_add = 0
+        return is_add
+
+    def get(self, keys: Union[List[str], str]) -> Union[List[int], int]:
+        """
+        检查数据是否存在
+        Args:
+            keys: list / 单个值
+
+        Returns:
+            list / 单个值 (如果数据已存在 返回 1 否则返回 0)
+        """
+        if isinstance(keys, list):
+            temp_set = set()
+            is_exist = []
+            for key in keys:
+                # 数据本身重复或者数据在去重库里
+                if key in temp_set or key in self.datas:
+                    is_exist.append(1)
+                else:
+                    is_exist.append(0)
+                    temp_set.add(key)
+
+            return is_exist
+        else:
+            return int(keys in self.datas)
+
+```
+
+### 代码文件: feapder\templates\project_template\README.md
+ 
+# xxx爬虫文档
+## 调研
+
+## 数据库设计
+
+## 爬虫逻辑
+
+## 项目架构
+ 
+
+### 代码文件: feapder\db\mongodb.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021-04-18 14:12:21
+---------
+@summary: 操作mongo数据库
+---------
+@author: Mkdir700
+@email:  mkdir700@gmail.com
+"""
+import re
+from typing import List, Dict, Optional
+from urllib import parse
+
+import pymongo
+from pymongo import MongoClient, UpdateOne, UpdateMany
+from pymongo.collection import Collection
+from pymongo.database import Database
+from pymongo.errors import DuplicateKeyError, BulkWriteError
+
+import feapder.setting as setting
+from feapder.utils.log import log
+
+
+class MongoDB:
+    def __init__(
+            self,
+            ip=None,
+            port=None,
+            db=None,
+            user_name=None,
+            user_pass=None,
+            url=None,
+            **kwargs,
+    ):
+        if not ip:
+            ip = setting.MONGO_IP
+        if not port:
+            port = setting.MONGO_PORT
+        if not db:
+            db = setting.MONGO_DB
+        if not user_name:
+            user_name = setting.MONGO_USER_NAME
+        if not user_pass:
+            user_pass = setting.MONGO_USER_PASS
+        if not url:
+            url = setting.MONGO_URL
+
+        if url:
+            self.client = MongoClient(url, **kwargs)
+        else:
+            self.client = MongoClient(
+                host=ip, port=port, username=user_name, password=user_pass, **kwargs
+            )
+
+        self.db = self.get_database(db)
+
+        # 缓存索引信息
+        self.__index__cached = {}
+
+    @classmethod
+    def from_url(cls, url, **kwargs):
+        """
+        Args:
+            url: mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+                 参考：http://mongodb.github.io/mongo-java-driver/3.4/javadoc/com/mongodb/MongoClientURI.html
+            **kwargs:
+
+        Returns:
+
+        """
+        url_parsed = parse.urlparse(url)
+
+        db_type = url_parsed.scheme.strip()
+        if db_type != "mongodb":
+            raise Exception(
+                "url error, expect mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]], but get {}".format(
+                    url
+                )
+            )
+
+        return cls(url=url, **kwargs)
+
+    def get_database(self, database, **kwargs) -> Database:
+        """
+        获取数据库对象
+        @param database: 数据库名
+        @return:
+        """
+        return self.client.get_database(database, **kwargs)
+
+    def get_collection(self, coll_name, **kwargs) -> Collection:
+        """
+        根据集合名获取集合对象
+        @param coll_name: 集合名
+        @return:
+        """
+        return self.db.get_collection(coll_name, **kwargs)
+
+    def find(
+            self, coll_name: str, condition: Optional[Dict] = None, limit: int = 0, **kwargs
+    ) -> List[Dict]:
+        """
+        @summary:
+        无数据： 返回[]
+        有数据： [{'_id': 'xx', ...}, ...]
+        ---------
+        @param coll_name: 集合名(表名)
+        @param condition: 查询条件
+        @param limit: 结果数量
+        @param kwargs:
+            更多参数 https://docs.mongodb.com/manual/reference/command/find/#command-fields
+
+        ---------
+        @result:
+        """
+        condition = {} if condition is None else condition
+        command = {"find": coll_name, "filter": condition, "limit": limit}
+        command.update(kwargs)
+        result = self.run_command(command)
+        cursor = result["cursor"]
+        cursor_id = cursor["id"]
+        dataset = cursor["firstBatch"]
+        while True:
+            if cursor_id == 0:
+                break
+            result = self.run_command(
+                {
+                    "getMore": cursor_id,
+                    "collection": coll_name,
+                    "batchSize": kwargs.get("batchSize", 100),
+                }
+            )
+            cursor = result["cursor"]
+            cursor_id = cursor["id"]
+            dataset.extend(cursor["nextBatch"])
+        return dataset
+
+    def add(
+            self,
+            coll_name,
+            data: Dict,
+            replace=False,
+            update_columns=(),
+            update_columns_value=(),
+            insert_ignore=False,
+    ):
+        """
+        添加单条数据
+        Args:
+            coll_name: 集合名
+            data: 单条数据
+            replace: 唯一索引冲突时直接覆盖旧数据，默认为False
+            update_columns: 更新指定的列（如果数据唯一索引冲突，则更新指定字段，如 update_columns = ["name", "title"]
+            update_columns_value: 指定更新的字段对应的值, 不指定则用数据本身的值更新
+            insert_ignore: 索引冲突是否忽略 默认False
+
+        Returns: 插入成功的行数
+
+        """
+        affect_count = 1
+        collection = self.get_collection(coll_name)
+        try:
+            collection.insert_one(data)
+        except DuplicateKeyError as e:
+            # 存在则更新
+            if update_columns:
+                if not isinstance(update_columns, (tuple, list)):
+                    update_columns = [update_columns]
+
+                condition = self.__get_update_condition(
+                    coll_name, data, e.details.get("errmsg")
+                )
+
+                # 更新指定的列
+                if update_columns_value:
+                    # 使用指定的值更新
+                    doc = {
+                        key: value
+                        for key, value in zip(update_columns, update_columns_value)
+                    }
+                else:
+                    # 使用数据本身的值更新
+                    doc = {key: data[key] for key in update_columns}
+
+                collection.update_one(condition, {"$set": doc})
+
+            # 覆盖更新
+            elif replace:
+                condition = self.__get_update_condition(
+                    coll_name, data, e.details.get("errmsg")
+                )
+                # 替换已存在的数据
+                collection.replace_one(condition, data)
+
+            elif not insert_ignore:
+                raise e
+
+        return affect_count
+
+    def add_batch(
+            self,
+            coll_name: str,
+            datas: List[Dict],
+            replace=False,
+            update_columns=(),
+            update_columns_value=(),
+            condition_fields: dict = None,
+    ):
+        """
+        批量添加数据
+        Args:
+            coll_name: 集合名
+            datas: 数据 [{'_id': 'xx'}, ... ]
+            replace:  唯一索引冲突时直接覆盖旧数据，默认为False
+            update_columns: 更新指定的列（如果数据的唯一索引存在，则更新指定字段，如 update_columns = ["name", "title"]
+            update_columns_value: 指定更新的字段对应的值, 不指定则用数据本身的值更新
+            condition_fields: 用于条件查找的字段，不指定则用索引冲突中的字段查找
+
+        Returns: 添加行数，不包含更新
+
+        """
+        add_count = 0
+
+        if not datas:
+            return add_count
+
+        collection = self.get_collection(coll_name)
+        if not isinstance(update_columns, (tuple, list)):
+            update_columns = [update_columns]
+
+        try:
+            add_count = len(datas)
+            collection.insert_many(datas, ordered=False)
+        except BulkWriteError as e:
+            write_errors = e.details.get("writeErrors")
+            for error in write_errors:
+                if error.get("code") == 11000:
+                    # 数据重复
+                    # 获取重复的数据
+                    data = error.get("op")
+
+                    def get_condition():
+                        # 获取更新条件
+                        if condition_fields:
+                            condition = {
+                                condition_field: data[condition_field]
+                                for condition_field in condition_fields
+                            }
+                        else:
+                            # 根据重复的值获取更新条件
+                            condition = self.__get_update_condition(
+                                coll_name, data, error.get("errmsg")
+                            )
+
+                        return condition
+
+                    if update_columns:
+                        # 更新指定的列
+                        if update_columns_value:
+                            # 使用指定的值更新
+                            doc = {
+                                key: value
+                                for key, value in zip(
+                                    update_columns, update_columns_value
+                                )
+                            }
+                        else:
+                            # 使用数据本身的值更新
+                            doc = {key: data.get(key) for key in update_columns}
+
+                        collection.update_one(get_condition(), {"$set": doc})
+                        add_count -= 1
+
+                    elif replace:
+                        # 覆盖更新
+                        collection.replace_one(get_condition(), data)
+                        add_count -= 1
+
+                    else:
+                        # log.error(error)
+                        add_count -= 1
+
+        return add_count
+
+    def count(self, coll_name, condition: Optional[Dict], limit=0, **kwargs):
+        """
+        计数
+        @param coll_name: 集合名
+        @param condition: 查询条件
+        @param limit: 限制数量
+        @param kwargs:
+        ----
+        command = {
+          count: <collection or view>,
+          query: <document>,
+          limit: <integer>,
+          skip: <integer>,
+          hint: <hint>,
+          readConcern: <document>,
+          collation: <document>,
+          comment: <any>
+        }
+        https://docs.mongodb.com/manual/reference/command/count/#mongodb-dbcommand-dbcmd.count
+        @return: 数据数量
+        """
+        command = {"count": coll_name, "query": condition, "limit": limit, **kwargs}
+        result = self.run_command(command)
+        return result["n"]
+
+    def update(self, coll_name, data: Dict, condition: Dict, upsert: bool = False):
+        """
+        更新
+        Args:
+            coll_name: 集合名
+            data: 单条数据 {"xxx":"xxx"}
+            condition: 更新条件 {"_id": "xxxx"}
+            upsert: 数据不存在则插入,默认为 False
+
+        Returns: True / False
+        """
+        try:
+            collection = self.get_collection(coll_name)
+            collection.update_one(condition, {"$set": data}, upsert=upsert)
+        except Exception as e:
+            log.error(
+                """
+                error:{}
+                condition: {}
+            """.format(
+                    e, condition
+                )
+            )
+            return False
+        else:
+            return True
+
+    def update_many(self, coll_name, data: Dict, condition: Dict, upsert: bool = False):
+        """
+        批量更新
+        Args:
+            coll_name: 集合名
+            data: 单条数据 {"xxx":"xxx"}
+            condition: 更新条件 {"_id": "xxxx"}
+            upsert: 数据不存在则插入,默认为 False
+
+        Returns: True / False
+        """
+        try:
+            collection = self.get_collection(coll_name)
+            collection.update_many(condition, {"$set": data}, upsert=upsert)
+        except Exception as e:
+            log.error(
+                """
+                error:{}
+                condition: {}
+            """.format(
+                    e, condition
+                )
+            )
+            return False
+        else:
+            return True
+
+    def update_batch(
+            self,
+            coll_name: str,
+            update_data_list: List[Dict],
+            condition_field: str,
+            upsert: bool = False,
+    ):
+        """
+        批量更新数据
+        Args:
+            coll_name: 集合名
+            update_data_list: 更新数据列表
+            condition_field: 更新条件字段
+            upsert: 数据不存在则插入，默认为 False
+
+        Returns: 更新行数
+
+        """
+        if not update_data_list:
+            return 0
+
+        collection = self.get_collection(coll_name)
+        bulk_operations = []
+
+        for update_data in update_data_list:
+            condition = {condition_field: update_data.get(condition_field)}
+            update_operation = UpdateMany(
+                condition, {"$set": update_data}, upsert=upsert
+            )
+            bulk_operations.append(update_operation)
+        try:
+            result = collection.bulk_write(bulk_operations, ordered=False)
+            return result.modified_count + result.upserted_count
+        except BulkWriteError as e:
+            log.error(f"Bulk write error: {e.details}")
+            return 0
+
+    def delete(self, coll_name, condition: Dict) -> bool:
+        """
+        删除
+        Args:
+            coll_name: 集合名
+            condition: 查找条件
+        Returns: True / False
+
+        """
+        try:
+            collection = self.get_collection(coll_name)
+            collection.delete_one(condition)
+        except Exception as e:
+            log.error(
+                """
+                error:{}
+                condition: {}
+            """.format(
+                    e, condition
+                )
+            )
+            return False
+        else:
+            return True
+
+    def run_command(self, command: Dict):
+        """
+        运行指令
+        参考文档 https://www.geek-book.com/src/docs/mongodb/mongodb/docs.mongodb.com/manual/reference/command/index.html
+        @param command:
+        @return:
+        """
+        return self.db.command(command)
+
+    def create_index(self, coll_name, keys, unique=True):
+        collection = self.get_collection(coll_name)
+        _keys = [(key, pymongo.ASCENDING) for key in keys]
+        collection.create_index(_keys, unique=unique)
+
+    def get_index(self, coll_name):
+        return self.get_collection(coll_name).index_information()
+
+    def drop_collection(self, coll_name):
+        return self.db.drop_collection(coll_name)
+
+    def get_index_key(self, coll_name, index_name):
+        """
+        获取参与索引的key
+        Args:
+            index_name: 索引名
+
+        Returns:
+
+        """
+        cache_key = f"{coll_name}:{index_name}"
+
+        if cache_key in self.__index__cached:
+            return self.__index__cached.get(cache_key)
+
+        index = self.get_index(coll_name)
+        index_detail = index.get(index_name)
+        if not index_detail:
+            errmsg = f"not found index {index_name} in collection {coll_name}"
+            raise Exception(errmsg)
+
+        index_keys = [val[0] for val in index_detail.get("key")]
+        self.__index__cached[cache_key] = index_keys
+        return index_keys
+
+    def __get_update_condition(
+            self, coll_name: str, data: dict, duplicate_errmsg: str
+    ) -> dict:
+        """
+        根据索引冲突的报错信息 获取更新条件
+        Args:
+            duplicate_errmsg: E11000 duplicate key error collection: feapder.test index: a_1_b_1 dup key: { : 1, : "你好" }
+            data: {"a": 1, "b": "你好", "c": "嘻嘻"}
+
+        Returns: {"a": 1, "b": "你好"}
+
+        """
+        index_name = re.search(r"index: (\w+)", duplicate_errmsg).group(1)
+        index_keys = self.get_index_key(coll_name, index_name)
+
+        condition = {key: data.get(key) for key in index_keys}
+        return condition
+
+    def __getattr__(self, name):
+        return getattr(self.db, name)
+
+
+if __name__ == "__main__":
+    update_data_list = [{"_id": "1", "status": 1}, {"_id": "2", "status": 1}]
+    mongo = MongoDB()
+    updated_count = mongo.update_batch("your_table_name", update_data_list, "_id")
+    print(f"Updated {updated_count} documents.")
+
+    id_list = ["1", "2"]
+    result = mongo.update_many(
+        "your_table_name", {"status": 1}, {"_id": {"$in": id_list}}
+    )
+
+```
+
+### 代码文件: feapder\network\downloader\base.py
+```python
+import abc
+from abc import ABC
+
+from feapder.network.response import Response
+
+
+class Downloader:
+    @abc.abstractmethod
+    def download(self, request) -> Response:
+        """
+
+        Args:
+            request: feapder.Request
+
+        Returns: feapder.Response
+
+        """
+        raise NotImplementedError
+
+    def close(self, response: Response):
+        pass
+
+
+class RenderDownloader(Downloader, ABC):
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        pass
+
+    def close(self, driver):
+        """
+        关闭浏览器
+        """
+        pass
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        pass
+
+```
+
+### 代码文件: feapder\network\proxy_pool\proxy_pool.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/10/19 10:40 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+from queue import Queue
+
+import requests
+
+import feapder.setting as setting
+from feapder.network.proxy_pool.base import BaseProxyPool
+from feapder.utils import metrics
+from feapder.utils import tools
+
+
+class ProxyPool(BaseProxyPool):
+    """
+    通过API提取代理，存储在内存中，无代理时会自动提取
+    API返回的代理以 \r\n 分隔
+    """
+
+    def __init__(self, proxy_api=None, **kwargs):
+        self.proxy_api = proxy_api or setting.PROXY_EXTRACT_API
+        self.proxy_queue = Queue()
+
+    def format_proxy(self, proxy):
+        return {"http": "http://" + proxy, "https": "http://" + proxy}
+
+    @tools.retry(3, interval=5)
+    def pull_proxies(self):
+        resp = requests.get(self.proxy_api)
+        proxies = resp.text.strip()
+        resp.close()
+        if "{" in proxies or not proxies:
+            raise Exception("获取代理失败", proxies)
+        # 使用 /r/n 分隔
+        return proxies.split("\r\n")
+
+    def get_proxy(self):
+        try:
+            if self.proxy_queue.empty():
+                proxies = self.pull_proxies()
+                for proxy in proxies:
+                    self.proxy_queue.put_nowait(proxy)
+                    metrics.emit_counter("total", 1, classify="proxy")
+
+            proxy = self.proxy_queue.get_nowait()
+            self.proxy_queue.put_nowait(proxy)
+
+            metrics.emit_counter("used_times", 1, classify="proxy")
+
+            return self.format_proxy(proxy)
+        except Exception as e:
+            tools.send_msg("获取代理失败", level="error")
+            raise Exception("获取代理失败", e)
+
+    def del_proxy(self, proxy):
+        """
+        @summary: 删除代理
+        ---------
+        @param proxy: ip:port
+        """
+        if proxy in self.proxy_queue.queue:
+            self.proxy_queue.queue.remove(proxy)
+            metrics.emit_counter("invalid", 1, classify="proxy")
+
+```
+
+### 代码文件: feapder\network\downloader\_requests.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/4/10 5:57 下午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import requests
+from requests.adapters import HTTPAdapter
+
+from feapder.network.downloader.base import Downloader
+from feapder.network.response import Response
+
+
+class RequestsDownloader(Downloader):
+    def download(self, request) -> Response:
+        response = requests.request(
+            request.method, request.url, **request.requests_kwargs
+        )
+        response = Response(response)
+        return response
+
+
+class RequestsSessionDownloader(Downloader):
+    session = None
+
+    @property
+    def _session(self):
+        if not self.__class__.session:
+            self.__class__.session = requests.Session()
+            # pool_connections – 缓存的 urllib3 连接池个数  pool_maxsize – 连接池中保存的最大连接数
+            http_adapter = HTTPAdapter(pool_connections=1000, pool_maxsize=1000)
+            # 任何使用该session会话的 HTTP 请求，只要其 URL 是以给定的前缀开头，该传输适配器就会被使用到。
+            self.__class__.session.mount("http", http_adapter)
+
+        return self.__class__.session
+
+    def download(self, request) -> Response:
+        response = self._session.request(
+            request.method, request.url, **request.requests_kwargs
+        )
+        response = Response(response)
+        return response
+
+```
+
+### 代码文件: feapder\network\item.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-07-26 22:28:10
+---------
+@summary: 定义实体
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import re
+
+import feapder.utils.tools as tools
+
+
+class ItemMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        attrs.setdefault("__name__", None)
+        attrs.setdefault("__table_name__", None)
+        attrs.setdefault("__name_underline__", None)
+        attrs.setdefault("__update_key__", None)
+        attrs.setdefault("__unique_key__", None)
+
+        return type.__new__(cls, name, bases, attrs)
+
+
+class Item(metaclass=ItemMetaclass):
+    __unique_key__ = []
+
+    def __init__(self, **kwargs):
+        self.__dict__ = kwargs
+
+    def __repr__(self):
+        return "<{}: {}>".format(self.item_name, tools.dumps_json(self.to_dict))
+
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+
+    def update(self, *args, **kwargs):
+        """
+        更新字段，与字典使用方法一致
+        """
+        self.__dict__.update(*args, **kwargs)
+
+    def update_strict(self, *args, **kwargs):
+        """
+        更新严格更新，只更新item中有的字段
+        """
+        for key, value in dict(*args, **kwargs).items():
+            if key in self.__dict__:
+                self.__dict__[key] = value
+
+    def pre_to_db(self):
+        """
+        入库前的处理
+        """
+        pass
+
+    @property
+    def to_dict(self):
+        propertys = {}
+        for key, value in self.__dict__.items():
+            if key not in (
+                "__name__",
+                "__table_name__",
+                "__name_underline__",
+                "__update_key__",
+                "__unique_key__",
+            ):
+                if key.startswith(f"_{self.__class__.__name__}"):
+                    key = key.replace(f"_{self.__class__.__name__}", "")
+                propertys[key] = value
+
+        return propertys
+
+    def to_sql(self, auto_update=False, update_columns=()):
+        return tools.make_insert_sql(
+            self.table_name, self.to_dict, auto_update, update_columns
+        )
+
+    @property
+    def item_name(self):
+        return self.__name__ or self.__class__.__name__
+
+    @item_name.setter
+    def item_name(self, name):
+        self.__name__ = name
+        self.__table_name__ = re.sub("_item$", "", self.name_underline)
+
+    @property
+    def table_name(self):
+        if not self.__table_name__:
+            self.__table_name__ = re.sub("_item$", "", self.name_underline)
+        return self.__table_name__
+
+    @table_name.setter
+    def table_name(self, name):
+        self.__table_name__ = name
+        self.__name__ = tools.key2hump(name) + "Item"
+
+    @property
+    def name_underline(self):
+        if not self.__name_underline__:
+            self.__name_underline__ = tools.key2underline(self.item_name)
+
+        return self.__name_underline__
+
+    @name_underline.setter
+    def name_underline(self, name):
+        self.__name_underline__ = name
+
+    @property
+    def unique_key(self):
+        return self.__unique_key__ or self.__class__.__unique_key__
+
+    @unique_key.setter
+    def unique_key(self, keys):
+        if isinstance(keys, (tuple, list)):
+            self.__unique_key__ = keys
+        else:
+            self.__unique_key__ = (keys,)
+
+    @property
+    def fingerprint(self):
+        args = []
+        for key, value in self.to_dict.items():
+            if value:
+                if (self.unique_key and key in self.unique_key) or not self.unique_key:
+                    args.append(str(value))
+
+        if args:
+            args = sorted(args)
+            return tools.get_md5(*args)
+        else:
+            return None
+
+    def to_UpdateItem(self):
+        update_item = UpdateItem(**self.__dict__)
+        update_item.item_name = self.item_name
+        return update_item
+
+
+class UpdateItem(Item):
+    __update_key__ = []
+
+    def __init__(self, **kwargs):
+        super(UpdateItem, self).__init__(**kwargs)
+
+    @property
+    def update_key(self):
+        return self.__update_key__ or self.__class__.__update_key__
+
+    @update_key.setter
+    def update_key(self, keys):
+        if isinstance(keys, (tuple, list)):
+            self.__update_key__ = keys
+        else:
+            self.__update_key__ = (keys,)
+
+```
+
+### 代码文件: feapder\templates\project_template\setting.py
+```python
+# -*- coding: utf-8 -*-
+"""爬虫配置文件"""
+# import os
+# import sys
+#
+# # MYSQL
+# MYSQL_IP = "localhost"
+# MYSQL_PORT = 3306
+# MYSQL_DB = ""
+# MYSQL_USER_NAME = ""
+# MYSQL_USER_PASS = ""
+#
+# # MONGODB
+# MONGO_IP = "localhost"
+# MONGO_PORT = 27017
+# MONGO_DB = ""
+# MONGO_USER_NAME = ""
+# MONGO_USER_PASS = ""
+# MONGO_URL = "
+#
+# # REDIS
+# # ip:port 多个可写为列表或者逗号隔开 如 ip1:port1,ip2:port2 或 ["ip1:port1", "ip2:port2"]
+# REDISDB_IP_PORTS = "localhost:6379"
+# REDISDB_USER_PASS = ""
+# REDISDB_DB = 0
+# # 连接redis时携带的其他参数，如ssl=True
+# REDISDB_KWARGS = dict()
+# # 适用于redis哨兵模式
+# REDISDB_SERVICE_NAME = ""
+#
+# # 数据入库的pipeline，可自定义，默认MysqlPipeline
+# ITEM_PIPELINES = [
+#     "feapder.pipelines.mysql_pipeline.MysqlPipeline",
+#     # "feapder.pipelines.mongo_pipeline.MongoPipeline",
+#     # "feapder.pipelines.console_pipeline.ConsolePipeline",
+# ]
+# EXPORT_DATA_MAX_FAILED_TIMES = 10  # 导出数据时最大的失败次数，包括保存和更新，超过这个次数报警
+# EXPORT_DATA_MAX_RETRY_TIMES = 10  # 导出数据时最大的重试次数，包括保存和更新，超过这个次数则放弃重试
+#
+# # 爬虫相关
+# # COLLECTOR
+# COLLECTOR_TASK_COUNT = 32  # 每次获取任务数量，追求速度推荐32
+#
+# # SPIDER
+# SPIDER_THREAD_COUNT = 1  # 爬虫并发数，追求速度推荐32
+# # 下载时间间隔 单位秒。 支持随机 如 SPIDER_SLEEP_TIME = [2, 5] 则间隔为 2~5秒之间的随机数，包含2和5
+# SPIDER_SLEEP_TIME = 0
+# SPIDER_MAX_RETRY_TIMES = 10  # 每个请求最大重试次数
+# KEEP_ALIVE = False  # 爬虫是否常驻
+
+# 下载
+# DOWNLOADER = "feapder.network.downloader.RequestsDownloader"  # 请求下载器
+# SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+# RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"  # 渲染下载器
+# # RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader"
+# MAKE_ABSOLUTE_LINKS = True  # 自动转成绝对连接
+
+# # 浏览器渲染
+# WEBDRIVER = dict(
+#     pool_size=1,  # 浏览器的数量
+#     load_images=True,  # 是否加载图片
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     custom_argument=[
+#         "--ignore-certificate-errors",
+#         "--disable-blink-features=AutomationControlled",
+#     ],  # 自定义浏览器渲染参数
+#     xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+#     auto_install_driver=True,  # 自动下载浏览器驱动 支持chrome 和 firefox
+#     download_path=None,  # 下载文件的路径
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+# )
+#
+# PLAYWRIGHT = dict(
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="chromium",  # chromium、firefox、webkit
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     download_path=None,  # 下载文件的路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+#     page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+#     storage_state_path=None,  # 保存浏览器状态的路径
+#     url_regexes=None,  # 拦截接口，支持正则，数组类型
+#     save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+# )
+#
+# # 爬虫启动时，重新抓取失败的requests
+# RETRY_FAILED_REQUESTS = False
+# # 爬虫启动时，重新入库失败的item
+# RETRY_FAILED_ITEMS = False
+# # 保存失败的request
+# SAVE_FAILED_REQUEST = True
+# # request防丢机制。（指定的REQUEST_LOST_TIMEOUT时间内request还没做完，会重新下发 重做）
+# REQUEST_LOST_TIMEOUT = 600  # 10分钟
+# # request网络请求超时时间
+# REQUEST_TIMEOUT = 22  # 等待服务器响应的超时时间，浮点数，或(connect timeout, read timeout)元组
+# # item在内存队列中最大缓存数量
+# ITEM_MAX_CACHED_COUNT = 5000
+# # item每批入库的最大数量
+# ITEM_UPLOAD_BATCH_MAX_SIZE = 1000
+# # item入库时间间隔
+# ITEM_UPLOAD_INTERVAL = 1
+# # 内存任务队列最大缓存的任务数，默认不限制；仅对AirSpider有效。
+# TASK_MAX_CACHED_SIZE = 0
+#
+# # 下载缓存 利用redis缓存，但由于内存大小限制，所以建议仅供开发调试代码时使用，防止每次debug都需要网络请求
+# RESPONSE_CACHED_ENABLE = False  # 是否启用下载缓存 成本高的数据或容易变需求的数据，建议设置为True
+# RESPONSE_CACHED_EXPIRE_TIME = 3600  # 缓存时间 秒
+# RESPONSE_CACHED_USED = False  # 是否使用缓存 补采数据时可设置为True
+#
+# # 设置代理
+# PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+# PROXY_ENABLE = True
+# PROXY_MAX_FAILED_TIMES = 5  # 代理最大失败次数，超过则不使用，自动删除
+# PROXY_POOL = "feapder.network.proxy_pool.ProxyPool"  # 代理池
+#
+# # 随机headers
+# RANDOM_HEADERS = True
+# # UserAgent类型 支持 'chrome', 'opera', 'firefox', 'internetexplorer', 'safari'，'mobile' 若不指定则随机类型
+# USER_AGENT_TYPE = "chrome"
+# # 默认使用的浏览器头
+# DEFAULT_USERAGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+# # requests 使用session
+# USE_SESSION = False
+#
+# # 去重
+# ITEM_FILTER_ENABLE = False  # item 去重
+# REQUEST_FILTER_ENABLE = False  # request 去重
+# ITEM_FILTER_SETTING = dict(
+#     filter_type=1  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、轻量去重（LiteFilter）= 4
+# )
+# REQUEST_FILTER_SETTING = dict(
+#     filter_type=3,  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、 轻量去重（LiteFilter）= 4
+#     expire_time=2592000,  # 过期时间1个月
+# )
+#
+# # 报警 支持钉钉、飞书、企业微信、邮件
+# # 钉钉报警
+# DINGDING_WARNING_URL = ""  # 钉钉机器人api
+# DINGDING_WARNING_PHONE = ""  # 被@的群成员手机号，支持列表，可指定多个。
+# DINGDING_WARNING_USER_ID = ""  # 被@的群成员userId，支持列表，可指定多个
+# DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# DINGDING_WARNING_SECRET = None  # 加签密钥
+# # 飞书报警
+# # https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+# FEISHU_WARNING_URL = ""  # 飞书机器人api
+# FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+# FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 邮件报警
+# EMAIL_SENDER = ""  # 发件人
+# EMAIL_PASSWORD = ""  # 授权码
+# EMAIL_RECEIVER = ""  # 收件人 支持列表，可指定多个
+# EMAIL_SMTPSERVER = "smtp.163.com"  # 邮件服务器 默认为163邮箱
+# # 企业微信报警
+# WECHAT_WARNING_URL = ""  # 企业微信机器人api
+# WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+# WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 时间间隔
+# WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏; 0表示不去重
+# WARNING_LEVEL = "DEBUG"  # 报警级别， DEBUG / INFO / ERROR
+# WARNING_FAILED_COUNT = 1000  # 任务失败数 超过WARNING_FAILED_COUNT则报警
+#
+# LOG_NAME = os.path.basename(os.getcwd())
+# LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+# LOG_LEVEL = "DEBUG"
+# LOG_COLOR = True  # 是否带有颜色
+# LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+# LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+# LOG_MODE = "w"  # 写文件的模式
+# LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+# LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+# LOG_ENCODING = "utf8"  # 日志文件编码
+# OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+#
+# # 切换工作路径为当前项目路径
+# project_path = os.path.abspath(os.path.dirname(__file__))
+# os.chdir(project_path)  # 切换工作路经
+# sys.path.insert(0, project_path)
+# print("当前工作路径为 " + os.getcwd())
+
+```
+
+### 代码文件: feapder\templates\project_template\spiders\__init__.py
+```python
+
+```
+
+### 代码文件: feapder\utils\__init__.py
+```python
+# -*- coding: utf-8 -*-
+'''
+Created on 2019/11/5 4:41 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+'''
+```
+
+### 代码文件: feapder\commands\create_builder.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/2/8 11:21 上午
+---------
+@summary: 生成器
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import argparse
+
+from terminal_layout import Fore
+from terminal_layout.extensions.choice import Choice, StringStyle
+
+import feapder.setting as setting
+from feapder.commands.create import *
+
+
+def main():
+    spider = argparse.ArgumentParser(description="生成器")
+
+    spider.add_argument(
+        "-p", "--project", help="创建项目 如 feapder create -p <project_name>", metavar=""
+    )
+    spider.add_argument(
+        "-s",
+        "--spider",
+        help="创建爬虫 如 feapder create -s <spider_name>",
+        metavar="",
+    )
+    spider.add_argument(
+        "-i",
+        "--item",
+        help="创建item 如 feapder create -i <table_name> 支持模糊匹配 如 feapder create -i %%table_name%%",
+        metavar="",
+    )
+    spider.add_argument(
+        "-t", "--table", help="根据json创建表 如 feapder create -t <table_name>", metavar=""
+    )
+    spider.add_argument(
+        "-init", help="创建__init__.py 如 feapder create -init", action="store_true"
+    )
+    spider.add_argument("-j", "--json", help="创建json", action="store_true")
+    spider.add_argument("-sj", "--sort_json", help="创建有序json", action="store_true")
+    spider.add_argument("-c", "--cookies", help="创建cookie", action="store_true")
+    spider.add_argument("--params", help="解析地址中的参数", action="store_true")
+    spider.add_argument(
+        "--setting", help="创建全局配置文件" "feapder create --setting", action="store_true"
+    )
+
+    # 指定数据库
+    spider.add_argument("--host", type=str, help="mysql 连接地址", metavar="")
+    spider.add_argument("--port", type=str, help="mysql 端口", metavar="")
+    spider.add_argument("--username", type=str, help="mysql 用户名", metavar="")
+    spider.add_argument("--password", type=str, help="mysql 密码", metavar="")
+    spider.add_argument("--db", type=str, help="mysql 数据库名", metavar="")
+    args = spider.parse_args()
+
+    if args.host:
+        setting.MYSQL_IP = args.host
+    if args.port:
+        setting.MYSQL_PORT = int(args.port)
+    if args.username:
+        setting.MYSQL_USER_NAME = args.username
+    if args.password:
+        setting.MYSQL_USER_PASS = args.password
+    if args.db:
+        setting.MYSQL_DB = args.db
+
+    if args.item:
+        c = Choice(
+            "请选择Item类型",
+            ["Item", "Item 支持字典赋值", "UpdateItem", "UpdateItem 支持字典赋值"],
+            icon_style=StringStyle(fore=Fore.green),
+            selected_style=StringStyle(fore=Fore.green),
+        )
+
+        choice = c.get_choice()
+        if choice:
+            index, value = choice
+            item_name = args.item
+            item_type = "Item" if index <= 1 else "UpdateItem"
+            support_dict = index in (1, 3)
+
+            CreateItem().create(item_name, item_type, support_dict)
+
+    elif args.spider:
+        c = Choice(
+            "请选择爬虫模板",
+            ["AirSpider", "Spider", "TaskSpider", "BatchSpider"],
+            icon_style=StringStyle(fore=Fore.green),
+            selected_style=StringStyle(fore=Fore.green),
+        )
+
+        choice = c.get_choice()
+        if choice:
+            index, spider_type = choice
+            spider_name = args.spider
+            CreateSpider().create(spider_name, spider_type)
+
+    elif args.project:
+        CreateProject().create(args.project)
+
+    elif args.table:
+        CreateTable().create(args.table)
+
+    elif args.init:
+        CreateInit().create()
+
+    elif args.json:
+        CreateJson().create()
+
+    elif args.sort_json:
+        CreateJson().create(sort_keys=True)
+
+    elif args.cookies:
+        CreateCookies().create()
+
+    elif args.setting:
+        CreateSetting().create()
+
+    elif args.params:
+        CreateParams().create()
+
+    else:
+        spider.print_help()
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+### 代码文件: feapder\dedup\expirefilter.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/13 9:44 PM
+---------
+@summary: 带有有效期的去重集合
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import time
+
+from feapder.db.redisdb import RedisDB
+from feapder.dedup.basefilter import BaseFilter
+
+
+class ExpireFilter(BaseFilter):
+    redis_db = None
+
+    def __init__(
+        self, name: str, expire_time: int, expire_time_record_key=None, redis_url=None
+    ):
+        if not name:
+            raise ValueError("name cant't be None")
+        if not expire_time:
+            raise ValueError("please set expire time, units is seconds")
+
+        if not self.__class__.redis_db:
+            self.__class__.redis_db = RedisDB(url=redis_url)
+
+        self.name = name
+        self.expire_time = expire_time
+        self.expire_time_record_key = expire_time_record_key
+        self.del_expire_key_time = None
+
+        self.record_expire_time()
+
+        self.del_expire_key()
+
+    def __repr__(self):
+        return "<ExpireSet: {}>".format(self.name)
+
+    @property
+    def current_timestamp(self):
+        return int(time.time())
+
+    def add(self, keys, *args, **kwargs):
+        """
+        @param keys: 检查关键词在zset中是否存在，支持列表批量
+        @return: list / 单个值
+        """
+        if self.current_timestamp - self.del_expire_key_time > self.expire_time:
+            self.del_expire_key()
+
+        is_added = self.redis_db.zadd(self.name, keys, self.current_timestamp)
+        return is_added
+
+    def get(self, keys):
+        is_exist = self.redis_db.zexists(self.name, keys)
+        if isinstance(keys, list):
+            # 判断数据本身是否重复
+            temp_set = set()
+            for i, key in enumerate(keys):
+                if key in temp_set:
+                    is_exist[i] = 1
+                else:
+                    temp_set.add(key)
+
+        return is_exist
+
+    def del_expire_key(self):
+        self.redis_db.zremrangebyscore(
+            self.name, "-inf", self.current_timestamp - self.expire_time
+        )
+        self.del_expire_key_time = self.current_timestamp
+
+    def record_expire_time(self):
+        if self.expire_time_record_key:
+            self.redis_db.hset(
+                self.expire_time_record_key, key=self.name, value=self.expire_time
+            )
+
+```
+
+### 代码文件: feapder\utils\tail_thread.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2024/3/19 20:00
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import sys
+import threading
+
+
+class TailThread(threading.Thread):
+    """
+    所有子线程结束后，主线程才会退出
+    """
+
+    def start(self) -> None:
+        """
+        解决python3.12 RuntimeError: cannot join thread before it is started的报错
+        """
+        super().start()
+
+        if sys.version_info.minor >= 12 and sys.version_info.major >= 3:
+            for thread in threading.enumerate():
+                if (
+                    thread.daemon
+                    or thread is threading.current_thread()
+                    or not thread.is_alive()
+                ):
+                    continue
+                thread.join()
+
+```
+
+### 代码文件: feapder\utils\log.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-12-08 16:50
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import logging
+import os
+import sys
+from logging.handlers import BaseRotatingHandler
+
+import loguru
+from better_exceptions import format_exception
+
+import feapder.setting as setting
+
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
+        logger_opt = loguru.logger.opt(depth=6, exception=record.exc_info)
+        logger_opt.log(record.levelname, record.getMessage())
+
+
+# 重写 RotatingFileHandler 自定义log的文件名
+# 原来 xxx.log xxx.log.1 xxx.log.2 xxx.log.3 文件由近及远
+# 现在 xxx.log xxx1.log xxx2.log  如果backup_count 是2位数时  则 01  02  03 三位数 001 002 .. 文件由近及远
+class RotatingFileHandler(BaseRotatingHandler):
+    def __init__(
+        self, filename, mode="a", max_bytes=0, backup_count=0, encoding=None, delay=0
+    ):
+        BaseRotatingHandler.__init__(self, filename, mode, encoding, delay)
+        self.max_bytes = max_bytes
+        self.backup_count = backup_count
+        self.placeholder = str(len(str(backup_count)))
+
+    def doRollover(self):
+        if self.stream:
+            self.stream.close()
+            self.stream = None
+        if self.backup_count > 0:
+            for i in range(self.backup_count - 1, 0, -1):
+                sfn = ("%0" + self.placeholder + "d.") % i  # '%2d.'%i -> 02
+                sfn = sfn.join(self.baseFilename.split("."))
+                # sfn = "%d_%s" % (i, self.baseFilename)
+                # dfn = "%d_%s" % (i + 1, self.baseFilename)
+                dfn = ("%0" + self.placeholder + "d.") % (i + 1)
+                dfn = dfn.join(self.baseFilename.split("."))
+                if os.path.exists(sfn):
+                    # print "%s -> %s" % (sfn, dfn)
+                    if os.path.exists(dfn):
+                        os.remove(dfn)
+                    os.rename(sfn, dfn)
+            dfn = (("%0" + self.placeholder + "d.") % 1).join(
+                self.baseFilename.split(".")
+            )
+            if os.path.exists(dfn):
+                os.remove(dfn)
+            # Issue 18940: A file may not have been created if delay is True.
+            if os.path.exists(self.baseFilename):
+                os.rename(self.baseFilename, dfn)
+        if not self.delay:
+            self.stream = self._open()
+
+    def shouldRollover(self, record):
+        if self.stream is None:  # delay was set...
+            self.stream = self._open()
+        if self.max_bytes > 0:  # are we rolling over?
+            msg = "%s\n" % self.format(record)
+            self.stream.seek(0, 2)  # due to non-posix-compliant Windows feature
+            if self.stream.tell() + len(msg) >= self.max_bytes:
+                return 1
+        return 0
+
+
+def get_logger(
+    name=None,
+    path=None,
+    log_level=None,
+    is_write_to_console=None,
+    is_write_to_file=None,
+    color=None,
+    mode=None,
+    max_bytes=None,
+    backup_count=None,
+    encoding=None,
+):
+    """
+    @summary: 获取log
+    ---------
+    @param name: log名
+    @param path: log文件存储路径 如 D://xxx.log
+    @param log_level: log等级 CRITICAL/ERROR/WARNING/INFO/DEBUG
+    @param is_write_to_console: 是否输出到控制台
+    @param is_write_to_file: 是否写入到文件 默认否
+    @param color：是否有颜色
+    @param mode：写文件模式
+    @param max_bytes： 每个日志文件的最大字节数
+    @param backup_count：日志文件保留数量
+    @param encoding：日志文件编码
+    ---------
+    @result:
+    """
+    # 加载setting里最新的值
+    name = name or setting.LOG_NAME
+    path = path or setting.LOG_PATH
+    log_level = log_level or setting.LOG_LEVEL
+    is_write_to_console = (
+        is_write_to_console
+        if is_write_to_console is not None
+        else setting.LOG_IS_WRITE_TO_CONSOLE
+    )
+    is_write_to_file = (
+        is_write_to_file
+        if is_write_to_file is not None
+        else setting.LOG_IS_WRITE_TO_FILE
+    )
+    color = color if color is not None else setting.LOG_COLOR
+    mode = mode or setting.LOG_MODE
+    max_bytes = max_bytes or setting.LOG_MAX_BYTES
+    backup_count = backup_count or setting.LOG_BACKUP_COUNT
+    encoding = encoding or setting.LOG_ENCODING
+
+    # logger 配置
+    name = name.split(os.sep)[-1].split(".")[0]  # 取文件名
+
+    logger = logging.getLogger(name)
+    logger.setLevel(log_level)
+
+    formatter = logging.Formatter(setting.LOG_FORMAT)
+    if setting.PRINT_EXCEPTION_DETAILS:
+        formatter.formatException = lambda exc_info: format_exception(*exc_info)
+
+    # 定义一个RotatingFileHandler，最多备份5个日志文件，每个日志文件最大10M
+    if is_write_to_file:
+        if path and not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
+
+        rf_handler = RotatingFileHandler(
+            path,
+            mode=mode,
+            max_bytes=max_bytes,
+            backup_count=backup_count,
+            encoding=encoding,
+        )
+        rf_handler.setFormatter(formatter)
+        logger.addHandler(rf_handler)
+    if color and is_write_to_console:
+        loguru_handler = InterceptHandler()
+        loguru_handler.setFormatter(formatter)
+        # logging.basicConfig(handlers=[loguru_handler], level=0)
+        logger.addHandler(loguru_handler)
+    elif is_write_to_console:
+        stream_handler = logging.StreamHandler()
+        stream_handler.stream = sys.stdout
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
+
+    _handler_list = []
+    _handler_name_list = []
+    # 检查是否存在重复handler
+    for _handler in logger.handlers:
+        if str(_handler) not in _handler_name_list:
+            _handler_name_list.append(str(_handler))
+            _handler_list.append(_handler)
+    logger.handlers = _handler_list
+    return logger
+
+
+# logging.disable(logging.DEBUG) # 关闭所有log
+
+# 不让打印log的配置
+STOP_LOGS = [
+    # ES
+    "urllib3.response",
+    "urllib3.connection",
+    "elasticsearch.trace",
+    "requests.packages.urllib3.util",
+    "requests.packages.urllib3.util.retry",
+    "urllib3.util",
+    "requests.packages.urllib3.response",
+    "requests.packages.urllib3.contrib.pyopenssl",
+    "requests.packages",
+    "urllib3.util.retry",
+    "requests.packages.urllib3.contrib",
+    "requests.packages.urllib3.connectionpool",
+    "requests.packages.urllib3.poolmanager",
+    "urllib3.connectionpool",
+    "requests.packages.urllib3.connection",
+    "elasticsearch",
+    "log_request_fail",
+    # requests
+    "requests",
+    "selenium.webdriver.remote.remote_connection",
+    "selenium.webdriver.remote",
+    "selenium.webdriver",
+    "selenium",
+    # markdown
+    "MARKDOWN",
+    "build_extension",
+    # newspaper
+    "calculate_area",
+    "largest_image_url",
+    "newspaper.images",
+    "newspaper",
+    "Importing",
+    "PIL",
+]
+
+# 关闭日志打印
+OTHERS_LOG_LEVAL = eval("logging." + setting.OTHERS_LOG_LEVAL)
+for STOP_LOG in STOP_LOGS:
+    logging.getLogger(STOP_LOG).setLevel(OTHERS_LOG_LEVAL)
+
+# print(logging.Logger.manager.loggerDict) # 取使用debug模块的name
+
+# 日志级别大小关系为：CRITICAL > ERROR > WARNING > INFO > DEBUG
+
+
+class Log:
+    log = None
+
+    def func(self, log_level):
+        def wrapper(msg, *args, **kwargs):
+            if self.isEnabledFor(log_level):
+                self._log(log_level, msg, args, **kwargs)
+
+        return wrapper
+
+    def __getattr__(self, name):
+        # 调用log时再初始化，为了加载最新的setting
+        if self.__class__.log is None:
+            self.__class__.log = get_logger()
+        return getattr(self.__class__.log, name)
+
+    @property
+    def debug(self):
+        return self.__class__.log.debug
+
+    @property
+    def info(self):
+        return self.__class__.log.info
+
+    @property
+    def success(self):
+        log_level = logging.INFO + 1
+        logging.addLevelName(log_level, "success".upper())
+        return self.func(log_level)
+
+    @property
+    def warning(self):
+        return self.__class__.log.warning
+
+    @property
+    def exception(self):
+        return self.__class__.log.exception
+
+    @property
+    def error(self):
+        return self.__class__.log.error
+
+    @property
+    def critical(self):
+        return self.__class__.log.critical
+
+
+log = Log()
+
+```
+
+### 代码文件: feapder\dedup\bloomfilter.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/13 4:11 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import hashlib
+import math
+import threading
+import time
+from struct import unpack, pack
+
+from feapder.dedup.basefilter import BaseFilter
+from feapder.utils.redis_lock import RedisLock
+from . import bitarray
+
+
+def make_hashfuncs(num_slices, num_bits):
+    if num_bits >= (1 << 31):
+        fmt_code, chunk_size = "Q", 8
+    elif num_bits >= (1 << 15):
+        fmt_code, chunk_size = "I", 4
+    else:
+        fmt_code, chunk_size = "H", 2
+    total_hash_bits = 8 * num_slices * chunk_size
+    if total_hash_bits > 384:
+        hashfn = hashlib.sha512
+    elif total_hash_bits > 256:
+        hashfn = hashlib.sha384
+    elif total_hash_bits > 160:
+        hashfn = hashlib.sha256
+    elif total_hash_bits > 128:
+        hashfn = hashlib.sha1
+    else:
+        hashfn = hashlib.md5
+    fmt = fmt_code * (hashfn().digest_size // chunk_size)
+    num_salts, extra = divmod(num_slices, len(fmt))
+    if extra:
+        num_salts += 1
+    salts = tuple(hashfn(hashfn(pack("I", i)).digest()) for i in range(num_salts))
+
+    def _make_hashfuncs(key):
+        if isinstance(key, str):
+            key = key.encode("utf-8")
+        else:
+            key = str(key).encode("utf-8")
+
+        i = 0
+        for salt in salts:
+            h = salt.copy()
+            h.update(key)
+            for uint in unpack(fmt, h.digest()):
+                yield uint % num_bits
+                i += 1
+                if i >= num_slices:
+                    return
+
+    return _make_hashfuncs
+
+
+class BloomFilter(object):
+    BASE_MEMORY = 1
+    BASE_REDIS = 2
+
+    def __init__(
+        self,
+        capacity: int,
+        error_rate: float = 0.00001,
+        bitarray_type=BASE_REDIS,
+        name=None,
+        redis_url=None,
+    ):
+        if not (0 < error_rate < 1):
+            raise ValueError("Error_Rate must be between 0 and 1.")
+        if not capacity > 0:
+            raise ValueError("Capacity must be > 0")
+
+        # given M = num_bits, k = num_slices, P = error_rate, n = capacity
+        # k = log2(1/P)
+        # solving for m = bits_per_slice
+        # n ~= M * ((ln(2) ** 2) / abs(ln(P)))
+        # n ~= (k * m) * ((ln(2) ** 2) / abs(ln(P)))
+        # m ~= n * abs(ln(P)) / (k * (ln(2) ** 2))
+        num_slices = int(math.ceil(math.log(1.0 / error_rate, 2)))
+        bits_per_slice = int(
+            math.ceil(
+                (capacity * abs(math.log(error_rate)))
+                / (num_slices * (math.log(2) ** 2))
+            )
+        )
+        self._setup(error_rate, num_slices, bits_per_slice, capacity)
+
+        if bitarray_type == BloomFilter.BASE_MEMORY:
+            self.bitarray = bitarray.MemoryBitArray(self.num_bits)
+            self.bitarray.setall(False)
+        elif bitarray_type == BloomFilter.BASE_REDIS:
+            assert name, "name can't be None "
+            self.bitarray = bitarray.RedisBitArray(name, redis_url)
+        else:
+            raise ValueError("not support this bitarray type")
+
+    def _setup(self, error_rate, num_slices, bits_per_slice, capacity):
+        self.error_rate = error_rate
+        self.num_slices = num_slices
+        self.bits_per_slice = bits_per_slice
+        self.capacity = capacity
+        self.num_bits = num_slices * bits_per_slice
+        self.make_hashes = make_hashfuncs(self.num_slices, self.bits_per_slice)
+
+        self._is_at_capacity = False
+        self._check_capacity_time = 0
+
+    def __repr__(self):
+        return "<BloomFilter: {}>".format(self.bitarray)
+
+    def get(self, keys, to_list=False):
+        is_list = isinstance(keys, list)
+        keys = keys if is_list else [keys]
+        is_exists = []
+
+        offsets = []
+        for key in keys:
+            hashes = self.make_hashes(key)
+            offset = 0
+            for k in hashes:
+                offsets.append(offset + k)
+                offset += self.bits_per_slice
+
+        old_values = self.bitarray.get(offsets)
+        for i in range(0, len(old_values), self.num_slices):
+            is_exists.append(int(all(old_values[i : i + self.num_slices])))
+
+        if to_list:
+            return is_exists
+        else:
+            return is_exists if is_list else is_exists[0]
+
+    @property
+    def is_at_capacity(self):
+        """
+        是否容量已满, 1的个数满位数组的一半的时，则看做已满
+        比较耗时 半小时检查一次
+        @return:
+        """
+        if self._is_at_capacity:
+            return self._is_at_capacity
+
+        if (
+            not self._check_capacity_time
+            or time.time() - self._check_capacity_time > 1800
+        ):
+            bit_count = self.bitarray.count()
+            if bit_count and bit_count / self.num_bits > 0.5:
+                self._is_at_capacity = True
+
+            self._check_capacity_time = time.time()
+
+        return self._is_at_capacity
+
+    def add(self, keys):
+        """
+        Adds a key to this bloom filter. If the key already exists in this
+        filter it will return False. Otherwise True. keys support list
+        @param keys: list or one key
+        @return:
+        """
+        # if self.is_at_capacity:
+        #     raise IndexError("BloomFilter is at capacity")
+
+        is_list = isinstance(keys, list)
+
+        keys = keys if is_list else [keys]
+        is_added = []
+
+        offsets = []
+        for key in keys:
+            hashes = self.make_hashes(key)
+            offset = 0
+            for k in hashes:
+                offsets.append(offset + k)
+                offset += self.bits_per_slice
+
+        old_values = self.bitarray.set(offsets, 1)
+        for i in range(0, len(old_values), self.num_slices):
+            is_added.append(1 ^ int(all(old_values[i : i + self.num_slices])))
+
+        return is_added if is_list else is_added[0]
+
+
+class ScalableBloomFilter(BaseFilter):
+    """
+    自动扩展空间的bloomfilter, 当一个filter满一半的时候，创建下一个
+    """
+
+    BASE_MEMORY = BloomFilter.BASE_MEMORY
+    BASE_REDIS = BloomFilter.BASE_REDIS
+
+    def __init__(
+        self,
+        initial_capacity: int = 100000000,
+        error_rate: float = 0.00001,
+        bitarray_type=BASE_REDIS,
+        name=None,
+        redis_url=None,
+    ):
+
+        if not error_rate or error_rate < 0:
+            raise ValueError("Error_Rate must be a decimal less than 0.")
+
+        self._setup(
+            initial_capacity, error_rate, name, bitarray_type, redis_url=redis_url
+        )
+
+    def _setup(self, initial_capacity, error_rate, name, bitarray_type, redis_url):
+        self.initial_capacity = initial_capacity
+        self.error_rate = error_rate
+        self.name = name
+        self.bitarray_type = bitarray_type
+        self.redis_url = redis_url
+
+        self.filters = []
+
+        self.filters.append(self.create_filter())
+        self._thread_lock = threading.RLock()
+        self._check_capacity_time = 0
+
+    def __repr__(self):
+        return "<ScalableBloomFilter: {}>".format(self.filters[-1].bitarray)
+
+    def create_filter(self):
+        filter = BloomFilter(
+            capacity=self.initial_capacity,
+            error_rate=self.error_rate,
+            bitarray_type=self.bitarray_type,
+            name=self.name + str(len(self.filters)) if self.name else self.name,
+            redis_url=self.redis_url,
+        )
+
+        return filter
+
+    def check_filter_capacity(self):
+        """
+        检测filter状态，如果已满，加载新的filter
+        @return:
+        """
+        if (
+            not self._check_capacity_time
+            or time.time() - self._check_capacity_time > 1800
+        ):
+            if self.bitarray_type == ScalableBloomFilter.BASE_MEMORY:
+                with self._thread_lock:
+                    while True:
+                        if self.filters[-1].is_at_capacity:
+                            self.filters.append(self.create_filter())
+                        else:
+                            break
+
+                    self._check_capacity_time = time.time()
+            else:
+                # 全局锁 同一时间只有一个进程在真正的创建新的filter，等这个进程创建完，其他进程只是把刚创建的filter append进来
+                key = (
+                    f"ScalableBloomFilter:{self.name}"
+                    if self.name
+                    else "ScalableBloomFilter"
+                )
+                with RedisLock(key=key, redis_url=self.redis_url) as lock:
+                    if lock.locked:
+                        while True:
+                            if self.filters[-1].is_at_capacity:
+                                self.filters.append(self.create_filter())
+                            else:
+                                break
+
+                        self._check_capacity_time = time.time()
+
+    def add(self, keys, skip_check=False):
+        """
+        Adds a key to this bloom filter. If the key already exists in this
+        filter it will return False. Otherwise True. keys support list
+        @param keys: list or one key
+        @param skip_check: add directly，not check if is exist in bloomfilters
+        @return:
+        """
+
+        self.check_filter_capacity()
+
+        current_filter = self.filters[-1]
+
+        if skip_check:
+            return current_filter.add(keys)
+
+        else:
+            is_list = isinstance(keys, list)
+
+            keys = keys if is_list else [keys]
+            not_exist_keys = list(set(keys))
+
+            # 检查之前的bloomfilter是否存在
+            # 记录下每级filter存在的key，不存在的key继续向下检查
+            for filter in reversed(self.filters):
+                current_filter_is_exists = filter.get(
+                    not_exist_keys, to_list=True
+                )  # 当前的filter是否存在
+
+                not_exist_keys_temp = []
+
+                for key, is_exist in zip(not_exist_keys, current_filter_is_exists):
+                    if not is_exist:  # 当前filter不存在的key 需要继续向下检查
+                        not_exist_keys_temp.append(key)
+
+                not_exist_keys = not_exist_keys_temp
+
+                if not not_exist_keys:
+                    break
+
+            # 仍有不存在的关键词，记录该关键词
+            if not_exist_keys:
+                current_filter.add(not_exist_keys)
+
+            # 比较key是否已存在, 内部重复的key 若不存在啊则只留其一算为不存在，其他看作已存在
+            for i, key in enumerate(keys):
+                for j, not_exist_key in enumerate(not_exist_keys):
+                    if key == not_exist_key:
+                        keys[i] = 1
+                        not_exist_keys.pop(j)
+                        break
+                else:
+                    keys[i] = 0
+
+            is_added = keys
+            return is_added if is_list else is_added[0]
+
+    def get(self, keys):
+        self.check_filter_capacity()
+
+        is_list = isinstance(keys, list)
+
+        keys = keys if is_list else [keys]  # 最终会修改为 [0, 1, ...] 0表示不存在 1 已存在
+        not_exist_keys = list(set(keys))
+
+        # 检查之前的bloomfilter是否存在
+        # 记录下每级filter存在的key，不存在的key继续向下检查
+        for filter in reversed(self.filters):
+            current_filter_is_exists = filter.get(
+                not_exist_keys, to_list=True
+            )  # 当前的filter是否存在
+
+            not_exist_keys_temp = []
+
+            for checked_key, is_exist in zip(not_exist_keys, current_filter_is_exists):
+                if not is_exist:  # 当前filter不存在的key 需要继续向下检查
+                    not_exist_keys_temp.append(checked_key)
+
+            not_exist_keys = not_exist_keys_temp
+
+            if not not_exist_keys:
+                break
+
+        # 比较key是否已存在, 内部重复的key 若不存在啊则只留其一算为不存在，其他看作已存在
+        for i, key in enumerate(keys):
+            for j, not_exist_key in enumerate(not_exist_keys):
+                if key == not_exist_key:
+                    keys[i] = 0
+                    not_exist_keys.pop(j)
+                    break
+            else:
+                keys[i] = 1
+
+        is_exists = keys
+        return is_exists if is_list else is_exists[0]
+
+    @property
+    def capacity(self):
+        """Returns the total capacity for all filters in this SBF"""
+        return sum(f.capacity for f in self.filters)
+
+```
+
+### 代码文件: feapder\utils\webdriver\selenium_driver.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/3/18 4:59 下午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import json
+import logging
+import os
+from typing import Optional, Union, List
+
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+
+from feapder.utils import tools
+from feapder.utils.log import log, OTHERS_LOG_LEVAL
+from feapder.utils.webdriver.webdirver import *
+
+# 屏蔽webdriver_manager日志
+logging.getLogger("WDM").setLevel(OTHERS_LOG_LEVAL)
+
+
+class SeleniumDriver(WebDriver, RemoteWebDriver):
+    CHROME = "CHROME"
+    EDGE = "EDGE"
+    PHANTOMJS = "PHANTOMJS"
+    FIREFOX = "FIREFOX"
+
+    __CHROME_ATTRS__ = {
+        "executable_path",
+        "port",
+        "options",
+        "service_args",
+        "desired_capabilities",
+        "service_log_path",
+        "chrome_options",
+        "keep_alive",
+    }
+
+    __EDGE_ATTRS__ = __CHROME_ATTRS__
+
+    __FIREFOX_ATTRS__ = {
+        "firefox_profile",
+        "firefox_binary",
+        "timeout",
+        "capabilities",
+        "proxy",
+        "executable_path",
+        "options",
+        "service_log_path",
+        "firefox_options",
+        "service_args",
+        "desired_capabilities",
+        "log_path",
+        "keep_alive",
+    }
+    __PHANTOMJS_ATTRS__ = {
+        "executable_path",
+        "port",
+        "desired_capabilities",
+        "service_args",
+        "service_log_path",
+    }
+
+    def __init__(self, xhr_url_regexes: list = None, **kwargs):
+        """
+
+        Args:
+            xhr_url_regexes: 拦截xhr接口，支持正则，数组类型
+            **kwargs:
+        """
+        super(SeleniumDriver, self).__init__(**kwargs)
+        self._xhr_url_regexes = xhr_url_regexes
+        self._driver_type = self._driver_type or SeleniumDriver.CHROME
+
+        if self._xhr_url_regexes and self._driver_type != SeleniumDriver.CHROME:
+            raise Exception(
+                "xhr_url_regexes only support by chrome now! eg: driver_type=SeleniumDriver.CHROME"
+            )
+
+        if self._driver_type == SeleniumDriver.CHROME:
+            self.driver = self.chrome_driver()
+
+        elif self._driver_type == SeleniumDriver.EDGE:
+            self.driver = self.edge_driver()
+
+        elif self._driver_type == SeleniumDriver.PHANTOMJS:
+            self.driver = self.phantomjs_driver()
+
+        elif self._driver_type == SeleniumDriver.FIREFOX:
+            self.driver = self.firefox_driver()
+
+        else:
+            raise TypeError(
+                "dirver_type must be one of CHROME or PHANTOMJS or FIREFOX, but received {}".format(
+                    type(self._driver_type)
+                )
+            )
+
+        # driver.get(url)一直不返回，但也不报错的问题，这时程序会卡住，设置超时选项能解决这个问题。
+        self.driver.set_page_load_timeout(self._timeout)
+        # 设置10秒脚本超时时间
+        self.driver.set_script_timeout(self._timeout)
+        self.url = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_val:
+            log.error(exc_val)
+
+        self.quit()
+        return True
+
+    def filter_kwargs(self, kwargs: dict, driver_attrs: set):
+        if not kwargs:
+            return {}
+
+        data = {}
+        for key, value in kwargs.items():
+            if key in driver_attrs:
+                data[key] = value
+
+        return data
+
+    def get_driver(self):
+        return self.driver
+
+    def firefox_driver(self):
+        if webdriver.__version__ >= "4.0.0":
+            raise Exception(
+                f"暂未适配selenium=={webdriver.__version__}版本的firefox API，建议安装selenium==3.141.0版本或使用CHROME浏览器"
+            )
+
+        firefox_profile = webdriver.FirefoxProfile()
+        firefox_options = webdriver.FirefoxOptions()
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        try:
+            from selenium.webdriver.firefox.service import Service
+        except (ImportError, ModuleNotFoundError):
+            Service = None
+
+        if self._proxy:
+            proxy = self._proxy() if callable(self._proxy) else self._proxy
+            firefox_capabilities["marionette"] = True
+            firefox_capabilities["proxy"] = {
+                "proxyType": "MANUAL",
+                "httpProxy": proxy,
+                "ftpProxy": proxy,
+                "sslProxy": proxy,
+            }
+
+        if self._user_agent:
+            firefox_profile.set_preference(
+                "general.useragent.override",
+                self._user_agent() if callable(self._user_agent) else self._user_agent,
+            )
+
+        if not self._load_images:
+            firefox_profile.set_preference("permissions.default.image", 2)
+
+        if self._headless:
+            firefox_options.add_argument("--headless")
+            firefox_options.add_argument("--disable-gpu")
+
+        # 添加自定义的配置参数
+        if self._custom_argument:
+            for arg in self._custom_argument:
+                firefox_options.add_argument(arg)
+
+        kwargs = self.filter_kwargs(self._kwargs, self.__FIREFOX_ATTRS__)
+
+        if Service is None:
+            if self._executable_path:
+                kwargs.update(executable_path=self._executable_path)
+            elif self._auto_install_driver:
+                kwargs.update(executable_path=GeckoDriverManager().install())
+        else:
+            if self._executable_path:
+                kwargs.update(service=Service(self._executable_path))
+            elif self._auto_install_driver:
+                kwargs.update(service=Service(GeckoDriverManager().install()))
+
+        driver = webdriver.Firefox(
+            capabilities=firefox_capabilities,
+            options=firefox_options,
+            firefox_profile=firefox_profile,
+            **kwargs,
+        )
+
+        if self._window_size:
+            driver.set_window_size(*self._window_size)
+
+        return driver
+
+    def chrome_driver(self):
+        chrome_options = webdriver.ChromeOptions()
+        # 此步骤很重要，设置为开发者模式，防止被各大网站识别出来使用了Selenium
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_experimental_option("useAutomationExtension", False)
+        # docker 里运行需要
+        chrome_options.add_argument("--no-sandbox")
+        try:
+            from selenium.webdriver.chrome.service import Service
+        except (ImportError, ModuleNotFoundError):
+            Service = None
+
+        if self._proxy:
+            chrome_options.add_argument(
+                "--proxy-server={}".format(
+                    self._proxy() if callable(self._proxy) else self._proxy
+                )
+            )
+        if self._user_agent:
+            chrome_options.add_argument(
+                "user-agent={}".format(
+                    self._user_agent()
+                    if callable(self._user_agent)
+                    else self._user_agent
+                )
+            )
+        if not self._load_images:
+            chrome_options.add_experimental_option(
+                "prefs", {"profile.managed_default_content_settings.images": 2}
+            )
+
+        if self._headless:
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-gpu")
+
+        if self._window_size:
+            chrome_options.add_argument(
+                "--window-size={},{}".format(self._window_size[0], self._window_size[1])
+            )
+
+        if self._download_path:
+            os.makedirs(self._download_path, exist_ok=True)
+            prefs = {
+                "download.prompt_for_download": False,
+                "download.default_directory": self._download_path,
+            }
+            chrome_options.add_experimental_option("prefs", prefs)
+
+        # 添加自定义的配置参数
+        if self._custom_argument:
+            for arg in self._custom_argument:
+                chrome_options.add_argument(arg)
+
+        kwargs = self.filter_kwargs(self._kwargs, self.__CHROME_ATTRS__)
+        if Service is None:
+            if self._executable_path:
+                kwargs.update(executable_path=self._executable_path)
+            elif self._auto_install_driver:
+                kwargs.update(executable_path=ChromeDriverManager().install())
+        else:
+            if self._executable_path:
+                kwargs.update(service=Service(self._executable_path))
+            elif self._auto_install_driver:
+                kwargs.update(service=Service(ChromeDriverManager().install()))
+
+        driver = webdriver.Chrome(options=chrome_options, **kwargs)
+
+        # 隐藏浏览器特征
+        if self._use_stealth_js:
+            with open(
+                os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
+            ) as f:
+                js = f.read()
+                driver.execute_cdp_cmd(
+                    "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+                )
+
+        if self._xhr_url_regexes:
+            assert isinstance(self._xhr_url_regexes, list)
+            with open(
+                os.path.join(os.path.dirname(__file__), "../js/intercept.js")
+            ) as f:
+                js = f.read()
+            driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+            )
+            js = f"window.__urlRegexes = {self._xhr_url_regexes}"
+            driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+            )
+
+        if self._download_path:
+            driver.command_executor._commands["send_command"] = (
+                "POST",
+                "/session/$sessionId/chromium/send_command",
+            )
+            params = {
+                "cmd": "Page.setDownloadBehavior",
+                "params": {"behavior": "allow", "downloadPath": self._download_path},
+            }
+            driver.execute("send_command", params)
+
+        return driver
+
+    def edge_driver(self):
+        edge_options = webdriver.EdgeOptions()
+        # 此步骤很重要，设置为开发者模式，防止被各大网站识别出来使用了Selenium
+        edge_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        edge_options.add_experimental_option("useAutomationExtension", False)
+        # docker 里运行需要
+        edge_options.add_argument("--no-sandbox")
+        try:
+            from selenium.webdriver.edge.service import Service
+        except (ImportError, ModuleNotFoundError):
+            Service = None
+
+        if self._proxy:
+            edge_options.add_argument(
+                "--proxy-server={}".format(
+                    self._proxy() if callable(self._proxy) else self._proxy
+                )
+            )
+        if self._user_agent:
+            edge_options.add_argument(
+                "user-agent={}".format(
+                    self._user_agent()
+                    if callable(self._user_agent)
+                    else self._user_agent
+                )
+            )
+        if not self._load_images:
+            edge_options.add_experimental_option(
+                "prefs", {"profile.managed_default_content_settings.images": 2}
+            )
+
+        if self._headless:
+            edge_options.add_argument("--headless")
+            edge_options.add_argument("--disable-gpu")
+
+        if self._window_size:
+            edge_options.add_argument(
+                "--window-size={},{}".format(self._window_size[0], self._window_size[1])
+            )
+
+        if self._download_path:
+            os.makedirs(self._download_path, exist_ok=True)
+            prefs = {
+                "download.prompt_for_download": False,
+                "download.default_directory": self._download_path,
+            }
+            edge_options.add_experimental_option("prefs", prefs)
+
+        # 添加自定义的配置参数
+        if self._custom_argument:
+            for arg in self._custom_argument:
+                edge_options.add_argument(arg)
+
+        kwargs = self.filter_kwargs(self._kwargs, self.__CHROME_ATTRS__)
+        if Service is None:
+            if self._executable_path:
+                kwargs.update(executable_path=self._executable_path)
+            elif self._auto_install_driver:
+                raise NotImplementedError("edge not support auto install driver")
+        else:
+            if self._executable_path:
+                kwargs.update(service=Service(self._executable_path))
+            elif self._auto_install_driver:
+                raise NotImplementedError("edge not support auto install driver")
+
+        driver = webdriver.Edge(options=edge_options, **kwargs)
+
+        # 隐藏浏览器特征
+        if self._use_stealth_js:
+            with open(
+                os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
+            ) as f:
+                js = f.read()
+                driver.execute_cdp_cmd(
+                    "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+                )
+
+        if self._xhr_url_regexes:
+            assert isinstance(self._xhr_url_regexes, list)
+            with open(
+                os.path.join(os.path.dirname(__file__), "../js/intercept.js")
+            ) as f:
+                js = f.read()
+            driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+            )
+            js = f"window.__urlRegexes = {self._xhr_url_regexes}"
+            driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument", {"source": js}
+            )
+
+        if self._download_path:
+            driver.command_executor._commands["send_command"] = (
+                "POST",
+                "/session/$sessionId/chromium/send_command",
+            )
+            params = {
+                "cmd": "Page.setDownloadBehavior",
+                "params": {"behavior": "allow", "downloadPath": self._download_path},
+            }
+            driver.execute("send_command", params)
+
+        return driver
+
+    def phantomjs_driver(self):
+        import warnings
+
+        warnings.filterwarnings("ignore")
+
+        service_args = []
+        dcap = DesiredCapabilities.PHANTOMJS
+
+        if self._proxy:
+            service_args.append(
+                "--proxy=%s" % self._proxy() if callable(self._proxy) else self._proxy
+            )
+        if self._user_agent:
+            dcap["phantomjs.page.settings.userAgent"] = (
+                self._user_agent() if callable(self._user_agent) else self._user_agent
+            )
+        if not self._load_images:
+            service_args.append("--load-images=no")
+
+        # 添加自定义的配置参数
+        if self._custom_argument:
+            for arg in self._custom_argument:
+                service_args.append(arg)
+
+        kwargs = self.filter_kwargs(self._kwargs, self.__PHANTOMJS_ATTRS__)
+
+        if self._executable_path:
+            kwargs.update(executable_path=self._executable_path)
+
+        driver = webdriver.PhantomJS(
+            service_args=service_args, desired_capabilities=dcap, **kwargs
+        )
+
+        if self._window_size:
+            driver.set_window_size(self._window_size[0], self._window_size[1])
+
+        del warnings
+
+        return driver
+
+    @property
+    def domain(self):
+        return tools.get_domain(self.url or self.driver.current_url)
+
+    @property
+    def cookies(self):
+        cookies_json = {}
+        for cookie in self.driver.get_cookies():
+            cookies_json[cookie["name"]] = cookie["value"]
+
+        return cookies_json
+
+    @cookies.setter
+    def cookies(self, val: Union[dict, List[dict]]):
+        """
+        设置cookie
+        Args:
+            val: {"key":"value", "key2":"value2"}
+
+        Returns:
+
+        """
+        if isinstance(val, list):
+            for cookie in val:
+                # "path", "domain", "secure", "expiry"
+                _cookie = {
+                    "name": cookie.get("name"),
+                    "value": cookie.get("value"),
+                    "domain": cookie.get("domain"),
+                    "path": cookie.get("path"),
+                    "expires": cookie.get("expires"),
+                    "secure": cookie.get("secure"),
+                }
+                self.driver.add_cookie(_cookie)
+        else:
+            for key, value in val.items():
+                self.driver.add_cookie({"name": key, "value": value})
+
+    @property
+    def user_agent(self):
+        return self.driver.execute_script("return navigator.userAgent;")
+
+    def xhr_response(self, xhr_url_regex) -> Optional[InterceptResponse]:
+        data = self.driver.execute_script(
+            f'return window.__ajaxData["{xhr_url_regex}"];'
+        )
+        if not data:
+            return None
+
+        request = InterceptRequest(**data["request"])
+        response = InterceptResponse(request, **data["response"])
+        return response
+
+    def xhr_data(self, xhr_url_regex) -> Union[str, dict, None]:
+        response = self.xhr_response(xhr_url_regex)
+        if not response:
+            return None
+        return response.content
+
+    def xhr_text(self, xhr_url_regex) -> Optional[str]:
+        response = self.xhr_response(xhr_url_regex)
+        if not response:
+            return None
+        if isinstance(response.content, dict):
+            return json.dumps(response.content, ensure_ascii=False)
+        return response.content
+
+    def xhr_json(self, xhr_url_regex) -> Optional[dict]:
+        text = self.xhr_text(xhr_url_regex)
+        return json.loads(text)
+
+    def __getattr__(self, name):
+        if self.driver:
+            return getattr(self.driver, name)
+        else:
+            raise AttributeError
+
+    # def __del__(self):
+    #     self.quit()
+
+```
+
+### 代码文件: feapder\commands\create\create_item.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 创建item
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import getpass
+import os
+
+import feapder.utils.tools as tools
+from feapder import setting
+from feapder.db.mysqldb import MysqlDB
+from .create_init import CreateInit
+
+
+def deal_file_info(file):
+    file = file.replace("{DATE}", tools.get_current_date())
+    file = file.replace("{USER}", os.getenv("FEAPDER_USER") or getpass.getuser())
+
+    return file
+
+
+class CreateItem:
+    def __init__(self):
+        self._db = MysqlDB()
+        self._create_init = CreateInit()
+
+    def select_columns(self, table_name):
+        # sql = 'SHOW COLUMNS FROM ' + table_name
+        sql = f"SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT, EXTRA, COLUMN_KEY, COLUMN_COMMENT FROM INFORMATION_SCHEMA.Columns WHERE table_name = '{table_name}' and table_schema = '{setting.MYSQL_DB}'"
+        columns = self._db.find(sql)
+
+        return columns
+
+    def select_tables_name(self, tables_name):
+        """
+        @summary:
+        ---------
+        @param tables_name: 一类tables 如 qidian*
+        ---------
+        @result:
+        """
+        sql = f"select table_name from information_schema.tables where table_name like '{tables_name}' and table_schema = '{setting.MYSQL_DB}'"
+        tables_name = self._db.find(sql)
+
+        return tables_name
+
+    def convert_table_name_to_hump(self, table_name):
+        """
+        @summary: 格式化表明为驼峰格式
+        ---------
+        @param table:
+        ---------
+        @result:
+        """
+        table_hump_format = ""
+
+        words = table_name.split("_")
+        for word in words:
+            table_hump_format += word.capitalize()  # 首字母大写
+
+        return table_hump_format
+
+    def get_item_template(self, item_type):
+        if item_type == "Item":
+            template_path = os.path.abspath(
+                os.path.join(__file__, "../../../templates/item_template.tmpl")
+            )
+        else:
+            template_path = os.path.abspath(
+                os.path.join(__file__, "../../../templates/update_item_template.tmpl")
+            )
+        with open(template_path, "r", encoding="utf-8") as file:
+            item_template = file.read()
+
+        return item_template
+
+    def create_item(self, item_template, columns, table_name, support_dict):
+        table_name_hump_format = self.convert_table_name_to_hump(table_name)
+        # 组装 类名
+        item_template = item_template.replace("${item_name}", table_name_hump_format)
+        if support_dict:
+            item_template = item_template.replace("${command}", table_name + " 1")
+        else:
+            item_template = item_template.replace("${command}", table_name)
+        item_template = item_template.replace("${table_name}", table_name)
+
+        # 组装 属性
+        propertys = ""
+        for column in columns:
+            column_name = column[0]
+            column_type = column[1]
+            is_nullable = column[2]
+            column_default = column[3]
+            column_extra = column[4]
+            column_key = column[5]
+            column_comment = column[6]
+
+            try:
+                column_default = None if column_default == "NULL" else column_default
+                value = (
+                    "kwargs.get('{column_name}')".format(column_name=column_name)
+                    if support_dict
+                    else (
+                        column_default != "CURRENT_TIMESTAMP" and column_default or None
+                    )
+                    and eval(column_default)
+                )
+            except:
+                value = (
+                    "kwargs.get('{column_name}')".format(column_name=column_name)
+                    if support_dict
+                    else (
+                        column_default != "CURRENT_TIMESTAMP" and column_default or None
+                    )
+                    and column_default
+                )
+
+            if column_extra == "auto_increment" or column_default is not None:
+                propertys += f"# self.{column_name} = {value}"
+
+            else:
+                if value is None or isinstance(value, (float, int)) or support_dict:
+                    propertys += f"self.{column_name} = {value}"
+                else:
+                    propertys += f"self.{column_name} = '{value}'"
+
+            if column_comment:
+                propertys += f"  # {column_comment}"
+            propertys += "\n" + " " * 8
+
+        item_template = item_template.replace("${propertys}", propertys.strip())
+        item_template = deal_file_info(item_template)
+
+        return item_template
+
+    def save_template_to_file(self, item_template, table_name):
+        item_file = table_name + "_item.py"
+        if os.path.exists(item_file):
+            confirm = input("%s 文件已存在 是否覆盖 (y/n).  " % item_file)
+            if confirm != "y":
+                print("取消覆盖  退出")
+                return
+
+        with open(item_file, "w", encoding="utf-8") as file:
+            file.write(item_template)
+            print("\n%s 生成成功" % item_file)
+
+        if os.path.basename(os.path.dirname(os.path.abspath(item_file))) == "items":
+            self._create_init.create()
+
+    def create(self, tables_name, item_type, support_dict):
+        input_tables_name = tables_name
+
+        tables_name = self.select_tables_name(tables_name)
+        if not tables_name:
+            print(tables_name)
+            tip = "mysql数据库中无 %s 表 " % input_tables_name
+            raise KeyError(tip)
+
+        for table_name in tables_name:
+            table_name = table_name[0]
+
+            columns = self.select_columns(table_name)
+            item_template = self.get_item_template(item_type)
+            item_template = self.create_item(
+                item_template, columns, table_name, support_dict
+            )
+            self.save_template_to_file(item_template, table_name)
+
+```
+
+### 代码文件: feapder\network\user_pool\guest_user_pool.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/27 11:32 AM
+---------
+@summary: 访客用户池 不需要登陆
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import random
+from typing import Optional
+
+import feapder.utils.tools as tools
+from feapder import setting
+from feapder.db.redisdb import RedisDB
+from feapder.network.user_pool.base_user_pool import UserPoolInterface, GuestUser
+from feapder.utils.log import log
+from feapder.utils.webdriver import WebDriver
+
+
+class GuestUserPool(UserPoolInterface):
+    """
+    访客用户池 不需要登陆
+    """
+
+    def __init__(
+        self,
+        redis_key,
+        page_url=None,
+        min_users=1,
+        must_contained_keys=(),
+        keep_alive=False,
+        **kwargs,
+    ):
+        """
+        @param redis_key: user存放在redis中的key前缀
+        @param page_url: 生产user的url
+        @param min_users: 最小user数
+        @param must_contained_keys: cookie中必须包含的key，用于校验cookie是否正确
+        @param keep_alive: 是否保持常驻，以便user不足时立即补充
+        ---
+        @param kwargs: WebDriver的一些参数
+            load_images: 是否加载图片
+            user_agent: 字符串 或 无参函数，返回值为user_agent
+            proxy: xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless: 是否启用无头模式
+            driver_type: CHROME,EDGE 或 PHANTOMJS,FIREFOX
+            timeout: 请求超时时间
+            window_size: # 窗口大小
+            executable_path: 浏览器路径，默认为默认路径
+        """
+
+        self._redisdb = RedisDB()
+
+        self._tab_user_pool = setting.TAB_USER_POOL.format(
+            redis_key=redis_key, user_type="guest"
+        )
+        self._page_url = page_url
+        self._min_users = min_users
+        self._must_contained_keys = must_contained_keys
+        self._keep_alive = keep_alive
+
+        self._kwargs = kwargs
+        self._kwargs.setdefault("load_images", False)
+        self._kwargs.setdefault("headless", True)
+
+        self._users_id = []
+
+    def _load_users_id(self):
+        self._users_id = self._redisdb.hkeys(self._tab_user_pool)
+        if self._users_id:
+            random.shuffle(self._users_id)
+
+    def _get_user_id(self):
+        if not self._users_id:
+            self._load_users_id()
+
+        if self._users_id:
+            return self._users_id.pop()
+
+    def login(self) -> Optional[GuestUser]:
+        """
+        默认使用webdirver去登录，生产cookie，可以重写
+        """
+        with WebDriver(**self._kwargs) as driver:
+            driver.get(self._page_url)
+
+            cookies = driver.cookies
+
+            for key in self._must_contained_keys:
+                if key not in cookies:
+                    break
+            else:
+                user = GuestUser(user_agent=driver.user_agent, cookies=cookies)
+                return user
+
+            log.error("获取cookie失败 cookies = {}".format(cookies))
+            return None
+
+    def add_user(self, user: GuestUser):
+        log.debug("add {}".format(user))
+        self._redisdb.hset(self._tab_user_pool, user.user_id, user.to_dict())
+
+    def get_user(self, block=True) -> Optional[GuestUser]:
+        """
+
+        Args:
+            block: 无用户时是否等待
+
+        Returns:
+
+        """
+        while True:
+            try:
+                user_id = self._get_user_id()
+                user_str = None
+                if user_id:
+                    user_str = self._redisdb.hget(self._tab_user_pool, user_id)
+                    # 如果没取到user，可能是其他爬虫将此用户删除了，需要重刷新本地缓存的用户id
+                    if not user_str:
+                        self._load_users_id()
+                        continue
+
+                if not user_id and block:
+                    self._keep_alive = False
+                    self._min_users = 1
+                    self.run()
+                    continue
+
+                return user_str and GuestUser(**eval(user_str))
+            except Exception as e:
+                log.exception(e)
+                tools.delay_time(1)
+
+    def del_user(self, user_id: str):
+        self._redisdb.hdel(self._tab_user_pool, user_id)
+        self._load_users_id()
+
+    def run(self):
+        while True:
+            try:
+                now_user_count = self._redisdb.hget_count(self._tab_user_pool)
+                need_user_count = self._min_users - now_user_count
+
+                if need_user_count > 0:
+                    log.info(
+                        "当前在线user数为 {} 小于 {}, 生产user".format(
+                            now_user_count, self._min_users
+                        )
+                    )
+                    try:
+                        user = self.login()
+                        if user:
+                            self.add_user(user)
+                    except Exception as e:
+                        log.exception(e)
+                else:
+                    log.debug("当前user数为 {} 数量足够 暂不生产".format(now_user_count))
+
+                    if self._keep_alive:
+                        tools.delay_time(10)
+                    else:
+                        break
+
+            except Exception as e:
+                log.exception(e)
+                tools.delay_time(1)
+
+```
+
+### 代码文件: feapder\core\handle_failed_items.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/11/18 11:33 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import feapder.setting as setting
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.db.redisdb import RedisDB
+from feapder.network.item import Item, UpdateItem
+from feapder.utils.log import log
+
+
+class HandleFailedItems:
+    def __init__(self, redis_key, task_table=None, item_buffer=None):
+        if redis_key.endswith(":s_failed_items"):
+            redis_key = redis_key.replace(":s_failed_items", "")
+
+        self._redisdb = RedisDB()
+        self._item_buffer = item_buffer or ItemBuffer(redis_key, task_table=task_table)
+
+        self._table_failed_items = setting.TAB_FAILED_ITEMS.format(redis_key=redis_key)
+
+    def get_failed_items(self, count=1):
+        failed_items = self._redisdb.sget(
+            self._table_failed_items, count=count, is_pop=False
+        )
+        return failed_items
+
+    def reput_failed_items_to_db(self):
+        log.debug("正在重新写入失败的items...")
+        total_count = 0
+        while True:
+            try:
+                failed_items = self.get_failed_items()
+                if not failed_items:
+                    break
+
+                for data_str in failed_items:
+                    data = eval(data_str)
+
+                    for add in data.get("add"):
+                        table = add.get("table")
+                        datas = add.get("datas")
+                        for _data in datas:
+                            item = Item(**_data)
+                            item.table_name = table
+                            self._item_buffer.put_item(item)
+                            total_count += 1
+
+                    for update in data.get("update"):
+                        table = update.get("table")
+                        datas = update.get("datas")
+                        update_keys = update.get("update_keys")
+                        for _data in datas:
+                            item = UpdateItem(**_data)
+                            item.table_name = table
+                            item.update_key = update_keys
+                            self._item_buffer.put_item(item)
+                            total_count += 1
+
+                    # 入库成功后删除
+                    def delete_item():
+                        self._redisdb.srem(self._table_failed_items, data_str)
+
+                    self._item_buffer.put_item(delete_item)
+                    self._item_buffer.flush()
+
+            except Exception as e:
+                log.exception(e)
+
+        if total_count:
+            log.debug("导入%s条失败item到数库" % total_count)
+        else:
+            log.debug("没有失败的item")
+
+    def close(self):
+        self._item_buffer.close()
+
+```
+
+### 代码文件: feapder\network\__init__.py
+```python
+
+```
+
+### 代码文件: feapder\commands\create\create_table.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 根据json生成表
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import time
+
+import pyperclip
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.db.mysqldb import MysqlDB
+from feapder.utils.tools import key2underline
+
+
+class CreateTable:
+    def __init__(self):
+        self._db = MysqlDB()
+
+    def is_valid_date(self, date):
+        try:
+            if ":" in date:
+                time.strptime(date, "%Y-%m-%d %H:%M:%S")
+            else:
+                time.strptime(date, "%Y-%m-%d")
+            return True
+        except:
+            return False
+
+    def get_key_type(self, value):
+        if isinstance(value, int):
+            key_type = "int"
+        elif isinstance(value, float):
+            key_type = "double"
+        elif isinstance(value, str):
+            if self.is_valid_date(value):
+                if ":" in value:
+                    key_type = "datetime"
+                else:
+                    key_type = "date"
+            elif len(value) > 50:
+                key_type = "text"
+            else:
+                key_type = "varchar(255)"
+        elif isinstance(value, (dict, list)):
+            key_type = "longtext"
+        else:
+            key_type = "varchar(255)"
+
+        return key_type
+
+    def get_data(self):
+        """
+        @summary: 从控制台读取多行
+        ---------
+        ---------
+        @result:
+        """
+        input("请复制json格式数据, 复制后按任意键读取剪切板内容\n")
+
+        text = pyperclip.paste()
+        print(text + "\n")
+
+        return tools.get_json(text)
+
+    def create(self, table_name):
+        # 输入表字段
+        data = self.get_data()
+
+        if not isinstance(data, dict):
+            raise Exception("表数据格式不正确")
+
+        # 拼接表结构
+        sql = """
+            CREATE TABLE `{db}`.`{table_name}` (
+                `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id主键',
+                {other_key}
+                `crawl_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '采集时间',
+                {unique}
+                PRIMARY KEY (`id`)
+            ) COMMENT='';
+        """
+
+        # print("请设置注释 回车跳过")
+        other_key = ""
+        for key, value in data.items():
+            key = key2underline(key)
+            comment = ""
+            if key == "id":
+                key = "data_id"
+                comment = "原始数据id"
+
+            key_type = self.get_key_type(value)
+
+            # comment = input("%s : %s  -> comment：" % (key, key_type))
+
+            other_key += (
+                "`{key}` {key_type} COMMENT '{comment}',\n                ".format(
+                    key=key, key_type=key_type, comment=comment
+                )
+            )
+
+        print("\n")
+
+        while True:
+            yes = input("是否添加批次字段 batch_date（y/n）:")
+            if yes == "y":
+                other_key += (
+                    "`{key}` {key_type} COMMENT '{comment}',\n                ".format(
+                        key="batch_date", key_type="date", comment="批次时间"
+                    )
+                )
+                break
+            elif yes == "n":
+                break
+
+        print("\n")
+
+        while True:
+            yes = input("是否设置唯一索引（y/n）:")
+            if yes == "y":
+                unique = input("请设置唯一索引, 多个逗号间隔\n等待输入：\n").replace("，", ",")
+                if unique:
+                    unique = "UNIQUE `idx` USING BTREE (`%s`) comment ''," % "`,`".join(
+                        unique.split(",")
+                    )
+                    break
+            elif yes == "n":
+                unique = ""
+                break
+
+        sql = sql.format(
+            db=setting.MYSQL_DB,
+            table_name=table_name,
+            other_key=other_key.strip(),
+            unique=unique,
+        )
+        print(sql)
+
+        if self._db.execute(sql):
+            print("\n%s 创建成功" % table_name)
+            print("注意手动检查下字段类型，确保无误！！！")
+        else:
+            print("\n%s 创建失败" % table_name)
+
+```
+
+### 代码文件: feapder\network\user_pool\__init__.py
+```python
+__all__ = [
+    "GuestUserPool",
+    "GuestUser",
+    "NormalUserPool",
+    "NormalUser",
+    "GoldUserPool",
+    "GoldUser",
+    "GoldUserStatus",
+]
+
+from .gold_user_pool import GoldUserPool, GoldUser, GoldUserStatus
+from .guest_user_pool import GuestUserPool, GuestUser
+from .normal_user_pool import NormalUserPool, NormalUser
+
+```
+
+### 代码文件: feapder\templates\project_template\main.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary: 爬虫入口
+---------
+@author: {USER}
+"""
+
+from feapder import ArgumentParser
+
+from spiders import *
+
+def crawl_xxx():
+    """
+    AirSpider爬虫
+    """
+    spider = xxx.XXXSpider()
+    spider.start()
+
+def crawl_xxx():
+    """
+    Spider爬虫
+    """
+    spider = xxx.XXXSpider(redis_key="xxx:xxx")
+    spider.start()
+
+
+def crawl_xxx(args):
+    """
+    BatchSpider爬虫
+    """
+    spider = xxx_spider.XXXSpider(
+        task_table="",  # mysql中的任务表
+        batch_record_table="",  # mysql中的批次记录表
+        batch_name="xxx(周全)",  # 批次名字
+        batch_interval=7,  # 批次时间 天为单位 若为小时 可写 1 / 24
+        task_keys=["id", "xxx"],  # 需要获取任务表里的字段名，可添加多个
+        redis_key="xxx:xxxx",  # redis中存放request等信息的根key
+        task_state="state",  # mysql中任务状态字段
+    )
+
+    if args == 1:
+        spider.start_monitor_task()
+    elif args == 2:
+        spider.start()
+    elif args == 3:
+        spider.init_task()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="xxx爬虫")
+
+    parser.add_argument(
+        "--crawl_xxx", action="store_true", help="xxx爬虫", function=crawl_xxx
+    )
+    parser.add_argument(
+        "--crawl_xxx", action="store_true", help="xxx爬虫", function=crawl_xxx
+    )
+    parser.add_argument(
+        "--crawl_xxx",
+        type=int,
+        nargs=1,
+        help="xxx爬虫",
+        choices=[1, 2, 3],
+        function=crawl_xxx,
+    )
+
+    parser.start()
+
+    # main.py作为爬虫启动的统一入口，提供命令行的方式启动多个爬虫，若只有一个爬虫，可不编写main.py
+    # 将上面的xxx修改为自己实际的爬虫名
+    # 查看运行命令 python main.py --help
+    # AirSpider与Spider爬虫运行方式 python main.py --crawl_xxx
+    # BatchSpider运行方式
+    # 1. 下发任务：python main.py --crawl_xxx 1
+    # 2. 采集：python main.py --crawl_xxx 2
+    # 3. 重置任务：python main.py --crawl_xxx 3
+
+
+```
+
+### 代码文件: feapder\commands\create\create_cookies.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/4/25 10:22 上午
+---------
+@summary: 将浏览器的cookie转为request的cookie
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import json
+
+import pyperclip
+
+from feapder.utils.tools import get_cookies_from_str, print_pretty
+
+
+class CreateCookies:
+    def get_data(self):
+        """
+        @summary: 从剪切板中读取内容
+        ---------
+        ---------
+        @result:
+        """
+        input("请复制浏览器cookie (列表或字符串格式), 复制后按任意键读取剪切板内容\n")
+
+        text = pyperclip.paste()
+        print(text + "\n")
+
+        return text
+
+    def create(self):
+        data = self.get_data()
+        cookies = {}
+        try:
+            data_json = json.loads(data)
+
+            for data in data_json:
+                cookies[data.get("name")] = data.get("value")
+
+        except:
+            cookies = get_cookies_from_str(data)
+
+        print_pretty(cookies)
+
+```
+
+### 代码文件: feapder\core\parser_control.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2017-01-03 16:06
+---------
+@summary: parser 控制类
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import inspect
+import random
+import threading
+import time
+from collections.abc import Iterable
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.buffer.request_buffer import AirSpiderRequestBuffer
+from feapder.core.base_parser import BaseParser
+from feapder.db.memorydb import MemoryDB
+from feapder.network.item import Item
+from feapder.network.request import Request
+from feapder.utils import metrics
+from feapder.utils.log import log
+
+
+class ParserControl(threading.Thread):
+    DOWNLOAD_EXCEPTION = "download_exception"
+    DOWNLOAD_SUCCESS = "download_success"
+    DOWNLOAD_TOTAL = "download_total"
+    PAESERS_EXCEPTION = "parser_exception"
+
+    is_show_tip = False
+
+    # 实时统计已做任务数及失败任务数，若失败任务数/已做任务数>0.5 则报警
+    _success_task_count = 0
+    _failed_task_count = 0
+    _total_task_count = 0
+
+    _hook_parsers = set()
+
+    def __init__(self, collector, redis_key, request_buffer, item_buffer):
+        super(ParserControl, self).__init__()
+        self._parsers = []
+        self._collector = collector
+        self._redis_key = redis_key
+        self._request_buffer = request_buffer
+        self._item_buffer = item_buffer
+
+        self._thread_stop = False
+
+    def run(self):
+        self._thread_stop = False
+        while not self._thread_stop:
+            try:
+                request = self._collector.get_request()
+                if not request:
+                    if not self.is_show_tip:
+                        log.debug("等待任务...")
+                        self.is_show_tip = True
+                    continue
+
+                self.is_show_tip = False
+                self.deal_request(request)
+
+            except Exception as e:
+                log.exception(e)
+
+    def is_not_task(self):
+        return self.is_show_tip
+
+    @classmethod
+    def get_task_status_count(cls):
+        return cls._failed_task_count, cls._success_task_count, cls._total_task_count
+
+    def deal_request(self, request):
+        response = None
+        request_redis = request["request_redis"]
+        request = request["request_obj"]
+
+        del_request_redis_after_item_to_db = False
+        del_request_redis_after_request_to_db = False
+
+        for parser in self._parsers:
+            if parser.name == request.parser_name:
+                used_download_midware_enable = False
+                try:
+                    self.__class__._total_task_count += 1
+                    # 记录需下载的文档
+                    self.record_download_status(
+                        ParserControl.DOWNLOAD_TOTAL, parser.name
+                    )
+
+                    # 解析request
+                    if request.auto_request:
+                        request_temp = None
+                        response = None
+
+                        # 下载中间件
+                        if request.download_midware:
+                            if isinstance(request.download_midware, (list, tuple)):
+                                request_temp = request
+                                for download_midware in request.download_midware:
+                                    download_midware = (
+                                        download_midware
+                                        if callable(download_midware)
+                                        else tools.get_method(parser, download_midware)
+                                    )
+                                    request_temp = download_midware(request_temp)
+                            else:
+                                download_midware = (
+                                    request.download_midware
+                                    if callable(request.download_midware)
+                                    else tools.get_method(
+                                        parser, request.download_midware
+                                    )
+                                )
+                                request_temp = download_midware(request)
+                        elif request.download_midware != False:
+                            request_temp = parser.download_midware(request)
+
+                        # 请求
+                        if request_temp:
+                            if (
+                                isinstance(request_temp, (tuple, list))
+                                and len(request_temp) == 2
+                            ):
+                                request_temp, response = request_temp
+
+                            if not isinstance(request_temp, Request):
+                                raise Exception(
+                                    "download_midware need return a request, but received type: {}".format(
+                                        type(request_temp)
+                                    )
+                                )
+                            used_download_midware_enable = True
+                            if response is None:
+                                response = (
+                                    request_temp.get_response()
+                                    if not setting.RESPONSE_CACHED_USED
+                                    else request_temp.get_response_from_cached(
+                                        save_cached=False
+                                    )
+                                )
+                        else:
+                            response = (
+                                request.get_response()
+                                if not setting.RESPONSE_CACHED_USED
+                                else request.get_response_from_cached(save_cached=False)
+                            )
+
+                        if response == None:
+                            raise Exception(
+                                "连接超时 url: %s" % (request.url or request_temp.url)
+                            )
+
+                        # 校验
+                        if parser.validate(request, response) == False:
+                            break
+
+                    else:
+                        response = None
+
+                    if request.callback:  # 如果有parser的回调函数，则用回调处理
+                        callback_parser = (
+                            request.callback
+                            if callable(request.callback)
+                            else tools.get_method(parser, request.callback)
+                        )
+                        results = callback_parser(request, response)
+                    else:  # 否则默认用parser处理
+                        results = parser.parse(request, response)
+
+                    if results and not isinstance(results, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, request.callback or "parse")
+                        )
+
+                    # 标识上一个result是什么
+                    result_type = 0  # 0\1\2 (初始值\request\item)
+                    # 此处判断是request 还是 item
+                    for result in results or []:
+                        if isinstance(result, Request):
+                            result_type = 1
+                            # 给request的 parser_name 赋值
+                            result.parser_name = result.parser_name or parser.name
+
+                            # 判断是同步的callback还是异步的
+                            if result.request_sync:  # 同步
+                                request_dict = {
+                                    "request_obj": result,
+                                    "request_redis": None,
+                                }
+                                self.deal_request(request_dict)
+                            else:  # 异步
+                                # 将next_request 入库
+                                self._request_buffer.put_request(result)
+                                del_request_redis_after_request_to_db = True
+
+                        elif isinstance(result, Item):
+                            result_type = 2
+                            # 将item入库
+                            self._item_buffer.put_item(result)
+                            # 需删除正在做的request
+                            del_request_redis_after_item_to_db = True
+
+                        elif callable(result):  # result为可执行的无参函数
+                            if result_type == 2:  # item 的 callback，buffer里的item均入库后再执行
+                                self._item_buffer.put_item(result)
+                                del_request_redis_after_item_to_db = True
+
+                            else:  # result_type == 1: # request 的 callback，buffer里的request均入库后再执行。可能有的parser直接返回callback
+                                self._request_buffer.put_request(result)
+                                del_request_redis_after_request_to_db = True
+
+                        elif result is not None:
+                            function_name = "{}.{}".format(
+                                parser.name,
+                                (
+                                    request.callback
+                                    and callable(request.callback)
+                                    and getattr(request.callback, "__name__")
+                                    or request.callback
+                                )
+                                or "parse",
+                            )
+                            raise TypeError(
+                                f"{function_name} result expect Request、Item or callback, bug get type: {type(result)}"
+                            )
+
+                except Exception as e:
+                    exception_type = (
+                        str(type(e)).replace("<class '", "").replace("'>", "")
+                    )
+                    if exception_type.startswith("requests"):
+                        # 记录下载失败的文档
+                        self.record_download_status(
+                            ParserControl.DOWNLOAD_EXCEPTION, parser.name
+                        )
+                        if request.retry_times % setting.PROXY_MAX_FAILED_TIMES == 0:
+                            request.del_proxy()
+
+                    else:
+                        # 记录解析程序异常
+                        self.record_download_status(
+                            ParserControl.PAESERS_EXCEPTION, parser.name
+                        )
+
+                    if setting.LOG_LEVEL == "DEBUG":  # 只有debug模式下打印， 超时的异常篇幅太多
+                        log.exception(e)
+
+                    log.error(
+                        """
+                        -------------- %s.%s error -------------
+                        error          %s
+                        response       %s
+                        deal request   %s
+                        """
+                        % (
+                            parser.name,
+                            (
+                                request.callback
+                                and callable(request.callback)
+                                and getattr(request.callback, "__name__")
+                                or request.callback
+                            )
+                            or "parse",
+                            str(e),
+                            response,
+                            tools.dumps_json(request.to_dict, indent=28)
+                            if setting.LOG_LEVEL == "DEBUG"
+                            else request,
+                        )
+                    )
+
+                    request.error_msg = "%s: %s" % (exception_type, e)
+                    request.response = str(response)
+
+                    if "Invalid URL" in str(e):
+                        request.is_abandoned = True
+
+                    requests = parser.exception_request(request, response, e) or [
+                        request
+                    ]
+                    if not isinstance(requests, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, "exception_request")
+                        )
+                    for request in requests:
+                        if callable(request):
+                            self._request_buffer.put_request(request)
+                            continue
+
+                        if not isinstance(request, Request):
+                            raise Exception("exception_request 需 yield request")
+
+                        if (
+                            request.retry_times + 1 > setting.SPIDER_MAX_RETRY_TIMES
+                            or request.is_abandoned
+                        ):
+                            self.__class__._failed_task_count += 1  # 记录失败任务数
+
+                            # 处理failed_request的返回值 request 或 func
+                            results = parser.failed_request(request, response, e) or [
+                                request
+                            ]
+                            if not isinstance(results, Iterable):
+                                raise Exception(
+                                    "%s.%s返回值必须可迭代" % (parser.name, "failed_request")
+                                )
+
+                            for result in results:
+                                if isinstance(result, Request):
+                                    if setting.SAVE_FAILED_REQUEST:
+                                        if used_download_midware_enable:
+                                            # 去掉download_midware 添加的属性
+                                            original_request = (
+                                                Request.from_dict(eval(request_redis))
+                                                if request_redis
+                                                else result
+                                            )
+                                            original_request.error_msg = (
+                                                request.error_msg
+                                            )
+                                            original_request.response = request.response
+
+                                            self._request_buffer.put_failed_request(
+                                                original_request
+                                            )
+                                        else:
+                                            self._request_buffer.put_failed_request(
+                                                result
+                                            )
+
+                                elif callable(result):
+                                    self._request_buffer.put_request(result)
+
+                                elif isinstance(result, Item):
+                                    self._item_buffer.put_item(result)
+
+                            del_request_redis_after_request_to_db = True
+
+                        else:
+                            # 将 requests 重新入库 爬取
+                            request.retry_times += 1
+                            request.filter_repeat = False
+                            log.info(
+                                """
+                                入库 等待重试
+                                url     %s
+                                重试次数 %s
+                                最大允许重试次数 %s"""
+                                % (
+                                    request.url,
+                                    request.retry_times,
+                                    setting.SPIDER_MAX_RETRY_TIMES,
+                                )
+                            )
+                            if used_download_midware_enable:
+                                # 去掉download_midware 添加的属性 使用原来的requests
+                                original_request = (
+                                    Request.from_dict(eval(request_redis))
+                                    if request_redis
+                                    else request
+                                )
+                                if hasattr(request, "error_msg"):
+                                    original_request.error_msg = request.error_msg
+                                if hasattr(request, "response"):
+                                    original_request.response = request.response
+                                original_request.retry_times = request.retry_times
+                                original_request.filter_repeat = request.filter_repeat
+
+                                self._request_buffer.put_request(original_request)
+                            else:
+                                self._request_buffer.put_request(request)
+                            del_request_redis_after_request_to_db = True
+
+                else:
+                    # 记录下载成功的文档
+                    self.record_download_status(
+                        ParserControl.DOWNLOAD_SUCCESS, parser.name
+                    )
+                    # 记录成功任务数
+                    self.__class__._success_task_count += 1
+
+                    # 缓存下载成功的文档
+                    if setting.RESPONSE_CACHED_ENABLE:
+                        request.save_cached(
+                            response=response,
+                            expire_time=setting.RESPONSE_CACHED_EXPIRE_TIME,
+                        )
+
+                finally:
+                    # 释放浏览器
+                    if response and getattr(response, "browser", None):
+                        request.render_downloader.put_back(response.browser)
+
+                break
+
+        # 删除正在做的request 跟随item优先
+        if request_redis:
+            if del_request_redis_after_item_to_db:
+                self._item_buffer.put_item(request_redis)
+
+            elif del_request_redis_after_request_to_db:
+                self._request_buffer.put_del_request(request_redis)
+
+            else:
+                self._request_buffer.put_del_request(request_redis)
+
+        if setting.SPIDER_SLEEP_TIME:
+            if (
+                isinstance(setting.SPIDER_SLEEP_TIME, (tuple, list))
+                and len(setting.SPIDER_SLEEP_TIME) == 2
+            ):
+                sleep_time = random.randint(
+                    int(setting.SPIDER_SLEEP_TIME[0]), int(setting.SPIDER_SLEEP_TIME[1])
+                )
+                time.sleep(sleep_time)
+            else:
+                time.sleep(setting.SPIDER_SLEEP_TIME)
+
+    def record_download_status(self, status, spider):
+        """
+        记录html等文档下载状态
+        @return:
+        """
+
+        metrics.emit_counter(f"{spider}:{status}", 1, classify="document")
+
+    def stop(self):
+        self._thread_stop = True
+        self._started.clear()
+
+    def add_parser(self, parser: BaseParser):
+        # 动态增加parser.exception_request和parser.failed_request的参数, 兼容旧版本
+        if parser not in self.__class__._hook_parsers:
+            self.__class__._hook_parsers.add(parser)
+            if len(inspect.getfullargspec(parser.exception_request).args) == 3:
+                _exception_request = parser.exception_request
+                parser.exception_request = (
+                    lambda request, response, e: _exception_request(request, response)
+                )
+
+            if len(inspect.getfullargspec(parser.failed_request).args) == 3:
+                _failed_request = parser.failed_request
+                parser.failed_request = lambda request, response, e: _failed_request(
+                    request, response
+                )
+
+        self._parsers.append(parser)
+
+
+class AirSpiderParserControl(ParserControl):
+    is_show_tip = False
+
+    # 实时统计已做任务数及失败任务数，若失败任务数/已做任务数>0.5 则报警
+    _success_task_count = 0
+    _failed_task_count = 0
+
+    def __init__(
+        self,
+        *,
+        memory_db: MemoryDB,
+        request_buffer: AirSpiderRequestBuffer,
+        item_buffer: ItemBuffer,
+    ):
+        super(ParserControl, self).__init__()
+        self._parsers = []
+        self._memory_db = memory_db
+        self._thread_stop = False
+        self._request_buffer = request_buffer
+        self._item_buffer = item_buffer
+
+    def run(self):
+        while not self._thread_stop:
+            try:
+                request = self._memory_db.get()
+                if not request:
+                    if not self.is_show_tip:
+                        log.debug("等待任务...")
+                        self.is_show_tip = True
+                    continue
+
+                self.is_show_tip = False
+                self.deal_request(request)
+
+            except Exception as e:
+                log.exception(e)
+
+    def deal_request(self, request):
+        response = None
+
+        for parser in self._parsers:
+            if parser.name == request.parser_name:
+                try:
+                    self.__class__._total_task_count += 1
+                    # 记录需下载的文档
+                    self.record_download_status(
+                        ParserControl.DOWNLOAD_TOTAL, parser.name
+                    )
+
+                    # 解析request
+                    if request.auto_request:
+                        request_temp = None
+                        response = None
+
+                        # 下载中间件
+                        if request.download_midware:
+                            if isinstance(request.download_midware, (list, tuple)):
+                                request_temp = request
+                                for download_midware in request.download_midware:
+                                    download_midware = (
+                                        download_midware
+                                        if callable(download_midware)
+                                        else tools.get_method(parser, download_midware)
+                                    )
+                                    request_temp = download_midware(request_temp)
+                            else:
+                                download_midware = (
+                                    request.download_midware
+                                    if callable(request.download_midware)
+                                    else tools.get_method(
+                                        parser, request.download_midware
+                                    )
+                                )
+                                request_temp = download_midware(request)
+                        elif request.download_midware != False:
+                            request_temp = parser.download_midware(request)
+
+                        # 请求
+                        if request_temp:
+                            if (
+                                isinstance(request_temp, (tuple, list))
+                                and len(request_temp) == 2
+                            ):
+                                request_temp, response = request_temp
+
+                            if not isinstance(request_temp, Request):
+                                raise Exception(
+                                    "download_midware need return a request, but received type: {}".format(
+                                        type(request_temp)
+                                    )
+                                )
+                            request = request_temp
+
+                        if response is None:
+                            response = (
+                                request.get_response()
+                                if not setting.RESPONSE_CACHED_USED
+                                else request.get_response_from_cached(save_cached=False)
+                            )
+
+                        # 校验
+                        if parser.validate(request, response) == False:
+                            break
+
+                    else:
+                        response = None
+
+                    if request.callback:  # 如果有parser的回调函数，则用回调处理
+                        callback_parser = (
+                            request.callback
+                            if callable(request.callback)
+                            else tools.get_method(parser, request.callback)
+                        )
+                        results = callback_parser(request, response)
+                    else:  # 否则默认用parser处理
+                        results = parser.parse(request, response)
+
+                    if results and not isinstance(results, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, request.callback or "parse")
+                        )
+
+                    # 此处判断是request 还是 item
+                    for result in results or []:
+                        if isinstance(result, Request):
+                            # 给request的 parser_name 赋值
+                            result.parser_name = result.parser_name or parser.name
+
+                            # 判断是同步的callback还是异步的
+                            if result.request_sync:  # 同步
+                                self.deal_request(result)
+                            else:  # 异步
+                                # 将next_request 入库
+                                self._request_buffer.put_request(result)
+
+                        elif isinstance(result, Item):
+                            self._item_buffer.put_item(result)
+                        elif result is not None:
+                            function_name = "{}.{}".format(
+                                parser.name,
+                                (
+                                    request.callback
+                                    and callable(request.callback)
+                                    and getattr(request.callback, "__name__")
+                                    or request.callback
+                                )
+                                or "parse",
+                            )
+                            raise TypeError(
+                                f"{function_name} result expect Request or Item, bug get type: {type(result)}"
+                            )
+
+                except Exception as e:
+                    exception_type = (
+                        str(type(e)).replace("<class '", "").replace("'>", "")
+                    )
+                    if exception_type.startswith("requests"):
+                        # 记录下载失败的文档
+                        self.record_download_status(
+                            ParserControl.DOWNLOAD_EXCEPTION, parser.name
+                        )
+                        if request.retry_times % setting.PROXY_MAX_FAILED_TIMES == 0:
+                            request.del_proxy()
+
+                    else:
+                        # 记录解析程序异常
+                        self.record_download_status(
+                            ParserControl.PAESERS_EXCEPTION, parser.name
+                        )
+
+                    if setting.LOG_LEVEL == "DEBUG":  # 只有debug模式下打印， 超时的异常篇幅太多
+                        log.exception(e)
+
+                    log.error(
+                        """
+                            -------------- %s.%s error -------------
+                            error          %s
+                            response       %s
+                            deal request   %s
+                            """
+                        % (
+                            parser.name,
+                            (
+                                request.callback
+                                and callable(request.callback)
+                                and getattr(request.callback, "__name__")
+                                or request.callback
+                            )
+                            or "parse",
+                            str(e),
+                            response,
+                            tools.dumps_json(request.to_dict, indent=28)
+                            if setting.LOG_LEVEL == "DEBUG"
+                            else request,
+                        )
+                    )
+
+                    request.error_msg = "%s: %s" % (exception_type, e)
+                    request.response = str(response)
+
+                    if "Invalid URL" in str(e):
+                        request.is_abandoned = True
+
+                    requests = parser.exception_request(request, response, e) or [
+                        request
+                    ]
+                    if not isinstance(requests, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, "exception_request")
+                        )
+                    for request in requests:
+                        if not isinstance(request, Request):
+                            raise Exception("exception_request 需 yield request")
+
+                        if (
+                            request.retry_times + 1 > setting.SPIDER_MAX_RETRY_TIMES
+                            or request.is_abandoned
+                        ):
+                            self.__class__._failed_task_count += 1  # 记录失败任务数
+
+                            # 处理failed_request的返回值 request 或 func
+                            results = parser.failed_request(request, response, e) or [
+                                request
+                            ]
+                            if not isinstance(results, Iterable):
+                                raise Exception(
+                                    "%s.%s返回值必须可迭代" % (parser.name, "failed_request")
+                                )
+
+                            log.info(
+                                """
+                                任务超过最大重试次数，丢弃
+                                url     %s
+                                重试次数 %s
+                                最大允许重试次数 %s"""
+                                % (
+                                    request.url,
+                                    request.retry_times,
+                                    setting.SPIDER_MAX_RETRY_TIMES,
+                                )
+                            )
+
+                        else:
+                            # 将 requests 重新入库 爬取
+                            request.retry_times += 1
+                            request.filter_repeat = False
+                            log.info(
+                                """
+                                    入库 等待重试
+                                    url     %s
+                                    重试次数 %s
+                                    最大允许重试次数 %s"""
+                                % (
+                                    request.url,
+                                    request.retry_times,
+                                    setting.SPIDER_MAX_RETRY_TIMES,
+                                )
+                            )
+                            self._request_buffer.put_request(request)
+
+                else:
+                    # 记录下载成功的文档
+                    self.record_download_status(
+                        ParserControl.DOWNLOAD_SUCCESS, parser.name
+                    )
+                    # 记录成功任务数
+                    self.__class__._success_task_count += 1
+
+                    # 缓存下载成功的文档
+                    if setting.RESPONSE_CACHED_ENABLE:
+                        request.save_cached(
+                            response=response,
+                            expire_time=setting.RESPONSE_CACHED_EXPIRE_TIME,
+                        )
+
+                finally:
+                    # 释放浏览器
+                    if response and getattr(response, "browser", None):
+                        request.render_downloader.put_back(response.browser)
+
+                break
+
+        if setting.SPIDER_SLEEP_TIME:
+            if (
+                isinstance(setting.SPIDER_SLEEP_TIME, (tuple, list))
+                and len(setting.SPIDER_SLEEP_TIME) == 2
+            ):
+                sleep_time = random.randint(
+                    int(setting.SPIDER_SLEEP_TIME[0]), int(setting.SPIDER_SLEEP_TIME[1])
+                )
+                time.sleep(sleep_time)
+            else:
+                time.sleep(setting.SPIDER_SLEEP_TIME)
+
+```
+
+### 代码文件: feapder\templates\air_spider_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+import feapder
+
+
+class ${spider_name}(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://spidertools.cn")
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+
+if __name__ == "__main__":
+    ${spider_name}().start()
+```
+
+### 代码文件: feapder\dedup\basefilter.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/21 11:17 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import abc
+from typing import List, Union
+
+
+class BaseFilter:
+    @abc.abstractmethod
+    def add(
+        self, keys: Union[List[str], str], *args, **kwargs
+    ) -> Union[List[bool], bool]:
+        """
+
+        Args:
+            keys: list / 单个值
+            *args:
+            **kwargs:
+
+        Returns:
+            list / 单个值 (如果数据已存在 返回 0 否则返回 1, 可以理解为是否添加成功)
+        """
+        pass
+
+    @abc.abstractmethod
+    def get(self, keys: Union[List[str], str]) -> Union[List[bool], bool]:
+        """
+        检查数据是否存在
+        Args:
+            keys: list / 单个值
+
+        Returns:
+            list / 单个值 (如果数据已存在 返回 1 否则返回 0)
+        """
+        pass
+
+```
+
+### 代码文件: feapder\core\__init__.py
+```python
+# -*- coding: utf-8 -*-
+'''
+Created on 2020/4/23 12:09 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+'''
+```
+
+### 代码文件: feapder\utils\webdriver\webdriver_pool.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/3/18 4:59 下午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import queue
+import threading
+
+from feapder.utils.log import log
+from feapder.utils.tools import Singleton
+from feapder.utils.webdriver.selenium_driver import SeleniumDriver
+
+
+@Singleton
+class WebDriverPool:
+    def __init__(
+        self, pool_size=5, driver_cls=SeleniumDriver, thread_safe=False, **kwargs
+    ):
+        """
+
+        Args:
+            pool_size: driver池的大小
+            driver: 驱动类型
+            thread_safe: 是否线程安全
+                是则每个线程拥有一个driver，pool_size无效，driver数量为线程数
+                否则每个线程从池中获取driver
+            **kwargs:
+        """
+        self.pool_size = pool_size
+        self.driver_cls = driver_cls
+        self.thread_safe = thread_safe
+        self.kwargs = kwargs
+
+        self.queue = queue.Queue(maxsize=pool_size)
+        self.lock = threading.RLock()
+        self.driver_count = 0
+        self.ctx = threading.local()
+
+    @property
+    def driver(self):
+        if not hasattr(self.ctx, "driver"):
+            self.ctx.driver = None
+        return self.ctx.driver
+
+    @driver.setter
+    def driver(self, driver):
+        self.ctx.driver = driver
+
+    @property
+    def is_full(self):
+        return self.driver_count >= self.pool_size
+
+    def create_driver(self, user_agent: str = None, proxy: str = None):
+        kwargs = self.kwargs.copy()
+        if user_agent:
+            kwargs["user_agent"] = user_agent
+        if proxy:
+            kwargs["proxy"] = proxy
+        return self.driver_cls(**kwargs)
+
+    def get(self, user_agent: str = None, proxy: str = None):
+        """
+        获取webdriver
+        当webdriver为新实例时会使用 user_agen, proxy, cookie参数来创建
+        Args:
+            user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+            proxy: xxx.xxx.xxx.xxx
+        Returns:
+
+        """
+        if not self.is_full and not self.thread_safe:
+            with self.lock:
+                if not self.is_full:
+                    driver = self.create_driver(user_agent, proxy)
+                    self.queue.put(driver)
+                    self.driver_count += 1
+        elif self.thread_safe:
+            if not self.driver:
+                driver = self.create_driver(user_agent, proxy)
+                self.driver = driver
+                self.driver_count += 1
+
+        if self.thread_safe:
+            driver = self.driver
+        else:
+            driver = self.queue.get()
+
+        return driver
+
+    def put(self, driver):
+        if not self.thread_safe:
+            self.queue.put(driver)
+
+    def remove(self, driver):
+        if self.thread_safe:
+            if self.driver:
+                self.driver.quit()
+                self.driver = None
+        else:
+            driver.quit()
+        self.driver_count -= 1
+
+    def close(self):
+        if self.thread_safe:
+            log.info("暂不支持关闭需线程安全的driver")
+
+        while not self.queue.empty():
+            driver = self.queue.get()
+            driver.quit()
+            self.driver_count -= 1
+
+```
+
+### 代码文件: feapder\commands\create\__init__.py
+```python
+__all__ = [
+    "CreateProject",
+    "CreateSpider",
+    "CreateItem",
+    "CreateInit",
+    "CreateJson",
+    "CreateTable",
+    "CreateCookies",
+    "CreateSetting",
+    "CreateParams",
+]
+
+from .create_table import CreateTable
+from .create_json import CreateJson
+from .create_spider import CreateSpider
+from .create_init import CreateInit
+from .create_item import CreateItem
+from .create_project import CreateProject
+from .create_cookies import CreateCookies
+from .create_setting import CreateSetting
+from .create_params import CreateParams
+
+```
+
+### 代码文件: feapder\buffer\request_buffer.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-06-19 17:17
+---------
+@summary: request 管理器， 负责缓冲添加到数据库中的request
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import collections
+import threading
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.db.memorydb import MemoryDB
+from feapder.db.redisdb import RedisDB
+from feapder.dedup import Dedup
+from feapder.utils.log import log
+
+MAX_URL_COUNT = 1000  # 缓存中最大request数
+
+
+class AirSpiderRequestBuffer:
+    dedup = None
+
+    def __init__(self, db=None, dedup_name: str = None):
+        self._db = db or MemoryDB()
+
+        if not self.__class__.dedup and setting.REQUEST_FILTER_ENABLE:
+            if setting.REQUEST_FILTER_SETTING.get(
+                "filter_type"
+            ) == Dedup.BloomFilter or setting.REQUEST_FILTER_SETTING.get("name"):
+                self.__class__.dedup = Dedup(
+                    to_md5=False, **setting.REQUEST_FILTER_SETTING
+                )
+            else:
+                self.__class__.dedup = Dedup(
+                    to_md5=False, name=dedup_name, **setting.REQUEST_FILTER_SETTING
+                )
+
+    def is_exist_request(self, request):
+        if (
+            request.filter_repeat
+            and setting.REQUEST_FILTER_ENABLE
+            and not self.__class__.dedup.add(request.fingerprint)
+        ):
+            log.debug("request已存在  url = %s" % request.url)
+            return True
+        return False
+
+    def put_request(self, request, ignore_max_size=True):
+        if self.is_exist_request(request):
+            return
+        else:
+            self._db.add(request, ignore_max_size=ignore_max_size)
+
+
+class RequestBuffer(AirSpiderRequestBuffer, threading.Thread):
+    def __init__(self, redis_key):
+        AirSpiderRequestBuffer.__init__(self, db=RedisDB(), dedup_name=redis_key)
+        threading.Thread.__init__(self)
+
+        self._thread_stop = False
+        self._is_adding_to_db = False
+
+        self._requests_deque = collections.deque()
+        self._del_requests_deque = collections.deque()
+
+        self._table_request = setting.TAB_REQUESTS.format(redis_key=redis_key)
+        self._table_failed_request = setting.TAB_FAILED_REQUESTS.format(
+            redis_key=redis_key
+        )
+
+    def run(self):
+        self._thread_stop = False
+        while not self._thread_stop:
+            try:
+                self.__add_request_to_db()
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)
+
+    def stop(self):
+        self._thread_stop = True
+        self._started.clear()
+
+    def put_request(self, request):
+        self._requests_deque.append(request)
+
+        if self.get_requests_count() > MAX_URL_COUNT:  # 超过最大缓存，主动调用
+            self.flush()
+
+    def put_del_request(self, request):
+        self._del_requests_deque.append(request)
+
+    def put_failed_request(self, request, table=None):
+        try:
+            request_dict = request.to_dict
+            self._db.zadd(
+                table or self._table_failed_request, request_dict, request.priority
+            )
+        except Exception as e:
+            log.exception(e)
+
+    def flush(self):
+        try:
+            self.__add_request_to_db()
+        except Exception as e:
+            log.exception(e)
+
+    def get_requests_count(self):
+        return len(self._requests_deque)
+
+    def is_adding_to_db(self):
+        return self._is_adding_to_db
+
+    def __add_request_to_db(self):
+        request_list = []
+        prioritys = []
+        callbacks = []
+
+        while self._requests_deque:
+            request = self._requests_deque.popleft()
+            self._is_adding_to_db = True
+
+            if callable(request):
+                # 函数
+                # 注意：应该考虑闭包情况。闭包情况可写成
+                # def test(xxx = xxx):
+                #     # TODO 业务逻辑 使用 xxx
+                # 这么写不会导致xxx为循环结束后的最后一个值
+                callbacks.append(request)
+                continue
+
+            priority = request.priority
+
+            # 如果需要去重并且库中已重复 则continue
+            if self.is_exist_request(request):
+                continue
+            else:
+                request_list.append(str(request.to_dict))
+                prioritys.append(priority)
+
+            if len(request_list) > MAX_URL_COUNT:
+                self._db.zadd(self._table_request, request_list, prioritys)
+                request_list = []
+                prioritys = []
+
+        # 入库
+        if request_list:
+            self._db.zadd(self._table_request, request_list, prioritys)
+
+        # 执行回调
+        for callback in callbacks:
+            try:
+                callback()
+            except Exception as e:
+                log.exception(e)
+
+        # 删除已做任务
+        if self._del_requests_deque:
+            request_done_list = []
+            while self._del_requests_deque:
+                request_done_list.append(self._del_requests_deque.popleft())
+
+            # 去掉request_list中的requests， 否则可能会将刚添加的request删除
+            request_done_list = list(set(request_done_list) - set(request_list))
+
+            if request_done_list:
+                self._db.zrem(self._table_request, request_done_list)
+
+        self._is_adding_to_db = False
+
+```
+
+### 代码文件: feapder\commands\create\create_project.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 创建项目
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import getpass
+import os
+import shutil
+
+import feapder.utils.tools as tools
+
+
+def deal_file_info(file):
+    file = file.replace("{DATE}", tools.get_current_date())
+    file = file.replace("{USER}", os.getenv("FEAPDER_USER") or getpass.getuser())
+
+    return file
+
+
+class CreateProject:
+    def copy_callback(self, src, dst, *, follow_symlinks=True):
+        if src.endswith(".py"):
+            with open(src, "r", encoding="utf-8") as src_file, open(
+                dst, "w", encoding="utf8"
+            ) as dst_file:
+                content = src_file.read()
+                content = deal_file_info(content)
+                dst_file.write(content)
+
+        else:
+            shutil.copy2(src, dst, follow_symlinks=follow_symlinks)
+
+    def create(self, project_name):
+        if os.path.exists(project_name):
+            print("%s 项目已经存在" % project_name)
+        else:
+            template_path = os.path.abspath(
+                os.path.join(__file__, "../../../templates/project_template")
+            )
+            shutil.copytree(
+                template_path, project_name, copy_function=self.copy_callback
+            )
+
+            print("\n%s 项目生成成功" % project_name)
+
+
+
+
+```
+
+### 代码文件: feapder\core\collector.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2016-12-23 11:24
+---------
+@summary: request 管理
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import threading
+import time
+from queue import Queue, Empty
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.db.redisdb import RedisDB
+from feapder.network.request import Request
+from feapder.utils.log import log
+
+
+class Collector(threading.Thread):
+    def __init__(self, redis_key):
+        """
+        @summary:
+        ---------
+        @param redis_key:
+        ---------
+        @result:
+        """
+
+        super(Collector, self).__init__()
+        self._db = RedisDB()
+
+        self._thread_stop = False
+
+        self._todo_requests = Queue(maxsize=setting.COLLECTOR_TASK_COUNT)
+        self._tab_requests = setting.TAB_REQUESTS.format(redis_key=redis_key)
+        self._is_collector_task = False
+
+    def run(self):
+        self._thread_stop = False
+        while not self._thread_stop:
+            try:
+                self.__input_data()
+            except Exception as e:
+                log.exception(e)
+                time.sleep(0.1)
+
+            self._is_collector_task = False
+
+    def stop(self):
+        self._thread_stop = True
+        self._started.clear()
+
+    def __input_data(self):
+        if setting.COLLECTOR_TASK_COUNT / setting.SPIDER_THREAD_COUNT > 1 and (
+            self._todo_requests.qsize() > setting.SPIDER_THREAD_COUNT
+            or self._todo_requests.qsize() >= self._todo_requests.maxsize
+        ):
+            time.sleep(0.1)
+            return
+
+        current_timestamp = tools.get_current_timestamp()
+
+        # 取任务，只取当前时间搓以内的任务，同时将任务分数修改为 current_timestamp + setting.REQUEST_LOST_TIMEOUT
+        requests_list = self._db.zrangebyscore_set_score(
+            self._tab_requests,
+            priority_min="-inf",
+            priority_max=current_timestamp,
+            score=current_timestamp + setting.REQUEST_LOST_TIMEOUT,
+            count=setting.COLLECTOR_TASK_COUNT,
+        )
+
+        if requests_list:
+            self._is_collector_task = True
+            # 存request
+            self.__put_requests(requests_list)
+        else:
+            time.sleep(0.1)
+
+    def __put_requests(self, requests_list):
+        for request in requests_list:
+            try:
+                request_dict = {
+                    "request_obj": Request.from_dict(eval(request)),
+                    "request_redis": request,
+                }
+            except Exception as e:
+                log.exception(
+                    """
+                error %s
+                request %s
+                """
+                    % (e, request)
+                )
+
+                request_dict = None
+
+            if request_dict:
+                self._todo_requests.put(request_dict)
+
+    def get_request(self):
+        try:
+            request = self._todo_requests.get(timeout=1)
+            return request
+        except Empty as e:
+            return None
+
+    def get_requests_count(self):
+        return (
+            self._todo_requests.qsize() or self._db.zget_count(self._tab_requests) or 0
+        )
+
+    def is_collector_task(self):
+        return self._is_collector_task
+
+```
+
+### 代码文件: feapder\db\mysqldb.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2016-11-16 16:25
+---------
+@summary: 操作mysql数据库
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import datetime
+import json
+from urllib import parse
+from typing import List, Dict
+
+import pymysql
+from dbutils.pooled_db import PooledDB
+from pymysql import cursors
+from pymysql import err
+
+import feapder.setting as setting
+from feapder.utils.log import log
+from feapder.utils.tools import make_insert_sql, make_batch_sql, make_update_sql
+
+
+def auto_retry(func):
+    def wapper(*args, **kwargs):
+        for i in range(3):
+            try:
+                return func(*args, **kwargs)
+            except (err.InterfaceError, err.OperationalError) as e:
+                log.error(
+                    """
+                    error:%s
+                    sql:  %s
+                    """
+                    % (e, kwargs.get("sql") or args[1])
+                )
+
+    return wapper
+
+
+class MysqlDB:
+    def __init__(
+        self, ip=None, port=None, db=None, user_name=None, user_pass=None, **kwargs
+    ):
+        # 可能会改setting中的值，所以此处不能直接赋值为默认值，需要后加载赋值
+        if not ip:
+            ip = setting.MYSQL_IP
+        if not port:
+            port = setting.MYSQL_PORT
+        if not db:
+            db = setting.MYSQL_DB
+        if not user_name:
+            user_name = setting.MYSQL_USER_NAME
+        if not user_pass:
+            user_pass = setting.MYSQL_USER_PASS
+
+        try:
+            self.connect_pool = PooledDB(
+                creator=pymysql,
+                mincached=1,
+                maxcached=100,
+                maxconnections=100,
+                blocking=True,
+                ping=7,
+                host=ip,
+                port=port,
+                user=user_name,
+                passwd=user_pass,
+                db=db,
+                charset="utf8mb4",
+                cursorclass=cursors.SSCursor,
+            )  # cursorclass 使用服务的游标，默认的在多线程下大批量插入数据会使内存递增
+
+        except Exception as e:
+            log.error(
+                """
+            连接失败：
+            ip: {}
+            port: {}
+            db: {}
+            user_name: {}
+            user_pass: {}
+            exception: {}
+            """.format(
+                    ip, port, db, user_name, user_pass, e
+                )
+            )
+        else:
+            log.debug("连接到mysql数据库 %s : %s" % (ip, db))
+
+    @classmethod
+    def from_url(cls, url, **kwargs):
+        """
+
+        Args:
+            url: mysql://username:password@ip:port/db?charset=utf8mb4
+            **kwargs:
+
+        Returns:
+
+        """
+        url_parsed = parse.urlparse(url)
+
+        db_type = url_parsed.scheme.strip()
+        if db_type != "mysql":
+            raise Exception(
+                "url error, expect mysql://username:ip:port/db?charset=utf8mb4, but get {}".format(
+                    url
+                )
+            )
+
+        connect_params = {
+            "ip": url_parsed.hostname.strip(),
+            "port": url_parsed.port,
+            "user_name": url_parsed.username.strip(),
+            "user_pass": url_parsed.password.strip(),
+            "db": url_parsed.path.strip("/").strip(),
+        }
+
+        connect_params.update(kwargs)
+
+        return cls(**connect_params)
+
+    @staticmethod
+    def unescape_string(value):
+        if not isinstance(value, str):
+            return value
+
+        value = value.replace("\\0", "\0")
+        value = value.replace("\\\\", "\\")
+        value = value.replace("\\n", "\n")
+        value = value.replace("\\r", "\r")
+        value = value.replace("\\Z", "\032")
+        value = value.replace('\\"', '"')
+        value = value.replace("\\'", "'")
+
+        return value
+
+    def get_connection(self):
+        conn = self.connect_pool.connection(shareable=False)
+        # cursor = conn.cursor(cursors.SSCursor)
+        cursor = conn.cursor()
+
+        return conn, cursor
+
+    def close_connection(self, conn, cursor):
+        if conn:
+            conn.close()
+        if cursor:
+            cursor.close()
+
+    def size_of_connections(self):
+        """
+        当前活跃的连接数
+        @return:
+        """
+        return self.connect_pool._connections
+
+    def size_of_connect_pool(self):
+        """
+        池子里一共有多少连接
+        @return:
+        """
+        return len(self.connect_pool._idle_cache)
+
+    @auto_retry
+    def find(self, sql, limit=0, to_json=False, conver_col=True):
+        """
+        @summary:
+        无数据： 返回()
+        有数据： 若limit == 1 则返回 (data1, data2)
+                否则返回 ((data1, data2),)
+        ---------
+        @param sql:
+        @param limit:
+        @param to_json 是否将查询结果转为json
+        @param conver_col 是否处理查询结果，如date类型转字符串，json字符串转成json。仅当to_json=True时生效
+        ---------
+        @result:
+        """
+        conn, cursor = self.get_connection()
+
+        cursor.execute(sql)
+
+        if limit == 1:
+            result = cursor.fetchone()  # 全部查出来，截取 不推荐使用
+        elif limit > 1:
+            result = cursor.fetchmany(limit)  # 全部查出来，截取 不推荐使用
+        else:
+            result = cursor.fetchall()
+
+        if to_json and result:
+            columns = [i[0] for i in cursor.description]
+
+            # 处理数据
+            def convert(col):
+                if isinstance(col, (datetime.date, datetime.time)):
+                    return str(col)
+                elif isinstance(col, str) and (
+                    col.startswith("{") or col.startswith("[")
+                ):
+                    try:
+                        # col = self.unescape_string(col)
+                        return json.loads(col)
+                    except:
+                        return col
+                else:
+                    # col = self.unescape_string(col)
+                    return col
+
+            if limit == 1:
+                if conver_col:
+                    result = [convert(col) for col in result]
+                result = dict(zip(columns, result))
+            else:
+                if conver_col:
+                    result = [[convert(col) for col in row] for row in result]
+                result = [dict(zip(columns, r)) for r in result]
+
+        self.close_connection(conn, cursor)
+
+        return result
+
+    def add(self, sql, exception_callfunc=None):
+        """
+
+        Args:
+            sql:
+            exception_callfunc: 异常回调
+
+        Returns: 添加行数
+
+        """
+        affect_count = None
+        conn, cursor = None, None
+
+        try:
+            conn, cursor = self.get_connection()
+            affect_count = cursor.execute(sql)
+            conn.commit()
+
+        except Exception as e:
+            log.error(
+                """
+                error:%s
+                sql:  %s
+            """
+                % (e, sql)
+            )
+            if exception_callfunc:
+                exception_callfunc(e)
+        finally:
+            self.close_connection(conn, cursor)
+
+        return affect_count
+
+    def add_smart(self, table, data: Dict, **kwargs):
+        """
+        添加数据, 直接传递json格式的数据，不用拼sql
+        Args:
+            table: 表名
+            data: 字典 {"xxx":"xxx"}
+            **kwargs:
+
+        Returns: 添加行数
+
+        """
+        sql = make_insert_sql(table, data, **kwargs)
+        return self.add(sql)
+
+    def add_batch(self, sql, datas: List[List]):
+        """
+        @summary: 批量添加数据
+        ---------
+        @ param sql: insert ignore into (xxx,xxx,xxx) values (%s, %s, %s)
+        @ param datas: 列表 [[v1,v2,v3], [v1,v2,v3]]
+                       列表里的值要和插入的key的顺序对应上
+        ---------
+        @result: 添加行数
+        """
+        affect_count = None
+        conn, cursor = None, None
+
+        try:
+            conn, cursor = self.get_connection()
+            affect_count = cursor.executemany(sql, datas)
+            conn.commit()
+
+        except Exception as e:
+            log.error(
+                """
+                error:%s
+                sql:  %s
+                """
+                % (e, sql)
+            )
+        finally:
+            self.close_connection(conn, cursor)
+
+        return affect_count
+
+    def add_batch_smart(self, table, datas: List[Dict], **kwargs) -> int:
+        """
+        批量添加数据, 直接传递list格式的数据，不用拼sql
+        Args:
+            table: 表名
+            datas: 列表 [{}, {}, {}]
+            **kwargs:
+
+        Returns: 添加行数
+
+        """
+        sql, datas = make_batch_sql(table, datas, **kwargs)
+        return self.add_batch(sql, datas)
+
+    def update(self, sql) -> int:
+        affect_count = None
+        conn, cursor = None, None
+
+        try:
+            conn, cursor = self.get_connection()
+            affect_count = cursor.execute(sql)
+            conn.commit()
+        except Exception as e:
+            log.error(
+                """
+                error:%s
+                sql:  %s
+            """
+                % (e, sql)
+            )
+        finally:
+            self.close_connection(conn, cursor)
+
+        return affect_count
+
+    def update_smart(self, table, data: Dict, condition) -> int:
+        """
+        更新, 不用拼sql
+        Args:
+            table: 表名
+            data: 数据 {"xxx":"xxx"}
+            condition: 更新条件 where后面的条件，如 condition='status=1'
+
+        Returns: 影响行数
+
+        """
+        sql = make_update_sql(table, data, condition)
+        return self.update(sql)
+
+    def delete(self, sql) -> int:
+        """
+        删除
+        Args:
+            sql:
+
+        Returns: 影响行数
+
+        """
+        affect_count = None
+        conn, cursor = None, None
+        try:
+            conn, cursor = self.get_connection()
+            affect_count = cursor.execute(sql)
+            conn.commit()
+        except Exception as e:
+            log.error(
+                """
+                error:%s
+                sql:  %s
+            """
+                % (e, sql)
+            )
+        finally:
+            self.close_connection(conn, cursor)
+
+        return affect_count
+
+    def execute(self, sql) -> int:
+        """
+
+        Args:
+            sql:
+
+        Returns: 影响行数
+        """
+        affect_count = None
+        conn, cursor = None, None
+        try:
+            conn, cursor = self.get_connection()
+            affect_count = cursor.execute(sql)
+            conn.commit()
+        except Exception as e:
+            log.error(
+                """
+                error:%s
+                sql:  %s
+            """
+                % (e, sql)
+            )
+        finally:
+            self.close_connection(conn, cursor)
+
+        return affect_count
+
+```
+
+### 代码文件: feapder\core\spiders\air_spider.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/22 12:05 AM
+---------
+@summary: 基于内存队列的爬虫，不支持分布式
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.buffer.request_buffer import AirSpiderRequestBuffer
+from feapder.core.base_parser import BaseParser
+from feapder.core.parser_control import AirSpiderParserControl
+from feapder.db.memorydb import MemoryDB
+from feapder.network.request import Request
+from feapder.utils import metrics
+from feapder.utils.log import log
+from feapder.utils.tail_thread import TailThread
+
+
+class AirSpider(BaseParser, TailThread):
+    __custom_setting__ = {}
+
+    def __init__(self, thread_count=None):
+        """
+        基于内存队列的爬虫，不支持分布式
+        :param thread_count: 线程数
+        """
+        super(AirSpider, self).__init__()
+
+        for key, value in self.__class__.__custom_setting__.items():
+            setattr(setting, key, value)
+
+        if thread_count:
+            setattr(setting, "SPIDER_THREAD_COUNT", thread_count)
+        self._thread_count = setting.SPIDER_THREAD_COUNT
+
+        self._memory_db = MemoryDB()
+        self._parser_controls = []
+        self._item_buffer = ItemBuffer(redis_key=self.name)
+        self._request_buffer = AirSpiderRequestBuffer(
+            db=self._memory_db, dedup_name=self.name
+        )
+
+        self._stop_spider = False
+        metrics.init(**setting.METRICS_OTHER_ARGS)
+
+    def distribute_task(self):
+        for request in self.start_requests():
+            if not isinstance(request, Request):
+                raise ValueError("仅支持 yield Request")
+
+            request.parser_name = request.parser_name or self.name
+            self._request_buffer.put_request(request, ignore_max_size=False)
+
+    def all_thread_is_done(self):
+        for i in range(3):  # 降低偶然性, 因为各个环节不是并发的，很有可能当时状态为假，但检测下一条时该状态为真。一次检测很有可能遇到这种偶然性
+            # 检测 parser_control 状态
+            for parser_control in self._parser_controls:
+                if not parser_control.is_not_task():
+                    return False
+
+            # 检测 任务队列 状态
+            if not self._memory_db.empty():
+                return False
+
+            # 检测 item_buffer 状态
+            if (
+                self._item_buffer.get_items_count() > 0
+                or self._item_buffer.is_adding_to_db()
+            ):
+                return False
+
+            tools.delay_time(1)
+
+        return True
+
+    def run(self):
+        self.start_callback()
+
+        for i in range(self._thread_count):
+            parser_control = AirSpiderParserControl(
+                memory_db=self._memory_db,
+                request_buffer=self._request_buffer,
+                item_buffer=self._item_buffer,
+            )
+            parser_control.add_parser(self)
+            parser_control.start()
+            self._parser_controls.append(parser_control)
+
+        self._item_buffer.start()
+
+        self.distribute_task()
+
+        while True:
+            try:
+                if self._stop_spider or self.all_thread_is_done():
+                    # 停止 parser_controls
+                    for parser_control in self._parser_controls:
+                        parser_control.stop()
+
+                    # 关闭item_buffer
+                    self._item_buffer.stop()
+
+                    # 关闭webdirver
+                    Request.render_downloader and Request.render_downloader.close_all()
+
+                    if self._stop_spider:
+                        log.info("爬虫被终止")
+                    else:
+                        log.info("无任务，爬虫结束")
+                    break
+
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+        self.end_callback()
+        # 为了线程可重复start
+        self._started.clear()
+        # 关闭打点
+        metrics.close()
+
+    def join(self, timeout=None):
+        """
+        重写线程的join
+        """
+        if not self._started.is_set():
+            return
+
+        super().join()
+
+    def stop_spider(self):
+        self._stop_spider = True
+
+```
+
+### 代码文件: feapder\VERSION
+```feapder\VERSION
+1.9.2
+```
+
+### 代码文件: feapder\pipelines\console_pipeline.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/3/18 12:39 上午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+from feapder.pipelines import BasePipeline
+from typing import Dict, List, Tuple
+from feapder.utils.log import log
+
+
+class ConsolePipeline(BasePipeline):
+    """
+    pipeline 是单线程的，批量保存数据的操作，不建议在这里写网络请求代码，如下载图片等
+    """
+
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+        log.info("【调试输出】共导出 %s 条数据 到 %s" % (len(items), table))
+        return True
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+        log.info("【调试输出】共导出 %s 条数据 到 %s" % (len(items), table))
+        return True
+
+```
+
+### 代码文件: feapder\pipelines\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/3/17 10:57 下午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import abc
+from typing import Dict, List, Tuple
+
+
+class BasePipeline(metaclass=abc.ABCMeta):
+    """
+    pipeline 是单线程的，批量保存数据的操作，不建议在这里写网络请求代码，如下载图片等
+    """
+
+    @abc.abstractmethod
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        return True
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据, 与UpdateItem配合使用，若爬虫中没使用UpdateItem，则可不实现此接口
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        return True
+
+    def close(self):
+        """
+        关闭，爬虫结束时调用
+        Returns:
+
+        """
+        pass
+
+```
+
+### 代码文件: feapder\network\downloader\_playwright.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/7 4:05 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, PlaywrightDriver
+
+
+class PlaywrightDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.PLAYWRIGHT, driver_cls=PlaywrightDriver, thread_safe=True
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.PLAYWRIGHT.get("proxy"):
+            proxy = setting.PLAYWRIGHT.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.PLAYWRIGHT.get("user_agent"):
+            user_agent = setting.PLAYWRIGHT.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.PLAYWRIGHT.get("render_time")
+        wait_until = setting.PLAYWRIGHT.get("wait_until") or "domcontentloaded"
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        driver: PlaywrightDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            if cookies:
+                driver.url = url
+                driver.cookies = cookies
+            http_response = driver.page.goto(url, wait_until=wait_until)
+            status_code = http_response.status
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = driver.page.content()
+            response = Response.from_dict(
+                {
+                    "url": driver.page.url,
+                    "cookies": driver.cookies,
+                    "_content": html.encode(),
+                    "status_code": status_code,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": driver.user_agent,
+                        "Cookie": tools.cookies2str(driver.cookies),
+                    },
+                }
+            )
+
+            response.driver = driver
+            response.browser = driver
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(driver)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        # 不支持
+        # self._webdriver_pool.close()
+        pass
+
+```
+
+### 代码文件: feapder\network\user_agent.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2016-12-28 17:55
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import random
+
+USER_AGENTS = {
+    "chrome": [
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2226.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2224.3 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36",
+        "Mozilla/5.0 (X11; OpenBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.3319.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2309.372 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1866.237 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.137 Safari/4E423F",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.517 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1664.3 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1664.3 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1623.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.17 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36",
+        "Mozilla/5.0 (X11; CrOS i686 4319.74.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.57 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1468.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1467.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1464.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1500.55 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.90 Safari/537.36",
+        "Mozilla/5.0 (X11; NetBSD) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36",
+        "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.60 Safari/537.17",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.15 (KHTML, like Gecko) Chrome/24.0.1295.0 Safari/537.15",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3215.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3790.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.92 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.63 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.24 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.136 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.0.3016 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36 Kinza/6.1.5",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.48 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.2.0.1713 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.47 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.2 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.819 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.41 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.785 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.9 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3235.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3409.85 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4371.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.9 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.43 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 CravingExplorer/2.4.1",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4121.813 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.107 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.9 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.158 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.58 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.140 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+        "Mozilla/5.0 (Microsoft Windows NT 10.0.16299.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 (FTM)",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4500.0 Iron Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4427.5 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3835.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/82.0.4085.4 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.91 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.4000.0 Iron Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.116 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2566 AOLBUILD/11.0.2566 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2510 AOLBUILD/11.0.2510 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36 AOLShield/83.0.4103.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 AOL/11.0 AOLBUILD/11.0.1839 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 ADG/11.0.2414 AOLBUILD/11.0.2414 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2566 AOLBUILD/11.0.2566 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36 AOLShield/83.0.4103.2",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.87 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.105 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.183 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/90.0.4430.72 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2510 AOLBUILD/11.0.2510 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2566 AOLBUILD/11.0.2566 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.97 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.105 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2510 AOLBUILD/11.0.2510 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.101 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 AOL/11.0 AOLBUILD/11.0.1839 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2470 AOLBUILD/11.0.2470 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 ADG/11.0.2566 AOLBUILD/11.0.2566 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 AOLShield/79.0.3945.5",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/79.0.3945.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.162 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.123 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4558.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4564.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3409.13 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.26 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4591.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.101.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.7113.93 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.49 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.1150.52 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4950.0 Iron Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4450.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 11.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4868.173 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1483.27 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.3478.83 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.115 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5118.205 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Agency/97.8.8247.48",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4137.1 SputnikBrowser/5.6.6280.0 (GOST) Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.43 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/82.0.4078.2 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.3538.77 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.5 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.6 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.1 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3409.631 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.3 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.2 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.8 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.5 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3409.1 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.44 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.779 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.19 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.6 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 FS",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\tChrome 79.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36\tChrome Generic",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.69 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.186 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4450.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_3_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/524.34",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.193 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.51 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.3538.77 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/77.0.3865.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/81.0.4044.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/83.0.4103.118 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/84.0.4147.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/84.0.4147.140 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/85.0.4183.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/87.0.4280.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/88.0.4324.175 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/89.0.4389.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/89.0.4389.127 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/79.0.3945.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/81.0.4044.113 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.135 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.70 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.162 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.67 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.162 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/83.0.4103.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/85.0.4183.83 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/90.0.4430.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/79.0.3945.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/79.0.3945.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/77.0.3865.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/81.0.4044.113 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.183 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.70 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.97 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/79.0.3945.130 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.108 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.149 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.149 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/81.0.4044.122 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.89 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.101 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/83.0.4103.97 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.105 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/78.0.3904.87 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/83.0.4103.106 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/84.0.4147.125 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/85.0.4183.121 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.183 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/83.0.4103.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.111 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.60 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.141 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/80.0.3987.116 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.183 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.67 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.192 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.67 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.101 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.152 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/87.0.4280.101 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.182 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/88.0.4324.96 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.72 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_3_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/537.36 (KHTML, like Gecko, Mediapartners-Google) Chrome/89.0.4389.130 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_3_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.69 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4582.189 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/82.0.4083.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4612.206 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4702.147 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4691.94 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4889.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.9999.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.40 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4880.146 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.147 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4886.93 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/89.0.4389.105 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4886.148 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5163.147 Safari/537.36"
+    ],
+    "opera": [
+        "Opera/9.80 (X11; Linux i686; Ubuntu/14.10) Presto/2.12.388 Version/12.16",
+        "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+        "Mozilla/5.0 (Windows NT 6.0; rv:2.0) Gecko/20100101 Firefox/4.0 Opera 12.14",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
+        "Opera/12.80 (Windows NT 5.1; U; en) Presto/2.10.289 Version/12.02",
+        "Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00",
+        "Opera/9.80 (Windows NT 5.1; U; zh-sg) Presto/2.9.181 Version/12.00",
+        "Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00",
+        "Opera/12.0(Windows NT 5.1;U;en)Presto/22.9.168 Version/12.00",
+        "Mozilla/5.0 (Windows NT 5.1) Gecko/20100101 Firefox/14.0 Opera/12.0",
+        "Opera/9.80 (Windows NT 6.1; WOW64; U; pt) Presto/2.10.229 Version/11.62",
+        "Opera/9.80 (Windows NT 6.0; U; pl) Presto/2.10.229 Version/11.62",
+        "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52",
+        "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; de) Presto/2.9.168 Version/11.52",
+        "Opera/9.80 (Windows NT 5.1; U; en) Presto/2.9.168 Version/11.51",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; de) Opera 11.51",
+        "Opera/9.80 (X11; Linux x86_64; U; fr) Presto/2.9.168 Version/11.50",
+        "Opera/9.80 (X11; Linux i686; U; hu) Presto/2.9.168 Version/11.50",
+        "Opera/9.80 (X11; Linux i686; U; ru) Presto/2.8.131 Version/11.11",
+        "Opera/9.80 (X11; Linux i686; U; es-ES) Presto/2.8.131 Version/11.11",
+        "Mozilla/5.0 (Windows NT 5.1; U; en; rv:1.8.1) Gecko/20061208 Firefox/5.0 Opera 11.11",
+        "Opera/9.80 (X11; Linux x86_64; U; bg) Presto/2.8.131 Version/11.10",
+        "Opera/9.80 (Windows NT 6.0; U; en) Presto/2.8.99 Version/11.10",
+        "Opera/9.80 (Windows NT 5.1; U; zh-tw) Presto/2.8.131 Version/11.10",
+        "Opera/9.80 (Windows NT 6.1; Opera Tablet/15165; U; en) Presto/2.8.149 Version/11.1",
+        "Opera/9.80 (X11; Linux x86_64; U; Ubuntu/10.10 (maverick); pl) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (X11; Linux i686; U; ja) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (X11; Linux i686; U; fr) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.1; U; zh-tw) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.1; U; zh-cn) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.1; U; sv) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.1; U; en-US) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.1; U; cs) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 6.0; U; pl) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 5.1; U;) Presto/2.7.62 Version/11.01",
+        "Opera/9.80 (Windows NT 5.1; U; cs) Presto/2.7.62 Version/11.01",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.13) Gecko/20101213 Opera/9.80 (Windows NT 6.1; U; zh-tw) Presto/2.7.62 Version/11.01",
+        "Mozilla/5.0 (Windows NT 6.1; U; nl; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6 Opera 11.01",
+        "Mozilla/5.0 (Windows NT 6.1; U; de; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6 Opera 11.01",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; de) Opera 11.01",
+        "Opera/9.80 (X11; Linux x86_64; U; pl) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (X11; Linux i686; U; it) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1; U; zh-cn) Presto/2.6.37 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1; U; pl) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1; U; ko) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1; U; fi) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1; U; en-GB) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.1 x64; U; en) Presto/2.7.62 Version/11.00",
+        "Opera/9.80 (Windows NT 6.0; U; en) Presto/2.7.39 Version/11.00",
+    ],
+    "firefox": [
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1",
+        "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0",
+        "Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20130401 Firefox/31.0",
+        "Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20120101 Firefox/29.0",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/29.0",
+        "Mozilla/5.0 (X11; OpenBSD amd64; rv:28.0) Gecko/20100101 Firefox/28.0",
+        "Mozilla/5.0 (X11; Linux x86_64; rv:28.0) Gecko/20100101  Firefox/28.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:27.3) Gecko/20130101 Firefox/27.3",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:27.0) Gecko/20121011 Firefox/27.0",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:25.0) Gecko/20100101 Firefox/25.0",
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/23.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0",
+        "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/22.0",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:22.0) Gecko/20130328 Firefox/22.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20130405 Firefox/22.0",
+        "Mozilla/5.0 (Microsoft Windows NT 6.2.9200.0); rv:22.0) Gecko/20130405 Firefox/22.0",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/21.0.1",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/21.0.1",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:21.0.0) Gecko/20121011 Firefox/21.0.0",
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:21.0) Gecko/20130331 Firefox/21.0",
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (X11; Linux i686; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:21.0) Gecko/20130514 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.2; rv:21.0) Gecko/20130326 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130401 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130331 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130330 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130401 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130328 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20130401 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20130331 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 5.0; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64;) Gecko/20100101 Firefox/20.0",
+        "Mozilla/5.0 (Windows x86; rv:19.0) Gecko/20100101 Firefox/19.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:6.0) Gecko/20100101 Firefox/19.0",
+        "Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/18.0.1",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0)  Gecko/20100101 Firefox/18.0",
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:17.0) Gecko/20100101 Firefox/17.0.6",
+    ],
+    "internetexplorer": [
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko",
+        "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0;  rv:11.0) like Gecko",
+        "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 7.0; InfoPath.3; .NET CLR 3.1.40767; Trident/6.0; en-IN)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/4.0; InfoPath.2; SV1; .NET CLR 2.0.50727; WOW64)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Macintosh; Intel Mac OS X 10_7_3; Trident/6.0)",
+        "Mozilla/4.0 (Compatible; MSIE 8.0; Windows NT 5.2; Trident/6.0)",
+        "Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)",
+        "Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)",
+        "Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))",
+        "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; InfoPath.3; MS-RTC LM 8; .NET4.0C; .NET4.0E)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; chromeframe/12.0.742.112)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; Tablet PC 2.0; InfoPath.3; .NET4.0C; .NET4.0E)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; yie8)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; .NET CLR 1.1.4322; .NET4.0C; Tablet PC 2.0)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; FunWebProducts)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/13.0.782.215)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/11.0.696.57)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0) chromeframe/10.0.648.205",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/4.0; GTB7.4; InfoPath.1; SV1; .NET CLR 2.8.52393; WOW64; en-US)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; chromeframe/11.0.696.57)",
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/4.0; GTB7.4; InfoPath.3; SV1; .NET CLR 3.1.76908; WOW64; en-US)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; GTB7.4; InfoPath.2; SV1; .NET CLR 3.3.69573; WOW64; en-US)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 1.0.3705; .NET CLR 1.1.4322)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; InfoPath.1; SV1; .NET CLR 3.8.36217; WOW64; en-US)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; .NET CLR 2.7.58687; SLCC2; Media Center PC 5.0; Zune 3.4; Tablet PC 3.6; InfoPath.3)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.2; Trident/4.0; Media Center PC 4.0; SLCC1; .NET CLR 3.0.04320)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 1.1.4322)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; SLCC1; .NET CLR 1.1.4322)",
+        "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.0; Trident/4.0; InfoPath.1; SV1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 3.0.04506.30)",
+        "Mozilla/5.0 (compatible; MSIE 7.0; Windows NT 5.0; Trident/4.0; FBSMTWB; .NET CLR 2.0.34861; .NET CLR 3.0.3746.3218; .NET CLR 3.5.33652; msn OptimizedIE8;ENUS)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.2; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; Media Center PC 6.0; InfoPath.2; MS-RTC LM 8)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; Media Center PC 6.0; InfoPath.2; MS-RTC LM 8",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; Media Center PC 6.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.3; .NET4.0C; .NET4.0E; .NET CLR 3.5.30729; .NET CLR 3.0.30729; MS-RTC LM 8)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 3.0)",
+    ],
+    "safari": [
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; da-dk) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; ko-KR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; fr-FR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; cs-CZ) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; ja-JP) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_8; zh-cn) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_8; ja-jp) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; ja-jp) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; zh-cn) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; sv-se) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; ko-kr) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; ja-jp) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; it-it) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; fr-fr) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; es-es) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-gb) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; de-de) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; sv-SE) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; ja-JP) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; de-DE) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; hu-HU) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; de-DE) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; ru-RU) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; ja-JP) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; it-IT) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us) AppleWebKit/534.16+ (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; fr-ch) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; de-de) AppleWebKit/534.15+ (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; ar) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Android 2.2; Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-HK) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; tr-TR) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; nb-NO) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 6.0; fr-FR) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-TW) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; ru-RU) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; zh-cn) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+    ],
+    "mobile": [
+        "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/14.2 Safari/536.2+",
+        "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/14.2 Safari/536.2+",
+        "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/14.2 Mobile Safari/537.10+",
+        "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/14.2 Mobile Safari/537.10+",
+        "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/14.2 Mobile Safari/534.30",
+        "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.0; SM-G950U Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.0; SM-G950U Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; SM-G965U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; SM-G965U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.1.0; SM-T837A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.1.0; SM-T837A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/14.2 Mobile/14E304 Safari/602.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/14.2 Mobile/14E304 Safari/602.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/14.2 Mobile/15A372 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:89.0 Gecko/48.0 Firefox/90.0 KAIOS/2.5",
+        "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:89.0 Gecko/48.0 Firefox/90.0 KAIOS/2.5",
+        "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+        "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+        "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36 Edge/14.14263",
+        "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36 Edge/14.14263",
+        "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36 Edge/14.14263",
+        "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36 Edge/14.14263",
+        "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
+        "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
+        "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+        "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+        "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 9; Pixel 3 Build/PQ1A.181105.017.A1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 9; Pixel 3 Build/PQ1A.181105.017.A1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 4a (5G)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 4a (5G)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.0; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 7.0; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36 Edg/93.0.4576.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0 Gecko/20100101 Firefox/90.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.2 Safari/605.1.15",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4576.0 Safari/537.36 Edg/93.0.4576.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0 Gecko/20100101 Firefox/90.0",
+    ],
+}
+
+
+def get(ua_type: str = None):
+    if not ua_type:
+        ua_type = random.choice(list(USER_AGENTS.keys()))
+    elif ua_type not in USER_AGENTS:
+        raise ValueError(
+            "ua_type error, expect one of {}".format(list(USER_AGENTS.keys()))
+        )
+
+    return random.choice(USER_AGENTS[ua_type])
+
+```
+
+### 代码文件: feapder\commands\shell.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/5/9 12:37 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import argparse
+import re
+import shlex
+import sys
+
+import IPython
+import pyperclip
+
+from feapder import Request
+from feapder.utils import tools
+
+
+def parse_curl(curl_str):
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("target_url", type=str, nargs="?")
+    parser.add_argument("-X", "--request", type=str, nargs=1, default="")
+    parser.add_argument("-H", "--header", nargs=1, action="append", default=[])
+    parser.add_argument("-d", "--data", nargs=1, action="append", default=[])
+    parser.add_argument("--data-ascii", nargs=1, action="append", default=[])
+    parser.add_argument("--data-binary", nargs=1, action="append", default=[])
+    parser.add_argument("--data-urlencode", nargs=1, action="append", default=[])
+    parser.add_argument("--data-raw", nargs=1, action="append", default=[])
+    parser.add_argument("-F", "--form", nargs=1, action="append", default=[])
+    parser.add_argument("--digest", action="store_true")
+    parser.add_argument("--ntlm", action="store_true")
+    parser.add_argument("--anyauth", action="store_true")
+    parser.add_argument("-e", "--referer", type=str)
+    parser.add_argument("-G", "--get", action="store_true", default=False)
+    parser.add_argument("-I", "--head", action="store_true")
+    parser.add_argument("-k", "--insecure", action="store_true")
+    parser.add_argument("-o", "--output", type=str)
+    parser.add_argument("-O", "--remote_name", action="store_true")
+    parser.add_argument("-r", "--range", type=str)
+    parser.add_argument("-u", "--user", type=str)
+    parser.add_argument("--url", type=str)
+    parser.add_argument("-A", "--user-agent", type=str)
+    parser.add_argument("--compressed", action="store_true", default=False)
+
+    curl_split = shlex.split(curl_str)
+    try:
+        args = parser.parse_known_args(curl_split[1:])[0]
+    except:
+        raise ValueError("Could not parse arguments.")
+
+    # 请求地址
+    url = args.target_url
+
+    # # 请求方法
+    # try:
+    #     method = args.request.lower()
+    # except AttributeError:
+    #     method = args.request[0].lower()
+
+    # 请求头
+    headers = {
+        h[0].split(":", 1)[0]: ("".join(h[0].split(":", 1)[1]).strip())
+        for h in args.header
+    }
+    if args.user_agent:
+        headers["User-Agent"] = args.user_agent
+    if args.referer:
+        headers["Referer"] = args.referer
+    if args.range:
+        headers["Range"] = args.range
+
+    # Cookie
+    cookie_str = headers.pop("Cookie", "") or headers.pop("cookie", "")
+    cookies = tools.get_cookies_from_str(cookie_str) if cookie_str else {}
+
+    # params
+    url, params = tools.parse_url_params(url)
+
+    # data
+    data = "".join(
+        [
+            "".join(d)
+            for d in args.data
+            + args.data_ascii
+            + args.data_binary
+            + args.data_raw
+            + args.form
+        ]
+    )
+    if data:
+        data = re.sub(r"^\$", "", data)
+
+    # method
+    if args.head:
+        method = "head"
+    elif args.get:
+        method = "get"
+        params.update(data)
+    elif args.request:
+        method = (
+            args.request[0].lower()
+            if isinstance(args.request, list)
+            else args.request.lower()
+        )
+    elif data:
+        method = "post"
+    else:
+        method = "get"
+        params.update(data)
+
+    username = None
+    password = None
+    if args.user:
+        u = args.user
+        if ":" in u:
+            username, password = u.split(":")
+        else:
+            username = u
+            password = input(f"请输入用户{username}的密码")
+
+    auth = None
+    if args.digest:
+        auth = "digest"
+    elif args.ntlm:
+        auth = "ntlm"
+    elif username:
+        auth = "basic"
+
+    insecure = args.insecure
+
+    return dict(
+        url=url,
+        method=method,
+        cookies=cookies,
+        headers=headers,
+        params=params,
+        data=data,
+        insecure=insecure,
+        username=username,
+        password=password,
+        auth=auth,
+    )
+
+
+def request(**kwargs):
+    kwargs.setdefault("proxies", None)
+    response = Request(**kwargs).get_response()
+    print(response)
+
+    IPython.embed(header="now you can use response")
+
+
+def fetch_url(url):
+    request(url=url)
+
+
+def fetch_curl():
+    input("请复制请求为cURL (bash)，复制后按任意键读取剪切板内容\n")
+    curl = pyperclip.paste()
+    if curl:
+        kwargs = parse_curl(curl)
+        request(**kwargs)
+
+
+def usage():
+    """
+    下载调试器
+
+    usage: feapder shell [options] [args]
+
+    optional arguments:
+      -u, --url     抓取指定url
+      -c, --curl    抓取curl格式的请求
+
+    """
+    print(usage.__doc__)
+    sys.exit()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="测试请求",
+        usage="usage: feapder shell [options] [args]",
+    )
+    parser.add_argument(
+        "-u",
+        "--url",
+        help="请求指定地址, 如 feapder shell --url http://www.spidertools.cn/",
+        metavar="",
+    )
+    parser.add_argument("-c", "--curl", help="执行curl，调试响应", action="store_true")
+
+    args = parser.parse_args()
+    return parser, args
+
+
+def main():
+    parser, args = parse_args()
+    if args.url:
+        fetch_url(args.url)
+    elif args.curl:
+        fetch_curl()
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+### 代码文件: feapder\utils\custom_argparse.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-10-15 14:32:12
+---------
+@summary: 封装ArgumentParser， 使其支持function， 调用start自动执行
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import argparse
+
+
+class ArgumentParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        self.functions = {}
+
+        super(ArgumentParser, self).__init__(*args, **kwargs)
+
+    def add_argument(self, *args, **kwargs):
+        function = kwargs.pop("function") if "function" in kwargs else None
+        key = self._get_optional_kwargs(*args, **kwargs).get("dest")
+        self.functions[key] = function
+
+        return super(ArgumentParser, self).add_argument(*args, **kwargs)
+
+    def start(self, args=None, namespace=None):
+        args = self.parse_args(args=args, namespace=namespace)
+        for key, value in vars(args).items():  # vars() 函数返回对象object的属性和属性值的字典对象
+            if value not in (None, False):
+                if callable(self.functions[key]):
+                    if value != True:
+                        if isinstance(value, list) and len(value) == 1:
+                            value = value[0]
+                        self.functions[key](value)
+                    else:
+                        self.functions[key]()
+
+    def run(self, args, values=None):
+        if args in self.functions:
+            if values:
+                self.functions[args](values)
+            else:
+                self.functions[args]()
+
+        else:
+            raise Exception(f"无此方法: {args}")
+
+
+if __name__ == "__main__":
+
+    def test():
+        print("test not args func")
+
+    def test2(args):
+        print("test args func", args)
+
+    parser = ArgumentParser(description="测试")
+
+    parser.add_argument("--test2", type=int, nargs=1, help="(1|2）", function=test2)
+    parser.add_argument("--test", action="store_true", help="", function=test)
+
+    parser.start()
+
+```
+
+### 代码文件: feapder\dedup\README.md
+ 
+# Dedup
+
+Dedup是feapder大数据去重模块，内置3种去重机制，使用方式一致，可容纳的去重数据量与内存有关。不同于BloomFilter，去重受槽位数量影响，Dedup使用了弹性的去重机制，可容纳海量的数据去重。
+
+
+## 去重方式
+
+### 临时去重
+
+> 基于redis，支持批量，去重有时效性。去重一万条数据约0.26秒，一亿条数据占用内存约1.43G
+
+```
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_ExpireFilter():
+    dedup = Dedup(
+        Dedup.ExpireFilter, expire_time=10, redis_url="redis://@localhost:6379/0"
+    )
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+
+### 内存去重
+
+> 基于内存，支持批量。去重一万条数据约0.5秒，一亿条数据占用内存约285MB
+
+```
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_MemoryFilter():
+    dedup = Dedup(Dedup.MemoryFilter)  # 表名为test 历史数据3秒有效期
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+### 永久去重
+
+> 基于redis，支持批量，永久去重。 去重一万条数据约3.5秒，一亿条数据占用内存约285MB
+
+    from feapder.dedup import Dedup
+
+    datas = {
+        "xxx": xxx,
+        "xxxx": "xxxx",
+    }
+
+    dedup = Dedup()
+
+    print(dedup) # <ScalableBloomFilter: RedisBitArray: dedup:bloomfilter:bloomfilter>
+    print(dedup.add(datas)) # 0 不存在
+    print(dedup.get(datas)) # 1 存在
+    
+## 过滤数据
+
+Dedup可以通过如下方法，过滤掉已存在的数据
+
+
+```python
+from feapder.dedup import Dedup
+
+def test_filter():
+    dedup = Dedup(Dedup.BloomFilter, redis_url="redis://@localhost:6379/0")
+
+    # 制造已存在数据
+    datas = ["xxx", "bbb"]
+    dedup.add(datas)
+
+    # 过滤掉已存在数据 "xxx", "bbb"
+    datas = ["xxx", "bbb", "ccc"]
+    dedup.filter_exist_data(datas)
+    assert datas == ["ccc"]
+```
+
+
+
+ 
+
+### 代码文件: feapder\network\downloader\_selenium.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/7/26 4:28 下午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, SeleniumDriver
+
+
+class SeleniumDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.WEBDRIVER, driver=SeleniumDriver
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.WEBDRIVER.get("proxy"):
+            proxy = setting.WEBDRIVER.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.WEBDRIVER.get("user_agent"):
+            user_agent = setting.WEBDRIVER.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.WEBDRIVER.get("render_time")
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        browser: SeleniumDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            browser.get(url)
+            if cookies:
+                browser.cookies = cookies
+                # 刷新使cookie生效
+                browser.get(url)
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = browser.page_source
+            response = Response.from_dict(
+                {
+                    "url": browser.current_url,
+                    "cookies": browser.cookies,
+                    "_content": html.encode(),
+                    "status_code": 200,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": browser.user_agent,
+                        "Cookie": tools.cookies2str(browser.cookies),
+                    },
+                }
+            )
+
+            response.driver = browser
+            response.browser = browser
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(browser)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        self._webdriver_pool.close()
+
+```
+
+### 代码文件: feapder\utils\webdriver\webdirver.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/7 4:27 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import abc
+
+from feapder import setting
+
+
+class InterceptRequest:
+    def __init__(self, url, data, headers):
+        self.url = url
+        self.data = data
+        self.headers = headers
+
+
+class InterceptResponse:
+    def __init__(self, request: InterceptRequest, url, headers, content, status_code):
+        self.request = request
+        self.url = url
+        self.headers = headers
+        self.content = content
+        self.status_code = status_code
+
+
+class WebDriver:
+    def __init__(
+        self,
+        load_images=True,
+        user_agent=None,
+        proxy=None,
+        headless=False,
+        driver_type=None,
+        timeout=16,
+        window_size=(1024, 800),
+        executable_path=None,
+        custom_argument=None,
+        download_path=None,
+        auto_install_driver=True,
+        use_stealth_js=True,
+        **kwargs,
+    ):
+        """
+        webdirver 封装，支持chrome、phantomjs 和 firefox
+        Args:
+            load_images: 是否加载图片
+            user_agent: 字符串 或 无参函数，返回值为user_agent
+            proxy: xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless: 是否启用无头模式
+            driver_type: CHROME,EDGE 或 PHANTOMJS,FIREFOX
+            timeout: 请求超时时间
+            window_size: # 窗口大小
+            executable_path: 浏览器路径，默认为默认路径
+            custom_argument: 自定义参数 用于webdriver.Chrome(options=chrome_options, **kwargs)
+            download_path: 文件下载保存路径；如果指定，不再出现“保留”“放弃”提示，仅对Chrome有效
+            auto_install_driver: 自动下载浏览器驱动 支持chrome 和 firefox
+            use_stealth_js: 使用stealth.min.js隐藏浏览器特征
+            **kwargs:
+        """
+        self._load_images = load_images
+        self._user_agent = user_agent or setting.DEFAULT_USERAGENT
+        self._proxy = proxy
+        self._headless = headless
+        self._timeout = timeout
+        self._window_size = window_size
+        self._executable_path = executable_path
+        self._custom_argument = custom_argument
+        self._download_path = download_path
+        self._auto_install_driver = auto_install_driver
+        self._use_stealth_js = use_stealth_js
+        self._driver_type = driver_type
+        self._kwargs = kwargs
+
+    @abc.abstractmethod
+    def quit(self):
+        pass
+
+```
+
+### 代码文件: feapder\utils\webdriver\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/7 4:39 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+from .playwright_driver import PlaywrightDriver
+from .selenium_driver import SeleniumDriver
+from .webdirver import InterceptRequest, InterceptResponse
+from .webdriver_pool import WebDriverPool
+
+# 为了兼容老代码
+WebDriver = SeleniumDriver
+
+```
+
+### 代码文件: feapder\commands\create\create_setting.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/4/23 13:20
+---------
+@summary: 生成配置文件
+---------
+@author: mkdir700
+@email:  mkdir700@gmail.com
+"""
+
+import os
+import shutil
+
+
+class CreateSetting:
+    def create(self):
+        if os.path.exists("setting.py"):
+            confirm = input("配置文件已存在 是否覆盖 (y/n).  ")
+            if confirm != "y":
+                print("取消覆盖  退出")
+                return
+
+        template_file_path = os.path.abspath(
+            os.path.join(__file__, "../../../templates/project_template/setting.py")
+        )
+        shutil.copy(template_file_path, "./", follow_symlinks=False)
+        print("配置文件生成成功")
+
+```
+
+### 代码文件: feapder\utils\webdriver\playwright_driver.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/9/7 4:11 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import json
+import os
+import re
+from collections import defaultdict
+from typing import Union, List
+
+try:
+    from typing import Literal  # python >= 3.8
+except ImportError:  # python <3.8
+    from typing_extensions import Literal
+
+
+from playwright.sync_api import Page, BrowserContext, ViewportSize, ProxySettings
+from playwright.sync_api import Playwright, Browser
+from playwright.sync_api import Response
+from playwright.sync_api import sync_playwright
+
+from feapder.utils import tools
+from feapder.utils.log import log
+from feapder.utils.webdriver.webdirver import *
+
+
+class PlaywrightDriver(WebDriver):
+    def __init__(
+        self,
+        *,
+        page_on_event_callback: dict = None,
+        storage_state_path: str = None,
+        driver_type: Literal["chromium", "firefox", "webkit"] = "chromium",
+        url_regexes: list = None,
+        save_all: bool = False,
+        **kwargs
+    ):
+        """
+
+        Args:
+            page_on_event_callback: page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+            storage_state_path: 保存浏览器状态的路径
+            driver_type: 浏览器类型 chromium, firefox, webkit
+            url_regexes: 拦截接口，支持正则，数组类型
+            save_all: 是否保存所有拦截的接口, 默认只保存最后一个
+            **kwargs:
+        """
+        super(PlaywrightDriver, self).__init__(**kwargs)
+        self.driver: Playwright = None
+        self.browser: Browser = None
+        self.context: BrowserContext = None
+        self.page: Page = None
+        self.url = None
+        self.storage_state_path = storage_state_path
+
+        self._driver_type = driver_type or "chromium"
+        self._page_on_event_callback = page_on_event_callback
+        self._url_regexes = url_regexes
+        self._save_all = save_all
+
+        if self._save_all and self._url_regexes:
+            log.warning(
+                "获取完拦截的数据后, 请主动调用PlaywrightDriver的clear_cache()方法清空拦截的数据，否则数据会一直累加，导致内存溢出"
+            )
+            self._cache_data = defaultdict(list)
+        else:
+            self._cache_data = {}
+
+        self._setup()
+
+    def _setup(self):
+        # 处理参数
+        if self._proxy:
+            proxy = self._proxy() if callable(self._proxy) else self._proxy
+            proxy = self.format_context_proxy(proxy)
+        else:
+            proxy = None
+
+        user_agent = (
+            self._user_agent() if callable(self._user_agent) else self._user_agent
+        )
+
+        view_size = ViewportSize(
+            width=self._window_size[0], height=self._window_size[1]
+        )
+
+        # 初始化浏览器对象
+        self.driver = sync_playwright().start()
+        self.browser = getattr(self.driver, self._driver_type).launch(
+            headless=self._headless,
+            args=["--no-sandbox"],
+            proxy=proxy,
+            executable_path=self._executable_path,
+            downloads_path=self._download_path,
+        )
+
+        if self.storage_state_path and os.path.exists(self.storage_state_path):
+            self.context = self.browser.new_context(
+                user_agent=user_agent,
+                screen=view_size,
+                viewport=view_size,
+                proxy=proxy,
+                storage_state=self.storage_state_path,
+            )
+        else:
+            self.context = self.browser.new_context(
+                user_agent=user_agent,
+                screen=view_size,
+                viewport=view_size,
+                proxy=proxy,
+            )
+
+        if self._use_stealth_js:
+            path = os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
+            self.context.add_init_script(path=path)
+
+        self.page = self.context.new_page()
+        self.page.set_default_timeout(self._timeout * 1000)
+
+        if self._page_on_event_callback:
+            for event, callback in self._page_on_event_callback.items():
+                self.page.on(event, callback)
+
+        if self._url_regexes:
+            self.page.on("response", self.on_response)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_val:
+            log.error(exc_val)
+
+        self.quit()
+        return True
+
+    def format_context_proxy(self, proxy) -> ProxySettings:
+        """
+        Args:
+            proxy: username:password@ip:port / ip:port
+        Returns:
+            {
+                "server": "ip:port"
+                "username": username,
+                "password": password,
+            }
+            server: http://ip:port or socks5://ip:port. Short form ip:port is considered an HTTP proxy.
+        """
+
+        if "@" in proxy:
+            certification, _proxy = proxy.split("@")
+            username, password = certification.split(":")
+
+            context_proxy = ProxySettings(
+                server=_proxy,
+                username=username,
+                password=password,
+            )
+        else:
+            context_proxy = ProxySettings(server=proxy)
+
+        return context_proxy
+
+    def save_storage_stage(self):
+        if self.storage_state_path:
+            os.makedirs(os.path.dirname(self.storage_state_path), exist_ok=True)
+            self.context.storage_state(path=self.storage_state_path)
+
+    def quit(self):
+        self.page.close()
+        self.context.close()
+        self.browser.close()
+        self.driver.stop()
+
+    @property
+    def domain(self):
+        return tools.get_domain(self.url or self.page.url)
+
+    @property
+    def cookies(self):
+        cookies_json = {}
+        for cookie in self.page.context.cookies():
+            cookies_json[cookie["name"]] = cookie["value"]
+
+        return cookies_json
+
+    @cookies.setter
+    def cookies(self, val: Union[dict, List[dict]]):
+        """
+        设置cookie
+        Args:
+            val: List[{name: str, value: str, url: Union[str, NoneType], domain: Union[str, NoneType], path: Union[str, NoneType], expires: Union[float, NoneType], httpOnly: Union[bool, NoneType], secure: Union[bool, NoneType], sameSite: Union["Lax", "None", "Strict", NoneType]}]
+
+        Returns:
+
+        """
+        if isinstance(val, list):
+            self.page.context.add_cookies(val)
+        else:
+            cookies = []
+            for key, value in val.items():
+                cookies.append(
+                    {"name": key, "value": value, "url": self.url or self.page.url}
+                )
+            self.page.context.add_cookies(cookies)
+
+    @property
+    def user_agent(self):
+        return self.page.evaluate("() => navigator.userAgent")
+
+    def on_response(self, response: Response):
+        for regex in self._url_regexes:
+            if re.search(regex, response.request.url):
+                intercept_request = InterceptRequest(
+                    url=response.request.url,
+                    headers=response.request.headers,
+                    data=response.request.post_data,
+                )
+
+                intercept_response = InterceptResponse(
+                    request=intercept_request,
+                    url=response.url,
+                    headers=response.headers,
+                    content=response.body(),
+                    status_code=response.status,
+                )
+                if self._save_all:
+                    self._cache_data[regex].append(intercept_response)
+                else:
+                    self._cache_data[regex] = intercept_response
+
+    def get_response(self, url_regex) -> InterceptResponse:
+        if self._save_all:
+            response_list = self._cache_data.get(url_regex)
+            if response_list:
+                return response_list[-1]
+        return self._cache_data.get(url_regex)
+
+    def get_all_response(self, url_regex) -> List[InterceptResponse]:
+        """
+        获取所有匹配的响应, 仅在save_all=True时有效
+        Args:
+            url_regex:
+
+        Returns:
+
+        """
+        response_list = self._cache_data.get(url_regex, [])
+        if not isinstance(response_list, list):
+            return [response_list]
+        return response_list
+
+    def get_text(self, url_regex):
+        return (
+            self.get_response(url_regex).content.decode()
+            if self.get_response(url_regex)
+            else None
+        )
+
+    def get_all_text(self, url_regex):
+        """
+        获取所有匹配的响应文本, 仅在save_all=True时有效
+        Args:
+            url_regex:
+
+        Returns:
+
+        """
+        return [
+            response.content.decode() for response in self.get_all_response(url_regex)
+        ]
+
+    def get_json(self, url_regex):
+        return (
+            json.loads(self.get_text(url_regex))
+            if self.get_response(url_regex)
+            else None
+        )
+
+    def get_all_json(self, url_regex):
+        """
+        获取所有匹配的响应json, 仅在save_all=True时有效
+        Args:
+            url_regex:
+
+        Returns:
+
+        """
+        return [json.loads(text) for text in self.get_all_text(url_regex)]
+
+    def clear_cache(self):
+        self._cache_data = defaultdict(list)
+
+```
+
+### 代码文件: feapder\templates\project_template\items\__init__.py
+```python
+
+```
+
+### 代码文件: feapder\commands\zip.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2022/2/13 12:59 上午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import argparse
+import os
+import re
+import zipfile
+
+
+def is_ignore_file(ignore_files: list, filename):
+    for ignore_file in ignore_files:
+        if re.search(ignore_file, filename):
+            return True
+    return False
+
+
+def zip(dir_path, zip_name, ignore_dirs: list = None, ignore_files: list = None):
+    print(f"正在压缩 {dir_path} >> {zip_name}")
+    ignore_files.append(os.path.basename(zip_name))
+    with zipfile.ZipFile(zip_name, "w") as file:
+        dir_name = os.path.basename(dir_path)
+        parent_dir = os.path.dirname(dir_path)
+        if parent_dir:
+            os.chdir(parent_dir)
+        for path, dirs, filenames in os.walk(dir_name):
+            # 修改原dirs，方式遍历忽略文件夹里的文件
+            if ignore_dirs:
+                dirs[:] = [d for d in dirs if d not in ignore_dirs]
+            for filename in filenames:
+                if ignore_files and is_ignore_file(ignore_files, filename):
+                    continue
+
+                filepath = os.path.join(path, filename)
+                print(f"  adding {filepath}")
+                file.write(filepath)
+
+    print(f"压缩成功 {dir_path} >> {zip_name}")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="压缩文件夹, 默认排除以下文件夹及文件 .git,__pycache__,.idea,venv,.DS_Store",
+        usage="feapder zip dir_path [zip_name]",
+    )
+    parser.add_argument("dir_path", type=str, help="文件夹路径")
+    parser.add_argument("zip_name", type=str, nargs="?", help="压缩后的文件名，默认为文件夹名.zip")
+    parser.add_argument("-i", help="忽略文件，逗号分隔，支持正则", metavar="")
+    parser.add_argument("-I", help="忽略文件夹，逗号分隔，支持正则 ", metavar="")
+    parser.add_argument("-o", help="输出路径，默认为当前目录", metavar="")
+
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    ignore_dirs = [".git", "__pycache__", ".idea", "venv", "env"]
+    ignore_files = [".DS_Store"]
+    args = parse_args()
+    if args.i:
+        ignore_files.extend(args.i.split(","))
+    if args.I:
+        ignore_dirs.extend(args.I.split(","))
+    dir_path = args.dir_path
+    zip_name = args.zip_name or os.path.basename(dir_path) + ".zip"
+    if args.o:
+        zip_name = os.path.join(args.o, os.path.basename(zip_name))
+
+    zip(dir_path, zip_name, ignore_dirs=ignore_dirs, ignore_files=ignore_files)
+
+```
+
+### 代码文件: feapder\dedup\bitarray.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/14 1:05 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+from __future__ import absolute_import
+
+
+from feapder.db.redisdb import RedisDB
+
+
+class BitArray:
+    def setall(self, value):
+        pass
+
+    def __repr__(self):
+        raise ImportError("this method mush be implement")
+
+    def set(self, offsets, values):
+        """
+        设置字符串数字某一位的值， 返回之前的值
+        @param offsets: 支持列表或单个值
+        @param values: 支持列表或单个值
+        @return: list / 单个值
+        """
+        raise ImportError("this method mush be implement")
+
+    def get(self, offsets):
+        """
+        取字符串数字某一位的值
+        @param offsets: 支持列表或单个值
+        @return: list / 单个值
+        """
+        raise ImportError("this method mush be implement")
+
+    def count(self, value=True):
+        raise ImportError("this method mush be implement")
+
+
+class MemoryBitArray(BitArray):
+    def __init__(self, num_bits):
+        try:
+            import bitarray
+        except Exception as e:
+            raise Exception(
+                '需要安装feapder完整版\ncommand: pip install "feapder[all]"\n若安装出错，参考：https://feapder.com/#/question/%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98'
+            )
+
+        self.num_bits = num_bits
+        self.bitarray = bitarray.bitarray(num_bits, endian="little")
+
+        self.setall(0)
+
+    def __repr__(self):
+        return "MemoryBitArray: {}".format(self.num_bits)
+
+    def setall(self, value):
+        self.bitarray.setall(value)
+
+    def set(self, offsets, values):
+        """
+        设置字符串数字某一位的值， 返回之前的值
+        @param offsets: 支持列表或单个值
+        @param values: 支持列表或单个值
+        @return: list / 单个值
+        """
+
+        old_values = []
+
+        if isinstance(offsets, list):
+            if not isinstance(values, list):
+                values = [values] * len(offsets)
+            else:
+                assert len(offsets) == len(values), "offsets值要与values值一一对应"
+
+            for offset, value in zip(offsets, values):
+                old_values.append(int(self.bitarray[offset]))
+                self.bitarray[offset] = value
+
+        else:
+            old_values = int(self.bitarray[offsets])
+            self.bitarray[offsets] = values
+
+        return old_values
+
+    def get(self, offsets):
+        """
+        取字符串数字某一位的值
+        @param offsets: 支持列表或单个值
+        @return: list / 单个值
+        """
+        if isinstance(offsets, list):
+            return [self.bitarray[offset] for offset in offsets]
+        else:
+            return self.bitarray[offsets]
+
+    def count(self, value=True):
+        return self.bitarray.count(value)
+
+
+class RedisBitArray(BitArray):
+    """
+    仿bitarray 基于redis
+    """
+
+    redis_db = None
+
+    def __init__(self, name, redis_url=None):
+        self.name = name
+        self.count_cached_name = name + "_count_cached"
+
+        if not self.__class__.redis_db:
+            self.__class__.redis_db = RedisDB(url=redis_url)
+
+    def __repr__(self):
+        return "RedisBitArray: {}".format(self.name)
+
+    def set(self, offsets, values):
+        """
+        设置字符串数字某一位的值， 返回之前的值
+        @param offsets: 支持列表或单个值
+        @param values: 支持列表或单个值
+        @return: list / 单个值
+        """
+        # 对offsets进行分片，最大100000个
+        results = []
+        batch_size = 170000
+        for i in range(0, len(offsets), batch_size):
+            results.extend(
+                self.redis_db.setbit(
+                    self.name,
+                    offsets[i : i + batch_size],
+                    values[i : i + batch_size] if isinstance(values, list) else values,
+                )
+            )
+        return results
+
+    def get(self, offsets):
+        return self.redis_db.getbit(self.name, offsets)
+
+    def count(self, value=True):
+        # 先查redis的缓存，若没有 在统计数量
+        count = self.redis_db.strget(self.count_cached_name)
+        if count:
+            return int(count)
+        else:
+            count = self.redis_db.bitcount(self.name)  # 被设置为 1 的比特位的数量
+            self.redis_db.strset(self.count_cached_name, count, ex=1800)  # 半小时过期
+            return count
+
+```
+
+### 代码文件: feapder\utils\email_sender.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/2/19 12:57 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import os
+import smtplib
+from email.header import Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formataddr
+
+from feapder.utils.log import log
+
+
+class EmailSender(object):
+    SENDER = "feapder报警系统"
+
+    def __init__(self, username, password, smtpserver="smtp.163.com"):
+        self.username = username
+        self.password = password
+        self.smtpserver = smtpserver
+        self.smtp_client = smtplib.SMTP_SSL(smtpserver)
+        self.sender = EmailSender.SENDER
+
+    def __enter__(self):
+        self.login()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.quit()
+
+    def quit(self):
+        self.smtp_client.quit()
+
+    def login(self):
+        self.smtp_client.connect(self.smtpserver)
+        self.smtp_client.login(self.username, self.password)
+
+    def send(
+        self,
+        receivers: list,
+        title: str,
+        content: str,
+        content_type: str = "plain",
+        filepath: str = None,
+    ):
+        """
+
+        Args:
+            receivers:
+            title:
+            content:
+            content_type: html / plain
+            filepath:
+
+        Returns:
+
+        """
+        # 创建一个带附件的实例
+        message = MIMEMultipart()
+        message["From"] = formataddr(
+            (self.sender, self.username)
+        )  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        message["To"] = ",".join(
+            [formataddr((receiver, receiver)) for receiver in receivers]
+        )
+
+        message["Subject"] = Header(title, "utf-8")
+
+        content = MIMEText(content, content_type, "utf-8")
+        message.attach(content)
+
+        # 构造附件
+        if filepath:
+            attach = MIMEText(open(filepath, "rb").read(), "base64", "utf-8")
+            attach.add_header(
+                "content-disposition",
+                "attachment",
+                filename=("utf-8", "", os.path.basename(filepath)),
+            )
+            message.attach(attach)
+
+        msg = message.as_string()
+        # 此处直接发送多个邮箱有问题，改成一个个发送
+        for receiver in receivers:
+            log.debug("发送邮件到 {}".format(receiver))
+            self.smtp_client.sendmail(self.username, receiver, msg)
+        log.debug("邮件发送成功！！！")
+        return True
+
+```
+
+### 代码文件: feapder\commands\create\create_spider.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 创建spider
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import getpass
+import os
+import re
+
+import feapder.utils.tools as tools
+from .create_init import CreateInit
+
+
+def deal_file_info(file):
+    file = file.replace("{DATE}", tools.get_current_date())
+    file = file.replace("{USER}", os.getenv("FEAPDER_USER") or getpass.getuser())
+
+    return file
+
+
+class CreateSpider:
+    def __init__(self):
+        self._create_init = CreateInit()
+
+    def cover_to_underline(self, key):
+        regex = "[A-Z]*"
+        capitals = re.findall(regex, key)
+
+        if capitals:
+            for pos, capital in enumerate(capitals):
+                if not capital:
+                    continue
+                if pos == 0:
+                    if len(capital) > 1:
+                        key = key.replace(capital, capital.lower() + "_", 1)
+                    else:
+                        key = key.replace(capital, capital.lower(), 1)
+                else:
+                    if len(capital) > 1:
+                        key = key.replace(capital, "_" + capital.lower() + "_", 1)
+                    else:
+                        key = key.replace(capital, "_" + capital.lower(), 1)
+
+        return key
+
+    def get_spider_template(self, spider_type):
+        if spider_type == "AirSpider":
+            template_path = "air_spider_template.tmpl"
+        elif spider_type == "Spider":
+            template_path = "spider_template.tmpl"
+        elif spider_type == "TaskSpider":
+            template_path = "task_spider_template.tmpl"
+        elif spider_type == "BatchSpider":
+            template_path = "batch_spider_template.tmpl"
+        else:
+            raise ValueError("spider type error, only support AirSpider、 Spider、TaskSpider、BatchSpider")
+
+        template_path = os.path.abspath(
+            os.path.join(__file__, "../../../templates", template_path)
+        )
+        with open(template_path, "r", encoding="utf-8") as file:
+            spider_template = file.read()
+
+        return spider_template
+
+    def create_spider(self, spider_template, spider_name, file_name):
+        spider_template = spider_template.replace("${spider_name}", spider_name)
+        spider_template = spider_template.replace("${file_name}", file_name)
+        spider_template = deal_file_info(spider_template)
+        return spider_template
+
+    def save_spider_to_file(self, spider, spider_name, file_name):
+        if os.path.exists(file_name):
+            confirm = input("%s 文件已存在 是否覆盖 (y/n).  " % file_name)
+            if confirm != "y":
+                print("取消覆盖  退出")
+                return
+
+        with open(file_name, "w", encoding="utf-8") as file:
+            file.write(spider)
+            print("\n%s 生成成功" % spider_name)
+
+        if os.path.basename(os.path.dirname(os.path.abspath(file_name))) == "spiders":
+            self._create_init.create()
+
+    def create(self, spider_name, spider_type):
+        # 检查spider_name
+        if not re.search("^[a-zA-Z][a-zA-Z0-9_]*$", spider_name):
+            print("爬虫命名不符合规范，请用蛇形或驼峰命名方式")
+            return
+
+        underline_format = self.cover_to_underline(spider_name)
+        spider_name = tools.key2hump(underline_format)
+        file_name = underline_format + ".py"
+
+        print(spider_name, file_name)
+
+        spider_template = self.get_spider_template(spider_type)
+        spider = self.create_spider(spider_template, spider_name, file_name)
+        self.save_spider_to_file(spider, spider_name, file_name)
+
+```
+
+### 代码文件: feapder\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/21 10:41 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import os
+import re
+import sys
+
+sys.path.insert(0, re.sub(r"([\\/]items$)|([\\/]spiders$)", "", os.getcwd()))
+
+__all__ = [
+    "AirSpider",
+    "Spider",
+    "TaskSpider",
+    "BatchSpider",
+    "BaseParser",
+    "TaskParser",
+    "BatchParser",
+    "Request",
+    "Response",
+    "Item",
+    "UpdateItem",
+    "ArgumentParser",
+]
+
+from feapder.core.spiders import AirSpider, Spider, TaskSpider, BatchSpider
+from feapder.core.base_parser import BaseParser, TaskParser, BatchParser
+from feapder.network.request import Request
+from feapder.network.response import Response
+from feapder.network.item import Item, UpdateItem
+from feapder.utils.custom_argparse import ArgumentParser
+
+```
+
+### 代码文件: feapder\network\proxy_pool\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2023/7/25 10:16
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+from .base import BaseProxyPool
+from .proxy_pool import ProxyPool
+
+```
+
+### 代码文件: feapder\db\memorydb.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/21 11:42 PM
+---------
+@summary: 基于内存的队列，代替redis
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+from queue import PriorityQueue
+
+from feapder import setting
+
+
+class MemoryDB:
+    def __init__(self):
+        self.priority_queue = PriorityQueue(maxsize=setting.TASK_MAX_CACHED_SIZE)
+
+    def add(self, item, ignore_max_size=False):
+        """
+        添加任务
+        :param item: 数据: 支持小于号比较的类 或者 （priority, item）
+        :param ignore_max_size: queue满时是否等待，为True时无视队列的maxsize，直接往里塞
+        :return:
+        """
+        if ignore_max_size:
+            self.priority_queue._put(item)
+            self.priority_queue.unfinished_tasks += 1
+        else:
+            self.priority_queue.put(item)
+
+    def get(self):
+        """
+        获取任务
+        :return:
+        """
+        try:
+            item = self.priority_queue.get(timeout=1)
+            return item
+        except:
+            return
+
+    def empty(self):
+        return self.priority_queue.empty()
+
+```
+
+### 代码文件: feapder\network\user_pool\normal_user_pool.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/27 11:32 AM
+---------
+@summary: 普通用户池，适用于账号成本低且大量的场景
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import os
+import random
+from typing import Iterable, Optional
+
+import feapder.utils.tools as tools
+from feapder import setting
+from feapder.db.mysqldb import MysqlDB
+from feapder.db.redisdb import RedisDB
+from feapder.network.user_pool.base_user_pool import UserPoolInterface, NormalUser
+from feapder.utils.log import log
+from feapder.utils.redis_lock import RedisLock
+
+
+class NormalUserPool(UserPoolInterface):
+    """
+    普通用户池，适用于账号成本低且大量的场景
+    """
+
+    def __init__(
+        self,
+        redis_key,
+        *,
+        table_userbase,
+        login_state_key="login_state",
+        lock_state_key="lock_state",
+        username_key="username",
+        password_key="password",
+        login_retry_times=1,
+        keep_alive=False,
+    ):
+        """
+        @param redis_key: 项目名
+        @param table_userbase: 用户表名
+        @param login_state_key: 登录状态列名
+        @param lock_state_key: 封锁状态列名
+        @param username_key: 登陆名列名
+        @param password_key: 密码列名
+        @param login_retry_times: 登陆失败重试次数
+        @param keep_alive: 是否保持常驻，以便user不足时立即补充
+        """
+
+        self._tab_user_pool = setting.TAB_USER_POOL.format(
+            redis_key=redis_key, user_type="normal"
+        )
+
+        self._login_retry_times = login_retry_times
+        self._table_userbase = table_userbase
+        self._login_state_key = login_state_key
+        self._lock_state_key = lock_state_key
+        self._username_key = username_key
+        self._password_key = password_key
+        self._keep_alive = keep_alive
+
+        self._users_id = []
+
+        self._redisdb = RedisDB()
+        self._mysqldb = MysqlDB()
+
+        self._create_userbase()
+
+    def _load_users_id(self):
+        self._users_id = self._redisdb.hkeys(self._tab_user_pool)
+        if self._users_id:
+            random.shuffle(self._users_id)
+
+    def _get_user_id(self):
+        if not self._users_id:
+            self._load_users_id()
+
+        if self._users_id:
+            return self._users_id.pop()
+
+    def _create_userbase(self):
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS `{self._table_userbase}` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `{self._username_key}` varchar(50) DEFAULT NULL COMMENT '用户名',
+              `{self._password_key}` varchar(255) DEFAULT NULL COMMENT '密码',
+              `{self._login_state_key}` int(11) DEFAULT '0' COMMENT '登录状态（0未登录 1已登录）',
+              `{self._lock_state_key}` int(11) DEFAULT '0' COMMENT '账号是否被封（0 未封 1 被封）',
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `username` (`username`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        """
+        self._mysqldb.execute(sql)
+
+    def _load_user(self) -> Iterable[NormalUser]:
+        """
+        返回用户信息
+        @return: yield username, password
+        """
+
+        sql = "select id, {username_key}, {password_key} from {table_userbase} where {lock_state_key} != 1 and {login_state_key} != 1".format(
+            username_key=self._username_key,
+            password_key=self._password_key,
+            table_userbase=self._table_userbase,
+            lock_state_key=self._lock_state_key,
+            login_state_key=self._login_state_key,
+        )
+
+        for id, username, password in self._mysqldb.find(sql):
+            yield NormalUser(user_id=id, username=username, password=password)
+
+    def handle_login_failed_user(self, user: NormalUser):
+        """
+        处理登录失败的user
+        @return:
+        """
+
+        pass
+
+    def handel_exception(self, e: Exception):
+        """
+        处理异常
+        @param e:
+        @return:
+        """
+        log.exception(e)
+
+    def login(self, user: NormalUser) -> NormalUser:
+        """
+        登录 生产cookie
+        """
+        raise NotImplementedError
+
+    def add_user(self, user: NormalUser):
+        log.debug("add {}".format(user))
+        self._redisdb.hset(self._tab_user_pool, user.user_id, user.to_dict())
+
+        sql = "update {table_userbase} set {login_state_key} = 1 where id = {user_id}".format(
+            table_userbase=self._table_userbase,
+            login_state_key=self._login_state_key,
+            username_key=self._username_key,
+            user_id=user.user_id,
+        )
+        self._mysqldb.update(sql)
+
+    def get_user(self, block=True) -> Optional[NormalUser]:
+        while True:
+            try:
+                user_id = self._get_user_id()
+                user_str = None
+                if user_id:
+                    user_str = self._redisdb.hget(self._tab_user_pool, user_id)
+                    # 如果没取到user，可能是其他爬虫将此用户删除了，需要重刷新本地缓存的用户id
+                    if not user_str:
+                        self._load_users_id()
+                        continue
+
+                if not user_id and block:
+                    self._keep_alive = False
+                    self.run()
+                    continue
+
+                return user_str and NormalUser(**eval(user_str))
+            except Exception as e:
+                log.exception(e)
+                tools.delay_time(1)
+
+    def del_user(self, user_id: int):
+        """
+        删除失效的user
+        @return:
+        """
+        self._redisdb.hdel(self._tab_user_pool, user_id)
+        self._load_users_id()
+
+        sql = "update {table_userbase} set {login_state_key} = 0 where id = {user_id}".format(
+            table_userbase=self._table_userbase,
+            login_state_key=self._login_state_key,
+            username_key=self._username_key,
+            user_id=user_id,
+        )
+
+        self._mysqldb.update(sql)
+
+    def tag_user_locked(self, user_id: int):
+        """
+        标记用户被封堵
+        """
+        sql = "update {table_userbase} set {lock_state_key} = 1 where id = {user_id}".format(
+            table_userbase=self._table_userbase,
+            lock_state_key=self._lock_state_key,
+            username_key=self._username_key,
+            user_id=user_id,
+        )
+
+        self._mysqldb.update(sql)
+
+    def run(self):
+        while True:
+            try:
+                try:
+                    with RedisLock(
+                        key=self._tab_user_pool, lock_timeout=3600, wait_timeout=0
+                    ) as _lock:
+                        if _lock.locked:
+                            for user in self._load_user():
+                                retry_times = 0
+                                while retry_times <= self._login_retry_times:
+                                    try:
+                                        login_user = self.login(user)
+                                        if login_user:
+                                            self.add_user(login_user)
+                                        else:
+                                            self.handle_login_failed_user(user)
+                                        break
+                                    except NotImplementedError:
+                                        log.error(
+                                            f"{self.__class__.__name__} must be implementation login method！"
+                                        )
+                                        os._exit(0)
+                                    except Exception as e:
+                                        self.handel_exception(e)
+                                    log.debug(
+                                        f"login failed, user: {user} retry_times: {retry_times}"
+                                    )
+                                    retry_times += 1
+                                else:
+                                    self.handle_login_failed_user(user)
+
+                            now_user_count = self._redisdb.hget_count(
+                                self._tab_user_pool
+                            )
+                            log.info("当前在线user数为 {}".format(now_user_count))
+
+                except Exception as e:
+                    log.exception(e)
+
+                if self._keep_alive:
+                    tools.delay_time(10)
+                else:
+                    break
+
+            except Exception as e:
+                log.exception(e)
+                tools.delay_time(1)
+
+```
+
+### 代码文件: feapder\network\user_pool\gold_user_pool.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018/12/27 11:32 AM
+---------
+@summary: 账号昂贵、限制查询次数及使用时间的用户UserPool
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import os
+import random
+import time
+from enum import Enum, unique
+from typing import Optional, List
+
+from feapder import setting
+from feapder.db.redisdb import RedisDB
+from feapder.network.user_pool.base_user_pool import GoldUser, UserPoolInterface
+from feapder.utils import metrics
+from feapder.utils.log import log
+from feapder.utils.redis_lock import RedisLock
+from feapder.utils.tools import send_msg
+
+
+@unique
+class GoldUserStatus(Enum):
+    # 使用状态
+    USED = "used"
+    SUCCESS = "success"
+    OVERDUE = "overdue"  # cookie 过期
+    SLEEP = "sleep"
+    EXCEPTION = "exception"
+    # 登陆状态
+    LOGIN_SUCCESS = "login_success"
+    LOGIN_FALIED = "login_failed"
+
+
+class GoldUserPool(UserPoolInterface):
+    """
+    账号昂贵、限制查询次数的用户的UserPool
+    """
+
+    def __init__(
+        self,
+        redis_key,
+        *,
+        users: List[GoldUser],
+        keep_alive=False,
+    ):
+        """
+        @param redis_key: user存放在redis中的key前缀
+        @param users: 账号信息
+        @param keep_alive: 是否保持常驻，以便user不足时立即补充
+        """
+        self._tab_user_pool = setting.TAB_USER_POOL.format(
+            redis_key=redis_key, user_type="gold"
+        )
+
+        self.users = users
+        self._keep_alive = keep_alive
+
+        self._redisdb = RedisDB()
+        self._users_id = []
+
+        if not users:
+            raise ValueError("not users")
+
+        # 给user的类属性复制
+        self.users[0].__class__.redisdb = self._redisdb
+        self.users[0].__class__.redis_key = self._tab_user_pool
+
+        self.__init_metrics()
+        self.__sync_users_base_info()
+        self.__sycn_users_info()
+
+    def __init_metrics(self):
+        metrics.init(**setting.METRICS_OTHER_ARGS)
+
+    def __sync_users_base_info(self):
+        # 本地同步基本信息到redis, 注 只能在初始化函数内同步
+        for user in self.users:
+            cache_user = self.get_user_by_id(user.user_id)
+            if cache_user:
+                for key, value in user.to_dict().items():
+                    if not key.startswith("_"):
+                        setattr(cache_user, key, value)
+                cache_user.sycn_to_redis()
+
+    def __sycn_users_info(self):
+        # redis同步登录信息到本地
+        for index, user in enumerate(self.users):
+            cache_user = self.get_user_by_id(user.user_id)
+            if cache_user:
+                self.users[index] = cache_user
+
+    def _load_users_id(self):
+        self._users_id = self._redisdb.hkeys(self._tab_user_pool)
+        if self._users_id:
+            random.shuffle(self._users_id)
+
+    def _get_user_id(self):
+        if not self._users_id:
+            self._load_users_id()
+
+        if self._users_id:
+            return self._users_id.pop()
+
+    def login(self, user: GoldUser) -> GoldUser:
+        """
+        登录 生产cookie
+        """
+        raise NotImplementedError
+
+    def get_user_by_id(self, user_id: str) -> GoldUser:
+        user_str = self._redisdb.hget(self._tab_user_pool, user_id)
+        if user_str:
+            user = GoldUser(**eval(user_str))
+            return user
+
+    def get_user(
+        self,
+        block=True,
+        username=None,
+        used_for_spider_name=None,
+        not_limit_use_interval=False,
+    ) -> Optional[GoldUser]:
+        """
+        @params username: 获取指定的用户
+        @params used_for_spider_name: 独享式使用，独享爬虫的名字。其他爬虫不可抢占
+        @params block: 无用户时是否等待
+        @params not_limit_frequence: 不限制使用频率
+        @return: GoldUser
+        """
+        while True:
+            try:
+                user_id = username or self._get_user_id()
+                user_str = None
+                if user_id:
+                    user_str = self._redisdb.hget(self._tab_user_pool, user_id)
+
+                if (not user_id or not user_str) and block:
+                    self._keep_alive = False
+                    self.run(username)
+                    continue
+
+                # 取到用户
+                user = GoldUser(**eval(user_str))
+
+                # 独占式使用，若为其他爬虫，检查等待使用时间是否超过独占时间，若超过则可以使用
+                if (
+                    user.get_used_for_spider_name()
+                    and user.get_used_for_spider_name() != used_for_spider_name
+                ):
+                    wait_time = time.time() - user.get_last_use_time()
+                    if wait_time < user.exclusive_time:
+                        log.info(
+                            "用户{} 被 {} 爬虫独占，需等待 {} 秒后才可使用".format(
+                                user.username,
+                                user.get_used_for_spider_name(),
+                                user.exclusive_time - wait_time,
+                            )
+                        )
+                        time.sleep(1)
+                        continue
+
+                if not user.is_overwork() and user.is_at_work_time():
+                    if not user.cookies:
+                        log.debug(f"用户 {user.username} 未登录，尝试登录")
+                        self._keep_alive = False
+                        self.run(username)
+                        continue
+
+                    if not_limit_use_interval or user.is_time_to_use():
+                        user.set_used_for_spider_name(used_for_spider_name)
+                        log.debug("使用用户 {}".format(user.username))
+                        self.record_user_status(user.user_id, GoldUserStatus.USED)
+                        return user
+                    else:
+                        log.debug("{} 用户使用间隔过短 查看下一个用户".format(user.username))
+                        time.sleep(1)
+                        continue
+                else:
+                    if not user.is_at_work_time():
+                        log.info("用户 {} 不在工作时间 sleep 60s".format(user.username))
+                        if block:
+                            time.sleep(60)
+                            continue
+                        else:
+                            return None
+
+            except Exception as e:
+                log.exception(e)
+                time.sleep(1)
+
+    def del_user(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        if user:
+            user.set_cookies(None)
+            self.record_user_status(user.user_id, GoldUserStatus.OVERDUE)
+
+    def add_user(self, user: GoldUser):
+        user.sycn_to_redis()
+
+    def delay_use(self, user_id: str, delay_seconds: int):
+        user = self.get_user_by_id(user_id)
+        if user:
+            user.set_delay_use(delay_seconds)
+
+        self.record_user_status(user_id, GoldUserStatus.SLEEP)
+
+    def record_success_user(self, user_id: str):
+        self.record_user_status(user_id, GoldUserStatus.SUCCESS)
+
+    def record_exception_user(self, user_id: str):
+        self.record_user_status(user_id, GoldUserStatus.EXCEPTION)
+
+    def run(self, username=None):
+        while True:
+            try:
+                with RedisLock(
+                    key=self._tab_user_pool, lock_timeout=3600, wait_timeout=0
+                ) as _lock:
+                    if _lock.locked:
+                        self.__sycn_users_info()
+                        online_user = 0
+                        for user in self.users:
+                            if username and username != user.username:
+                                continue
+
+                            try:
+                                if user.cookies:
+                                    online_user += 1
+                                    continue
+
+                                # 预检查
+                                if not user.is_time_to_login():
+                                    log.info(
+                                        "账号{}与上次登录时间间隔过短，暂不登录: 将在{}登录使用".format(
+                                            user.username, user.next_login_time()
+                                        )
+                                    )
+                                    continue
+
+                                user = self.login(user)
+                                if user.cookies:
+                                    # 保存cookie
+                                    user.set_login_time()
+                                    self.add_user(user)
+                                    self.record_user_status(
+                                        user.user_id, GoldUserStatus.LOGIN_SUCCESS
+                                    )
+                                    log.debug("登录成功 {}".format(user.username))
+                                    online_user += 1
+                                else:
+                                    log.info("登录失败 {}".format(user.username))
+                                    self.record_user_status(
+                                        user.user_id, GoldUserStatus.LOGIN_FALIED
+                                    )
+                            except NotImplementedError:
+                                log.error(
+                                    f"{self.__class__.__name__} must be implementation login method！"
+                                )
+                                os._exit(0)
+                            except Exception as e:
+                                log.exception(e)
+                                msg = f"{user.username} 账号登陆失败 exception: {str(e)}"
+                                log.info(msg)
+                                self.record_user_status(
+                                    user.user_id, GoldUserStatus.LOGIN_FALIED
+                                )
+
+                                send_msg(
+                                    msg=msg,
+                                    level="error",
+                                    message_prefix=f"{user.username} 账号登陆失败",
+                                )
+
+                        log.info("当前在线user数为 {}".format(online_user))
+
+                if self._keep_alive:
+                    time.sleep(10)
+                else:
+                    break
+
+            except Exception as e:
+                log.exception(e)
+                time.sleep(1)
+
+    def record_user_status(self, user_id: str, status: GoldUserStatus):
+        metrics.emit_counter(user_id, 1, classify=f"users_{status.value}")
+
+```
+
+### 代码文件: feapder\pipelines\mongo_pipeline.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021-04-18 14:12:21
+---------
+@summary: 导出数据
+---------
+@author: Mkdir700
+@email:  mkdir700@gmail.com
+"""
+from typing import Dict, List, Tuple
+
+from feapder.db.mongodb import MongoDB
+from feapder.pipelines import BasePipeline
+from feapder.utils.log import log
+
+
+class MongoPipeline(BasePipeline):
+    def __init__(self):
+        self._to_db = None
+
+    @property
+    def to_db(self):
+        if not self._to_db:
+            self._to_db = MongoDB()
+
+        return self._to_db
+
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+        try:
+            add_count = self.to_db.add_batch(coll_name=table, datas=items)
+            datas_size = len(items)
+            log.info(
+                "共导出 %s 条数据到 %s,  新增 %s条, 重复 %s 条"
+                % (datas_size, table, add_count, datas_size - add_count)
+            )
+            return True
+        except Exception as e:
+            log.exception(e)
+            return False
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+        try:
+            add_count = self.to_db.add_batch(
+                coll_name=table,
+                datas=items,
+                update_columns=update_keys or list(items[0].keys()),
+            )
+            datas_size = len(items)
+            update_count = datas_size - add_count
+            msg = "共导出 %s 条数据到 %s,  新增 %s 条, 更新 %s 条" % (
+                datas_size,
+                table,
+                add_count,
+                update_count,
+            )
+            if update_keys:
+                msg += " 更新字段为 {}".format(update_keys)
+            log.info(msg)
+
+            return True
+        except Exception as e:
+            log.exception(e)
+            return False
+
+```
+
+### 代码文件: feapder\db\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/23 12:09 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+```
+
+### 代码文件: feapder\commands\create\create_json.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-28 17:38:43
+---------
+@summary: 字符串转json
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+
+import pyperclip
+
+import feapder.utils.tools as tools
+
+
+class CreateJson:
+    def get_data(self):
+        """
+        @summary: 从控制台读取多行
+        ---------
+        ---------
+        @result:
+        """
+        input("请复制需要转换的内容（xxx:xxx格式，支持多行），复制后按任意键读取剪切板内容\n")
+
+        text = pyperclip.paste()
+        print(text + "\n")
+
+        data = []
+        for line in text.split("\n"):
+            line = line.strip().replace("\t", " " * 4)
+            if not line:
+                break
+
+            data.append(line)
+
+        return data
+
+    def create(self, sort_keys=False):
+        contents = self.get_data()
+
+        json = {}
+        for content in contents:
+            content = content.strip()
+            if not content or content.startswith(":"):
+                continue
+
+            regex = "([^:\s]*)[:|\s]*(.*)"
+
+            result = tools.get_info(content, regex, fetch_one=True)
+            if result[0] in json:
+                json[result[0]] = json[result[0]] + "&" + result[1]
+            else:
+                json[result[0]] = result[1].strip()
+
+        print(tools.dumps_json(json, sort_keys=sort_keys))
+
+```
+
+### 代码文件: feapder\utils\redis_lock.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2019/11/5 5:25 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import threading
+import time
+
+from feapder.db.redisdb import RedisDB
+from feapder.utils.log import log
+
+
+class RedisLock:
+    redis_cli = None
+
+    def __init__(
+        self, key, *, wait_timeout=0, lock_timeout=86400, redis_cli=None, redis_url=None
+    ):
+        """
+        redis超时锁
+        :param key: 存储锁的key redis_lock:[key]
+        :param wait_timeout: 等待加锁超时时间，为0时则不等待加锁，加锁失败
+        :param lock_timeout: 锁超时时间 为0时则不会超时，直到锁释放或意外退出，默认超时为1天
+        :param redis_cli: redis客户端对象
+        :param redis_url: redis连接地址，若redis_cli传值，则不使用redis_url
+
+        用法示例:
+        with RedisLock(key="test") as _lock:
+            if _lock.locked:
+                # 用来判断是否加上了锁
+                # do somethings
+        """
+        self.redis_conn = redis_cli
+        self.redis_url = redis_url
+        self.lock_key = "redis_lock:{}".format(key)
+        # 锁超时时间
+        self.lock_timeout = lock_timeout
+        # 等待加锁时间
+        self.wait_timeout = wait_timeout
+        self.locked = False
+        self.stop_prolong_life = False
+
+    @property
+    def redis_conn(self):
+        if not self.__class__.redis_cli:
+            self.__class__.redis_cli = RedisDB(url=self.redis_url).get_redis_obj()
+
+        return self.__class__.redis_cli
+
+    @redis_conn.setter
+    def redis_conn(self, cli):
+        if cli:
+            self.__class__.redis_cli = cli
+
+    def __enter__(self):
+        if not self.locked:
+            self.acquire()
+            if self.locked:
+                # 延长锁的时间
+                thread = threading.Thread(target=self.prolong_life)
+                thread.daemon = True
+                thread.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop_prolong_life = True
+        self.release()
+
+    def __repr__(self):
+        return "<RedisLock: {} >".format(self.lock_key)
+
+    def acquire(self):
+        start = time.time()
+        while True:
+            # 尝试加锁
+            if self.redis_conn.set(self.lock_key, time.time(), nx=True, ex=5):
+                self.locked = True
+                break
+
+            if self.wait_timeout > 0:
+                if time.time() - start > self.wait_timeout:
+                    log.debug("获取锁失败")
+                    break
+            else:
+                log.debug("获取锁失败")
+                break
+            log.debug("等待锁: {} wait:{}".format(self, time.time() - start))
+            if self.wait_timeout > 10:
+                time.sleep(5)
+            else:
+                time.sleep(1)
+        return
+
+    def release(self):
+        if self.locked:
+            self.redis_conn.delete(self.lock_key)
+            self.locked = False
+        return
+
+    def prolong_life(self):
+        """
+        延长锁的过期时间
+        :return:
+        """
+
+        spend_time = 0
+        while not self.stop_prolong_life:
+            expire = self.redis_conn.ttl(self.lock_key)
+            if expire < 0:  # key 不存在
+                time.sleep(1)
+                continue
+            self.redis_conn.expire(self.lock_key, expire + 5)  # 延长5秒
+            time.sleep(expire)  # 临过期5秒前，再次延长
+            spend_time += expire
+            if self.lock_timeout and spend_time > self.lock_timeout:
+                log.info("锁超时，释放")
+                self.redis_conn.delete(self.lock_key)
+                break
+
+```
+
+### 代码文件: feapder\dedup\__init__.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-12-13 21:08
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import copy
+from typing import Any, List, Union, Optional, Tuple, Callable
+
+from feapder.utils.tools import get_md5
+from .bloomfilter import BloomFilter, ScalableBloomFilter
+from .expirefilter import ExpireFilter
+from .litefilter import LiteFilter
+
+
+class Dedup:
+    BloomFilter = 1
+    MemoryFilter = 2
+    ExpireFilter = 3
+    LiteFilter = 4
+
+    def __init__(self, filter_type: int = BloomFilter, to_md5: bool = True, **kwargs):
+        """
+        去重过滤器 集成BloomFilter、MemoryFilter、ExpireFilter、MemoryLiteFilter
+        Args:
+            filter_type: 过滤器类型 BloomFilter
+            name: 过滤器名称 该名称会默认以dedup作为前缀 dedup:expire_set:[name]/dedup:bloomfilter:[name]。 默认ExpireFilter name=过期时间; BloomFilter name=dedup:bloomfilter:bloomfilter
+            absolute_name: 过滤器绝对名称 不会加dedup前缀，当此值不为空时name参数无效
+            expire_time: ExpireFilter的过期时间 单位为秒，其他两种过滤器不用指定
+            error_rate: BloomFilter/MemoryFilter的误判率 默认为0.00001
+            to_md5: 去重前是否将数据转为MD5，默认是
+            redis_url: redis://[[username]:[password]]@localhost:6379/0
+                       BloomFilter 与 ExpireFilter 使用
+                       默认会读取setting中的redis配置，若无setting，则需要专递redis_url
+            initial_capacity: 单个布隆过滤器去重容量 默认100000000，当布隆过滤器容量满时会扩展下一个布隆过滤器
+            error_rate：布隆过滤器的误判率 默认0.00001
+            **kwargs:
+        """
+
+        if filter_type == Dedup.ExpireFilter:
+            try:
+                expire_time = kwargs["expire_time"]
+            except:
+                raise ValueError("需传参数 expire_time")
+
+            name = kwargs.get("absolute_name") or "dedup:expire_set:%s" % kwargs.get(
+                "name", expire_time
+            )
+            expire_time_record_key = "dedup:expire_set:expire_time"
+
+            self.dedup = ExpireFilter(
+                name=name,
+                expire_time=expire_time,
+                expire_time_record_key=expire_time_record_key,
+                redis_url=kwargs.get("redis_url"),
+            )
+
+        elif filter_type == Dedup.LiteFilter:
+            self.dedup = LiteFilter()
+
+        else:
+            initial_capacity = kwargs.get("initial_capacity", 100000000)
+            error_rate = kwargs.get("error_rate", 0.00001)
+            name = kwargs.get("absolute_name") or "dedup:bloomfilter:" + kwargs.get(
+                "name", "bloomfilter"
+            )
+            if filter_type == Dedup.BloomFilter:
+                self.dedup = ScalableBloomFilter(
+                    name=name,
+                    initial_capacity=initial_capacity,
+                    error_rate=error_rate,
+                    bitarray_type=ScalableBloomFilter.BASE_REDIS,
+                    redis_url=kwargs.get("redis_url"),
+                )
+            elif filter_type == Dedup.MemoryFilter:
+                self.dedup = ScalableBloomFilter(
+                    name=name,
+                    initial_capacity=initial_capacity,
+                    error_rate=error_rate,
+                    bitarray_type=ScalableBloomFilter.BASE_MEMORY,
+                )
+            else:
+                raise ValueError(
+                    "filter_type 类型错误，仅支持 Dedup.BloomFilter、Dedup.MemoryFilter、Dedup.ExpireFilter"
+                )
+
+        self._to_md5 = to_md5
+
+    def __repr__(self):
+        return str(self.dedup)
+
+    def _deal_datas(self, datas):
+        if self._to_md5:
+            if isinstance(datas, list):
+                keys = [get_md5(data) for data in datas]
+            else:
+                keys = get_md5(datas)
+        else:
+            keys = copy.deepcopy(datas)
+
+        return keys
+
+    def add(
+        self, datas: Union[List[Any], Any], skip_check: bool = False
+    ) -> Union[List[Any], Any]:
+        """
+        添加数据
+        @param datas: list / 单个值
+        @param skip_check: 是否直接添加，不检查是否存在 适用于bloomfilter，加快add速度
+        @return: list / 单个值 (如果数据已存在 返回 0 否则返回 1, 可以理解为是否添加成功)
+        """
+
+        keys = self._deal_datas(datas)
+        is_added = self.dedup.add(keys, skip_check)
+
+        return is_added
+
+    def get(self, datas: Union[List[Any], Any]) -> Union[List[Any], Any]:
+        """
+        检查数据是否存在
+        @param datas: list / 单个值
+        @return: list / 单个值 （存在返回1 不存在返回0)
+        """
+        keys = self._deal_datas(datas)
+        is_exists = self.dedup.get(keys)
+
+        return is_exists
+
+    def filter_exist_data(
+        self,
+        datas: List[Any],
+        *,
+        datas_fingerprints: Optional[List] = None,
+        callback: Callable[[Any], None] = None
+    ) -> Union[Tuple[List[Any], List[Any]], List[Any]]:
+        """
+        过滤掉已存在的数据
+        *** 直接修改原来的数据 使用完此方法后 datas, datas_fingerprints 里面的值为去重后的数据
+        @param datas_fingerprints: 数据的唯一指纹 列表
+        @param datas: 数据 列表
+        @param callback: 数据已存在时的回调 callback(data)
+        @return: None
+        """
+
+        is_exists = self.get(datas_fingerprints or datas)
+
+        dedup_datas = []
+
+        if datas_fingerprints:
+            dedup_datas_fingerprints = []
+            while is_exists:
+                data = datas.pop(0)
+                is_exist = is_exists.pop(0)
+                data_fingerprint = datas_fingerprints.pop(0)
+
+                if not is_exist:
+                    dedup_datas.append(data)
+                    dedup_datas_fingerprints.append(data_fingerprint)
+                else:
+                    if callback:
+                        callback(data)
+
+            datas_fingerprints.extend(dedup_datas_fingerprints)
+            datas.extend(dedup_datas)
+            return datas, datas_fingerprints
+
+        else:
+            while is_exists:
+                data = datas.pop(0)
+                is_exist = is_exists.pop(0)
+
+                if not is_exist:
+                    dedup_datas.append(data)
+                else:
+                    if callback:
+                        callback(data)
+
+            datas.extend(dedup_datas)
+            return datas
+
+```
+
+### 代码文件: feapder\core\spiders\spider.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/22 12:05 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import time
+import warnings
+from collections.abc import Iterable
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.core.base_parser import BaseParser
+from feapder.core.scheduler import Scheduler
+from feapder.db.redisdb import RedisDB
+from feapder.network.item import Item
+from feapder.network.request import Request
+from feapder.utils.log import log
+
+CONSOLE_PIPELINE_PATH = "feapder.pipelines.console_pipeline.ConsolePipeline"
+
+
+class Spider(
+    BaseParser, Scheduler
+):  # threading 中有name函数， 必须先继承BaseParser 否则其内部的name会被Schedule的基类threading.Thread的name覆盖
+    """
+    @summary: 为了简化搭建爬虫
+    ---------
+    """
+
+    def __init__(
+        self,
+        redis_key=None,
+        min_task_count=1,
+        check_task_interval=5,
+        thread_count=None,
+        begin_callback=None,
+        end_callback=None,
+        delete_keys=(),
+        keep_alive=None,
+        auto_start_requests=None,
+        batch_interval=0,
+        wait_lock=True,
+        **kwargs
+    ):
+        """
+        @summary: 爬虫
+        ---------
+        @param redis_key: 任务等数据存放在redis中的key前缀
+        @param min_task_count: 任务队列中最少任务数, 少于这个数量才会添加任务，默认1。start_monitor_task 模式下生效
+        @param check_task_interval: 检查是否还有任务的时间间隔；默认5秒
+        @param thread_count: 线程数，默认为配置文件中的线程数
+        @param begin_callback: 爬虫开始回调函数
+        @param end_callback: 爬虫结束回调函数
+        @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+        @param keep_alive: 爬虫是否常驻
+        @param auto_start_requests: 爬虫是否自动添加任务
+        @param batch_interval: 抓取时间间隔 默认为0 天为单位 多次启动时，只有当前时间与第一次抓取结束的时间间隔大于指定的时间间隔时，爬虫才启动
+        @param wait_lock: 下发任务时否等待锁，若不等待锁，可能会存在多进程同时在下发一样的任务，因此分布式环境下请将该值设置True
+        ---------
+        @result:
+        """
+        super(Spider, self).__init__(
+            redis_key=redis_key,
+            thread_count=thread_count,
+            begin_callback=begin_callback,
+            end_callback=end_callback,
+            delete_keys=delete_keys,
+            keep_alive=keep_alive,
+            auto_start_requests=auto_start_requests,
+            batch_interval=batch_interval,
+            wait_lock=wait_lock,
+            **kwargs
+        )
+
+        self._min_task_count = min_task_count
+        self._check_task_interval = check_task_interval
+
+        self._is_distributed_task = False
+        self._is_show_not_task = False
+
+    def start_monitor_task(self, *args, **kws):
+        if not self.is_reach_next_spider_time():
+            return
+
+        self._auto_start_requests = False
+        redisdb = RedisDB()
+
+        if not self._parsers:  # 不是add_parser 模式
+            self._parsers.append(self)
+
+        while True:
+            try:
+                # 检查redis中是否有任务
+                tab_requests = setting.TAB_REQUESTS.format(redis_key=self._redis_key)
+                todo_task_count = redisdb.zget_count(tab_requests)
+
+                if todo_task_count < self._min_task_count:  # 添加任务
+                    # make start requests
+                    self.distribute_task(*args, **kws)
+
+                else:
+                    log.info("redis 中尚有%s条积压任务，暂时不派发新任务" % todo_task_count)
+
+            except Exception as e:
+                log.exception(e)
+
+            if not self._keep_alive:
+                break
+
+            time.sleep(self._check_task_interval)
+
+    def distribute_task(self, *args, **kws):
+        """
+        @summary: 分发任务 并将返回的request入库
+        ---------
+        @param tasks:
+        ---------
+        @result:
+        """
+        self._is_distributed_task = False
+
+        for parser in self._parsers:
+            requests = parser.start_requests(*args, **kws)
+            if requests and not isinstance(requests, Iterable):
+                raise Exception("%s.%s返回值必须可迭代" % (parser.name, "start_requests"))
+
+            result_type = 1
+            for request in requests or []:
+                if isinstance(request, Request):
+                    request.parser_name = request.parser_name or parser.name
+                    self._request_buffer.put_request(request)
+
+                    self._is_distributed_task = True
+                    result_type = 1
+
+                elif isinstance(request, Item):
+                    self._item_buffer.put_item(request)
+                    result_type = 2
+
+                elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                    if result_type == 1:
+                        self._request_buffer.put_request(request)
+                    else:
+                        self._item_buffer.put_item(request)
+                else:
+                    raise TypeError(
+                        "start_requests yield result type error, expect Request、Item、callback func, bug get type: {}".format(
+                            type(request)
+                        )
+                    )
+
+            self._request_buffer.flush()
+            self._item_buffer.flush()
+
+        if self._is_distributed_task:  # 有任务时才提示启动爬虫
+            # begin
+            self.spider_begin()
+
+            # 重置已经提示无任务状态为False
+            self._is_show_not_task = False
+
+        elif not self._is_show_not_task:  # 无任务，且没推送过无任务信息
+            # 发送无任务消息
+            msg = "《%s》start_requests无任务添加" % (self._spider_name)
+            log.info(msg)
+
+            # self.send_msg(msg)
+
+            self._is_show_not_task = True
+
+    def run(self):
+        if not self.is_reach_next_spider_time():
+            return
+
+        if not self._parsers:  # 不是add_parser 模式
+            self._parsers.append(self)
+
+        self._start()
+
+        while True:
+            try:
+                if self._stop_spider or self.all_thread_is_done():
+                    if not self._is_notify_end:
+                        self.spider_end()  # 跑完一轮
+                        self._is_notify_end = True
+
+                    if not self._keep_alive:
+                        self._stop_all_thread()
+                        break
+
+                else:
+                    self._is_notify_end = False
+
+                self.check_task_status()
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+    @classmethod
+    def to_DebugSpider(cls, *args, **kwargs):
+        # DebugSpider 继承 cls
+        DebugSpider.__bases__ = (cls,)
+        DebugSpider.__name__ = cls.__name__
+        return DebugSpider(*args, **kwargs)
+
+
+class DebugSpider(Spider):
+    """
+    Debug爬虫
+    """
+
+    __debug_custom_setting__ = dict(
+        COLLECTOR_TASK_COUNT=1,
+        # SPIDER
+        SPIDER_THREAD_COUNT=1,
+        SPIDER_SLEEP_TIME=0,
+        SPIDER_MAX_RETRY_TIMES=10,
+        REQUEST_LOST_TIMEOUT=600,  # 10分钟
+        PROXY_ENABLE=False,
+        RETRY_FAILED_REQUESTS=False,
+        # 保存失败的request
+        SAVE_FAILED_REQUEST=False,
+        # 过滤
+        ITEM_FILTER_ENABLE=False,
+        REQUEST_FILTER_ENABLE=False,
+        OSS_UPLOAD_TABLES=(),
+        DELETE_KEYS=True,
+    )
+
+    def __init__(
+        self, request=None, request_dict=None, save_to_db=False, *args, **kwargs
+    ):
+        """
+        @param request: request 类对象
+        @param request_dict: request 字典。 request 与 request_dict 二者选一即可
+        @param save_to_db: 数据是否入库 默认否
+        @param kwargs:
+        """
+        warnings.warn(
+            "您正处于debug模式下，该模式下不会更新任务状态及数据入库，仅用于调试。正式发布前请更改为正常模式", category=Warning
+        )
+
+        if not request and not request_dict:
+            raise Exception("request 与 request_dict 不能同时为null")
+
+        kwargs["redis_key"] = kwargs["redis_key"] + "_debug"
+        if not save_to_db:
+            self.__class__.__debug_custom_setting__["ITEM_PIPELINES"] = [
+                CONSOLE_PIPELINE_PATH
+            ]
+        self.__class__.__custom_setting__.update(
+            self.__class__.__debug_custom_setting__
+        )
+
+        super(DebugSpider, self).__init__(*args, **kwargs)
+
+        self._request = request or Request.from_dict(request_dict)
+
+    def save_cached(self, request, response, table):
+        pass
+
+    def __start_requests(self):
+        yield self._request
+
+    def distribute_task(self):
+        """
+        @summary: 分发任务 并将返回的request入库
+        ---------
+        ---------
+        @result:
+        """
+        self._is_distributed_task = False
+
+        for parser in self._parsers:
+            requests = parser.__start_requests()
+            if requests and not isinstance(requests, Iterable):
+                raise Exception("%s.%s返回值必须可迭代" % (parser.name, "start_requests"))
+
+            result_type = 1
+            for request in requests or []:
+                if isinstance(request, Request):
+                    request.parser_name = request.parser_name or parser.name
+                    self._request_buffer.put_request(request)
+
+                    self._is_distributed_task = True
+                    result_type = 1
+
+                elif isinstance(request, Item):
+                    self._item_buffer.put_item(request)
+                    result_type = 2
+
+                elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                    if result_type == 1:
+                        self._request_buffer.put_request(request)
+                    else:
+                        self._item_buffer.put_item(request)
+
+            self._request_buffer.flush()
+            self._item_buffer.flush()
+
+        if self._is_distributed_task:  # 有任务时才提示启动爬虫
+            # begin
+            self.spider_begin()
+
+            # 重置已经提示无任务状态为False
+            self._is_show_not_task = False
+
+        elif not self._is_show_not_task:  # 无任务，且没推送过无任务信息
+            # 发送无任务消息
+            msg = "《%s》start_requests无任务添加" % (self._spider_name)
+            log.info(msg)
+
+            # self.send_msg(msg)
+
+            self._is_show_not_task = True
+
+    def _start(self):
+        # 启动parser 的 start_requests
+        self.spider_begin()  # 不自动结束的爬虫此处只能执行一遍
+
+        for parser in self._parsers:
+            results = parser.__start_requests()
+            # 添加request到请求队列，由请求队列统一入库
+            if results and not isinstance(results, Iterable):
+                raise Exception("%s.%s返回值必须可迭代" % (parser.name, "start_requests"))
+
+            result_type = 1
+            for result in results or []:
+                if isinstance(result, Request):
+                    result.parser_name = result.parser_name or parser.name
+                    self._request_buffer.put_request(result)
+                    result_type = 1
+
+                elif isinstance(result, Item):
+                    self._item_buffer.put_item(result)
+                    result_type = 2
+
+                elif callable(result):  # callbale的request可能是更新数据库操作的函数
+                    if result_type == 1:
+                        self._request_buffer.put_request(result)
+                    else:
+                        self._item_buffer.put_item(result)
+
+            self._request_buffer.flush()
+            self._item_buffer.flush()
+
+        # 启动collector
+        self._collector.start()
+
+        # 启动parser control
+        for i in range(self._thread_count):
+            parser_control = self._parser_control_obj(
+                self._collector,
+                self._redis_key,
+                self._request_buffer,
+                self._item_buffer,
+            )
+
+            for parser in self._parsers:
+                parser_control.add_parser(parser)
+
+            parser_control.start()
+            self._parser_controls.append(parser_control)
+
+        # 启动request_buffer
+        self._request_buffer.start()
+
+        # 启动item_buffer
+        self._item_buffer.start()
+
+    def run(self):
+        if not self._parsers:  # 不是add_parser 模式
+            self._parsers.append(self)
+
+        self._start()
+
+        while True:
+            try:
+                if self.all_thread_is_done():
+                    self._stop_all_thread()
+                    break
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+        self.delete_tables([self._redis_key + "*"])
+
+```
+
+### 代码文件: feapder\commands\__init__.py
+```python
+
+```
+
+### 代码文件: feapder\network\downloader\__init__.py
+```python
+from ._requests import RequestsDownloader
+from ._requests import RequestsSessionDownloader
+
+# 下面是非必要依赖
+try:
+    from ._selenium import SeleniumDownloader
+except ModuleNotFoundError:
+    pass
+try:
+    from ._playwright import PlaywrightDownloader
+except ModuleNotFoundError:
+    pass
+
+```
+
+### 代码文件: feapder\core\spiders\batch_spider.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/4/22 12:06 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import datetime
+import os
+import time
+import warnings
+from collections.abc import Iterable
+
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.core.base_parser import BatchParser
+from feapder.core.scheduler import Scheduler
+from feapder.db.mysqldb import MysqlDB
+from feapder.db.redisdb import RedisDB
+from feapder.network.item import Item
+from feapder.network.item import UpdateItem
+from feapder.network.request import Request
+from feapder.utils.log import log
+from feapder.utils.perfect_dict import PerfectDict
+from feapder.utils.redis_lock import RedisLock
+
+CONSOLE_PIPELINE_PATH = "feapder.pipelines.console_pipeline.ConsolePipeline"
+
+
+class BatchSpider(BatchParser, Scheduler):
+    def __init__(
+        self,
+        task_table,
+        batch_record_table,
+        batch_name,
+        batch_interval,
+        task_keys,
+        task_state="state",
+        min_task_count=10000,
+        check_task_interval=5,
+        task_limit=10000,
+        related_redis_key=None,
+        related_batch_record=None,
+        task_condition="",
+        task_order_by="",
+        redis_key=None,
+        thread_count=None,
+        begin_callback=None,
+        end_callback=None,
+        delete_keys=(),
+        keep_alive=None,
+        auto_start_next_batch=True,
+        **kwargs,
+    ):
+        """
+        @summary: 批次爬虫
+        必要条件
+        1、需有任务表
+            任务表中必须有id 及 任务状态字段 如 state。如指定parser_name字段，则任务会自动下发到对应的parser下, 否则会下发到所有的parser下。其他字段可根据爬虫需要的参数自行扩充
+
+            参考建表语句如下：
+            CREATE TABLE `table_name` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `param` varchar(1000) DEFAULT NULL COMMENT '爬虫需要的抓取数据需要的参数',
+              `state` int(11) DEFAULT NULL COMMENT '任务状态',
+              `parser_name` varchar(255) DEFAULT NULL COMMENT '任务解析器的脚本类名',
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `nui` (`param`) USING BTREE
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+        2、需有批次记录表 不存在自动创建
+        ---------
+        @param task_table: mysql中的任务表
+        @param batch_record_table: mysql 中的批次记录表
+        @param batch_name: 批次采集程序名称
+        @param batch_interval: 批次间隔 天为单位。 如想一小时一批次，可写成1/24
+        @param task_keys: 需要获取的任务字段 列表 [] 如需指定解析的parser，则需将parser_name字段取出来。
+        @param task_state: mysql中任务表的任务状态字段
+        @param min_task_count: redis 中最少任务数, 少于这个数量会从mysql的任务表取任务
+        @param check_task_interval: 检查是否还有任务的时间间隔；
+        @param task_limit: 从数据库中取任务的数量
+        @param redis_key: 任务等数据存放在redis中的key前缀
+        @param thread_count: 线程数，默认为配置文件中的线程数
+        @param begin_callback: 爬虫开始回调函数
+        @param end_callback: 爬虫结束回调函数
+        @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+        @param keep_alive: 爬虫是否常驻，默认否
+        @param auto_start_next_batch: 本批次结束后，且下一批次时间已到达时，是否自动启动下一批次，默认是
+        @param related_redis_key: 有关联的其他爬虫任务表（redis）注意：要避免环路 如 A -> B & B -> A 。
+        @param related_batch_record: 有关联的其他爬虫批次表（mysql）注意：要避免环路 如 A -> B & B -> A 。
+            related_redis_key 与 related_batch_record 选其一配置即可；用于相关联的爬虫没结束时，本爬虫也不结束
+            若相关连的爬虫为批次爬虫，推荐以related_batch_record配置，
+            若相关连的爬虫为普通爬虫，无批次表，可以以related_redis_key配置
+        @param task_condition: 任务条件 用于从一个大任务表中挑选出数据自己爬虫的任务，即where后的条件语句
+        @param task_order_by: 取任务时的排序条件 如 id desc
+        ---------
+        @result:
+        """
+        Scheduler.__init__(
+            self,
+            redis_key=redis_key,
+            thread_count=thread_count,
+            begin_callback=begin_callback,
+            end_callback=end_callback,
+            delete_keys=delete_keys,
+            keep_alive=keep_alive,
+            auto_start_requests=False,
+            batch_interval=batch_interval,
+            task_table=task_table,
+            **kwargs,
+        )
+
+        self._redisdb = RedisDB()
+        self._mysqldb = MysqlDB()
+
+        self._task_table = task_table  # mysql中的任务表
+        self._batch_record_table = batch_record_table  # mysql 中的批次记录表
+        self._batch_name = batch_name  # 批次采集程序名称
+        self._task_keys = task_keys  # 需要获取的任务字段
+
+        self._task_state = task_state  # mysql中任务表的state字段名
+        self._min_task_count = min_task_count  # redis 中最少任务数
+        self._check_task_interval = check_task_interval
+        self._task_limit = task_limit  # mysql中一次取的任务数量
+        self._related_task_tables = [
+            setting.TAB_REQUESTS.format(redis_key=redis_key)
+        ]  # 自己的task表也需要检查是否有任务
+        if related_redis_key:
+            self._related_task_tables.append(
+                setting.TAB_REQUESTS.format(redis_key=related_redis_key)
+            )
+
+        self._related_batch_record = related_batch_record
+        self._task_condition = task_condition
+        self._task_condition_prefix_and = task_condition and " and {}".format(
+            task_condition
+        )
+        self._task_condition_prefix_where = task_condition and " where {}".format(
+            task_condition
+        )
+        self._task_order_by = task_order_by and " order by {}".format(task_order_by)
+        self._auto_start_next_batch = auto_start_next_batch
+
+        self._batch_date_cache = None
+        if self._batch_interval >= 1:
+            self._date_format = "%Y-%m-%d"
+        elif self._batch_interval < 1 and self._batch_interval >= 1 / 24:
+            self._date_format = "%Y-%m-%d %H"
+        else:
+            self._date_format = "%Y-%m-%d %H:%M"
+
+        self._is_more_parsers = True  # 多模版类爬虫
+
+        # 初始化每个配置的属性
+        self._spider_last_done_time = None  # 爬虫最近已做任务数量时间
+        self._spider_last_done_count = None  # 爬虫最近已做任务数量
+        self._spider_deal_speed_cached = None
+        self._batch_timeout = False  # 批次是否超时或将要超时
+
+        # 重置任务
+        self.reset_task()
+
+    def init_batch_property(self):
+        """
+        每个批次开始时需要重置的属性
+        @return:
+        """
+        self._spider_deal_speed_cached = None
+        self._spider_last_done_time = None
+        self._spider_last_done_count = None  # 爬虫刚开始启动时已做任务数量
+        self._batch_timeout = False
+
+    def add_parser(self, parser, **kwargs):
+        parser = parser(
+            self._task_table,
+            self._batch_record_table,
+            self._task_state,
+            self._date_format,
+            self._mysqldb,
+            **kwargs,
+        )  # parser 实例化
+        self._parsers.append(parser)
+
+    def start_monitor_task(self):
+        """
+        @summary: 监控任务状态
+        ---------
+        ---------
+        @result:
+        """
+        if not self._parsers:  # 不是多模版模式， 将自己注入到parsers，自己为模版
+            self._is_more_parsers = False
+            self._parsers.append(self)
+
+        elif len(self._parsers) <= 1:
+            self._is_more_parsers = False
+
+        self.create_batch_record_table()
+
+        # 添加任务
+        for parser in self._parsers:
+            parser.add_task()
+
+        is_first_check = True
+        while True:
+            try:
+                if self.check_batch(is_first_check):  # 该批次已经做完
+                    if self._keep_alive:
+                        is_first_check = True
+                        log.info("爬虫所有任务已做完，不自动结束，等待新任务...")
+                        time.sleep(self._check_task_interval)
+                        continue
+                    else:
+                        break
+
+                is_first_check = False
+
+                # 检查redis中是否有任务 任务小于_min_task_count 则从mysql中取
+                tab_requests = setting.TAB_REQUESTS.format(redis_key=self._redis_key)
+                todo_task_count = self._redisdb.zget_count(tab_requests)
+
+                tasks = []
+                if todo_task_count < self._min_task_count:  # 从mysql中取任务
+                    # 更新batch表的任务状态数量
+                    self.update_task_done_count()
+
+                    log.info("redis 中剩余任务%s 数量过小 从mysql中取任务追加" % todo_task_count)
+                    tasks = self.get_todo_task_from_mysql()
+                    if not tasks:  # 状态为0的任务已经做完，需要检查状态为2的任务是否丢失
+
+                        if (
+                            todo_task_count == 0
+                        ):  # redis 中无待做任务，此时mysql中状态为2的任务为丢失任务。需重新做
+                            lose_task_count = self.get_lose_task_count()
+
+                            if not lose_task_count:
+                                time.sleep(self._check_task_interval)
+                                continue
+
+                            elif (
+                                lose_task_count > self._task_limit * 5
+                            ):  # 丢失任务太多，直接重置，否则每次等redis任务消耗完再取下一批丢失任务，速度过慢
+                                log.info("正在重置丢失任务为待做 共 {} 条".format(lose_task_count))
+                                # 重置正在做的任务为待做
+                                if self.reset_lose_task_from_mysql():
+                                    log.info("重置丢失任务成功")
+                                else:
+                                    log.info("重置丢失任务失败")
+
+                                continue
+
+                            else:  # 丢失任务少，直接取
+                                log.info(
+                                    "正在取丢失任务 共 {} 条, 取 {} 条".format(
+                                        lose_task_count,
+                                        self._task_limit
+                                        if self._task_limit <= lose_task_count
+                                        else lose_task_count,
+                                    )
+                                )
+                                tasks = self.get_doing_task_from_mysql()
+
+                    else:
+                        log.info("mysql 中取到待做任务 %s 条" % len(tasks))
+
+                else:
+                    log.info("redis 中尚有%s条积压任务，暂时不派发新任务" % todo_task_count)
+
+                if not tasks:
+                    if todo_task_count >= self._min_task_count:
+                        # log.info('任务正在进行 redis中剩余任务 %s' % todo_task_count)
+                        pass
+                    else:
+                        log.info("mysql 中无待做任务 redis中剩余任务 %s" % todo_task_count)
+                else:
+                    # make start requests
+                    self.distribute_task(tasks)
+                    log.info("添加任务到redis成功")
+
+            except Exception as e:
+                log.exception(e)
+
+            time.sleep(self._check_task_interval)
+
+    def create_batch_record_table(self):
+        sql = (
+            "select table_name from information_schema.tables where table_name like '%s'"
+            % self._batch_record_table
+        )
+        tables_name = self._mysqldb.find(sql)
+        if not tables_name:
+            sql = """
+                CREATE TABLE `{table_name}` (
+                      `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                      `batch_date` {batch_date} DEFAULT NULL COMMENT '批次时间',
+                      `total_count` int(11) DEFAULT NULL COMMENT '任务总数',
+                      `done_count` int(11) DEFAULT NULL COMMENT '完成数 (1,-1)',
+                      `fail_count` int(11) DEFAULT NULL COMMENT '失败任务数 (-1)',
+                      `interval` float(11) DEFAULT NULL COMMENT '批次间隔',
+                      `interval_unit` varchar(20) DEFAULT NULL COMMENT '批次间隔单位 day, hour',
+                      `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '批次开始时间',
+                      `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '本条记录更新时间',
+                      `is_done` int(11) DEFAULT '0' COMMENT '批次是否完成 0 未完成  1 完成',
+                      PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+            """.format(
+                table_name=self._batch_record_table,
+                batch_date="datetime",
+            )
+
+            self._mysqldb.execute(sql)
+
+    def distribute_task(self, tasks):
+        """
+        @summary: 分发任务
+        ---------
+        @param tasks:
+        ---------
+        @result:
+        """
+        if self._is_more_parsers:  # 为多模版类爬虫，需要下发指定的parser
+            for task in tasks:
+                for parser in self._parsers:  # 寻找task对应的parser
+                    if parser.name in task:
+                        task = PerfectDict(
+                            _dict=dict(zip(self._task_keys, task)), _values=list(task)
+                        )
+                        requests = parser.start_requests(task)
+                        if requests and not isinstance(requests, Iterable):
+                            raise Exception(
+                                "%s.%s返回值必须可迭代" % (parser.name, "start_requests")
+                            )
+
+                        result_type = 1
+                        for request in requests or []:
+                            if isinstance(request, Request):
+                                request.parser_name = request.parser_name or parser.name
+                                self._request_buffer.put_request(request)
+                                result_type = 1
+
+                            elif isinstance(request, Item):
+                                self._item_buffer.put_item(request)
+                                result_type = 2
+
+                                if (
+                                    self._item_buffer.get_items_count()
+                                    >= setting.ITEM_MAX_CACHED_COUNT
+                                ):
+                                    self._item_buffer.flush()
+
+                            elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                                if result_type == 1:
+                                    self._request_buffer.put_request(request)
+                                else:
+                                    self._item_buffer.put_item(request)
+
+                                    if (
+                                        self._item_buffer.get_items_count()
+                                        >= setting.ITEM_MAX_CACHED_COUNT
+                                    ):
+                                        self._item_buffer.flush()
+
+                            else:
+                                raise TypeError(
+                                    "start_requests yield result type error, expect Request、Item、callback func, bug get type: {}".format(
+                                        type(requests)
+                                    )
+                                )
+
+                        break
+
+        else:  # task没对应的parser 则将task下发到所有的parser
+            for task in tasks:
+                for parser in self._parsers:
+                    task = PerfectDict(
+                        _dict=dict(zip(self._task_keys, task)), _values=list(task)
+                    )
+                    requests = parser.start_requests(task)
+                    if requests and not isinstance(requests, Iterable):
+                        raise Exception(
+                            "%s.%s返回值必须可迭代" % (parser.name, "start_requests")
+                        )
+
+                    result_type = 1
+                    for request in requests or []:
+                        if isinstance(request, Request):
+                            request.parser_name = request.parser_name or parser.name
+                            self._request_buffer.put_request(request)
+                            result_type = 1
+
+                        elif isinstance(request, Item):
+                            self._item_buffer.put_item(request)
+                            result_type = 2
+
+                            if (
+                                self._item_buffer.get_items_count()
+                                >= setting.ITEM_MAX_CACHED_COUNT
+                            ):
+                                self._item_buffer.flush()
+
+                        elif callable(request):  # callbale的request可能是更新数据库操作的函数
+                            if result_type == 1:
+                                self._request_buffer.put_request(request)
+                            else:
+                                self._item_buffer.put_item(request)
+
+                                if (
+                                    self._item_buffer.get_items_count()
+                                    >= setting.ITEM_MAX_CACHED_COUNT
+                                ):
+                                    self._item_buffer.flush()
+
+        self._request_buffer.flush()
+        self._item_buffer.flush()
+
+    def __get_task_state_count(self):
+        sql = "select {state}, count(1) from {task_table}{task_condition} group by {state}".format(
+            state=self._task_state,
+            task_table=self._task_table,
+            task_condition=self._task_condition_prefix_where,
+        )
+        task_state_count = self._mysqldb.find(sql)
+
+        task_state = {
+            "total_count": sum(count for state, count in task_state_count),
+            "done_count": sum(
+                count for state, count in task_state_count if state in (1, -1)
+            ),
+            "failed_count": sum(
+                count for state, count in task_state_count if state == -1
+            ),
+        }
+
+        return task_state
+
+    def update_task_done_count(self):
+        """
+        @summary: 更新批次表中的任务状态
+        ---------
+        ---------
+        @result:
+        """
+        task_count = self.__get_task_state_count()
+
+        # log.info('《%s》 批次进度 %s/%s' % (self._batch_name, done_task_count, total_task_count))
+
+        # 更新批次表
+        sql = "update {} set done_count = {}, total_count = {}, fail_count = {}, update_time = CURRENT_TIME, is_done=0, `interval` = {}, interval_unit = '{}' where batch_date = '{}'".format(
+            self._batch_record_table,
+            task_count.get("done_count"),
+            task_count.get("total_count"),
+            task_count.get("failed_count"),
+            self._batch_interval
+            if self._batch_interval >= 1
+            else self._batch_interval * 24,
+            "day" if self._batch_interval >= 1 else "hour",
+            self.batch_date,
+        )
+        self._mysqldb.update(sql)
+
+    def update_is_done(self):
+        sql = "update {} set is_done = 1, update_time = CURRENT_TIME where batch_date = '{}' and is_done = 0".format(
+            self._batch_record_table, self.batch_date
+        )
+        self._mysqldb.update(sql)
+
+    def get_todo_task_from_mysql(self):
+        """
+        @summary: 取待做的任务
+        ---------
+        ---------
+        @result:
+        """
+        # TODO 分批取数据 每批最大取 1000000个，防止内存占用过大
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where %s = 0%s%s limit %s" % (
+            task_keys,
+            self._task_table,
+            self._task_state,
+            self._task_condition_prefix_and,
+            self._task_order_by,
+            self._task_limit,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        if tasks:
+            # 更新任务状态
+            for i in range(0, len(tasks), 10000):  # 10000 一批量更新
+                task_ids = str(
+                    tuple([task[0] for task in tasks[i : i + 10000]])
+                ).replace(",)", ")")
+                sql = "update %s set %s = 2 where id in %s" % (
+                    self._task_table,
+                    self._task_state,
+                    task_ids,
+                )
+                self._mysqldb.update(sql)
+
+        return tasks
+
+    def get_doing_task_from_mysql(self):
+        """
+        @summary: 取正在做的任务
+        ---------
+        ---------
+        @result:
+        """
+
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where %s = 2%s%s limit %s" % (
+            task_keys,
+            self._task_table,
+            self._task_state,
+            self._task_condition_prefix_and,
+            self._task_order_by,
+            self._task_limit,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        return tasks
+
+    def get_lose_task_count(self):
+        sql = 'select date_format(batch_date, "{date_format}"), total_count, done_count from {batch_record_table} order by id desc limit 1'.format(
+            date_format=self._date_format.replace(":%M", ":%i"),
+            batch_record_table=self._batch_record_table,
+        )
+        batch_info = self._mysqldb.find(sql)  # (('2018-08-19', 49686, 0),)
+        batch_date, total_count, done_count = batch_info[0]
+        return total_count - done_count
+
+    def reset_lose_task_from_mysql(self):
+        """
+        @summary: 重置丢失任务为待做
+        ---------
+        ---------
+        @result:
+        """
+
+        sql = "update {table} set {state} = 0 where {state} = 2{task_condition}".format(
+            table=self._task_table,
+            state=self._task_state,
+            task_condition=self._task_condition_prefix_and,
+        )
+        return self._mysqldb.update(sql)
+
+    def get_deal_speed(self, total_count, done_count, last_batch_date):
+        """
+        获取处理速度
+        @param total_count: 总数量
+        @param done_count: 做完数量
+        @param last_batch_date: 批次时间 datetime
+        @return:
+            deal_speed （条/小时）, need_time （秒）, overflow_time（秒） （ overflow_time < 0 时表示提前多少秒完成 )
+            或
+            None
+        """
+        now_date = datetime.datetime.now()
+        if self._spider_last_done_count is None:
+            self._spider_last_done_count = done_count
+            self._spider_last_done_time = now_date
+
+        elif done_count > self._spider_last_done_count:
+            time_interval = (now_date - self._spider_last_done_time).total_seconds()
+            deal_speed = (
+                done_count - self._spider_last_done_count
+            ) / time_interval  # 条/秒
+            need_time = (total_count - done_count) / deal_speed  # 单位秒
+            overflow_time = (
+                (now_date - last_batch_date).total_seconds()
+                + need_time
+                - datetime.timedelta(days=self._batch_interval).total_seconds()
+            )  # 溢出时间 秒
+            calculate_speed_time = now_date.strftime("%Y-%m-%d %H:%M:%S")  # 统计速度时间
+
+            deal_speed = int(deal_speed * 3600)  # 条/小时
+
+            # 更新最近已做任务数及时间
+            self._spider_last_done_count = done_count
+            self._spider_last_done_time = now_date
+
+            self._spider_deal_speed_cached = (
+                deal_speed,
+                need_time,
+                overflow_time,
+                calculate_speed_time,
+            )
+
+        return self._spider_deal_speed_cached
+
+    def init_task(self):
+        """
+        @summary: 初始化任务表中的任务， 新一个批次开始时调用。 可能会重写
+        ---------
+        ---------
+        @result:
+        """
+
+        sql = "update {task_table} set {state} = 0 where {state} != -1{task_condition}".format(
+            task_table=self._task_table,
+            state=self._task_state,
+            task_condition=self._task_condition_prefix_and,
+        )
+        return self._mysqldb.update(sql)
+
+    def check_batch(self, is_first_check=False):
+        """
+        @summary: 检查批次是否完成
+        ---------
+        @param: is_first_check 是否为首次检查，若首次检查，且检查结果为批次已完成，则不发送批次完成消息。因为之前发送过了
+        ---------
+        @result: 完成返回True 否则False
+        """
+
+        sql = 'select date_format(batch_date, "{date_format}"), total_count, done_count, is_done from {batch_record_table} order by id desc limit 1'.format(
+            date_format=self._date_format.replace(":%M", ":%i"),
+            batch_record_table=self._batch_record_table,
+        )
+        batch_info = self._mysqldb.find(sql)  # (('批次时间', 总量, 完成量, 批次是否完成),)
+
+        if batch_info:
+            batch_date, total_count, done_count, is_done = batch_info[0]
+
+            now_date = datetime.datetime.now()
+            last_batch_date = datetime.datetime.strptime(batch_date, self._date_format)
+            time_difference = now_date - last_batch_date
+
+            if total_count == done_count and time_difference < datetime.timedelta(
+                days=self._batch_interval
+            ):  # 若在本批次内，再次检查任务表是否有新增任务
+                # # 改成查询任务表 看是否真的没任务了，因为batch_record表里边的数量可能没来得及更新
+                task_count = self.__get_task_state_count()
+
+                total_count = task_count.get("total_count")
+                done_count = task_count.get("done_count")
+
+            if total_count == done_count:
+                if not is_done:
+                    # 检查相关联的爬虫是否完成
+                    related_spider_is_done = self.related_spider_is_done()
+                    if related_spider_is_done is False:
+                        msg = "《{}》本批次未完成, 正在等待依赖爬虫 {} 结束. 批次时间 {} 批次进度 {}/{}".format(
+                            self._batch_name,
+                            self._related_batch_record or self._related_task_tables,
+                            batch_date,
+                            done_count,
+                            total_count,
+                        )
+                        log.info(msg)
+                        # 检查是否超时 超时发出报警
+                        if time_difference >= datetime.timedelta(
+                            days=self._batch_interval
+                        ):  # 已经超时
+                            self.send_msg(
+                                msg,
+                                level="error",
+                                message_prefix="《{}》本批次未完成, 正在等待依赖爬虫 {} 结束".format(
+                                    self._batch_name,
+                                    self._related_batch_record
+                                    or self._related_task_tables,
+                                ),
+                            )
+                            self._batch_timeout = True
+
+                        return False
+
+                    else:
+                        self.update_is_done()
+
+                msg = "《{}》本批次完成 批次时间 {} 共处理 {} 条任务".format(
+                    self._batch_name, batch_date, done_count
+                )
+                log.info(msg)
+                if not is_first_check:
+                    if self._batch_timeout:  # 之前报警过已超时，现在已完成，发出恢复消息
+                        self._batch_timeout = False
+                        self.send_msg(msg, level="error")
+                    else:
+                        self.send_msg(msg)
+
+                # 判断下一批次是否到
+                if time_difference >= datetime.timedelta(days=self._batch_interval):
+                    if not is_first_check and not self._auto_start_next_batch:
+                        return True  # 下一批次不开始。因为设置了不自动开始下一批次
+
+                    msg = "《{}》下一批次开始".format(self._batch_name)
+                    log.info(msg)
+                    self.send_msg(msg)
+
+                    # 初始化任务表状态
+                    if self.init_task() != False:  # 更新失败返回False 其他返回True/None
+                        # 初始化属性
+                        self.init_batch_property()
+
+                        is_success = (
+                            self.record_batch()
+                        )  # 有可能插入不成功，但是任务表已经重置了，不过由于当前时间为下一批次的时间，检查批次是否结束时不会检查任务表，所以下次执行时仍然会重置
+                        if is_success:
+                            # 看是否有等待任务的worker，若有则需要等会再下发任务，防止work批次时间没来得及更新
+                            if self.have_alive_spider():
+                                log.info(
+                                    f"插入新批次记录成功，检测到有爬虫进程在等待任务，本批任务1分钟后开始下发, 防止爬虫端缓存的批次时间没来得及更新"
+                                )
+                                tools.delay_time(60)
+                            else:
+                                log.info("插入新批次记录成功")
+
+                            return False  # 下一批次开始
+
+                        else:
+                            return True  # 下一批次不开始。先不派发任务，因为批次表新批次插入失败了，需要插入成功后再派发任务
+
+                else:
+                    log.info("《{}》下次批次时间未到".format(self._batch_name))
+                    if not is_first_check:
+                        self.send_msg("《{}》下次批次时间未到".format(self._batch_name))
+                    return True
+
+            else:
+                if time_difference >= datetime.timedelta(
+                    days=self._batch_interval
+                ):  # 已经超时
+                    time_out = time_difference - datetime.timedelta(
+                        days=self._batch_interval
+                    )
+                    time_out_pretty = tools.format_seconds(time_out.total_seconds())
+
+                    msg = "《{}》本批次已超时{} 批次时间 {}, 批次进度 {}/{}".format(
+                        self._batch_name,
+                        time_out_pretty,
+                        batch_date,
+                        done_count,
+                        total_count,
+                    )
+                    if self._batch_interval >= 1:
+                        msg += ", 期望时间{}天".format(self._batch_interval)
+                    else:
+                        msg += ", 期望时间{}小时".format(self._batch_interval * 24)
+
+                    result = self.get_deal_speed(
+                        total_count=total_count,
+                        done_count=done_count,
+                        last_batch_date=last_batch_date,
+                    )
+                    if result:
+                        (
+                            deal_speed,
+                            need_time,
+                            overflow_time,
+                            calculate_speed_time,
+                        ) = result
+                        msg += ", 任务处理速度于{}统计, 约 {}条/小时, 预计还需 {}".format(
+                            calculate_speed_time,
+                            deal_speed,
+                            tools.format_seconds(need_time),
+                        )
+
+                        if overflow_time > 0:
+                            msg += ", 该批次预计总超时 {}, 请及时处理".format(
+                                tools.format_seconds(overflow_time)
+                            )
+
+                    log.info(msg)
+                    self.send_msg(
+                        msg,
+                        level="error",
+                        message_prefix="《{}》批次超时".format(self._batch_name),
+                    )
+                    self._batch_timeout = True
+
+                else:  # 未超时
+                    remaining_time = (
+                        datetime.timedelta(days=self._batch_interval) - time_difference
+                    )
+                    remaining_time_pretty = tools.format_seconds(
+                        remaining_time.total_seconds()
+                    )
+
+                    if self._batch_interval >= 1:
+                        msg = "《{}》本批次正在进行, 批次时间 {}, 批次进度 {}/{}, 期望时间{}天, 剩余{}".format(
+                            self._batch_name,
+                            batch_date,
+                            done_count,
+                            total_count,
+                            self._batch_interval,
+                            remaining_time_pretty,
+                        )
+                    else:
+                        msg = "《{}》本批次正在进行, 批次时间 {}, 批次进度 {}/{}, 期望时间{}小时, 剩余{}".format(
+                            self._batch_name,
+                            batch_date,
+                            done_count,
+                            total_count,
+                            self._batch_interval * 24,
+                            remaining_time_pretty,
+                        )
+
+                    result = self.get_deal_speed(
+                        total_count=total_count,
+                        done_count=done_count,
+                        last_batch_date=last_batch_date,
+                    )
+                    if result:
+                        (
+                            deal_speed,
+                            need_time,
+                            overflow_time,
+                            calculate_speed_time,
+                        ) = result
+                        msg += ", 任务处理速度于{}统计, 约 {}条/小时, 预计还需 {}".format(
+                            calculate_speed_time,
+                            deal_speed,
+                            tools.format_seconds(need_time),
+                        )
+
+                        if overflow_time > 0:
+                            msg += ", 该批次可能会超时 {}, 请及时处理".format(
+                                tools.format_seconds(overflow_time)
+                            )
+                            # 发送警报
+                            self.send_msg(
+                                msg,
+                                level="error",
+                                message_prefix="《{}》批次可能超时".format(self._batch_name),
+                            )
+                            self._batch_timeout = True
+
+                        elif overflow_time < 0:
+                            msg += ", 该批次预计提前 {} 完成".format(
+                                tools.format_seconds(-overflow_time)
+                            )
+
+                    log.info(msg)
+
+        else:
+            # 插入batch_date
+            self.record_batch()
+
+            # 初始化任务表状态 可能有产生任务的代码
+            self.init_task()
+
+            return False
+
+    def related_spider_is_done(self):
+        """
+        相关连的爬虫是否跑完
+        @return: True / False / None 表示无相关的爬虫 可由自身的total_count 和 done_count 来判断
+        """
+
+        for related_redis_task_table in self._related_task_tables:
+            if self._redisdb.exists_key(related_redis_task_table):
+                return False
+
+        if self._related_batch_record:
+            sql = "select is_done from {} order by id desc limit 1".format(
+                self._related_batch_record
+            )
+            is_done = self._mysqldb.find(sql)
+            is_done = is_done[0][0] if is_done else None
+
+            if is_done is None:
+                log.warning("相关联的批次表不存在或无批次信息")
+                return True
+
+            if not is_done:
+                return False
+
+        return True
+
+    def record_batch(self):
+        """
+        @summary: 记录批次信息（初始化）
+        ---------
+        ---------
+        @result:
+        """
+
+        # 查询总任务数
+        sql = "select count(1) from %s%s" % (
+            self._task_table,
+            self._task_condition_prefix_where,
+        )
+        total_task_count = self._mysqldb.find(sql)[0][0]
+
+        batch_date = tools.get_current_date(self._date_format)
+
+        sql = "insert into %s (batch_date, done_count, total_count, `interval`, interval_unit, create_time) values ('%s', %s, %s, %s, '%s', CURRENT_TIME)" % (
+            self._batch_record_table,
+            batch_date,
+            0,
+            total_task_count,
+            self._batch_interval
+            if self._batch_interval >= 1
+            else self._batch_interval * 24,
+            "day" if self._batch_interval >= 1 else "hour",
+        )
+
+        affect_count = self._mysqldb.add(sql)  # None / 0 / 1 (1 为成功)
+        if affect_count:
+            # 重置批次日期
+            self._batch_date_cache = batch_date
+            # 重新刷下self.batch_date 中的 os.environ.get('batch_date') 否则日期还停留在上一个批次
+            os.environ["batch_date"] = self._batch_date_cache
+
+            # 爬虫开始
+            self.spider_begin()
+        else:
+            log.error("插入新批次失败")
+
+        return affect_count
+
+    # -------- 批次结束逻辑 ------------
+
+    def task_is_done(self):
+        """
+        @summary: 检查任务状态 是否做完 同时更新批次时间 (不能挂 挂了批次时间就不更新了)
+        ---------
+        ---------
+        @result: True / False （做完 / 未做完）
+        """
+
+        is_done = False
+
+        # 查看批次记录表任务状态
+        sql = 'select date_format(batch_date, "{date_format}"), total_count, done_count, is_done from {batch_record_table} order by id desc limit 1'.format(
+            date_format=self._date_format.replace(":%M", ":%i"),
+            batch_record_table=self._batch_record_table,
+        )
+
+        batch_info = self._mysqldb.find(sql)
+        if batch_info is None:
+            raise Exception("查询批次信息失败")
+
+        if batch_info:
+            self._batch_date_cache, total_count, done_count, is_done = batch_info[
+                0
+            ]  # 更新self._batch_date_cache, 防止新批次已经开始了，但self._batch_date_cache还是原来的批次时间
+
+            log.info(
+                "《%s》 批次时间%s 批次进度 %s/%s 完成状态 %d"
+                % (
+                    self._batch_name,
+                    self._batch_date_cache,
+                    done_count,
+                    total_count,
+                    is_done,
+                )
+            )
+            os.environ["batch_date"] = self._batch_date_cache  # 更新BatchParser里边的批次时间
+
+        if is_done:  # 检查任务表中是否有没做的任务 若有则is_done 为 False
+            # 比较耗时 加锁防止多进程同时查询
+            with RedisLock(key=self._spider_name) as lock:
+                if lock.locked:
+                    log.info("批次表标记已完成，正在检查任务表是否有未完成的任务")
+
+                    sql = "select 1 from %s where (%s = 0 or %s=2)%s limit 1" % (
+                        self._task_table,
+                        self._task_state,
+                        self._task_state,
+                        self._task_condition_prefix_and,
+                    )
+                    tasks = self._mysqldb.find(sql)  # [(1,)]  / []
+                    if tasks:
+                        log.info("检测到任务表中有未完成任务，等待任务下发")
+                        is_done = False
+
+                        # 更新batch_record 表的is_done 状态，减少查询任务表的次数
+                        sql = 'update {batch_record_table} set is_done = 0 where batch_date = "{batch_date}"'.format(
+                            batch_record_table=self._batch_record_table,
+                            batch_date=self._batch_date_cache,
+                        )
+                        self._mysqldb.update(sql)
+
+                    else:
+                        log.info("任务表中任务均已完成，爬虫结束")
+                else:
+                    log.info("批次表标记已完成，其他爬虫进程正在检查任务表是否有未完成的任务，本进程跳过检查，继续等待")
+
+                    is_done = False
+
+        return is_done
+
+    def run(self):
+        """
+        @summary: 重写run方法 检查mysql中的任务是否做完， 做完停止
+        ---------
+        ---------
+        @result:
+        """
+        try:
+            self.create_batch_record_table()
+
+            if not self._parsers:  # 不是add_parser 模式
+                self._parsers.append(self)
+
+            self._start()
+
+            while True:
+                try:
+                    if self._stop_spider or (
+                        self.task_is_done() and self.all_thread_is_done()
+                    ):  # redis全部的任务已经做完 并且mysql中的任务已经做完（检查各个线程all_thread_is_done，防止任务没做完，就更新任务状态，导致程序结束的情况）
+                        if not self._is_notify_end:
+                            self.spider_end()
+                            self._is_notify_end = True
+
+                        if not self._keep_alive:
+                            self._stop_all_thread()
+                            break
+                    else:
+                        self._is_notify_end = False
+
+                    self.check_task_status()
+
+                except Exception as e:
+                    log.exception(e)
+
+                tools.delay_time(10)  # 10秒钟检查一次爬虫状态
+
+        except Exception as e:
+            msg = "《%s》主线程异常 爬虫结束 exception: %s" % (self._batch_name, e)
+            log.error(msg)
+            self.send_msg(
+                msg, level="error", message_prefix="《%s》爬虫异常结束".format(self._batch_name)
+            )
+
+            os._exit(137)  # 使退出码为35072 方便爬虫管理器重启
+
+    @classmethod
+    def to_DebugBatchSpider(cls, *args, **kwargs):
+        # DebugBatchSpider 继承 cls
+        DebugBatchSpider.__bases__ = (cls,)
+        DebugBatchSpider.__name__ = cls.__name__
+        return DebugBatchSpider(*args, **kwargs)
+
+
+class DebugBatchSpider(BatchSpider):
+    """
+    Debug批次爬虫
+    """
+
+    __debug_custom_setting__ = dict(
+        COLLECTOR_TASK_COUNT=1,
+        # SPIDER
+        SPIDER_THREAD_COUNT=1,
+        SPIDER_SLEEP_TIME=0,
+        SPIDER_MAX_RETRY_TIMES=10,
+        REQUEST_LOST_TIMEOUT=600,  # 10分钟
+        PROXY_ENABLE=False,
+        RETRY_FAILED_REQUESTS=False,
+        # 保存失败的request
+        SAVE_FAILED_REQUEST=False,
+        # 过滤
+        ITEM_FILTER_ENABLE=False,
+        REQUEST_FILTER_ENABLE=False,
+        OSS_UPLOAD_TABLES=(),
+        DELETE_KEYS=True,
+    )
+
+    def __init__(
+        self,
+        task_id=None,
+        task=None,
+        save_to_db=False,
+        update_task=False,
+        *args,
+        **kwargs,
+    ):
+        """
+        @param task_id:  任务id
+        @param task:  任务  task 与 task_id 二者选一即可
+        @param save_to_db: 数据是否入库 默认否
+        @param update_task: 是否更新任务 默认否
+        @param args:
+        @param kwargs:
+        """
+        warnings.warn(
+            "您正处于debug模式下，该模式下不会更新任务状态及数据入库，仅用于调试。正式发布前请更改为正常模式", category=Warning
+        )
+
+        if not task and not task_id:
+            raise Exception("task_id 与 task 不能同时为null")
+
+        kwargs["redis_key"] = kwargs["redis_key"] + "_debug"
+        if not save_to_db:
+            self.__class__.__debug_custom_setting__["ITEM_PIPELINES"] = [
+                CONSOLE_PIPELINE_PATH
+            ]
+
+        self.__class__.__custom_setting__.update(
+            self.__class__.__debug_custom_setting__
+        )
+
+        super(DebugBatchSpider, self).__init__(*args, **kwargs)
+
+        self._task_id = task_id
+        self._task = task
+        self._update_task = update_task
+
+    def start_monitor_task(self):
+        """
+        @summary: 监控任务状态
+        ---------
+        ---------
+        @result:
+        """
+        if not self._parsers:  # 不是多模版模式， 将自己注入到parsers，自己为模版
+            self._is_more_parsers = False
+            self._parsers.append(self)
+
+        elif len(self._parsers) <= 1:
+            self._is_more_parsers = False
+
+        if self._task:
+            self.distribute_task([self._task])
+        else:
+            tasks = self.get_todo_task_from_mysql()
+            if not tasks:
+                raise Exception("未获取到任务 请检查 task_id: {} 是否存在".format(self._task_id))
+            self.distribute_task(tasks)
+
+        os.environ.setdefault("batch_date", "1970-00-00")
+        log.debug("下发任务完毕")
+
+    def get_todo_task_from_mysql(self):
+        """
+        @summary: 取待做的任务
+        ---------
+        ---------
+        @result:
+        """
+
+        # 查询任务
+        task_keys = ", ".join([f"`{key}`" for key in self._task_keys])
+        sql = "select %s from %s where id=%s" % (
+            task_keys,
+            self._task_table,
+            self._task_id,
+        )
+        tasks = self._mysqldb.find(sql)
+
+        return tasks
+
+    def save_cached(self, request, response, table):
+        pass
+
+    def update_task_state(self, task_id, state=1, *args, **kwargs):
+        """
+        @summary: 更新任务表中任务状态，做完每个任务时代码逻辑中要主动调用。可能会重写
+        调用方法为 yield lambda : self.update_task_state(task_id, state)
+        ---------
+        @param task_id:
+        @param state:
+        ---------
+        @result:
+        """
+        if self._update_task:
+            kwargs["id"] = task_id
+            kwargs[self._task_state] = state
+
+            sql = tools.make_update_sql(
+                self._task_table,
+                kwargs,
+                condition="id = {task_id}".format(task_id=task_id),
+            )
+
+            if self._mysqldb.update(sql):
+                log.debug("置任务%s状态成功" % task_id)
+            else:
+                log.error("置任务%s状态失败  sql=%s" % (task_id, sql))
+
+    def update_task_batch(self, task_id, state=1, *args, **kwargs):
+        """
+        批量更新任务 多处调用，更新的字段必须一致
+        注意：需要 写成 yield update_task_batch(...) 否则不会更新
+        @param task_id:
+        @param state:
+        @param kwargs:
+        @return:
+        """
+        if self._update_task:
+            kwargs["id"] = task_id
+            kwargs[self._task_state] = state
+
+            update_item = UpdateItem(**kwargs)
+            update_item.table_name = self._task_table
+            update_item.name_underline = self._task_table + "_item"
+
+            return update_item
+
+    def run(self):
+        self.start_monitor_task()
+
+        if not self._parsers:  # 不是add_parser 模式
+            self._parsers.append(self)
+
+        self._start()
+
+        while True:
+            try:
+                if self.all_thread_is_done():
+                    self._stop_all_thread()
+                    break
+
+            except Exception as e:
+                log.exception(e)
+
+            tools.delay_time(1)  # 1秒钟检查一次爬虫状态
+
+        self.delete_tables([self._redis_key + "*"])
+
+```
+
+### 代码文件: feapder\buffer\__init__.py
+```python
+# -*- coding: utf-8 -*-
+'''
+Created on 2020/4/23 12:09 AM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+'''
+```
+
+### 代码文件: feapder\core\handle_failed_requests.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-08-13 11:43:01
+---------
+@summary:
+---------
+@author: Boris
+@email:  boris_liu@foxmail.com
+"""
+import feapder.setting as setting
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.db.redisdb import RedisDB
+from feapder.network.request import Request
+from feapder.utils.log import log
+
+
+class HandleFailedRequests:
+    def __init__(self, redis_key):
+        if redis_key.endswith(":z_failed_requests"):
+            redis_key = redis_key.replace(":z_failed_requests", "")
+
+        self._redisdb = RedisDB()
+        self._request_buffer = RequestBuffer(redis_key)
+
+        self._table_failed_request = setting.TAB_FAILED_REQUESTS.format(
+            redis_key=redis_key
+        )
+
+    def get_failed_requests(self, count=10000):
+        failed_requests = self._redisdb.zget(self._table_failed_request, count=count)
+        failed_requests = [eval(failed_request) for failed_request in failed_requests]
+        return failed_requests
+
+    def reput_failed_requests_to_requests(self):
+        log.debug("正在重置失败的requests...")
+        total_count = 0
+        while True:
+            try:
+                failed_requests = self.get_failed_requests()
+                if not failed_requests:
+                    break
+
+                for request in failed_requests:
+                    request["retry_times"] = 0
+                    request_obj = Request.from_dict(request)
+                    self._request_buffer.put_request(request_obj)
+
+                    total_count += 1
+            except Exception as e:
+                log.exception(e)
+
+        self._request_buffer.flush()
+
+        log.debug("重置%s条失败requests为待抓取requests" % total_count)
+
+```
+
+### 代码文件: feapder\utils\perfect_dict.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2021/4/8 11:32 上午
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+
+def ensure_value(value):
+    if isinstance(value, (list, tuple)):
+        _value = []
+        for v in value:
+            _value.append(ensure_value(v))
+
+        if isinstance(value, tuple):
+            value = tuple(_value)
+        else:
+            value = _value
+
+    if isinstance(value, dict):
+        return PerfectDict(value)
+    else:
+        return value
+
+
+class PerfectDict(dict):
+    """
+    >>> data = PerfectDict({"id":1, "url":"xxx"})
+    >>> data
+    {'id': 1, 'url': 'xxx'}
+    >>> data = PerfectDict(id=1, url="xxx")
+    >>> data
+    {'id': 1, 'url': 'xxx'}
+    >>> data.id
+    1
+    >>> data.get("id")
+    1
+    >>> data["id"]
+    1
+    >>> id, url = data
+    >>> id
+    1
+    >>> url
+    'xxx'
+    >>> data[0]
+    1
+    >>> data[1]
+    'xxx'
+    >>> data = PerfectDict({"a": 1, "b": {"b1": 2}, "c": [{"c1": [{"d": 1}]}]})
+    >>> data.b.b1
+    2
+    >>> data[1].b1
+    2
+    >>> data.get("b").b1
+    2
+    >>> data.c[0].c1
+    [{'d': 1}]
+    >>> data.c[0].c1[0]
+    {'d': 1}
+    """
+
+    def __init__(self, _dict: dict = None, _values: list = None, **kwargs):
+        self.__dict__ = _dict or kwargs or {}
+        self.__dict__.pop("__values__", None)
+        super().__init__(self.__dict__, **kwargs)
+        self.__values__ = _values or list(self.__dict__.values())
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            value = self.__values__[key]
+        else:
+            value = self.__dict__[key]
+
+        return ensure_value(value)
+
+    def __iter__(self, *args, **kwargs):
+        for value in self.__values__:
+            yield ensure_value(value)
+
+    def __getattribute__(self, item):
+        value = object.__getattribute__(self, item)
+        if item == "__dict__" or item == "__values__":
+            return value
+        return ensure_value(value)
+
+    def get(self, key, default=None):
+        if key in self.__dict__:
+            value = self.__dict__[key]
+            return ensure_value(value)
+
+        return default
+
+```
+
+### 代码文件: feapder\network\user_pool\base_user_pool.py
+```python
+import abc
+import json
+import random
+import time
+from datetime import datetime
+
+from feapder.db.redisdb import RedisDB
+from feapder.utils.log import log
+from feapder.utils.tools import get_md5, timestamp_to_date
+
+
+class GuestUser:
+    def __init__(self, user_agent=None, proxies=None, cookies=None, **kwargs):
+        self.__dict__.update(kwargs)
+        self.user_agent = user_agent
+        self.proxies = proxies
+        self.cookies = cookies
+        self.user_id = kwargs.get("user_id") or get_md5(user_agent, proxies, cookies)
+
+    def __str__(self):
+        return f"<{self.__class__.__name__}>: " + json.dumps(
+            self.to_dict(), indent=4, ensure_ascii=False
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_dict(self):
+        data = {}
+        for key, value in self.__dict__.items():
+            if value is not None:
+                data[key] = value
+        return data
+
+    def from_dict(cls, data):
+        return cls.__init__(**data)
+
+
+class NormalUser(GuestUser):
+    def __init__(self, username, password, **kwargs):
+        super().__init__(**kwargs)
+        self.username = username
+        self.password = password
+        self.user_id = kwargs.get("user_id") or self.username  # 用户名作为user_id
+
+
+class GoldUser(NormalUser):
+    """
+    昂贵的账号
+    """
+
+    redisdb: RedisDB = None
+    redis_key: str = None
+
+    def __init__(
+        self,
+        max_use_times,
+        use_interval=0,
+        work_time=(7, 23),
+        login_interval=30 * 60,
+        exclusive_time=None,
+        **kwargs,
+    ):
+        """
+        @param max_use_times:
+        @param use_interval: 使用时间间隔。 支持元组 指定间隔的时间范围 如（5，10）即5到10秒；或直接传整数
+        @param work_time: 工作时间，默认 7点到23点
+        @param login_interval: 登录时间间隔 防止频繁登录 导致账号被封
+        @param exclusive_time: 独占时长
+        """
+        super().__init__(**kwargs)
+        self.max_use_times = max_use_times
+        self.use_interval = use_interval
+        self.work_time = work_time
+        self.login_interval = login_interval
+        self.exclusive_time = exclusive_time or (
+            use_interval[-1] * 5
+            if isinstance(use_interval, (tuple, list))
+            else use_interval * 5
+        )
+
+        self._delay_use = kwargs.get("_delay_use", 0)  # 延时使用，用于等待解封的用户
+        self._login_time = kwargs.get("_login_time", 0)
+        self._use_times = kwargs.get("_use_times", 0)
+        self._last_use_time = kwargs.get("_last_use_time", 0)
+        self._used_for_spider_name = kwargs.get("_used_for_spider_name")
+        self._reset_use_times_date = kwargs.get("_reset_use_times_date")
+
+    def __eq__(self, other):
+        return self.username == other.username
+
+    def update(self, ohter):
+        self.__dict__.update(ohter.to_dict())
+
+    def sycn_to_redis(self):
+        self.redisdb.hset(self.redis_key, self.user_id, self.to_dict())
+
+    def set_delay_use(self, seconds):
+        self._delay_use = seconds
+        self.sycn_to_redis()
+
+    def set_cookies(self, cookies):
+        self.cookies = cookies
+        self.sycn_to_redis()
+
+    def set_login_time(self, _login_time=None):
+        self._login_time = _login_time or time.time()
+        self.sycn_to_redis()
+
+    def get_login_time(self):
+        return self._login_time
+
+    def get_last_use_time(self):
+        return self._last_use_time
+
+    def get_used_for_spider_name(self):
+        return self._used_for_spider_name
+
+    def set_used_for_spider_name(self, name):
+        self._used_for_spider_name = name
+        self._use_times += 1
+        self._last_use_time = time.time()
+        self.sycn_to_redis()
+
+    def is_time_to_login(self):
+        return time.time() - self.get_login_time() > self.login_interval
+
+    def next_login_time(self):
+        return timestamp_to_date(int(self.login_interval + self.get_login_time()))
+
+    def is_time_to_use(self):
+        if self._delay_use:
+            is_time = time.time() - self._last_use_time > self._delay_use
+            if is_time:
+                self._delay_use = 0  # 不用同步了，使用用户时会同步
+
+        else:
+            is_time = time.time() - self._last_use_time > (
+                random.randint(*self.use_interval)
+                if isinstance(self.use_interval, (tuple, list))
+                else self.use_interval
+            )
+
+        return is_time
+
+    def reset_use_times(self):
+        self._use_times = 0
+        self._reset_use_times_date = datetime.now().strftime("%Y-%m-%d")
+        self.sycn_to_redis()
+
+    @property
+    def use_times(self):
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        if current_date != self._reset_use_times_date:
+            self.reset_use_times()
+
+        return self._use_times
+
+    def is_overwork(self):
+        if self.use_times > self.max_use_times:
+            log.info("账号 {} 请求次数超限制".format(self.username))
+            return True
+
+        return False
+
+    def is_at_work_time(self):
+        if datetime.now().hour in list(range(*self.work_time)):
+            return True
+
+        log.info("账号 {} 不再工作时间内".format(self.username))
+        return False
+
+
+class UserPoolInterface(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def login(self, *args, **kwargs):
+        """
+        登录 生产cookie
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_user(self, *args, **kwargs):
+        """
+        将带有cookie的用户添加到用户池
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_user(self, block=True):
+        """
+        获取用户使用
+        Args:
+            block: 无用户时是否等待
+
+        Returns:
+
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def del_user(self, *args, **kwargs):
+        """
+        删除用户
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def run(self):
+        """
+        维护一定数量的用户
+        Returns:
+
+        """
+        raise NotImplementedError
+
+```
+
+### 代码文件: feapder\db\redisdb.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2016-11-16 16:25
+---------
+@summary: 操作redis数据库
+---------
+@author: Boris
+"""
+import os
+import time
+from typing import Union, List
+
+import redis
+from redis.connection import Encoder as _Encoder
+from redis.exceptions import ConnectionError, TimeoutError
+from redis.exceptions import DataError
+from redis.sentinel import Sentinel
+
+import feapder.setting as setting
+from feapder.utils.log import log
+
+
+class Encoder(_Encoder):
+    def encode(self, value):
+        "Return a bytestring or bytes-like representation of the value"
+        if isinstance(value, (bytes, memoryview)):
+            return value
+        # elif isinstance(value, bool):
+        #     # special case bool since it is a subclass of int
+        #     raise DataError(
+        #         "Invalid input of type: 'bool'. Convert to a "
+        #         "bytes, string, int or float first."
+        #     )
+        elif isinstance(value, float):
+            value = repr(value).encode()
+        elif isinstance(value, int):
+            # python 2 repr() on longs is '123L', so use str() instead
+            value = str(value).encode()
+        elif isinstance(value, (list, dict, tuple)):
+            value = str(value)
+        elif not isinstance(value, str):
+            # a value we don't know how to deal with. throw an error
+            typename = type(value).__name__
+            raise DataError(
+                "Invalid input of type: '%s'. Convert to a "
+                "bytes, string, int or float first." % typename
+            )
+        if isinstance(value, str):
+            value = value.encode(self.encoding, self.encoding_errors)
+        return value
+
+
+redis.connection.Encoder = Encoder
+
+
+class RedisDB:
+    def __init__(
+        self,
+        ip_ports=None,
+        db=None,
+        user_pass=None,
+        url=None,
+        decode_responses=True,
+        service_name=None,
+        max_connections=1000,
+        **kwargs,
+    ):
+        """
+        redis的封装
+        Args:
+            ip_ports: ip:port 多个可写为列表或者逗号隔开 如 ip1:port1,ip2:port2 或 ["ip1:port1", "ip2:port2"]
+            db:
+            user_pass:
+            url:
+            decode_responses:
+            service_name: 适用于redis哨兵模式
+            max_connections: 同一个redis对象使用的并发数（连接池的最大连接数），超过这个数量会抛出redis.ConnectionError
+        """
+
+        # 可能会改setting中的值，所以此处不能直接赋值为默认值，需要后加载赋值
+        if ip_ports is None:
+            ip_ports = setting.REDISDB_IP_PORTS
+        if db is None:
+            db = setting.REDISDB_DB
+        if user_pass is None:
+            user_pass = setting.REDISDB_USER_PASS
+        if service_name is None:
+            service_name = setting.REDISDB_SERVICE_NAME
+        if kwargs is None:
+            kwargs = setting.REDISDB_KWARGS
+
+        self._is_redis_cluster = False
+
+        self.__redis = None
+        self._url = url
+        self._ip_ports = ip_ports
+        self._db = db
+        self._user_pass = user_pass
+        self._decode_responses = decode_responses
+        self._service_name = service_name
+        self._max_connections = max_connections
+        self._kwargs = kwargs
+        self.get_connect()
+
+    def __repr__(self):
+        if self._url:
+            return "<Redisdb url:{}>".format(self._url)
+
+        return "<Redisdb ip_ports: {} db:{} user_pass:{}>".format(
+            self._ip_ports, self._db, self._user_pass
+        )
+
+    @property
+    def _redis(self):
+        try:
+            if not self.__redis.ping():
+                raise ConnectionError("unable to connect to redis")
+        except:
+            self._reconnect()
+
+        return self.__redis
+
+    @_redis.setter
+    def _redis(self, val):
+        self.__redis = val
+
+    def get_connect(self):
+        # 获取数据库连接
+        try:
+            if not self._url:
+                if not self._ip_ports:
+                    raise ConnectionError("未设置 redis 连接信息")
+
+                ip_ports = (
+                    self._ip_ports
+                    if isinstance(self._ip_ports, list)
+                    else self._ip_ports.split(",")
+                )
+                if len(ip_ports) > 1:
+                    startup_nodes = []
+                    for ip_port in ip_ports:
+                        ip, port = ip_port.split(":")
+                        startup_nodes.append({"host": ip, "port": port})
+
+                    if self._service_name:
+                        # log.debug("使用redis哨兵模式")
+                        hosts = [(node["host"], node["port"]) for node in startup_nodes]
+                        sentinel = Sentinel(hosts, socket_timeout=3, **self._kwargs)
+                        self._redis = sentinel.master_for(
+                            self._service_name,
+                            password=self._user_pass,
+                            db=self._db,
+                            redis_class=redis.StrictRedis,
+                            decode_responses=self._decode_responses,
+                            max_connections=self._max_connections,
+                            **self._kwargs,
+                        )
+
+                    else:
+                        try:
+                            from rediscluster import RedisCluster
+                        except ModuleNotFoundError as e:
+                            log.error('请安装 pip install "feapder[all]"')
+                            os._exit(0)
+
+                        # log.debug("使用redis集群模式")
+                        self._redis = RedisCluster(
+                            startup_nodes=startup_nodes,
+                            decode_responses=self._decode_responses,
+                            password=self._user_pass,
+                            max_connections=self._max_connections,
+                            **self._kwargs,
+                        )
+
+                    self._is_redis_cluster = True
+                else:
+                    ip, port = ip_ports[0].split(":")
+                    self._redis = redis.StrictRedis(
+                        host=ip,
+                        port=port,
+                        db=self._db,
+                        password=self._user_pass,
+                        decode_responses=self._decode_responses,
+                        max_connections=self._max_connections,
+                        **self._kwargs,
+                    )
+                    self._is_redis_cluster = False
+            else:
+                self._redis = redis.StrictRedis.from_url(
+                    self._url, decode_responses=self._decode_responses, **self._kwargs
+                )
+                self._is_redis_cluster = False
+
+        except Exception as e:
+            raise e
+
+        # 不要写成self._redis.ping() 否则循环调用了
+        return self.__redis.ping()
+
+    @classmethod
+    def from_url(cls, url):
+        """
+
+        Args:
+            url: redis://[[username]:[password]]@[host]:[port]/[db]
+
+        Returns:
+
+        """
+        return cls(url=url)
+
+    def sadd(self, table, values):
+        """
+        @summary: 使用无序set集合存储数据， 去重
+        ---------
+        @param table:
+        @param values: 值； 支持list 或 单个值
+        ---------
+        @result: 若库中存在 返回0，否则入库，返回1。 批量添加返回None
+        """
+
+        if isinstance(values, list):
+            pipe = self._redis.pipeline()
+
+            if not self._is_redis_cluster:
+                pipe.multi()
+            for value in values:
+                pipe.sadd(table, value)
+            pipe.execute()
+
+        else:
+            return self._redis.sadd(table, values)
+
+    def sget(self, table, count=1, is_pop=True):
+        """
+        返回 list 如 ['1'] 或 []
+        @param table:
+        @param count:
+        @param is_pop:
+        @return:
+        """
+
+        datas = []
+        if is_pop:
+            count = count if count <= self.sget_count(table) else self.sget_count(table)
+            if count:
+                if count > 1:
+                    pipe = self._redis.pipeline()
+
+                    if not self._is_redis_cluster:
+                        pipe.multi()
+                    while count:
+                        pipe.spop(table)
+                        count -= 1
+                    datas = pipe.execute()
+
+                else:
+                    datas.append(self._redis.spop(table))
+
+        else:
+            datas = self._redis.srandmember(table, count)
+
+        return datas
+
+    def srem(self, table, values):
+        """
+        @summary: 移除集合中的指定元素
+        ---------
+        @param table:
+        @param values: 一个或者列表
+        ---------
+        @result:
+        """
+
+        if isinstance(values, list):
+            pipe = self._redis.pipeline()
+
+            if not self._is_redis_cluster:
+                pipe.multi()
+            for value in values:
+                pipe.srem(table, value)
+            pipe.execute()
+        else:
+            self._redis.srem(table, values)
+
+    def sget_count(self, table):
+        return self._redis.scard(table)
+
+    def sdelete(self, table):
+        """
+        @summary: 删除set集合的大键（数据量大的表）
+        删除大set键，使用sscan命令，每次扫描集合中500个元素，再用srem命令每次删除一个键
+        若直接用delete命令，会导致Redis阻塞，出现故障切换和应用程序崩溃的故障。
+        ---------
+        @param table:
+        ---------
+        @result:
+        """
+
+        # 当 SCAN 命令的游标参数被设置为 0 时， 服务器将开始一次新的迭代， 而当服务器向用户返回值为 0 的游标时， 表示迭代已结束
+        cursor = "0"
+        while cursor != 0:
+            cursor, data = self._redis.sscan(table, cursor=cursor, count=500)
+            for item in data:
+                # pipe.srem(table, item)
+                self._redis.srem(table, item)
+
+            # pipe.execute()
+
+    def sismember(self, table, key):
+        "Return a boolean indicating if ``value`` is a member of set ``name``"
+        return self._redis.sismember(table, key)
+
+    def zadd(self, table, values, prioritys=0):
+        """
+        @summary: 使用有序set集合存储数据， 去重(值存在更新)
+        ---------
+        @param table:
+        @param values: 值； 支持list 或 单个值
+        @param prioritys: 优先级； double类型，支持list 或 单个值。 根据此字段的值来排序, 值越小越优先。 可不传值，默认value的优先级为0
+        ---------
+        @result:若库中存在 返回0，否则入库，返回1。 批量添加返回 [0, 1 ...]
+        """
+        if isinstance(values, list):
+            if not isinstance(prioritys, list):
+                prioritys = [prioritys] * len(values)
+            else:
+                assert len(values) == len(prioritys), "values值要与prioritys值一一对应"
+
+            pipe = self._redis.pipeline()
+
+            if not self._is_redis_cluster:
+                pipe.multi()
+            for value, priority in zip(values, prioritys):
+                pipe.execute_command(
+                    "ZADD", table, priority, value
+                )  # 为了兼容2.x与3.x版本的redis
+            return pipe.execute()
+
+        else:
+            return self._redis.execute_command(
+                "ZADD", table, prioritys, values
+            )  # 为了兼容2.x与3.x版本的redis
+
+    def zget(self, table, count=1, is_pop=True):
+        """
+        @summary: 从有序set集合中获取数据 优先返回分数小的（优先级高的）
+        ---------
+        @param table:
+        @param count: 数量 -1 返回全部数据
+        @param is_pop:获取数据后，是否在原set集合中删除，默认是
+        ---------
+        @result: 列表
+        """
+
+        start_pos = 0  # 包含
+        end_pos = count - 1 if count > 0 else count
+
+        pipe = self._redis.pipeline()
+
+        if not self._is_redis_cluster:
+            pipe.multi()  # 标记事务的开始 参考 http://www.runoob.com/redis/redis-transactions.html
+        pipe.zrange(table, start_pos, end_pos)  # 取值
+        if is_pop:
+            pipe.zremrangebyrank(table, start_pos, end_pos)  # 删除
+        results, *count = pipe.execute()
+        return results
+
+    def zremrangebyscore(self, table, priority_min, priority_max):
+        """
+        根据分数移除成员 闭区间
+        @param table:
+        @param priority_min:
+        @param priority_max:
+        @return: 被移除的成员个数
+        """
+        return self._redis.zremrangebyscore(table, priority_min, priority_max)
+
+    def zrangebyscore(self, table, priority_min, priority_max, count=None, is_pop=True):
+        """
+        @summary: 返回指定分数区间的数据 闭区间
+        ---------
+        @param table:
+        @param priority_min: 优先级越小越优先
+        @param priority_max:
+        @param count: 获取的数量，为空则表示分数区间内的全部数据
+        @param is_pop: 是否删除
+        ---------
+        @result:
+        """
+
+        # 使用lua脚本， 保证操作的原子性
+        lua = """
+            -- local key = KEYS[1]
+            local min_score = ARGV[2]
+            local max_score = ARGV[3]
+            local is_pop = ARGV[4]
+            local count = ARGV[5]
+
+            -- 取值
+            local datas = nil
+            if count then
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score, 'limit', 0, count)
+            else
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score)
+            end
+
+            -- 删除redis中刚取到的值
+            if (is_pop=='True' or is_pop=='1') then
+                for i=1, #datas do
+                    redis.call('zrem', KEYS[1], datas[i])
+                end
+            end
+
+
+            return datas
+
+        """
+        cmd = self._redis.register_script(lua)
+        if count:
+            res = cmd(
+                keys=[table], args=[table, priority_min, priority_max, is_pop, count]
+            )
+        else:
+            res = cmd(keys=[table], args=[table, priority_min, priority_max, is_pop])
+
+        return res
+
+    def zrangebyscore_increase_score(
+        self, table, priority_min, priority_max, increase_score, count=None
+    ):
+        """
+        @summary: 返回指定分数区间的数据 闭区间， 同时修改分数
+        ---------
+        @param table:
+        @param priority_min: 最小分数
+        @param priority_max: 最大分数
+        @param increase_score: 分数值增量 正数则在原有的分数上叠加，负数则相减
+        @param count: 获取的数量，为空则表示分数区间内的全部数据
+        ---------
+        @result:
+        """
+
+        # 使用lua脚本， 保证操作的原子性
+        lua = """
+            -- local key = KEYS[1]
+            local min_score = ARGV[1]
+            local max_score = ARGV[2]
+            local increase_score = ARGV[3]
+            local count = ARGV[4]
+
+            -- 取值
+            local datas = nil
+            if count then
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score, 'limit', 0, count)
+            else
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score)
+            end
+
+            --修改优先级
+            for i=1, #datas do
+                redis.call('zincrby', KEYS[1], increase_score, datas[i])
+            end
+
+            return datas
+
+        """
+        cmd = self._redis.register_script(lua)
+        if count:
+            res = cmd(
+                keys=[table], args=[priority_min, priority_max, increase_score, count]
+            )
+        else:
+            res = cmd(keys=[table], args=[priority_min, priority_max, increase_score])
+
+        return res
+
+    def zrangebyscore_set_score(
+        self, table, priority_min, priority_max, score, count=None
+    ):
+        """
+        @summary: 返回指定分数区间的数据 闭区间， 同时修改分数
+        ---------
+        @param table:
+        @param priority_min: 最小分数
+        @param priority_max: 最大分数
+        @param score: 分数值
+        @param count: 获取的数量，为空则表示分数区间内的全部数据
+        ---------
+        @result:
+        """
+
+        # 使用lua脚本， 保证操作的原子性
+        lua = """
+            -- local key = KEYS[1]
+            local min_score = ARGV[1]
+            local max_score = ARGV[2]
+            local set_score = ARGV[3]
+            local count = ARGV[4]
+
+            -- 取值
+            local datas = nil
+            if count then
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score, 'withscores','limit', 0, count)
+            else
+                datas = redis.call('zrangebyscore', KEYS[1], min_score, max_score, 'withscores')
+            end
+
+            local real_datas = {} -- 数据
+            --修改优先级
+            for i=1, #datas, 2 do
+               local data = datas[i]
+               local score = datas[i+1]
+
+               table.insert(real_datas, data) -- 添加数据
+
+               redis.call('zincrby', KEYS[1], set_score - score, datas[i])
+            end
+
+            return real_datas
+
+        """
+        cmd = self._redis.register_script(lua)
+        if count:
+            res = cmd(keys=[table], args=[priority_min, priority_max, score, count])
+        else:
+            res = cmd(keys=[table], args=[priority_min, priority_max, score])
+
+        return res
+
+    def zincrby(self, table, amount, value):
+        return self._redis.zincrby(table, amount, value)
+
+    def zget_count(self, table, priority_min=None, priority_max=None):
+        """
+        @summary: 获取表数据的数量
+        ---------
+        @param table:
+        @param priority_min:优先级范围 最小值（包含）
+        @param priority_max:优先级范围 最大值（包含）
+        ---------
+        @result:
+        """
+
+        if priority_min != None and priority_max != None:
+            return self._redis.zcount(table, priority_min, priority_max)
+        else:
+            return self._redis.zcard(table)
+
+    def zrem(self, table, values):
+        """
+        @summary: 移除集合中的指定元素
+        ---------
+        @param table:
+        @param values: 一个或者列表
+        ---------
+        @result:
+        """
+
+        if isinstance(values, list):
+            self._redis.zrem(table, *values)
+        else:
+            self._redis.zrem(table, values)
+
+    def zexists(self, table, values):
+        """
+        利用zscore判断某元素是否存在
+        @param values:
+        @return:
+        """
+
+        is_exists = []
+
+        if isinstance(values, list):
+            pipe = self._redis.pipeline()
+            pipe.multi()
+            for value in values:
+                pipe.zscore(table, value)
+            is_exists_temp = pipe.execute()
+            for is_exist in is_exists_temp:
+                if is_exist != None:
+                    is_exists.append(1)
+                else:
+                    is_exists.append(0)
+
+        else:
+            is_exists = self._redis.zscore(table, values)
+            is_exists = 1 if is_exists != None else 0
+
+        return is_exists
+
+    def lpush(self, table, values):
+        if isinstance(values, list):
+            pipe = self._redis.pipeline()
+
+            if not self._is_redis_cluster:
+                pipe.multi()
+            for value in values:
+                pipe.lpush(table, value)
+            pipe.execute()
+
+        else:
+            return self._redis.lpush(table, values)
+
+    def lpop(self, table, count=1):
+        """
+        @summary:
+        ---------
+        @param table:
+        @param count:
+        ---------
+        @result: count>1时返回列表
+        """
+
+        datas = None
+        lcount = self.lget_count(table)
+        count = count if count <= lcount else lcount
+
+        if count:
+            if count > 1:
+                pipe = self._redis.pipeline()
+
+                if not self._is_redis_cluster:
+                    pipe.multi()
+                while count:
+                    pipe.lpop(table)
+                    count -= 1
+                datas = pipe.execute()
+
+            else:
+                datas = self._redis.lpop(table)
+
+        return datas
+
+    def rpoplpush(self, from_table, to_table=None):
+        """
+        将列表 from_table 中的最后一个元素(尾元素)弹出，并返回给客户端。
+        将 from_table 弹出的元素插入到列表 to_table ，作为 to_table 列表的的头元素。
+        如果 from_table 和 to_table 相同，则列表中的表尾元素被移动到表头，并返回该元素，可以把这种特殊情况视作列表的旋转(rotation)操作
+        @param from_table:
+        @param to_table:
+        @return:
+        """
+
+        if not to_table:
+            to_table = from_table
+
+        return self._redis.rpoplpush(from_table, to_table)
+
+    def lget_count(self, table):
+        return self._redis.llen(table)
+
+    def lrem(self, table, value, num=0):
+        """
+        @summary:
+        删除value
+        ---------
+        @param table:
+        @param value:
+        @param num:
+        ---------
+        @result: 删除的条数
+        """
+        return self._redis.lrem(table, num, value)
+
+    def lrange(self, table, start=0, end=-1):
+        return self._redis.lrange(table, start, end)
+
+    def hset(self, table, key, value):
+        """
+        @summary:
+        如果 key 不存在，一个新的哈希表被创建并进行 HSET 操作。
+        如果域 field 已经存在于哈希表中，旧值将被覆盖
+        ---------
+        @param table:
+        @param key:
+        @param value:
+        ---------
+        @result: 1 新插入； 0 覆盖
+        """
+        return self._redis.hset(table, key, value)
+
+    def hset_batch(self, table, datas):
+        """
+        批量插入
+        Args:
+            datas:
+                [[key, value]]
+        Returns:
+
+        """
+        pipe = self._redis.pipeline()
+
+        if not self._is_redis_cluster:
+            pipe.multi()
+        for key, value in datas:
+            pipe.hset(table, key, value)
+        return pipe.execute()
+
+    def hincrby(self, table, key, increment):
+        return self._redis.hincrby(table, key, increment)
+
+    def hget(self, table, key, is_pop=False):
+        if not is_pop:
+            return self._redis.hget(table, key)
+        else:
+            lua = """
+                -- local key = KEYS[1]
+                local field = ARGV[1]
+
+                -- 取值
+                local datas = redis.call('hget', KEYS[1], field)
+                -- 删除值
+                redis.call('hdel', KEYS[1], field)
+
+                return datas
+
+                    """
+            cmd = self._redis.register_script(lua)
+            res = cmd(keys=[table], args=[key])
+
+            return res
+
+    def hgetall(self, table):
+        return self._redis.hgetall(table)
+
+    def hexists(self, table, key):
+        return self._redis.hexists(table, key)
+
+    def hdel(self, table, *keys):
+        """
+        @summary: 删除对应的key 可传多个
+        ---------
+        @param table:
+        @param *keys:
+        ---------
+        @result:
+        """
+        self._redis.hdel(table, *keys)
+
+    def hget_count(self, table):
+        return self._redis.hlen(table)
+
+    def hkeys(self, table):
+        return self._redis.hkeys(table)
+
+    def hvals(self, key):
+        return self._redis.hvals(key)
+
+    def setbit(
+        self, table, offsets: Union[int, List[int]], values: Union[int, List[int]]
+    ):
+        """
+        设置字符串数组某一位的值，返回之前的值
+        @param table: Redis key
+        @param offsets: 支持列表或单个值
+        @param values: 支持列表或单个值
+        @return: list / 单个值
+        """
+        if isinstance(offsets, list):
+            if isinstance(values, int):
+                # 使用lua脚本，数据是一起传给redis的，降低了网络开销，但redis会阻塞
+                script = """
+                            local value = table.remove(ARGV, 1)
+                            local offsets = ARGV
+                            local results = {}
+                            for i, offset in ipairs(offsets) do
+                                results[i] = redis.call('SETBIT', KEYS[1], offset, value)
+                            end
+                            return results
+                        """
+                return self._redis.eval(script, 1, table, values, *offsets)
+            else:
+                assert len(offsets) == len(values), "offsets值要与values值一一对应"
+                pipe = self._redis.pipeline()
+                pipe.multi()
+
+                for offset, value in zip(offsets, values):
+                    pipe.setbit(table, offset, value)
+
+                return pipe.execute()
+
+        else:
+            return self._redis.setbit(table, offsets, values)
+
+    def getbit(self, table, offsets):
+        """
+        取字符串数组某一位的值
+        @param table:
+        @param offsets: 支持列表
+        @return: list / 单个值
+        """
+        if isinstance(offsets, list):
+            pipe = self._redis.pipeline()
+            pipe.multi()
+            for offset in offsets:
+                pipe.getbit(table, offset)
+
+            return pipe.execute()
+
+        else:
+            return self._redis.getbit(table, offsets)
+
+    def bitcount(self, table):
+        return self._redis.bitcount(table)
+
+    def strset(self, table, value, **kwargs):
+        """
+        设置键值
+        Args:
+            table:
+            value:
+            **kwargs:
+                ex: Union[None, int, timedelta] = ..., 设置键的过期时间为 second 秒
+                px: Union[None, int, timedelta] = ..., 设置键的过期时间为 millisecond 毫秒
+                nx: bool = ..., 只有键不存在时，才对键进行设置操作
+                xx: bool = ..., 只有键已经存在时，才对键进行设置操作
+                keepttl: bool = ..., 保留键的过期时间
+        Returns:
+
+        """
+        return self._redis.set(table, value, **kwargs)
+
+    def str_incrby(self, table, value):
+        return self._redis.incrby(table, value)
+
+    def strget(self, table):
+        return self._redis.get(table)
+
+    def strlen(self, table):
+        return self._redis.strlen(table)
+
+    def getkeys(self, regex):
+        return self._redis.keys(regex)
+
+    def exists_key(self, key):
+        return self._redis.exists(key)
+
+    def set_expire(self, key, seconds):
+        """
+        @summary: 设置过期时间
+        ---------
+        @param key:
+        @param seconds: 秒
+        ---------
+        @result:
+        """
+        self._redis.expire(key, seconds)
+
+    def get_expire(self, key):
+        """
+        @summary: 查询过期时间
+        ---------
+        @param key:
+        @param seconds: 秒
+        ---------
+        @result:
+        """
+        return self._redis.ttl(key)
+
+    def clear(self, table):
+        try:
+            self._redis.delete(table)
+        except Exception as e:
+            log.error(e)
+
+    def get_redis_obj(self):
+        return self._redis
+
+    def _reconnect(self):
+        # 检测连接状态, 当数据库重启或设置 timeout 导致断开连接时自动重连
+        retry_count = 0
+        while True:
+            try:
+                retry_count += 1
+                log.error(f"redis 连接断开, 重新连接 {retry_count}")
+                if self.get_connect():
+                    log.info(f"redis 连接成功")
+                    return True
+            except (ConnectionError, TimeoutError) as e:
+                log.error(f"连接失败 e: {e}")
+
+            time.sleep(2)
+
+    def __getattr__(self, name):
+        return getattr(self._redis, name)
+
+    def current_status(self, show_key=True, filter_key_by_used_memory=10 * 1024 * 1024):
+        """
+        统计redis当前使用情况
+        Args:
+            show_key: 是否统计每个key的内存
+            filter_key_by_used_memory: 根据内存的使用量过滤key 只显示使用量大于指定内存的key
+
+        Returns:
+
+        """
+        from prettytable import PrettyTable
+        from tqdm import tqdm
+
+        status_msg = ""
+
+        print("正在查询最大连接数...")
+        clients_count = self._redis.execute_command("info clients")
+        max_clients_count = self._redis.execute_command("config get maxclients")
+        status_msg += ": ".join(max_clients_count) + "\n"
+        status_msg += clients_count + "\n"
+
+        print("正在查询整体内存使用情况...")
+        total_status = self._redis.execute_command("info memory")
+        status_msg += total_status + "\n"
+
+        if show_key:
+            print("正在查询每个key占用内存情况等信息...")
+            table = PrettyTable(
+                field_names=[
+                    "type",
+                    "key",
+                    "value_count",
+                    "used_memory_human",
+                    "used_memory",
+                ],
+                sortby="used_memory",
+                reversesort=True,
+                header_style="title",
+            )
+
+            keys = self._redis.execute_command("keys *")
+            for key in tqdm(keys):
+                key_type = self._redis.execute_command("type {}".format(key))
+                if key_type == "set":
+                    value_count = self._redis.scard(key)
+                elif key_type == "zset":
+                    value_count = self._redis.zcard(key)
+                elif key_type == "list":
+                    value_count = self._redis.llen(key)
+                elif key_type == "hash":
+                    value_count = self._redis.hlen(key)
+                elif key_type == "string":
+                    value_count = self._redis.strlen(key)
+                elif key_type == "none":
+                    continue
+                else:
+                    raise TypeError("尚不支持 {} 类型的key".format(key_type))
+
+                used_memory = self._redis.execute_command("memory usage {}".format(key))
+                if used_memory >= filter_key_by_used_memory:
+                    used_memory_human = (
+                        "%0.2fMB" % (used_memory / 1024 / 1024) if used_memory else 0
+                    )
+
+                    table.add_row(
+                        [key_type, key, value_count, used_memory_human, used_memory]
+                    )
+
+            status_msg += str(table)
+
+        return status_msg
+
+```
+
+### 代码文件: feapder\utils\metrics.py
+```python
+import concurrent.futures
+import json
+import os
+import queue
+import random
+import socket
+import string
+import threading
+import time
+from collections import Counter
+from typing import Any
+
+from influxdb import InfluxDBClient
+
+from feapder import setting
+from feapder.utils.log import log
+from feapder.utils.tools import aio_wrap, ensure_float, ensure_int
+
+_inited_pid = None
+# this thread should stop running in the forked process
+_executor = concurrent.futures.ThreadPoolExecutor(
+    max_workers=1, thread_name_prefix="metrics"
+)
+
+
+class MetricsEmitter:
+    def __init__(
+        self,
+        influxdb,
+        *,
+        batch_size=10,
+        max_timer_seq=0,
+        emit_interval=10,
+        retention_policy=None,
+        ratio=1.0,
+        debug=False,
+        add_hostname=False,
+        max_points=10240,
+        default_tags=None,
+    ):
+        """
+        Args:
+            influxdb: influxdb instance
+            batch_size: 打点的批次大小
+            max_timer_seq: 每个时间间隔内最多收集多少个 timer 类型点, 0 表示不限制
+            emit_interval: 最多等待多长时间必须打点
+            retention_policy: 对应的 retention policy
+            ratio: store 和 timer 类型采样率，比如 0.1 表示只有 10% 的点会留下
+            debug: 是否打印调试日志
+            add_hostname: 是否添加 hostname 作为 tag
+            max_points: 本地 buffer 最多累计多少个点
+        """
+        self.pending_points = queue.Queue()
+        self.batch_size = batch_size
+        self.influxdb: InfluxDBClient = influxdb
+        self.tagkv = {}
+        self.max_timer_seq = max_timer_seq
+        self.lock = threading.Lock()
+        self.hostname = socket.gethostname()
+        self.last_emit_ts = time.time()  # 上次提交时间
+        self.emit_interval = emit_interval  # 提交间隔
+        self.max_points = max_points
+        self.retention_policy = retention_policy  # 支持自定义保留策略
+        self.debug = debug
+        self.add_hostname = add_hostname
+        self.ratio = ratio
+        self.default_tags = default_tags or {}
+
+    def define_tagkv(self, tagk, tagvs):
+        self.tagkv[tagk] = set(tagvs)
+
+    def _point_tagset(self, p):
+        return f"{p['measurement']}-{sorted(p['tags'].items())}-{p['time']}"
+
+    def _make_time_to_ns(self, _time):
+        """
+        将时间转换为 ns 级别的时间戳，补足长度 19 位
+        Args:
+            _time:
+
+        Returns:
+
+        """
+        time_len = len(str(_time))
+        random_str = "".join(random.sample(string.digits, 19 - time_len))
+        return int(str(_time) + random_str)
+
+    def _accumulate_points(self, points):
+        """
+        对于处于同一个 key 的点做聚合
+
+          - 对于 counter 类型，同一个 key 的值(_count)可以累加
+          - 对于 store 类型，不做任何操作，influxdb 会自行覆盖
+          - 对于 timer 类型，通过添加一个 _seq 值来区分每个不同的点
+        """
+        counters = {}  # 临时保留 counter 类型的值
+        timer_seqs = Counter()  # 记录不同 key 的 timer 序列号
+        new_points = []
+
+        for point in points:
+            point_type = point["tags"].get("_type", None)
+            tagset = self._point_tagset(point)
+
+            # counter 类型全部聚合，不做丢弃
+            if point_type == "counter":
+                if tagset not in counters:
+                    counters[tagset] = point
+                else:
+                    counters[tagset]["fields"]["_count"] += point["fields"]["_count"]
+            elif point_type == "timer":
+                if self.max_timer_seq and timer_seqs[tagset] > self.max_timer_seq:
+                    continue
+                # 掷一把骰子，如果足够幸运才打点
+                if self.ratio < 1.0 and random.random() > self.ratio:
+                    continue
+                # 增加 _seq tag，以便区分不同的点
+                point["tags"]["_seq"] = timer_seqs[tagset]
+                point["time"] = self._make_time_to_ns(point["time"])
+                timer_seqs[tagset] += 1
+                new_points.append(point)
+            else:
+                if self.ratio < 1.0 and random.random() > self.ratio:
+                    continue
+                point["time"] = self._make_time_to_ns(point["time"])
+                new_points.append(point)
+
+        for point in counters.values():
+            # 修改下counter类型的点的时间戳，补足19位, 伪装成纳秒级时间戳，防止influxdb对同一秒内的数据进行覆盖
+            point["time"] = self._make_time_to_ns(point["time"])
+            new_points.append(point)
+
+            # 把拟合后的 counter 值添加进来
+            new_points.append(point)
+        return new_points
+
+    def _get_ready_emit(self, force=False):
+        """
+        把当前 pending 的值做聚合并返回
+        """
+        if self.debug:
+            log.info("got %s raw points", self.pending_points.qsize())
+
+        # 从 pending 中读取点, 设定一个最大值，避免一直打点，一直获取
+        points = []
+        while len(points) < self.max_points or force:
+            try:
+                points.append(self.pending_points.get_nowait())
+            except queue.Empty:
+                break
+
+        # 聚合点
+        points = self._accumulate_points(points)
+
+        if self.debug:
+            log.info("got %s point", len(points))
+            log.info(json.dumps(points, indent=4))
+
+        return points
+
+    def emit(self, point=None, force=False):
+        """
+        1. 添加新点到 pending
+        2. 如果符合条件，尝试聚合并打点
+        3. 更新打点时间
+
+        :param point:
+        :param force: 强制提交所有点 默认False
+        :return:
+        """
+        if point:
+            self.pending_points.put(point)
+
+        # 判断是否需要提交点 1、数量 2、间隔 3、强力打点
+        if not (
+            force
+            or self.pending_points.qsize() >= self.max_points  # noqa: W503
+            or time.time() - self.last_emit_ts > self.emit_interval  # noqa: W503
+        ):
+            return
+
+        # 需要打点，读取可以打点的值, 确保只有一个线程在做点的压缩
+        with self.lock:
+            points = self._get_ready_emit(force=force)
+
+            if not points:
+                return
+            try:
+                # h(hour) m(minutes), s(seconds), ms(milliseconds), u(microseconds), n(nanoseconds)
+                self.influxdb.write_points(
+                    points,
+                    batch_size=self.batch_size,
+                    time_precision="n",
+                    retention_policy=self.retention_policy,
+                )
+            except Exception:
+                log.exception("error writing points")
+
+            self.last_emit_ts = time.time()
+
+    def flush(self):
+        if self.debug:
+            log.info("start draining points %s", self.pending_points.qsize())
+        self.emit(force=True)
+
+    def close(self):
+        self.flush()
+        try:
+            self.influxdb.close()
+        except Exception as e:
+            log.exception(e)
+
+    def make_point(self, measurement, tags: dict, fields: dict, timestamp=None):
+        """
+        默认的时间戳是"秒"级别的
+        """
+        assert measurement, "measurement can't be null"
+        tags = tags.copy() if tags else {}
+        tags.update(self.default_tags)
+        fields = fields.copy() if fields else {}
+        if timestamp is None:
+            timestamp = int(time.time())
+        # 支持自定义hostname
+        if self.add_hostname and "hostname" not in tags:
+            tags["hostname"] = self.hostname
+        point = dict(measurement=measurement, tags=tags, fields=fields, time=timestamp)
+        if self.tagkv:
+            for tagk, tagv in tags.items():
+                if tagv not in self.tagkv[tagk]:
+                    raise ValueError("tag value = %s not in %s", tagv, self.tagkv[tagk])
+        return point
+
+    def get_counter_point(
+        self,
+        measurement: str,
+        key: str = None,
+        count: int = 1,
+        tags: dict = None,
+        timestamp: int = None,
+    ):
+        """
+        counter 不能被覆盖
+        """
+        tags = tags.copy() if tags else {}
+        if key is not None:
+            tags["_key"] = key
+        tags["_type"] = "counter"
+        count = ensure_int(count)
+        fields = dict(_count=count)
+        point = self.make_point(measurement, tags, fields, timestamp=timestamp)
+        return point
+
+    def get_store_point(
+        self,
+        measurement: str,
+        key: str = None,
+        value: Any = 0,
+        tags: dict = None,
+        timestamp=None,
+    ):
+        tags = tags.copy() if tags else {}
+        if key is not None:
+            tags["_key"] = key
+        tags["_type"] = "store"
+        fields = dict(_value=value)
+        point = self.make_point(measurement, tags, fields, timestamp=timestamp)
+        return point
+
+    def get_timer_point(
+        self,
+        measurement: str,
+        key: str = None,
+        duration: float = 0,
+        tags: dict = None,
+        timestamp=None,
+    ):
+        tags = tags.copy() if tags else {}
+        if key is not None:
+            tags["_key"] = key
+        tags["_type"] = "timer"
+        fields = dict(_duration=ensure_float(duration))
+        point = self.make_point(measurement, tags, fields, timestamp=timestamp)
+        return point
+
+    def emit_any(self, *args, **kwargs):
+        point = self.make_point(*args, **kwargs)
+        self.emit(point)
+
+    def emit_counter(self, *args, **kwargs):
+        point = self.get_counter_point(*args, **kwargs)
+        self.emit(point)
+
+    def emit_store(self, *args, **kwargs):
+        point = self.get_store_point(*args, **kwargs)
+        self.emit(point)
+
+    def emit_timer(self, *args, **kwargs):
+        point = self.get_timer_point(*args, **kwargs)
+        self.emit(point)
+
+
+_emitter: MetricsEmitter = None
+_measurement: str = None
+
+
+def init(
+    *,
+    influxdb_host=None,
+    influxdb_port=None,
+    influxdb_udp_port=None,
+    influxdb_database=None,
+    influxdb_user=None,
+    influxdb_password=None,
+    influxdb_measurement=None,
+    retention_policy=None,
+    retention_policy_duration="180d",
+    emit_interval=60,
+    batch_size=100,
+    debug=False,
+    use_udp=False,
+    timeout=22,
+    ssl=False,
+    retention_policy_replication: str = "1",
+    set_retention_policy_default=True,
+    **kwargs,
+):
+    """
+    打点监控初始化
+    Args:
+        influxdb_host:
+        influxdb_port:
+        influxdb_udp_port:
+        influxdb_database:
+        influxdb_user:
+        influxdb_password:
+        influxdb_measurement: 存储的表，也可以在打点的时候指定
+        retention_policy: 保留策略
+        retention_policy_duration: 保留策略过期时间
+        emit_interval: 打点最大间隔
+        batch_size: 打点的批次大小
+        debug: 是否开启调试
+        use_udp: 是否使用udp协议打点
+        timeout: 与influxdb建立连接时的超时时间
+        ssl: 是否使用https协议
+        retention_policy_replication: 保留策略的副本数, 确保数据的可靠性和高可用性。如果一个节点发生故障，其他节点可以继续提供服务，从而避免数据丢失和服务不可用的情况
+        set_retention_policy_default: 是否设置为默认的保留策略，当retention_policy初次创建时有效
+        **kwargs: 可传递MetricsEmitter类的参数
+
+    Returns:
+
+    """
+    global _inited_pid, _emitter, _measurement
+    if _inited_pid == os.getpid():
+        return
+
+    influxdb_host = influxdb_host or setting.INFLUXDB_HOST
+    influxdb_port = influxdb_port or setting.INFLUXDB_PORT
+    influxdb_udp_port = influxdb_udp_port or setting.INFLUXDB_UDP_PORT
+    influxdb_database = influxdb_database or setting.INFLUXDB_DATABASE
+    influxdb_user = influxdb_user or setting.INFLUXDB_USER
+    influxdb_password = influxdb_password or setting.INFLUXDB_PASSWORD
+    _measurement = influxdb_measurement or setting.INFLUXDB_MEASUREMENT
+    retention_policy = (
+        retention_policy or f"{influxdb_database}_{retention_policy_duration}"
+    )
+
+    if not all(
+        [
+            influxdb_host,
+            influxdb_port,
+            influxdb_udp_port,
+            influxdb_database,
+            influxdb_user,
+            influxdb_password,
+        ]
+    ):
+        return
+
+    influxdb_client = InfluxDBClient(
+        host=influxdb_host,
+        port=influxdb_port,
+        udp_port=influxdb_udp_port,
+        database=influxdb_database,
+        use_udp=use_udp,
+        timeout=timeout,
+        username=influxdb_user,
+        password=influxdb_password,
+        ssl=ssl,
+    )
+    # 创建数据库
+    if influxdb_database:
+        try:
+            influxdb_client.create_database(influxdb_database)
+            influxdb_client.create_retention_policy(
+                retention_policy,
+                retention_policy_duration,
+                replication=retention_policy_replication,
+                default=set_retention_policy_default,
+            )
+        except Exception as e:
+            log.error("metrics init falied: {}".format(e))
+            return
+
+    _emitter = MetricsEmitter(
+        influxdb_client,
+        debug=debug,
+        batch_size=batch_size,
+        retention_policy=retention_policy,
+        emit_interval=emit_interval,
+        **kwargs,
+    )
+    _inited_pid = os.getpid()
+    log.info("metrics init successfully")
+
+
+def emit_any(
+    tags: dict,
+    fields: dict,
+    *,
+    classify: str = "",
+    measurement: str = None,
+    timestamp=None,
+):
+    """
+    原生的打点，不进行额外的处理
+    Args:
+        tags: influxdb的tag的字段和值
+        fields: influxdb的field的字段和值
+        classify: 点的类别
+        measurement: 存储的表
+        timestamp: 点的时间搓，默认为当前时间
+
+    Returns:
+
+    """
+    if not _emitter:
+        return
+
+    tags = tags or {}
+    tags["_classify"] = classify
+    measurement = measurement or _measurement
+    _emitter.emit_any(measurement, tags, fields, timestamp)
+
+
+def emit_counter(
+    key: str = None,
+    count: int = 1,
+    *,
+    classify: str = "",
+    tags: dict = None,
+    measurement: str = None,
+    timestamp: int = None,
+):
+    """
+    聚合打点，即会将一段时间内的点求和，然后打一个点数和
+    Args:
+        key: 与点绑定的key值
+        count: 点数
+        classify: 点的类别
+        tags: influxdb的tag的字段和值
+        measurement: 存储的表
+        timestamp: 点的时间搓，默认为当前时间
+
+    Returns:
+
+    """
+    if not _emitter:
+        return
+
+    tags = tags or {}
+    tags["_classify"] = classify
+    measurement = measurement or _measurement
+    _emitter.emit_counter(measurement, key, count, tags, timestamp)
+
+
+def emit_timer(
+    key: str = None,
+    duration: float = 0,
+    *,
+    classify: str = "",
+    tags: dict = None,
+    measurement: str = None,
+    timestamp=None,
+):
+    """
+    时间打点，用于监控程序的运行时长等，每个duration一个点，不会被覆盖
+    Args:
+        key: 与点绑定的key值
+        duration: 时长
+        classify: 点的类别
+        tags: influxdb的tag的字段和值
+        measurement: 存储的表
+        timestamp: 点的时间搓，默认为当前时间
+
+    Returns:
+
+    """
+    if not _emitter:
+        return
+
+    tags = tags or {}
+    tags["_classify"] = classify
+    measurement = measurement or _measurement
+    _emitter.emit_timer(measurement, key, duration, tags, timestamp)
+
+
+def emit_store(
+    key: str = None,
+    value: Any = 0,
+    *,
+    classify: str = "",
+    tags: dict = None,
+    measurement: str = None,
+    timestamp=None,
+):
+    """
+    直接打点，不进行额外的处理
+    Args:
+        key: 与点绑定的key值
+        value: 点的值
+        classify: 点的类别
+        tags: influxdb的tag的字段和值
+        measurement: 存储的表
+        timestamp: 点的时间搓，默认为当前时间
+
+    Returns:
+
+    """
+    if not _emitter:
+        return
+
+    tags = tags or {}
+    tags["_classify"] = classify
+    measurement = measurement or _measurement
+    _emitter.emit_store(measurement, key, value, tags, timestamp)
+
+
+def flush():
+    """
+    强刷点到influxdb
+    Returns:
+
+    """
+    if not _emitter:
+        return
+    _emitter.flush()
+
+
+def close():
+    """
+    关闭
+    Returns:
+
+    """
+    if not _emitter:
+        return
+    _emitter.close()
+
+
+# 协程打点
+aemit_counter = aio_wrap(executor=_executor)(emit_counter)
+aemit_store = aio_wrap(executor=_executor)(emit_store)
+aemit_timer = aio_wrap(executor=_executor)(emit_timer)
+
+```
+
+### 代码文件: feapder\network\proxy_pool_old.py
+```python
+# coding:utf8
+"""
+代理池
+"""
+import datetime
+import json
+import os
+import random
+import socket
+import time
+from urllib import parse
+
+import redis
+import requests
+
+from feapder import setting
+from feapder.utils import tools
+from feapder.utils.log import log
+
+# 建立本地缓存代理文件夹
+proxy_path = os.path.join(os.path.dirname(__file__), "proxy_file")
+if not os.path.exists(proxy_path):
+    os.makedirs(proxy_path, exist_ok=True)
+
+
+def get_proxies_by_host(host, port):
+    proxy_id = "{}:{}".format(host, port)
+    return get_proxies_by_id(proxy_id)
+
+
+def get_proxies_by_id(proxy_id):
+    proxies = {
+        "http": "http://{}".format(proxy_id),
+        "https": "http://{}".format(proxy_id),
+    }
+    return proxies
+
+
+def get_proxy_from_url(**kwargs):
+    """
+    获取指定url的代理
+    :param kwargs:
+    :return:
+    """
+    proxy_source_url = kwargs.get("proxy_source_url", [])
+    if not isinstance(proxy_source_url, list):
+        proxy_source_url = [proxy_source_url]
+        proxy_source_url = [x for x in proxy_source_url if x]
+    if not proxy_source_url:
+        raise ValueError("no specify proxy_source_url: {}".format(proxy_source_url))
+    kwargs = kwargs.copy()
+    kwargs.pop("proxy_source_url")
+    proxies_list = []
+    for url in proxy_source_url:
+        if url.startswith("http"):
+            proxies_list.extend(get_proxy_from_http(url, **kwargs))
+        elif url.startswith("redis"):
+            proxies_list.extend(get_proxy_from_redis(url, **kwargs))
+
+    if proxies_list:
+        # 顺序打乱
+        random.shuffle(proxies_list)
+
+    return proxies_list
+
+
+def get_proxy_from_http(proxy_source_url, **kwargs):
+    """
+    从指定 http 地址获取代理
+    :param proxy_source_url:
+    :param kwargs:
+    :return:
+    """
+    filename = tools.get_md5(proxy_source_url) + ".txt"
+    abs_filename = os.path.join(proxy_path, filename)
+    update_interval = kwargs.get("local_proxy_file_cache_timeout", 60)
+    update_flag = 0
+    if not update_interval:
+        # 强制更新
+        update_flag = 1
+    elif not os.path.exists(abs_filename):
+        # 文件不存在则更新
+        update_flag = 1
+    elif time.time() - os.stat(abs_filename).st_mtime > update_interval:
+        # 超过更新间隔
+        update_flag = 1
+    if update_flag:
+        response = requests.get(proxy_source_url, timeout=20)
+        with open(os.path.join(proxy_path, filename), "w") as f:
+            f.write(response.text)
+    return get_proxy_from_file(filename)
+
+
+def get_proxy_from_file(filename, **kwargs):
+    """
+    从指定本地文件获取代理
+        文件格式
+        ip:port:https
+        ip:port:http
+        ip:port
+    :param filename:
+    :param kwargs:
+    :return:
+    """
+    proxies_list = []
+    with open(os.path.join(proxy_path, filename), "r") as f:
+        lines = f.readlines()
+
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        # 解析
+        auth = ""
+        if "@" in line:
+            auth, line = line.split("@")
+        #
+        items = line.split(":")
+        if len(items) < 2:
+            continue
+
+        ip, port, *protocol = items
+        if not all([port, ip]):
+            continue
+        if auth:
+            ip = "{}@{}".format(auth, ip)
+        if not protocol:
+            proxies = {
+                "https": "http://%s:%s" % (ip, port),
+                "http": "http://%s:%s" % (ip, port),
+            }
+        else:
+            proxies = {protocol[0]: "%s://%s:%s" % (protocol[0], ip, port)}
+        proxies_list.append(proxies)
+
+    return proxies_list
+
+
+def get_proxy_from_redis(proxy_source_url, **kwargs):
+    """
+    从指定 redis 地址获取代理
+    @param proxy_source_url: redis://:passwd@host:ip/db
+        redis 存储结构 zset
+        ip:port ts
+    @param kwargs:
+        {"redis_proxies_key": "xxx"}
+    @return: [{'http':'http://xxx.xxx.xxx:xxx', 'https':'http://xxx.xxx.xxx.xxx:xxx'}]
+    """
+
+    redis_conn = redis.StrictRedis.from_url(proxy_source_url)
+    key = kwargs.get("redis_proxies_key")
+    assert key, "从redis中获取代理 需要指定 redis_proxies_key"
+    proxies = redis_conn.zrange(key, 0, -1)
+    proxies_list = []
+    for proxy in proxies:
+        proxy = proxy.decode()
+        proxies_list.append(
+            {"https": "http://%s" % proxy, "http": "http://%s" % proxy}
+        )
+    return proxies_list
+
+
+def check_proxy(
+    ip="",
+    port="",
+    proxies=None,
+    type=0,
+    timeout=5,
+    logger=None,
+    show_error_log=True,
+    **kwargs,
+):
+    """
+    代理有效性检查
+    :param ip:
+    :param port:
+    :param type: 0:socket  1:requests
+    :param timeout:
+    :param logger:
+    :return:
+    """
+    if not logger:
+        logger = log
+    ok = 0
+    if type == 0 and ip and port:
+        # socket检测成功 不代表代理一定可用 Connection closed by foreign host. 这种情况就不行
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sk:
+            sk.settimeout(timeout)
+            try:
+                # 必须检测 否则代理永远不刷新
+                sk.connect((ip, int(port)))
+                ok = 1
+            except Exception as e:
+                if show_error_log:
+                    logger.debug("check proxy failed: {} {}:{}".format(e, ip, port))
+            sk.close()
+    else:
+        if not proxies:
+            proxies = {
+                "http": "http://{}:{}".format(ip, port),
+                "https": "http://{}:{}".format(ip, port),
+            }
+        try:
+            r = requests.get(
+                "http://www.baidu.com", proxies=proxies, timeout=timeout, stream=True
+            )
+            ok = 1
+            r.close()
+        except Exception as e:
+            if show_error_log:
+                logger.debug(
+                    "check proxy failed: {} {}:{} {}".format(e, ip, port, proxies)
+                )
+    return ok
+
+
+class ProxyItem(object):
+    """单个代理对象"""
+
+    # 代理标记
+    proxy_tag_list = (-1, 0, 1)
+
+    def __init__(
+        self,
+        proxies=None,
+        valid_timeout=20,
+        check_interval=180,
+        max_proxy_use_num=10000,
+        delay=30,
+        use_interval=None,
+        **kwargs,
+    ):
+        """
+        :param proxies:
+        :param valid_timeout:  代理检测超时时间 默认-1    20181008  默认不再监测有效性
+        :param check_interval:
+        :param max_proxy_use_num:
+        :param delay:
+        :param use_interval: 使用间隔 单位秒 默认不限制
+        :param logger: 日志处理器 默认 log.get_logger()
+        :param kwargs:
+        """
+        # {"http": ..., "https": ...}
+        self.proxies = proxies
+        # 检测超时时间 秒
+        self.valid_timeout = valid_timeout
+        # 检测间隔 秒
+        self.check_interval = check_interval
+
+        # 标记  0:正常 -1:丢弃  1: 待会再用 ...
+        self.flag = 0
+        # 上次状态变化时间
+        self.flag_ts = 0
+        # 上次更新时间 有效时间
+        self.update_ts = 0
+        # 最大被使用次数
+        self.max_proxy_use_num = max_proxy_use_num
+        # 被使用次数记录
+        self.use_num = 0
+        # 延迟使用时间
+        self.delay = delay
+        # 使用间隔 单位秒
+        self.use_interval = use_interval
+        # 使用时间
+        self.use_ts = 0
+
+        self.proxy_args = self.parse_proxies(self.proxies)
+        self.proxy_ip = self.proxy_args["ip"]
+        self.proxy_port = self.proxy_args["port"]
+        self.proxy_ip_port = "{}:{}".format(self.proxy_ip, self.proxy_port)
+        if self.proxy_args["user"]:
+            self.proxy_id = "{user}:{password}@{ip}:{port}".format(**self.proxy_args)
+        else:
+            self.proxy_id = self.proxy_ip_port
+
+        # 日志处理器
+        self.logger = log
+
+    def get_proxies(self):
+        self.use_num += 1
+        return self.proxies
+
+    def is_delay(self):
+        return self.flag == 1
+
+    def is_valid(self, force=0, type=0):
+        """
+        检测代理是否有效
+            1 有效
+            2 延时使用
+            0 无效 直接在代理池删除
+        :param force:
+        :param type:
+        :return:
+        """
+        if self.use_num > self.max_proxy_use_num > 0:
+            self.logger.debug("代理达到最大使用次数: {} {}".format(self.use_num, self.proxies))
+            return 0
+        if self.flag == -1:
+            self.logger.debug("代理被标记 -1 丢弃 %s" % self.proxies)
+            return 0
+        if self.delay > 0 and self.flag == 1:
+            if time.time() - self.flag_ts < self.delay:
+                self.logger.debug("代理被标记 1 延迟 %s" % self.proxies)
+                return 2
+            else:
+                self.flag = 0
+                self.logger.debug("延迟代理释放: {}".format(self.proxies))
+        if self.use_interval:
+            if time.time() - self.use_ts < self.use_interval:
+                return 2
+        if not force:
+            if time.time() - self.update_ts < self.check_interval:
+                return 1
+        if self.valid_timeout > 0:
+            ok = check_proxy(
+                proxies=self.proxies,
+                type=type,
+                timeout=self.valid_timeout,
+                logger=self.logger,
+            )
+        else:
+            ok = 1
+        self.update_ts = time.time()
+        return ok
+
+    @classmethod
+    def parse_proxies(self, proxies):
+        """
+        分解代理组成部分
+        :param proxies:
+        :return:
+        """
+        if not proxies:
+            return {}
+        if isinstance(proxies, (str, bytes)):
+            proxies = json.loads(proxies)
+        protocol = list(proxies.keys())
+        if not protocol:
+            return {}
+        _url = proxies.get(protocol[0])
+        if not _url.startswith("http"):
+            _url = "http://" + _url
+        _url_parse = parse.urlparse(_url)
+        netloc = _url_parse.netloc
+        if "@" in netloc:
+            netloc_auth, netloc_host = netloc.split("@")
+        else:
+            netloc_auth, netloc_host = "", netloc
+        ip, *port = netloc_host.split(":")
+        port = port[0] if port else "80"
+        user, *password = netloc_auth.split(":")
+        password = password[0] if password else ""
+        return {
+            "protocol": protocol,
+            "ip": ip,
+            "port": port,
+            "user": user,
+            "password": password,
+            "ip_port": "{}:{}".format(ip, port),
+        }
+
+
+class ProxyPoolBase(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def get(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class ProxyPool(ProxyPoolBase):
+    """代理池"""
+
+    def __init__(self, **kwargs):
+        """
+        :param size: 代理池大小  -1 为不限制
+        :param proxy_source_url: 代理文件地址 支持列表
+        :param proxy_instance:  提供代理的实例
+        :param reset_interval:  代理池重置间隔 最小间隔
+        :param reset_interval_max:  代理池重置间隔 最大间隔 默认2分钟
+        :param check_valid: 是否在获取代理时进行检测有效性
+        :param local_proxy_file_cache_timeout: 本地缓存的代理文件超时时间
+        :param logger: 日志处理器 默认 log.get_logger()
+        :param kwargs: 其他的参数
+        """
+        kwargs.setdefault("size", -1)
+        kwargs.setdefault("proxy_source_url", setting.PROXY_EXTRACT_API)
+
+        super(ProxyPool, self).__init__(**kwargs)
+        # 队列最大长度
+        self.max_queue_size = kwargs.get("size", -1)
+        # 实际代理数量
+        self.real_max_proxy_count = 1000
+        # 代理可用最大次数
+        # 代理获取地址 http://localhost/proxy.txt
+        self.proxy_source_url = kwargs.get("proxy_source_url", [])
+        if not isinstance(self.proxy_source_url, list):
+            self.proxy_source_url = [self.proxy_source_url]
+            self.proxy_source_url = [x for x in self.proxy_source_url if x]
+            self.proxy_source_url = list(set(self.proxy_source_url))
+            kwargs.update({"proxy_source_url": self.proxy_source_url})
+        # 处理日志
+        self.logger = kwargs.get("logger") or log
+        kwargs["logger"] = self.logger
+        if not self.proxy_source_url:
+            self.logger.warn("need set proxy_source_url or proxy_instance")
+
+        # 代理池重置间隔
+        self.reset_interval = kwargs.get("reset_interval", 5)
+        # 强制重置一下代理 添加新的代理进来 防止一直使用旧的被封的代理
+        self.reset_interval_max = kwargs.get("reset_interval_max", 180)
+        # 是否监测代理有效性
+        self.check_valid = kwargs.get("check_valid", True)
+
+        # 代理队列
+        self.proxy_queue = None
+        # {代理id: ProxyItem, ...}
+        self.proxy_dict = {}
+        # 失效代理队列
+        self.invalid_proxy_dict = {}
+
+        self.kwargs = kwargs
+
+        # 重置代理池锁
+        self.reset_lock = None
+        # 重置时间
+        self.last_reset_time = 0
+        # 重置的太快了  计数
+        self.reset_fast_count = 0
+        # 计数 获取代理重试3次仍然失败 次数
+        self.no_valid_proxy_times = 0
+
+        # 上次获取代理时间
+        self.last_get_ts = time.time()
+
+        # 记录ProxyItem的update_ts 防止由于重置太快导致重复检测有效性
+        self.proxy_item_update_ts_dict = {}
+
+        # 警告
+        self.warn_flag = False
+
+    def warn(self):
+        if not self.warn_flag:
+            for url in self.proxy_source_url:
+                if "zhima" in url:
+                    continue
+            self.warn_flag = True
+        return
+
+    @property
+    def queue_size(self):
+        """
+        当前代理池中代理数量
+        :return:
+        """
+        return self.proxy_queue.qsize() if self.proxy_queue is not None else 0
+
+    def clear(self):
+        """
+        清空自己
+        :return:
+        """
+        self.proxy_queue = None
+        # {代理ip: ProxyItem, ...}
+        self.proxy_dict = {}
+        # 清理失效代理集合
+        _limit = datetime.datetime.now() - datetime.timedelta(minutes=10)
+        self.invalid_proxy_dict = {
+            k: v for k, v in self.invalid_proxy_dict.items() if v > _limit
+        }
+        # 清理超时的update_ts记录
+        _limit = time.time() - 600
+        self.proxy_item_update_ts_dict = {
+            k: v for k, v in self.proxy_item_update_ts_dict.items() if v > _limit
+        }
+        return
+
+    def get(self, retry: int = 0) -> dict:
+        """
+        从代理池中获取代理
+        :param retry:
+        :return:
+        """
+        retry += 1
+        if retry > 3:
+            self.no_valid_proxy_times += 1
+            return None
+        if time.time() - self.last_get_ts > 3 * 60:
+            # 3分钟没有获取过 重置一下
+            try:
+                self.reset_proxy_pool()
+            except Exception as e:
+                self.logger.exception(e)
+        # 记录获取时间
+        self.last_get_ts = time.time()
+        #
+        self.warn()
+        proxy_item = self.get_random_proxy()
+        if proxy_item:
+            # 不检测
+            if not self.check_valid:
+                # 塞回去
+                proxies = proxy_item.get_proxies()
+                self.put_proxy_item(proxy_item)
+                return proxies
+            else:
+                is_valid = proxy_item.is_valid()
+                if is_valid:
+                    # 记录update_ts
+                    self.proxy_item_update_ts_dict[
+                        proxy_item.proxy_id
+                    ] = proxy_item.update_ts
+                    # 塞回去
+                    proxies = proxy_item.get_proxies()
+                    self.put_proxy_item(proxy_item)
+                    if is_valid == 1:
+                        if proxy_item.use_interval:
+                            proxy_item.use_ts = time.time()
+                        return proxies
+                else:
+                    # 处理失效代理
+                    self.proxy_dict.pop(proxy_item.proxy_id, "")
+                    self.invalid_proxy_dict[
+                        proxy_item.proxy_id
+                    ] = datetime.datetime.now()
+        else:
+            try:
+                self.reset_proxy_pool()
+            except Exception as e:
+                self.logger.exception(e)
+        if self.no_valid_proxy_times >= 5:
+            # 解决bug: 当爬虫仅剩一个任务时 由于只有一个线程检测代理 而不可用代理又刚好很多（时间越长越多） 可能出现一直获取不到代理的情况
+            # 导致爬虫烂尾
+            try:
+                self.reset_proxy_pool()
+            except Exception as e:
+                self.logger.exception(e)
+        return self.get(retry)
+
+    get_proxy = get
+
+    def get_random_proxy(self) -> ProxyItem:
+        """
+        随机获取代理
+        :return:
+        """
+        if self.proxy_queue is not None:
+            if random.random() < 0.5:
+                # 一半概率检查 这是个高频操作 优化一下
+                if time.time() - self.last_reset_time > self.reset_interval_max:
+                    self.reset_proxy_pool(force=True)
+                else:
+                    min_q_size = (
+                        min(self.max_queue_size / 2, self.real_max_proxy_count / 2)
+                        if self.max_queue_size > 0
+                        else self.real_max_proxy_count / 2
+                    )
+                    if self.proxy_queue.qsize() < min_q_size:
+                        self.reset_proxy_pool()
+            try:
+                return self.proxy_queue.get_nowait()
+            except Exception:
+                pass
+        return None
+
+    def append_proxies(self, proxies_list: list) -> int:
+        """
+        添加代理到代理池
+        :param proxies_list:
+        :return:
+        """
+        count = 0
+        if not isinstance(proxies_list, list):
+            proxies_list = [proxies_list]
+        for proxies in proxies_list:
+            if proxies:
+                proxy_item = ProxyItem(proxies=proxies, **self.kwargs)
+                # 增加失效判断 2018/12/18
+                if proxy_item.proxy_id in self.invalid_proxy_dict:
+                    continue
+                if proxy_item.proxy_id not in self.proxy_dict:
+                    # 补充update_ts
+                    if not proxy_item.update_ts:
+                        proxy_item.update_ts = self.proxy_item_update_ts_dict.get(
+                            proxy_item.proxy_id, 0
+                        )
+                    self.put_proxy_item(proxy_item)
+                    self.proxy_dict[proxy_item.proxy_id] = proxy_item
+                    count += 1
+        return count
+
+    def put_proxy_item(self, proxy_item: ProxyItem):
+        """
+        添加 ProxyItem 到代理池
+        :param proxy_item:
+        :return:
+        """
+        return self.proxy_queue.put_nowait(proxy_item)
+
+    def reset_proxy_pool(self, force: bool = False):
+        """
+        重置代理池
+        :param force: 是否强制重置代理池
+        :return:
+        """
+        if not self.reset_lock:
+            # 必须用时调用 否则 可能存在 gevent patch前 threading就已经被导入 导致的Rlock patch失效
+            import threading
+
+            self.reset_lock = threading.RLock()
+        with self.reset_lock:
+            if (
+                force
+                or self.proxy_queue is None
+                or (
+                    self.max_queue_size > 0
+                    and self.proxy_queue.qsize() < self.max_queue_size / 2
+                )
+                or (
+                    self.max_queue_size < 0
+                    and self.proxy_queue.qsize() < self.real_max_proxy_count / 2
+                )
+                or self.no_valid_proxy_times >= 5
+            ):
+                if time.time() - self.last_reset_time < self.reset_interval:
+                    self.reset_fast_count += 1
+                    if self.reset_fast_count % 10 == 0:
+                        self.logger.debug(
+                            "代理池重置的太快了:) {}".format(self.reset_fast_count)
+                        )
+                        time.sleep(1)
+                else:
+                    self.clear()
+                    if self.proxy_queue is None:
+                        import queue
+
+                        self.proxy_queue = queue.Queue()
+                    # TODO 这里获取到的可能重复
+                    proxies_list = get_proxy_from_url(**self.kwargs)
+                    self.real_max_proxy_count = len(proxies_list)
+                    if 0 < self.max_queue_size < self.real_max_proxy_count:
+                        proxies_list = random.sample(proxies_list, self.max_queue_size)
+                    _valid_count = self.append_proxies(proxies_list)
+                    self.last_reset_time = time.time()
+                    self.no_valid_proxy_times = 0
+                    self.logger.debug(
+                        "重置代理池成功: 获取{}, 成功添加{}, 失效{},  当前代理数{},".format(
+                            len(proxies_list),
+                            _valid_count,
+                            len(self.invalid_proxy_dict),
+                            len(self.proxy_dict),
+                        )
+                    )
+        return
+
+    def tag_proxy(self, proxies_list: list, flag: int, *, delay=30) -> bool:
+        """
+        对代理进行标记
+        :param proxies_list:
+        :param flag:
+                    -1  废弃
+                    1 延迟使用
+        :param delay: 延迟时间
+        :return:
+        """
+        if int(flag) not in ProxyItem.proxy_tag_list or not proxies_list:
+            return False
+        if not isinstance(proxies_list, list):
+            proxies_list = [proxies_list]
+        for proxies in proxies_list:
+            if not proxies:
+                continue
+            proxy_id = ProxyItem(proxies).proxy_id
+            if proxy_id not in self.proxy_dict:
+                continue
+            self.proxy_dict[proxy_id].flag = flag
+            self.proxy_dict[proxy_id].flag_ts = time.time()
+            self.proxy_dict[proxy_id].delay = delay
+
+        return True
+
+    def get_proxy_item(self, proxy_id="", proxies=None):
+        """
+        获取代理对象
+        :param proxy_id:
+        :param proxies:
+        :return:
+        """
+        if proxy_id:
+            return self.proxy_dict.get(proxy_id)
+        if proxies:
+            proxy_id = ProxyItem(proxies).proxy_id
+            return self.proxy_dict.get(proxy_id)
+        return
+
+    def copy(self):
+        return ProxyPool(**self.kwargs)
+
+    def all(self) -> list:
+        """
+        获取当前代理池中的全部代理
+        :return:
+        """
+        return get_proxy_from_url(**self.kwargs)
+
+```
+
+### 代码文件: feapder\requirements.txt
+```txt
+better-exceptions>=0.2.2
+DBUtils>=2.0
+parsel>=1.5.2
+PyExecJS>=1.5.1
+pymongo>=3.10.1
+PyMySQL>=0.9.3
+redis>=2.10.6,<4.0.0
+requests>=2.22.0
+selenium>=3.141.0
+bs4>=0.0.1
+ipython>=7.14.0
+bitarray>=1.5.3
+redis-py-cluster>=2.1.0
+cryptography>=3.3.2
+urllib3>=1.25.8
+loguru>=0.5.3
+influxdb>=5.3.1
+pyperclip>=1.8.2
+webdriver-manager>=4.0.0
+terminal-layout>=2.1.3
+playwright
+```
+
+### 代码文件: feapder\commands\cmdline.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2020/5/8 2:24 PM
+---------
+@summary:
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+
+import re
+import sys
+from os.path import dirname, join
+import os
+
+import requests
+
+from feapder.commands import create_builder
+from feapder.commands import retry
+from feapder.commands import shell
+from feapder.commands import zip
+
+HELP = """
+███████╗███████╗ █████╗ ██████╗ ██████╗ ███████╗██████╗
+██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
+█████╗  █████╗  ███████║██████╔╝██║  ██║█████╗  ██████╔╝
+██╔══╝  ██╔══╝  ██╔══██║██╔═══╝ ██║  ██║██╔══╝  ██╔══██╗
+██║     ███████╗██║  ██║██║     ██████╔╝███████╗██║  ██║
+╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝
+
+Version: {version}
+Document: https://feapder.com
+
+Usage:
+  feapder <command> [options] [args]
+      
+Available commands:
+"""
+
+NEW_VERSION_TIP = """
+──────────────────────────────────────────────────────
+New version available \033[31m{version}\033[0m → \033[32m{new_version}\033[0m
+Run \033[33mpip install --upgrade feapder\033[0m to update!
+"""
+
+with open(join(dirname(dirname(__file__)), "VERSION"), "rb") as f:
+    VERSION = f.read().decode("ascii").strip()
+
+
+def _print_commands():
+    print(HELP.rstrip().format(version=VERSION))
+    cmds = {
+        "create": "create project、spider、item and so on",
+        "shell": "debug response",
+        "zip": "zip project",
+        "retry": "retry failed request or item",
+    }
+    for cmdname, cmdclass in sorted(cmds.items()):
+        print("  %-13s %s" % (cmdname, cmdclass))
+
+    print('\nUse "feapder <command> -h" to see more info about a command')
+
+
+def check_new_version():
+    try:
+        url = "https://pypi.org/simple/feapder/"
+        resp = requests.get(url, timeout=3, verify=False)
+        html = resp.text
+
+        last_stable_version = re.findall(r"feapder-([\d.]*?).tar.gz", html)[-1]
+        now_version = VERSION
+        now_stable_version = re.sub("-beta.*", "", VERSION)
+
+        if now_stable_version < last_stable_version or (
+            now_stable_version == last_stable_version and "beta" in now_version
+        ):
+            new_version = f"feapder=={last_stable_version}"
+            if new_version:
+                version = f"feapder=={VERSION.replace('-beta', 'b')}"
+                tip = NEW_VERSION_TIP.format(version=version, new_version=new_version)
+                # 修复window下print不能带颜色输出的问题
+                if os.name == "nt":
+                    os.system("")
+                print(tip)
+    except Exception as e:
+        pass
+
+
+def execute():
+    try:
+        args = sys.argv
+        if len(args) < 2:
+            _print_commands()
+            check_new_version()
+            return
+
+        command = args.pop(1)
+        if command == "create":
+            create_builder.main()
+        elif command == "shell":
+            shell.main()
+        elif command == "zip":
+            zip.main()
+        elif command == "retry":
+            retry.main()
+        else:
+            _print_commands()
+    except KeyboardInterrupt:
+        pass
+
+    check_new_version()
+
+
+if __name__ == "__main__":
+    execute()
+
+```
+
+### 代码文件: feapder\templates\spider_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+import feapder
+
+
+class ${spider_name}(feapder.Spider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379", REDISDB_USER_PASS="", REDISDB_DB=0
+    )
+
+    def start_requests(self):
+        yield feapder.Request("https://spidertools.cn")
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+
+if __name__ == "__main__":
+    ${spider_name}(redis_key="xxx:xxx").start()
+
+```
+
+### 代码文件: feapder\utils\tools.py
+```python
+# -*- coding: utf-8 -*-
+"""
+Created on 2018-09-06 14:21
+---------
+@summary: 工具
+---------
+@author: Boris
+@email: boris_liu@foxmail.com
+"""
+import asyncio
+import base64
+import calendar
+import codecs
+import configparser  # 读配置文件的
+import datetime
+import functools
+import hashlib
+import hmac
+import html
+import importlib
+import json
+import os
+import pickle
+import random
+import re
+import signal
+import socket
+import ssl
+import string
+import sys
+import time
+import traceback
+import urllib
+import urllib.parse
+import uuid
+import weakref
+from functools import partial, wraps
+from hashlib import md5
+from pprint import pformat
+from pprint import pprint
+from urllib import request
+from urllib.parse import urljoin
+
+import redis
+import requests
+import six
+from requests.cookies import RequestsCookieJar
+from w3lib.url import canonicalize_url as _canonicalize_url
+
+import feapder.setting as setting
+from feapder.db.redisdb import RedisDB
+from feapder.utils.email_sender import EmailSender
+from feapder.utils.log import log
+
+try:
+    import execjs  # pip install PyExecJS
+except Exception as e:
+    pass
+
+os.environ["EXECJS_RUNTIME"] = "Node"  # 设置使用node执行js
+
+# 全局取消ssl证书验证
+ssl._create_default_https_context = ssl._create_unverified_context
+
+TIME_OUT = 30
+TIMER_TIME = 5
+
+redisdb = None
+
+
+def get_redisdb():
+    global redisdb
+    if not redisdb:
+        redisdb = RedisDB()
+    return redisdb
+
+
+# 装饰器
+class Singleton(object):
+    def __init__(self, cls):
+        self._cls = cls
+        self._instance = {}
+
+    def __call__(self, *args, **kwargs):
+        if self._cls not in self._instance:
+            self._instance[self._cls] = self._cls(*args, **kwargs)
+        return self._instance[self._cls]
+
+
+class LazyProperty:
+    """
+    属性延时初始化，且只初始化一次
+    """
+
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        else:
+            value = self.func(instance)
+            setattr(instance, self.func.__name__, value)
+            return value
+
+
+def log_function_time(func):
+    try:
+
+        @functools.wraps(func)  # 将函数的原来属性付给新函数
+        def calculate_time(*args, **kw):
+            began_time = time.time()
+            callfunc = func(*args, **kw)
+            end_time = time.time()
+            log.debug(func.__name__ + " run time  = " + str(end_time - began_time))
+            return callfunc
+
+        return calculate_time
+    except:
+        log.debug("求取时间无效 因为函数参数不符")
+        return func
+
+
+def run_safe_model(module_name):
+    def inner_run_safe_model(func):
+        try:
+
+            @functools.wraps(func)  # 将函数的原来属性付给新函数
+            def run_func(*args, **kw):
+                callfunc = None
+                try:
+                    callfunc = func(*args, **kw)
+                except Exception as e:
+                    log.error(module_name + ": " + func.__name__ + " - " + str(e))
+                    traceback.print_exc()
+                return callfunc
+
+            return run_func
+        except Exception as e:
+            log.error(module_name + ": " + func.__name__ + " - " + str(e))
+            traceback.print_exc()
+            return func
+
+    return inner_run_safe_model
+
+
+def memoizemethod_noargs(method):
+    """Decorator to cache the result of a method (without arguments) using a
+    weak reference to its object
+    """
+    cache = weakref.WeakKeyDictionary()
+
+    @functools.wraps(method)
+    def new_method(self, *args, **kwargs):
+        if self not in cache:
+            cache[self] = method(self, *args, **kwargs)
+        return cache[self]
+
+    return new_method
+
+
+def retry(retry_times=3, interval=0):
+    """
+    普通函数的重试装饰器
+    Args:
+        retry_times: 重试次数
+        interval: 每次重试之间的间隔
+
+    Returns:
+
+    """
+
+    def _retry(func):
+        @functools.wraps(func)  # 将函数的原来属性付给新函数
+        def wapper(*args, **kwargs):
+            for i in range(retry_times):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    log.error(
+                        "函数 {} 执行失败 重试 {} 次. error {}".format(func.__name__, i + 1, e)
+                    )
+                    time.sleep(interval)
+                    if i + 1 >= retry_times:
+                        raise e
+
+        return wapper
+
+    return _retry
+
+
+def retry_asyncio(retry_times=3, interval=0):
+    """
+    协程的重试装饰器
+    Args:
+        retry_times: 重试次数
+        interval: 每次重试之间的间隔
+
+    Returns:
+
+    """
+
+    def _retry(func):
+        @functools.wraps(func)  # 将函数的原来属性付给新函数
+        async def wapper(*args, **kwargs):
+            for i in range(retry_times):
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    log.error(
+                        "函数 {} 执行失败 重试 {} 次. error {}".format(func.__name__, i + 1, e)
+                    )
+                    await asyncio.sleep(interval)
+                    if i + 1 >= retry_times:
+                        raise e
+
+        return wapper
+
+    return _retry
+
+
+def func_timeout(timeout):
+    """
+    函数运行时间限制装饰器
+    注: 不支持window
+    Args:
+        timeout: 超时的时间
+
+    Eg:
+        @set_timeout(3)
+        def test():
+            ...
+
+    Returns:
+
+    """
+
+    def wapper(func):
+        def handle(
+            signum, frame
+        ):  # 收到信号 SIGALRM 后的回调函数，第一个参数是信号的数字，第二个参数是the interrupted stack frame.
+            raise TimeoutError
+
+        def new_method(*args, **kwargs):
+            signal.signal(signal.SIGALRM, handle)  # 设置信号和回调函数
+            signal.alarm(timeout)  # 设置 timeout 秒的闹钟
+            r = func(*args, **kwargs)
+            signal.alarm(0)  # 关闭闹钟
+            return r
+
+        return new_method
+
+    return wapper
+
+
+########################【网页解析相关】###############################
+
+
+# @log_function_time
+def get_html_by_requests(
+    url, headers=None, code="utf-8", data=None, proxies={}, with_response=False
+):
+    html = ""
+    r = None
+    try:
+        if data:
+            r = requests.post(
+                url, headers=headers, timeout=TIME_OUT, data=data, proxies=proxies
+            )
+        else:
+            r = requests.get(url, headers=headers, timeout=TIME_OUT, proxies=proxies)
+
+        if code:
+            r.encoding = code
+        html = r.text
+
+    except Exception as e:
+        log.error(e)
+    finally:
+        r and r.close()
+
+    if with_response:
+        return html, r
+    else:
+        return html
+
+
+def get_json_by_requests(
+    url,
+    params=None,
+    headers=None,
+    data=None,
+    proxies={},
+    with_response=False,
+    cookies=None,
+):
+    json = {}
+    response = None
+    try:
+        # response = requests.get(url, params = params)
+        if data:
+            response = requests.post(
+                url,
+                headers=headers,
+                data=data,
+                params=params,
+                timeout=TIME_OUT,
+                proxies=proxies,
+                cookies=cookies,
+            )
+        else:
+            response = requests.get(
+                url,
+                headers=headers,
+                params=params,
+                timeout=TIME_OUT,
+                proxies=proxies,
+                cookies=cookies,
+            )
+        response.encoding = "utf-8"
+        json = response.json()
+    except Exception as e:
+        log.error(e)
+    finally:
+        response and response.close()
+
+    if with_response:
+        return json, response
+    else:
+        return json
+
+
+def get_cookies(response):
+    cookies = requests.utils.dict_from_cookiejar(response.cookies)
+    return cookies
+
+
+def get_cookies_from_str(cookie_str):
+    """
+    >>> get_cookies_from_str("key=value; key2=value2; key3=; key4=; ")
+    {'key': 'value', 'key2': 'value2', 'key3': '', 'key4': ''}
+
+    Args:
+        cookie_str: key=value; key2=value2; key3=; key4=
+
+    Returns:
+
+    """
+    cookies = {}
+    for cookie in cookie_str.split(";"):
+        cookie = cookie.strip()
+        if not cookie:
+            continue
+        key, value = cookie.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        cookies[key] = value
+
+    return cookies
+
+
+def get_cookies_jar(cookies):
+    """
+    @summary: 适用于selenium生成的cookies转requests的cookies
+    requests.get(xxx, cookies=jar)
+    参考：https://www.cnblogs.com/small-bud/p/9064674.html
+
+    ---------
+    @param cookies: [{},{}]
+    ---------
+    @result: cookie jar
+    """
+
+    cookie_jar = RequestsCookieJar()
+    for cookie in cookies:
+        cookie_jar.set(cookie["name"], cookie["value"])
+
+    return cookie_jar
+
+
+def get_cookies_from_selenium_cookie(cookies):
+    """
+    @summary: 适用于selenium生成的cookies转requests的cookies
+    requests.get(xxx, cookies=jar)
+    参考：https://www.cnblogs.com/small-bud/p/9064674.html
+
+    ---------
+    @param cookies: [{},{}]
+    ---------
+    @result: cookie jar
+    """
+
+    cookie_dict = {}
+    for cookie in cookies:
+        if cookie.get("name"):
+            cookie_dict[cookie["name"]] = cookie["value"]
+
+    return cookie_dict
+
+
+def cookiesjar2str(cookies):
+    str_cookie = ""
+    for k, v in requests.utils.dict_from_cookiejar(cookies).items():
+        str_cookie += k
+        str_cookie += "="
+        str_cookie += v
+        str_cookie += "; "
+    return str_cookie
+
+
+def cookies2str(cookies):
+    str_cookie = ""
+    for k, v in cookies.items():
+        str_cookie += k
+        str_cookie += "="
+        str_cookie += v
+        str_cookie += "; "
+    return str_cookie
+
+
+def get_urls(
+    html,
+    stop_urls=(
+        "javascript",
+        "+",
+        ".css",
+        ".js",
+        ".rar",
+        ".xls",
+        ".exe",
+        ".apk",
+        ".doc",
+        ".jpg",
+        ".png",
+        ".flv",
+        ".mp4",
+    ),
+):
+    # 不匹配javascript、 +、 # 这样的url
+    regex = r'<a.*?href.*?=.*?["|\'](.*?)["|\']'
+
+    urls = get_info(html, regex)
+    urls = sorted(set(urls), key=urls.index)
+    if stop_urls:
+        stop_urls = isinstance(stop_urls, str) and [stop_urls] or stop_urls
+        use_urls = []
+        for url in urls:
+            for stop_url in stop_urls:
+                if stop_url in url:
+                    break
+            else:
+                use_urls.append(url)
+
+        urls = use_urls
+    return urls
+
+
+def get_full_url(root_url, sub_url):
+    """
+    @summary: 得到完整的ur
+    ---------
+    @param root_url: 根url （网页的url）
+    @param sub_url:  子url （带有相对路径的 可以拼接成完整的）
+    ---------
+    @result: 返回完整的url
+    """
+
+    return urljoin(root_url, sub_url)
+
+
+def joint_url(url, params):
+    # param_str = "?"
+    # for key, value in params.items():
+    #     value = isinstance(value, str) and value or str(value)
+    #     param_str += key + "=" + value + "&"
+    #
+    # return url + param_str[:-1]
+
+    if not params:
+        return url
+
+    params = urlencode(params)
+    separator = "?" if "?" not in url else "&"
+    return url + separator + params
+
+
+def canonicalize_url(url):
+    """
+    url 归一化 会参数排序 及去掉锚点
+    """
+    return _canonicalize_url(url)
+
+
+def get_url_md5(url):
+    url = canonicalize_url(url)
+    url = re.sub("^http://", "https://", url)
+    return get_md5(url)
+
+
+def fit_url(urls, identis):
+    identis = isinstance(identis, str) and [identis] or identis
+    fit_urls = []
+    for link in urls:
+        for identi in identis:
+            if identi in link:
+                fit_urls.append(link)
+    return list(set(fit_urls))
+
+
+def get_param(url, key):
+    pattern = r"(?:[?&])" + re.escape(key) + r"=([^&]+)"
+    match = re.search(pattern, url)
+    if match:
+        return match.group(1)
+    return None
+
+
+def get_all_params(url):
+    """
+    >>> get_all_params("https://www.baidu.com/s?wd=feapder")
+    {'wd': 'feapder'}
+    """
+    params_json = {}
+    params = url.split("?", 1)[-1].split("&")
+    for param in params:
+        key_value = param.split("=", 1)
+        if len(key_value) == 2:
+            params_json[key_value[0]] = unquote_url(key_value[1])
+        else:
+            params_json[key_value[0]] = ""
+
+    return params_json
+
+
+def parse_url_params(url):
+    """
+    解析url参数
+    :param url:
+    :return:
+
+    >>> parse_url_params("https://www.baidu.com/s?wd=%E4%BD%A0%E5%A5%BD")
+    ('https://www.baidu.com/s', {'wd': '你好'})
+    >>> parse_url_params("wd=%E4%BD%A0%E5%A5%BD")
+    ('', {'wd': '你好'})
+    >>> parse_url_params("https://www.baidu.com/s?wd=%E4%BD%A0%E5%A5%BD&pn=10")
+    ('https://www.baidu.com/s', {'wd': '你好', 'pn': '10'})
+    >>> parse_url_params("wd=%E4%BD%A0%E5%A5%BD&pn=10")
+    ('', {'wd': '你好', 'pn': '10'})
+    >>> parse_url_params("https://www.baidu.com")
+    ('https://www.baidu.com', {})
+    >>> parse_url_params("https://www.spidertools.cn/#/")
+    ('https://www.spidertools.cn/#/', {})
+    """
+    root_url = ""
+    params = {}
+    if "?" not in url:
+        if re.search("[&=]", url) and not re.search("/", url):
+            # 只有参数
+            params = get_all_params(url)
+        else:
+            root_url = url
+
+    else:
+        root_url = url.split("?", 1)[0]
+        params = get_all_params(url)
+
+    return root_url, params
+
+
+def urlencode(params):
+    """
+    字典类型的参数转为字符串
+    @param params:
+    {
+        'a': 1,
+        'b': 2
+    }
+    @return: a=1&b=2
+    """
+    return urllib.parse.urlencode(params)
+
+
+def urldecode(url):
+    """
+    将字符串类型的参数转为json
+    @param url: xxx?a=1&b=2
+    @return:
+    {
+        'a': 1,
+        'b': 2
+    }
+    """
+    params_json = {}
+    params = url.split("?")[-1].split("&")
+    for param in params:
+        key, value = param.split("=", 1)
+        params_json[key] = unquote_url(value)
+
+    return params_json
+
+
+def unquote_url(url, encoding="utf-8"):
+    """
+    @summary: 将url解码
+    ---------
+    @param url:
+    ---------
+    @result:
+    """
+
+    return urllib.parse.unquote(url, encoding=encoding)
+
+
+def quote_url(url, encoding="utf-8"):
+    """
+    @summary: 将url编码 编码意思http://www.w3school.com.cn/tags/html_ref_urlencode.html
+    ---------
+    @param url:
+    ---------
+    @result:
+    """
+
+    return urllib.parse.quote(url, safe="%;/?:@&=+$,", encoding=encoding)
+
+
+def quote_chinese_word(text, encoding="utf-8"):
+    def quote_chinese_word_func(text):
+        chinese_word = text.group(0)
+        return urllib.parse.quote(chinese_word, encoding=encoding)
+
+    return re.sub("([\u4e00-\u9fa5]+)", quote_chinese_word_func, text, flags=re.S)
+
+
+def unescape(str):
+    """
+    反转译
+    """
+    return html.unescape(str)
+
+
+def excape(str):
+    """
+    转译
+    """
+    return html.escape(str)
+
+
+_regexs = {}
+
+
+# @log_function_time
+def get_info(html, regexs, allow_repeat=True, fetch_one=False, split=None):
+    regexs = isinstance(regexs, str) and [regexs] or regexs
+
+    infos = []
+    for regex in regexs:
+        if regex == "":
+            continue
+
+        if regex not in _regexs.keys():
+            _regexs[regex] = re.compile(regex, re.S)
+
+        if fetch_one:
+            infos = _regexs[regex].search(html)
+            if infos:
+                infos = infos.groups()
+            else:
+                continue
+        else:
+            infos = _regexs[regex].findall(str(html))
+
+        if len(infos) > 0:
+            # print(regex)
+            break
+
+    if fetch_one:
+        infos = infos if infos else ("",)
+        return infos if len(infos) > 1 else infos[0]
+    else:
+        infos = allow_repeat and infos or sorted(set(infos), key=infos.index)
+        infos = split.join(infos) if split else infos
+        return infos
+
+
+def table_json(table, save_one_blank=True):
+    """
+    将表格转为json 适应于 key：value 在一行类的表格
+    @param table: 使用selector封装后的具有xpath的selector
+    @param save_one_blank: 保留一个空白符
+    @return:
+    """
+    data = {}
+
+    trs = table.xpath(".//tr")
+    for tr in trs:
+        tds = tr.xpath("./td|./th")
+
+        for i in range(0, len(tds), 2):
+            if i + 1 > len(tds) - 1:
+                break
+
+            key = tds[i].xpath("string(.)").extract_first(default="").strip()
+            value = tds[i + 1].xpath("string(.)").extract_first(default="").strip()
+            value = replace_str(value, "[\f\n\r\t\v]", "")
+            value = replace_str(value, " +", " " if save_one_blank else "")
+
+            if key:
+                data[key] = value
+
+    return data
+
+
+def get_table_row_data(table):
+    """
+    获取表格里每一行数据
+    @param table: 使用selector封装后的具有xpath的selector
+    @return: [[],[]..]
+    """
+
+    datas = []
+    rows = table.xpath(".//tr")
+    for row in rows:
+        cols = row.xpath("./td|./th")
+        row_datas = []
+        for col in cols:
+            data = col.xpath("string(.)").extract_first(default="").strip()
+            row_datas.append(data)
+        datas.append(row_datas)
+
+    return datas
+
+
+def rows2json(rows, keys=None):
+    """
+    将行数据转为json
+    @param rows: 每一行的数据
+    @param keys: json的key，空时将rows的第一行作为key
+    @return:
+    """
+    data_start_pos = 0 if keys else 1
+    datas = []
+    keys = keys or rows[0]
+    for values in rows[data_start_pos:]:
+        datas.append(dict(zip(keys, values)))
+
+    return datas
+
+
+def get_form_data(form):
+    """
+    提取form中提交的数据
+    :param form: 使用selector封装后的具有xpath的selector
+    :return:
+    """
+    data = {}
+    inputs = form.xpath(".//input")
+    for input in inputs:
+        name = input.xpath("./@name").extract_first()
+        value = input.xpath("./@value").extract_first()
+        if name:
+            data[name] = value
+
+    return data
+
+
+def get_domain(url):
+    return urllib.parse.urlparse(url).netloc
+
+
+def get_index_url(url):
+    return "/".join(url.split("/")[:3])
+
+
+def get_ip(domain):
+    ip = socket.getaddrinfo(domain, "http")[0][4][0]
+    return ip
+
+
+def get_localhost_ip():
+    """
+    利用 UDP 协议来实现的，生成一个UDP包，把自己的 IP 放如到 UDP 协议头中，然后从UDP包中获取本机的IP。
+    这个方法并不会真实的向外部发包，所以用抓包工具是看不到的
+    :return:
+    """
+    s = None
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except:
+        ip = ""
+    finally:
+        if s:
+            s.close()
+
+    return ip
+
+
+def ip_to_num(ip):
+    import struct
+
+    ip_num = socket.ntohl(struct.unpack("I", socket.inet_aton(str(ip)))[0])
+    return ip_num
+
+
+def is_valid_proxy(proxy, check_url=None):
+    """
+    检验代理是否有效
+    @param proxy: xxx.xxx.xxx:xxx
+    @param check_url: 利用目标网站检查，目标网站url。默认为None， 使用代理服务器的socket检查, 但不能排除Connection closed by foreign host
+    @return: True / False
+    """
+    is_valid = False
+
+    if check_url:
+        proxies = {"http": f"http://{proxy}", "https": f"https://{proxy}"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+        }
+        response = None
+        try:
+            response = requests.get(
+                check_url, headers=headers, proxies=proxies, stream=True, timeout=20
+            )
+            is_valid = True
+
+        except Exception as e:
+            log.error("check proxy failed: {} {}".format(e, proxy))
+
+        finally:
+            if response:
+                response.close()
+
+    else:
+        ip, port = proxy.split(":")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sk:
+            sk.settimeout(7)
+            try:
+                sk.connect((ip, int(port)))  # 检查代理服务器是否开着
+                is_valid = True
+
+            except Exception as e:
+                log.error("check proxy failed: {} {}:{}".format(e, ip, port))
+
+    return is_valid
+
+
+def is_valid_url(url):
+    """
+    验证url是否合法
+    :param url:
+    :return:
+    """
+    if re.match(r"(^https?:/{2}\w.+$)|(ftp://)", url):
+        return True
+    else:
+        return False
+
+
+def get_text(soup, *args):
+    try:
+        return soup.get_text()
+    except Exception as e:
+        log.error(e)
+        return ""
+
+
+def del_html_tag(content, save_line_break=True, save_p=False, save_img=False):
+    """
+    删除html标签
+    @param content: html内容
+    @param save_p: 保留p标签
+    @param save_img: 保留图片标签
+    @param save_line_break: 保留\n换行
+    @return:
+    """
+    if not content:
+        return content
+    # js
+    content = re.sub("(?i)<script(.|\n)*?</script>", "", content)  # (?)忽略大小写
+    # css
+    content = re.sub("(?i)<style(.|\n)*?</style>", "", content)  # (?)忽略大小写
+    # 注释
+    content = re.sub("<!--(.|\n)*?-->", "", content)
+    # 干掉&nbsp;等无用的字符 但&xxx= 这种表示参数的除外
+    content = re.sub("(?!&[a-z]+=)&[a-z]+;?", "", content)
+
+    if save_p and save_img:
+        content = re.sub("<(?!(p[ >]|/p>|img ))(.|\n)+?>", "", content)
+    elif save_p:
+        content = re.sub("<(?!(p[ >]|/p>))(.|\n)+?>", "", content)
+    elif save_img:
+        content = re.sub("<(?!img )(.|\n)+?>", "", content)
+    elif save_line_break:
+        content = re.sub("<(?!/p>)(.|\n)+?>", "", content)
+        content = re.sub("</p>", "\n", content)
+    else:
+        content = re.sub("<(.|\n)*?>", "", content)
+
+    if save_line_break:
+        # 把非换行符的空白符替换为一个空格
+        content = re.sub("[^\S\n]+", " ", content)
+        # 把多个换行符替换为一个换行符 如\n\n\n 或 \n \n \n 替换为\n
+        content = re.sub("(\n ?)+", "\n", content)
+    else:
+        content = re.sub("\s+", " ", content)
+    content = content.strip()
+
+    return content
+
+
+def del_html_js_css(content):
+    content = replace_str(content, "(?i)<script(.|\n)*?</script>")  # (?)忽略大小写
+    content = replace_str(content, "(?i)<style(.|\n)*?</style>")
+    content = replace_str(content, "<!--(.|\n)*?-->")
+
+    return content
+
+
+def is_have_chinese(content):
+    regex = "[\u4e00-\u9fa5]+"
+    chinese_word = get_info(content, regex)
+    return chinese_word and True or False
+
+
+def is_have_english(content):
+    regex = "[a-zA-Z]+"
+    english_words = get_info(content, regex)
+    return english_words and True or False
+
+
+def get_chinese_word(content):
+    regex = "[\u4e00-\u9fa5]+"
+    chinese_word = get_info(content, regex)
+    return chinese_word
+
+
+def get_english_words(content):
+    regex = "[a-zA-Z]+"
+    english_words = get_info(content, regex)
+    return english_words or ""
+
+
+##################################################
+def get_json(json_str):
+    """
+    @summary: 取json对象
+    ---------
+    @param json_str: json格式的字符串
+    ---------
+    @result: 返回json对象
+    """
+
+    try:
+        return json.loads(json_str) if json_str else {}
+    except Exception as e1:
+        try:
+            json_str = json_str.strip()
+            json_str = json_str.replace("'", '"')
+            keys = get_info(json_str, "(\w+):")
+            for key in keys:
+                json_str = json_str.replace(key, '"%s"' % key)
+
+            return json.loads(json_str) if json_str else {}
+
+        except Exception as e2:
+            log.error(
+                """
+                e1: %s
+                format json_str: %s
+                e2: %s
+                """
+                % (e1, json_str, e2)
+            )
+
+        return {}
+
+
+def jsonp2json(jsonp):
+    """
+    将jsonp转为json
+    @param jsonp: jQuery172013600082560040794_1553230569815({})
+    @return:
+    """
+    try:
+        return json.loads(re.match(".*?({.*}).*", jsonp, re.S).group(1))
+    except:
+        raise ValueError("Invalid Input")
+
+
+def dumps_json(data, indent=4, sort_keys=False):
+    """
+    @summary: 格式化json 用于打印
+    ---------
+    @param data: json格式的字符串或json对象
+    ---------
+    @result: 格式化后的字符串
+    """
+    try:
+        if isinstance(data, str):
+            data = get_json(data)
+
+        data = json.dumps(
+            data,
+            ensure_ascii=False,
+            indent=indent,
+            skipkeys=True,
+            sort_keys=sort_keys,
+            default=str,
+        )
+
+    except Exception as e:
+        data = pformat(data)
+
+    return data
+
+
+def get_json_value(json_object, key):
+    """
+    @summary:
+    ---------
+    @param json_object: json对象或json格式的字符串
+    @param key: 建值 如果在多个层级目录下 可写 key1.key2  如{'key1':{'key2':3}}
+    ---------
+    @result: 返回对应的值，如果没有，返回''
+    """
+    current_key = ""
+    value = ""
+    try:
+        json_object = (
+            isinstance(json_object, str) and get_json(json_object) or json_object
+        )
+
+        current_key = key.split(".")[0]
+        value = json_object[current_key]
+
+        key = key[key.find(".") + 1 :]
+    except Exception as e:
+        return value
+
+    if key == current_key:
+        return value
+    else:
+        return get_json_value(value, key)
+
+
+def get_all_keys(datas, depth=None, current_depth=0):
+    """
+    @summary: 获取json李所有的key
+    ---------
+    @param datas: dict / list
+    @param depth: 字典key的层级 默认不限制层级 层级从1开始
+    @param current_depth: 字典key的当前层级 不用传参
+    ---------
+    @result: 返回json所有的key
+    """
+
+    keys = []
+    if depth and current_depth >= depth:
+        return keys
+
+    if isinstance(datas, list):
+        for data in datas:
+            keys.extend(get_all_keys(data, depth, current_depth=current_depth + 1))
+    elif isinstance(datas, dict):
+        for key, value in datas.items():
+            keys.append(key)
+            if isinstance(value, dict):
+                keys.extend(get_all_keys(value, depth, current_depth=current_depth + 1))
+
+    return keys
+
+
+def to_chinese(unicode_str):
+    format_str = json.loads('{"chinese":"%s"}' % unicode_str)
+    return format_str["chinese"]
+
+
+##################################################
+def replace_str(source_str, regex, replace_str=""):
+    """
+    @summary: 替换字符串
+    ---------
+    @param source_str: 原字符串
+    @param regex: 正则
+    @param replace_str: 用什么来替换 默认为''
+    ---------
+    @result: 返回替换后的字符串
+    """
+    str_info = re.compile(regex)
+    return str_info.sub(replace_str, source_str)
+
+
+def del_redundant_blank_character(text):
+    """
+    删除冗余的空白符， 只保留一个
+    :param text:
+    :return:
+    """
+    return re.sub("\s+", " ", text)
+
+
+##################################################
+def get_conf_value(config_file, section, key):
+    cp = configparser.ConfigParser(allow_no_value=True)
+    with codecs.open(config_file, "r", encoding="utf-8") as f:
+        cp.read_file(f)
+    return cp.get(section, key)
+
+
+def mkdir(path):
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        pass
+
+
+def get_cache_path(filename, root_dir=None, local=False):
+    """
+    Args:
+        filename:
+        root_dir:
+        local: 是否存储到当前目录
+
+    Returns:
+
+    """
+    if root_dir is None:
+        if local:
+            root_dir = os.path.join(sys.path[0], ".cache")
+        else:
+            root_dir = os.path.join(os.path.expanduser("~"), ".feapder/cache")
+    file_path = f"{root_dir}{os.sep}{filename}"
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    return f"{root_dir}{os.sep}{filename}"
+
+
+def write_file(filename, content, mode="w", encoding="utf-8"):
+    """
+    @summary: 写文件
+    ---------
+    @param filename: 文件名（有路径）
+    @param content: 内容
+    @param mode: 模式 w/w+ (覆盖/追加)
+    ---------
+    @result:
+    """
+
+    directory = os.path.dirname(filename)
+    mkdir(directory)
+    with open(filename, mode, encoding=encoding) as file:
+        file.writelines(content)
+
+
+def read_file(filename, readlines=False, encoding="utf-8"):
+    """
+    @summary: 读文件
+    ---------
+    @param filename: 文件名（有路径）
+    @param readlines: 按行读取 （默认False）
+    ---------
+    @result: 按行读取返回List，否则返回字符串
+    """
+
+    content = None
+    try:
+        with open(filename, "r", encoding=encoding) as file:
+            content = file.readlines() if readlines else file.read()
+    except Exception as e:
+        log.error(e)
+
+    return content
+
+
+def get_oss_file_list(oss_handler, prefix, date_range_min, date_range_max=None):
+    """
+    获取文件列表
+    @param prefix: 路径前缀 如 xxx/xxx
+    @param date_range_min: 时间范围 最小值 日期分隔符为/ 如 2019/03/01 或 2019/03/01/00/00/00
+    @param date_range_max: 时间范围 最大值 日期分隔符为/ 如 2019/03/01 或 2019/03/01/00/00/00
+    @return: 每个文件路径 如 html/xxx/xxx/2019/03/22/15/53/15/8ca8b9e4-4c77-11e9-9dee-acde48001122.json.snappy
+    """
+
+    # 计算时间范围
+    date_range_max = date_range_max or date_range_min
+    date_format = "/".join(
+        ["%Y", "%m", "%d", "%H", "%M", "%S"][: date_range_min.count("/") + 1]
+    )
+    time_interval = [
+        {"days": 365},
+        {"days": 31},
+        {"days": 1},
+        {"hours": 1},
+        {"minutes": 1},
+        {"seconds": 1},
+    ][date_range_min.count("/")]
+    date_range = get_between_date(
+        date_range_min, date_range_max, date_format=date_format, **time_interval
+    )
+
+    for date in date_range:
+        file_folder_path = os.path.join(prefix, date)
+        objs = oss_handler.list(prefix=file_folder_path)
+        for obj in objs:
+            filename = obj.key
+            yield filename
+
+
+def is_html(url):
+    if not url:
+        return False
+
+    try:
+        content_type = request.urlopen(url).info().get("Content-Type", "")
+
+        if "text/html" in content_type:
+            return True
+        else:
+            return False
+    except Exception as e:
+        log.error(e)
+        return False
+
+
+def is_exist(file_path):
+    """
+    @summary: 文件是否存在
+    ---------
+    @param file_path:
+    ---------
+    @result:
+    """
+
+    return os.path.exists(file_path)
+
+
+def download_file(url, file_path, *, call_func=None, proxies=None, data=None):
+    """
+    下载文件，会自动创建文件存储目录
+    Args:
+        url: 地址
+        file_path: 文件存储地址
+        call_func: 下载成功的回调
+        proxies: 代理
+        data: 请求体
+
+    Returns:
+
+    """
+    directory = os.path.dirname(file_path)
+    mkdir(directory)
+
+    # 进度条
+    def progress_callfunc(blocknum, blocksize, totalsize):
+        """回调函数
+        @blocknum : 已经下载的数据块
+        @blocksize : 数据块的大小
+        @totalsize: 远程文件的大小
+        """
+        percent = 100.0 * blocknum * blocksize / totalsize
+        if percent > 100:
+            percent = 100
+        # print ('进度条 %.2f%%' % percent, end = '\r')
+        sys.stdout.write("进度条 %.2f%%" % percent + "\r")
+        sys.stdout.flush()
+
+    if url:
+        try:
+            if proxies:
+                # create the object, assign it to a variable
+                proxy = request.ProxyHandler(proxies)
+                # construct a new opener using your proxy settings
+                opener = request.build_opener(proxy)
+                # install the openen on the module-level
+                request.install_opener(opener)
+
+            request.urlretrieve(url, file_path, progress_callfunc, data)
+
+            if callable(call_func):
+                call_func()
+            return 1
+        except Exception as e:
+            log.error(e)
+            return 0
+    else:
+        return 0
+
+
+def get_file_list(path, ignore=[]):
+    templist = path.split("*")
+    path = templist[0]
+    file_type = templist[1] if len(templist) >= 2 else ""
+
+    # 递归遍历文件
+    def get_file_list_(path, file_type, ignore, all_file=[]):
+        file_list = os.listdir(path)
+
+        for file_name in file_list:
+            if file_name in ignore:
+                continue
+
+            file_path = os.path.join(path, file_name)
+            if os.path.isdir(file_path):
+                get_file_list_(file_path, file_type, ignore, all_file)
+            else:
+                if not file_type or file_name.endswith(file_type):
+                    all_file.append(file_path)
+
+        return all_file
+
+    return get_file_list_(path, file_type, ignore) if os.path.isdir(path) else [path]
+
+
+def rename_file(old_name, new_name):
+    os.rename(old_name, new_name)
+
+
+def del_file(path, ignore=()):
+    files = get_file_list(path, ignore)
+    for file in files:
+        try:
+            os.remove(file)
+        except Exception as e:
+            log.error(
+                """
+                删除出错: %s
+                Exception : %s
+                """
+                % (file, str(e))
+            )
+        finally:
+            pass
+
+
+def get_file_type(file_name):
+    """
+    @summary: 取文件后缀名
+    ---------
+    @param file_name:
+    ---------
+    @result:
+    """
+    try:
+        return os.path.splitext(file_name)[1]
+    except Exception as e:
+        log.exception(e)
+
+
+def get_file_path(file_path):
+    """
+    @summary: 取文件路径
+    ---------
+    @param file_path: /root/a.py
+    ---------
+    @result: /root
+    """
+    try:
+        return os.path.split(file_path)[0]
+    except Exception as e:
+        log.exception(e)
+
+
+#############################################
+
+
+def exec_js(js_code):
+    """
+    @summary: 执行js代码
+    ---------
+    @param js_code: js代码
+    ---------
+    @result: 返回执行结果
+    """
+
+    return execjs.eval(js_code)
+
+
+def compile_js(js_func):
+    """
+    @summary: 编译js函数
+    ---------
+    @param js_func:js函数
+    ---------
+    @result: 返回函数对象 调用 fun('js_funName', param1,param2)
+    """
+
+    ctx = execjs.compile(js_func)
+    return ctx.call
+
+
+#############################################
+
+
+def date_to_timestamp(date, time_format="%Y-%m-%d %H:%M:%S"):
+    """
+    @summary:
+    ---------
+    @param date:将"2011-09-28 10:00:00"时间格式转化为时间戳
+    @param format:时间格式
+    ---------
+    @result: 返回时间戳
+    """
+
+    timestamp = time.mktime(time.strptime(date, time_format))
+    return int(timestamp)
+
+
+def timestamp_to_date(timestamp, time_format="%Y-%m-%d %H:%M:%S"):
+    """
+    @summary:
+    ---------
+    @param timestamp: 将时间戳转化为日期
+    @param format: 日期格式
+    ---------
+    @result: 返回日期
+    """
+    if timestamp is None:
+        raise ValueError("timestamp is null")
+
+    date = time.localtime(timestamp)
+    return time.strftime(time_format, date)
+
+
+def get_current_timestamp():
+    return int(time.time())
+
+
+def get_current_date(date_format="%Y-%m-%d %H:%M:%S"):
+    return datetime.datetime.now().strftime(date_format)
+    # return time.strftime(date_format, time.localtime(time.time()))
+
+
+def get_date_number(year=None, month=None, day=None):
+    """
+    @summary: 获取指定日期对应的日期数
+    默认当前周
+    ---------
+    @param year: 2010
+    @param month: 6
+    @param day: 16
+    ---------
+    @result: (年号，第几周，第几天) 如 (2010, 24, 3)
+    """
+    if year and month and day:
+        return datetime.date(year, month, day).isocalendar()
+    elif not any([year, month, day]):
+        return datetime.datetime.now().isocalendar()
+    else:
+        assert year, "year 不能为空"
+        assert month, "month 不能为空"
+        assert day, "day 不能为空"
+
+
+def get_between_date(
+    begin_date, end_date=None, date_format="%Y-%m-%d", **time_interval
+):
+    """
+    @summary: 获取一段时间间隔内的日期，默认为每一天
+    ---------
+    @param begin_date: 开始日期 str 如 2018-10-01
+    @param end_date: 默认为今日
+    @param date_format: 日期格式，应与begin_date的日期格式相对应
+    @param time_interval: 时间间隔 默认一天 支持 days、seconds、microseconds、milliseconds、minutes、hours、weeks
+    ---------
+    @result: list 值为字符串
+    """
+
+    date_list = []
+
+    begin_date = datetime.datetime.strptime(begin_date, date_format)
+    end_date = (
+        datetime.datetime.strptime(end_date, date_format)
+        if end_date
+        else datetime.datetime.strptime(
+            time.strftime(date_format, time.localtime(time.time())), date_format
+        )
+    )
+    time_interval = time_interval or dict(days=1)
+
+    while begin_date <= end_date:
+        date_str = begin_date.strftime(date_format)
+        date_list.append(date_str)
+
+        begin_date += datetime.timedelta(**time_interval)
+
+    if end_date.strftime(date_format) not in date_list:
+        date_list.append(end_date.strftime(date_format))
+
+    return date_list
+
+
+def get_between_months(begin_date, end_date=None):
+    """
+    @summary: 获取一段时间间隔内的月份
+    需要满一整月
+    ---------
+    @param begin_date: 开始时间 如 2018-01-01
+    @param end_date: 默认当前时间
+    ---------
+    @result: 列表 如 ['2018-01', '2018-02']
+    """
+
+    def add_months(dt, months):
+        month = dt.month - 1 + months
+        year = dt.year + month // 12
+        month = month % 12 + 1
+        day = min(dt.day, calendar.monthrange(year, month)[1])
+        return dt.replace(year=year, month=month, day=day)
+
+    date_list = []
+    begin_date = datetime.datetime.strptime(begin_date, "%Y-%m-%d")
+    end_date = (
+        datetime.datetime.strptime(end_date, "%Y-%m-%d")
+        if end_date
+        else datetime.datetime.strptime(
+            time.strftime("%Y-%m-%d", time.localtime(time.time())), "%Y-%m-%d"
+        )
+    )
+    while begin_date <= end_date:
+        date_str = begin_date.strftime("%Y-%m")
+        date_list.append(date_str)
+        begin_date = add_months(begin_date, 1)
+    return date_list
+
+
+def get_today_of_day(day_offset=0):
+    return str(datetime.date.today() + datetime.timedelta(days=day_offset))
+
+
+def get_days_of_month(year, month):
+    """
+    返回天数
+    """
+
+    return calendar.monthrange(year, month)[1]
+
+
+def get_firstday_of_month(date):
+    """''
+    date format = "YYYY-MM-DD"
+    """
+
+    year, month, day = date.split("-")
+    year, month, day = int(year), int(month), int(day)
+
+    days = "01"
+    if int(month) < 10:
+        month = "0" + str(int(month))
+    arr = (year, month, days)
+    return "-".join("%s" % i for i in arr)
+
+
+def get_lastday_of_month(date):
+    """''
+    get the last day of month
+    date format = "YYYY-MM-DD"
+    """
+    year, month, day = date.split("-")
+    year, month, day = int(year), int(month), int(day)
+
+    days = calendar.monthrange(year, month)[1]
+    month = add_zero(month)
+    arr = (year, month, days)
+    return "-".join("%s" % i for i in arr)
+
+
+def get_firstday_month(month_offset=0):
+    """''
+    get the first day of month from today
+    month_offset is how many months
+    """
+    (y, m, d) = get_year_month_and_days(month_offset)
+    d = "01"
+    arr = (y, m, d)
+    return "-".join("%s" % i for i in arr)
+
+
+def get_lastday_month(month_offset=0):
+    """''
+    get the last day of month from today
+    month_offset is how many months
+    """
+    return "-".join("%s" % i for i in get_year_month_and_days(month_offset))
+
+
+def get_last_month(month_offset=0):
+    """''
+    get the last day of month from today
+    month_offset is how many months
+    """
+    return "-".join("%s" % i for i in get_year_month_and_days(month_offset)[:2])
+
+
+def get_year_month_and_days(month_offset=0):
+    """
+    @summary:
+    ---------
+    @param month_offset: 月份偏移量
+    ---------
+    @result: ('2019', '04', '30')
+    """
+
+    today = datetime.datetime.now()
+    year, month = today.year, today.month
+
+    this_year = int(year)
+    this_month = int(month)
+    total_month = this_month + month_offset
+    if month_offset >= 0:
+        if total_month <= 12:
+            days = str(get_days_of_month(this_year, total_month))
+            total_month = add_zero(total_month)
+            return (year, total_month, days)
+        else:
+            i = total_month // 12
+            j = total_month % 12
+            if j == 0:
+                i -= 1
+                j = 12
+            this_year += i
+            days = str(get_days_of_month(this_year, j))
+            j = add_zero(j)
+            return (str(this_year), str(j), days)
+    else:
+        if (total_month > 0) and (total_month < 12):
+            days = str(get_days_of_month(this_year, total_month))
+            total_month = add_zero(total_month)
+            return (year, total_month, days)
+        else:
+            i = total_month // 12
+            j = total_month % 12
+            if j == 0:
+                i -= 1
+                j = 12
+            this_year += i
+            days = str(get_days_of_month(this_year, j))
+            j = add_zero(j)
+            return (str(this_year), str(j), days)
+
+
+def add_zero(n):
+    return "%02d" % n
+
+
+def get_month(month_offset=0):
+    """''
+    获取当前日期前后N月的日期
+    if month_offset>0, 获取当前日期前N月的日期
+    if month_offset<0, 获取当前日期后N月的日期
+    date format = "YYYY-MM-DD"
+    """
+    today = datetime.datetime.now()
+    day = add_zero(today.day)
+
+    (y, m, d) = get_year_month_and_days(month_offset)
+    arr = (y, m, d)
+    if int(day) < int(d):
+        arr = (y, m, day)
+    return "-".join("%s" % i for i in arr)
+
+
+@run_safe_model("format_date")
+def format_date(date, old_format="", new_format="%Y-%m-%d %H:%M:%S"):
+    """
+    @summary: 格式化日期格式
+    ---------
+    @param date: 日期 eg：2017年4月17日 3时27分12秒
+    @param old_format: 原来的日期格式 如 '%Y年%m月%d日 %H时%M分%S秒'
+        %y 两位数的年份表示（00-99）
+        %Y 四位数的年份表示（000-9999）
+        %m 月份（01-12）
+        %d 月内中的一天（0-31）
+        %H 24小时制小时数（0-23）
+        %I 12小时制小时数（01-12）
+        %M 分钟数（00-59）
+        %S 秒（00-59）
+    @param new_format: 输出的日期格式
+    ---------
+    @result: 格式化后的日期，类型为字符串 如2017-4-17 03:27:12
+    """
+    if not date:
+        return ""
+
+    if not old_format:
+        regex = "(\d+)"
+        numbers = get_info(date, regex, allow_repeat=True)
+        formats = ["%Y", "%m", "%d", "%H", "%M", "%S"]
+        old_format = date
+        for i, number in enumerate(numbers[:6]):
+            if i == 0 and len(number) == 2:  # 年份可能是两位 用小%y
+                old_format = old_format.replace(
+                    number, formats[i].lower(), 1
+                )  # 替换一次 '2017年11月30日 11:49' 防止替换11月时，替换11小时
+            else:
+                old_format = old_format.replace(number, formats[i], 1)  # 替换一次
+
+    try:
+        date_obj = datetime.datetime.strptime(date, old_format)
+        if "T" in date and "Z" in date:
+            date_obj += datetime.timedelta(hours=8)
+            date_str = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            date_str = datetime.datetime.strftime(date_obj, new_format)
+
+    except Exception as e:
+        log.error("日期格式化出错，old_format = %s 不符合 %s 格式" % (old_format, date))
+        date_str = date
+
+    return date_str
+
+
+def transform_lower_num(data_str: str):
+    num_map = {
+        "一": "1",
+        "二": "2",
+        "两": "2",
+        "三": "3",
+        "四": "4",
+        "五": "5",
+        "六": "6",
+        "七": "7",
+        "八": "8",
+        "九": "9",
+        "十": "0",
+    }
+    pattern = f'[{"|".join(num_map.keys())}|零]'
+    res = re.search(pattern, data_str)
+    if not res:
+        #  如果字符串中没有包含中文数字 不做处理 直接返回
+        return data_str
+
+    data_str = data_str.replace("0", "零")
+    for n in num_map:
+        data_str = data_str.replace(n, num_map[n])
+
+    re_data_str = re.findall("\d+", data_str)
+    for i in re_data_str:
+        if len(i) == 3:
+            new_i = i.replace("0", "")
+            data_str = data_str.replace(i, new_i, 1)
+        elif len(i) == 4:
+            new_i = i.replace("10", "")
+            data_str = data_str.replace(i, new_i, 1)
+        elif len(i) == 2 and int(i) < 10:
+            new_i = int(i) + 10
+            data_str = data_str.replace(i, str(new_i), 1)
+        elif len(i) == 1 and int(i) == 0:
+            new_i = int(i) + 10
+            data_str = data_str.replace(i, str(new_i), 1)
+
+    return data_str.replace("零", "0")
+
+
+@run_safe_model("format_time")
+def format_time(release_time, date_format="%Y-%m-%d %H:%M:%S"):
+    """
+    >>> format_time("2个月前")
+    '2021-08-15 16:24:21'
+    >>> format_time("2月前")
+    '2021-08-15 16:24:36'
+    """
+    release_time = transform_lower_num(release_time)
+    release_time = release_time.replace("日", "天").replace("/", "-")
+
+    if "年前" in release_time:
+        years = re.compile("(\d+)\s*年前").findall(release_time)
+        years_ago = datetime.datetime.now() - datetime.timedelta(
+            days=int(years[0]) * 365
+        )
+        release_time = years_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "月前" in release_time:
+        months = re.compile("(\d+)[\s个]*月前").findall(release_time)
+        months_ago = datetime.datetime.now() - datetime.timedelta(
+            days=int(months[0]) * 30
+        )
+        release_time = months_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "周前" in release_time:
+        weeks = re.compile("(\d+)\s*周前").findall(release_time)
+        weeks_ago = datetime.datetime.now() - datetime.timedelta(days=int(weeks[0]) * 7)
+        release_time = weeks_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "天前" in release_time:
+        ndays = re.compile("(\d+)\s*天前").findall(release_time)
+        days_ago = datetime.datetime.now() - datetime.timedelta(days=int(ndays[0]))
+        release_time = days_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "小时前" in release_time:
+        nhours = re.compile("(\d+)\s*小时前").findall(release_time)
+        hours_ago = datetime.datetime.now() - datetime.timedelta(hours=int(nhours[0]))
+        release_time = hours_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "分钟前" in release_time:
+        nminutes = re.compile("(\d+)\s*分钟前").findall(release_time)
+        minutes_ago = datetime.datetime.now() - datetime.timedelta(
+            minutes=int(nminutes[0])
+        )
+        release_time = minutes_ago.strftime("%Y-%m-%d %H:%M:%S")
+
+    elif "前天" in release_time:
+        today = datetime.date.today()
+        yesterday = today - datetime.timedelta(days=2)
+        release_time = release_time.replace("前天", str(yesterday))
+
+    elif "昨天" in release_time:
+        today = datetime.date.today()
+        yesterday = today - datetime.timedelta(days=1)
+        release_time = release_time.replace("昨天", str(yesterday))
+
+    elif "今天" in release_time:
+        release_time = release_time.replace("今天", get_current_date("%Y-%m-%d"))
+
+    elif "刚刚" in release_time:
+        release_time = get_current_date()
+
+    elif re.search("^\d\d:\d\d", release_time):
+        release_time = get_current_date("%Y-%m-%d") + " " + release_time
+
+    elif not re.compile("\d{4}").findall(release_time):
+        month = re.compile("\d{1,2}").findall(release_time)
+        if month and int(month[0]) <= int(get_current_date("%m")):
+            release_time = get_current_date("%Y") + "-" + release_time
+        else:
+            release_time = str(int(get_current_date("%Y")) - 1) + "-" + release_time
+
+    # 把日和小时粘在一起的拆开
+    template = re.compile("(\d{4}-\d{1,2}-\d{2})(\d{1,2})")
+    release_time = re.sub(template, r"\1 \2", release_time)
+    release_time = format_date(release_time, new_format=date_format)
+
+    return release_time
+
+
+def to_date(date_str, date_format="%Y-%m-%d %H:%M:%S"):
+    return datetime.datetime.strptime(date_str, date_format)
+
+
+def get_before_date(
+    current_date,
+    days,
+    current_date_format="%Y-%m-%d %H:%M:%S",
+    return_date_format="%Y-%m-%d %H:%M:%S",
+):
+    """
+    @summary: 获取之前时间
+    ---------
+    @param current_date: 当前时间 str类型
+    @param days: 时间间隔 -1 表示前一天 1 表示后一天
+    @param days: 返回的时间格式
+    ---------
+    @result: 字符串
+    """
+
+    current_date = to_date(current_date, current_date_format)
+    date_obj = current_date + datetime.timedelta(days=days)
+    return datetime.datetime.strftime(date_obj, return_date_format)
+
+
+def delay_time(sleep_time=60):
+    """
+    @summary: 睡眠  默认1分钟
+    ---------
+    @param sleep_time: 以秒为单位
+    ---------
+    @result:
+    """
+
+    time.sleep(sleep_time)
+
+
+def format_seconds(seconds):
+    """
+    @summary: 将秒转为时分秒
+    ---------
+    @param seconds:
+    ---------
+    @result: 2天3小时2分49秒
+    """
+
+    seconds = int(seconds + 0.5)  # 向上取整
+
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    d, h = divmod(h, 24)
+
+    times = ""
+    if d:
+        times += "{}天".format(d)
+    if h:
+        times += "{}小时".format(h)
+    if m:
+        times += "{}分".format(m)
+    if s:
+        times += "{}秒".format(s)
+
+    return times
+
+
+################################################
+def get_md5(*args):
+    """
+    @summary: 获取唯一的32位md5
+    ---------
+    @param *args: 参与联合去重的值
+    ---------
+    @result: 7c8684bcbdfcea6697650aa53d7b1405
+    """
+
+    m = hashlib.md5()
+    for arg in args:
+        m.update(str(arg).encode())
+
+    return m.hexdigest()
+
+
+def get_sha1(*args):
+    """
+    @summary: 获取唯一的40位值， 用于获取唯一的id
+    ---------
+    @param *args: 参与联合去重的值
+    ---------
+    @result: ba4868b3f277c8e387b55d9e3d0be7c045cdd89e
+    """
+
+    sha1 = hashlib.sha1()
+    for arg in args:
+        sha1.update(str(arg).encode())
+    return sha1.hexdigest()  # 40位
+
+
+def get_base64(data):
+    if data is None:
+        return data
+    return base64.b64encode(str(data).encode()).decode("utf8")
+
+
+def get_uuid(key1="", key2=""):
+    """
+    @summary: 计算uuid值
+    可用于将两个字符串组成唯一的值。如可将域名和新闻标题组成uuid，形成联合索引
+    ---------
+    @param key1:str
+    @param key2:str
+    ---------
+    @result:
+    """
+
+    uuid_object = ""
+
+    if not key1 and not key2:
+        uuid_object = uuid.uuid1()
+    else:
+        hash = md5(bytes(key1, "utf-8") + bytes(key2, "utf-8")).digest()
+        uuid_object = uuid.UUID(bytes=hash[:16], version=3)
+
+    return str(uuid_object)
+
+
+def get_hash(text):
+    return hash(text)
+
+
+##################################################
+
+
+def cut_string(text, length):
+    """
+    @summary: 将文本按指定长度拆分
+    ---------
+    @param text: 文本
+    @param length: 拆分长度
+    ---------
+    @result: 返回按指定长度拆分后形成的list
+    """
+
+    text_list = re.findall(".{%d}" % length, text, re.S)
+    leave_text = text[len(text_list) * length :]
+    if leave_text:
+        text_list.append(leave_text)
+
+    return text_list
+
+
+def get_random_string(length=1):
+    random_string = "".join(random.sample(string.ascii_letters + string.digits, length))
+    return random_string
+
+
+def get_random_password(length=8, special_characters=""):
+    """
+    @summary: 创建随机密码 默认长度为8，包含大写字母、小写字母、数字
+    ---------
+    @param length: 密码长度 默认8
+    @param special_characters: 特殊字符
+    ---------
+    @result: 指定长度的密码
+    """
+
+    while True:
+        random_password = "".join(
+            random.sample(
+                string.ascii_letters + string.digits + special_characters, length
+            )
+        )
+        if (
+            re.search("[0-9]", random_password)
+            and re.search("[A-Z]", random_password)
+            and re.search("[a-z]", random_password)
+        ):
+            if not special_characters:
+                break
+            elif set(random_password).intersection(special_characters):
+                break
+
+    return random_password
+
+
+def get_random_email(length=None, email_types: list = None, special_characters=""):
+    """
+    随机生成邮箱
+    :param length: 邮箱长度
+    :param email_types: 邮箱类型
+    :param special_characters: 特殊字符
+    :return:
+    """
+    if not length:
+        length = random.randint(4, 12)
+    if not email_types:
+        email_types = [
+            "qq.com",
+            "163.com",
+            "gmail.com",
+            "yahoo.com",
+            "hotmail.com",
+            "yeah.net",
+            "126.com",
+            "139.com",
+            "sohu.com",
+        ]
+
+    email_body = get_random_password(length, special_characters)
+    email_type = random.choice(email_types)
+
+    email = email_body + "@" + email_type
+    return email
+
+
+#################################
+
+
+def dumps_obj(obj):
+    return pickle.dumps(obj)
+
+
+def loads_obj(obj_str):
+    return pickle.loads(obj_str)
+
+
+def get_method(obj, name):
+    name = str(name)
+    try:
+        return getattr(obj, name)
+    except AttributeError:
+        log.error("Method %r not found in: %s" % (name, obj))
+        return None
+
+
+def switch_workspace(project_path):
+    """
+    @summary:
+    ---------
+    @param project_path:
+    ---------
+    @result:
+    """
+
+    os.chdir(project_path)  # 切换工作路经
+
+
+############### 数据库相关 #######################
+def format_sql_value(value):
+    if isinstance(value, str):
+        value = value.strip()
+
+    elif isinstance(value, (list, dict)):
+        value = dumps_json(value, indent=None)
+
+    elif isinstance(value, (datetime.date, datetime.time)):
+        value = str(value)
+
+    elif isinstance(value, bool):
+        value = int(value)
+
+    return value
+
+
+def list2str(datas):
+    """
+    列表转字符串
+    :param datas: [1, 2]
+    :return: (1, 2)
+    """
+    data_str = str(tuple(datas))
+    data_str = re.sub(",\)$", ")", data_str)
+    return data_str
+
+
+def make_insert_sql(
+    table, data, auto_update=False, update_columns=(), insert_ignore=False
+):
+    """
+    @summary: 适用于mysql， oracle数据库时间需要to_date 处理（TODO）
+    ---------
+    @param table:
+    @param data: 表数据 json格式
+    @param auto_update: 使用的是replace into， 为完全覆盖已存在的数据
+    @param update_columns: 需要更新的列 默认全部，当指定值时，auto_update设置无效，当duplicate key冲突时更新指定的列
+    @param insert_ignore: 数据存在忽略
+    ---------
+    @result:
+    """
+
+    keys = ["`{}`".format(key) for key in data.keys()]
+    keys = list2str(keys).replace("'", "")
+
+    values = [format_sql_value(value) for value in data.values()]
+    values = list2str(values)
+
+    if update_columns:
+        if not isinstance(update_columns, (tuple, list)):
+            update_columns = [update_columns]
+        update_columns_ = ", ".join(
+            ["{key}=values({key})".format(key=key) for key in update_columns]
+        )
+        sql = (
+            "insert%s into `{table}` {keys} values {values} on duplicate key update %s"
+            % (" ignore" if insert_ignore else "", update_columns_)
+        )
+
+    elif auto_update:
+        sql = "replace into `{table}` {keys} values {values}"
+    else:
+        sql = "insert%s into `{table}` {keys} values {values}" % (
+            " ignore" if insert_ignore else ""
+        )
+
+    sql = sql.format(table=table, keys=keys, values=values).replace("None", "null")
+    return sql
+
+
+def make_update_sql(table, data, condition):
+    """
+    @summary: 适用于mysql， oracle数据库时间需要to_date 处理（TODO）
+    ---------
+    @param table:
+    @param data: 表数据 json格式
+    @param condition: where 条件
+    ---------
+    @result:
+    """
+    key_values = []
+
+    for key, value in data.items():
+        value = format_sql_value(value)
+        if isinstance(value, str):
+            key_values.append("`{}`={}".format(key, repr(value)))
+        elif value is None:
+            key_values.append("`{}`={}".format(key, "null"))
+        else:
+            key_values.append("`{}`={}".format(key, value))
+
+    key_values = ", ".join(key_values)
+
+    sql = "update `{table}` set {key_values} where {condition}"
+    sql = sql.format(table=table, key_values=key_values, condition=condition)
+    return sql
+
+
+def make_batch_sql(
+    table, datas, auto_update=False, update_columns=(), update_columns_value=()
+):
+    """
+    @summary: 生产批量的sql
+    ---------
+    @param table:
+    @param datas: 表数据 [{...}]
+    @param auto_update: 使用的是replace into， 为完全覆盖已存在的数据
+    @param update_columns: 需要更新的列 默认全部，当指定值时，auto_update设置无效，当duplicate key冲突时更新指定的列
+    @param update_columns_value: 需要更新的列的值 默认为datas里边对应的值, 注意 如果值为字符串类型 需要主动加单引号， 如 update_columns_value=("'test'",)
+    ---------
+    @result:
+    """
+    if not datas:
+        return
+
+    keys = list(set([key for data in datas for key in data]))
+    values_placeholder = ["%s"] * len(keys)
+
+    values = []
+    for data in datas:
+        value = []
+        for key in keys:
+            current_data = data.get(key)
+            current_data = format_sql_value(current_data)
+
+            value.append(current_data)
+
+        values.append(value)
+
+    keys = ["`{}`".format(key) for key in keys]
+    keys = list2str(keys).replace("'", "")
+
+    values_placeholder = list2str(values_placeholder).replace("'", "")
+
+    if update_columns:
+        if not isinstance(update_columns, (tuple, list)):
+            update_columns = [update_columns]
+        if update_columns_value:
+            update_columns_ = ", ".join(
+                [
+                    "`{key}`={value}".format(key=key, value=value)
+                    for key, value in zip(update_columns, update_columns_value)
+                ]
+            )
+        else:
+            update_columns_ = ", ".join(
+                ["`{key}`=values(`{key}`)".format(key=key) for key in update_columns]
+            )
+        sql = "insert into `{table}` {keys} values {values_placeholder} on duplicate key update {update_columns}".format(
+            table=table,
+            keys=keys,
+            values_placeholder=values_placeholder,
+            update_columns=update_columns_,
+        )
+    elif auto_update:
+        sql = "replace into `{table}` {keys} values {values_placeholder}".format(
+            table=table, keys=keys, values_placeholder=values_placeholder
+        )
+    else:
+        sql = "insert ignore into `{table}` {keys} values {values_placeholder}".format(
+            table=table, keys=keys, values_placeholder=values_placeholder
+        )
+
+    return sql, values
+
+
+############### json相关 #######################
+
+
+def key2underline(key: str, strict=True):
+    """
+    >>> key2underline("HelloWord")
+    'hello_word'
+    >>> key2underline("SHData", strict=True)
+    's_h_data'
+    >>> key2underline("SHData", strict=False)
+    'sh_data'
+    >>> key2underline("SHDataHi", strict=False)
+    'sh_data_hi'
+    >>> key2underline("SHDataHi", strict=True)
+    's_h_data_hi'
+    >>> key2underline("dataHi", strict=True)
+    'data_hi'
+    """
+    regex = "[A-Z]*" if not strict else "[A-Z]"
+    capitals = re.findall(regex, key)
+
+    if capitals:
+        for capital in capitals:
+            if not capital:
+                continue
+            if key.startswith(capital):
+                if len(capital) > 1:
+                    key = key.replace(
+                        capital, capital[:-1].lower() + "_" + capital[-1].lower(), 1
+                    )
+                else:
+                    key = key.replace(capital, capital.lower(), 1)
+            else:
+                if len(capital) > 1:
+                    key = key.replace(capital, "_" + capital.lower() + "_", 1)
+                else:
+                    key = key.replace(capital, "_" + capital.lower(), 1)
+
+    return key.strip("_")
+
+
+def key2hump(key):
+    """
+    下划线试变成首字母大写
+    """
+    return key.title().replace("_", "")
+
+
+def format_json_key(json_data):
+    json_data_correct = {}
+    for key, value in json_data.items():
+        key = key2underline(key)
+        json_data_correct[key] = value
+
+    return json_data_correct
+
+
+def quick_to_json(text):
+    """
+    @summary: 可快速将浏览器上的header转为json格式
+    ---------
+    @param text:
+    ---------
+    @result:
+    """
+
+    contents = text.split("\n")
+    json = {}
+    for content in contents:
+        if content == "\n":
+            continue
+
+        content = content.strip()
+        regex = ["(:?.*?):(.*)", "(.*?):? +(.*)", "([^:]*)"]
+
+        result = get_info(content, regex)
+        result = result[0] if isinstance(result[0], tuple) else result
+        try:
+            json[result[0]] = eval(result[1].strip())
+        except:
+            json[result[0]] = result[1].strip()
+
+    return json
+
+
+##############################
+
+
+def print_pretty(object):
+    pprint(object)
+
+
+def print_params2json(url):
+    params_json = {}
+    params = url.split("?")[-1].split("&")
+    for param in params:
+        key_value = param.split("=", 1)
+        params_json[key_value[0]] = key_value[1]
+
+    print(dumps_json(params_json))
+
+
+def print_cookie2json(cookie_str_or_list):
+    if isinstance(cookie_str_or_list, str):
+        cookie_json = {}
+        cookies = cookie_str_or_list.split("; ")
+        for cookie in cookies:
+            name, value = cookie.split("=")
+            cookie_json[name] = value
+    else:
+        cookie_json = get_cookies_from_selenium_cookie(cookie_str_or_list)
+
+    print(dumps_json(cookie_json))
+
+
+###############################
+
+
+def flatten(x):
+    """flatten(sequence) -> list
+    Returns a single, flat list which contains all elements retrieved
+    from the sequence and all recursively contained sub-sequences
+    (iterables).
+    Examples:
+    >>> [1, 2, [3,4], (5,6)]
+    [1, 2, [3, 4], (5, 6)]
+    >>> flatten([[[1,2,3], (42,None)], [4,5], [6], 7, (8,9,10)])
+    [1, 2, 3, 42, None, 4, 5, 6, 7, 8, 9, 10]
+    >>> flatten(["foo", "bar"])
+    ['foo', 'bar']
+    >>> flatten(["foo", ["baz", 42], "bar"])
+    ['foo', 'baz', 42, 'bar']
+    """
+    return list(iflatten(x))
+
+
+def iflatten(x):
+    """iflatten(sequence) -> iterator
+    Similar to ``.flatten()``, but returns iterator instead"""
+    for el in x:
+        if _is_listlike(el):
+            for el_ in flatten(el):
+                yield el_
+        else:
+            yield el
+
+
+def _is_listlike(x):
+    """
+    >>> _is_listlike("foo")
+    False
+    >>> _is_listlike(5)
+    False
+    >>> _is_listlike(b"foo")
+    False
+    >>> _is_listlike([b"foo"])
+    True
+    >>> _is_listlike((b"foo",))
+    True
+    >>> _is_listlike({})
+    True
+    >>> _is_listlike(set())
+    True
+    >>> _is_listlike((x for x in range(3)))
+    True
+    >>> _is_listlike(six.moves.xrange(5))
+    True
+    """
+    return hasattr(x, "__iter__") and not isinstance(x, (six.text_type, bytes))
+
+
+###################
+
+
+def re_def_supper_class(obj, supper_class):
+    """
+    重新定义父类
+    @param obj: 类 如 class A: 则obj为A 或者 A的实例 a.__class__
+    @param supper_class: 父类
+    @return:
+    """
+    obj.__bases__ = (supper_class,)
+
+
+###################
+freq_limit_record = {}
+
+
+def reach_freq_limit(rate_limit, *key):
+    """
+    频率限制
+    :param rate_limit: 限制时间 单位秒
+    :param key: 频率限制的key
+    :return: True / False
+    """
+    if rate_limit == 0:
+        return False
+
+    msg_md5 = get_md5(*key)
+    key = "rate_limit:{}".format(msg_md5)
+    try:
+        if get_redisdb().strget(key):
+            return True
+
+        get_redisdb().strset(key, time.time(), ex=rate_limit)
+    except redis.exceptions.ConnectionError as e:
+        # 使用内存做频率限制
+        global freq_limit_record
+
+        if key not in freq_limit_record:
+            freq_limit_record[key] = time.time()
+            return False
+
+        if time.time() - freq_limit_record.get(key) < rate_limit:
+            return True
+        else:
+            freq_limit_record[key] = time.time()
+
+    return False
+
+
+def dingding_warning(
+    message,
+    *,
+    message_prefix=None,
+    rate_limit=None,
+    url=None,
+    user_phone=None,
+    user_id=None,
+    secret=None,
+):
+    """
+    钉钉报警，user_phone与user_id 二选一即可
+    Args:
+        message:
+        message_prefix: 消息摘要，用于去重
+        rate_limit: 包名频率，单位秒，相同的报警内容在rate_limit时间内只会报警一次
+        url: 钉钉报警url
+        user_phone: 被@的群成员手机号，支持列表，可指定多个。
+        user_id: 被@的群成员userId，支持列表，可指定多个
+        secret: 钉钉报警加签密钥
+    Returns:
+
+    """
+    # 为了加载最新的配置
+    rate_limit = rate_limit if rate_limit is not None else setting.WARNING_INTERVAL
+    url = url or setting.DINGDING_WARNING_URL
+    user_phone = user_phone or setting.DINGDING_WARNING_PHONE
+    user_id = user_id or setting.DINGDING_WARNING_USER_ID
+    secret = secret or setting.DINGDING_WARNING_SECRET
+    if secret:
+        timestamp = str(round(time.time() * 1000))
+        secret_enc = secret.encode("utf-8")
+        string_to_sign_enc = f"{timestamp}\n{secret}".encode("utf-8")
+        hmac_code = hmac.new(
+            secret_enc, string_to_sign_enc, digestmod=hashlib.sha256
+        ).digest()
+        sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+        url = f"{url}&timestamp={timestamp}&sign={sign}"
+
+    if not all([url, message]):
+        return
+
+    if reach_freq_limit(rate_limit, url, user_phone, message_prefix or message):
+        log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
+        return
+
+    if isinstance(user_phone, str):
+        user_phone = [user_phone] if user_phone else []
+
+    if isinstance(user_id, str):
+        user_id = [user_id] if user_id else []
+
+    data = {
+        "msgtype": "text",
+        "text": {"content": message},
+        "at": {
+            "atMobiles": user_phone,
+            "atUserIds": user_id,
+            "isAtAll": setting.DINGDING_WARNING_ALL,
+        },
+    }
+
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(
+            url, headers=headers, data=json.dumps(data).encode("utf8")
+        )
+        result = response.json()
+        response.close()
+        if result.get("errcode") == 0:
+            return True
+        else:
+            raise Exception(result.get("errmsg"))
+    except Exception as e:
+        log.error("报警发送失败。 报警内容 {}, error: {}".format(message, e))
+        return False
+
+
+def email_warning(
+    message,
+    title,
+    message_prefix=None,
+    email_sender=None,
+    email_password=None,
+    email_receiver=None,
+    email_smtpserver=None,
+    rate_limit=None,
+):
+    # 为了加载最新的配置
+    email_sender = email_sender or setting.EMAIL_SENDER
+    email_password = email_password or setting.EMAIL_PASSWORD
+    email_receiver = email_receiver or setting.EMAIL_RECEIVER
+    email_smtpserver = email_smtpserver or setting.EMAIL_SMTPSERVER
+    rate_limit = rate_limit if rate_limit is not None else setting.WARNING_INTERVAL
+
+    if not all([message, email_sender, email_password, email_receiver]):
+        return
+
+    if reach_freq_limit(
+        rate_limit, email_receiver, email_sender, message_prefix or message
+    ):
+        log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
+        return
+
+    if isinstance(email_receiver, str):
+        email_receiver = [email_receiver]
+
+    with EmailSender(
+        username=email_sender, password=email_password, smtpserver=email_smtpserver
+    ) as email:
+        return email.send(receivers=email_receiver, title=title, content=message)
+
+
+def linkedsee_warning(message, rate_limit=3600, message_prefix=None, token=None):
+    """
+    灵犀电话报警
+    Args:
+        message:
+        rate_limit:
+        message_prefix:
+        token:
+
+    Returns:
+
+    """
+    if not token:
+        log.info("未设置灵犀token，不支持报警")
+        return
+
+    if reach_freq_limit(rate_limit, token, message_prefix or message):
+        log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
+        return
+
+    headers = {"servicetoken": token, "Content-Type": "application/json"}
+
+    url = "http://www.linkedsee.com/alarm/zabbix"
+
+    data = {"content": message}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+    return response
+
+
+def wechat_warning(
+    message,
+    message_prefix=None,
+    rate_limit=None,
+    url=None,
+    user_phone=None,
+    all_users: bool = None,
+):
+    """企业微信报警"""
+
+    # 为了加载最新的配置
+    rate_limit = rate_limit if rate_limit is not None else setting.WARNING_INTERVAL
+    url = url or setting.WECHAT_WARNING_URL
+    user_phone = user_phone or setting.WECHAT_WARNING_PHONE
+    all_users = all_users if all_users is not None else setting.WECHAT_WARNING_ALL
+
+    if isinstance(user_phone, str):
+        user_phone = [user_phone] if user_phone else []
+
+    if all_users is True or not user_phone:
+        user_phone = ["@all"]
+
+    if not all([url, message]):
+        return
+
+    if reach_freq_limit(rate_limit, url, user_phone, message_prefix or message):
+        log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
+        return
+
+    data = {
+        "msgtype": "text",
+        "text": {"content": message, "mentioned_mobile_list": user_phone},
+    }
+
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(
+            url, headers=headers, data=json.dumps(data).encode("utf8")
+        )
+        result = response.json()
+        response.close()
+        if result.get("errcode") == 0:
+            return True
+        else:
+            raise Exception(result.get("errmsg"))
+    except Exception as e:
+        log.error("报警发送失败。 报警内容 {}, error: {}".format(message, e))
+        return False
+
+
+def feishu_warning(message, message_prefix=None, rate_limit=None, url=None, user=None):
+    """
+
+    Args:
+        message:
+        message_prefix:
+        rate_limit:
+        url:
+        user: {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+
+    Returns:
+
+    """
+    # 为了加载最新的配置
+    rate_limit = rate_limit if rate_limit is not None else setting.WARNING_INTERVAL
+    url = url or setting.FEISHU_WARNING_URL
+    user = user or setting.FEISHU_WARNING_USER
+
+    if not all([url, message]):
+        return
+
+    if reach_freq_limit(rate_limit, url, user, message_prefix or message):
+        log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
+        return
+
+    if isinstance(user, dict):
+        user = [user] if user else []
+
+    at = ""
+    if setting.FEISHU_WARNING_ALL:
+        at = '<at user_id="all">所有人</at>'
+    elif user:
+        at = " ".join(
+            [f'<at user_id="{u.get("open_id")}">{u.get("name")}</at>' for u in user]
+        )
+
+    data = {"msg_type": "text", "content": {"text": at + message}}
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(
+            url, headers=headers, data=json.dumps(data).encode("utf8")
+        )
+        result = response.json()
+        response.close()
+        if result.get("StatusCode") == 0:
+            return True
+        else:
+            raise Exception(result.get("msg"))
+    except Exception as e:
+        log.error("报警发送失败。 报警内容 {}, error: {}".format(message, e))
+        return False
+
+
+def send_msg(msg, level="DEBUG", message_prefix=""):
+    if setting.WARNING_LEVEL == "ERROR":
+        if level.upper() != "ERROR":
+            return
+
+    if setting.DINGDING_WARNING_URL:
+        keyword = "feapder报警系统\n"
+        dingding_warning(keyword + msg, message_prefix=message_prefix)
+
+    if setting.EMAIL_RECEIVER:
+        title = message_prefix or msg
+        if len(title) > 50:
+            title = title[:50] + "..."
+        email_warning(msg, message_prefix=message_prefix, title=title)
+
+    if setting.WECHAT_WARNING_URL:
+        keyword = "feapder报警系统\n"
+        wechat_warning(keyword + msg, message_prefix=message_prefix)
+
+    if setting.FEISHU_WARNING_URL:
+        keyword = "feapder报警系统\n"
+        feishu_warning(keyword + msg, message_prefix=message_prefix)
+
+
+###################
+
+
+def make_item(cls, data: dict):
+    """提供Item类与原数据，快速构建Item实例
+    :param cls: Item类
+    :param data: 字典格式的数据
+    """
+    item = cls()
+    for key, val in data.items():
+        setattr(item, key, val)
+    return item
+
+
+###################
+
+
+def aio_wrap(loop=None, executor=None):
+    """
+    wrap a normal sync version of a function to an async version
+    """
+    outer_loop = loop
+    outer_executor = executor
+
+    def wrap(fn):
+        @wraps(fn)
+        async def run(*args, loop=None, executor=None, **kwargs):
+            if loop is None:
+                if outer_loop is None:
+                    loop = asyncio.get_event_loop()
+                else:
+                    loop = outer_loop
+            if executor is None:
+                executor = outer_executor
+            pfunc = partial(fn, *args, **kwargs)
+            return await loop.run_in_executor(executor, pfunc)
+
+        return run
+
+    return wrap
+
+
+######### number ##########
+
+
+def ensure_int(n):
+    """
+    >>> ensure_int(None)
+    0
+    >>> ensure_int(False)
+    0
+    >>> ensure_int(12)
+    12
+    >>> ensure_int("72")
+    72
+    >>> ensure_int('')
+    0
+    >>> ensure_int('1')
+    1
+    """
+    if not n:
+        return 0
+    return int(n)
+
+
+def ensure_float(n):
+    """
+    >>> ensure_float(None)
+    0.0
+    >>> ensure_float(False)
+    0.0
+    >>> ensure_float(12)
+    12.0
+    >>> ensure_float("72")
+    72.0
+    """
+    if not n:
+        return 0.0
+    return float(n)
+
+
+def import_cls(cls_info):
+    module, class_name = cls_info.rsplit(".", 1)
+    cls = importlib.import_module(module).__getattribute__(class_name)
+    return cls
+
+```
+
+### 代码文件: feapder\templates\item_template.tmpl
+```tmpl
+# -*- coding: utf-8 -*-
+"""
+Created on {DATE}
+---------
+@summary:
+---------
+@author: {USER}
+"""
+
+from feapder import Item
+
+
+class ${item_name}Item(Item):
+    """
+    This class was generated by feapder
+    command: feapder create -i ${command}
+    """
+
+    __table_name__ = "${table_name}"
+
+    def __init__(self, *args, **kwargs):
+        ${propertys}
+
+```

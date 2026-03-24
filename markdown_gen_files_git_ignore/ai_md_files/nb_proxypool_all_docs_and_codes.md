@@ -1,0 +1,896 @@
+# markdown content namespace: nb_proxypool codes 
+
+
+## File Tree
+
+
+```
+
+├── README.md
+├── __init__.py
+├── git_nb_proxypool.py
+├── nb_log_config.py
+├── proxy_check.py
+├── proxy_from_sites_parse.py
+├── proxy_pool_config.py
+├── proxy_request_client.py
+├── run_proxy.py
+└── tests
+    └── re_test.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `git_nb_proxypool.py`
+
+- `nb_log_config.py`
+
+- `proxy_check.py`
+
+- `proxy_from_sites_parse.py`
+
+- `proxy_pool_config.py`
+
+- `proxy_request_client.py`
+
+- `README.md`
+
+- `run_proxy.py`
+
+- `__init__.py`
+
+- `tests/re_test.py`
+
+
+---
+
+
+### code file start: git_nb_proxypool.py 
+
+```python
+# coding=utf-8
+import subprocess
+import os
+import time
+
+# os.environ["path"] = r'C:\Program Files\Git\mingw64\libexec\git-core'
+def getstatusoutput(cmd):
+    try:
+        data = subprocess.check_output(cmd, shell=True, universal_newlines=True,
+                                       stderr=subprocess.STDOUT, encoding='utf8')
+        exitcode = 0
+    except subprocess.CalledProcessError as ex:
+        data = ex.output
+        exitcode = ex.returncode
+    if data[-1:] == '\n':
+        data = data[:-1]
+    return exitcode, data
+
+
+def do_cmd(cmd_strx):
+    print(f'执行 {cmd_strx}')
+    retx = getstatusoutput(cmd_strx)
+    print(retx[0])
+    # if retx[0] !=0:
+    #     raise ValueError('要检查git提交')
+    print(retx[1], '\n')
+    return retx
+
+
+t0 = time.time()
+
+do_cmd('git pull')
+
+do_cmd('git diff')
+
+do_cmd('git add .')
+
+do_cmd('git commit -m commit')
+
+do_cmd('git push origin')
+
+# do_cmd('git push github')
+
+# print(subprocess.getstatusoutput('git push github'))
+print(f'{time.strftime("%H:%M:%S")}  spend_time {time.time() - t0}')
+time.sleep(100000)
+
+'''dsds'''
+```
+
+**code file end: git_nb_proxypool.py**
+
+---
+
+
+### code file start: nb_log_config.py 
+
+```python
+# coding=utf8
+"""
+此文件nb_log_config.py是自动生成到python项目的根目录的,因为是自动生成到 sys.path[1]。
+在这里面写的变量会覆盖此文件nb_log_config_default中的值。对nb_log包进行默认的配置。用户是无需修改nb_log安装包位置里面的配置文件的。
+
+但最终配置方式是由get_logger_and_add_handlers方法的各种传参决定，如果方法相应的传参为None则使用这里面的配置。
+"""
+
+"""
+如果反对日志有各种彩色，可以设置 DEFAULUT_USE_COLOR_HANDLER = False
+如果反对日志有块状背景彩色，可以设置 DISPLAY_BACKGROUD_COLOR_IN_CONSOLE = False
+如果想屏蔽nb_log包对怎么设置pycahrm的颜色的提示，可以设置 WARNING_PYCHARM_COLOR_SETINGS = False
+如果想改变日志模板，可以设置 FORMATTER_KIND 参数，只带了7种模板，可以自定义添加喜欢的模板
+LOG_PATH 配置文件日志的保存路径的文件夹。
+"""
+import sys
+# noinspection PyUnresolvedReferences
+import logging
+import os
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa
+import socket
+from pythonjsonlogger.jsonlogger import JsonFormatter
+
+
+def get_host_ip():
+    ip = ''
+    host_name = ''
+    # noinspection PyBroadException
+    try:
+        sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sc.connect(('8.8.8.8', 80))
+        ip = sc.getsockname()[0]
+        host_name = socket.gethostname()
+        sc.close()
+    except Exception:
+        pass
+    return ip, host_name
+
+
+computer_ip, computer_name = get_host_ip()
+
+
+class JsonFormatterJumpAble(JsonFormatter):
+    def add_fields(self, log_record, record, message_dict):
+        # log_record['jump_click']   = f"""File '{record.__dict__.get('pathname')}', line {record.__dict__.get('lineno')}"""
+        log_record[f"{record.__dict__.get('pathname')}:{record.__dict__.get('lineno')}"] = ''  # 加个能点击跳转的字段。
+        log_record['ip'] = computer_ip
+        log_record['host_name'] = computer_name
+        super().add_fields(log_record, record, message_dict)
+        if 'for_segmentation_color' in log_record:
+            del log_record['for_segmentation_color']
+
+
+DING_TALK_TOKEN = '3dd0eexxxxxadab014bd604XXXXXXXXXXXX'  # 钉钉报警机器人
+
+EMAIL_HOST = ('smtp.sohu.com', 465)
+EMAIL_FROMADDR = 'aaa0509@sohu.com'  # 'matafyhotel-techl@matafy.com',
+EMAIL_TOADDRS = ('cccc.cheng@silknets.com', 'yan@dingtalk.com',)
+EMAIL_CREDENTIALS = ('aaa0509@sohu.com', 'abcdefg')
+
+ELASTIC_HOST = '127.0.0.1'
+ELASTIC_PORT = 9200
+
+KAFKA_BOOTSTRAP_SERVERS = ['192.168.199.202:9092']
+ALWAYS_ADD_KAFKA_HANDLER_IN_TEST_ENVIRONENT = False
+
+MONGO_URL = 'mongodb://myUserAdmin:mimamiama@127.0.0.1:27016/admin'
+
+# 项目中的print是否自动写入到文件中。值为None则不重定向print到文件中。 自动每天一个文件， 2023-06-30.my_proj.print,生成的文件位置在定义的LOG_PATH
+# 如果你设置了环境变量，export PRINT_WRTIE_FILE_NAME="my_proj.print" (linux临时环境变量语法，windows语法自己百度这里不举例),那就优先使用环境变量中设置的文件名字，而不是nb_log_config.py中设置的名字
+PRINT_WRTIE_FILE_NAME = Path(sys.path[1]).name + '.print'
+
+# 项目中的所有标准输出（不仅包括print，还包括了streamHandler日志）都写入到这个文件，为None将不把标准输出重定向到文件。自动每天一个文件， 2023-06-30.my_proj.std,生成的文件位置在定义的LOG_PATH
+# 如果你设置了环境变量，export SYS_STD_FILE_NAME="my_proj.std"  (linux临时环境变量语法，windows语法自己百度这里不举例),那就优先使用环境变量中设置的文件名字，，而不是nb_log_config.py中设置的名字
+SYS_STD_FILE_NAME = Path(sys.path[1]).name + '.std'
+
+USE_BULK_STDOUT_ON_WINDOWS = False # 在win上是否每隔0.1秒批量stdout,win的io太差了
+
+DEFAULUT_USE_COLOR_HANDLER = True  # 是否默认使用有彩的日志。
+DISPLAY_BACKGROUD_COLOR_IN_CONSOLE = True  # 在控制台是否显示彩色块状的日志。为False则不使用大块的背景颜色。
+AUTO_PATCH_PRINT = True  # 是否自动打print的猴子补丁，如果打了猴子补丁，print自动变色和可点击跳转。
+SHOW_PYCHARM_COLOR_SETINGS = True  # 有的人很反感启动代码时候提示教你怎么优化pycahrm控制台颜色，可以把这里设置为False
+
+DEFAULT_ADD_MULTIPROCESSING_SAFE_ROATING_FILE_HANDLER = False  # 是否默认同时将日志记录到记log文件记事本中，就是用户不指定 log_filename的值，会自动写入日志命名空间.log文件中。
+LOG_FILE_SIZE = 100  # 单位是M,每个文件的切片大小，超过多少后就自动切割
+LOG_FILE_BACKUP_COUNT = 10  # 对同一个日志文件，默认最多备份几个文件，超过就删除了。
+
+LOG_PATH = '/pythonlogs'  # 默认的日志文件夹,如果不写明磁盘名，则是项目代码所在磁盘的根目录下的/pythonlogs
+# LOG_PATH = Path(__file__).absolute().parent / Path("pythonlogs")   #这么配置就会自动在你项目的根目录下创建pythonlogs文件夹了并写入。
+if os.name == 'posix':  # linux非root用户和mac用户无法操作 /pythonlogs 文件夹，没有权限，默认修改为   home/[username]  下面了。例如你的linux用户名是  xiaomin，那么默认会创建并在 /home/xiaomin/pythonlogs文件夹下写入日志文件。
+    home_path = os.environ.get("HOME", '/')  # 这个是获取linux系统的当前用户的主目录，不需要亲自设置
+    LOG_PATH = Path(home_path) / Path('pythonlogs')  # linux mac 权限很严格，非root权限不能在/pythonlogs写入，修改一下默认值。
+# print('LOG_PATH:',LOG_PATH)
+
+LOG_FILE_HANDLER_TYPE = 6  # 1 2 3 4 5 6
+"""
+LOG_FILE_HANDLER_TYPE 这个值可以设置为 1 2 3 4 5 四种值，
+1为使用多进程安全按日志文件大小切割的文件日志,这是本人实现的批量写入日志，减少操作文件锁次数，测试10进程快速写入文件，win上性能比第5种提高了100倍，linux提升5倍
+2为多进程安全按天自动切割的文件日志，同一个文件，每天生成一个新的日志文件。日志文件名字后缀自动加上日期。
+3为不自动切割的单个文件的日志(不切割文件就不会出现所谓进程安不安全的问题) 
+4为 WatchedFileHandler，这个是需要在linux下才能使用，需要借助lograte外力进行日志文件的切割，多进程安全。
+5 为第三方的concurrent_log_handler.ConcurrentRotatingFileHandler按日志文件大小切割的文件日志，
+   这个是采用了文件锁，多进程安全切割，文件锁在linux上使用fcntl性能还行，win上使用win32con性能非常惨。按大小切割建议不要选第5个个filehandler而是选择第1个。
+6 BothDayAndSizeRotatingFileHandler 使用本人完全彻底开发的，同时按照时间和大小切割，无论是文件的大小、还是时间达到了需要切割的条件就切割。
+"""
+
+LOG_LEVEL_FILTER = logging.DEBUG  # 默认日志级别，低于此级别的日志不记录了。例如设置为INFO，那么logger.debug的不会记录，只会记录logger.info以上级别的。
+# 强烈不建议调高这里的级别为INFO，日志是有命名空间的，单独提高打印啰嗦的日志命名空间的日志级别就可以了，不要全局提高日志级别。
+# https://nb-log-doc.readthedocs.io/zh_CN/latest/articles/c9.html#id2  文档9.5里面讲了几百次 python logging的命名空间的作用了，有些人到现在还不知道日志的name作用。
+
+# 屏蔽的字符串显示，用 if in {打印信息} 来判断实现的,如果打印的消息中包括 FILTER_WORDS_PRINT 数组中的任何一个字符串，那么消息就不执行打印。
+# 这个配置对 print 和 logger的控制台输出都生效。这个可以过滤某些啰嗦的print信息，也可以过滤同级别日志中的某些烦人的日志。可以用来过滤三方包中某些控制台打印。数组不要配置过多，否则有一丝丝影响性能会。
+FILTER_WORDS_PRINT = []  # 例如， 你希望消息中包括阿弥陀佛 或者 包括善哉善哉 就不打印，那么可以设置  FILTER_WORDS_PRINT = ['阿弥陀佛','善哉善哉']
+
+RUN_ENV = 'test'
+
+FORMATTER_DICT = {
+    1: logging.Formatter(
+        '日志时间【%(asctime)s】 - 日志名称【%(name)s】 - 文件【%(filename)s】 - 第【%(lineno)d】行 - 日志等级【%(levelname)s】 - 日志信息【%(message)s】',
+        "%Y-%m-%d %H:%M:%S"),
+    2: logging.Formatter(
+        '%(asctime)s - %(name)s - %(filename)s - %(funcName)s - %(lineno)d - %(levelname)s - %(message)s',
+        "%Y-%m-%d %H:%M:%S"),
+    3: logging.Formatter(
+        '%(asctime)s - %(name)s - 【 File "%(pathname)s", line %(lineno)d, in %(funcName)s 】 - %(levelname)s - %(message)s',
+        "%Y-%m-%d %H:%M:%S"),  # 一个模仿traceback异常的可跳转到打印日志地方的模板
+    4: logging.Formatter(
+        '%(asctime)s - %(name)s - "%(filename)s" - %(funcName)s - %(lineno)d - %(levelname)s - %(message)s -               File "%(pathname)s", line %(lineno)d ',
+        "%Y-%m-%d %H:%M:%S"),  # 这个也支持日志跳转
+    5: logging.Formatter(
+        '%(asctime)s - %(name)s - "%(pathname)s:%(lineno)d" - %(funcName)s - %(levelname)s - %(message)s',
+        "%Y-%m-%d %H:%M:%S"),  # 我认为的最好的模板,推荐
+    6: logging.Formatter('%(name)s - %(asctime)-15s - %(filename)s - %(lineno)d - %(levelname)s: %(message)s',
+                         "%Y-%m-%d %H:%M:%S"),
+    7: logging.Formatter('%(asctime)s - %(name)s - "%(filename)s:%(lineno)d" - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"),  # 一个只显示简短文件名和所处行数的日志模板
+
+    8: JsonFormatterJumpAble('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(filename)s %(lineno)d  %(process)d %(thread)d', "%Y-%m-%d %H:%M:%S.%f",
+                             json_ensure_ascii=False),  # 这个是json日志，方便elk采集分析.
+
+    9: logging.Formatter(
+        '[p%(process)d_t%(thread)d] %(asctime)s - %(name)s - "%(pathname)s:%(lineno)d" - %(funcName)s - %(levelname)s - %(message)s',
+        "%Y-%m-%d %H:%M:%S"),  # 对5改进，带进程和线程显示的日志模板。
+    10: logging.Formatter(
+        '[p%(process)d_t%(thread)d] %(asctime)s - %(name)s - "%(filename)s:%(lineno)d" - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"),  # 对7改进，带进程和线程显示的日志模板。
+    11: logging.Formatter(
+        f'({computer_ip},{computer_name})-[p%(process)d_t%(thread)d] %(asctime)s - %(name)s - "%(filename)s:%(lineno)d" - %(funcName)s - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"),  # 对7改进，带进程和线程显示的日志模板以及ip和主机名。
+}
+
+FORMATTER_KIND = 5  # 如果get_logger不指定日志模板，则默认选择第几个模板
+
+```
+
+**code file end: nb_log_config.py**
+
+---
+
+
+### code file start: proxy_check.py 
+
+```python
+import typing
+import time
+
+import nb_log
+import requests
+import json
+
+from boost_spider import RequestClient
+from proxy_pool_config import get_redis, ProxyGetterConfig
+from funboost import boost, BrokerEnum, ConcurrentModeEnum
+
+# CHECK_PROXY_VALIDITY_URL = 'https://www.sohu.com/sohuflash_1.js'
+CHECK_PROXY_VALIDITY_URL = 'https://www.baidu.com/'
+
+logger = nb_log.get_logger('proxy_check', log_filename='proxy_check.log')
+logger_proxy_error = nb_log.get_logger('proxy_error', log_filename='proxy_error.log')
+
+
+@boost('check_one_new_proxy', qps=100, broker_kind=BrokerEnum.REDIS, concurrent_num=300)
+def check_one_new_proxy(proxy_dict, is_save_to_db=True, exist_proxy=False):
+    is_valid = False
+    try:
+        # print(proxy_dict)
+        RequestClient(using_platfrom=proxy_dict['platform'], request_retry_times=0).get(CHECK_PROXY_VALIDITY_URL,
+                                                                                        timeout=ProxyGetterConfig.REQUESTS_TIMEOUT,
+                                                                                        proxies=proxy_dict,
+                                                                                        verify=False)
+        is_valid = True
+    except Exception as e:
+        logger_proxy_error.warning(f'{type(e)} ,{e}')
+        pass
+    new_proxy_str = '旧代理' if exist_proxy else '新代理'
+    if is_valid:
+        logger.info(f' {proxy_dict} {new_proxy_str} 有效')
+    else:
+        logger.warning(f' {proxy_dict} {new_proxy_str} 无效')
+    if is_save_to_db and is_valid:
+        get_redis().zadd(ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT,
+                         {json.dumps(proxy_dict, ensure_ascii=False): time.time()})
+    if is_save_to_db and is_valid is False:
+        get_redis().zrem(ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT, json.dumps(proxy_dict, ensure_ascii=False))
+    return is_valid
+
+
+@boost('check_one_exist_proxy', qps=100, broker_kind=BrokerEnum.REDIS, concurrent_num=400)
+def check_one_exist_proxy(proxy_dict, is_save_to_db=True):
+    return check_one_new_proxy(proxy_dict, is_save_to_db, exist_proxy=True)
+
+
+@boost('scan_exists_proxy', broker_kind=BrokerEnum.REDIS, concurrent_mode=ConcurrentModeEnum.SINGLE_THREAD)
+def scan_exists_proxy():
+    proxy_dict_str_list = get_redis().zrangebyscore(ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT, 0, time.time() - 5)
+    for proxy_dict_str in proxy_dict_str_list:
+        check_one_exist_proxy.push(json.loads(proxy_dict_str))
+    return len(proxy_dict_str_list)
+
+
+@boost('show_proxy_count', broker_kind=BrokerEnum.REDIS, concurrent_mode=ConcurrentModeEnum.SINGLE_THREAD)
+def show_proxy_count():
+    count = get_redis().zcount(ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT, 0, time.time())
+    logger.info(f'当前 {ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT} 键中共有 {count} 个 代理')
+    return count
+
+```
+
+**code file end: proxy_check.py**
+
+---
+
+
+### code file start: proxy_from_sites_parse.py 
+
+```python
+import json
+import typing
+import nb_log
+
+from boost_spider.http.request_client import SpiderResponse
+
+from pyquery import PyQuery as pq
+import re
+
+from proxy_request_client import ProxyClient
+from proxy_check import check_one_new_proxy
+
+
+class BaseProxyFromSiteGetter(nb_log.LoggerMixin):
+    site_name = None
+    url_formatter: str = None
+    support_page = False
+
+    @classmethod
+    def class_name(cls):
+        return str(cls.__name__).split('.')[-1]
+
+    def __init__(self, page=1, proxy_type=None, ):
+        self.resp = None
+        kwargs = {}
+        kwargs['page'] = page
+        kwargs['proxy_type'] = proxy_type
+        self.page = page
+        self.kwargs = kwargs
+        self.logger.debug([self.class_name(),kwargs])
+        self._format_the_url()
+        self.proxy_list = []  # type: typing.List[str]
+        self.proxy_dict_list_valid = []  # type: typing.List[dict]
+
+    def _format_the_url(self):
+        self.url = self.url_formatter.format(**self.kwargs)
+
+    def _request(self):
+        self.resp = ProxyClient(proxy_name_list=[ProxyClient.PROXY_FREE,
+                                                     ProxyClient.PROXY_NOPROXY],
+                                    using_platfrom=self.site_name, request_retry_times=2).get(
+            url=self.url)  # type: SpiderResponse
+
+    def _parse(self):
+        """部分网站的通用提取，如果不通用需要重写"""
+        """ 适用于这样的网页
+          <td>139.196.214.238</td>
+                    <td>2087</td>
+        """
+        res = re.findall('<td>(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})</td>[\s\S]*?<td>(\d+)</td>', self.resp.text)
+        for r in res:
+            self.proxy_list.append(f'{r[0]}:{r[1]}')
+
+    def get_proxies(self):
+        if self.support_page is False and self.page > 1:
+            return []
+        self._request()
+        if self.resp is not None:
+            self._parse()
+            # self.proxy_list= self._parse() or []
+        self._check_all_proxies()
+        return self.proxy_list
+
+    def _check_all_proxies(self):
+        for proxy in self.proxy_list:
+            proxy_dict = {'https': f'{proxy}', 'http': f'{proxy}', 'platform': self.site_name}
+            check_one_new_proxy.push(proxy_dict, )
+            # if is_valid:
+            #     self.proxy_dict_list_valid.append(proxy_dict)
+
+
+def get_proxy_getter_cls(site_proxy_cls_name):
+    site_proxy_cls = globals()[site_proxy_cls_name]  # type:type[BaseProxyFromSiteGetter]
+    return site_proxy_cls
+
+
+class ZjProxy(BaseProxyFromSiteGetter):
+    '''
+    代理非常非常垃圾，完全不可用。
+    '''
+    site_name = 'zj'
+    url_formatter = 'https://zj.v.api.aa1.cn/api/proxyip/'
+    support_page = False
+
+    def _parse(self):
+        self.proxy_list = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+', self.resp.text)
+
+
+class Kuaidaili(BaseProxyFromSiteGetter):
+    site_name = 'kuaidaili'
+    url_formatter = 'https://www.kuaidaili.com/free/intr/{page}/'  # 页码从1开始  intr  inha
+    support_page = True
+
+    def _parse(self):
+        '''
+            <td data-title="IP">182.34.102.15</td>
+                            <td data-title="PORT">9999</td>
+        :return:
+        '''
+        # self.logger.debug(self.resp.text)
+        p_list = re.findall('<td data-title="IP">(.*?)</td>[\s\S]*?<td data-title="PORT">(.*?)</td>', self.resp.text)
+        for t in p_list:
+            self.proxy_list.append(f'{t[0]}:{t[1]}')
+
+
+class Ip66(BaseProxyFromSiteGetter):
+    """
+    一个代理没有，垃圾
+    """
+    site_name = '66ip'
+    url_formatter = 'http://www.66ip.cn/{page}.html'
+    support_page = True
+
+    def _parse(self):
+        doc = pq(self.resp.text)
+        trs = doc('.containerbox table tr:gt(0)').items()
+        for tr in trs:
+            ip = tr.find('td:nth-child(1)').text()
+            port = tr.find('td:nth-child(2)').text()
+            self.proxy_list.append(':'.join([ip, port]))
+
+
+class Ip3366(BaseProxyFromSiteGetter):
+    '''
+    很差劲
+    '''
+    site_name = 'ip3366'
+    url_formatter = 'http://www.ip3366.net/?stype={proxy_type}&page={page}.html'  # 种类 1 2 加页面
+    support_page = True
+
+    find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+
+    def _parse(self):
+        trs = self.find_tr.findall(self.resp.text)
+        for s in range(1, len(trs)):
+            find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+            re_ip_address = find_ip.findall(trs[s])
+            find_port = re.compile('<td>(\d+)</td>')
+            re_port = find_port.findall(trs[s])
+            for address, port in zip(re_ip_address, re_port):
+                address_port = address + ':' + port
+                self.proxy_list.append(address_port.replace(' ', ''))
+
+
+class Xici(BaseProxyFromSiteGetter):
+    site_name = 'xici'
+    url_formatter = 'https://www.xicidaili.com/wn/{page}'
+    support_page = False # xici网站太垃圾了,不分页.
+
+    find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+
+    def _parse(self):
+        trs = self.find_tr.findall(self.resp.text)
+        for s in range(1, len(trs)):
+            find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+            re_ip_address = find_ip.findall(trs[s])
+            find_port = re.compile('<td>(\d+)</td>')
+            re_port = find_port.findall(trs[s])
+            for address, port in zip(re_ip_address, re_port):
+                address_port = address + ':' + port
+                self.proxy_list.append(address_port.replace(' ', ''))
+
+
+class Ip89(BaseProxyFromSiteGetter):
+    """ 89免费代理
+    可以
+    """
+    site_name = '89ip'
+    url_formatter = 'https://www.89ip.cn/index_{page}.html'
+    support_page = True
+
+    def _parse(self):
+        # self.logger.info(self.resp.text)
+        proxies = re.findall(
+            r'<td.*?>[\s\S]*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\s\S]*?</td>[\s\S]*?<td.*?>[\s\S]*?(\d+)[\s\S]*?</td>',
+            self.resp.text)
+        for proxy in proxies:
+            self.proxy_list.append(':'.join(proxy))
+
+
+class Ihuan(BaseProxyFromSiteGetter):
+    """ 小幻代理
+    不错
+    """
+    site_name = 'ihuan'
+    url_formatter = 'https://ip.ihuan.me/address/5Lit5Zu9.html?page={page}'
+    support_page = True
+
+    def _parse(self):
+        # self.logger.info(self.resp.text)
+        proxies = re.findall(r'>\s*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*?</a></td><td>(\d+)</td>', self.resp.text)
+        for proxy in proxies:
+            self.proxy_list.append(':'.join(proxy))
+
+
+class Fatezero(BaseProxyFromSiteGetter):
+    '''
+    垃圾
+    '''
+    site_name = 'fatezero'
+    url_formatter = 'http://proxylist.fatezero.org/proxy.list'  # 不能分页
+    support_page = False
+
+    def _parse(self):
+        for each in self.resp.text.split("\n"):
+            if not each.startswith('{'):
+                continue
+            json_info = json.loads(each)
+            if json_info.get("country") == "CN":
+                self.proxy_list.append("%s:%s" % (json_info.get("host", ""), json_info.get("port", "")))
+
+
+class Kaixin(BaseProxyFromSiteGetter):
+    """
+    不错
+    """
+    site_name = 'kaixin'
+    url_formatter = 'http://www.kxdaili.com/dailiip/{proxy_type}/{page}.html'  # 可以同时分类和分页
+    support_page = True
+
+
+class Zdaye(BaseProxyFromSiteGetter):
+    """
+    不错
+    """
+    site_name = 'zdaye'
+    url_formatter = 'https://www.zdaye.com/free/?ip=&adr=&checktime=&sleep=&cunhuo=&dengji=&nadr=&https=1&yys=&post=&px='  # 不分页
+    support_page = False
+
+
+class Uqidata(BaseProxyFromSiteGetter):
+    '''不行'''
+    site_name = 'uqidata'
+    url_formatter = 'https://ip.uqidata.com/free/index.html'  # 不分页
+    support_page = False
+
+
+class Proxyhub(BaseProxyFromSiteGetter):
+    """
+    不可用
+    """
+    site_name = 'proxyhub'
+    url_formatter = 'https://proxyhub.me/'  # 不分页
+    support_page = False
+
+
+# class Atomintersoft(BaseProxyFromSiteGetter):
+#
+#     site_name = 'atomintersoft'
+#     url_formatter = 'https://atomintersoft.com/{proxy_type}_proxy_list'  # ['transparent', 'anonymous', 'high_anonymity_elite']
+#
+#     def _parse(self):
+#         urls = ['https://atomintersoft.com/%s_proxy_list' % n for n in
+#                 ['transparent', 'anonymous', 'high_anonymity_elite']]
+#         request = WebRequest()
+#         for url in urls:
+#             tree = request.get(url, timeout=10).tree
+#             for proxy in tree.xpath("//table/thead/tr//td[1]/text()[1]"):
+#                 if proxy:
+#                     yield proxy
+
+class Cool(BaseProxyFromSiteGetter):
+    """不行"""
+    site_name = 'cool'
+    url_formatter = 'https://cool-proxy.net/proxies.json'  # 不能分页
+    support_page = False
+
+    def _parse(self):
+        for proxy in json.loads(self.resp.text):
+            ip = proxy['ip']
+            port = proxy['port']
+            if ip:
+                self.proxy_list.append("%s:%s" % (ip, port))
+
+
+class Beesproxy(BaseProxyFromSiteGetter):
+    """
+    不错
+    """
+    site_name = 'beesproxy'
+    url_formatter = 'https://www.beesproxy.com/free/page/{page}'
+    support_page = True
+
+    def _format_the_url(self):
+        if self.page == 1:
+            self.url = 'https://www.beesproxy.com/free'
+        else:
+            self.url = self.url_formatter.format(**self.kwargs)
+
+
+if __name__ == '__main__':
+    for p in range(1, 5):
+        for proxy_type in (1, 2):
+            get_proxy_getter_cls(Ip89.class_name())(page=p, proxy_type=proxy_type).get_proxies()
+
+    # print(Beesproxy.class_name())
+
+```
+
+**code file end: proxy_from_sites_parse.py**
+
+---
+
+
+### code file start: proxy_pool_config.py 
+
+```python
+from functools import lru_cache
+
+from funboost import RedisMixin
+
+
+
+class ProxyGetterConfig:
+    PROXY_KEY_IN_REDIS_DEFAULT = 'proxy_free'
+    REQUESTS_TIMEOUT = 5
+
+@lru_cache()
+def get_redis():
+    return RedisMixin().redis_db_frame
+
+
+
+
+```
+
+**code file end: proxy_pool_config.py**
+
+---
+
+
+### code file start: proxy_request_client.py 
+
+```python
+import json
+import random
+
+from boost_spider.http.request_client import RequestClient
+from proxy_pool_config import get_redis, ProxyGetterConfig
+
+
+class ProxyClient(RequestClient):
+    def _request_with_free_proxy(self, method, url, verify=None, timeout=None, headers=None, cookies=None, **kwargs):
+        """使用redis中的快代理池子,怎么从redis拿代理ip和requests怎么使用代理，用户自己写"""
+        res = get_redis().zrange(ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT, 0, -1)
+        # 低版本redis服务端 没有 ZRANDMEMBER 命令.
+        if len(res) == 0:
+            err_msg = f'request_with_free_proxy redis {ProxyGetterConfig.PROXY_KEY_IN_REDIS_DEFAULT} 键中没有代理ip'
+            self.logger.warning(err_msg)
+            raise Exception(err_msg) # 报错是为了换成noproxy重试
+        proxies = json.loads(random.choice(res))
+        resp = self.ss.request(method, url, verify=verify or self._verify, timeout=timeout or self._timeout,
+                               headers=headers, cookies=cookies,
+                               proxies=proxies, **kwargs)
+
+        return resp
+
+    PROXY_FREE = 'free'
+    PROXYNAME__REQUEST_METHED_MAP = {'noproxy': RequestClient._request_with_no_proxy,
+                                     'free': _request_with_free_proxy,
+                                     }  # 用户新增了方法后，在这里添加代理名字和请求方法的映射映射
+
+
+if __name__ == '__main__':
+    ProxyClient(proxy_name_list=[
+        ProxyClient.PROXY_FREE, ProxyClient.PROXY_NOPROXY],request_retry_times=4).get('https://www.baidu.com')
+
+```
+
+**code file end: proxy_request_client.py**
+
+---
+
+
+### code file start: README.md 
+
+# 1 nb_proxypool
+
+nb_proxypool 代理池powered by funboost
+
+## 2 运行方式
+
+### 2.0 安装依赖
+
+使用了boost_sipder里面的请求类
+
+pip install boost_spider
+
+boost_spider会自动安装funboost.
+
+### 2.1 配置redis账号
+
+拉取代码,修改funboost_config.py配置文件的redis的账号密码
+
+![img.png](tests/img.png)
+
+### 2.2 运行代理自动抓取和超高速并发检测生成redis代理池
+
+点击运行 run_proxy.py
+
+## 3 nb_proxypool 代码写法说明
+
+nb_proxypool采用的是funboost框架驱动函数并发和定时,如果想弄清楚用法,用户需要阅读分布式函数万能框架funboost文档
+
+[https://funboost.readthedocs.io/zh/latest/](https://funboost.readthedocs.io/zh/latest/)
+
+## 4使用redis中的代理ip方式
+
+直接使用 proxy_request_client.py 中的 ProxyClient 发请求就好了,该类的方法名和入参和requests 100%一致,兼容性极好.
+
+下面代码表示 按照 不使用代理和使用free代理池的请求顺序来请求百度,最大重试轮流请求4次
+
+```
+ProxyClient(proxy_name_list=[
+        ProxyClient.PROXY_FREE, ProxyClient.PROXY_NOPROXY],request_retry_times=4).get('https://www.baidu.com')
+
+```
+
+用户也可以自己使用requests从redis中获取代理,不使用ProxyClient类.
+
+**code file end: README.md**
+
+---
+
+
+### code file start: run_proxy.py 
+
+```python
+import time
+
+from funboost import boost, BrokerEnum, funboost_aps_scheduler,ctrl_c_recv
+
+from proxy_from_sites_parse import *
+
+from proxy_check import check_one_new_proxy, check_one_exist_proxy, scan_exists_proxy, show_proxy_count
+
+
+@boost('get_proxies_from_sites', broker_kind=BrokerEnum.REDIS, qps=0.5, is_print_detail_exception=False)
+def get_proxies_from_sites(site_proxy_cls_name: str, page, proxy_type=1, ):
+    get_proxy_getter_cls(site_proxy_cls_name)(page=page, proxy_type=proxy_type).get_proxies()
+
+
+def run_funboost():
+    funboost_aps_scheduler.start()
+
+    ''' 定时任务推送代理抓取'''
+    for p in range(1, 5):
+        for site_cls in [Kuaidaili, Xici, Ip89, Ihuan, Zdaye, Beesproxy]:
+            if site_cls.support_page or (site_cls.support_page is False and p == 1):
+                # 页数越靠后的，定时运行间隔越大，因为页数靠后的很少更新
+                funboost_aps_scheduler.add_push_job(get_proxies_from_sites, 'interval', seconds=p * 30,
+                                                    kwargs={"site_proxy_cls_name": site_cls.class_name(),
+                                                            "page": p})
+    for p in range(1, 5):
+        for proxy_type in [1, 2]:
+            funboost_aps_scheduler.add_push_job(get_proxies_from_sites, 'interval', seconds=30 * p,
+                                                kwargs={"site_proxy_cls_name": Kaixin.class_name(),
+                                                        "page": p, "proxy_type": proxy_type})
+    '''定时任务扫描存量代理'''
+    funboost_aps_scheduler.add_push_job(scan_exists_proxy, 'interval', seconds=30, )
+    funboost_aps_scheduler.add_push_job(show_proxy_count, 'interval', seconds=10, )
+
+    get_proxies_from_sites.consume()  # 启动消费代理抓取
+    check_one_new_proxy.consume()  # 启动消费检测1个新ip代理
+    scan_exists_proxy.consume()  # 启动消费扫描存量代理
+    check_one_exist_proxy.consume()  # 消启动费 检测一个旧ip代理
+    show_proxy_count.consume()  # # 消启动费显示代理ip数量
+
+    ctrl_c_recv()
+
+
+if __name__ == '__main__':
+    run_funboost()
+
+```
+
+**code file end: run_proxy.py**
+
+---
+
+
+### code file start: __init__.py 
+
+```python
+
+```
+
+**code file end: __init__.py**
+
+---
+
+
+### code file start: tests/re_test.py 
+
+```python
+
+html = '''
+         <tr>
+                            <td data-title="IP">61.216.185.88</td>
+                            <td data-title="PORT">60808</td>
+                            <td data-title="匿名度">高匿名</td>
+                            <td data-title="类型">HTTP</td>
+                            <td data-title="位置">中国 台湾 屏东县 </td>
+                            <td data-title="响应速度">0.7秒</td>
+                            <td data-title="最后验证时间">2023-09-28 20:31:01</td>
+                            <td data-title="付费方式">免费代理ip</td>
+                        </tr>
+                    
+                        <tr>
+                            <td data-title="IP">36.134.91.82</td>
+                            <td data-title="PORT">8888</td>
+                            <td data-title="匿名度">高匿名</td>
+                            <td data-title="类型">HTTP</td>
+                            <td data-title="位置">中国   </td>
+                            <td data-title="响应速度">5秒</td>
+                            <td data-title="最后验证时间">2023-09-28 19:31:01</td>
+                            <td data-title="付费方式">免费代理ip</td>
+                        </tr>
+
+'''
+
+html2 = '''
+ <td>139.196.214.238</td>
+                    <td>2087</td>
+                    
+                    
+                     <td>139.196.214.238</td>
+                    <td>2087</td>
+'''
+
+html3 = '''
+
+ <td data-title="IP">180.123.9.124</td>
+                            <td data-title="PORT">8888</td>
+'''
+import re
+
+r = re.findall('<td data-title="IP">(.*?)</td>[\s\S]*?<td data-title="PORT">(.*?)</td>',html3)
+print(r)
+
+
+r = re.findall('<td>(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})</td>[\s\S]*?<td>(\d+)</td>',html2)
+print(r)
+```
+
+**code file end: tests/re_test.py**
+
+---
+

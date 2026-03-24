@@ -1,0 +1,1053 @@
+# markdown content namespace: threadpool_executor_shrink_able readme 
+
+
+## File Tree
+
+
+```
+
+└── README.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+
+---
+
+
+### code file start: README.md 
+
+pip install threadpool_executor_shrink_able
+
+
+
+
+
+史上最强的python线程池。
+
+最智能的可自动实时调节线程数量的线程池。此线程池和官方concurrent.futures的线程池 是鸭子类关系，所以可以一键替换类名 或者 import as来替换类名。
+对比官方线程池，有4个创新功能或改进。 
+
+1、主要是不仅能扩大，还可自动缩小(官方内置的ThreadpoolExecutor不具备此功能，此概念是什么意思和目的，可以百度java ThreadpoolExecutor的KeepAliveTime参数的介绍)，
+
+2、非常节制的开启多线程，例如实例化一个最大100线程数目的pool，每隔2秒submit一个函数任务，而函数每次只需要1秒就能完成，实际上只需要调节增加到1个线程就可以，不需要慢慢增加到100个线程
+官方的线程池不够智能，会一直增加到最大线程数目，此线程池则不会。
+
+3、线程池任务的queue队列，修改为有界队列
+
+4、此线程池运行函数出错时候，直接显示线程错误，官方的线程池则不会显示错误，例如函数中写1/0,任然不现实错误。
+
+5.有线程池BoundedThreadPoolExecutor改善线程报错和有界队列。
+
+6.patch_builtin_concurrent_futeres_threadpoolexecutor 支持给内置线程池打猴子补丁的方式，一键替换项目中所有原有的Thredpoolexecutor
+
+7.以上是对比concurrent.futures 内置线程池，在博客园和csdn搜索 python自定义线程池这几个关键字，有上百篇博客实现线程池，但总共样子也就两三种，全部是抄袭来抄袭去，而且还很难调用，必须在程序末尾加join啥的，没有任何创意，中国博客园网友真的是很偷懒。
+
+用法例子：
+
+```python
+import time
+from nb_log import nb_print
+from threadpool_executor_shrink_able import ThreadPoolExecutorShrinkAble
+
+def f1(a):
+    time.sleep(0.2)  # 可修改这个数字测试多线程数量调节功能。
+    
+    nb_print(f'{a} 。。。。。。。')
+    
+    # raise Exception('抛个错误测试')  # 官方的不会显示函数出错你，你还以为你写的代码没毛病呢。
+
+
+pool = ThreadPoolExecutorShrinkAble(200)
+
+# pool = ThreadPoolExecutor(200)  # 测试对比官方自带
+
+for i in range(300):
+
+    time.sleep(0.3)  # 这里的间隔时间模拟，当任务来临不密集，只需要少量线程就能搞定f1了，因为f1的消耗时间短，不需要开那么多线程，CustomThreadPoolExecutor比ThreadPoolExecutor 优势之一。
+    
+    pool.submit(f1, str(i))
+
+# 1/下面测试阻塞主线程退出的情况。注释掉可以测主线程退出的情况。
+
+# 2/此代码可以证明，在一段时间后，连续长时间没任务，官方线程池的线程数目还是保持在最大数量了。
+# 而此线程池会自动缩小，实现了java线程池的keppalivetime功能。
+
+time.sleep(1000000)
+```
+
+## 对比网上线程池
+1
+
+(https://www.cnblogs.com/shenwenlong/p/5604687.html)
+```
+
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+import queue
+import threading
+import contextlib
+import time
+
+StopEvent = object()
+
+
+class ThreadPool(object):
+
+    def __init__(self, max_num):
+        self.q = queue.Queue()#存放任务的队列
+        self.max_num = max_num#最大线程并发数
+
+        self.terminal = False#如果为True 终止所有线程，不再获取新任务
+        self.generate_list = [] #已经创建的线程
+        self.free_list = []#闲置的线程
+
+    def run(self, func, args, callback=None):
+        """
+        线程池执行一个任务
+        :param func: 任务函数
+        :param args: 任务函数所需参数
+        :param callback: 任务执行失败或成功后执行的回调函数，回调函数有两个参数1、任务函数执行状态；2、任务函数返回值（默认为None，即：不执行回调函数）
+        :return: 如果线程池已经终止，则返回True否则None
+        """
+
+        if len(self.free_list) == 0 and len(self.generate_list) < self.max_num: #无空闲线程和不超过最大线程数
+            self.generate_thread() # 创建线程
+        w = (func, args, callback,)#保存参数为元组
+        self.q.put(w)#添加到任务队列
+
+    def generate_thread(self):
+        """
+        创建一个线程
+        """
+        t = threading.Thread(target=self.call)
+        t.start()
+
+    def call(self):
+        """
+        循环去获取任务函数并执行任务函数
+        """
+        current_thread = threading.currentThread#获取当前线程对象
+        self.generate_list.append(current_thread)#添加到已创建线程里
+
+        event = self.q.get() #获取任务
+        while event != StopEvent: #如果不为停止信号
+
+            func, arguments, callback = event#分别取值，
+            try:
+                result = func(*arguments) #运行函数，把结果赋值给result
+                status = True   #运行结果是否正常
+            except Exception as e:
+                status = False #不正常
+                result = e  #结果为错误信息
+
+            if callback is not None: # 是否有回调函数
+                try:
+                    callback(status, result) #执行回调函数
+                except Exception as e:
+                    pass
+
+            if self.terminal: # 默认为False ，如果调用terminal方法
+                event = StopEvent #停止信号
+            else:
+                # self.free_list.append(current_thread) #执行完毕任务，添加到闲置列表
+                # event = self.q.get()    #获取任务
+                # self.free_list.remove(current_thread) #获取到任务之后，从闲置里删除
+                with self.worker_state(self.free_list,current_thread):
+                    event = self.q.get()
+
+
+        else:
+            self.generate_list.remove(current_thread) #如果收到终止信号，就从已创建的列表删除
+
+    def close(self): #终止线程
+        num = len(self.generate_list) #获取总已创建的线程
+        while num:
+            self.q.put(StopEvent) #添加停止信号，有几个线程就添加几个
+            num -= 1
+
+    # 终止线程（清空队列）
+    def terminate(self):
+
+        self.terminal = True #更改为True，
+
+        while self.generate_list: #如果有已创建线程存活
+            self.q.put(StopEvent) #有几个就发几个信号
+        self.q.empty()  #清空队列
+    @contextlib.contextmanager
+    def worker_state(self,free_list,current_thread):
+        free_list.append(current_thread)
+        try:
+            yield
+        finally:
+            free_list.remove(current_thread)
+import time
+
+def work(i):
+    print(i)
+
+pool = ThreadPool(10)
+for item in range(50):
+    pool.run(func=work, args=(item,))
+pool.terminate()
+pool.close()
+
+```
+
+调用方式伤不起
+
+主要原因是用非搜狐线程，要么程序很快结束，要么就一直while 1循环程序结束不了，造成需要这样调用。
+```
+pool = ThreadPool(10)
+
+for item in range(50):
+
+    pool.run(func=work, args=(item,))
+    
+pool.terminate()
+
+pool.close()
+
+
+```
+
+2 网上线程池之二
+
+(https://www.cnblogs.com/tkqasn/p/5711593.html)
+
+仍然是采用非守护线程，导致调用方式伤不起。啥pool.close pool.join都需要，无法随时提交任务。
+
+```
+   pool=ThreadPool(5)
+    # pool.Deamon=True#需在pool.run之前设置
+    for i in range(1000):
+        pool.run(func=Foo,args=(i,),callback=Bar)
+    pool.close()
+    pool.join()
+    # pool.terminate()
+```
+
+
+源码
+```
+
+import threading
+import contextlib
+from Queue import Queue
+import time
+
+class ThreadPool(object):
+    def __init__(self, max_num):
+        self.StopEvent = 0#线程任务终止符，当线程从队列获取到StopEvent时，代表此线程可以销毁。可设置为任意与任务有区别的值。
+        self.q = Queue()
+        self.max_num = max_num  #最大线程数
+        self.terminal = False   #是否设置线程池强制终止
+        self.created_list = [] #已创建线程的线程列表
+        self.free_list = [] #空闲线程的线程列表
+        self.Deamon=False #线程是否是后台线程
+
+    def run(self, func, args, callback=None):
+        """
+        线程池执行一个任务
+        :param func: 任务函数
+        :param args: 任务函数所需参数
+        :param callback:
+        :return: 如果线程池已经终止，则返回True否则None
+        """
+
+        if len(self.free_list) == 0 and len(self.created_list) < self.max_num:
+            self.create_thread()
+        task = (func, args, callback,)
+        self.q.put(task)
+
+    def create_thread(self):
+        """
+        创建一个线程
+        """
+        t = threading.Thread(target=self.call)
+        t.setDaemon(self.Deamon)
+        t.start()
+        self.created_list.append(t)#将当前线程加入已创建线程列表created_list
+
+    def call(self):
+        """
+        循环去获取任务函数并执行任务函数
+        """
+        current_thread = threading.current_thread()   #获取当前线程对象·
+        event = self.q.get()    #从任务队列获取任务
+        while event != self.StopEvent:   #判断获取到的任务是否是终止符
+
+            func, arguments, callback = event#从任务中获取函数名、参数、和回调函数名
+            try:
+                result = func(*arguments)
+                func_excute_status =True#func执行成功状态
+            except Exception as e:
+                func_excute_status = False
+                result =None
+                print '函数执行产生错误', e#打印错误信息
+
+            if func_excute_status:#func执行成功后才能执行回调函数
+                if callback is not None:#判断回调函数是否是空的
+                    try:
+                        callback(result)
+                    except Exception as e:
+                        print '回调函数执行产生错误', e  # 打印错误信息
+
+
+            with self.worker_state(self.free_list,current_thread):
+                #执行完一次任务后，将线程加入空闲列表。然后继续去取任务，如果取到任务就将线程从空闲列表移除
+                if self.terminal:#判断线程池终止命令，如果需要终止，则使下次取到的任务为StopEvent。
+                    event = self.StopEvent
+                else: #否则继续获取任务
+                    event = self.q.get()  # 当线程等待任务时，q.get()方法阻塞住线程，使其持续等待
+
+        else:#若线程取到的任务是终止符，就销毁线程
+            #将当前线程从已创建线程列表created_list移除
+            self.created_list.remove(current_thread)
+
+    def close(self):
+        """
+        执行完所有的任务后，所有线程停止
+        """
+        full_size = len(self.created_list)#按已创建的线程数量往线程队列加入终止符。
+        while full_size:
+            self.q.put(self.StopEvent)
+            full_size -= 1
+
+    def terminate(self):
+        """
+        无论是否还有任务，终止线程
+        """
+        self.terminal = True
+        while self.created_list:
+            self.q.put(self.StopEvent)
+
+        self.q.queue.clear()#清空任务队列
+
+    def join(self):
+        """
+        阻塞线程池上下文，使所有线程执行完后才能继续
+        """
+        for t in self.created_list:
+            t.join()
+
+
+    @contextlib.contextmanager#上下文处理器，使其可以使用with语句修饰
+    def worker_state(self, state_list, worker_thread):
+        """
+        用于记录线程中正在等待的线程数
+        """
+        state_list.append(worker_thread)
+        try:
+            yield
+        finally:
+            state_list.remove(worker_thread)
+
+
+
+
+
+
+if __name__ == '__main__':
+    def Foo(arg):
+        return arg
+        # time.sleep(0.1)
+
+    def Bar(res):
+        print res
+
+    pool=ThreadPool(5)
+    # pool.Deamon=True#需在pool.run之前设置
+    for i in range(1000):
+        pool.run(func=Foo,args=(i,),callback=Bar)
+    pool.close()
+    pool.join()
+    # pool.terminate()
+
+    print "任务队列里任务数%s" %pool.q.qsize()
+    print "当前存活子线程数量:%d" % threading.activeCount()
+    print "当前线程创建列表:%s" %pool.created_list
+    print "当前线程创建列表:%s" %pool.free_list
+
+详细代码，
+```
+
+可以去博客园搜索任意自定义线程池，由于没使用守护线程实现，调用都很麻烦。
+
+
+## 3 有界队列比无界队列的好处
+
+```
+如下例子，如果用官方的原生 ThreadPoolExecutor，那么电脑会内存瞬间卡死。
+如果用 BoundedThreadPoolExecutor 或者 ThreadPoolExecutorShrinkAble 则不会出现内存迅速涨满卡死电脑
+
+因为无界队列迅速把任务添加到work_queue内存队列中。
+
+此外无界队列的坏处包括，如果用线程池去运行消息队列中的消息，这种线程池会迅速把谁有消息从消息队列中间件里面掏空取到内存中，
+破坏了负载均衡，导致有的机器没任务可消费，有的机器忙死。
+```
+
+```python
+import time
+from concurrent.futures import ThreadPoolExecutor
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+
+# pool = ThreadPoolExecutor(10)
+pool = BoundedThreadPoolExecutor(10)
+
+def print_long_str(long_str):
+    print(long_str[:10])
+    time.sleep(5)
+
+
+for i in range(10000000):
+    pool.submit(print_long_str,'很长的字符串很占内存'*100000)
+
+
+```
+
+**code file end: README.md**
+
+---
+
+# markdown content namespace: threadpool_executor_shrink_able codes 
+
+
+## File Tree
+
+
+```
+
+└── threadpool_executor_shrink_able
+    ├── __init__.py
+    ├── bounded_threadpoolexcutor.py
+    ├── monkey_builtin_threadpoolexecutor.py
+    ├── sharp_threadpoolexecutor.py
+    └── sharp_threadpoolexecutor0.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `threadpool_executor_shrink_able/bounded_threadpoolexcutor.py`
+
+- `threadpool_executor_shrink_able/monkey_builtin_threadpoolexecutor.py`
+
+- `threadpool_executor_shrink_able/sharp_threadpoolexecutor.py`
+
+- `threadpool_executor_shrink_able/sharp_threadpoolexecutor0.py`
+
+- `threadpool_executor_shrink_able/__init__.py`
+
+
+---
+
+
+### code file start: threadpool_executor_shrink_able/bounded_threadpoolexcutor.py 
+
+```python
+# coding=utf-8
+"""
+一个有界任务队列的thradpoolexcutor
+直接捕获错误日志
+"""
+from functools import wraps
+import queue
+from concurrent.futures import ThreadPoolExecutor
+# noinspection PyProtectedMember
+# from concurrent.futures.thread import _WorkItem
+from nb_log import LogManager
+
+logger = LogManager('BoundedThreadPoolExecutor').get_logger_and_add_handlers()
+
+
+def _deco(f):
+    @wraps(f)
+    def __deco(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            logger.exception(e)
+
+    return __deco
+
+
+class BoundedThreadPoolExecutor(ThreadPoolExecutor, ):
+    def __init__(self, max_workers=None, thread_name_prefix=''):
+        ThreadPoolExecutor.__init__(self, max_workers, thread_name_prefix)
+        self._work_queue = queue.Queue(max_workers * 2)
+
+    def submit(self, fn, *args, **kwargs):
+        fn_deco = _deco(fn)
+        super().submit(fn_deco, *args, **kwargs)
+        # with self._shutdown_lock:
+        #     if self._shutdown:
+        #         raise RuntimeError('cannot schedule new futures after shutdown')
+        #     f = Future()
+        #     fn_deco = _deco(fn)
+        #     w = _WorkItem(f, fn_deco, args, kwargs)
+        #     self._work_queue.put(w)
+        #     self._adjust_thread_count()
+        #     return f
+
+
+if __name__ == '__main__':
+    def fun():
+        print(1 / 0)
+
+    pool = BoundedThreadPoolExecutor(10)
+    pool.submit(fun)
+
+```
+
+**code file end: threadpool_executor_shrink_able/bounded_threadpoolexcutor.py**
+
+---
+
+
+### code file start: threadpool_executor_shrink_able/monkey_builtin_threadpoolexecutor.py 
+
+```python
+"""
+这个主要是为了 1/防止内置线程池，线程中的函数出错了不报错，导致以为代码没毛病。
+2/有界队列
+
+"""
+import concurrent
+from threadpool_executor_shrink_able.bounded_threadpoolexcutor import BoundedThreadPoolExecutor
+
+
+def patch_builtin_concurrent_futeres_threadpoolexecutor():
+    concurrent.futures.ThreadPoolExecutor = BoundedThreadPoolExecutor
+
+
+if __name__ == '__main__':
+    patch_builtin_concurrent_futeres_threadpoolexecutor()  # 如果不大猴子补丁，出错了自己完全不知道。
+    from concurrent.futures import ThreadPoolExecutor
+
+    def test_error():
+        raise ValueError('测试错误')
+
+    pool = ThreadPoolExecutor(20)
+    pool.submit(test_error)
+
+```
+
+**code file end: threadpool_executor_shrink_able/monkey_builtin_threadpoolexecutor.py**
+
+---
+
+
+### code file start: threadpool_executor_shrink_able/sharp_threadpoolexecutor.py 
+
+```python
+"""
+史上最强的python线程池。
+
+最智能的可自动实时调节线程数量的线程池。此线程池和官方concurrent.futures的线程池 是鸭子类关系，所以可以一键替换类名 或者 import as来替换类名。
+对比官方线程池，有4个创新功能或改进。
+
+1、主要是不仅能扩大，还可自动缩小(官方内置的ThreadpoolExecutor不具备此功能，此概念是什么意思和目的，可以百度java ThreadpoolExecutor的KeepAliveTime参数的介绍)，
+
+2、非常节制的开启多线程，例如实例化一个最大100线程数目的pool，每隔2秒submit一个函数任务，而函数每次只需要1秒就能完成，实际上只需要调节增加到1个线程就可以，不需要慢慢增加到100个线程
+官方的线程池不够智能，会一直增加到最大线程数目，此线程池则不会。
+
+3、线程池任务的queue队列，修改为有界队列
+
+4、此线程池运行函数出错时候，直接显示线程错误，官方的线程池则不会显示错误，例如函数中写1/0,任然不现实错误。
+
+这是完整版实现 ThreadpoolExecutor ，支持future相关的功能
+"""
+import os
+import atexit
+import queue
+import sys
+import threading
+import time
+import weakref
+from nb_log import LoggerMixin, nb_print, LoggerLevelSetterMixin, LogManager
+from concurrent.futures import Executor, Future
+
+_shutdown = False
+_threads_queues = weakref.WeakKeyDictionary()
+
+
+def _python_exit():
+    global _shutdown
+    _shutdown = True
+    items = list(_threads_queues.items())
+    for t, q in items:
+        q.put(None)
+    for t, q in items:
+        t.join()
+
+
+atexit.register(_python_exit)
+
+
+class _WorkItem(LoggerMixin):
+    def __init__(self, future, fn, args, kwargs):
+        self.future = future
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self):
+        # noinspection PyBroadException
+        if not self.future.set_running_or_notify_cancel():
+            return
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except BaseException as exc:
+            self.logger.exception(f'函数 {self.fn.__name__} 中发生错误，错误原因是 {type(exc)} {exc} ')
+            self.future.set_exception(exc)
+            # Break a reference cycle with the exception 'exc'
+            self = None
+        else:
+            self.future.set_result(result)
+
+    def __str__(self):
+        return f'{(self.fn.__name__, self.args, self.kwargs)}'
+
+
+def set_thread_pool_executor_shrinkable(min_works, keep_alive_time):
+    ThreadPoolExecutorShrinkAble.MIN_WORKERS = min_works
+    ThreadPoolExecutorShrinkAble.KEEP_ALIVE_TIME = keep_alive_time
+
+
+class ThreadPoolExecutorShrinkAble(Executor, LoggerMixin, LoggerLevelSetterMixin):
+    # 为了和官方自带的THredpoolexecutor保持完全一致的鸭子类，参数设置成死的，不让用户传参了。建议用猴子补丁修改这里的两个常量。
+    # MIN_WORKERS = 5   # 最小值可以设置为0
+    # KEEP_ALIVE_TIME = 60
+
+    MIN_WORKERS = 1
+    KEEP_ALIVE_TIME = 10
+
+    def __init__(self, max_workers:int=None, thread_name_prefix=''):
+        """
+        最好需要兼容官方concurren.futures.ThreadPoolExecutor 和改版的BoundedThreadPoolExecutor，入参名字和个数保持了一致。
+        :param max_workers:
+        :param thread_name_prefix:
+        """
+        self._max_workers = max_workers or 4
+        self._thread_name_prefix = thread_name_prefix
+        self.work_queue = self._work_queue = queue.Queue(max_workers or 10)
+        # self._threads = set()
+        self._threads = weakref.WeakSet()
+        self._lock_compute_threads_free_count = threading.Lock()
+        self.threads_free_count = 0
+        self._shutdown = False
+        self._shutdown_lock = threading.Lock()
+
+    def _change_threads_free_count(self, change_num):
+        with self._lock_compute_threads_free_count:
+            self.threads_free_count += change_num
+
+    def submit(self, func, *args, **kwargs):
+        with self._shutdown_lock:
+            if self._shutdown:
+                raise RuntimeError('不能添加新的任务到线程池')
+            f = Future()
+            w = _WorkItem(f, func, args, kwargs)
+            self.work_queue.put(w)
+            self._adjust_thread_count()
+            return f
+
+    def _adjust_thread_count(self):
+        # print(self.threads_free_count, self.MIN_WORKERS, len(self._threads), self._max_workers)
+        if self.threads_free_count <= self.MIN_WORKERS and len(self._threads) < self._max_workers:
+            t = _CustomThread(self).set_log_level(self.logger.level)
+            t.daemon = True
+            t.start()
+            self._threads.add(t)
+            _threads_queues[t] = self._work_queue
+
+    def shutdown(self, wait=True):  # noqa
+        with self._shutdown_lock:
+            self._shutdown = True
+            self.work_queue.put(None)
+        if wait:
+            for t in self._threads:
+                t.join()
+
+
+# 两个名字都可以，兼容以前的老名字（中文意思是 自定义线程池），但新名字更能表达意思（可缩小线程池）。
+CustomThreadpoolExecutor = CustomThreadPoolExecutor = ThreadPoolExecutorShrinkAble
+
+
+# noinspection PyProtectedMember
+class _CustomThread(threading.Thread, LoggerMixin, LoggerLevelSetterMixin):
+    _lock_for_judge_threads_free_count = threading.Lock()
+
+    def __init__(self, executorx: ThreadPoolExecutorShrinkAble):
+        super().__init__()
+        self._executorx = executorx
+
+    def _remove_thread(self, stop_resson=''):
+        # noinspection PyUnresolvedReferences
+        self.logger.debug(f'停止线程 {self._ident}, 触发条件是 {stop_resson} ')
+        self._executorx._change_threads_free_count(-1)
+        self._executorx._threads.remove(self)
+        _threads_queues.pop(self)
+
+    # noinspection PyProtectedMember
+    def run(self):
+        # noinspection PyUnresolvedReferences
+        self.logger.debug(f'新启动线程 {self._ident} ')
+        self._executorx._change_threads_free_count(1)
+        while True:
+            try:
+                work_item = self._executorx.work_queue.get(block=True, timeout=self._executorx.KEEP_ALIVE_TIME)
+            except queue.Empty:
+                # continue
+                # self._remove_thread()
+                with self._lock_for_judge_threads_free_count:
+                    if self._executorx.threads_free_count > self._executorx.MIN_WORKERS:
+                        self._remove_thread(
+                            f'当前线程超过 {self._executorx.KEEP_ALIVE_TIME} 秒没有任务，线程池中不在工作状态中的线程数量是 '
+                            f'{self._executorx.threads_free_count}，超过了指定的最小核心数量 {self._executorx.MIN_WORKERS}')
+                        break  # 退出while 1，即是结束。这里才是决定线程结束销毁，_remove_thread只是个名字而已，不是由那个来销毁线程。
+                    else:
+                        continue
+
+            if work_item is not None:
+                self._executorx._change_threads_free_count(-1)
+                work_item.run()
+                del work_item
+                self._executorx._change_threads_free_count(1)
+                continue
+            if _shutdown or self._executorx._shutdown:
+                self._executorx.work_queue.put(None)
+                break
+
+
+process_name_set = set()
+logger_show_current_threads_num = LogManager('show_current_threads_num').get_logger_and_add_handlers(
+    formatter_template=5, log_filename='show_current_threads_num.log', do_not_use_color_handler=False)
+
+
+def show_current_threads_num(sleep_time=600, process_name='', block=False, daemon=True):
+    process_name = sys.argv[0] if process_name == '' else process_name
+
+    def _show_current_threads_num():
+        while True:
+            # logger_show_current_threads_num.info(f'{process_name} 进程 的 并发数量是 -->  {threading.active_count()}')
+            # nb_print(f'  {process_name} {os.getpid()} 进程 的 线程数量是 -->  {threading.active_count()}')
+            logger_show_current_threads_num.info(
+                f'  {process_name} {os.getpid()} 进程 的 线程数量是 -->  {threading.active_count()}')
+            time.sleep(sleep_time)
+
+    if process_name not in process_name_set:
+        if block:
+            _show_current_threads_num()
+        else:
+            t = threading.Thread(target=_show_current_threads_num, daemon=daemon)
+            t.start()
+        process_name_set.add(process_name)
+
+
+def get_current_threads_num():
+    return threading.active_count()
+
+
+if __name__ == '__main__':
+    from concurrent.futures import ThreadPoolExecutor
+
+    show_current_threads_num(sleep_time=5)
+
+
+    def f1(a):
+        time.sleep(2)  # 可修改这个数字测试多线程数量调节功能。
+        nb_print(f'{a} 。。。。。。。')
+        return a * 10
+        # raise Exception('抛个错误测试')  # 官方的不会显示函数出错你，你还以为你写的代码没毛病呢。
+
+
+    pool = ThreadPoolExecutorShrinkAble(200)
+    # pool = ThreadPoolExecutor(200)  # 测试对比官方自带
+
+    for i in range(30):
+        # time.sleep(0.5)  # 这里的间隔时间模拟，当任务来临不密集，只需要少量线程就能搞定f1了，因为f1的消耗时间短，
+        # 不需要开那么多线程，CustomThreadPoolExecutor比ThreadPoolExecutor 优势之一。
+        futurex = pool.submit(f1, i)
+        # print(futurex.result())
+
+    # 1/下面测试阻塞主线程退出的情况。注释掉可以测主线程退出的情况。
+    # 2/此代码可以证明，在一段时间后，连续长时间没任务，官方线程池的线程数目还是保持在最大数量了。而此线程池会自动缩小，实现了java线程池的keppalivetime功能。
+    time.sleep(1000000)
+
+```
+
+**code file end: threadpool_executor_shrink_able/sharp_threadpoolexecutor.py**
+
+---
+
+
+### code file start: threadpool_executor_shrink_able/sharp_threadpoolexecutor0.py 
+
+```python
+"""
+史上最强的python线程池。
+
+最智能的可自动实时调节线程数量的线程池。此线程池和官方concurrent.futures的线程池 是鸭子类关系，所以可以一键替换类名 或者 import as来替换类名。
+对比官方线程池，有4个创新功能或改进。
+
+1、主要是不仅能扩大，还可自动缩小(官方内置的 ThreadpoolExecutor 不具备此功能，此概念是什么意思和目的，可以百度java ThreadpoolExecutor的KeepAliveTime参数的介绍)，
+
+2、非常节制的开启多线程，例如实例化一个最大100线程数目的pool，每隔2秒submit一个函数任务，而函数每次只需要1秒就能完成，实际上只需要调节增加到1个线程就可以，不需要慢慢增加到100个线程
+官方的线程池不够智能，会一直增加到最大线程数目，此线程池则不会。
+
+3、线程池任务的queue队列，修改为有界队列
+
+4、此线程池运行函数出错时候，直接显示线程错误，官方的线程池则不会显示错误，例如函数中写1/0,任然不现实错误。
+
+这是非完整版 ThreadpoolExecutor ，因为不支持map方法以及future相关的功能，简单地submit可以
+"""
+import os
+import atexit
+import queue
+import sys
+import threading
+import time
+import weakref
+
+from nb_log import LoggerMixin, nb_print, LoggerLevelSetterMixin, LogManager
+
+_shutdown = False
+_threads_queues = weakref.WeakKeyDictionary()
+
+
+def _python_exit():
+    global _shutdown
+    _shutdown = True
+    items = list(_threads_queues.items())
+    for t, q in items:
+        q.put(None)
+    for t, q in items:
+        t.join()
+
+
+atexit.register(_python_exit)
+
+
+class _WorkItem(LoggerMixin):
+    def __init__(self, fn, args, kwargs):
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self):
+        # noinspection PyBroadException
+        try:
+            self.fn(*self.args, **self.kwargs)
+        except BaseException as exc:
+            self.logger.exception(f'函数 {self.fn.__name__} 中发生错误，错误原因是 {type(exc)} {exc} ')
+
+    def __str__(self):
+        return f'{(self.fn.__name__, self.args, self.kwargs)}'
+
+
+class ThreadPoolExecutorShrinkAble(LoggerMixin, LoggerLevelSetterMixin):
+    # 为了和官方自带的THredpoolexecutor保持完全一致的鸭子类，参数设置成死的，不然用户传参了。
+    MIN_WORKERS = 5
+    KEEP_ALIVE_TIME = 60
+
+    def __init__(self, max_workers=None, thread_name_prefix=''):
+        """
+        最好需要兼容官方concurren.futures.ThreadPoolExecutor 和改版的BoundedThreadPoolExecutor，入参名字和个数保持了一致。
+        :param max_workers:
+        :param thread_name_prefix:
+        """
+        self._max_workers = max_workers or 4
+        self._thread_name_prefix = thread_name_prefix
+        self.work_queue = queue.Queue(max_workers)
+        # self._threads = set()
+        self._threads = weakref.WeakSet()
+        self._lock_compute_threads_free_count = threading.Lock()
+        self.threads_free_count = 0
+        self._shutdown = False
+        self._shutdown_lock = threading.Lock()
+
+    def _change_threads_free_count(self, change_num):
+        with self._lock_compute_threads_free_count:
+            self.threads_free_count += change_num
+
+    def submit(self, func, *args, **kwargs):
+        with self._shutdown_lock:
+            if self._shutdown:
+                raise RuntimeError('不能添加新的任务到线程池')
+        self._adjust_thread_count()
+
+        self.work_queue.put(_WorkItem(func, args, kwargs))
+
+    def _adjust_thread_count(self):
+        # if len(self._threads) < self._threads_num:
+        # self.logger.debug(
+        #     (self.threads_free_count, len(self._threads), len(_threads_queues), get_current_threads_num()))
+
+        if self.threads_free_count < self.MIN_WORKERS and len(self._threads) < self._max_workers:
+            # t = threading.Thread(target=_work,
+            #                      args=(self._work_queue,self))
+
+            t = _CustomThread(self).set_log_level(self.logger.level)
+            t.setDaemon(True)
+            t.start()
+            self._threads.add(t)
+            _threads_queues[t] = self.work_queue
+
+    def shutdown(self, wait=True):
+        with self._shutdown_lock:
+            self._shutdown = True
+            self.work_queue.put(None)
+        if wait:
+            for t in self._threads:
+                t.join()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.shutdown(wait=True)
+        return False
+
+
+# 两个名字都可以，兼容以前的老名字（中文意思是 自定义线程池），但新名字更能表达意思（可缩小线程池）。
+CustomThreadpoolExecutor = ThreadPoolExecutorShrinkAble
+
+
+# noinspection PyProtectedMember
+class _CustomThread(threading.Thread, LoggerMixin, LoggerLevelSetterMixin):
+    _lock_for_judge_threads_free_count = threading.Lock()
+
+    def __init__(self, executorx: ThreadPoolExecutorShrinkAble):
+        super().__init__()
+        self._executorx = executorx
+
+
+    def _remove_thread(self, stop_resson=''):
+        # noinspection PyUnresolvedReferences
+        self.logger.debug(f'停止线程 {self._ident}, 触发条件是 {stop_resson} ')
+        self._executorx._change_threads_free_count(-1)
+        self._executorx._threads.remove(self)
+        _threads_queues.pop(self)
+
+    # noinspection PyProtectedMember
+    def run(self):
+        # noinspection PyUnresolvedReferences
+        self.logger.debug(f'新启动线程 {self._ident} ')
+        self._executorx._change_threads_free_count(1)
+        while True:
+            try:
+                work_item = self._executorx.work_queue.get(block=True, timeout=self._executorx.KEEP_ALIVE_TIME)
+            except queue.Empty:
+                # continue
+                # self._remove_thread()
+                with self._lock_for_judge_threads_free_count:
+                    if self._executorx.threads_free_count > self._executorx.MIN_WORKERS:
+                        self._remove_thread(
+                            f'当前线程超过 {self._executorx.KEEP_ALIVE_TIME} 秒没有任务，线程池中不在工作状态中的线程数量是 '
+                            f'{self._executorx.threads_free_count}，超过了指定的数量 {self._executorx.MIN_WORKERS}')
+                        break  # 退出while 1，即是结束。这里才是决定线程结束销毁，_remove_thread只是个名字而已，不是由那个来销毁线程。
+                    else:
+                        continue
+
+            # nb_print(work_item)
+            if work_item is not None:
+                self._executorx._change_threads_free_count(-1)
+                work_item.run()
+                del work_item
+                self._executorx._change_threads_free_count(1)
+                continue
+            if _shutdown or self._executorx._shutdown:
+                self._executorx.work_queue.put(None)
+                break
+
+
+process_name_set = set()
+logger_show_current_threads_num = LogManager('show_current_threads_num').get_logger_and_add_handlers(
+    formatter_template=5, log_filename='show_current_threads_num.log', do_not_use_color_handler=False)
+
+
+def show_current_threads_num(sleep_time=600, process_name='', block=False, daemon=True):
+    process_name = sys.argv[0] if process_name == '' else process_name
+
+    def _show_current_threads_num():
+        while True:
+            # logger_show_current_threads_num.info(f'{process_name} 进程 的 并发数量是 -->  {threading.active_count()}')
+            # nb_print(f'  {process_name} {os.getpid()} 进程 的 线程数量是 -->  {threading.active_count()}')
+            logger_show_current_threads_num.info(
+                f'  {process_name} {os.getpid()} 进程 的 线程数量是 -->  {threading.active_count()}')
+            time.sleep(sleep_time)
+
+    if process_name not in process_name_set:
+        if block:
+            _show_current_threads_num()
+        else:
+            t = threading.Thread(target=_show_current_threads_num, daemon=daemon)
+            t.start()
+        process_name_set.add(process_name)
+
+
+def get_current_threads_num():
+    return threading.active_count()
+
+
+if __name__ == '__main__':
+    from concurrent.futures import ThreadPoolExecutor
+
+    show_current_threads_num(sleep_time=5)
+
+
+    def f1(a):
+        time.sleep(0.2)  # 可修改这个数字测试多线程数量调节功能。
+        nb_print(f'{a} 。。。。。。。')
+        # raise Exception('抛个错误测试')  # 官方的不会显示函数出错你，你还以为你写的代码没毛病呢。
+
+
+    # pool = ThreadPoolExecutorShrinkAble(200)
+    pool = ThreadPoolExecutor(200)  # 测试对比官方自带
+
+    for i in range(300):
+        time.sleep(10)  # 这里的间隔时间模拟，当任务来临不密集，只需要少量线程就能搞定f1了，因为f1的消耗时间短，
+        # 不需要开那么多线程，CustomThreadPoolExecutor比ThreadPoolExecutor 优势之一。
+        pool.submit(f1, str(i))
+
+    # 1/下面测试阻塞主线程退出的情况。注释掉可以测主线程退出的情况。
+    # 2/此代码可以证明，在一段时间后，连续长时间没任务，官方线程池的线程数目还是保持在最大数量了。而此线程池会自动缩小，实现了java线程池的keppalivetime功能。
+    time.sleep(1000000)
+
+```
+
+**code file end: threadpool_executor_shrink_able/sharp_threadpoolexecutor0.py**
+
+---
+
+
+### code file start: threadpool_executor_shrink_able/__init__.py 
+
+```python
+from .sharp_threadpoolexecutor import CustomThreadpoolExecutor,ThreadPoolExecutorShrinkAble,show_current_threads_num
+from .bounded_threadpoolexcutor import BoundedThreadPoolExecutor
+from .monkey_builtin_threadpoolexecutor import patch_builtin_concurrent_futeres_threadpoolexecutor
+
+```
+
+**code file end: threadpool_executor_shrink_able/__init__.py**
+
+---
+

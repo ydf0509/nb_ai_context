@@ -1,0 +1,2499 @@
+﻿﻿# markdown content namespace: nb_aiopool project summary 
+
+
+
+- `nb_aiopool` is a powerful aiopool library for Python.
+
+- `NbAioPool(...)` is the main class to create a aiopool object.
+
+- `@aio_task(...)` is the main decorator to create a aio task.
+
+
+## 📋 Core Source Files Metadata (Entry Points)
+
+
+以下是项目最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_aiopool most core source code files as follows: 
+- `nb_aiopool/contrib/nb_aio_task.py`
+- `nb_aiopool/nb_aiopool.py`
+- `nb_aiopool/__init__.py`
+
+
+### 📄 Python File Metadata: `nb_aiopool/contrib/nb_aio_task.py`
+
+#### 📝 Module Docstring
+
+```
+nb_aio_task - 基于 Redis + NbAioPool 的简易分布式异步任务队列
+
+特点：
+- 简单：无需复杂配置，装饰器即用
+- 高效：利用 NbAioPool 的背压机制和并发控制
+- 分布式：基于 Redis 实现任务队列
+```
+
+#### 📦 Imports
+
+- `import asyncio`
+- `import json`
+- `import pickle`
+- `import traceback`
+- `from typing import Callable`
+- `from typing import Any`
+- `from typing import List`
+- `from typing import Optional`
+- `from functools import wraps`
+- `from nb_aiopool.nb_aiopool import NbAioPool`
+- `from nb_log import get_logger`
+- `import redis.asyncio as aioredis`
+- `import aioredis`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AioTask`
+*Line: 35*
+
+**Docstring:**
+```
+异步任务包装器
+```
+
+**Public Methods (6):**
+- `async def submit(self, *args, **kwargs) -> None`
+  - *提交任务到 Redis 队列*
+- `async def consume(self, timeout: int = 5) -> None`
+  - *启动消费者，持续从 Redis 队列消费任务*
+- `async def stop(self) -> None`
+  - *停止消费者*
+- `async def get_queue_size(self) -> int`
+  - *获取队列中待处理任务数量*
+- `async def clear_queue(self) -> None`
+  - *清空队列*
+- `async def close(self) -> None`
+  - *关闭 Redis 连接*
+
+#### 🔧 Public Functions (8)
+
+- `def aio_task(queue_name: str, max_concurrency: int = 50, redis_url: str = 'redis://localhost:6379/0', max_queue_size: int = 1000, use_pickle: bool = True)`
+  - *Line: 200*
+  - *异步任务装饰器*
+
+- `async def batch_consume(tasks: List[AioTask], timeout: int = 5) -> None`
+  - *Line: 247*
+  - *批量启动多个任务的消费者*
+
+- `def decorator(func: Callable) -> AioTask`
+  - *Line: 231*
+
+- `async def add_task(x, y)` `aio_task(queue_name='test_queue1', max_concurrency=10)`
+  - *Line: 278*
+  - *测试任务：加法*
+
+- `async def multiply_task(a, b)` `aio_task(queue_name='test_queue2', max_concurrency=5)`
+  - *Line: 286*
+  - *测试任务：乘法*
+
+- `async def producer()`
+  - *Line: 293*
+  - *生产者：提交任务*
+
+- `async def consumer()`
+  - *Line: 311*
+  - *消费者：处理任务*
+
+- `async def main()`
+  - *Line: 323*
+  - *主函数*
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_aiopool/nb_aiopool.py`
+
+#### 📦 Imports
+
+- `import concurrent.futures`
+- `import asyncio`
+- `from typing import Any`
+- `from typing import Coroutine`
+- `from typing import List`
+- `from typing import TypeVar`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NbAioPool`
+*Line: 9*
+
+**Docstring:**
+```
+NbAioPool 是一个经典的基于 `asyncio.Queue`有界队列 的并发池。
+它通过固定数量的后台工作协程（worker）来消费队列中的任务，实现稳定可靠的并发控制。
+```
+
+**Public Methods (6):**
+- `async def submit(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None) -> asyncio.Future`
+  - *提交任务，返回 Future*
+- `async def run(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None) -> T`
+  - *await pool.run 相当于 await await pool.submit*
+- `def sync_submit(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None, loop: asyncio.AbstractEventLoop = None) -> concurrent.futures.Future`
+  - *同步提交任务，返回 concurrent.futures.Future*
+- `async def batch_submit(self, coros: List[Coroutine[Any, Any, T]], block: bool = True) -> List[asyncio.Future]`
+  - *批量提交任务，返回 Future 列表*
+- `async def batch_run(self, coros: List[Coroutine[Any, Any, T]], block: bool = True) -> List[T]`
+  - *批量提交任务，返回结果列表*
+- `async def shutdown(self, wait: bool = True)`
+  - *优雅关闭池*
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_aiopool/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_aiopool import NbAioPool`
+
+
+---
+
+
+# markdown content namespace: nb_aiopool Project Root Dir Some Files 
+
+
+## File Tree
+
+
+```
+
+├── README.md
+└── pyproject.toml
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: README.md** --- 
+
+# nb_aiopool - asyncio 协程并发池
+
+- `nb_aiopool` 是一个轻量级、高性能的 `asyncio` 协程并发池，专为异步编程场景设计。  
+- `nb_aiopool` 附赠一套分布式asyncio异步任务队列框架 `nb_aio_task` ，用来演示如何使用 `nb_aiopool` 实现`asyncio`生态的分布式异步任务队列框架，
+
+**核心价值：**
+- ✅ **背压控制**：防止瞬间创建海量 Task，避免内存和 CPU 失控
+- ✅ **简化代码**：无需在业务函数中侵入 `asyncio.Semaphore`
+- ✅ **生产级稳定**：经过压测验证，100万并发任务（大字符串入参）内存稳定在 43MB
+
+**为什么不用 `asyncio.Semaphore`？**  
+`asyncio.Semaphore` 只能控制并发数量，但无法阻止你快速创建100万个 `asyncio.Task`！
+
+当每个Task携带大字符串参数（如 `f"{'task' * 100}_{i}"`）和返回值时：
+- ❌ `asyncio.Semaphore`：100万Task × 1.6KB = **10GB+内存** → 💥 电脑死机
+- ✅ `NbAioPool`：背压保护，内存稳定在 **43MB** → ✨ 丝滑流畅
+
+**为什么强调背压机制？：**
+假设你使用 `asyncio.create_task(process_message(message))` 消费 `redis/rabbitmq/kafka` 消息队列，如果消息队列有1亿消息，如果没有背压机制，会迅速掏空消息队列里面的1亿消息到程序内存中，严重的内存泄漏迅速宕机和负载不均衡。
+
+
+## 目录
+
+- [1. 安装](#1-安装)
+- [2. 快速开始](#2-快速开始)
+- [3. NbAioPool 是伪需求吗？](#3-nbaiopool-是伪需求吗)
+- [4. 核心概念：pool.submit vs pool.run](#4-核心概念poolsubmit-vs-poolrun)
+  - [4.1 submit - 提交任务返回Future](#41-poolsubmitcoro---提交任务返回-future)
+  - [4.2 run - 提交并等待结果](#42-poolruncoro---提交任务并等待结果)
+  - [4.3 batch_submit - 批量提交 🆕](#43-poolbatch_submitcoros---批量提交任务-)
+  - [4.4 batch_run - 批量执行 🆕](#44-poolbatch_runcoros---批量提交并等待结果-)
+  - [4.5 四种方法对比](#45-四种方法对比总结)
+- [5. 使用场景](#5-使用场景)
+  - [5.1 局部变量用法（推荐）](#51-局部变量用法推荐)
+  - [5.2 全局变量用法](#52-全局变量用法)
+- [6. 稳定性对比：吊打 asyncio.Semaphore](#6-稳定性对比吊打-asynciosemaphore)
+- [7. 与其他方案对比](#7-与其他方案对比)
+- [8. API 参考](#8-api-参考)
+- [9. 最佳实践](#9-最佳实践)
+- [10. 常见问题](#10-常见问题)
+- [11. nb_aiopool 和 async-pool-executor 区别](#11-nb_aiopool-和-async-pool-executor-区别)
+- [12. 相关链接](#12-相关链接)
+- [13. nb_aio_task - 分布式异步任务队列 🎁](#13-nb_aiopool-贡献赠送一套分布式异步函数执行框架-nb_aio_task)
+- [14. 许可证](#14-许可证)
+
+---
+
+## 1. 安装
+
+```bash
+pip install nb_aiopool
+```
+
+**环境要求：** Python 3.7+
+
+---
+
+## 2. 快速开始
+
+```python
+import asyncio
+from nb_aiopool import NbAioPool
+
+async def my_task(x):
+    """你的业务逻辑"""
+    await asyncio.sleep(0.1)
+    return x * 2
+
+async def main():
+    # 创建并发池：最大并发数 10，队列容量 1000
+    async with NbAioPool(max_concurrency=10, max_queue_size=1000) as pool:
+        # 方式1: 提交任务，返回 future（不阻塞）
+        future = await pool.submit(my_task(5))
+        result = await future  # 需要时再等待结果
+        print(f"结果: {result}")
+        
+        # 方式2: 提交并立即等待结果（阻塞当前协程）
+        result = await pool.run(my_task(10))
+        print(f"结果: {result}")
+        
+        # 方式3: 批量提交
+        futures = [await pool.submit(my_task(i)) for i in range(100)]
+        results = await asyncio.gather(*futures)
+        print(f"批量结果: {results}")
+
+asyncio.run(main())
+```
+
+---
+
+## 3. NbAioPool 是伪需求吗？
+
+### 3.1🚨 问题：为什么 asyncio 也需要并发池？
+
+很多人认为："协程这么轻量，为什么还需要并发池？直接用 `asyncio.Semaphore` 不就行了？"
+
+**错！大错特错！**
+
+### 3.2 ❌ 反面教材：只用 `asyncio.Semaphore`
+
+```python
+import asyncio
+
+async def task_with_semaphore(big_data, task_id, semaphore):
+    async with semaphore:  # 只控制并发数量
+        await asyncio.sleep(0.1)
+        # 返回大字符串，加剧内存占用
+        return f"result_{'x' * 200}_{task_id}"
+
+async def bad_example():
+    semaphore = asyncio.Semaphore(1000)  # 限制1000并发
+    
+    # 🔥 灾难：瞬间创建1000万个 Task！
+    # 每个Task携带大字符串参数，内存瞬间爆炸
+    tasks = [
+        asyncio.create_task(
+            task_with_semaphore(f"{'task' * 100}_{i}", i, semaphore)
+        ) 
+        for i in range(10000000)
+    ]
+    
+    # 此时你的电脑：
+    # - 内存暴涨到 10GB+（每个Task都有大字符串！）
+    # - CPU 100%
+    # - 鼠标键盘卡死
+    # - 系统崩溃重启
+    
+    await asyncio.gather(*tasks)
+```
+
+**问题分析：**
+
+| 问题 | `asyncio.Semaphore` | `NbAioPool` |
+|------|---------------------|-------------|
+| 控制并发数量 | ✅ 支持 | ✅ 支持 |
+| 背压机制 | ❌ 无法阻止快速创建Task | ✅ 队列满时自动阻塞 |
+| 内存稳定性 | ❌ 100万Task占用10GB+ | ✅ 100万任务仅43MB |
+| CPU占用 | ❌ 100%持续飙升 | ✅ 稳定在1% |
+| 代码侵入性 | ❌ 需要改业务函数 | ✅ 无需改业务逻辑 |
+
+### 3.3 ✅ 正确做法：使用 `NbAioPool`
+
+```python
+import asyncio
+from nb_aiopool import NbAioPool
+
+async def clean_task(big_data, task_id):
+    """干净的业务逻辑，无需关心并发控制"""
+    await asyncio.sleep(0.1)
+    # 同样处理大字符串，但内存稳定
+    return f"result_{'x' * 200}_{task_id}"
+
+async def good_example():
+    async with NbAioPool(max_concurrency=1000, max_queue_size=10000) as pool:
+        # ✅ 背压机制：队列满时自动阻塞，不会瞬间创建100万Task
+        # 即使每个任务携带大字符串，内存依然稳定
+        for i in range(1000000):
+            await pool.submit(clean_task(f"{'task' * 100}_{i}", i))
+        
+        # 电脑状态：
+        # - 内存稳定在 43MB（有背压保护！）
+        # - CPU 1%
+        # - 一切丝滑流畅
+
+asyncio.run(good_example())
+```
+
+### 3.4 nb_aiopool 吊打 分批处理并发协程 (预判了你的质疑)
+
+肯定有人会质疑，没人那么愚蠢按照 `bad_example` 函数 中快速创建 1000万tasks，聪明人都会分批并发
+
+- 有人会说只有笨瓜才会这样写代码，快速创建1000万个tasks
+```python
+async def bad_example():
+    semaphore = asyncio.Semaphore(1000)  # 限制1000并发
+    
+    # 🔥 灾难：瞬间创建1000万个 Task！
+    # 每个Task携带大字符串参数，内存瞬间爆炸
+    tasks = [
+        asyncio.create_task(
+            task_with_semaphore(f"{'task' * 100}_{i}", i, semaphore)
+        ) 
+        for i in range(10000000)
+    ]
+    await asyncio.gather(*tasks)
+```
+
+- 你会说你会按下面分批
+```python
+async def safe_batch_processing():
+    semaphore = asyncio.Semaphore(1000)  # 限制并发数量
+    batch_size = 1000  # 每批处理1000个任务
+    total_tasks = 10000000  # 总共1000万个任务
+    
+    for batch_start in range(0, total_tasks, batch_size):
+        batch_end = min(batch_start + batch_size, total_tasks)
+        print(f"处理批次: {batch_start} 到 {batch_end-1}")
+        
+        # 仅创建当前批次的任务
+        batch_tasks = [
+            asyncio.create_task(
+                task_with_semaphore(f"{'task' * 100}_{i}", i, semaphore)
+            )
+            for i in range(batch_start, batch_end)
+        ]
+        
+        # 等待当前批次完成
+        batch_results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+
+        # 可选：批次间短暂休眠，让系统资源回收
+        await asyncio.sleep(0.01)
+
+```
+
+**分批的缺点：**
+
+- **代码复杂度高**：需要手动管理批次循环、边界计算和批次间协调，代码冗长且容易出错。
+
+- **动态负载不均衡**：每批固定数量的任务，无法根据系统实时负载动态调整，导致资源浪费或处理能力不足
+
+
+
+**举例** 例如1000个任务作为一批次，如果999个任务0.1秒完成，但有1个任务卡了300秒，在绝大部分99%的时间里，服务的asyncio协程并发降低到1了，严重浪费 asyncio 并发高的好处。
+
+**分批处理和nb_aiopool示意图**
+分批处理：
+[■■■■■■■■■■] → 等待300秒 → [■■■■■■■■■■] → ...
+      ↑
+    1个慢任务阻塞全部
+
+NbAioPool：
+[■□□□□□□□□□] → [■■■■■□□□□□] → 持续高效处理
+  快任务完成后立即释放槽位
+
+**小结：**相比之下，`NbAioPool` 提供了自动化的背压控制和持续的任务流处理，无需手动管理批次，代码更简洁且性能更稳定。
+
+
+### 3.5 如果你说不分批执行，使用 生产者->asyncio.Queue->消费者 模式来实现 (再次预判了你的质疑)
+
+那你说的刚好就是 `nb_aiopool` 了， `nb_aiopool` 就是 `生产者->asyncio.Queue->消费者` 实现的封装。 
+
+`nb_aiopool` 就是减少了需要频繁临时手写 `定义queue + produce函数 + consume函数`
+
+---
+
+## 4. 核心概念：pool.submit vs pool.run
+
+### 4.1 `pool.submit(coro)` - 提交任务，返回 Future
+
+**特点：**
+- ✅ 非阻塞：立即返回 `asyncio.Future` 对象
+- ✅ 适合批量提交：可以快速提交大量任务
+- ⚠️ 需要手动等待：稍后通过 `await future` 获取结果
+
+**使用场景：** 需要并发执行多个任务，最后统一收集结果
+
+```python
+async def example_submit():
+    async with NbAioPool(max_concurrency=10) as pool:
+        # 批量提交100个任务
+        futures = [await pool.submit(my_task(i)) for i in range(100)]
+        
+        # 可以先做其他事情
+        print("任务已提交，现在可以做别的事")
+        
+        # 需要结果时再等待
+    results = await asyncio.gather(*futures)
+        print(f"结果: {results}")
+```
+
+### 4.2 `pool.run(coro)` - 提交任务并等待结果
+
+**特点：**
+- ✅ 一步到位：直接返回任务执行结果
+- ✅ 代码简洁：相当于 `await (await pool.submit(coro))`
+- ⚠️ 阻塞当前协程：会等待任务完成
+
+**使用场景：** 需要立即使用任务结果
+
+```python
+async def example_run():
+    async with NbAioPool(max_concurrency=10) as pool:
+        # 逐个执行并获取结果
+        for i in range(100):
+            result = await pool.run(my_task(i))
+            print(f"第 {i} 个任务结果: {result}")
+```
+
+### 4.3 `pool.batch_submit(coros)` - 批量提交任务 🆕
+
+**特点：**
+- ✅ 批量操作：一次性提交多个协程，无需循环
+- ✅ 代码简洁：比列表推导式更清晰
+- ✅ 返回 Future 列表：可以灵活控制等待时机
+
+**使用场景：** 需要批量提交大量任务，后续统一收集结果
+
+```python
+async def example_batch_submit():
+    async with NbAioPool(max_concurrency=10) as pool:
+        # 创建100个协程对象
+        coros = [my_task(i) for i in range(100)]
+        
+        # 批量提交，返回 future 列表
+        futures = await pool.batch_submit(coros)
+        
+        # 可以先做其他事情
+        print(f"已批量提交 {len(futures)} 个任务")
+        
+        # 统一等待所有任务完成
+        results = await asyncio.gather(*futures)
+        print(f"结果: {results}")
+```
+
+**对比传统方式：**
+
+```python
+# 传统方式：列表推导式 + submit
+futures = [await pool.submit(my_task(i)) for i in range(100)]
+
+# 批量方式：更简洁 ✅
+coros = [my_task(i) for i in range(100)]
+futures = await pool.batch_submit(coros)
+```
+
+### 4.4 `pool.batch_run(coros)` - 批量提交并等待结果 🆕
+
+**特点：**
+- ✅ 一步到位：批量提交并直接返回所有结果
+- ✅ 极简代码：相当于 `await pool.batch_submit(coros)` + `await asyncio.gather(*futures)`
+- ⚠️ 阻塞当前协程：会等待所有任务完成
+
+**使用场景：** 批量执行任务并立即需要所有结果
+
+```python
+async def example_batch_run():
+    async with NbAioPool(max_concurrency=10) as pool:
+        # 创建100个协程对象
+        coros = [my_task(i) for i in range(100)]
+        
+        # 批量提交并等待所有结果（一步到位）
+        results = await pool.batch_run(coros)
+        print(f"结果: {results}")
+        print(f"共完成 {len(results)} 个任务")
+```
+
+**对比传统方式：**
+
+```python
+# 传统方式：3行代码
+coros = [my_task(i) for i in range(100)]
+futures = await pool.batch_submit(coros)
+results = await asyncio.gather(*futures)
+
+# 批量方式：2行代码 ✅
+coros = [my_task(i) for i in range(100)]
+results = await pool.batch_run(coros)
+```
+
+### 4.5 四种方法对比总结
+
+| 方法 | 提交方式 | 返回值 | 是否等待 | 适用场景 |
+|------|----------|--------|----------|----------|
+| `submit(coro)` | 单个 | Future | ❌ | 逐个提交，灵活控制 |
+| `run(coro)` | 单个 | 结果 | ✅ | 逐个执行，立即使用结果 |
+| `batch_submit(coros)` | 批量 | Future列表 | ❌ | 批量提交，统一收集 |
+| `batch_run(coros)` | 批量 | 结果列表 | ✅ | 批量执行，立即获取结果 |
+
+**代码示例对比：**
+
+```python
+# 方式1: submit - 逐个提交，手动等待
+future1 = await pool.submit(my_task(1))
+future2 = await pool.submit(my_task(2))
+result1 = await future1
+result2 = await future2
+
+# 方式2: run - 逐个执行，立即获取结果
+result1 = await pool.run(my_task(1))
+result2 = await pool.run(my_task(2))
+
+# 方式3: batch_submit - 批量提交，手动等待
+coros = [my_task(1), my_task(2)]
+futures = await pool.batch_submit(coros)
+results = await asyncio.gather(*futures)
+
+# 方式4: batch_run - 批量执行，一步到位 ✅ 最简洁
+coros = [my_task(1), my_task(2)]
+results = await pool.batch_run(coros)
+```
+
+**选择建议：**
+- 少量任务，逐个执行 → 用 `run`
+- 少量任务，并发执行 → 用 `submit` + 手动 gather
+- 大量任务，需要灵活控制 → 用 `batch_submit` （我说的大量也不能是那种几百万个coro一次batch_submit，几百个次batch_submit还行，因为coros列表和futures列表太大，内存太大；如果真的是几百万个coro需要运行，那就使用for循环逐个submit提交，使用发后不管的模式，不gather futures的模式）
+- 大量任务，一步到位 → 用 `batch_run` ⭐ **最推荐**
+
+---
+
+## 5. 使用场景
+
+### 5.1 局部变量用法（推荐）
+
+适用于 `asyncio.run()` 启动的应用。
+
+#### 5.1.1 使用 `async with`（最佳实践）
+
+```python
+import asyncio
+from nb_aiopool import NbAioPool
+
+async def sample_task(x: int):
+    await asyncio.sleep(0.1)
+    print(x)
+    return x * 2
+
+async def main():
+    # 推荐：使用 async with，自动处理资源释放
+    async with NbAioPool(max_concurrency=10, max_queue_size=1000) as pool:
+        # 方式1: submit 逐个提交
+        futures = [await pool.submit(sample_task(i)) for i in range(100)]
+        results = await asyncio.gather(*futures)
+        print("方式1结果:", results)
+        
+        # 方式2: run 逐个执行
+        for i in range(10):
+            result = await pool.run(sample_task(i))
+            print(f"任务 {i} 结果: {result}")
+        
+        # 方式3: batch_submit 批量提交 🆕
+        coros = [sample_task(i) for i in range(100)]
+        futures = await pool.batch_submit(coros)
+        results = await asyncio.gather(*futures)
+        print("方式3结果:", results)
+        
+        # 方式4: batch_run 批量执行（最简洁）🆕 ⭐
+        coros = [sample_task(i) for i in range(100)]
+        results = await pool.batch_run(coros)
+        print("方式4结果:", results)
+    
+    # async with 退出时自动调用 pool.shutdown(wait=True)
+
+asyncio.run(main())
+```
+
+#### 5.1.2 手动管理生命周期（不推荐手动await pool.shutdown）
+
+```python
+async def main():
+    pool = NbAioPool(max_concurrency=10, max_queue_size=1000)
+    
+    # 提交任务
+    futures = [await pool.submit(sample_task(i)) for i in range(100)]
+    results = await asyncio.gather(*futures)
+    print("结果:", results)
+    
+    # ⚠️ 如果你不写await asyncio.gather(*futures)，必须手动调用 shutdown，否则任务会丢失！
+    await pool.shutdown(wait=True)
+
+asyncio.run(main())
+```
+
+### 5.2 全局变量用法
+
+适用于需要跨模块、跨函数共享 pool 的场景，这要求代码最最末尾的那一行必须是 `loop.run_forever()` 的应用。
+
+**完整示例：** 参考 `tests/t_global_nb_aiopool.py`
+
+```python
+import asyncio
+from nb_aiopool import NbAioPool
+
+# 全局 pool，可在多个模块、函数中共享
+aiopool = NbAioPool(max_concurrency=3, max_queue_size=1000)
+
+async def fun_level1(x):
+    """第一层业务逻辑"""
+    await asyncio.sleep(1)
+    print(f"Level1: {x}")
+    # 在任务内部可以继续提交子任务
+    await aiopool.submit(fun_level2(x*2, x*3))
+
+async def fun_level2(a, b):
+    """第二层业务逻辑"""
+    await asyncio.sleep(2)
+    print(f"Level2: {a}, {b}")
+
+async def main():
+    # 批量提交任务
+    for i in range(30):
+        await aiopool.submit(fun_level1(i))
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.create_task(main())
+    
+    # ⚠️ 关键：使用 全局变量pool 时必须加这行，否则任务会因为程序提前退出而丢失
+    loop.run_forever()
+```
+
+**注意事项：**
+
+1. **全局 pool 初始化：** 在模块顶层创建，确保所有函数可访问
+2. **程序需要长期运行：** 使用 `loop.run_forever()` 时，任务会持续执行
+
+---
+
+## 6. 稳定性对比：吊打 asyncio.Semaphore
+
+### 6.1 压测场景
+
+**任务：** 执行 100 万个简单的 `asyncio.sleep(5)` 任务，并发数 1000
+
+**完整代码：** 参考 `tests/t_press_web/nopool_test_sleep.py`
+
+### 6.2 方案1：只用 `asyncio.Semaphore`（灾难版）
+
+```python
+async def aio_task_use_semaphore(big_input_data, n, semaphore):
+    async with semaphore:
+        await asyncio.sleep(5)
+        print(n)
+        # 返回大字符串，进一步加剧内存占用
+        return f"result_{'x' * 200}_{n}_{big_input_data[:50]}"
+
+async def no_pool_main():
+    print("正在创建100万个任务...")
+    semaphore = asyncio.Semaphore(1000)
+    
+    # 🔥 灾难：瞬间创建100万个Task
+    # 每个Task都有大字符串入参和返回值，内存爆炸式增长！
+    tasks = [
+        asyncio.create_task(
+            aio_task_use_semaphore(f"{'task' * 100}_{i}", i, semaphore)
+        ) 
+        for i in range(1000000)
+    ]
+    
+    print("开始执行任务...")
+    await asyncio.gather(*tasks)
+    print("执行完成")
+
+asyncio.run(no_pool_main())
+```
+
+**资源占用（实测）：**
+
+| 时间 | 内存 | CPU | 状态 |
+|------|------|-----|------|
+| 0s | 50MB | 100% | 创建Task中 |
+| 10s | 3GB | 100% | 内存持续上涨 |
+| 30s | 10GB+ | 100% | 系统卡死 |
+| 45s | 💥 | 💥 | **电脑死机重启** |
+
+### 6.3 方案2：使用 `NbAioPool`（稳如老狗版）
+
+```python
+async def aio_task(big_input_data, n):
+    """干净的业务逻辑，无需 semaphore"""
+    await asyncio.sleep(5)
+    print(n)
+    # 同样返回大字符串，但有背压保护，内存依然稳定
+    return f"result_{'x' * 200}_{n}_{big_input_data[:50]}"
+
+async def pool_main():
+    async with NbAioPool(max_concurrency=1000, max_queue_size=10000) as pool:
+        for i in range(1000000):
+            # ✅ 有背压：队列满时自动阻塞，不会瞬间创建100万Task
+            # 即使每个任务都有大字符串入参和返回值，内存依然稳定！
+            await pool.submit(aio_task(f"{'task' * 100}_{i}", i))
+
+asyncio.run(pool_main())
+```
+
+**资源占用（实测）：**
+
+| 时间 | 内存 | CPU | 状态 |
+|------|------|-----|------|
+| 0s | 43MB | 1% | 稳定运行 |
+| 60s | 43MB | 1% | 稳定运行 |
+| 300s | 43MB | 1% | 稳定运行 |
+| 1小时+ | 43MB | 1% | **持续稳定** ✅ |
+
+### 6.4 对比总结
+
+```
+┌─────────────────────────────────────────────────────────┐
+│         asyncio.Semaphore          vs    NbAioPool      │
+├─────────────────────────────────────────────────────────┤
+│ 内存占用：    10GB+                vs       43MB        │
+│ CPU占用：     100%持续             vs       1%          │
+│ 稳定性：      30秒内死机           vs       持续稳定    │
+│ 背压机制：    ❌ 无                vs       ✅ 有       │
+│ 代码侵入：    ❌ 需改业务函数      vs       ✅ 无侵入  │
+└─────────────────────────────────────────────────────────┘
+```
+
+**结论：**
+
+> **为什么内存差距这么大？**  
+> 因为 `asyncio.Semaphore` 瞬间创建100万个Task对象，每个Task都保存着：
+> - 大字符串入参：`f"{'task' * 100}_{i}"` ≈ 400 字节
+> - 大字符串返回值：`f"result_{'x' * 200}_{task_id}"` ≈ 200 字节  
+> - Task对象本身的开销：≈ 1KB
+> 
+> **100万个Task × 1.6KB ≈ 1.6GB**，再加上Python对象管理开销，轻松超过10GB！
+>
+> 而 `NbAioPool` 有背压机制，同时只保持 `max_concurrency + max_queue_size` 个任务在内存中，
+> 即使100万任务，内存也稳定在 43MB！
+>
+> **试想一下：** 如果你的异步函数入参和返回值是更大的对象（如几KB的字典、图片数据），  
+> 并且需要创建 1000 万个 tasks，不使用 `NbAioPool`，  
+> 你需要购买阿里云 **10TB 内存** 的服务器才能顶得住！
+
+
+
+
+---
+
+## 7. 与其他方案对比
+
+### 7.1 vs `asyncio.Semaphore`
+
+| 特性 | `asyncio.Semaphore` | `NbAioPool` |
+|------|---------------------|-------------|
+| 并发控制 | ✅ | ✅ |
+| 背压机制 | ❌ | ✅ |
+| 内存稳定 | ❌ | ✅ |
+| 代码侵入 | ❌ 需改业务函数 | ✅ 无侵入 |
+| 使用复杂度 | 中 | 低 |
+
+### 7.2 vs `asyncio.TaskGroup` (Python 3.11+)
+
+| 特性 | `asyncio.TaskGroup` | `NbAioPool` |
+|------|---------------------|-------------|
+| Python 版本要求 | 3.11+ | 3.7+ |
+| 并发数控制 | ❌ | ✅ |
+| 背压机制 | ❌ | ✅ |
+| 全局共享 | ❌ 不适合 | ✅ 支持 |
+| 异常处理 | ✅ 优秀 | ✅ |
+
+**使用建议：**
+- `TaskGroup`：适合局部任务组的异常管理
+- `NbAioPool`：适合需要并发控制和背压的场景
+
+### 7.3 vs `async_pool_executor`
+
+**完全不同的使用场景！**
+
+| 库 | 环境 | 用途 |
+|----|----|------|
+| `async_pool_executor` | **同步环境** | 在同步代码中调用异步函数 |
+| `NbAioPool` | **异步环境** | 在异步代码中管理并发 |
+
+**举例说明：**
+
+```python
+# async_pool_executor: 同步代码调用异步函数
+from async_pool_executor import AsyncPoolExecutor
+
+executor = AsyncPoolExecutor()
+# 在同步函数中调用异步函数
+executor.submit(async_func, arg1, arg2)
+# NbAioPool: 异步代码管理并发
+from nb_aiopool import NbAioPool
+
+async def main():
+    async with NbAioPool(max_concurrency=100) as pool:
+        # 在异步环境中控制并发
+        await pool.submit(async_func(arg1, arg2))
+```
+
+---
+
+## 8. API 参考
+
+### 8.1 `NbAioPool`
+
+```python
+class NbAioPool:
+    def __init__(self, max_concurrency: int = 100, max_queue_size: int = 1000):
+        """
+        创建并发池
+        
+        参数:
+            max_concurrency: 最大并发任务数（同时运行的worker数量）
+            max_queue_size: 任务队列最大容量（背压控制）
+        """
+```
+
+### 8.2 主要方法
+
+```python
+async def submit(self, coro: Coroutine, block: bool = True) -> asyncio.Future:
+    """
+    提交任务，返回 Future 对象
+    
+    参数:
+        coro: 协程对象（注意：是协程对象，不是函数！）
+        block: 队列满时是否阻塞等待（True: 等待，False: 立即抛异常）
+    
+    返回:
+        asyncio.Future 对象
+    
+    示例:
+        future = await pool.submit(my_task(10))
+        result = await future
+    """
+
+async def run(self, coro: Coroutine, block: bool = True) -> Any:
+    """
+    提交任务并等待结果（等价于 await pool.submit(coro)）
+    
+    参数:
+        coro: 协程对象
+        block: 队列满时是否阻塞等待
+    
+    返回:
+        任务执行结果
+    
+    示例:
+        result = await pool.run(my_task(10))
+    """
+
+async def batch_submit(self, coros: List[Coroutine], block: bool = True) -> List[asyncio.Future]:
+    """
+    批量提交任务，返回 Future 列表 🆕
+    
+    参数:
+        coros: 协程对象列表
+        block: 队列满时是否阻塞等待
+    
+    返回:
+        asyncio.Future 对象列表
+    
+    示例:
+        coros = [my_task(i) for i in range(100)]
+        futures = await pool.batch_submit(coros)
+        results = await asyncio.gather(*futures)
+    """
+
+async def batch_run(self, coros: List[Coroutine], block: bool = True) -> List[Any]:
+    """
+    批量提交任务并等待所有结果 🆕
+    
+    参数:
+        coros: 协程对象列表
+        block: 队列满时是否阻塞等待
+    
+    返回:
+        所有任务的执行结果列表
+    
+    示例:
+        coros = [my_task(i) for i in range(100)]
+        results = await pool.batch_run(coros)  # 一步到位
+    """
+
+async def shutdown(self, wait: bool = True):
+    """
+    关闭池
+    
+    参数:
+        wait: 是否等待所有任务完成
+    """
+```
+
+### 8.3 上下文管理器
+
+```python
+async with NbAioPool(max_concurrency=10) as pool:
+    await pool.submit(my_task(1))
+    # 退出时自动调用 shutdown(wait=True)
+```
+
+---
+
+## 9. 最佳实践
+
+### ✅ 推荐做法
+
+```python
+# 1. 使用 async with 管理生命周期
+async with NbAioPool(max_concurrency=100) as pool:
+    await pool.submit(task())
+
+# 2. 根据场景选择并发数
+# - CPU密集型（少）: max_concurrency = CPU核心数 * 2
+# - IO密集型（多）: max_concurrency = 100 ~ 1000
+# - 网络爬虫（超多）: max_concurrency = 1000 ~ 10000
+
+# 3. 队列大小设置
+# max_queue_size 应该 >= max_concurrency * 10
+
+# 4. 批量任务优先使用 batch_run（最简洁）🆕 ⭐
+coros = [task(i) for i in range(1000)]
+results = await pool.batch_run(coros)  # 一步到位
+
+# 或使用 batch_submit（需要灵活控制时）
+coros = [task(i) for i in range(1000)]
+futures = await pool.batch_submit(coros)
+results = await asyncio.gather(*futures)
+
+# 传统方式（不推荐，代码冗长）
+futures = [await pool.submit(task(i)) for i in range(1000)]
+results = await asyncio.gather(*futures)
+```
+
+---
+
+## 10. 常见问题
+
+### Q1: `batch_submit` 和 `batch_run` 有什么区别？
+
+```python
+# batch_submit: 批量提交，返回 future 列表，需要手动等待
+coros = [my_task(i) for i in range(100)]
+futures = await pool.batch_submit(coros)
+# 可以做其他事情...
+results = await asyncio.gather(*futures)
+
+# batch_run: 批量提交并自动等待，一步到位 ⭐ 推荐
+coros = [my_task(i) for i in range(100)]
+results = await pool.batch_run(coros)  # 直接得到结果
+```
+
+**建议：** 
+- 大多数场景用 `batch_run`，代码最简洁
+- 需要在等待前做其他操作时用 `batch_submit`
+
+### Q2: `async with` 和手动 `shutdown` 有什么区别？
+
+```python
+# 方式1: async with（推荐）
+async with NbAioPool(max_concurrency=10) as pool:
+    await pool.submit(task())
+# 自动调用 shutdown(wait=True)
+
+# 方式2: 手动管理
+pool = NbAioPool(max_concurrency=10)
+await pool.submit(task())
+await pool.shutdown(wait=True)  # 必须手动调用！
+```
+
+**建议：** 优先使用 `async with`，避免忘记 `shutdown` 导致任务丢失.
+
+
+
+---
+
+## 11. nb_aiopool 和 async-pool-executor 区别
+
+nb_aiopool 的定位与 async-pool-executor (例如 这个库 或 funboost 内置的实现) 完全不同，它们解决了不同场景下的问题，不存在竞争关系。
+
+`nb_aiopool`  
+和以前的这两个已开发的 `async_pool_executor` 作用不同。
+
+https://github.com/ydf0509/async_pool_executor 
+https://github.com/ydf0509/funboost/blob/master/funboost/concurrent_pool/async_pool_executor.py
+
+`async_pool_executor` 是在同步环境中去 pool.submit 任务给一个loop并发运行多个coro ，   
+当一个框架需要兼容调度同步和异步并发时候用这，  
+例如`funboost`总体生态语法是同步的，需要依靠使用`async_pool_executor` 实现 `asyncio` 模式并发。 
+
+`nb_aiopool` 是 在异步环境中去 await pool.submit ，纯脆为了异步生态而生。  
+
+
+简单来说：
+*   **`async_pool_executor`：是**一座桥梁**，连接了**同步世界**和**异步世界**。**
+    *   它的工作是在一个**同步的**代码环境中，能够方便地调用并执行**异步的**函数（协程），而不用把整个应用都变成 `async/await`。
+*   **`nb_aiopool`：是一个**交通管制系统**，它**完全生活在异步世界内部**。**
+    *   它的工作是在一个**已经存在的**异步代码环境中，去管理和限制并发任务的流量，防止交通堵塞（资源耗尽）。
+
+---
+
+## 12. 相关链接
+
+- **GitHub:** https://github.com/ydf0509/nb_aiopool
+- **PyPI:** https://pypi.org/project/nb-aiopool/
+- **作者:** ydf0509
+
+
+## 13. nb_aiopool 贡献赠送一套分布式异步函数执行框架 nb_aio_task
+
+- `nb_aio_task` 框架是一个基于 `Redis` + `NbAioPool` 的简易分布式asyncio生态的异步任务队列，类似 `RQ/Celery/Funboost`，但更简单，更纯粹(只为异步而生)。
+
+- `nb_aio_task` 基于 `异步redis包(aioredis/redis[asyncio])` 作为 `broker`，使用 `NbAioPool` 作为并发控制和背压机制。
+
+- `nb_aio_task` 的教程见 `nb_aiopool/contrib/README.md` ,例子见 `nb_aiopool/contrib/example.py`
+
+- `funboost` + 支持所有并发模式(包括asyncio) 是更强力的万能函数调度框架，`nb_aio_task` 是用来演示如何使用 `nb_aiopool` 实现`asyncio`生态的分布式异步任务队列框架，
+  证明`nb_aiopool` 是可以作为任何`asyncio`生态框架的基石存在。
+
+- `nb_aio_task` 的asyncio 比 funboost 的asyncio 更纯粹,天然更容易自动使用用户的 `loop`, 因为 nb_aio_task 是在主线程运行的，自动和用户自己其他asyncio的代码 共享一个loop。
+    `funboost` 是子线程启动消费的，不是自动和用户的主线程共用一个loop,使用上要指定 `specify_async_loop`， 对不懂loop是什么的pythoner来说略难。
+
+- `nb_aio_task`  使用例子
+```python
+
+
+import asyncio
+from nb_aiopool.contrib.nb_aio_task import aio_task, batch_consume
+
+@aio_task(queue_name="my_queue1", max_concurrency=100)
+async def my_fun1(x, y):
+    await asyncio.sleep(1)
+    print(f"my_fun1: {x}, {y}")
+    for i in range(5): # 消费函数可以继续向其他队列中发消息
+        await my_fun2.submit(a=x*3 + i)
+    return x + y
+
+@aio_task(queue_name="my_queue2", max_concurrency=50)
+async def my_fun2(a):
+    await asyncio.sleep(1)
+    print(f"my_fun2: {a}")
+    return a * 2
+
+
+async def main():
+    # 任然可以直接运行函数，但不会进入队列
+    print(f"直接运行函数: {await my_fun1(1,2)}")
+
+    # 提交任务
+    for i in range(100):
+        await my_fun1.submit(i, i+1)
+    
+    # 启动消费者（阻塞运行）
+    await batch_consume([my_fun1, my_fun2])
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## 14. 许可证
+
+MIT License
+
+
+--- **end of file: README.md** --- 
+
+---
+
+
+--- **start of file: pyproject.toml** --- 
+
+``text
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb_aiopool"
+version = "1.0"
+description = "即使在 asyncio 编程生态中，并发池仍然有其用武之地。nb_aiopool 提供并发限制和背压机制"
+keywords = ["asyncio", "pool", "concurrency", "task", "async","asyncio-pool", "asyncio-concurrency", "asyncio-task", "asyncio-concurrent", "asyncio-pool-concurrency", "asyncio-pool-task", "asyncio-pool-concurrent"]
+authors = [
+    {name = "ydf0509", email = "ydf0509@xxx.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "typing_extensions>=3.7; python_version < '3.8'",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.14",
+]
+dev = [
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.812",
+]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_aiopool"
+Repository = "https://github.com/ydf0509/nb_aiopool"
+Issues = "https://github.com/ydf0509/nb_aiopool/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nb_aiopool*"]
+
+[tool.setuptools.package-data]
+nb_aiopool = ["py.typed", "contrib/README.md"]
+
+```
+
+--- **end of file: pyproject.toml** --- 
+
+---
+
+# markdown content namespace: nb_aiopool codes 
+
+
+## File Tree
+
+
+```
+
+└── nb_aiopool
+    ├── __init__.py
+    ├── contrib
+    │   ├── README.md
+    │   ├── __init__.py
+    │   ├── example.py
+    │   └── nb_aio_task.py
+    └── nb_aiopool.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `nb_aiopool/nb_aiopool.py`
+
+- `nb_aiopool/__init__.py`
+
+- `nb_aiopool/contrib/example.py`
+
+- `nb_aiopool/contrib/nb_aio_task.py`
+
+- `nb_aiopool/contrib/README.md`
+
+- `nb_aiopool/contrib/__init__.py`
+
+
+---
+
+
+--- **start of file: nb_aiopool/nb_aiopool.py** --- 
+
+
+### 📄 Python File Metadata: `nb_aiopool/nb_aiopool.py`
+
+#### 📦 Imports
+
+- `import concurrent.futures`
+- `import asyncio`
+- `from typing import Any`
+- `from typing import Coroutine`
+- `from typing import List`
+- `from typing import TypeVar`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NbAioPool`
+*Line: 9*
+
+**Docstring:**
+```
+NbAioPool 是一个经典的基于 `asyncio.Queue`有界队列 的并发池。
+它通过固定数量的后台工作协程（worker）来消费队列中的任务，实现稳定可靠的并发控制。
+```
+
+**Public Methods (6):**
+- `async def submit(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None) -> asyncio.Future`
+  - *提交任务，返回 Future*
+- `async def run(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None) -> T`
+  - *await pool.run 相当于 await await pool.submit*
+- `def sync_submit(self, coro: Coroutine[Any, Any, T], block: bool = True, future: asyncio.Future = None, loop: asyncio.AbstractEventLoop = None) -> concurrent.futures.Future`
+  - *同步提交任务，返回 concurrent.futures.Future*
+- `async def batch_submit(self, coros: List[Coroutine[Any, Any, T]], block: bool = True) -> List[asyncio.Future]`
+  - *批量提交任务，返回 Future 列表*
+- `async def batch_run(self, coros: List[Coroutine[Any, Any, T]], block: bool = True) -> List[T]`
+  - *批量提交任务，返回结果列表*
+- `async def shutdown(self, wait: bool = True)`
+  - *优雅关闭池*
+
+
+---
+
+```python
+import concurrent.futures
+
+import asyncio
+from typing import Any, Coroutine, List, TypeVar
+
+T = TypeVar("T")  # 用于标注异步函数返回类型
+
+
+class NbAioPool:
+    """
+    NbAioPool 是一个经典的基于 `asyncio.Queue`有界队列 的并发池。
+    它通过固定数量的后台工作协程（worker）来消费队列中的任务，实现稳定可靠的并发控制。
+    """
+    def __init__(self, max_concurrency: int = 100, max_queue_size: int = 1000):
+        self._max_concurrency = max_concurrency
+        self._queue: asyncio.Queue = asyncio.Queue(maxsize=max_queue_size)
+        self._workers: List[asyncio.Task] = []
+        self._running = False
+        self._stopped = False
+        self._lock = asyncio.Lock()
+   
+
+    async def _worker(self):
+        while True:
+            coro, fut = await self._queue.get()
+            if coro is None:
+                # 哨兵，退出 worker
+                self._queue.task_done()
+                break
+            try:
+                result = await coro
+                if not fut.cancelled():
+                    fut.set_result(result)
+            except Exception as e:
+                if not fut.cancelled():
+                    fut.set_exception(e)
+            finally:
+                self._queue.task_done()
+
+    async def _ensure_started(self):
+        async with self._lock:
+            if not self._running:
+                self._workers = [asyncio.create_task(self._worker()) for _ in range(self._max_concurrency)]
+                self._running = True
+
+
+
+    async def submit(self,
+                     coro: Coroutine[Any, Any, T],
+                     block: bool = True,
+                     future: asyncio.Future = None) -> asyncio.Future:
+        """
+        提交任务，返回 Future
+        :param coro: 协程对象
+        :param block: True 队列满等待，False 队列满立即抛异常
+        :param future: 可选的外部 Future 对象
+        """
+        if self._stopped:
+            raise RuntimeError("Pool is stopped, cannot submit new tasks.")
+
+        await self._ensure_started()
+        if future is None:
+            future = asyncio.get_running_loop().create_future()
+        try:
+            if block:
+                await self._queue.put((coro, future))
+            else:
+                self._queue.put_nowait((coro, future))
+        except asyncio.QueueFull:
+            future.set_exception(RuntimeError("Queue full"))
+        return future
+
+    async def run(self,
+                     coro: Coroutine[Any, Any, T],
+                     block: bool = True,
+                     future: asyncio.Future = None) -> T:
+        """
+        await pool.run 相当于 await await pool.submit
+
+        :param coro: 协程对象
+        :param block: True 队列满等待，False 队列满立即抛异常
+        :param future: 可选的外部 Future 对象
+        :return: 协程执行结果
+        """
+        future: asyncio.Future = await self.submit(coro, block=block, future=future)
+        return await future
+
+    def sync_submit(self,
+                     coro: Coroutine[Any, Any, T],
+                     block: bool = True,
+                     future: asyncio.Future = None,
+                     loop: asyncio.AbstractEventLoop = None) -> concurrent.futures.Future:
+        """
+        同步提交任务，返回 concurrent.futures.Future
+        :param coro: 协程对象
+        :param block: True 队列满等待，False 队列满立即抛异常
+        :param future: 可选的外部 Future 对象
+        :param loop: 事件循环对象
+        """
+        if loop is None:
+            raise ValueError("please pass loop")
+        return asyncio.run_coroutine_threadsafe(
+            self.submit(coro, block=block, future=future), loop)
+
+    async def batch_submit(self,
+                           coros: List[Coroutine[Any, Any, T]],
+                           block: bool = True) -> List[asyncio.Future]:
+        """
+        批量提交任务，返回 Future 列表
+        :param coros: 协程对象列表
+        :param block: True 队列满等待，False 队列满立即抛异常
+        :return: Future 列表
+        """
+        futures = []
+        for coro in coros:
+            # 每个协程都创建独立的 future，不重用
+            fut = await self.submit(coro, block=block, future=None)
+            futures.append(fut)
+        return futures
+
+    async def batch_run(self,
+                        coros: List[Coroutine[Any, Any, T]],
+                        block: bool = True) -> List[T]:
+        """
+        批量提交任务，返回结果列表
+        :param coros: 协程对象列表
+        :param block: True 队列满等待，False 队列满立即抛异常
+        :return: 结果列表
+        """
+        futures = await self.batch_submit(coros, block=block)
+        return await asyncio.gather(*futures)
+
+    async def shutdown(self, wait: bool = True):
+        """
+        优雅关闭池
+        :param wait: True 等待任务完成并 worker 退出，False 仅发哨兵后台退出
+        """
+        self._stopped = True
+
+        if wait:
+            # 等待队列中所有任务完成
+            await self._queue.join()
+
+        # 发送哨兵，确保所有 worker 能退出
+        for _ in range(self._max_concurrency):
+            await self._queue.put((None, None))
+
+        if wait:
+            # 等待所有 worker 完全退出
+            await asyncio.gather(*self._workers, return_exceptions=True)
+
+        # 清理状态
+        self._workers.clear()
+        self._running = False
+
+    # =================
+    # Async Context Manager
+    # =================
+    async def __aenter__(self):
+        await self._ensure_started()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.shutdown(wait=True)
+
+
+
+
+
+```
+
+--- **end of file: nb_aiopool/nb_aiopool.py** --- 
+
+---
+
+
+--- **start of file: nb_aiopool/__init__.py** --- 
+
+
+### 📄 Python File Metadata: `nb_aiopool/__init__.py`
+
+#### 📦 Imports
+
+- `from nb_aiopool import NbAioPool`
+
+
+---
+
+```python
+
+
+from .nb_aiopool import NbAioPool
+```
+
+--- **end of file: nb_aiopool/__init__.py** --- 
+
+---
+
+
+--- **start of file: nb_aiopool/contrib/example.py** --- 
+
+
+### 📄 Python File Metadata: `nb_aiopool/contrib/example.py`
+
+#### 📝 Module Docstring
+
+```
+nb_aio_task 使用示例
+
+演示如何使用 aio_task 装饰器创建分布式异步任务队列
+```
+
+#### 📦 Imports
+
+- `import asyncio`
+- `from nb_aiopool.contrib.nb_aio_task import aio_task`
+- `from nb_aiopool.contrib.nb_aio_task import batch_consume`
+- `import traceback`
+
+#### 🔧 Public Functions (12)
+
+- `async def my_fun1(x, y)` `aio_task(queue_name='my_queue1', max_concurrency=100)`
+  - *Line: 14*
+  - *加法任务*
+
+- `async def my_fun2(a)` `aio_task(queue_name='my_queue2', max_concurrency=50)`
+  - *Line: 23*
+  - *乘法任务*
+
+- `async def complex_task(data: dict)` `aio_task(queue_name='my_queue3', max_concurrency=20)`
+  - *Line: 32*
+  - *复杂对象任务（使用 pickle 序列化）*
+
+- `async def example_1_basic()`
+  - *Line: 43*
+  - *示例1：基本用法 - 提交任务*
+
+- `async def example_2_consume()`
+  - *Line: 60*
+  - *示例2：启动消费者*
+
+- `async def example_3_batch_submit()`
+  - *Line: 74*
+  - *示例3：批量提交任务*
+
+- `async def example_4_complex_data()`
+  - *Line: 88*
+  - *示例4：处理复杂对象*
+
+- `async def example_5_producer_consumer()`
+  - *Line: 105*
+  - *示例5：完整的生产者-消费者模式*
+
+- `async def example_6_clear_queue()`
+  - *Line: 132*
+  - *示例6：队列管理*
+
+- `async def main()`
+  - *Line: 152*
+  - *主函数：选择要运行的示例*
+
+- `async def producer()`
+  - *Line: 111*
+  - *生产者：持续提交任务*
+
+- `async def consumer()`
+  - *Line: 119*
+  - *消费者：处理任务*
+
+
+---
+
+```python
+"""
+nb_aio_task 使用示例
+
+演示如何使用 aio_task 装饰器创建分布式异步任务队列
+"""
+
+import asyncio
+from nb_aiopool.contrib.nb_aio_task import aio_task, batch_consume
+
+
+# ==================== 定义任务 ====================
+
+@aio_task(queue_name="my_queue1", max_concurrency=100)
+async def my_fun1(x, y):
+    """加法任务"""
+    await asyncio.sleep(1)
+    result = x + y
+    print(f"my_fun1: {x} + {y} = {result}")
+    return result
+
+
+@aio_task(queue_name="my_queue2", max_concurrency=50)
+async def my_fun2(a):
+    """乘法任务"""
+    await asyncio.sleep(1)
+    result = a * 2
+    print(f"my_fun2: {a} * 2 = {result}")
+    return result
+
+
+@aio_task(queue_name="my_queue3", max_concurrency=20)
+async def complex_task(data: dict):
+    """复杂对象任务（使用 pickle 序列化）"""
+    await asyncio.sleep(0.5)
+    name = data.get('name', 'Unknown')
+    value = data.get('value', 0)
+    print(f"complex_task: {name} -> {value}")
+    return f"Processed {name}"
+
+
+# ==================== 使用示例 ====================
+
+async def example_1_basic():
+    """示例1：基本用法 - 提交任务"""
+    print("\n" + "="*60)
+    print("示例1：基本用法 - 提交任务")
+    print("="*60)
+    
+    # 提交任务到队列
+    await my_fun1.submit(1, 2)
+    await my_fun1.submit(10, 20)
+    await my_fun2.submit(3)
+    await my_fun2.submit(5)
+    
+    print(f"\n队列状态:")
+    print(f"  my_queue1: {await my_fun1.get_queue_size()} 个任务")
+    print(f"  my_queue2: {await my_fun2.get_queue_size()} 个任务")
+
+
+async def example_2_consume():
+    """示例2：启动消费者"""
+    print("\n" + "="*60)
+    print("示例2：启动消费者")
+    print("="*60)
+    
+    # 方式1：分别启动每个任务的消费者
+    # await my_fun1.consume()
+    # await my_fun2.consume()
+    
+    # 方式2：批量启动多个消费者 ⭐ 推荐
+    await batch_consume([my_fun1, my_fun2])
+
+
+async def example_3_batch_submit():
+    """示例3：批量提交任务"""
+    print("\n" + "="*60)
+    print("示例3：批量提交任务")
+    print("="*60)
+    
+    # 批量提交 100 个任务
+    for i in range(100):
+        await my_fun1.submit(i, i+1)
+    
+    print(f"已提交 100 个任务到 my_queue1")
+    print(f"队列大小: {await my_fun1.get_queue_size()}")
+
+
+async def example_4_complex_data():
+    """示例4：处理复杂对象"""
+    print("\n" + "="*60)
+    print("示例4：处理复杂对象")
+    print("="*60)
+    
+    # 提交包含复杂对象的任务
+    await complex_task.submit({'name': 'Task-A', 'value': 100})
+    await complex_task.submit({'name': 'Task-B', 'value': 200})
+    await complex_task.submit({'name': 'Task-C', 'value': 300})
+    
+    print(f"队列大小: {await complex_task.get_queue_size()}")
+    
+    # 启动消费者
+    await complex_task.consume()
+
+
+async def example_5_producer_consumer():
+    """示例5：完整的生产者-消费者模式"""
+    print("\n" + "="*60)
+    print("示例5：生产者-消费者模式")
+    print("="*60)
+    
+    async def producer():
+        """生产者：持续提交任务"""
+        print("📤 生产者启动")
+        for i in range(50):
+            await my_fun1.submit(i, i*2)
+            await asyncio.sleep(0.1)  # 模拟实际业务间隔
+        print("📤 生产者完成")
+    
+    async def consumer():
+        """消费者：处理任务"""
+        print("📥 消费者启动")
+        await batch_consume([my_fun1, my_fun2])
+    
+    # 并发运行生产者和消费者
+    await asyncio.gather(
+        producer(),
+        consumer(),
+        return_exceptions=True
+    )
+
+
+async def example_6_clear_queue():
+    """示例6：队列管理"""
+    print("\n" + "="*60)
+    print("示例6：队列管理")
+    print("="*60)
+    
+    # 提交一些任务
+    for i in range(10):
+        await my_fun1.submit(i, i)
+    
+    print(f"提交前队列大小: {await my_fun1.get_queue_size()}")
+    
+    # 清空队列
+    await my_fun1.clear_queue()
+    
+    print(f"清空后队列大小: {await my_fun1.get_queue_size()}")
+
+
+# ==================== 主函数 ====================
+
+async def main():
+    """主函数：选择要运行的示例"""
+    
+    print("""
+╔══════════════════════════════════════════════════════════╗
+║  nb_aio_task - 简易分布式异步任务队列                    ║
+║                                                          ║
+║  基于 Redis + NbAioPool 实现                             ║
+║  特点：简单、高效、支持并发控制和背压机制                 ║
+╚══════════════════════════════════════════════════════════╝
+    """)
+    
+    # 提示
+    print("⚠️  请确保 Redis 服务已启动：redis-server\n")
+    
+    # 选择要运行的示例
+    print("可用示例：")
+    print("  1. 基本用法 - 提交任务")
+    print("  2. 启动消费者")
+    print("  3. 批量提交任务")
+    print("  4. 处理复杂对象")
+    print("  5. 生产者-消费者模式 ⭐")
+    print("  6. 队列管理")
+    
+    choice = input("\n请选择示例 (1-6，默认5): ").strip() or "5"
+    
+    if choice == "1":
+        await example_1_basic()
+    elif choice == "2":
+        await example_2_consume()
+    elif choice == "3":
+        await example_3_batch_submit()
+    elif choice == "4":
+        await example_4_complex_data()
+    elif choice == "5":
+        await example_5_producer_consumer()
+    elif choice == "6":
+        await example_6_clear_queue()
+    else:
+        print(f"无效选择: {choice}")
+        return
+    
+    print("\n✅ 示例运行完成")
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n\n👋 程序已停止")
+    except Exception as e:
+        print(f"\n❌ 错误: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+```
+
+--- **end of file: nb_aiopool/contrib/example.py** --- 
+
+---
+
+
+--- **start of file: nb_aiopool/contrib/nb_aio_task.py** --- 
+
+
+### 📄 Python File Metadata: `nb_aiopool/contrib/nb_aio_task.py`
+
+#### 📝 Module Docstring
+
+```
+nb_aio_task - 基于 Redis + NbAioPool 的简易分布式异步任务队列
+
+特点：
+- 简单：无需复杂配置，装饰器即用
+- 高效：利用 NbAioPool 的背压机制和并发控制
+- 分布式：基于 Redis 实现任务队列
+```
+
+#### 📦 Imports
+
+- `import asyncio`
+- `import json`
+- `import pickle`
+- `import traceback`
+- `from typing import Callable`
+- `from typing import Any`
+- `from typing import List`
+- `from typing import Optional`
+- `from functools import wraps`
+- `from nb_aiopool.nb_aiopool import NbAioPool`
+- `from nb_log import get_logger`
+- `import redis.asyncio as aioredis`
+- `import aioredis`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AioTask`
+*Line: 35*
+
+**Docstring:**
+```
+异步任务包装器
+```
+
+**Public Methods (6):**
+- `async def submit(self, *args, **kwargs) -> None`
+  - *提交任务到 Redis 队列*
+- `async def consume(self, timeout: int = 5) -> None`
+  - *启动消费者，持续从 Redis 队列消费任务*
+- `async def stop(self) -> None`
+  - *停止消费者*
+- `async def get_queue_size(self) -> int`
+  - *获取队列中待处理任务数量*
+- `async def clear_queue(self) -> None`
+  - *清空队列*
+- `async def close(self) -> None`
+  - *关闭 Redis 连接*
+
+#### 🔧 Public Functions (8)
+
+- `def aio_task(queue_name: str, max_concurrency: int = 50, redis_url: str = 'redis://localhost:6379/0', max_queue_size: int = 1000, use_pickle: bool = True)`
+  - *Line: 200*
+  - *异步任务装饰器*
+
+- `async def batch_consume(tasks: List[AioTask], timeout: int = 5) -> None`
+  - *Line: 247*
+  - *批量启动多个任务的消费者*
+
+- `def decorator(func: Callable) -> AioTask`
+  - *Line: 231*
+
+- `async def add_task(x, y)` `aio_task(queue_name='test_queue1', max_concurrency=10)`
+  - *Line: 278*
+  - *测试任务：加法*
+
+- `async def multiply_task(a, b)` `aio_task(queue_name='test_queue2', max_concurrency=5)`
+  - *Line: 286*
+  - *测试任务：乘法*
+
+- `async def producer()`
+  - *Line: 293*
+  - *生产者：提交任务*
+
+- `async def consumer()`
+  - *Line: 311*
+  - *消费者：处理任务*
+
+- `async def main()`
+  - *Line: 323*
+  - *主函数*
+
+
+---
+
+```python
+"""
+nb_aio_task - 基于 Redis + NbAioPool 的简易分布式异步任务队列
+
+特点：
+- 简单：无需复杂配置，装饰器即用
+- 高效：利用 NbAioPool 的背压机制和并发控制
+- 分布式：基于 Redis 实现任务队列
+"""
+
+import asyncio
+import json
+import pickle
+import traceback
+
+from typing import Callable, Any, List, Optional
+from functools import wraps
+
+
+
+try:
+    import redis.asyncio as aioredis
+except ImportError:
+    try:
+        import aioredis
+    except ImportError:
+        raise ImportError(
+            "请安装 redis 依赖: pip install redis[asyncio] 或 pip install aioredis"
+        )
+
+from nb_aiopool.nb_aiopool import NbAioPool
+from nb_log import get_logger
+
+logger = get_logger(__name__)
+
+class AioTask:
+    """异步任务包装器"""
+    
+    def __init__(
+        self,
+        func: Callable,
+        queue_name: str,
+        max_concurrency: int = 100,
+        redis_url: str = "redis://localhost:6379/0",
+        max_queue_size: int = 100, # NbAioPool 的 asyncio.Queue 内存工作队列大小，不是指redis list的最大长度限制。
+        use_pickle: bool = True,
+    ):
+        """
+        初始化异步任务
+        
+        :param func: 被装饰的异步函数
+        :param queue_name: Redis 队列名称
+        :param max_concurrency: 最大并发数
+        :param redis_url: Redis 连接URL
+        :param max_queue_size: NbAioPool 队列大小
+        :param use_pickle: 是否使用 pickle 序列化（支持复杂对象），否则使用 json
+        """
+        self.func = func
+        self.queue_name = f"nb_aio_task:{queue_name}"
+        self.max_concurrency = max_concurrency
+        self.redis_url = redis_url
+        self.max_queue_size = max_queue_size
+        self.use_pickle = use_pickle
+        
+        self._redis: Optional[aioredis.Redis] = None
+        self._pool: Optional[NbAioPool] = None
+        self._consuming = False
+        
+        # 保留原函数的元信息
+        wraps(func)(self)
+
+    async def __call__(self, *args, **kwargs) -> Any:
+        """直接运行函数"""
+        return await self.func(*args, **kwargs)
+    
+    async def _get_redis(self) -> aioredis.Redis:
+        """获取 Redis 连接（单例）"""
+        if self._redis is None:
+            self._redis = await aioredis.from_url(
+                self.redis_url,
+                decode_responses=False  # 使用 bytes 模式以支持 pickle
+            )
+        return self._redis
+    
+    def _serialize(self, data: Any) -> bytes:
+        """序列化数据"""
+        if self.use_pickle:
+            return pickle.dumps(data)
+        else:
+            return json.dumps(data).encode('utf-8')
+    
+    def _deserialize(self, data: bytes) -> Any:
+        """反序列化数据"""
+        if self.use_pickle:
+            return pickle.loads(data)
+        else:
+            return json.loads(data.decode('utf-8'))
+    
+    async def submit(self, *args, **kwargs) -> None:
+        """
+        提交任务到 Redis 队列
+        
+        :param args: 函数位置参数
+        :param kwargs: 函数关键字参数
+        """
+        redis = await self._get_redis()
+        task_data = {
+            'args': args,
+            'kwargs': kwargs,
+        }
+        serialized = self._serialize(task_data)
+        await redis.rpush(self.queue_name, serialized)
+        logger.info(f"✅ 任务已提交到队列 {self.queue_name}: {self.func.__name__}({args}, {kwargs})")
+    
+    async def _execute_task(self, task_data: bytes) -> Any:
+        """执行单个任务"""
+        try:
+            data = self._deserialize(task_data)
+            args = data.get('args', ())
+            kwargs = data.get('kwargs', {})
+            
+            result = await self.func(*args, **kwargs)
+            logger.info(f"✅ 任务执行成功: {self.func.__name__}({args}, {kwargs}) -> {result}")
+            return result
+        
+        except Exception as e:
+            logger.error(f"❌ 任务执行失败: {self.func.__name__}", exc_info=True)
+            raise
+    
+    async def consume(self, timeout: int = 5) -> None:
+        """
+        启动消费者，持续从 Redis 队列消费任务
+        
+        :param timeout: 每次 blpop 的超时时间（秒）
+        """
+        if self._consuming:
+            logger.warning(f"⚠️  消费者已在运行: {self.queue_name}")
+            return
+        
+        self._consuming = True
+        redis = await self._get_redis()
+        
+        # 创建 NbAioPool
+        self._pool = NbAioPool(
+            max_concurrency=self.max_concurrency,
+            max_queue_size=self.max_queue_size
+        )
+        
+        logger.info(f"🚀 启动消费者: {self.queue_name} (并发数: {self.max_concurrency})")
+        
+        try:
+            while self._consuming:
+                # 阻塞式获取任务
+                result = await redis.blpop(self.queue_name, timeout=timeout)
+                
+                if result is None:
+                    # 超时，继续循环
+                    await asyncio.sleep(0.1)
+                    continue
+                
+                _, task_data = result
+                
+                # 提交到 NbAioPool 执行（利用背压机制）
+                await self._pool.submit(self._execute_task(task_data))
+        
+        except asyncio.CancelledError:
+            logger.info(f"🛑 消费者被取消: {self.queue_name}")
+        
+        except Exception as e:
+            logger.error(f"❌ 消费者异常退出: {self.queue_name}", exc_info=True)
+        
+        finally:
+            # 清理资源
+            if self._pool:
+                await self._pool.shutdown(wait=True)
+            logger.info(f"🛑 消费者已停止: {self.queue_name}")
+    
+    async def stop(self) -> None:
+        """停止消费者"""
+        self._consuming = False
+        logger.info(f"正在停止消费者: {self.queue_name}")
+    
+    async def get_queue_size(self) -> int:
+        """获取队列中待处理任务数量"""
+        redis = await self._get_redis()
+        return await redis.llen(self.queue_name)
+    
+    async def clear_queue(self) -> None:
+        """清空队列"""
+        redis = await self._get_redis()
+        await redis.delete(self.queue_name)
+        logger.info(f"🗑️  队列已清空: {self.queue_name}")
+    
+    async def close(self) -> None:
+        """关闭 Redis 连接"""
+        if self._redis:
+            await self._redis.close()
+            self._redis = None
+
+
+def aio_task(
+    queue_name: str,
+    max_concurrency: int = 50,
+    redis_url: str = "redis://localhost:6379/0",
+    max_queue_size: int = 1000,
+    use_pickle: bool = True,
+):
+    """
+    异步任务装饰器
+    
+    使用示例：
+    
+    ```python
+    @aio_task(queue_name="my_queue", max_concurrency=100)
+    async def my_task(x, y):
+        await asyncio.sleep(1)
+        return x + y
+    
+    # 提交任务
+    await my_task.submit(1, 2)
+    
+    # 启动消费者
+    await my_task.consume()
+    ```
+    
+    :param queue_name: Redis 队列名称
+    :param max_concurrency: 最大并发数
+    :param redis_url: Redis 连接URL
+    :param max_queue_size: NbAioPool 队列大小
+    :param use_pickle: 是否使用 pickle 序列化
+    """
+    def decorator(func: Callable) -> AioTask:
+        if not asyncio.iscoroutinefunction(func):
+            raise TypeError(f"{func.__name__} 必须是异步函数 (async def)")
+        
+        return AioTask(
+            func=func,
+            queue_name=queue_name,
+            max_concurrency=max_concurrency,
+            redis_url=redis_url,
+            max_queue_size=max_queue_size,
+            use_pickle=use_pickle,
+        )
+    
+    return decorator
+
+
+async def batch_consume(
+    tasks: List[AioTask],
+    timeout: int = 5
+) -> None:
+    """
+    批量启动多个任务的消费者
+    
+    :param tasks: AioTask 列表
+    :param timeout: 每次 blpop 的超时时间（秒）
+    
+    使用示例：
+    
+    ```python
+    await batch_consume([my_task1, my_task2, my_task3])
+    ```
+    """
+    logger.info(f"🚀 批量启动 {len(tasks)} 个消费者")
+    
+    # 并发启动所有消费者
+    await asyncio.gather(
+        *[task.consume(timeout=timeout) for task in tasks],
+        return_exceptions=True
+    )
+
+
+# ==================== 示例代码 ====================
+
+if __name__ == "__main__":
+    # 配置日志格式
+
+    @aio_task(queue_name="test_queue1", max_concurrency=10)
+    async def add_task(x, y):
+        """测试任务：加法"""
+        await asyncio.sleep(0.5)
+        result = x + y
+        print(f"计算结果: {x} + {y} = {result}")
+        return result
+    
+    @aio_task(queue_name="test_queue2", max_concurrency=5)
+    async def multiply_task(a, b):
+        """测试任务：乘法"""
+        await asyncio.sleep(1)
+        result = a * b
+        print(f"计算结果: {a} * {b} = {result}")
+        return result
+    
+    async def producer():
+        """生产者：提交任务"""
+        print("\n" + "="*60)
+        print("生产者启动：开始提交任务")
+        print("="*60)
+        
+        # 提交 20 个加法任务
+        for i in range(20):
+            await add_task.submit(i, i+1)
+        
+        # 提交 10 个乘法任务
+        for i in range(10):
+            await multiply_task.submit(i, 2)
+        
+        print(f"\n队列状态:")
+        print(f"  add_task 队列: {await add_task.get_queue_size()} 个任务")
+        print(f"  multiply_task 队列: {await multiply_task.get_queue_size()} 个任务")
+    
+    async def consumer():
+        """消费者：处理任务"""
+        print("\n" + "="*60)
+        print("消费者启动：开始处理任务")
+        print("="*60)
+        
+        # 方式1：单独启动消费者
+        # await add_task.consume()
+        
+        # 方式2：批量启动消费者 ⭐ 推荐
+        await batch_consume([add_task, multiply_task])
+    
+    async def main():
+        """主函数"""
+        # 直接运行函数
+        print(f"直接运行函数: {await add_task(1,2)}")
+
+        # 先提交任务
+        await producer()
+        
+        # 等待一下，让任务进入队列
+        await asyncio.sleep(1)
+        
+        # 启动消费者（这会阻塞运行）
+        await consumer()
+    
+    # 运行示例
+    print("""
+    ╔══════════════════════════════════════════════════════════╗
+    ║  nb_aio_task - 简易分布式异步任务队列示例                ║
+    ║                                                          ║
+    ║  提示：请先启动 Redis 服务                                ║
+    ║  $ redis-server                                          ║
+    ╚══════════════════════════════════════════════════════════╝
+    """)
+    
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n\n👋 程序已停止")
+
+```
+
+--- **end of file: nb_aiopool/contrib/nb_aio_task.py** --- 
+
+---
+
+
+--- **start of file: nb_aiopool/contrib/README.md** --- 
+
+# nb_aio_task - 简易分布式异步任务队列
+
+基于 **Redis + NbAioPool** 实现的轻量级分布式异步任务队列，类似 RQ/Celery/Funboost，但更简单。
+
+## 特点
+
+- ✅ **简单易用**：装饰器即用，无需复杂配置
+- ✅ **高效稳定**：充分利用 `NbAioPool` 的背压机制和并发控制
+- ✅ **分布式**：基于 Redis 实现任务队列，支持多进程/多机器消费
+- ✅ **类型支持**：支持 pickle/json 序列化，可传递复杂对象
+
+## 安装依赖
+
+```bash
+pip install redis  # 或 pip install aioredis
+```
+
+## 快速开始
+
+### 1. 定义任务
+
+```python
+import asyncio
+from nb_aiopool.contrib.nb_aio_task import aio_task, batch_consume
+
+@aio_task(queue_name="my_queue1", max_concurrency=100)
+async def my_fun1(x, y):
+    await asyncio.sleep(1)
+    print(f"my_fun1: {x}, {y}")
+    return x + y
+
+@aio_task(queue_name="my_queue2", max_concurrency=50)
+async def my_fun2(a):
+    await asyncio.sleep(1)
+    print(f"my_fun2: {a}")
+    return a * 2
+```
+
+### 2. 提交任务（生产者）
+
+```python
+async def producer():
+    # 提交任务到 Redis 队列
+    await my_fun1.submit(1, 2)
+    await my_fun1.submit(10, 20)
+    await my_fun2.submit(3)
+    
+    # 查看队列大小
+    print(f"队列大小: {await my_fun1.get_queue_size()}")
+```
+
+### 3. 消费任务（消费者）
+
+```python
+async def consumer():
+    # 任然可以直接运行函数，但不会进入队列
+    print(f"直接运行函数: {await my_fun1(1,2)}")
+
+    # 方式1：单独启动消费者
+    await my_fun1.consume()
+    
+    # 方式2：批量启动多个消费者 ⭐ 推荐
+    await batch_consume([my_fun1, my_fun2])
+```
+
+### 4. 完整示例
+
+```python
+async def main():
+    # 提交任务
+    for i in range(100):
+        await my_fun1.submit(i, i+1)
+    
+    # 启动消费者（阻塞运行）
+    await batch_consume([my_fun1, my_fun2])
+
+if __name__ == "__main__":
+    # 方式1：使用 asyncio.run（任务执行完会退出）
+    asyncio.run(main())
+    
+    # 方式2：使用 loop.run_forever（持续运行）
+    # loop = asyncio.get_event_loop()
+    # loop.create_task(main())
+    # loop.run_forever()
+```
+
+## API 参考
+
+### `@aio_task` 装饰器
+
+```python
+@aio_task(
+    queue_name: str,              # Redis 队列名称（必填）
+    max_concurrency: int = 50,    # 最大并发数
+    redis_url: str = "redis://localhost:6379/0",  # Redis 连接URL
+    max_queue_size: int = 1000,   # NbAioPool 队列大小
+    use_pickle: bool = True,      # 是否使用 pickle 序列化
+)
+```
+
+### 任务方法
+
+```python
+# 提交任务到队列
+await my_task.submit(*args, **kwargs)
+
+# 启动消费者
+await my_task.consume(timeout=5)
+
+# 停止消费者
+await my_task.stop()
+
+# 获取队列大小
+size = await my_task.get_queue_size()
+
+# 清空队列
+await my_task.clear_queue()
+
+# 关闭 Redis 连接
+await my_task.close()
+```
+
+### 批量启动消费者
+
+```python
+from nb_aiopool.contrib.nb_aio_task import batch_consume
+
+# 同时启动多个任务的消费者
+await batch_consume([task1, task2, task3], timeout=5)
+```
+
+## 高级用法
+
+### 1. 处理复杂对象
+
+```python
+@aio_task(queue_name="complex_queue", use_pickle=True)
+async def process_data(data: dict):
+    # 使用 pickle 可以传递任意 Python 对象
+    name = data['name']
+    items = data['items']
+    return f"Processed {len(items)} items for {name}"
+
+await process_data.submit({
+    'name': 'User-A',
+    'items': [1, 2, 3, 4, 5]
+})
+```
+
+### 2. 生产者-消费者分离
+
+**生产者进程（producer.py）：**
+```python
+import asyncio
+from nb_aiopool.contrib.nb_aio_task import aio_task
+
+@aio_task(queue_name="tasks", max_concurrency=50)
+async def my_task(x):
+    return x * 2
+
+async def main():
+    # 持续提交任务
+    for i in range(1000):
+        await my_task.submit(i)
+        await asyncio.sleep(0.1)
+
+asyncio.run(main())
+```
+
+**消费者进程（consumer.py）：**
+```python
+import asyncio
+from nb_aiopool.contrib.nb_aio_task import aio_task
+
+@aio_task(queue_name="tasks", max_concurrency=50)
+async def my_task(x):
+    await asyncio.sleep(1)
+    print(f"处理任务: {x}")
+    return x * 2
+
+async def main():
+    # 持续消费任务
+    await my_task.consume()
+
+asyncio.run(main())
+```
+
+### 3. 多机器部署
+
+只需要多个机器连接同一个 Redis，使用相同的 `queue_name`：
+
+```python
+# 机器1：生产者
+@aio_task(queue_name="shared_queue", redis_url="redis://192.168.1.100:6379/0")
+async def task(x):
+    return x * 2
+
+# 机器2：消费者
+@aio_task(queue_name="shared_queue", redis_url="redis://192.168.1.100:6379/0")
+async def task(x):
+    return x * 2
+
+# 机器1 提交任务
+await task.submit(100)
+
+# 机器2 消费任务
+await task.consume()
+```
+
+## 对比其他框架
+
+| 特性 | nb_aio_task | Celery | RQ | Funboost |
+|------|-------------|--------|-----|----------|
+| 复杂度 | ⭐ 极简 | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ |
+| 异步支持 | ✅ 原生 | ⚠️ 需配置 | ❌ | ✅ |
+| 并发控制 | ✅ 内置 | ⚠️ 有限 | ⚠️ 有限 | ✅ |
+| 依赖 | Redis | RabbitMQ/Redis | Redis | 多种 |
+| 学习曲线 | 5分钟 | 1天 | 30分钟 | 2小时 |
+
+## 注意事项
+
+1. **Redis 必须运行**：确保 Redis 服务已启动
+2. **队列持久化**：Redis 数据会持久化，重启后任务不丢失
+3. **错误处理**：任务执行失败会打印异常，但不会重试（保持简单）
+4. **序列化选择**：
+   - `use_pickle=True`：支持复杂对象，但不安全（不要处理不信任的数据）
+   - `use_pickle=False`：只支持 JSON 可序列化的对象，但更安全
+
+## 运行示例
+
+```bash
+# 1. 启动 Redis
+redis-server
+
+# 2. 运行示例
+python -m nb_aiopool.contrib.example
+
+# 3. 或运行内置测试
+python -m nb_aiopool.contrib.nb_aio_task
+```
+
+## 许可证
+
+MIT
+
+
+--- **end of file: nb_aiopool/contrib/README.md** --- 
+
+---
+
+
+--- **start of file: nb_aiopool/contrib/__init__.py** --- 
+
+
+### 📄 Python File Metadata: `nb_aiopool/contrib/__init__.py`
+
+
+---
+
+```python
+
+
+
+```
+
+--- **end of file: nb_aiopool/contrib/__init__.py** --- 
+
+---
+

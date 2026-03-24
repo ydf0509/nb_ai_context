@@ -1,3 +1,9 @@
+---
+noteId: "ee20896013c911f1a395e7a8f6f96a97"
+tags: []
+
+---
+
 ﻿# 🤖 AI Reading Guide for Project: nb_ai_context
 
 > **Important Notice for AI Models**: This document contains the complete source code and documentation for the `nb_ai_context` project. Please read this guide carefully before analyzing the content.

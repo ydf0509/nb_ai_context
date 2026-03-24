@@ -1,0 +1,465 @@
+# markdown content namespace: nb_config readme 
+
+
+## File Tree
+
+
+```
+
+└── README.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `README.md`
+
+
+---
+
+
+### code file start: README.md 
+
+# nb_config
+
+
+一个Python配置覆盖系统，基于继承机制让用户可以透明地覆盖第三方库的配置，无需修改第三方库的任何代码。万能通用覆盖三方包的配置的包。
+
+这个包适合写三方库的用户，如果三方包需要使用者能方便自定义覆盖三方库中的配置，则可以使用这个包。         
+例如三方库中总是导入 config_default.py的配置，有些小白一看到三方包中的这种写法，很手痒老是想着手动修改三方包下的配置文件源码。   
+使用这个包，就能让小白安心的复制三方包配置文件源码到自己项目下，然后修改自己项目中的配置文件中需要修改的配置。
+（改三方包下的配置文件不好，每次新环境安装三方包或者升级三方包，配置文件都会被重置成默认的，用户需要重新修改配置文件。）
+
+这个包不适合用户用来管理自己普通项目中的配置，因为用户自己项目下的的配置文件用户随便改就完了，没有涉及到这种覆盖需求。    
+
+这样做，是为了用户能简单粗暴复制三方包种的配置文件到自己项目下，然后用户修改自己项目中的配置文件中需要修改的配置。
+
+这个包是是为了三方包开发者使用。
+
+
+```python
+from nb_config.import_user_config import UserConfigAutoImporter
+
+# 自动import0导入用户配置 ，没导入成功就复制三方包配置文件到用户项目根目录 sys.path[1]下新建配置文件。
+# 这个通常放在三方包里面运行，而不是一般用户亲自使用这个方法
+UserConfigAutoImporter(user_config_module_path='config_user2',
+                       default_config_module_path='tests.mock_sitepackage.config_default').auto_import_user_config()
+
+import tests.mock_sitepackage.site_packge_fun1_mod
+from tests.mock_sitepackage.site_packge_fun2_mod import site_packge_fun2
+
+if __name__ == '__main__':
+    
+    tests.mock_sitepackage.site_packge_fun1_mod.site_packge_fun1()
+    site_packge_fun2()
+
+    """
+    三方包内部虽然没有亲自导入使用用户自己的配置模块，但能自动使用用户自己的配置文件中设置的值。
+    输出结果：
+    tests.mock_sitepackage.config_default.ConfigKLS1.config_a:用户自己的a
+    tests.mock_sitepackage.config_default.ConfigKLS1.config_b:用户自己的b
+    tests.mock_sitepackage.config_default.ConfigKLS1.config_c:三方包默认的c
+    """
+```
+
+**code file end: README.md**
+
+---
+
+# markdown content namespace: nb_config codes 
+
+
+## File Tree
+
+
+```
+
+└── nb_config
+    ├── __init__.py
+    ├── import_user_config.py
+    ├── nb_config_decorator.py
+    └── simple_data_class.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `nb_config/import_user_config.py`
+
+- `nb_config/nb_config_decorator.py`
+
+- `nb_config/simple_data_class.py`
+
+- `nb_config/__init__.py`
+
+
+---
+
+
+### code file start: nb_config/import_user_config.py 
+
+```python
+import importlib
+import inspect
+import multiprocessing
+from pathlib import Path
+from shutil import copyfile
+import sys
+
+from nb_config.simple_data_class import DataClassBase
+
+def is_main_process():
+    return multiprocessing.process.current_process().name == 'MainProcess'
+
+class UserConfigAutoImporter:
+    """ 用法例子：
+    UserConfigAutoImporter(user_config_module_path='myconfigs.pyconfigs.config_user5',
+                       default_config_module_path='tests.mock_sitepackage.config_default',
+                       is_auto_create_user_config_file=True,
+                       ).auto_import_user_config()
+    """
+
+    """
+    1、这是自动导入用户配置模块，如果用户配置模块不存在，则在 sys.path[1] 目录下自动创建一个用户配置模块。
+
+    2、这个类通常由 三方框架内部去使用自动导入用户固定位置的配置文件，而不是由用户亲自麻烦去使用，
+    但也可以三方框架教程明确写明，用户在导入三方开之前先UserConfigAutoImporter.auto_import_user_config,这样用户自由决定配置文件放在哪里。
+    
+    """
+    def __init__(self,user_config_module_path:str,default_config_module_path:str,
+                 is_auto_create_user_config_file:bool=True,
+                 is_show_final_config:bool=True,
+                 ):
+        self.user_config_module_path=user_config_module_path # 用户配置模块的python import 路径
+        self.default_config_module_path=default_config_module_path # 默认配置文件的python import路径
+        self.is_auto_create_user_config_file=is_auto_create_user_config_file
+        self.is_show_final_config=is_show_final_config
+        
+    def auto_create_user_config_file(self):
+        if '/lib/python' in sys.path[1] or r'\lib\python' in sys.path[1] or '.zip' in sys.path[1]:
+            raise EnvironmentError(f'''如果是cmd 或者shell启动而不是pycharm 这种ide启动脚本，请先在会话窗口设置临时PYTHONPATH为你的项目路径，
+
+                               windwos cmd 使用              set PYTHONNPATH=你的当前python项目根目录,
+                               windows powershell 使用       $env:PYTHONPATH=你的当前python项目根目录,
+                               linux 使用                    export PYTHONPATH=你的当前你python项目根目录,
+                                   
+                               PYTHONPATH 作用是python的基本常识，请ai问一下，不懂这个就太low了。
+                               需要在会话窗口命令行设置临时的环境变量，而不是修改linux配置文件的方式设置永久环境变量，每个python项目的PYTHONPATH都要不一样，不要在配置文件写死
+                               
+                               懂PYTHONPATH 的重要性和妙用见： https://github.com/ydf0509/pythonpathdemo
+                               ''')
+        if self.is_auto_create_user_config_file is False:
+            raise EnvironmentError(f'''如果用户配置模块不能被自动导入，又不希望自动创建，请先在会话窗口设置临时PYTHONPATH为你的配置文件所在的文件夹，
+                               ''')
+        
+        # 解析模块路径，支持多级目录结构
+        project_root = Path(sys.path[1])
+        module_parts = self.user_config_module_path.split('.')
+        
+        # 构建目录路径和文件路径
+        if len(module_parts) > 1:
+            # 多级目录情况，如 configs.py_configs.my_config
+            dir_parts = module_parts[:-1]  # ['configs', 'py_configs']
+            file_name = module_parts[-1]   # 'my_config'
+            
+            # 创建目录结构
+            current_path = project_root
+            for dir_part in dir_parts:
+                current_path = current_path / dir_part
+                current_path.mkdir(exist_ok=True)
+                
+                # 确保每个目录都有 __init__.py 文件
+                init_file = current_path / '__init__.py'
+                if not init_file.exists():
+                    init_file.write_text('# Auto-generated __init__.py\n', encoding='utf-8')
+            
+            target_file_name = current_path / f'{file_name}.py'
+        else:
+            # 单级文件情况，如 config_user2
+            target_file_name = project_root / f'{self.user_config_module_path}.py'
+        
+        source_file_name = importlib.import_module(self.default_config_module_path).__file__
+        copyfile(source_file_name, target_file_name)
+        print(f'在  {project_root} 目录下自动生成了一个文件， 请刷新文件夹查看或修改 \n "{target_file_name}:1" 文件')
+        
+
+    def auto_import_user_config(self):
+        """
+        导入用户配置模块
+
+        Args:
+            module_path: 模块路径，如 'your_project.config'
+            
+        Returns:
+            导入的模块对象
+            
+        Raises:
+            ImportError: 当模块无法找到时，提供详细的解决方案
+        """
+        try:
+            self.overwrite_default_config_with_user_config()
+        except ModuleNotFoundError:
+            self.auto_create_user_config_file()
+            self.overwrite_default_config_with_user_config()
+            
+    def overwrite_default_config_with_user_config(self):
+        m= importlib.import_module(self.user_config_module_path)
+        importlib.reload(m) 
+        print(f'''import {self.user_config_module_path} 成功 ,使用 "{m.__file__}:1"  作为了配置文件''')
+        dest_m = importlib.import_module(self.default_config_module_path)
+        # importlib.reload(dest_m)
+        for name in dir(dest_m):
+            config_cls = getattr(dest_m, name)
+            # 检查是否为类，且是 DataClassBase 的子类（但不是 DataClassBase 本身）
+            if (inspect.isclass(config_cls) and 
+                issubclass(config_cls, DataClassBase) and 
+                config_cls is not DataClassBase):
+                    dest_cls = getattr(dest_m,name)
+                    dest_cls.update_cls_attribute(**getattr(m,name)().get_dict()) # 将用户配置的值更新到默认配置中
+                    dest_cls.has_merged_config = True
+                    if self.is_show_final_config:
+                        if is_main_process():
+                            print(f'{dest_m.__name__}.{name} 的最终融合配置: {config_cls().get_pwd_enc_json()}')
+        # importlib.reload(dest_m) # 这个不能加，不然又恢复了默认值
+   
+    def check_all_default_config_has_merged(self):
+        dest_m = importlib.import_module(self.default_config_module_path)
+        for name in dir(dest_m):
+            config_cls = getattr(dest_m, name)
+            if (inspect.isclass(config_cls) and 
+                issubclass(config_cls, DataClassBase) and 
+                config_cls is not DataClassBase):
+                if  config_cls.has_merged_config is False:
+                    raise ValueError(f'{dest_m.__name__}.{name} 的配置没有被合并')
+
+
+
+
+
+
+
+
+```
+
+**code file end: nb_config/import_user_config.py**
+
+---
+
+
+### code file start: nb_config/nb_config_decorator.py 
+
+```python
+# """
+# nb_config 装饰器模块
+# 提供透明的第三方库配置覆盖功能
+# """
+
+# from functools import wraps
+# import importlib
+# import nb_log
+
+# logger = nb_log.get_logger(__name__)
+
+
+# def nb_config_class(overwrite_config_module: str):
+    
+#     """
+#     配置覆盖装饰器
+    
+#     通过装饰器的方式，将用户自定义的配置透明地注入到第三方库的配置类中。
+#     第三方库无需任何修改，自动使用用户的配置值。
+    
+#     Args:
+#         overwrite_config_module: 要覆盖的目标配置模块路径，如 'third_party.config'
+        
+#     Returns:
+#         装饰器函数
+        
+#     Example:
+#         ```python
+#         # third_party_lib/config.py
+#         from nb_config import DataClassBase
+        
+#         class DatabaseConfig(DataClassBase):
+#             host = 'localhost'
+#             port = 5432
+            
+#         # your_project/my_config.py  
+#         from nb_config import nb_config_class, DataClassBase
+        
+#         @nb_config_class('third_party_lib.config')
+#         class DatabaseConfig(DataClassBase):
+#             host = 'production-db.com'
+#             # port 保持默认值 5432
+#         ```
+#     """
+#     def _nbconfig(cls: type):
+#         # 首先检查是否是自己替换自己（在任何导入和处理之前）
+#         # 检查当前类是否就是要替换的目标类
+#         current_module = cls.__module__
+#         if current_module.endswith(overwrite_config_module):
+#             # print(f"🔄 检测到自引用，跳过配置覆盖: {cls.__name__} (自己替换自己)")
+#             return cls
+            
+#         try:
+#             # 导入目标模块并获取同名配置类
+#             target_module = importlib.import_module(overwrite_config_module)
+#             target_config_class = getattr(target_module, cls.__name__)
+            
+#             # 将用户配置类的属性注入到目标配置类中
+#             for key, value in cls.__dict__.items():
+#                 if not key.startswith('__'):  # 跳过私有属性
+#                     logger.debug(f"配置覆盖: {target_config_class.__module__}.{target_config_class.__name__}.{key} = {value}")
+#                     setattr(target_config_class, key, value)
+                    
+#             return cls  # 直接返回原类，保持用户代码不变
+            
+#         except (ImportError, AttributeError) as e:
+#             logger.error(f"配置覆盖失败: {e}")
+#             # 如果目标模块或类不存在，仍然返回原类，避免中断用户程序
+#             return cls
+            
+#     return _nbconfig 
+```
+
+**code file end: nb_config/nb_config_decorator.py**
+
+---
+
+
+### code file start: nb_config/simple_data_class.py 
+
+```python
+import json
+
+import copy
+import typing
+
+
+from nb_libs.str_utils import PwdEnc, StrHelper
+
+def dict_to_un_strict_json(dictx: dict, indent=4):
+    dict_new = {}
+    for k, v in dictx.items():
+        # only_print_on_main_process(f'{k} :  {v}')
+        if isinstance(v, (bool, tuple, dict, float, int)):
+            dict_new[k] = v
+        else:
+            dict_new[k] = str(v)
+    return json.dumps(dict_new, ensure_ascii=False, indent=indent)
+    
+class DataClassBase:
+    """
+    使用类实现的 简单数据类。
+    也可以使用装饰器来实现数据类
+    """
+    has_merged_config = False
+
+    def __new__(cls, **kwargs):
+        self = super().__new__(cls)
+        self.__dict__ = copy.copy({k: v for k, v in cls.__dict__.items() if not k.startswith('__')})
+        self.__dict__.pop('has_merged_config',None)
+        return self
+
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __call__(self, ) -> dict:
+        return self.get_dict()
+
+    def get_dict(self):
+        return {k: v.get_dict() if isinstance(v, DataClassBase) else v for k, v in self.__dict__.items()}
+
+    def __str__(self):
+        return f"{self.__class__}    {self.get_dict()}"
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def get_json(self,indent=4):
+        return dict_to_un_strict_json(self.get_dict(),indent=indent)
+
+    def get_pwd_enc_json(self,indent=4):
+        """防止打印密码明文,泄漏密码"""
+        dict_new = {}
+        for k, v in self.get_dict().items():
+            # only_print_on_main_process(f'{k} :  {v}')
+            if isinstance(v, (bool, tuple, dict, float, int)):
+                dict_new[k] = v
+            else:
+                v_enc =PwdEnc.enc_broker_uri(str(v))
+                if StrHelper(k).judge_contains_str_list(['pwd', 'pass_word', 'password', 'passwd', 'pass']):
+                    v_enc = PwdEnc.enc_pwd(v_enc)
+                dict_new[k] = v_enc
+        return dict_to_un_strict_json(dict_new,  indent=indent)
+
+    @classmethod
+    def update_cls_attribute(cls,**kwargs):
+        for k ,v in kwargs.items():
+            setattr(cls,k,v)
+        return cls
+
+    def update_instance_attribute(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        return self
+    
+    @classmethod
+    def check_has_merged_config(cls):
+        if cls.has_merged_config is False:
+            raise ValueError(f'{cls.__name__} 的配置没有被合并')
+
+
+if __name__ == '__main__':
+    import datetime
+
+
+    class A(DataClassBase):
+        x = 1
+        y = 2
+        z = datetime.datetime.now()
+
+
+    print(A())
+    print(A(y=3))
+    print(A(y=5).get_dict())
+
+    print(A()['y'])
+    print(A().y)
+
+```
+
+**code file end: nb_config/simple_data_class.py**
+
+---
+
+
+### code file start: nb_config/__init__.py 
+
+```python
+from .simple_data_class import DataClassBase
+from .import_user_config import UserConfigAutoImporter
+
+__version__ = '1.3'
+
+
+
+
+
+
+  
+```
+
+**code file end: nb_config/__init__.py**
+
+---
+

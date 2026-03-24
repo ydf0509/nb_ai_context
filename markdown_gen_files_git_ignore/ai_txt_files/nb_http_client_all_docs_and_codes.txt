@@ -1,0 +1,549 @@
+﻿# markdown content namespace: nb_http_client readme 
+
+
+## File Tree
+
+
+```
+
+└── readme.md
+
+```
+
+---
+
+
+## Included Files
+
+
+- `readme.md`
+
+
+---
+
+
+### code file start: readme.md 
+
+# nb_http_client 是 python 史上性能最强的http客户端
+
+## 0. 安装 pip install nb_http_client
+
+## 1.测试比较环境为 win10 + python3.7 + 2.5ghz主频 + 单进程 + 线程池
+
+```
+e5 2678v3 主频很差，cpu架构很落后，如果用最新的13代i9超频最高可以达到6ghz，测试指标有可能可以提高100%。
+但是不同的请求客户端都是跑在同一个2.5ghz主频上，所以是公平的比较。
+```
+
+
+## 2.不同的请求客户端，请求同一个server服务端，测试结果
+```
+线程池 + requests  390次每秒
+线程池 + requests 同一个session 420次每秒
+线程池 + urllib3    1070次每秒
+线程池 + nb_http_client  2500次每秒，(最新的笔记本cpu amd r7 5800H 4.2ghz 单核可以达到5100次每秒。)
+asyncio + aiohttp    1480次每秒
+线程池 + pycurl 30次每秒
+```
+
+
+## 3.测试代码
+
+### 3.1服务端
+
+```python
+from aiohttp import web
+"""
+主要是用来测试http客户端池的最牛性能。不能让服务端成为客户端测试性能的瓶颈。
+"""
+routes = web.RouteTableDef()
+
+@routes.get('/')
+async def hello(request):
+    return web.Response(text="Hello, aio")
+
+app = web.Application()
+app.add_routes(routes)
+web.run_app(app,port=5678)
+```
+
+
+### 3.2.1 线程池 + 各种请求客户端
+```python
+import typing
+from http.client import HTTPConnection
+import time
+import decorator_libs
+import requests
+import urllib3
+import pycurl
+from io import BytesIO
+from nb_http_client import ObjectPool, HttpOperator
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+http_pool = ObjectPool(object_type=HttpOperator, object_pool_size=50, object_init_kwargs=dict(host='127.0.0.1', port=5678),
+                       max_idle_seconds=30)
+requests_session = requests.session()
+urllib3_pool = urllib3.PoolManager(100)
+
+thread_pool = BoundedThreadPoolExecutor(50)
+
+
+def test_by_requets():
+    # 这个连接池是requests性能5倍。 headers = {'Connection':'close'} 为了防止频繁报错 OSError: [WinError 10048] 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+    resp = requests.get('http://127.0.0.1:5678/', headers={'Connection': 'close'})
+    print(resp.text)
+
+
+def test_by_requests_session():
+    resp = requests_session.get('http://127.0.0.1:5678/', headers={'Connection': 'close'})
+    print(resp.text)
+
+
+def test_by_urllib3():
+    resp = urllib3_pool.request('get', 'http://127.0.0.1:5678/', headers={'Connection': 'close'})  # urllib3 第二快，次代码手动实现的http池是第一快。
+    print(resp.data)
+
+
+def test_by_pycurl():
+    # 这个号称c库，性能是最差的
+    buffer = BytesIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, 'http://127.0.0.1:5678/')
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    c.close()
+    body = buffer.getvalue()
+    print(body.decode())
+
+
+def test_by_nb_http_client():
+    with http_pool.get() as conn:  # type: typing.Union[HttpOperator,HTTPConnection]  # http对象池的请求速度暴击requests的session和直接requests.get
+        r1 = conn.request_and_getresponse('GET', '/')
+        print(r1.text[:10], )
+
+
+
+
+if __name__ == '__main__':
+    with decorator_libs.TimerContextManager():
+        for x in range(30000):
+            # time.sleep(5)  # 这是测试是否是是智能节制新建对象，如果任务不密集，不需要新建那么多对象。
+            thread_pool.submit(test_by_pycurl, )  # TOOD 这里换成不同的函数来测试，然后在控制台搜索时分秒就能看到每一秒的响应个数了。
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试nb_http_client的连接长时间不使用，能自动摧毁
+
+
+```
+
+
+**code file end: readme.md**
+
+---
+
+# markdown content namespace: nb_http_client codes 
+
+
+## File Tree
+
+
+```
+
+└── nb_http_client
+    ├── __init__.py
+    └── tests
+        ├── aio_server.py
+        ├── aio_server_multi.py
+        ├── fastapi_server.py
+        ├── test_all_kinds_http_client.py
+        ├── test_asyncio_http_client.py
+        ├── test_baidu.py
+        ├── test_fast_requests.py
+        └── tornado_server.py
+
+```
+
+---
+
+
+## Included Files
+
+
+- `nb_http_client/__init__.py`
+
+- `nb_http_client/tests/aio_server.py`
+
+- `nb_http_client/tests/aio_server_multi.py`
+
+- `nb_http_client/tests/fastapi_server.py`
+
+- `nb_http_client/tests/test_all_kinds_http_client.py`
+
+- `nb_http_client/tests/test_asyncio_http_client.py`
+
+- `nb_http_client/tests/test_baidu.py`
+
+- `nb_http_client/tests/test_fast_requests.py`
+
+- `nb_http_client/tests/tornado_server.py`
+
+
+---
+
+
+### code file start: nb_http_client/__init__.py 
+
+```python
+from universal_object_pool.contrib.http_pool import HttpOperator, ObjectPool,HTTPSConnection,HTTPConnection
+
+```
+
+**code file end: nb_http_client/__init__.py**
+
+---
+
+
+### code file start: nb_http_client/tests/aio_server.py 
+
+```python
+from aiohttp import web
+"""
+主要是用来测试http客户端池的最牛性能。不能让服务端成为客户端测试性能的瓶颈。
+"""
+routes = web.RouteTableDef()
+
+@routes.get('/')
+async def hello(request):
+    return web.Response(text="Hello, aio")
+
+
+app = web.Application()
+app.add_routes(routes)
+web.run_app(app,port=5678)
+
+```
+
+**code file end: nb_http_client/tests/aio_server.py**
+
+---
+
+
+### code file start: nb_http_client/tests/aio_server_multi.py 
+
+```python
+from aiohttp import web
+from multiprocessing import Process
+"""
+主要是用来测试http客户端池的最牛性能。不能让服务端成为客户端测试性能的瓶颈。
+"""
+routes = web.RouteTableDef()
+
+@routes.get('/')
+async def hello(request):
+    return web.Response(text="Hello, aio")
+
+
+def start(port):
+    app = web.Application()
+    app.add_routes(routes)
+    web.run_app(app,port=port)
+
+if __name__ == '__main__':
+    for p in [7001,7002,7003,7004]:
+        Process(target=start,args=(p,)).start()
+
+```
+
+**code file end: nb_http_client/tests/aio_server_multi.py**
+
+---
+
+
+### code file start: nb_http_client/tests/fastapi_server.py 
+
+```python
+from pathlib import Path
+
+from fastapi import FastAPI
+import nb_log
+
+app = FastAPI()
+
+
+@app.get("/")
+async def hello_world():
+    return "Hello, World!"
+
+
+LOG_FILE_PATH = '/pythonlogs'
+LOGGING_CONFIG: dict = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "()": "uvicorn.logging.DefaultFormatter",
+            "fmt": "%(asctime)s %(levelprefix)s %(message)s",  # 这里日志格式加了时间显示
+            "use_colors": False,
+        },
+        "access": {
+            "()": "uvicorn.logging.AccessFormatter",
+            "fmt": '%(name)s %(asctime)s %(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s',
+            # 这里日志格式加了时间显示
+        },
+    },
+    "handlers": {
+        "default": {
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+        },
+        # "default_file": {
+        #     "formatter": "default",
+        #     "class": "nb_log.handlers.ConcurrentRotatingFileHandler",  # 注意这里是多进程安全切割日志
+        #     'filename': Path(LOG_FILE_PATH) / 'uvicorn_default.log',
+        #     'maxBytes': 1000 * 1000 * 100,
+        #     'backupCount': 3,
+        # },
+        "default_file": {
+            "formatter": "default",
+            "class": "nb_log.handlers.BothDayAndSizeRotatingFileHandler",  # 注意这里是多进程安全切割日志
+            'file_name': 'uvicorn_default.log',
+            'log_path': LOG_FILE_PATH,
+            'max_bytes': 1000 * 1000 * 1000,
+            'back_count': 10,
+
+        },
+
+        "access": {
+            "formatter": "access",
+            "class": "nb_log.handlers.ColorHandler",  # 这里用了nb_log的彩色控制台handler。
+        },
+        # "access_file": {
+        #     "formatter": "access",
+        #     "class": "nb_log.handlers.ConcurrentRotatingFileHandler",  # 注意这里是多进程安全切割日志
+        #     'filename': Path(LOG_FILE_PATH) / 'uvicorn_access.log',
+        #     'maxBytes': 1000 * 1000 * 100,
+        #     'backupCount': 3,
+        # },
+        "access_file": {
+            "formatter": "access",
+             "class": "nb_log.handlers.BothDayAndSizeRotatingFileHandler",  # 注意这里是多进程安全切割日志
+            'file_name': 'uvicorn_access.log',
+            'log_path': LOG_FILE_PATH,
+            'max_bytes': 1000 * 1000 * 1000,
+            'back_count': 10,
+        },
+    },
+    "loggers": {
+        "uvicorn": {"handlers": ["default", "default_file"], "level": "INFO"},
+        "uvicorn.error": {"level": "INFO"},
+        "uvicorn.access": {"handlers": ["access", "access_file"], "level": "INFO", "propagate": False},
+    },
+}
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run('nb_http_client.tests.fastapi_server:app', host="0.0.0.0", port=8008, workers=2,log_config=LOGGING_CONFIG)
+
+
+```
+
+**code file end: nb_http_client/tests/fastapi_server.py**
+
+---
+
+
+### code file start: nb_http_client/tests/test_all_kinds_http_client.py 
+
+```python
+import typing
+import sys
+from http.client import HTTPConnection
+import time
+import decorator_libs
+import requests
+import urllib3
+# import pycurl
+from io import BytesIO
+from nb_http_client import ObjectPool, HttpOperator
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+http_pool = ObjectPool(object_type=HttpOperator, object_pool_size=50, object_init_kwargs=dict(host='127.0.0.1', port=5678),
+                       max_idle_seconds=30)
+requests_session = requests.session()
+urllib3_pool = urllib3.PoolManager(100)
+
+thread_pool = BoundedThreadPoolExecutor(50)
+
+
+def test_by_requets():
+
+    resp = requests.get('http://127.0.0.1:5678/', headers={'Connection': 'close'})
+    print(resp.text)
+
+
+def test_by_requests_session():
+    # 这个连接池是requests性能5倍。 headers = {'Connection':'close'} 为了防止频繁报错 OSError: [WinError 10048] 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+    resp = requests_session.get('http://127.0.0.1:5678/', headers={'Connection': 'close'})
+    print(resp.text)
+
+
+def test_by_urllib3():
+    resp = urllib3_pool.request('get', 'http://127.0.0.1:5678/', headers={'Connection': 'close'})  # urllib3 第二快，代码手动实现的http池是第一快。
+    print(resp.data)
+
+
+def test_by_pycurl():
+    # 这个号称c库，性能是最差的
+    buffer = BytesIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, 'http://127.0.0.1:5678/')
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    c.close()
+    body = buffer.getvalue()
+    print(body.decode())
+
+
+def test_by_nb_http_client():
+    with http_pool.get() as conn:  # type: typing.Union[HttpOperator,HTTPConnection]  # http对象池的请求速度暴击requests的session和直接requests.get
+        r1 = conn.request_and_getresponse('GET', '/')
+        # print(r1.text[:10], )
+        sys.stdout.write(f'{int(time.time())}  {r1.text[:10]} \n')
+
+
+
+
+if __name__ == '__main__':
+    with decorator_libs.TimerContextManager():
+        for x in range(3000000):
+            # time.sleep(5)  # 这是测试是否是是智能节制新建对象，如果任务不密集，不需要新建那么多对象。
+            thread_pool.submit(test_by_nb_http_client, )  # TOOD 这里换成不同的函数来测试，然后在控制台搜索时分秒就能看到每一秒的响应个数了。
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试nb_http_client的连接长时间不使用，能自动摧毁
+
+```
+
+**code file end: nb_http_client/tests/test_all_kinds_http_client.py**
+
+---
+
+
+### code file start: nb_http_client/tests/test_asyncio_http_client.py 
+
+```python
+# coding:utf-8
+import asyncio
+import aiohttp
+import time
+import nb_log
+sh = asyncio.Semaphore(50)
+ss= aiohttp.ClientSession()
+
+async def req():
+    async with sh:
+        async with ss.request('get',url='http://127.0.0.1:5678/') as resp:
+            text = await resp.text()
+            print(text)
+
+if __name__ == '__main__':
+    # 开启事件循环
+    t1 = time.time()
+    loop = asyncio.get_event_loop()
+    tasks = [asyncio.ensure_future(req()) for _ in range(30000)]
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.close()
+    print(time.time() - t1)
+
+
+
+```
+
+**code file end: nb_http_client/tests/test_asyncio_http_client.py**
+
+---
+
+
+### code file start: nb_http_client/tests/test_baidu.py 
+
+```python
+import time
+import typing
+
+import decorator_libs
+from threadpool_executor_shrink_able import BoundedThreadPoolExecutor
+
+from nb_http_client import ObjectPool,HttpOperator,HTTPConnection
+
+http_pool = ObjectPool(object_type=HttpOperator, object_pool_size=50, object_init_kwargs=dict(host='www.baidu.com',is_https=False),
+                       max_idle_seconds=30)
+
+
+def test_by_nb_http_client(url):
+    with http_pool.get() as conn:  # type: typing.Union[HttpOperator,HTTPConnection]  # http对象池的请求速度暴击requests的session和直接requests.get
+        r1 = conn.request_and_getresponse('GET', url)
+        print(r1.text[:10000], )
+
+
+if __name__ == '__main__':
+    thread_pool = BoundedThreadPoolExecutor(50)
+    with decorator_libs.TimerContextManager():
+        for x in range(30000):
+            # time.sleep(5)  # 这是测试是否是是智能节制新建对象，如果任务不密集，不需要新建那么多对象。
+            thread_pool.submit(test_by_nb_http_client, '/')  # TOOD 这里换成不同的函数来测试，然后在控制台搜索时分秒就能看到每一秒的响应个数了。
+        thread_pool.shutdown()
+    time.sleep(10000)  # 这个可以测试nb_http_client的连接长时间不使用，能自动摧毁
+```
+
+**code file end: nb_http_client/tests/test_baidu.py**
+
+---
+
+
+### code file start: nb_http_client/tests/test_fast_requests.py 
+
+```python
+import  fast_requests
+
+
+
+```
+
+**code file end: nb_http_client/tests/test_fast_requests.py**
+
+---
+
+
+### code file start: nb_http_client/tests/tornado_server.py 
+
+```python
+
+import tornado.ioloop
+import tornado.web
+from tornado.httpserver import HTTPServer
+from tornado.options import define, options
+
+
+
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, World!")
+
+def make_app():
+    return tornado.web.Application([
+        (r"/", MainHandler),
+    ])
+
+if __name__ == "__main__":
+    app = make_app()
+    http_server = tornado.httpserver.HTTPServer(app)
+    http_server.bind(5678)
+    http_server.start(4)
+    tornado.ioloop.IOLoop.instance().start()
+```
+
+**code file end: nb_http_client/tests/tornado_server.py**
+
+---
+

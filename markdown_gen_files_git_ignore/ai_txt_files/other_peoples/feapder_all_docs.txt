@@ -1,0 +1,7100 @@
+﻿# feapder 项目教程大全 
+
+
+### 代码文件: docs\question\setting不生效问题.md
+ 
+# setting不生效问题
+
+## 问题
+
+以下面这个项目结构为例，在`spiders`目录下运行`spider_test.py`读取不到`setting.py`，所以`setting`的配置不生效。
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/11/01/16672715088563.jpg)
+
+读取不到是因为python的环境变量问题，在spiders目录下运行，只会找spides目录下的文件
+
+## 解决方式
+
+### 方法1：在setting同级目录下运行
+
+在main.py中导入spider_test， 然后运行main.py
+
+### 方法2：设置工作区间
+
+设置工作区间方式（以pycharm为例）：项目->右键->Mark Directory as -> Sources Root
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/11/01/16672717483410.jpg)
+
+### 方法3：设置PYTHONPATH
+
+以mac或linux举例，执行如下命令
+
+```shell
+export PYTHONPATH=$PYTHONPATH:/绝对路径/spider-project
+```
+注：这个命令设置的环境变量只在当前终端有效
+
+然后即可在spiders目录下运行
+
+```shell
+python spider_test.py
+```
+
+window如何添加环境变量大家自行探索，搞定了可在评论区留言
+ 
+
+### 代码文件: docs\_navbar.md
+ 
+
+  * [爬虫管理系统](feapder_platform/feaplat.md)
+  * [爬虫工具库](https://spidertools.cn)
+  * [知识星球](https://t.zsxq.com/mmAmAuF)
+  * [微信公众号](https://open.weixin.qq.com/qr/code?username=gh_870ffb1242a7)
+  * [知乎](https://www.zhihu.com/people/boris-97-17/posts)
+  * [讨论](https://gitter.im/feapder/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+ 
+
+### 代码文件: docs\source_code\BaseParser.md
+ 
+
+# BaseParser
+
+BaseParser为Spider的基类，用来定义任务下发与数据解析，是面向用户提供的接口
+
+## 源码
+
+
+```python
+class BaseParser(object):
+    def start_requests(self):
+        """
+        @summary: 添加初始url
+        ---------
+        ---------
+        @result: yield Request()
+        """
+
+        pass
+
+    def download_midware(self, request):
+        """
+        @summary: 下载中间件 可修改请求的一些参数, 或可自定义下载，然后返回 request, response
+        ---------
+        @param request:
+        ---------
+        @result: return request / request, response
+        """
+
+        pass
+
+    def validate(self, request, response):
+        """
+        @summary: 校验函数, 可用于校验response是否正确
+        若函数内抛出异常，则重试请求
+        若返回True 或 None，则进入解析函数
+        若返回False，则抛弃当前请求
+        可通过request.callback_name 区分不同的回调函数，编写不同的校验逻辑
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result: True / None / False
+        """
+
+        pass
+
+    def parse(self, request, response):
+        """
+        @summary: 默认的解析函数
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result:
+        """
+
+        pass
+
+    def exception_request(self, request, response):
+        """
+        @summary: 请求或者parser里解析出异常的request
+        ---------
+        @param request:
+        @param response:
+        ---------
+        @result: request / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def failed_request(self, request, response):
+        """
+        @summary: 超过最大重试次数的request
+        可返回修改后的request  若不返回request，则将传进来的request直接人redis的failed表。否则将修改后的request入failed表
+        ---------
+        @param request:
+        ---------
+        @result: request / item / callback / None (返回值必须可迭代)
+        """
+
+        pass
+
+    def start_callback(self):
+        """
+        @summary: 程序开始的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    def end_callback(self):
+        """
+        @summary: 程序结束的回调
+        ---------
+        ---------
+        @result: None
+        """
+
+        pass
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    def close(self):
+        pass
+```
+
+## 使用
+
+以程序开始结束回调举例：
+
+```python
+import feapder
+
+
+class TestSpider(feapder.Spider):
+    def start_callback(self):
+        print("爬虫开始了")
+
+    def end_callback(self):
+        print("爬虫结束了")
+```
+ 
+
+### 代码文件: docs\source_code\custom_downloader.md
+ 
+# 自定义下载器
+
+下载器一共分为三种：**普通下载器**、**支持保持session的下载器**以及**浏览器渲染下载器**。默认已经在框架中内置，setting中的配置如下
+
+```
+DOWNLOADER = "feapder.network.downloader.RequestsDownloader"  # 请求下载器
+SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"  # 渲染下载器
+```
+
+- session下载器当配置中`USE_SESSION = True`时会启用
+- 渲染下载器当使用浏览器下载功能时会启用
+
+这些下载器均为插件的形式，我们可以自定义
+
+## 自定义普通下载器
+
+1. 编写下载器。如在 `xxx-spider/downloader/my_downloader.py `下自定义了如下下载器
+
+    ```
+    import requests
+    
+    from feapder.network.downloader.base import Downloader
+    from feapder.network.response import Response
+    
+    class RequestsDownloader(Downloader):
+        def download(self, request) -> Response:
+            response = requests.request(
+                request.method, request.url, **request.requests_kwargs
+            )
+            # 将requests的response转化为feapder的Response 对象，方便后续解析时使用xpath、re等方法
+            response = Response(response)
+            return response
+    ```
+    
+    注：这里返回的response对象不强制要求为是feapder的Response。返回值会传到解析函数的response参数里，若返回的是文本，则接收到的也是文本。
+    
+    但为了代码可读性，建议将返回值转为feapder的Response后再返回。
+    
+    转feapder的Response的方式有如下几种
+    
+    ```
+    # 方式1
+    # response参数为reqeusts的response
+    Response(response)
+    
+    # 方式2
+    Response.from_text(text="html内容")
+    ```    
+
+2. 在settings中指定下载器
+
+    ```
+    DOWNLOADER = "downloader.my_downloader.RequestsDownloader"
+    ```
+
+## 自定义session下载器
+
+1. 和普通下载器一样，都是继承`Downloader`，如何保持session，可自定义。代码示例 `xxx-spider/downloader/my_downloader.py `
+
+    ```
+    class RequestsSessionDownloader(Downloader):
+        session = None
+    
+        @property
+        def _session(self):
+            if not self.__class__.session:
+                self.__class__.session = requests.Session()
+                # pool_connections – 缓存的 urllib3 连接池个数  pool_maxsize – 连接池中保存的最大连接数
+                http_adapter = HTTPAdapter(pool_connections=1000, pool_maxsize=1000)
+                # 任何使用该session会话的 HTTP 请求，只要其 URL 是以给定的前缀开头，该传输适配器就会被使用到。
+                self.__class__.session.mount("http", http_adapter)
+    
+            return self.__class__.session
+    
+        def download(self, request) -> Response:
+            response = self._session.request(
+                request.method, request.url, **request.requests_kwargs
+            )
+            response = Response(response)
+            return response
+    ```
+
+2. 在settings中指定下载器
+
+    ```
+    SESSION_DOWNLOADER = "downloader.my_downloader.RequestsSessionDownloader"
+    ```
+
+注意，这里要配置 `SESSION_DOWNLOADER`
+
+## 自定义浏览器渲染下载器
+
+1. 编写下载器 `xxx-spider/downloader/my_downloader.py `
+
+**若浏览器框架本身不支持多线程，但想在多线程中使用，如playwright使用，参考如下：**
+
+```
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, PlaywrightDriver
+
+
+class MyDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.PLAYWRIGHT, driver_cls=PlaywrightDriver, thread_safe=True
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.PLAYWRIGHT.get("proxy"):
+            proxy = setting.PLAYWRIGHT.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.PLAYWRIGHT.get("user_agent"):
+            user_agent = setting.PLAYWRIGHT.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.PLAYWRIGHT.get("render_time")
+        wait_until = setting.PLAYWRIGHT.get("wait_until") or "domcontentloaded"
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        driver: PlaywrightDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            if cookies:
+                driver.url = url
+                driver.cookies = cookies
+            driver.page.goto(url, wait_until=wait_until)
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = driver.page.content()
+            response = Response.from_dict(
+                {
+                    "url": driver.page.url,
+                    "cookies": driver.cookies,
+                    "_content": html.encode(),
+                    "status_code": 200,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": driver.user_agent,
+                        "Cookie": tools.cookies2str(driver.cookies),
+                    },
+                }
+            )
+
+            response.driver = driver
+            response.browser = driver
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(driver)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        # 不支持
+        # self._webdriver_pool.close()
+        pass
+```
+
+这里使用了WebDriverPool，参数`thread_safe=True`，即要保证使用时的线程安全，确保同个浏览器对象只能被同一个线程调用
+
+**若浏览器框架本身支持多线程，如selenium，则参考如下**
+
+```
+import feapder.setting as setting
+import feapder.utils.tools as tools
+from feapder.network.downloader.base import RenderDownloader
+from feapder.network.response import Response
+from feapder.utils.webdriver import WebDriverPool, SeleniumDriver
+
+
+class MyDownloader(RenderDownloader):
+    webdriver_pool: WebDriverPool = None
+
+    @property
+    def _webdriver_pool(self):
+        if not self.__class__.webdriver_pool:
+            self.__class__.webdriver_pool = WebDriverPool(
+                **setting.WEBDRIVER, driver=SeleniumDriver
+            )
+
+        return self.__class__.webdriver_pool
+
+    def download(self, request) -> Response:
+        # 代理优先级 自定义 > 配置文件 > 随机
+        if request.custom_proxies:
+            proxy = request.get_proxy()
+        elif setting.WEBDRIVER.get("proxy"):
+            proxy = setting.WEBDRIVER.get("proxy")
+        else:
+            proxy = request.get_proxy()
+
+        # user_agent优先级 自定义 > 配置文件 > 随机
+        if request.custom_ua:
+            user_agent = request.get_user_agent()
+        elif setting.WEBDRIVER.get("user_agent"):
+            user_agent = setting.WEBDRIVER.get("user_agent")
+        else:
+            user_agent = request.get_user_agent()
+
+        cookies = request.get_cookies()
+        url = request.url
+        render_time = request.render_time or setting.WEBDRIVER.get("render_time")
+        if request.get_params():
+            url = tools.joint_url(url, request.get_params())
+
+        browser: SeleniumDriver = self._webdriver_pool.get(
+            user_agent=user_agent, proxy=proxy
+        )
+        try:
+            browser.get(url)
+            if cookies:
+                browser.cookies = cookies
+                # 刷新使cookie生效
+                browser.get(url)
+
+            if render_time:
+                tools.delay_time(render_time)
+
+            html = browser.page_source
+            response = Response.from_dict(
+                {
+                    "url": browser.current_url,
+                    "cookies": browser.cookies,
+                    "_content": html.encode(),
+                    "status_code": 200,
+                    "elapsed": 666,
+                    "headers": {
+                        "User-Agent": browser.user_agent,
+                        "Cookie": tools.cookies2str(browser.cookies),
+                    },
+                }
+            )
+
+            response.driver = browser
+            response.browser = browser
+            return response
+        except Exception as e:
+            self._webdriver_pool.remove(browser)
+            raise e
+
+    def close(self, driver):
+        if driver:
+            self._webdriver_pool.remove(driver)
+
+    def put_back(self, driver):
+        """
+        释放浏览器对象
+        """
+        self._webdriver_pool.put(driver)
+
+    def close_all(self):
+        """
+        关闭所有浏览器
+        """
+        self._webdriver_pool.close()
+```
+
+2. 在settings中指定下载器
+
+```
+RENDER_DOWNLOADER = "downloader.my_downloader.MyDownloader"
+```
+
+注，这里要写`RENDER_DOWNLOADER`
+ 
+
+### 代码文件: docs\source_code\Item.md
+ 
+# Item
+
+有关Item的简介及创建，可参考[命令行工具](command/cmdline?id=_3-创建-item)
+
+## 数据入库
+
+数据自动入库，除了根据mysql表生产item外，也可以直接给item赋值，示例如下：
+
+```
+from feapder import Item
+
+item = Item()
+item.table_name = "spider_data" # 表名
+item.title = title
+yield item
+```
+
+等价于：
+ 
+1. 生成item
+    
+    ```
+    from feapder import Item
+    
+    class SpiderDataItem(Item):
+        """
+        This class was generated by feapder.
+        command: feapder create -i spider_data.
+        """
+    
+        def __init__(self, *args, **kwargs):
+            # self.id = None
+            self.title = None
+    ```
+
+1. 使用
+
+    ```         
+    item = SpiderDataItem()
+    item.title = title
+    yield item
+    ```
+    
+## Item指纹
+
+item指纹用于数据入库前的去重，默认为所有字段值排序后计算的md5，但当数据中有采集时间时，这种指纹计算方式明显不合理。因此我们可以通过如下方法指定参与去重的key
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    
+    __unique_key__ = ["title", "url"] # 指定去重的key为 title、url，最后的指纹为title与url值联合计算的md5
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+        self.crawl_time = None
+```
+
+或可通过如下方式指定`__unique_key__`
+
+```
+item = SpiderDataItem()
+item.unique_key =  ["title", "url"] # 支持列表、元组、字符串
+```
+
+或者重写指纹函数
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    ...
+
+    @property
+    def fingerprint(self):
+        return "我是指纹"
+```
+
+## 入库前对item进行处理
+
+pre_to_db函数为每个item入库前的回调函数，可通过此函数对数据进行处理
+
+```python
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+
+    def pre_to_db(self):
+        """
+        入库前的处理
+        """
+        self.title = self.title.strip()
+```
+
+## 更新数据
+
+采集过程中，往往会有些数据漏采或解析出错，如果我们想更新已入库的数据，可将Item转为UpdateItem
+
+    item = SpiderDataItem.to_UpdateItem()
+    
+或直接修改继承类
+
+```
+from feapder import Item, UpdateItem
+
+class SpiderDataItem(UpdateItem):
+    ...
+```
+
+关于UpdateItem使用，详见[UpdateItem](source_code/UpdateItem)
+
+ 
+
+### 代码文件: docs\source_code\Spider进阶.md
+ 
+# Spider进阶
+
+## Spider参数：
+
+```python
+def __init__(
+    self,
+    redis_key=None,
+    min_task_count=1,
+    check_task_interval=5,
+    thread_count=None,
+    begin_callback=None,
+    end_callback=None,
+    delete_keys=(),
+    keep_alive=None,
+    auto_start_requests=None,
+    send_run_time=False,
+    batch_interval=0,
+    wait_lock=True
+):
+    """
+    @param redis_key: 任务等数据存放在redis中的key前缀
+    @param min_task_count: 任务队列中最少任务数, 少于这个数量才会添加任务，默认1。start_monitor_task 模式下生效
+    @param check_task_interval: 检查是否还有任务的时间间隔；默认5秒
+    @param thread_count: 线程数，默认为配置文件中的线程数
+    @param begin_callback: 爬虫开始回调函数
+    @param end_callback: 爬虫结束回调函数
+    @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+    @param keep_alive: 爬虫是否常驻
+    @param auto_start_requests: 爬虫是否自动添加任务
+    @param send_run_time: 发送运行时间
+    @param batch_interval: 抓取时间间隔 默认为0 天为单位 多次启动时，只有当前时间与第一次抓取结束的时间间隔大于指定的时间间隔时，爬虫才启动
+    @param wait_lock: 下发任务时否等待锁，若不等待锁，可能会存在多进程同时在下发一样的任务，因此分布式环境下请将该值设置True
+    """
+    
+```
+
+下面介绍下理解起来可能有疑惑的参数
+
+### 1. redis_key
+
+redis_key为redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+key的命名方式为[配置文件](source_code/配置文件.md)中定义的
+
+    # 任务表模版
+    TAB_REQUESTS = "{redis_key}:z_requsets"
+    # 任务失败模板
+    TAB_FAILED_REQUESTS = "{redis_key}:z_failed_requsets"
+    # 爬虫状态表模版
+    TAB_SPIDER_STATUS = "{redis_key}:z_spider_status"
+    # item 表模版
+    TAB_ITEM = "{redis_key}:s_{item_name}"
+    # 爬虫时间记录表
+    TAB_SPIDER_TIME = "{redis_key}:h_spider_time"
+    
+    
+### 2. min_task_count
+
+这个参数用于控制最小任务数的，少于这个数量再下发任务，防止redis中堆积任务太多，内存撑爆，通常用于从数据库中取任务，下发。
+
+此参数需要使用`start_monitor_task`方式才会生效，示例如下：
+
+```python
+import feapder
+from feapder.db.mysqldb import MysqlDB
+
+
+class SpiderTest(feapder.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = MysqlDB()
+
+    def start_requests(self):
+        sql = "select url from feapder_test where state = 0 limit 1000"
+        result = self.db.find(sql)
+        for url, in result:
+            yield feapder.Request(url)
+
+    def parser(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    spider = SpiderTest(
+        redis_key="feapder:spider_test", min_task_count=100
+    )
+    # 监控任务，若任务数小于min_task_count，则调用start_requests下发一批，注start_requests产生的任务会一次下发完，比如本例，会一次下发1000个任务，然后任务队列中少于100条任务时，再下发1000条
+    spider.start_monitor_task()
+    # 采集
+    # spider.start()
+```
+
+`spider.start_monitor_task()` 与 `spider.start()` 分开运行，属于master、worker两种进程
+
+### 3. delete_keys
+
+通常在开发阶段使用，如想清空任务队列重新抓取，或防止由于任务防丢策略导致爬虫需等待10分钟才能取到任务的情况。使用场景见[运行问题](question/运行问题?id=_1-二次运行时卡住，不继续抓取)
+
+delete_keys 接收类型为tuple/bool/string，支持正则，拿以下的key举例
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+删除`feapder:spider_test_z_requests` 可写为 `delete_keys="*z_requests"`
+
+删除全部可写为`delete_keys="*"`
+
+### 4. keep_alive
+
+用于`spider.start_monitor_task()` 与 `spider.start()` 这种master、worker模式。
+
+`keep_alive=True`时，爬虫做完任务后不会退出，继续等待任务。
+
+### 5. send_run_time
+
+是否将运行时间作为报警信息发送
+
+### 6. batch_interval
+
+设置每次采集的时间间隔，如我们设置7天，当爬虫正常结束后，7天内我们二次运行爬虫时会自动退出，不执行采集逻辑
+
+```
+def spider_test():
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider", batch_interval=7)
+    spider.start()
+    
+```
+运行：
+
+    上次运行结束时间为 2021-03-15 14:42:31 与当前时间间隔 为 3秒, 小于规定的抓取时间间隔 7天。爬虫不执行，退出～
+
+## Spider方法
+
+Spider继承至BaseParser，并且BaseParser是对开发者暴露的常用方法接口，因此推荐先看[BaseParser](source_code/BaseParser)，Spider方法如下：
+
+### 1. start_monitor_task
+
+下发及监控任务，与`keep_alive`参数配合使用，用于常驻进程的爬虫
+
+使用：
+
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider", keep_alive=True)
+    # 下发及监控任务
+    spider.start_monitor_task()
+    # 采集（进程常驻）
+    # spider.start()
+    
+`spider.start_monitor_task()` 与 `spider.start()` 分开运行，属于master、worker两种进程
+
+## 其他细节
+
+### 1. 任务防丢
+
+Spider爬虫支持任务防丢，断点续爬，实现原理如下：
+
+Spider利用了redis有序集合来存储任务，有序集合有个分数，爬虫取任务时，只取小于当前时间戳分数的任务，同时将任务分数修改为当前时间戳+10分钟，（这个取任务与改分数是原子性的操作）。**当任务做完时，且数据已入库后，再主动将任务删除。**
+
+目的：将取到的任务分数修改成10分钟后，可防止其他爬虫节点取到同样的任务，同时当爬虫意外退出后，任务也不会丢失，10分钟后还可以取到。
+
+10分钟是可配置的，为配置文件中的`REQUEST_LOST_TIMEOUT`参数
+
+### 2. 任务重试
+
+任务请求失败或解析函数抛出异常时，会自动重试，默认重试次数为100次，可通过配置文件`SPIDER_MAX_RETRY_TIMES`参数修改。当任务超过最大重试次数时，默认会将失败的任务存储到Redis的`{redis_key}:z_failed_requsets`里，供人工排查。
+
+相关配置为：
+
+```python
+# 每个请求最大重试次数
+SPIDER_MAX_RETRY_TIMES = 100 
+# 重新尝试失败的requests 当requests重试次数超过允许的最大重试次数算失败
+RETRY_FAILED_REQUESTS = False
+# 保存失败的request
+SAVE_FAILED_REQUEST = True
+# 任务失败数 超过WARNING_FAILED_COUNT则报警
+WARNING_FAILED_COUNT = 1000
+```
+
+当`RETRY_FAILED_REQUESTS=True`时，爬虫再次启动时会将失败的任务重新下发到任务队列中，重新抓取
+
+### 3. 去重
+
+支持任务去重和数据去重，任务默认是临时去重，去重库保留1个月，即只去重1个月内的任务，数据是永久去重。默认去重是关闭的，相关配置为：
+
+```
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+修改默认去重库：
+
+```
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.dedup import Dedup
+
+RequestBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+ItemBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+```
+
+RequestBuffer 为任务入库前缓冲的buffer，ItemBuffer为数据入库前缓冲的buffer
+
+关于去重库详情见：[海量数据去重](source_code/dedup)
+
+### 4. 加速采集
+
+与爬虫采集速度的相关配置为：
+
+```python
+# 爬虫相关
+# COLLECTOR
+COLLECTOR_SLEEP_TIME = 1 # 从任务队列中获取任务到内存队列的间隔
+COLLECTOR_TASK_COUNT = 10 # 每次获取任务数量
+
+# SPIDER
+SPIDER_THREAD_COUNT = 1 # 爬虫并发数
+SPIDER_SLEEP_TIME = 0 # 下载时间间隔（解析完一个response后休眠时间）
+SPIDER_MAX_RETRY_TIMES = 100 # 每个请求最大重试次数
+```
+
+COLLECTOR 为从任务队列中取任务到内存队列的线程，SPIDER为实际采集的线程
+
+`COLLECTOR_TASK_COUNT` 建议 >= `SPIDER_THREAD_COUNT`, 这样每个线程的爬虫才有任务可做。但COLLECTOR_TASK_COUNT不建议过大，不然分布式时，一个池子里的任务都被节点A取走了，其他节点取不到任务了。
+
+### 了解更多
+
+更多配置，详见[配置文件](source_code/配置文件)
+
+ 
+
+### 代码文件: docs\source_code\配置文件.md
+ 
+# 配置文件
+
+配置文件支持全局配置及某个爬虫自定义配置
+
+## 全局配置
+
+在项目的根目录下创建 setting.py, 全部的参数如下，按需选择
+![-w378](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/30/16093189206589.jpg)
+
+```python
+# -*- coding: utf-8 -*-
+"""爬虫配置文件"""
+# import os
+# import sys
+#
+# # MYSQL
+# MYSQL_IP = "localhost"
+# MYSQL_PORT = 3306
+# MYSQL_DB = ""
+# MYSQL_USER_NAME = ""
+# MYSQL_USER_PASS = ""
+#
+# # MONGODB
+# MONGO_IP = "localhost"
+# MONGO_PORT = 27017
+# MONGO_DB = ""
+# MONGO_USER_NAME = ""
+# MONGO_USER_PASS = ""
+#
+# # REDIS
+# # ip:port 多个可写为列表或者逗号隔开 如 ip1:port1,ip2:port2 或 ["ip1:port1", "ip2:port2"]
+# REDISDB_IP_PORTS = "localhost:6379"
+# REDISDB_USER_PASS = ""
+# REDISDB_DB = 0
+# # 适用于redis哨兵模式
+# REDISDB_SERVICE_NAME = ""
+#
+# # 数据入库的pipeline，可自定义，默认MysqlPipeline
+# ITEM_PIPELINES = [
+#     "feapder.pipelines.mysql_pipeline.MysqlPipeline",
+#     # "feapder.pipelines.mongo_pipeline.MongoPipeline",
+#     # "feapder.pipelines.console_pipeline.ConsolePipeline",
+# ]
+# EXPORT_DATA_MAX_FAILED_TIMES = 10  # 导出数据时最大的失败次数，包括保存和更新，超过这个次数报警
+# EXPORT_DATA_MAX_RETRY_TIMES = 10  # 导出数据时最大的重试次数，包括保存和更新，超过这个次数则放弃重试
+#
+# # 爬虫相关
+# # COLLECTOR
+# COLLECTOR_TASK_COUNT = 32  # 每次获取任务数量，追求速度推荐32
+#
+# # SPIDER
+# SPIDER_THREAD_COUNT = 1  # 爬虫并发数，追求速度推荐32
+# # 下载时间间隔 单位秒。 支持随机 如 SPIDER_SLEEP_TIME = [2, 5] 则间隔为 2~5秒之间的随机数，包含2和5
+# SPIDER_SLEEP_TIME = 0
+# SPIDER_MAX_RETRY_TIMES = 10  # 每个请求最大重试次数
+# KEEP_ALIVE = False  # 爬虫是否常驻
+
+# 下载
+# DOWNLOADER = "feapder.network.downloader.RequestsDownloader"
+# SESSION_DOWNLOADER = "feapder.network.downloader.RequestsSessionDownloader"
+# RENDER_DOWNLOADER = "feapder.network.downloader.SeleniumDownloader"
+# # RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+# MAKE_ABSOLUTE_LINKS = True  # 自动转成绝对连接
+
+# # 浏览器渲染
+# WEBDRIVER = dict(
+#     pool_size=1,  # 浏览器的数量
+#     load_images=True,  # 是否加载图片
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     custom_argument=[
+#         "--ignore-certificate-errors",
+#         "--disable-blink-features=AutomationControlled",
+#     ],  # 自定义浏览器渲染参数
+#     xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+#     auto_install_driver=True,  # 自动下载浏览器驱动 支持chrome 和 firefox
+#     download_path=None,  # 下载文件的路径
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+# )
+#
+# PLAYWRIGHT = dict(
+#     user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+#     proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+#     headless=False,  # 是否为无头浏览器
+#     driver_type="chromium",  # chromium、firefox、webkit
+#     timeout=30,  # 请求超时时间
+#     window_size=(1024, 800),  # 窗口大小
+#     executable_path=None,  # 浏览器路径，默认为默认路径
+#     download_path=None,  # 下载文件的路径
+#     render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+#     wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+#     use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+#     page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+#     storage_state_path=None,  # 保存浏览器状态的路径
+#     url_regexes=None,  # 拦截接口，支持正则，数组类型
+#     save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+# )
+#
+# # 爬虫启动时，重新抓取失败的requests
+# RETRY_FAILED_REQUESTS = False
+# # 保存失败的request
+# SAVE_FAILED_REQUEST = True
+# # request防丢机制。（指定的REQUEST_LOST_TIMEOUT时间内request还没做完，会重新下发 重做）
+# REQUEST_LOST_TIMEOUT = 600  # 10分钟
+# # request网络请求超时时间
+# REQUEST_TIMEOUT = 22  # 等待服务器响应的超时时间，浮点数，或(connect timeout, read timeout)元组
+# # item在内存队列中最大缓存数量
+# ITEM_MAX_CACHED_COUNT = 5000
+# # item每批入库的最大数量
+# ITEM_UPLOAD_BATCH_MAX_SIZE = 1000
+# # item入库时间间隔
+# ITEM_UPLOAD_INTERVAL = 1
+# # 内存任务队列最大缓存的任务数，默认不限制；仅对AirSpider有效。
+# TASK_MAX_CACHED_SIZE = 0
+#
+# # 下载缓存 利用redis缓存，但由于内存大小限制，所以建议仅供开发调试代码时使用，防止每次debug都需要网络请求
+# RESPONSE_CACHED_ENABLE = False  # 是否启用下载缓存 成本高的数据或容易变需求的数据，建议设置为True
+# RESPONSE_CACHED_EXPIRE_TIME = 3600  # 缓存时间 秒
+# RESPONSE_CACHED_USED = False  # 是否使用缓存 补采数据时可设置为True
+#
+# # 设置代理
+# PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+# PROXY_ENABLE = True
+#
+# # 随机headers
+# RANDOM_HEADERS = True
+# # UserAgent类型 支持 'chrome', 'opera', 'firefox', 'internetexplorer', 'safari'，'mobile' 若不指定则随机类型
+# USER_AGENT_TYPE = "chrome"
+# # 默认使用的浏览器头
+# DEFAULT_USERAGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+# # requests 使用session
+# USE_SESSION = False
+#
+# # 去重
+# ITEM_FILTER_ENABLE = False  # item 去重
+# REQUEST_FILTER_ENABLE = False  # request 去重
+# ITEM_FILTER_SETTING = dict(
+#     filter_type=1  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、轻量去重（LiteFilter）= 4
+# )
+# REQUEST_FILTER_SETTING = dict(
+#     filter_type=3,  # 永久去重（BloomFilter） = 1 、内存去重（MemoryFilter） = 2、 临时去重（ExpireFilter）= 3、 轻量去重（LiteFilter）= 4
+#     expire_time=2592000,  # 过期时间1个月
+# )
+#
+# # 报警 支持钉钉、飞书、企业微信、邮件
+# # 钉钉报警
+# DINGDING_WARNING_URL = ""  # 钉钉机器人api
+# DINGDING_WARNING_PHONE = ""  # 报警人 支持列表，可指定多个
+# DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 飞书报警
+# # https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+# FEISHU_WARNING_URL = ""  # 飞书机器人api
+# FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+# FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 邮件报警
+# EMAIL_SENDER = ""  # 发件人
+# EMAIL_PASSWORD = ""  # 授权码
+# EMAIL_RECEIVER = ""  # 收件人 支持列表，可指定多个
+# EMAIL_SMTPSERVER = "smtp.163.com"  # 邮件服务器 默认为163邮箱
+# # 企业微信报警
+# WECHAT_WARNING_URL = ""  # 企业微信机器人api
+# WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+# WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+# # 时间间隔
+# WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏; 0表示不去重
+# WARNING_LEVEL = "DEBUG"  # 报警级别， DEBUG / INFO / ERROR
+# WARNING_FAILED_COUNT = 1000  # 任务失败数 超过WARNING_FAILED_COUNT则报警
+#
+# LOG_NAME = os.path.basename(os.getcwd())
+# LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+# LOG_LEVEL = "DEBUG"
+# LOG_COLOR = True  # 是否带有颜色
+# LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+# LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+# LOG_MODE = "w"  # 写文件的模式
+# LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+# LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+# LOG_ENCODING = "utf8"  # 日志文件编码
+# OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+#
+# # 切换工作路径为当前项目路径
+# project_path = os.path.abspath(os.path.dirname(__file__))
+# os.chdir(project_path)  # 切换工作路经
+# sys.path.insert(0, project_path)
+# print("当前工作路径为 " + os.getcwd())
+
+```
+
+- 数据库连接信息默认读取的环境变量，因此若不想将自己的账号暴露给其他同事，建议写在环境变量里，环境变量的`key`与配置文件的`key`相同
+
+- `LOG_LEVEL`为`DEBUG`时，日志输出比较详细，开发阶段使用。线上部署时，可将`LOG_LEVEL`改为`INFO`
+
+## 自定义配置
+
+常用于一个项目下有多个爬虫，不同的爬虫使用不同的配置。我们可以使用类变量`__custom_setting__`自定义配置，示例如下：
+
+```python
+import feapder
+
+
+class SpiderTest(feapder.AirSpider):
+    __custom_setting__ = dict(
+        SPIDER_MAX_RETRY_TIMES=20,
+    )
+```
+
+ 
+
+### 代码文件: docs\foreword\10分钟上手.md
+ 
+
+
+<!--
+ * @Author: Boris
+ * @Date: 2021-02-09 15:03:53
+ * @Description:
+-->
+
+# 糗事百科抓取
+
+
+
+https://www.qiushibaike.com/8hr/page/1/
+
+![-w843](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101267651625.jpg)
+
+我们以糗事百科抓取抓取为例，先抓推荐列表，然后抓详情，带领大家10分钟快速入门
+
+## 1. 抓列表
+
+![-w1485](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101239769142.jpg)
+
+列表是html里直接返回的，我们打开检查工具，观察标题所在的标签，可写出如下xpath表达式
+
+    //a[@class="recmd-content"]
+
+创建爬虫
+
+    feapder create -s spider_test
+
+开始写代码
+
+1. 下发任务：下发1~14页列表任务
+
+        def start_requests(self):
+            for i in range(1, 15):
+                yield feapder.Request("https://www.qiushibaike.com/8hr/page/{}/".format(i))
+
+1. 解析标题及详情页链接
+
+        def parse(self, request, response):
+            article_list = response.xpath('//a[@class="recmd-content"]')
+            for article in article_list:
+                title = article.xpath("./text()").extract_first()
+                url = article.xpath("./@href").extract_first()
+                print(title, url)
+
+3. 运行，打印如下：
+
+    ![-w1183](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101251846542.jpg)
+
+    细心的你，会发现连接也自动补全了，网页源代码如下：
+    ![-w671](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101252789007.jpg)
+
+## 2. 抓详情
+
+抓详情需要将列表采集到的url作为新任务，然后请求，解析。写法很简单，代码如下：
+
+派发详情任务：
+
+    yield feapder.Request(url, callback=self.parser_detail)  # callback 为回调函数
+
+若我们需要携带title字段，写法如下
+
+    yield feapder.Request(url, callback=self.parser_detail, title=title)  # title 为携带的字段，直接携带就行，不用放到一个meta里
+
+解析详情
+
+![-w1470](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101256627827.jpg)
+
+    def parse_detail(self, request, response):
+        """
+        解析详情
+        """
+        # 取url
+        url = request.url
+        # 取title
+        title = request.title
+        # 解析正文
+        content = response.xpath('string(//div[@class="content"])').extract_first() # string 表达式是取某个标签下的文本，包括子标签文本
+
+        print("url", url)
+        print("title", title)
+        print("content", content)
+
+## 整体代码如下
+
+
+    import feapder
+
+
+    class SpiderTest(feapder.AirSpider):
+        def start_requests(self):
+            for i in range(1, 15):
+                yield feapder.Request("https://www.qiushibaike.com/8hr/page/{}/".format(i))
+
+        def parse(self, request, response):
+            article_list = response.xpath('//a[@class="recmd-content"]')
+            for article in article_list:
+                title = article.xpath("./text()").extract_first()
+                url = article.xpath("./@href").extract_first()
+                # print(title, url)
+
+                yield feapder.Request(
+                    url, callback=self.parse_detail, title=title
+                )  # callback 为回调函数
+
+        def parse_detail(self, request, response):
+            """
+            解析详情
+            """
+            # 取url
+            url = request.url
+            # 取title
+            title = request.title
+            # 解析正文
+            content = response.xpath(
+                'string(//div[@class="content"])'
+            ).extract_first()  # string 表达式是取某个标签下的文本，包括子标签文本
+
+            print("url", url)
+            print("title", title)
+            print("content", content)
+
+
+    if __name__ == "__main__":
+        SpiderTest().start()
+
+嫌弃跑的太慢? 我们可以加一个参数轻松解决
+
+
+    if __name__ == "__main__":
+        SpiderTest(thread_count=15).start()
+
+thread_count 为线程数
+
+
+## 采集中可能需要如下问题：
+
+编码错误
+
+![-w1444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/01/09/16101262462057.jpg)
+
+这是因为框架解析解析text时默认使用了`strict`模式，我们可以加如下一行代码将其改成`ignore`模式，这样遇到不支持的字符便忽略
+
+    response.encoding_errors = 'ignore'
+
+![-w718](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/17/16159888418946.jpg)
+
+
+我们还可以指定编码，来解决。写法如下
+
+    response.code = '网页编码' #  已将encoding简写为code
+
+ 
+
+### 代码文件: docs\usage\爬虫集成.md
+ 
+# 爬虫集成
+
+ > 本功能可以将多个爬虫以插件的形式集成为一个爬虫，常用于采集周期一致，需求一致的，但需要采集多个数据源的项目
+ 
+ 
+## 使用场景举例
+
+如我们需要做舆情数据，需要采集多个新闻网站，如何开发爬虫呢？
+
+### 常规做法
+
+每个新闻源写一个或多个爬虫，如下：
+![-w526](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16146986664270.jpg)
+这样每个爬虫之间比较独立，如果有上百个数据源，需要启动上百个爬虫脚本，不便于管理
+
+### 本框架做法
+
+本框架支持上述的常规做法同时，支持了更友好的管理方式，可将这些爬虫集成为一个爬虫，我们只需维护这一个爬虫即可，当然也支持分布式。
+
+![-w528](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16146992324366.jpg)
+
+注： Spider爬虫与BatchSpider爬虫支持集成，AirSpider不支持
+
+## Spider 集成
+
+> 支持分布式采集
+
+以采集新浪和腾讯新闻为例
+
+### 1. 编写解析器
+
+新浪解析器
+```
+import feapder
+
+
+class SinaNewsParser(feapder.BaseParser):
+    def start_requests(self):
+        """
+        注意 这里继承的是BaseParser，而不是Spider
+        """
+        yield feapder.Request("https://news.sina.com.cn/")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+腾讯解析器
+```
+import feapder
+
+
+class TencentNewsParser(feapder.BaseParser):
+    """
+    注意 这里继承的是BaseParser，而不是Spider
+    """
+    def start_requests(self):
+        yield feapder.Request("https://news.qq.com/")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+注意：之前我们爬虫继承的是`Spider`，这里因为要集成，所以要继承`BaseParser`
+
+`BaseParser`只是一个解析器，不具备任何调度功能，我们写好每个网站的解析器，然后集成到爬虫中，由这个爬虫调度这些解析器去解析对应的网站
+
+`BaseParser` 所支持的函数与`Spider`一致，因此集成时爬虫代码无需更改，只需要将继承类改为`BaseParser`即可
+
+### 2. 集成解析器
+
+```python
+from feapder import Spider
+
+spider = Spider(redis_key="feapder:test_spider_integration")
+# 集成
+spider.add_parser(SinaNewsParser)
+spider.add_parser(TencentNewsParser)
+
+spider.start()
+``` 
+
+`add_parser`方法可以集成解析器，只需要将每个解析器的类名传进来即可
+
+完整代码示例：[Spider集成](https://github.com/Boris-code/feapder/tree/master/tests/spider-integration)
+
+## BatchSpider 集成
+
+> 支持批次采集、支持分布式
+
+以采集新浪和腾讯新闻为例
+
+### 1. 编写解析器
+
+新浪解析器
+
+```python
+import feapder
+
+
+class SinaNewsParser(feapder.BatchParser):
+    """
+    注意 这里继承的是BatchParser，而不是BatchSpider
+    """
+    
+    def start_requests(self, task):
+        task_id = task[0]
+        url = task[1]
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(self.name, title)
+        yield self.update_task_batch(request.task_id, 1)
+```
+
+腾讯解析器
+
+```python
+import feapder
+
+
+class TencentNewsParser(feapder.BatchParser):
+    """
+    注意 这里继承的是BatchParser，而不是BatchSpider
+    """
+
+    def start_requests(self, task):
+        task_id = task[0]
+        url = task[1]
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()
+        print(self.name, title)
+        yield self.update_task_batch(request.task_id, 1)
+```
+
+注意：之前我们爬虫继承的是`BatchSpider`，这里因为要集成，所以要继承`BatchParser`
+
+`BatchParser`只是一个解析器，不具备任何调度功能，我们写好每个网站的解析器，然后集成到爬虫中，由这个爬虫调度这些解析器去解析对应的网站
+
+`BatchParser` 所支持的常用函数与`BatchSpider`一致，但`BatchParser`不支持任务初始化函数`init_task`。任务初始化为`BatchSpider`的每个批次开始时的逻辑，所有批次解析器共用一个`init_task`
+
+### 2.集成
+
+```python
+from feapder import BatchSpider
+
+
+def batch_spider_integration_test(args):
+    """
+    BatchSpider集成测试
+    """
+
+    spider = BatchSpider(
+        task_table="batch_spider_integration_task",  # mysql中的任务表
+        batch_record_table="batch_spider_integration_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫集成测试",  # 批次名字
+        batch_interval=7,  # 批次时间 天为单位 若为小时 可写 1 / 24
+        task_keys=["id", "url", "parser_name"],  # 集成批次爬虫，需要将批次爬虫的名字取出来，任务分发时才知道分发到哪个模板上
+        redis_key="feapder:test_batch_spider_integration",  # redis中存放request等信息的根key
+        task_state="state",  # mysql中任务状态字段
+    )
+
+    # 集成
+    spider.add_parser(SinaNewsParser)
+    spider.add_parser(TencentNewsParser)
+
+    if args == 1:
+        spider.start_monitor_task()
+    elif args == 2:
+        spider.start()
+```
+
+任务表：
+
+![-w444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/03/16147423559139.jpg)
+
+任务表里需要有一个字段存储解析器的类名，与对应的任务关联，在我们取任务时携带这个类名，这样框架才知道这条任务归属于哪个解析器
+
+这里存储解析器名字的字段为`parser_name`
+
+完整代码示例：[批次爬虫集成](https://github.com/Boris-code/feapder/tree/master/tests/batch-spider-integration)
+ 
+
+### 代码文件: docs\source_code\报警及监控.md
+ 
+# 报警及监控
+
+支持钉钉、飞书、企业微信、邮件报警
+
+## 钉钉报警
+
+条件：需要有钉钉群，需要获取钉钉机器人的Webhook地址
+
+获取方式参考官方文档：https://developers.dingtalk.com/document/app/custom-robot-access
+
+安全设置选择自定义关键词，填入**feapder**
+
+![-w547](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167753030324.jpg)
+
+或使用加签方式，然后在setting中设置密钥
+
+相关配置：
+
+```python
+# 钉钉报警
+DINGDING_WARNING_URL = ""  # 钉钉机器人api
+DINGDING_WARNING_PHONE = ""  # 报警人 支持列表，可指定多个
+DINGDING_WARNING_ALL = False  # 是否提示所有人， 默认为False
+DINGDING_WARNING_SECRET = None  # 加签密钥
+```
+
+## 企业微信报警
+
+条件：需要企业微信群，并获取企业微信机器人的Webhook地址
+
+获取方式：https://weibanzhushou.com/blog/330
+
+报警简介：
+
+- 仅支持文本模式
+- 当用户手机号码为空字符串或`WECHAT_WARNING_ALL`为`True`时将会`@全体成员`
+
+
+相关设置：
+
+```python
+# 企业微信报警
+WECHAT_WARNING_URL = ""  # 企业微信机器人api
+WECHAT_WARNING_PHONE = ""  # 报警人 将会在群内@此人, 支持列表，可指定多人
+WECHAT_WARNING_ALL = False  # 是否提示所有人， 默认为False
+```
+
+## 飞书报警
+
+可参考文档设置机器人：https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#e1cdee9f
+
+然后在feapder的setting文件中修改如下配置
+
+```
+FEISHU_WARNING_URL = ""  # 飞书机器人api
+FEISHU_WARNING_USER = None  # 报警人 {"open_id":"ou_xxxxx", "name":"xxxx"} 或 [{"open_id":"ou_xxxxx", "name":"xxxx"}]
+FEISHU_WARNING_ALL = False  # 是否提示所有人， 默认为False
+```
+
+## 邮件报警
+
+相关配置：
+
+```
+# 邮件报警
+EMAIL_SENDER = ""  # 发件人
+EMAIL_PASSWORD = ""  # 授权码
+EMAIL_RECEIVER = "" # 收件人 支持列表，可指定多个
+```
+
+邮件报警目前支持163邮箱作为发送者，`EMAIL_SENDER`为邮箱账号，如`feapder@163.com`, `EMAIL_PASSWORD`为授权码，不是登录密码，获取授权码的流程如下：
+
+1. 设置 -> POP3/SMTP/IMAP
+
+    ![-w258](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719328720.jpg)
+
+2. 开启SMTP服务
+
+    ![-w444](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719490656.jpg)
+    
+    开启后，会弹出授权码，该授权码即为EMAIL_PASSWORD
+    
+3. 设置反垃圾规则为高级
+    
+    ![-w1112](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/27/16167719655644.jpg)
+
+4. 将本邮箱账号添加到白名单中
+
+## 报警间隔及报警级别
+
+框架会对相同的报警进行过滤，防止刷屏，默认的报警时间间隔为1小时，可通过以下配置修改：
+
+```python
+WARNING_INTERVAL = 3600  # 相同报警的报警时间间隔，防止刷屏
+WARNING_LEVEL = "DEBUG" # 报警级别， DEBUG / ERROR
+```
+
+DEBUG级别的报警包含一些运行信息，ERROR级别的报警都是有问题的报警，需要及时处理
+
+
+## 可视化监控
+
+支持对爬虫运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+需 feapder>=1.6.6, 需配合feaplat爬虫管理平台
+ 
+
+### 代码文件: docs\question\安装问题.md
+ 
+# 安装问题
+
+## 1. bitarray问题
+
+> window下pip 安装报错
+
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/09/16128685646774.jpg)
+
+解决办法：安装 Microsoft Visual C++ 工具，工具下载地址如下所示：
+https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe
+
+## 2. AttributeError 'str' object has not attribute 'decode'
+
+> window下pip 安装报错
+
+![670479264](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/670479264.jpg)
+
+下载bitarray离线包，版本要求`bitarray>=1.5.3`
+
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#bitarray
+
+![-w722](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158992617537.jpg)
+
+
+解压，进入目录下执行：
+
+    python setup.py install
+
+ 
+
+### 代码文件: docs\usage\AirSpider.md
+ 
+# AirSpider
+
+AirSpider是一款轻量爬虫，学习成本低。面对一些数据量较少，无需断点续爬，无需分布式采集的需求，可采用此爬虫。
+
+## 1. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例
+
+```python
+feapder create -s air_spider_test
+
+请选择爬虫模板
+> AirSpider
+  Spider
+  TaskSpider
+  BatchSpider
+```
+
+生成如下
+
+
+    import feapder
+
+
+    class AirSpiderTest(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+
+        def parse(self, request, response):
+            print(response)
+
+
+    if __name__ == "__main__":
+        AirSpiderTest().start()
+
+
+可直接运行
+
+## 2. 代码讲解
+
+默认生成的代码继承了feapder.AirSpider，包含 `start_requests` 及 `parser` 两个函数，含义如下：
+
+1. feapder.AirSpider：轻量爬虫基类
+2. start_requests：初始任务下发入口
+3. feapder.Request：基于requests库类似，表示一个请求，支持requests所有参数，同时也可携带些自定义的参数，详情可参考[Request](source_code/Request.md)
+4. parser：数据解析函数
+5. response：请求响应的返回体，支持xpath、re、css等解析方式，详情可参考[Response](source_code/Response.md)
+
+除了start_requests、parser两个函数。系统还内置了下载中间件等函数，具体支持可参考[BaseParser](source_code/BaseParser.md)
+
+## 3. 自定义解析函数
+
+开发过程中解析函数往往不止有一个，除了系统默认的parser外，还支持自定义解析函数，写法如下
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", callback=self.parser_xxx)
+
+    def parser_xxx(self, request, response):
+        print(response)
+
+即feapder.Request支持指定callback函数，不指定时默认回调parser
+
+## 4. 携带参数
+
+有时我们需要把前面请求到的数据携带到下一级，写法如下
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com",  xxx="我是携带的数据")
+
+    def parse(self, request, response):
+        xxx = request.xxx
+        print(xxx)
+
+直接在feapder.Request中携带即可，xxx为携带数据的key，可以随意写，只要不和feapder.Request默认参数冲突即可。默认参数参考[Request](source_code/Request.md)。可以携带任意类型的值，如字典、类等
+
+取值：如何携带就如何取值，如上我们携带xxx， 那么`request.xxx` 可将xxx值取出，取出的值和携带的值类型一致。
+
+## 5. 下发新任务
+
+parser中支持下发新任务，写法与start_requests一致，只需要`yield feapder.Request`即可。示例如下：
+
+    def parse(self, request, response):
+        yield feapder.Request("url1") # 不指定callback，任务会调度默认的parser上
+        yield feapder.Request("url2", callback=self.parser_detail) # 指定了callback，任务由callback指定的函数解析
+
+## 6. 下载中间件
+
+下载中间件用于在请求之前，对请求做一些处理，如添加cookie、header等。写法如下：
+
+
+    def download_midware(self, request):
+        request.headers = {'User-Agent':"lalala"}
+        return request
+
+request.参数， 这里的参数支持requests所有参数，同时也可携带些自定义的参数，详情可参考[Request](source_code/Request.md)
+
+默认所有的解析函数在请求之前都会经过此下载中间件
+
+## 7. 自定义下载中间件
+
+与自定义解析函数类似，下载中间件也支持自定义，只需要在feapder.Request参数里指定个`download_midware`回调即可，写法如下：
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", download_midware=self.xxx)
+
+    def xxx(self, request):
+        """
+        我是自定义的下载中间件
+        :param request:
+        :return:
+        """
+        request.headers = {'User-Agent':"lalala"}
+        return request
+
+自定义的下载中间件只有指定的请求才会经过。其他未指定下载中间件的请求，还是会经过默认的下载中间件
+
+## 8. 校验
+
+```python
+def validate(self, request, response):
+    """
+    @summary: 校验函数, 可用于校验response是否正确
+    若函数内抛出异常，则重试请求
+    若返回True 或 None，则进入解析函数
+    若返回False，则抛弃当前请求
+    可通过request.callback_name 区分不同的回调函数，编写不同的校验逻辑
+    ---------
+    @param request:
+    @param response:
+    ---------
+    @result: True / None / False
+    """
+    pass
+```
+
+例如：
+
+```python
+def validate(self, request, response):
+    if response.status_code != 200:
+        raise Exception("response code not 200") # 重试
+
+    # if "哈哈" not in response.text:
+    #     return False # 抛弃当前请求
+```
+
+## 9. 失败重试
+
+框架支持重试机制，下载失败或解析函数抛出异常会自动重试请求。
+
+例如下面代码，校验了返回的code是否为200，非200抛出异常，触发重试
+
+    def parse(self, request, response):
+        if response.status_code != 200:
+            raise Exception("非法页面")
+
+默认最大重试次数为100次，我们可以引入配置文件或自定义配置来修改重试次数，详情参考[配置文件](source_code/配置文件.md)
+
+
+## 10. 爬虫配置
+
+爬虫配置支持自定义配置或引入配置文件`setting.py`的方式。
+
+配置文件：在工作区间的根目录下引入`setting.py`，具体参考[配置文件](source_code/配置文件.md)
+
+![-w261](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16138971894815.jpg)
+
+
+自定义配置：
+使用类变量`__custom_setting__`：
+
+    class AirSpiderTest(feapder.AirSpider):
+        __custom_setting__ = dict(
+            PROXY_EXTRACT_API="代理提取地址",
+        )
+
+上例是配置代理提取地址，以便爬虫使用代理，自定义配置支持配置文件中的所有参数。
+
+配置优先级： 自定义配置 > 配置文件，即自定义配置会覆盖配置文件里的配置信息，不过自定义配置只对自己有效，配置文件可以是多个爬虫公用的
+
+AirSpider不支持去重，因此配置文件中的去重配置无效
+
+## 11. 加快采集速度
+
+默认爬虫为1线程，我们可通过修改线程数来加快采集速度。除了在配置文件中修改或使用自定义配置外，可以在启动函数中传递线程数
+
+
+    if __name__ == "__main__":
+        AirSpiderTest(thread_count=10).start()
+
+## 12. 数据入库
+
+框架内封装了`MysqlDB`、`RedisDB`，与pymysql不同的是，MysqlDB 使用了线程池，且对方法进行了封装，使用起来更方便。RedisDB 支持 哨兵模式、集群模式。使用方法如下：
+
+导入
+
+    from feapder.db.mysqldb import MysqlDB
+    from feapder.db.redisdb import RedisDB
+
+以mysql为例，获取mysql对象
+
+方式1：若`setting.py` 或 `__custom_setting__`中指定了数据库连接信息，则可以直接以`db = MysqlDB()`方式获取
+
+    class AirSpiderTest(feapder.AirSpider):
+        __custom_setting__ = dict(
+            MYSQL_IP="localhost",
+            MYSQL_PORT = 3306,
+            MYSQL_DB = "feapder",
+            MYSQL_USER_NAME = "feapder",
+            MYSQL_USER_PASS = "feapder123"
+
+        )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = MysqlDB()
+
+方式2：若没配置文件，则MysqlDB需要传递连接信息
+
+    db = MysqlDB(
+            ip="localhost",
+            port=3306,
+            user_name="feapder",
+            user_pass="feapder123",
+            db="feapder"
+        )
+
+MysqlDB 的具体使用方法见 [MysqlDB](source_code/MysqlDB.md)
+
+RedisDB 的具体使用方法见 [RedisDB](source_code/RedisDB.md)
+
+框架也支持数据自动入库，详见[数据自动入库](usage/Spider?id=_5-数据自动入库)
+
+## 13. 浏览器渲染下载
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+使用方式：
+```python
+def start_requests(self):
+    yield feapder.Request("https://news.qq.com/", render=True)
+```
+在返回的Request中传递`render=True`即可
+
+框架支持`CHROME`、`EDGE`和`PHANTOMJS`浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+# 浏览器渲染
+WEBDRIVER = dict(
+    pool_size=1,  # 浏览器的数量
+    load_images=True,  # 是否加载图片
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="CHROME",  # CHROME、EDGE或PHANTOMJS,
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    render_time=0, # 渲染时长，即打开网页等待指定时间后再获取源码
+)
+```
+
+## 14. 自定义下载器
+
+自定义下载器即在下载中间件里下载，然后返回response即可，如使用httpx库下载以便支持http2
+
+
+```python
+import feapder
+import httpx
+
+
+class AirSpeedTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def download_midware(self, request):
+        with httpx.Client(http2=True) as client:
+            response = client.get(request.url)
+
+        return request, response
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    AirSpeedTest(thread_count=1).start()
+```
+
+注意，解析函数里的response已经变成了下载中间件返回的response，而非默认的。若想用xpath、css等解析功能，写法如下
+
+```python
+
+import feapder
+import httpx
+from feapder.network.selector import Selector
+
+
+class AirSpeedTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def download_midware(self, request):
+        with httpx.Client(http2=True) as client:
+            response = client.get(request.url)
+
+        return request, response
+
+    def parse(self, request, response):
+        selector = Selector(response.text)
+        title = selector.xpath("//title/text()").extract_first()
+        print(title)
+```
+
+## 15. 主动停止爬虫
+
+```
+import feapder
+
+
+class AirTest(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com")
+
+    def parse(self, request, response):
+        self.stop_spider() # 停止爬虫，可以在任意地方调用该方法
+
+
+if __name__ == "__main__":
+    AirTest().start()
+```
+
+## 16. 完整的代码示例
+
+AirSpider：https://github.com/Boris-code/feapder/blob/master/tests/air-spider/test_air_spider.py
+
+浏览器渲染：https://github.com/Boris-code/feapder/blob/master/tests/test_rander.py
+
+ 
+
+### 代码文件: docs\usage\BatchSpider.md
+ 
+# BatchSpider
+
+BatchSpider是一款分布式批次爬虫，对于需要周期性采集的数据，优先考虑使用本爬虫。
+
+## 1. 创建项目
+
+参考 [Spider](usage/Spider?id=_1-创建项目)
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例:
+
+```python
+feapder create -s batch_spider_test
+
+请选择爬虫模板
+  AirSpider
+  Spider
+  TaskSpider
+> BatchSpider
+```
+
+生成如下
+
+```
+import feapder
+
+
+class BatchSpiderTest(feapder.BatchSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="feapder",
+        MYSQL_USER_NAME="feapder",
+        MYSQL_USER_PASS="feapder123",
+    )
+
+    def start_requests(self, task):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    spider = BatchSpiderTest(
+        redis_key="xxx:xxxx",  # 分布式爬虫调度信息存储位置
+        task_table="",  # mysql中的任务表
+        task_keys=["id", "xxx"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="xxx_batch_record",  # mysql中的批次记录表
+        batch_name="xxx(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    # spider.start_monitor_task() # 下发及监控任务
+    spider.start() # 采集
+```
+
+因BatchSpider是基于redis做的分布式，mysql来维护任务种子及批次信息，因此模板代码默认给了redis及mysql的配置方式，连接信息需按真实情况修改
+
+## 3. 代码讲解
+
+配置信息：
+
+- REDISDB_IP_PORTS： 连接地址，若为集群或哨兵模式，多个连接地址用逗号分开，若为哨兵模式，需要加个REDISDB_SERVICE_NAME参数
+- REDISDB_USER_PASS： 连接密码
+- REDISDB_DB：数据库
+
+BatchSpider参数：
+
+1. redis_key：redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+    ![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+1. task_table：mysql中的任务表，为抓取的任务种子，需要运行前手动创建好
+2. task_keys：任务表里需要获取的字段，框架会将这些字段的数据查询出来，传递给爬虫，然后拼接请求
+3. task_state：任务表里表示任务完成状态的字段，默认是state。字段为整形，有4种状态（0 待抓取，1抓取完毕，2抓取中，-1抓取失败）
+4. batch_record_table：批次信息表，用于记录批次信息，由爬虫自动创建
+5. batch_name： 批次名称，可以理解成爬虫的名字，用于报警等
+6. batch_interval：批次周期 天为单位 若为小时 可写 1 / 24
+
+启动：BatchSpider分为master及work两种程序
+
+1. master负责下发任务，监控批次进度，创建批次等功能，启动方式：
+
+        spider.start_monitor_task()
+
+2. worker负责消费任务，抓取数据，启动方式：
+
+        spider.start()
+
+
+更详细的说明可查看 [BatchSpider进阶](source_code/BatchSpider进阶.md)
+
+## 4. 声明
+
+[Spider](usage/Spider.md)支持的方法BatchSpider都支持，使用方式一致，下面重点讲解不同之处
+
+## 5. 任务表
+
+任务表为存储任务种子的，表结构需要包含`id`、`任务状态`两个字段，如我们需要对某些地址进行采集，设计如下
+
+![-w752](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/22/16139762922842.jpg)
+
+建表语句：
+
+```sql
+CREATE TABLE `batch_spider_task` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) DEFAULT NULL,
+  `state` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
+
+也许有人会问，为什么要弄个任务表，直接把种子任务写到代码里不行么。答：可以的，可以用`AirSpider`或`Spider`这么搞。`BatchSpider`面向的场景是周期性抓取，如我们有1亿个商品需要更新，不可能把这1亿个商品id都写代码里，还是需要存储到一张表里，这个表即为任务表。
+
+为了保证每个商品都得以更新，需要引入抓取状态字段，本例为`state`字段。`state`字段有4种状态（0 待抓取，1抓取完毕，2抓取中，-1抓取失败）。框架下发任务时，会优先分批下发状态为0的任务到redis任务队列，并将这些已下发的任务状态更新为2，当0都下发完毕且redis任务队列中无任务，这时框架会检查任务表里是否还有状态为2的任务，若有则将这些任务视为丢失的任务，然后将这些状态为2的任务置为0，再次分批下发到redis任务队列。直到任务表里任务状态只有1和-1两种状态，才算采集完毕
+
+1 和 -1 两种状态是开发人员在代码里自己维护的。当任务做完时将任务状态更新为1，当任务无效时，将任务状态更新为-1。更新方法见[更新任务状态](usage/BatchSpider?id=_8-更新任务状态)
+
+注意：每个批次开始时，框架默认会重置状态非-1的任务为0，然后重新抓取。-1的任务永远不会抓取
+
+## 7. 拼接任务
+
+```
+def start_requests(self, task):
+    pass
+```
+        
+任务拼接在`start_requests`里处理。这里的task参数为BatchSpider启动参数中指定的`task_keys`对应的值
+
+如表`batch_spider_task`，现有任务信息如下：
+![-w398](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/22/16139773315622.jpg)
+
+启动参数配置如下，注意`task_keys=["id", "url"]`：
+
+```
+def crawl_test(args):
+    spider = test_spider.TestSpider(
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    if args == 1:
+        spider.start_monitor_task()  # 下发及监控任务
+    else:
+        spider.start()  # 采集
+```
+
+这时，start_requests的task参数值即为任务表里id与url对应的值。
+
+```
+    def start_requests(self, task):
+        # task 为在任务表中取出的每一条任务
+        id, url = task  # id， url为所取的字段，main函数中指定的
+        yield feapder.Request(url, task_id=id)
+
+```
+task值的获取方式，支持以下几种：
+
+```python
+# 列表方式
+id, url = task
+id = task[0]
+url = task[1]
+# 字典方式
+id, url = task.id, task.url
+id, url = task.get("id"), task.get("url")
+id, url = task["id"], task["url"]
+```
+
+
+## 8. 更新任务状态
+
+任务的完成状态与失败状态需要自己维护，为了更新这个状态，我们需要在请求中携带任务id，常规写法为 
+
+    yield feapder.Request(url, task_id=id)
+    
+当任务解析完毕后，可使用如下方法更新
+
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+    
+这个更新不是实时的，也会先流经ItemBuffer，然后在数据入库后批量更新
+
+## 9. 处理无效任务
+
+有些任务，可能就是有问题的，我们需要将其更新为-1，防止爬虫一直重试。除了在解析函数中判断当前任务是否有效外，框架还提供了两个函数
+
+```
+def exception_request(self, request, response):
+    """
+    @summary: 请求或者parser里解析出异常的request
+    ---------
+    @param request:
+    @param response:
+    ---------
+    @result: request / callback / None (返回值必须可迭代)
+    """
+
+    pass
+
+def failed_request(self, request, response):
+    """
+    @summary: 超过最大重试次数的request
+    ---------
+    @param request:
+    ---------
+    @result: request / item / callback / None (返回值必须可迭代)
+    """
+
+    pass
+```
+
+`exception_request`：处理请求失败或解析出异常的request，我们可以在这里切换request的cookie等，然后再`yield request`返回处理后的request
+
+`failed_request`：处理超过最大重试次数的request。我们可以在这里将任务状态更新为-1
+
+    def failed_request(self, request, response):
+        """
+        @summary: 超过最大重试次数的request
+        ---------
+        @param request:
+        ---------
+        @result: request / item / callback / None (返回值必须可迭代)
+        """
+
+        yield request
+        yield self.update_task_batch(request.task_id, -1) # 更新任务状态为-1
+
+超过最大重试次数的request会保存到redis里，key名以`z_failed_requsets`结尾。我们可以查看这个表里的失败任务，观察失败原因，以此来调整爬虫
+
+## 10.增量采集
+
+每个批次开始时，框架默认会重置状态非-1的任务为0，然后重新抓取。但是有些需求是增量采集的，做过的任务无需再次处理。重置任务是`init_task`方法实现的，我们可以将`init_task`方法置空来实现增量采集
+
+```
+    def init_task(self):
+        pass
+```
+
+## 11. 调试
+
+与[Spider调试](usage/Spider?id=_6-调试)类似。BatchSpider可以通过`to_DebugBatchSpider`转为调试爬虫，写法如下：
+
+```
+def test_debug():
+    spider = test_spider.TestSpider.to_DebugBatchSpider(
+        task_id=1,
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    spider.start()  # 采集
+```
+
+DebugBatchSpider爬虫支持传递`task_id`或直接传递`task`来指定任务。还支持其他参数，全部参数如下：
+
+    @param task_id:  任务id
+    @param task:  任务  task 与 task_id 二者选一即可
+    @param save_to_db: 数据是否入库 默认否
+    @param update_stask: 是否更新任务 默认否
+
+
+## 12. 运行BatchSpider
+
+与[Spider](usage/Spider?id=_7-运行多个spider)运行方式类似。但因每个爬虫都有maser和work两个入口，因此框架提供一种更方便的方式，写法如下
+
+```
+from spiders import *
+from feapder import ArgumentParser
+
+
+def crawl_test(args):
+    spider = test_spider.TestSpider(
+        redis_key="feapder:test_batch_spider",  # 分布式爬虫调度信息存储位置
+        task_table="batch_spider_task",  # mysql中的任务表
+        task_keys=["id", "url"],  # 需要获取任务表里的字段名，可添加多个
+        task_state="state",  # mysql中任务状态字段
+        batch_record_table="batch_spider_batch_record",  # mysql中的批次记录表
+        batch_name="批次爬虫测试(周全)",  # 批次名字
+        batch_interval=7,  # 批次周期 天为单位 若为小时 可写 1 / 24
+    )
+
+    if args == 1:
+        spider.start_monitor_task()  # 下发及监控任务
+    else:
+        spider.start()  # 采集
+        
+if __name__ == "__main__":
+
+    parser = ArgumentParser(description="批次爬虫测试")
+
+    parser.add_argument(
+        "--crawl_test", type=int, nargs=1, help="BatchSpider demo(1|2）", function=crawl_test
+    )
+
+    parser.start()
+    
+```
+
+运行master
+
+    python3 main.py --crawl_test 1
+
+运行worker
+
+    python3 main.py --crawl_test 2
+    
+crawl_test的args参数会接收1或2两个参数，以此来运行不同的程序
+
+## 13. 完整的代码示例
+
+[https://github.com/Boris-code/feapder/tree/master/tests/batch-spider](https://github.com/Boris-code/feapder/tree/master/tests/batch-spider)
+ 
+
+### 代码文件: docs\source_code\UserPool.md
+ 
+# 用户池使用说明
+
+用户池分为三种，使用场景如下
+1. `GuestUserPool`：游客用户池，用于从不需要登录的页面获取cookie
+2. `NormalUserPool`：普通用户池，管理大量账号的信息，从需要登录的页面获取cookie
+3. `GoldUserPool`：昂贵的用户池，用于账号单价较高，需要限制使用频率、使用时间的场景
+
+## GuestUserPool使用方式
+> 环境：redis
+
+### 导包
+```
+from typing import Optional
+
+from feapder.network.user_pool import GuestUser
+from feapder.network.user_pool import GuestUserPool
+```
+
+### 默认的用户池
+使用webdriver访问page_url生产cookie
+```
+user_pool = GuestUserPool(
+    "test:user_pool", page_url="https://www.baidu.com"
+)
+
+```
+
+### 自定义登录方法
+```
+class CustomGuestUserPool(GuestUserPool):
+    def login(self) -> Optional[GuestUser]:
+        # 此处为假数据，正常需通过网站获取cookie
+        user = GuestUser(
+            user_agent="xxx",
+            proxies="yyy",
+            cookies={"some_key": "some_value{}".format(time.time())},
+        )
+        return user
+
+user_pool = CustomGuestUserPool(
+    "test:user_pool", min_users=10, keep_alive=True
+)
+```
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user(block=True)
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+## NormalUserPool使用方式
+> 环境：redis、mysql
+
+### 导包
+```
+from feapder.network.user_pool import NormalUser
+from feapder.network.user_pool import NormalUserPool
+```
+
+### 自定义登录的方法
+```
+class CustomNormalUserPool(NormalUserPool):
+    def login(self, user: NormalUser) -> NormalUser:
+        # 此处为假数据，正常需通过登录网站获取cookie
+        username = user.username
+        password = user.password
+
+        # 登录获取cookie
+        cookie = "xxx"
+        user.cookies = cookie
+
+        return user
+
+user_pool = CustomNormalUserPool(
+    "test:user_pool",
+    table_userbase="test_userbase",
+    login_retry_times=0,
+    keep_alive=True,
+)
+```
+- table_userbase 为mysql里存储用户信息的表，此表会自动创建，需手动录入用户账密
+
+    例如：
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/12/22/16401504359853.jpg)
+
+
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user()
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+### 标记账号被封
+以后不再使用
+```
+user_pool.tag_user_locked(user.user_id)
+```
+
+## GoldUserPool使用方式
+> 环境：redis
+
+### 导包
+```
+from feapder.network.user_pool import GoldUser
+from feapder.network.user_pool import GoldUserPool
+```
+
+### 定义用户信息
+```
+users = [
+    GoldUser(
+        username="zhangsan",
+        password="1234",
+        max_use_times=10,
+        use_interval=5,
+    ),
+    GoldUser(
+        username="lisi",
+        password="1234",
+        max_use_times=10,
+        use_interval=5,
+        login_interval=50,
+    ),
+]
+```
+
+### 自定义登录的方法
+```
+class CustomGoldUserPool(GoldUserPool):
+    def login(self, user: GoldUser) -> GoldUser:
+        # 此处为假数据，正常需通过登录网站获取cookie
+        username = user.username
+        password = user.password
+
+        # 登录获取cookie
+        cookie = "zzzz"
+        user.cookies = cookie
+
+        return user
+
+user_pool = CustomGoldUserPool(
+    "test:user_pool",
+    users=users,
+    keep_alive=True,
+)
+```
+
+### 获取用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user()
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+
+### 获取指定用户
+无用户时会先登录生产用户
+```
+user = user_pool.get_user(username="用户名")
+print("取到user：", user)
+print("cookie：", user.cookies)
+print("user_agent：", user.user_agent)
+print("proxies：", user.proxies)
+
+```
+
+### 删除用户
+```
+user_pool.del_user(user.user_id)
+```
+
+### 维护一定数量的用户
+run方法需单独起一个进程调用，此进程会常驻，当用户数不足时会及时补充
+```
+user_pool.run()
+```
+
+### 用户延时使用
+```
+user_pool.delay_use(user.user_id, delay_seconds)
+```
+
+### 用户独占使用
+某个用户被指定的爬虫独占使用，独占时间内其他爬虫不可使用
+```
+user = user_pool.get_user(
+    username="用户名",
+    used_for_spider_name="爬虫名"
+)
+```
+ 
+
+### 代码文件: docs\foreword\功能概览.md
+ 
+# FEAPDER
+
+## 1. 支持周期性采集
+
+周期性抓取是爬虫中常见的需求，如每日抓取一次商品的销量等，我们把每个周期称为一个批次。
+
+本框架支持批次采集，引入了批次表的概念，详细记录了每一批次的抓取状态
+
+![-w899](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084680404224.jpg)
+
+## 2. 支持分布式采集
+
+面对海量的数据，分布式采集必不可少的，本框架支持分布式，且可随时重启爬虫，任务不丢失
+
+## 3. 支持爬虫集成
+
+本功能可以将多个爬虫以插件的形式集成为一个爬虫，常用于采集周期一致，需求一致的，但需要采集多个数据源的项目
+
+## 4. 支持海量数据去重
+
+框架内置3种去重机制，通过简单的配置可对任务及数据自动去重，也可拿出来单独作为模块使用，支持批量去重。
+
+1. 临时去重：处理一万条数据约0.26秒。 去重一亿条数据占用内存约1.43G，可指定去重的失效周期
+2. 内存去重：处理一万条数据约0.5秒。 去重一亿条数据占用内存约285MB
+3. 永久去重：处理一万条数据约3.5秒。去重一亿条数据占用内存约285MB
+
+## 5. 数据采集完整性
+
+feapder对于每一条URL数据的抓取采取了强状态的控制，做到采集任务中URL抓取100%不丢失，即使多次尝试失败的URL也会进入错误队列并记录失败原因日志。这一特性对于很多强依赖采集数据的业务场景非常重要，保证数据用的放心。
+
+## 6. 数据自动入库
+
+只需要根据数据库表自动生成item，然后给item属性赋值，直接yield 返回即可批量入库
+
+## 7. 支持Debug模式
+
+爬虫支持debug模式，debug模式下默认数据不入库、不修改任务状态。可针对某个任务进行调试，方便开发
+
+## 8. 完善的报警机制
+
+为了保证数据的全量性、准确性、时效性，本框架内置报警机制，有了这些报警，我们可以实时掌握爬虫状态
+
+1. 实时计算爬虫抓取速度，估算剩余时间，在指定的抓取周期内预判是否会超时
+
+    ![-w657](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084718683378.jpg)
+
+
+2. 爬虫卡死报警
+
+    ![-w501](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084718974597.jpg)
+
+3. 爬虫任务失败数过多报警，可能是由于网站模板改动或封堵导致
+
+    ![-w416](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/29/16092335882158.jpg)
+
+## 9. 下载监控
+
+框架对请求总数、成功数、失败数、解析异常数进行监控，将数据点打入到infuxdb，结合Grafana面板，可方便掌握抓取情况
+
+![-w1299](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/09/16128568548280.jpg)
+
+
+
+ 
+
+### 代码文件: docs\source_code\logger.md
+ 
+# 日志配置及使用
+
+## 日志配置
+
+见配置文件，相关配置如下：
+
+```python
+LOG_NAME = os.path.basename(os.getcwd())
+LOG_PATH = "log/%s.log" % LOG_NAME  # log存储路径
+LOG_LEVEL = "DEBUG"
+LOG_COLOR = True  # 是否带有颜色
+LOG_IS_WRITE_TO_CONSOLE = True  # 是否打印到控制台
+LOG_IS_WRITE_TO_FILE = False  # 是否写文件
+LOG_MODE = "w"  # 写文件的模式
+LOG_MAX_BYTES = 10 * 1024 * 1024  # 每个日志文件的最大字节数
+LOG_BACKUP_COUNT = 20  # 日志文件保留数量
+LOG_ENCODING = "utf8"  # 日志文件编码
+OTHERS_LOG_LEVAL = "ERROR"  # 第三方库的log等级
+```
+
+框架屏蔽了requests、selenium等一些第三方库的日志，OTHERS_LOG_LEVAL是用来控制这些第三库日志等级的。
+
+## 使用日志工具
+
+
+```python
+from feapder.utils.log import log
+
+log.debug("xxx")
+log.info("xxx")
+log.warning("xxx")
+log.error("xxx")
+log.critical("xxx")
+```
+
+默认是带有颜色的日志：
+
+![-w583](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/08/06/16282311862710.jpg)
+
+日志等级：CRITICAL > ERROR > WARNING > INFO > DEBUG
+
+ 
+
+### 代码文件: docs\source_code\MysqlDB.md
+ 
+# MysqlDB
+
+MysqlDB具有断开自动重连特性，支持多线程下操作，内置连接池，最大连接数100
+
+## 连接
+
+```python
+from feapder.db.mysqldb import MysqlDB
+
+
+db = MysqlDB(
+    ip="localhost", port=3306, db="feapder", user_name="feapder", user_pass="feapder123"
+)
+```
+
+若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+```python
+db = MysqlDB()
+```
+    
+或者可以根据url连接
+
+```python
+db = MysqlDB.from_url("mysql://username:password@ip:port/db?charset=utf8mb4")
+```
+    
+## 方法
+
+> MysqlDB封装了增删改查等方法，方便使用
+
+### 查
+
+```python
+def find(self, sql, limit=0, to_json=False):
+    """
+    @summary:
+    无数据： 返回()
+    有数据： 若limit == 1 则返回 (data1, data2)
+            否则返回 ((data1, data2),)
+    ---------
+    @param sql:
+    @param limit:
+    @param to_json 是否将查询结果转为json
+    ---------
+    @result:
+    """
+```
+    
+
+### 增
+
+```python
+def add(self, sql, exception_callfunc=None):
+    """
+    Args:
+        sql:
+        exception_callfunc: 异常回调
+
+    Returns:添加行数
+
+    """
+```
+
+```python
+def add_smart(self, table, data: Dict, **kwargs):
+    """
+    添加数据, 直接传递json格式的数据，不用拼sql
+    Args:
+        table: 表名
+        data: 字典 {"xxx":"xxx"}
+        **kwargs:
+
+    Returns:添加行数
+
+    """
+```
+
+
+```python
+def add_batch(self, sql, datas: List[Dict]):
+    """
+    @summary: 批量添加数据
+    ---------
+    @ param sql: insert ignore into (xxx, xxx) values (%s, %s, %s)
+    @ param datas: 列表 [{}, {}, {}]
+    ---------
+    @result:添加行数
+    """
+```
+
+```python
+def add_batch_smart(self, table, datas: List[Dict], **kwargs):
+    """
+    批量添加数据, 直接传递list格式的数据，不用拼sql
+    Args:
+        table: 表名
+        datas: 列表 [{}, {}, {}]
+        **kwargs:
+
+    Returns: 添加行数
+
+    """
+```
+
+### 更新
+
+```python
+def update(self, sql):
+    pass
+```
+
+```python
+def update_smart(self, table, data: Dict, condition):
+    """
+    更新, 不用拼sql
+    Args:
+        table: 表名 
+        data: 数据 {"xxx":"xxx"}
+        condition: 更新条件 where后面的条件，如 condition='status=1'
+
+    Returns: True / False
+    
+    """
+```
+
+### 删除
+
+```python
+def delete(self, sql):
+    """
+    删除
+    Args:
+        sql: 
+
+    Returns: True / False
+
+    """
+```
+
+### 执行其他sql
+
+```python
+def execute(self, sql):
+    pass
+```
+ 
+
+### 代码文件: docs\question\运行问题.md
+ 
+# 运行问题
+
+## 1. 二次运行时卡住，不继续抓取
+
+![1779423237](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/11/1779423237.jpg)
+
+**原因：**
+
+因爬虫支持分布式和任务防丢，为防止任务抢占和任务丢失，巧妙的利用了redis有序集合来存储任务。
+
+策略：有序集合有个分数，爬虫取任务时，只取小于当前时间戳分数的任务，同时将任务分数修改为当前时间戳+10分钟，当任务做完时，再主动将任务删除。
+
+目的：将取到的任务分数修改成10分钟后，可防止其他爬虫节点取到同样的任务，同时当爬虫意外退出后，任务也不会丢失，10分钟后还可以取到。但也会导致有时爬虫启动时，明明有任务，却处于等待任务的情况。
+
+应对等待情况：
+
+1. 可将任务清空，重新抓取，可直接操作redis清空，或通过传参方式
+
+        spider = test_spider.TestSpider(redis_key="feapder:test_spider", delete_keys="*z_requsets")
+        spider.start()
+        
+    delete_keys为需要删除的key，类型: 元组/bool/string，支持正则; 常用于清空任务队列，否则重启时会断点续爬，如写成`delete_keys=True`也是可以的
+
+1. 手动修改任务分数为小于当前时间搓的分数
+
+    ![-w917](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/11/16154327722622.jpg)
+
+1. 等10分钟就好了
+
+2. 用debug模式开发
+
+ 
+
+### 代码文件: docs\source_code\RedisDB.md
+ 
+# RedisDB
+
+RedisDB支持**哨兵模式**、**集群模式**与单节点的**普通模式**，封装了操作redis的常用的方法
+
+## 连接
+
+> 若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+### 普通模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="localhost:6379", db=0, user_pass=None)
+```
+
+使用地址连接
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB.from_url("redis://[[username]:[password]]@[host]:[port]/[db]")
+```
+
+### 哨兵模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379", db=0, user_pass=None, service_name="my_master")
+```
+
+注意：多个地址用逗号分隔，需传递`service_name`
+
+对应setting配置文件，配置方式为：
+
+```python
+REDISDB_IP_PORTS = "172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379"
+REDISDB_USER_PASS = ""
+REDISDB_DB = 0
+REDISDB_SERVICE_NAME = "my_master"
+```
+
+### 集群模式
+
+```python
+from feapder.db.redisdb import RedisDB
+
+db = RedisDB(ip_ports="172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379", db=0, user_pass=None)
+```
+
+注意：多个地址用逗号分隔，不用传递`service_name`
+
+对应setting配置文件，配置方式为：
+
+```python
+REDISDB_IP_PORTS = "172.25.21.4:26379,172.25.21.5:26379,172.25.21.6:26379"
+REDISDB_USER_PASS = ""
+REDISDB_DB = 0
+```
+
+## 方法：
+
+详见源码，此处不一一列举， 源码：`feapder.db.redisdb`
+ 
+
+### 代码文件: docs\source_code\Response.md
+ 
+
+
+# Response
+
+Response 对 requests 返回的response进行了封装，因此支持response所有方法
+
+## 功能点
+
+### 1. 智能解码
+
+Response 对返回的文本进行了智能解码，可解决绝大多数乱码问题
+
+### 2. 智能转为绝对连接
+
+若网页源码里的连接是相对连接，会自动转为绝对连接
+
+### 3. 支持xpath选择器
+
+例如：
+
+定位a标签连接，返回SelectorList
+```python
+response.xpath("//a/@href")
+```
+
+取第一个连接文本
+
+```python
+response.xpath("//a/@href").extract_first()
+```
+
+取全部连接文本列表
+```python
+response.xpath("//a/@href").extract()
+```
+
+### 4. 支持css选择器
+
+例如：
+
+定位a标签连接，返回SelectorList
+```python
+response.css("a::attr(href)")
+```
+
+取第一个连接文本
+
+```python
+response.css("a::attr(href)").extract_first()
+```
+
+取全部连接文本列表
+```python
+response.css("a::attr(href)").extract()
+```
+
+### 5. 支持正则
+
+获取全部
+```python
+def re(self, regex, replace_entities=False):
+    """
+    @summary: 正则匹配
+    ---------
+    @param regex: 正则或者re.compile
+    @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+    ---------
+    @result: 列表
+    """
+```
+
+获取第一个
+```python
+def re_first(self, regex, default=None, replace_entities=False):
+    """
+    @summary: 正则匹配
+    ---------
+    @param regex: 正则或者re.compile
+    @param default: 未匹配到， 默认值
+    @param replace_entities: 为True时 去掉&nbsp;等字符， 转义&quot;为 " 等， 会使网页结构发生变化。如在网页源码中提取json， 建议设置成False
+    ---------
+    @result: 第一个值或默认值
+    """
+```
+
+例如获取全部连接：
+
+```
+response.re("<a.*?href='(.*?)'")
+```
+
+### 6. 支持BeautifulSoup
+
+默认的features为`html.parser`
+
+```python
+def bs4(self, features="html.parser"):
+    pass
+```
+
+例如获取标题：
+
+```python
+response.bs4().title
+```
+
+
+### 7. 定位混用
+
+xpath、css两种定位方式可混用，如：
+
+```
+response.css("a").xpath("./@href").extract()
+```
+
+### 8. 取文本
+
+取文本有两种方式
+
+方式1：这种直接取的源码
+
+```
+response.text
+```
+
+方式2：这种会将源码转为dom树，然后获取转换之后的文本
+
+```
+response.extract()
+```
+
+如：网页源码`<a class='page-numbers'...`  会被处理成`<a class="page-numbers"`
+
+### 9. 取json
+
+```
+response.json
+```
+
+### 10. 查看下载内容
+
+```
+response.open()
+```
+
+这个函数会打开浏览器，渲染下载内容，方便查看下载内容是否与数据源一致
+
+### 11. 更新response.text的值
+
+```
+response.text = ""
+```
+常用于浏览器渲染模式，如页面有变化，可以取最新的页面内容更新到response.text里，然后使用response的选择器提取内容
+
+### 12. 将普通response转为feapder.Response
+
+```
+response = feapder.Response(response)
+```
+
+### 13. 将源码转为feapder.Response
+
+```
+response = feapder.Response.from_text(text=html, url="", cookies={}, headers={})
+```
+
+url是网页的地址，用来将html里的链接转为绝对链接，若不提供，则无法转换
+
+示例：
+```
+import feapder
+
+html = "<a href='/666'>hello word</a>"
+response = feapder.Response.from_text(text=html, url="https://www.feapder.com", cookies={}, headers={})
+print(response.xpath("//a/@href").extract_first())
+
+输出：https://www.feapder.com/666
+```
+
+### 14. 序列化与反序列化
+
+序列化 
+
+    response_dict = response.to_dict
+
+反序列化 
+
+    feapder.Response.from_dict(response_dict)
+    
+
+### 其他
+
+其他方法与requests的response一致，但有如下差异
+
+## 差异
+
+feapder.Response 与 requests的response有以下几点差异，使用时需要注意
+
+### 1. json方法
+
+获取json数据时，常规的response写法如下：
+
+```
+response.json()
+```
+
+feapder.Response写法如下
+
+```
+response.json
+```
+
+做到了与response.text使用方式保持一致
+
+### 2. 设置编码
+
+常规的response写法如下：
+
+```
+response.enconding="utf-8"
+```
+
+feapder.Response写法如下
+```
+response.code="utf-8"
+```
+做了简化，不过`response.enconding`也支持
+
+### 3. 解码方式(二进制转字符串方式)
+
+
+解码方式有3种 `strict`、`replace`、`ignore`
+
+1. strict：严格模式，一旦有某个字符解不出来，就会报错
+2. replace：替换模式，某个字符解不出来时，替换为乱码字符
+3. ignore：忽略模式，某个字符解不出来时，忽略这个字符
+
+例如：
+
+```shell
+>>>content = b'\xe4\x3f\xa0\xe5\xa5\xbd'
+>>>str(content, errors='replace')
+'�?�好'
+>>>str(content, errors='strict')
+Traceback (most recent call last):
+  File "/Users/Boris/workspace/feapder/venv2/lib/python3.6/site-packages/IPython/core/interactiveshell.py", line 3343, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "<ipython-input-11-a129a2aa6283>", line 1, in <module>
+    str(content, errors='strict')
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe4 in position 0: invalid continuation byte
+>>>str(content, errors='ignore')
+'?好'
+```
+
+常规的response在解码时，使用了`replace`模式，这样会导致数据中可能混杂着乱码，我们不能及时发现.
+
+feapder.Response默认使用了`strict`默认，一旦某个字符解析失败，就会抛异常，防止乱码混入。然后通过人工指定编码，解决乱码问题。
+
+若想修改feapder.Response的解码方式，可通过如下方式指定
+
+```
+response.encoding_errors = "strict"  # strict / replace / ignore
+```
+
+
+
+ 
+
+### 代码文件: docs\usage\TaskSpider.md
+ 
+# TaskSpider
+
+TaskSpider是一款分布式爬虫，内部封装了取种子任务的逻辑，内置支持从redis或者mysql获取任务，也可通过自定义实现从其他来源获取任务
+
+## 1. 创建项目
+
+参考 [Spider](usage/Spider?id=_1-创建项目)
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例:
+
+```python
+feapder create -s task_spider_test
+
+请选择爬虫模板
+  AirSpider
+  Spider
+> TaskSpider
+  BatchSpider
+```
+
+示例代码：
+
+```python
+import feapder
+from feapder import ArgumentParser
+
+
+class TaskSpiderTest(feapder.TaskSpider):
+    # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+    # redis 必须，mysql可选
+    __custom_setting__ = dict(
+        REDISDB_IP_PORTS="localhost:6379",
+        REDISDB_USER_PASS="",
+        REDISDB_DB=0,
+        MYSQL_IP="localhost",
+        MYSQL_PORT=3306,
+        MYSQL_DB="feapder",
+        MYSQL_USER_NAME="feapder",
+        MYSQL_USER_PASS="feapder123",
+    )
+    
+    def add_task(self):
+        # 加种子任务 框架会调用这个函数，方便往redis里塞任务，但不能写成死循环。实际业务中可以自己写个脚本往redis里塞任务
+        self._redisdb.zadd(self._task_table, {"id": 1, "url": "https://www.baidu.com"})
+
+    def start_requests(self, task):
+        task_id, url = task
+        yield feapder.Request(url, task_id=task_id)
+
+    def parse(self, request, response):
+        # 提取网站title
+        print(response.xpath("//title/text()").extract_first())
+        # 提取网站描述
+        print(response.xpath("//meta[@name='description']/@content").extract_first())
+        print("网站地址: ", response.url)
+
+        # mysql 需要更新任务状态为做完 即 state=1
+        # yield self.update_task_batch(request.task_id)
+        
+def start(args):
+    """
+    用mysql做种子表
+    """
+    spider = TaskSpiderTest(
+        task_table="spider_task", # 任务表名
+        task_keys=["id", "url"], # 表里查询的字段
+        redis_key="test:task_spider", # redis里做任务队列的key
+        keep_alive=True, # 是否常驻
+    )
+    if args == 1:
+        spider.start_monitor_task()
+    else:
+        spider.start()
+
+
+def start2(args):
+    """
+    用redis做种子表
+    """
+    spider = TaskSpiderTest(
+        task_table="spider_task2", # 任务表名
+        task_table_type="redis", # 任务表类型为redis
+        redis_key="test:task_spider", # redis里做任务队列的key
+        keep_alive=True, # 是否常驻
+        use_mysql=False, # 若用不到mysql，可以不使用
+    )
+    if args == 1:
+        spider.start_monitor_task()
+    else:
+        spider.start()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="测试TaskSpider")
+
+    parser.add_argument("--start", type=int, nargs=1, help="用mysql做种子表 (1|2）", function=start)
+    parser.add_argument("--start2", type=int, nargs=1, help="用redis做种子表 (1|2）", function=start2)
+
+    parser.start()
+
+    # 下发任务  python3 task_spider_test.py --start 1
+    # 采集  python3 task_spider_test.py --start 2
+```
+
+## 3. 代码讲解
+
+#### 3.1 main
+
+main函数为命令行参数解析，分别定义了两种获取任务的方式。start函数为从mysql里获取任务，前提是需要有任务表。start2函数为从redis里获取任务，指定了根任务的key为`spider_task2`，key的类型为zset
+
+启动：TaskSpider分为master及work两种程序
+
+1. master负责下发任务，监控批次进度，创建批次等功能，启动方式：
+
+        spider.start_monitor_task()
+
+2. worker负责消费任务，抓取数据，启动方式：
+
+        spider.start()
+
+#### 3.1 add_task: 
+
+框架内置的函数，在调用start_monitor_task时会自动调度此函数，用于初始化任务种子，若不需要，可直接删除此函数
+
+本代码示例为向redis的`spider_task2`的key加了个值为`{"id": 1, "url": "https://www.baidu.com"}`的种子
+
+
+
+
+
+ 
+
+### 代码文件: docs\usage\使用前必读.md
+ 
+# 使用前必读
+
+## 爬虫种类简介
+
+feapder爬虫框架内置三种爬虫
+
+1. AirSpider - 轻量级爬虫
+2. Spider - 分布式爬虫
+3. BatchSpider - 分布式批次爬虫
+
+**一、AirSpider :**
+
+轻量爬虫，学习成本低。面对一些数据量较少，无需断点续爬，无需分布式采集的需求，可采用此爬虫。
+ 
+**二、Spider :**
+
+分布式爬虫，适用于海量数据采集，支持断点续爬、爬虫报警、数据自动入库等功能
+
+
+**三、BatchSpider**
+
+分布式批次爬虫，对于需要周期性采集的数据，优先考虑使用本爬虫。
+
+本爬虫会自动维护个批次信息表，详细的记录了每个批次时间、任务完成情况、批次周期等信息，示例数据如下
+![-w899](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/12/20/16084680404224.jpg)
+
+另外本爬虫与其他爬虫最大的区别是，会维护个批次时间信息，本批次未完成下一批次不会开始。
+
+举个例子
+
+> 需求：每7天全量抓取一次商品价格信息。表结构需要包含每个批次信息
+
+表设计如下：
+
+| 字段 | 说明 |
+| --- | --- |
+| id | 主键 |
+| item_id | 商品id |
+| price | 价格 |
+| crawl_time | 采集时间 |
+| batch_date | 批次时间 |
+
+数据示例
+
+| id | item_id | price | crawl_time | batch_date |
+| --- | --- | --- | --- | --- |
+| 1 | 3213 | 99 | 2021-01-01 | 2021-01-01 |
+| 2 | 3214 | 90 | 2021-01-05 | 2021-01-01 |
+| 3 | 3213 | 95 | 2021-01-08 | 2021-01-08 |
+| 4 | 3214 | 92 | 2021-01-20| 2021-01-08 |
+
+从数据示例中可以看到
+- id（1，2） 两条数据虽然是不同天采集的，但都归属于2021-01-01这个批次。
+- id（3，4） 为7天后抓取的新一批数据，归属于2021-01-08这个批次。
+- id为4的数琚，采集时间为20号，虽然已经超出了7天这个维度，但因是采集超时等某种原因导致，为了保证每个批次数据的完整性，仍会归属于2021-01-08这个批次。
+
+BatchSpider爬虫会自动维护这个batch_date， 有了这个batch_date，方便业务做时序数据展示
+
+并且在采集过程中，可随时重启爬虫，若本批次还有剩余任务，会继续抓取，若本批次结束了，下一批次未到时，爬虫会自动退出
+
+## 学习路线
+
+feapder虽然内置三种爬虫，但对于开发者暴露的接口一致。只需要继承不同的类即可，使用方式雷同。
+
+建议学习路线为 AirSpider->Spider->BatchSpider。因为后一个爬虫是基于前一个爬虫丰富而来的，与我们读书 小学->初中->高中这个路线类似
+
+ 
+
+### 代码文件: docs\source_code\dedup.md
+ 
+# Dedup
+
+Dedup是feapder大数据去重模块，不同于BloomFilter，去重受槽位数量影响，Dedup使用了弹性的去重机制，可容纳海量的数据去重。
+
+
+## 去重方式
+
+### 临时去重
+
+> 基于redis，支持批量，去重有时效性。去重一万条数据约0.26秒，一亿条数据占用内存约1.43G
+
+```python
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_ExpireFilter():
+    dedup = Dedup(
+        Dedup.ExpireFilter, expire_time=10, redis_url="redis://@localhost:6379/0"
+    )
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+
+### 内存去重
+
+> 基于内存，支持批量。去重一万条数据约0.5秒，一亿条数据占用内存约285MB
+
+```python
+from feapder.dedup import Dedup
+
+data = {"xxx": 123, "xxxx": "xxxx"}
+datas = ["xxx", "bbb"]
+
+def test_MemoryFilter():
+    dedup = Dedup(Dedup.MemoryFilter)  # 表名为test 历史数据3秒有效期
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+### 永久去重
+
+> 基于redis，支持批量，永久去重。 去重一万条数据约3.5秒，一亿条数据占用内存约285MB
+
+```python
+from feapder.dedup import Dedup
+
+def test_BloomFilter():
+    dedup = Dedup(Dedup.BloomFilter, redis_url="redis://@localhost:6379/0")
+
+    # 逐条去重
+    assert dedup.add(data) == 1
+    assert dedup.get(data) == 1
+
+    # 批量去重
+    assert dedup.add(datas) == [1, 1]
+    assert dedup.get(datas) == [1, 1]
+```
+
+## 过滤数据
+
+Dedup可以通过如下方法，过滤掉已存在的数据
+
+
+```python
+from feapder.dedup import Dedup
+
+def test_filter():
+    dedup = Dedup(Dedup.BloomFilter, redis_url="redis://@localhost:6379/0")
+
+    # 制造已存在数据
+    datas = ["xxx", "bbb"]
+    dedup.add(datas)
+
+    # 过滤掉已存在数据 "xxx", "bbb"
+    datas = ["xxx", "bbb", "ccc"]
+    dedup.filter_exist_data(datas)
+    assert datas == ["ccc"]
+```
+
+## Dedup参数
+
+- **filter_type**：去重类型，支持BloomFilter、MemoryFilter、ExpireFilter三种
+- **redis_url**不是必须传递的，若项目中存在setting.py文件，且已配置redis连接方式，则可以不传递redis_url
+
+    ![-w294](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/07/16151133801599.jpg)
+
+    ```
+    import feapder
+    from feapder.dedup import Dedup
+
+    class TestSpider(feapder.Spider):
+        def __init__(self, *args, **kwargs):
+            self.dedup = Dedup() # 默认是永久去重
+    ```
+
+- **name**: 过滤器名称 该名称会默认以dedup作为前缀 `dedup:expire_set:[name]`或`dedup:bloomfilter:[name]`。 默认ExpireFilter name=过期时间，BloomFilter name=`dedup:bloomfilter:bloomfilter`
+
+ ![-w499](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/07/16151136442498.jpg)
+
+ 若对不同数据源去重，可通过name参数来指定不同去重库
+
+- **absolute_name**：过滤器绝对名称 不会加dedup前缀
+- **expire_time**：ExpireFilter的过期时间 单位为秒，其他两种过滤器不用指定
+- **error_rate**：BloomFilter/MemoryFilter的误判率 默认为0.00001
+- **to_md5**：去重前是否将数据转为MD5，默认是
+
+## 爬虫中使用
+
+框架支持对请求和入库的数据进行去重，仅需要在[配置文件](source_code/配置文件)中进行配置即可
+
+```python
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+或者可以直接导入此去重模块使用
+
+```python
+from feapder.dedup import Dedup
+```
+
+
+ 
+
+### 代码文件: docs\index.html
+```html
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <title>feapder官方文档|feapder-document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="feapder官方文档">
+  <meta name="keywords" content="feapder官方文档,feapder文档,feapder document,feapder教程,feapder">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="baidu-site-verification" content="code-5vXrzaZgX6" />
+  <link rel="stylesheet" href="./lib/docsify/lib/themes/vue.css">
+
+  <meta name="robots" content="all" />
+
+  <meta name="author" content="Boris" />
+  <meta property="og:title" content="feapder官方文档|feapder-document" />
+  <meta property="og:url" content="https://www.feapder.com" />
+  <meta property="og:image" content="http://www.spidertools.cn/img/feapder.5d54c199.png" />
+  <meta property="og:description" content="feapder爬虫框架官方文档" />
+  <meta property="og:site_name" content="feapder爬虫框架官方文档" />
+
+  <!-- 谷歌统计 -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KS7S55K3YN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || []
+    function gtag() { dataLayer.push(arguments) }
+    gtag('js', new Date())
+
+    gtag('config', 'G-KS7S55K3YN');
+  </script>
+
+  <!-- 百度统计 -->
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script")
+      hm.src = "https://hm.baidu.com/hm.js?f45b875b62fd14ec127215dd2057b3cd"
+      var s = document.getElementsByTagName("script")[0]
+      s.parentNode.insertBefore(hm, s)
+    })();
+  </script>
+
+
+</head>
+
+<body>
+  <div id="app"></div>
+  <!-- docsify-edit-on-github -->
+  <script src="./lib/docsify/lib/plugins/docsify-edit-on-github.js"></script>
+
+  <script>
+    window.$docsify = {
+      name: 'feapder-document',
+      repo: 'https://github.com/Boris-code/feapder',
+      loadNavbar: true,
+      loadSidebar: true,
+      coverpage: true,
+      auto2top: true,
+      maxLevel: 2,
+      subMaxLevel: 3,
+      search: {
+        placeholder: '搜索',
+        noData: '找不到结果!',
+        depth: 3
+      },
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',//防止意外回退
+        '/.*/_navbar.md': '/_navbar.md'
+      },
+      ga: 'UA-144208445-1',
+      plugins: [
+        function (hook) {
+          var header = [
+            '<p>',
+            '<a href="https://www.qg.net/product/proxyip.html?web=feapder&keyword=%E4%BB%A3%E7%90%86ip&campaign=w-1" target="_blank">',
+            '<img src="/images/qingguo.jpg" alt="青果代理" width="640px" height="60px">',
+            '</a>',
+            '</p>'
+          ].join('')
+          var footer = [
+            '<hr/>',
+            '<footer style="text-align: center">',
+            '<span><a href="https://beian.miit.gov.cn/" target="_blank">辽ICP备2021010524号-2</a></span>',
+            '</footer>'
+          ].join('')
+          hook.afterEach(function (html) {
+            // var isReadme = window.location.href.indexOf("README");
+            var isReadme = 0 // 可以投放广告
+            if (isReadme === 1) {
+              return header + html + footer
+            } else {
+              return html + footer
+            }
+          })
+        },
+        // docsify-edit-on-github
+        EditOnGithubPlugin.create("https://github.com/Boris-code/feapder/tree/master/docs/",
+          null,
+          '修正此页'
+        )
+      ]
+    }
+  </script>
+
+  <!--gitter 聊天室  -->
+  <script>
+      ((window.gitter = {}).chat = {}).options = {
+      //需要在gitter上创建rootm
+      room: 'feapder/community',
+      preload: true,
+      activation: true
+    };
+  </script>
+  <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
+  <!-- 评论 -->
+  <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+  <script>
+    function loadGitalk() {
+      console.log("load gitalk")
+      var path = location.href.match(/(?<=#)[^?]*/g)
+      path = path ? path[0] : "/"
+      var gitalk = new Gitalk({
+        clientID: '9bbc1bce85637dc3fd74',
+        clientSecret: 'fff857ba856732b11b0e38e18103ff3444c667d6',
+        repo: 'feapder',
+        owner: 'Boris-code',
+        admin: 'Boris-code',
+        proxy: 'https://shielded-brushlands-08810.herokuapp.com/https://github.com/login/oauth/access_token',
+        id: decodeURI(path), // 取地址#xxx? 中的xxx， 防止默认的评论id超过50字
+        // facebook-like distraction free mode
+        distractionFreeMode: false
+      })
+      return gitalk
+    }
+    var gitalk = loadGitalk()
+
+    // 监听URL中hash的变化，如果发现换了一个MD文件，那么刷新页面，解决整个网站使用一个gitalk评论issues的问题。
+    window.onhashchange = function (event) {
+      if (event.newURL.indexOf("#") !== -1 && event.oldURL.indexOf("#") !== -1) {
+        if (event.newURL.match(/(?<=#)[^?]*/g)[0] !== event.oldURL.match(/(?<=#)[^?]*/g)[0]) {
+          if (event.newURL.indexOf("?") === -1) {
+            gitalk = loadGitalk()
+          }
+        }
+      }
+    }
+        // 由于docsify/lib/plugins/gitalk.min.js文件中已经有下面代码了，所以不需要在写一次了
+        // gitalk.render('gitalk-container');    // 渲染Gitalk评论组件
+  </script> -->
+
+  <!-- 其他插件 -->
+  <script src="./lib/docsify/lib/docsify.min.js"></script>
+  <script src="./lib/docsify/lib/plugins/ga.js"></script>
+  <script src="./lib/docsify/lib/plugins/search.js"></script>
+  <script src="./lib/docsify-copy-code/docsify-copy-code.min.js"></script>
+  <script src="./lib/prismjs/components/prism-bash.js"></script>
+  <script src="./lib/prismjs/components/prism-java.js"></script>
+  <script src="./lib/prismjs/components/prism-sql.js"></script>
+  <script src="./lib/prismjs/components/prism-yaml.js"></script>
+  <script src="./lib/prismjs/components/prism-python.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <!-- 分页导航 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+
+</body>
+
+</html>
+```
+
+### 代码文件: docs\robots.txt
+```txt
+User-agent: *
+```
+
+### 代码文件: docs\usage\Spider.md
+ 
+# Spider
+
+Spider是一款基于redis的分布式爬虫，适用于海量数据采集，支持断点续爬、爬虫报警、数据自动入库等功能
+
+## 1. 创建项目
+
+创建项目这一步不是必须的，一个脚本可以解决的需求，可直接创建爬虫。若需求比较复杂，需要写多个爬虫，那么最好用项目形式把这些脚本管理起来。
+
+命令参考：[命令行工具](command/cmdline.md?id=_1-创建爬虫项目)
+
+示例:
+
+    feapder create -p spider-project
+    
+创建好项目后，开发时我们需要将项目设置为工作区间，否则引入非同级目录下的文件时，编译器会报错。不过因为main.py在项目的根目录下，因此不影响正常运行。
+
+![-w925](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139218044066.jpg)
+
+设置工作区间方式（以pycharm为例）：项目->右键->Mark Directory as -> Sources Root
+
+
+## 2. 创建爬虫
+
+命令参考：[命令行工具](command/cmdline.md?id=_2-创建爬虫)
+
+示例: 
+
+```python
+feapder create -s spider_test
+
+请选择爬虫模板
+  AirSpider
+> Spider
+  TaskSpider
+  BatchSpider
+```
+
+生成如下
+
+
+    import feapder
+
+
+    class SpiderTest(feapder.Spider):
+        # 自定义数据库，若项目中有setting.py文件，此自定义可删除
+        __custom_setting__ = dict(
+            REDISDB_IP_PORTS="localhost:6379", REDISDB_USER_PASS="", REDISDB_DB=0
+        )
+    
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+    
+        def parse(self, request, response):
+            print(response)
+    
+    
+    if __name__ == "__main__":
+        SpiderTest(redis_key="xxx:xxx").start()
+
+
+因Spider是基于redis做的分布式，因此模板代码默认给了redis的配置方式，连接信息需按真实情况修改
+
+## 3. 代码讲解
+
+配置信息：
+
+- REDISDB_IP_PORTS： 连接地址，若为集群或哨兵模式，多个连接地址用逗号分开，若为哨兵模式，需要加个REDISDB_SERVICE_NAME参数
+- REDISDB_USER_PASS： 连接密码
+- REDISDB_DB：数据库
+
+Spider参数：
+
+redis_key为redis中存储任务等信息的key前缀，如redis_key="feapder:spider_test", 则redis中会生成如下
+
+![-w365](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139009217536.jpg)
+
+更详细的说明可查看 [Spider进阶](source_code/Spider进阶.md)
+
+## 4. 声明
+
+[AirSpider](usage/AirSpider.md)支持的方法Spider都支持，使用方式一致，下面重点讲解不同之处
+
+## 5. 数据自动入库
+
+除了导入MysqlDB这种方式外，Spider支持数据自动批量入库。我们需要将数据封装为一个item，然后返回给框架即可。步骤如下：
+
+1.创建item，命令参考[命令行工具](command/cmdline.md?id=_3-创建-item)。这里我们创建了个SpiderDataItem， 生成的代码如下：
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None  # type : int(10) unsigned | allow_null : NO | key : PRI | default_value : None | extra : auto_increment | column_comment : 
+        self.title = None  # type : varchar(255) | allow_null : YES | key :  | default_value : None | extra : | column_comment :
+```
+
+
+2.给item赋值，然后yield返回即可
+
+代码示例：
+
+![-w682](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139031333228.jpg)
+
+返回item后，item会流经到框架的ItemBuffer, ItemBuffer每.05秒或当item数量积攒到5000个，便会批量将这些item批量入库。表名为类名去掉Item的小写，如SpiderDataItem数据会落入到spider_data表。
+
+Item详细介绍参考[Item](source_code/Item.md)
+
+[comment]: <> (ItemBuffer详细介绍请参考[ItemBuffer]&#40;source_code/ItemBuffer.md&#41;)
+
+## 6. 调试
+
+开发过程中，我们可能需要针对某个请求进行调试，常规的做法是修改下发任务的代码。但这样并不好，改来改去可能把之前写好的逻辑搞乱了，或者忘记改回来直接发布了，又或者调试的数据入库了，污染了库里已有的数据，造成了很多本来不应该发生的问题。
+
+本框架支持Debug爬虫，可针对某条任务进行调试，写法如下：
+
+    if __name__ == "__main__":
+        spider = SpiderTest.to_DebugSpider(
+            redis_key="feapder:spider_test", request=feapder.Request("http://www.baidu.com")
+        )
+        spider.start()
+    
+对比下之前的启动方式
+
+    spider = SpiderTest(redis_key="feapder:spider_test")
+    spider.start()
+    
+可以看到，代码中 `to_DebugSpider`方法可以将原爬虫直接转为debug爬虫，然后通过传递request参数抓取指定的任务。
+
+通常结合断点来进行调试，debug模式下，运行产生的数据默认不入库
+
+除了指定request参数外，还可以指定`request_dict`参数，request_dict接收字典类型，如`request_dict={"url":"http://www.baidu.com"}`, 其作用于传递request一致。request 与 request_dict 二者选一传递即可
+
+## 7. 运行多个Spider
+
+通常，一个项目下可能存在多个爬虫，为了规范，建议启动入口统一放到项目下的main.py中，然后以命令行的方式运行指定的文件。
+
+例如如下项目：
+
+![-w300](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/21/16139224711465.jpg)
+
+项目中包含了两个spider，main.py写法如下：
+
+```
+from spiders import *
+from feapder import Request
+from feapder import ArgumentParser
+
+
+def test_spider():
+    spider = test_spider.TestSpider(redis_key="feapder:test_spider")
+    spider.start()
+
+
+def test_spider2():
+    spider = test_spider.TestSpider2(redis_key="feapder:test_spider2")
+    spider.start()
+
+
+def test_debug_spider():
+    # debug爬虫
+    spider = test_spider.TestSpider.to_DebugSpider(
+        redis_key="feapder:test_spider", request=Request("http://www.baidu.com")
+    )
+    spider.start()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Spider测试")
+
+    parser.add_argument(
+        "--test_spider", action="store_true", help="测试Spider", function=test_spider
+    )
+    parser.add_argument(
+        "--test_spider2", action="store_true", help="测试Spider2", function=test_spider2
+    )
+    parser.add_argument(
+        "--test_debug_spider",
+        action="store_true",
+        help="测试DebugSpider",
+        function=test_debug_spider,
+    )
+
+    parser.start()
+```
+
+这里使用了`ArgumentParser`模块，使其支持命令行参数，如运行test_spider
+
+    python3 main.py --test_spider
+    
+## 8. 分布式
+
+分布式说白了就是启动多个进程，处理同一批任务。`Spider`支持启动多份，且不会重复发下任务，我们可以在多个服务器上部署启动，也可以在同一个机器上启动多次。
+    
+## 9. 完整的代码示例
+
+[https://github.com/Boris-code/feapder/tree/master/tests/spider](https://github.com/Boris-code/feapder/tree/master/tests/spider)
+
+ 
+
+### 代码文件: docs\README.md
+ 
+# FEAPDER
+
+![](https://img.shields.io/badge/python-3.6-brightgreen)
+![](https://img.shields.io/github/watchers/Boris-code/feapder?style=social)
+![](https://img.shields.io/github/stars/Boris-code/feapder?style=social)
+![](https://img.shields.io/github/forks/Boris-code/feapder?style=social)
+[![Downloads](https://pepy.tech/badge/feapder)](https://pepy.tech/project/feapder)
+[![Downloads](https://pepy.tech/badge/feapder/month)](https://pepy.tech/project/feapder)
+[![Downloads](https://pepy.tech/badge/feapder/week)](https://pepy.tech/project/feapder)
+
+## 简介
+
+1. feapder是一款上手简单，功能强大的Python爬虫框架，内置AirSpider、Spider、TaskSpider、BatchSpider四种爬虫解决不同场景的需求。
+2. 支持断点续爬、监控报警、浏览器渲染、海量数据去重等功能。
+3. 更有功能强大的爬虫管理系统feaplat为其提供方便的部署及调度
+
+读音: `[ˈfiːpdə]`
+
+![feapder](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/09/04/feapder.jpg)
+
+## 文档地址
+
+- 官方文档：https://feapder.com
+- github：https://github.com/Boris-code/feapder
+- 更新日志：https://github.com/Boris-code/feapder/releases
+- 爬虫管理系统：http://feapder.com/#/feapder_platform/feaplat
+
+
+## 环境要求：
+
+- Python 3.6.0+
+- Works on Linux, Windows, macOS
+
+## 安装
+
+From PyPi:
+
+精简版
+
+```shell
+pip install feapder
+```
+
+浏览器渲染版：
+```shell
+pip install "feapder[render]"
+```
+
+完整版：
+
+```shell
+pip install "feapder[all]"
+```
+
+三个版本区别：
+
+1. 精简版：不支持浏览器渲染、不支持基于内存去重、不支持入库mongo
+2. 浏览器渲染版：不支持基于内存去重、不支持入库mongo
+3. 完整版：支持所有功能
+
+
+完整版可能会安装出错，若安装出错，请参考[安装问题](question/安装问题)
+
+## 小试一下
+
+创建爬虫
+
+```shell
+feapder create -s first_spider
+```
+
+创建后的爬虫代码如下：
+
+```python
+
+import feapder
+
+
+class FirstSpider(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        print(response)
+
+
+if __name__ == "__main__":
+    FirstSpider().start()
+
+```
+
+直接运行，打印如下：
+
+```shell
+Thread-2|2021-02-09 14:55:11,373|request.py|get_response|line:283|DEBUG|
+                -------------- FirstSpider.parse request for ----------------
+                url  = https://www.baidu.com
+                method = GET
+                body = {'timeout': 22, 'stream': True, 'verify': False, 'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36'}}
+
+<Response [200]>
+Thread-2|2021-02-09 14:55:11,610|parser_control.py|run|line:415|DEBUG| parser 等待任务...
+FirstSpider|2021-02-09 14:55:14,620|air_spider.py|run|line:80|INFO| 无任务，爬虫结束
+```
+
+代码解释如下：
+
+1. start_requests： 生产任务
+2. parse： 解析数据
+
+## 爬虫工具推荐
+
+1. 爬虫在线工具库：http://www.spidertools.cn
+2. 爬虫管理系统：http://feapder.com/#/feapder_platform/feaplat
+3. 验证码识别库：https://github.com/sml2h3/ddddocr
+
+
+<!-- ## 微信赞赏
+
+如果您觉得这个项目帮助到了您，您可以帮作者买一杯咖啡表示鼓励 🍹
+
+也可和作者交个朋友，解决您在使用过程中遇到的问题
+
+
+![赞赏码](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/zan-shang-ma.png) -->
+
+## 学习交流
+
+<table border="0">
+    <tr>
+     <td> 知识星球：17321694 </td>
+     <td> 作者微信： boris_tm </td>
+     <td> QQ群号：521494615</td>
+    </tr>
+    <tr>
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg?x-oss-process=style/markdown-media" width="250px" /> </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2024/04/28/17142933285892.jpg" width="250px" /> </td>
+    </tr>
+  </table>
+
+
+  加好友备注：feapder
+ 
+
+### 代码文件: docs\source_code\UpdateItem.md
+ 
+# UpdateItem
+
+UpdateItem用于更新数据，继承至Item，所以使用方式基本与Item一致，下载只说不同之处
+
+## 更新逻辑
+
+更新逻辑借助了数据库的唯一索引，即插入数据时发现数据已存在，则更新。因此要求数据表必须存在唯一索引，才能使用UpdateItem
+
+比如将title设置唯一，要求每条数据的title都不能重复
+
+![-w781](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158245077159.jpg)
+
+或联合索引，要求title与url不能同时重复
+
+![-w761](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/03/16/16158245648750.jpg)
+
+
+## 指定更新的字段
+
+方式1：指定`__update_key__`
+
+```python
+from feapder import UpdateItem
+
+
+class SpiderDataItem(UpdateItem):
+    
+    __update_key__ = ["title"] # 更新title字段
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+```
+
+方式2：赋值`update_key`
+
+```python
+from feapder import UpdateItem
+
+
+class SpiderDataItem(UpdateItem):
+
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+
+item = SpiderDataItem()
+item.update_key = "title" # 支持列表、元组、字符串
+```
+
+方式3：将普通的item转为UpdateItem，然后再指定更新的key
+
+```python
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+        self.url = None
+
+item = SpiderDataItem()
+item = item.to_UpdateItem()
+item.update_key = "title"
+```
+
+**推荐方式1，直接改Item类，不用修改爬虫代码**
+ 
+
+### 代码文件: docs\feapder_platform\usage.md
+ 
+# FEAPLAT使用说明
+
+## 首次运行须知
+
+1. 管理系统默认账号密码：admin / admin
+
+## 添加项目
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318800747189.jpg)
+
+1. 使用git方式上传项目时，需要使用SSH协议，若拉取私有项目，可在feaplat的设置页面添加 SSH 密钥。使用git方式，每次运行前会拉取默认分支最新的代码
+2. 项目会被放到爬虫`worker`容器的根目录下 即 `/项目文件`
+3. 工作路径：是指你的项目路径，比如下面的项目结构：
+    
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315322995977.jpg)
+    
+    工作路径为 `/spider-project`，feaplat会进入到这个目录，后续的代码执行命令都是在这个路径下运行的 
+    
+1. requirements.txt：用于安装依赖包，填写依赖包的绝对路径
+
+## 运行
+
+1. 启动命令：启动命令是在您添加项目时配置的工作路径下执行的
+2. 定时类型：
+    1. cron：crontab表达式，参考：https://tool.lu/crontab/
+    2. interval：时间间隔
+    3. date：指定日期
+    4. once：立即运行，且只运行一次
+
+## 示例
+
+1. 准备项目，项目结构如下：
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343707944750.jpg)
+2. 压缩后上传：（推荐使用 `feapder zip` 命令压缩）
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343709590040.jpg)
+   - 工作路径：上传的项目会被放到docker里的根目录下（跟你本机项目路径没关系），然后解压运行。因`feapder_demo.zip`解压后为`feapder_demo`，所以工作路径配置`/feapder_demo`
+   - 本项目没依赖，可以不配置`requirements.txt`
+   - 若需要第三放库，则在项目下创建requirements.txt文件，把依赖库写进去，然后路径指向这个文件即可，如`/feaplat_demo/requirements.txt`
+1. 点击项目进入任务列表，添加任务
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343712604864.jpg)
+   启动命令的执行位置是在上面配置的工作路径下执行的，定时类型为once时点击确认添加会自动执行
+1. 查看任务实例：
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343720658671.jpg)
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/16/16343720862217.jpg)
+    
+   可以看到已经运行完毕 
+   
+## git方式拉取私有项目
+
+拉取私有项目需在git仓库里添加如下公钥
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd/k/tjbcMislEunjtYQNXxz5tgEDc/fSvuLHBNUX4PtfmMQ07TuUX2XJIIzLRPaqv3nsMn3+QZrV0xQd545FG1Cq83JJB98ATTW7k5Q0eaWXkvThdFeG5+n85KeVV2W4BpdHHNZ5h9RxBUmVZPpAZacdC6OUSBYTyCblPfX9DvjOk+KfwAZVwpJSkv4YduwoR3DNfXrmK5P+wrYW9z/VHUf0hcfWEnsrrHktCKgohZn9Fe8uS3B5wTNd9GgVrLGRk85ag+CChoqg80DjgFt/IhzMCArqwLyMn7rGG4Iu2Ie0TcdMc0TlRxoBhqrfKkN83cfQ3gDf41tZwp67uM9ZN feapder@qq.com
+```
+
+或在系统设置页面配置您的SSH私钥，然后在git仓库里添加您的公钥，例如：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/19/16346353514967.jpg)
+
+注意，公私钥加密方式为RSA，其他的可能会有问题
+
+生成RSA公私钥方式如下：
+```shell
+ssh-keygen -t rsa -C "备注" -f 生成路径/文件名
+```
+如：
+`ssh-keygen -t rsa -C "feaplat" -f id_rsa`
+然后一路回车，不要输密码
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/11/17/16371210640228.jpg)
+最终生成 `id_rsa`、`id_rsa.pub` 文件，复制`id_rsa.pub`文件内容到git仓库，复制`id_rsa`文件内容到feaplat爬虫管理系统
+
+
+
+## 爬虫监控
+
+> 若您使用的是feapder爬虫或者使用了自定义打点，监控才会有对应的数据
+
+1. 表名：以 task_id 命名
+2. 保留策略：这是influxdb的概念，监控数据默认保留180天，滚动更新，这个保留策略为`feapder_180d`，同时也被设置成了默认策略`default`。所以直接用`default`就可以。
+
+## 系统设置
+
+1. GIT_SSH_PRIVATE_KEY：可以在自己的笔记本上使用`cat .ssh/id_rsa`查看，然后把内容复制到进来。不了解git ssh协议的，自行查资料
+
+## 更新版本
+
+```
+git pull
+docker-compose up -d
+```
+依次执行以上命令即可
+
+ 
+
+### 代码文件: docs\_coverpage.md
+ 
+![feapder](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/feapder.png)
+
+#  feapder 爬虫框架文档
+
+> [ˈfiːpdə]
+
+feapder 命名源于 fast-easy-air-pro-spider 缩写
+
+秉承着开发快速、抓取快速、简单、轻量且功能强大的原则，倾心打造。
+
+支持轻量级爬虫、分布式爬虫、批次爬虫、爬虫集成，以及完善的报警等。
+
+
+[GitHub](https://github.com/Boris-code/feapder)
+[Get Started](README.md)
+
+ 
+
+### 代码文件: docs\command\cmdline.md
+ 
+
+
+<!--
+ * @Author: Boris
+ * @Date: 2020-06-21 22:32:55
+ * @Description:
+-->
+
+# 命令行工具
+
+命令行工具为**feapder**内置支持的，可方便快速的创建项目、爬虫、item、以及调试请求等，使用方法如下：
+
+## 1.查看支持的命令行
+
+打开命令行窗口，输入feapder
+
+    >feapder
+
+    feapder 1.1.3
+
+    Usage:
+      feapder <command> [options] [args]
+
+    Available commands:
+      create        create project、feapder、item and so on
+      shell         debug response
+      zip           zip project
+
+    Use "feapder <command> -h" to see more info about a command
+
+
+可见feapder支持`create`、`shell`及`zip`三种命令
+
+## 2. feapder create
+
+使用feapder create 可快速创建项目、爬虫、item等，具体支持的命令可输入`feapder create -h` 查看使用帮助
+
+    > feapder create -h
+    usage: cmdline.py [-h] [-p] [-s] [-i] [-t] [-init] [-j] [-sj] [-c] [--params] [--setting] [--host] [--port] [--username] [--password] [--db]
+
+    生成器
+    
+    optional arguments:
+      -h, --help        show this help message and exit
+      -p , --project    创建项目 如 feapder create -p <project_name>
+      -s , --spider     创建爬虫 如 feapder create -s <spider_name>
+      -i , --item       创建item 如 feapder create -i <table_name> 支持模糊匹配 如 feapder create -i %table_name%
+      -t , --table      根据json创建表 如 feapder create -t <table_name>
+      -init             创建__init__.py 如 feapder create -init
+      -j, --json        创建json
+      -sj, --sort_json  创建有序json
+      -c, --cookies     创建cookie
+      --params          解析地址中的参数
+      --setting         创建全局配置文件feapder create --setting
+      --host            mysql 连接地址
+      --port            mysql 端口
+      --username        mysql 用户名
+      --password        mysql 密码
+      --db              mysql 数据库名
+
+具体使用方法如下：
+
+### 1. 创建爬虫项目
+
+命令
+
+    feapder create -p <project_name>
+
+示例：
+
+    feapder create -p first-project
+
+生成如下：
+
+![-w354](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127822246620.jpg)
+
+* items： 文件夹存放与数据库表映射的item
+* spiders： 文件夹存放爬虫脚本
+* main.py： 运行入口
+* setting.py： 爬虫配置文件
+
+若项目比较简单，不需要这个层次结构管理，也可不创建项目，直接创建爬虫
+
+### 2. 创建爬虫
+
+命令
+
+    feapder create -s <spider_name>
+    
+示例：创建名为first_spider的爬虫
+
+```shell
+feapder create -s first_spider
+
+请选择爬虫模板
+> AirSpider
+  Spider
+  TaskSpider
+  BatchSpider
+``` 
+    
+输入命令后，可以按上下键选择爬虫模板，如选择 AirSpider爬虫模板，生成first_spider.py, 内容如下：
+
+    import feapder
+
+
+    class FirstSpider(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+
+        def parse(self, request, response):
+            print(response)
+
+
+    if __name__ == "__main__":
+        FirstSpider().start()
+
+
+若在项目下创建，建议先进入到spiders目录下，再创建爬虫
+
+### 3. 创建 item
+
+item为与数据库表的映射，与数据入库的逻辑相关。
+在使用此命令前，需在数据库中创建好表，且setting.py中配置好数据库连接地址
+
+命令
+
+    feapder create -i <item_name>
+    
+输出：
+
+```
+请选择Item类型
+> Item
+  Item 支持字典赋值
+  UpdateItem
+  UpdateItem 支持字典赋值
+```
+
+示例
+
+1. 建表
+
+        CREATE TABLE `spider_data` (
+          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `title` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+2. 配置setting.py， 连接方式换成自己数据库的
+
+    ![-w799](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127839359771.jpg)
+
+
+3. 进入items目录，执行命令
+
+        feapder create -i spider_data
+
+生成如下:
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = None
+        self.title = None
+
+```
+
+若字段有默认值或者自增，则默认注释掉，可按需打开
+
+若不配置setting.py, 可在命令行中指定数据库连接信息
+
+     feapder create -i spider_data --host localhost --db feapder --username feapder --password feapder123
+
+也可在环境变量中配置数据库连接信息, 以mac电脑为例
+
+    > vim ~/.bash_profile
+
+    export MYSQL_IP='xxx'
+    export MYSQL_PORT='xxx'
+    export MYSQL_DB='xxx'
+    export MYSQL_USER_NAME='xxx'
+    export MYSQL_USER_PASS='xxx'
+
+    > source ~/.bash_profile
+
+这样，以后所有的项目setting.py中均可不配置mysql连接信息
+
+**若item字段过多，不想逐一赋值，可选择支持字典赋值的Item类型创建**
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/09/09/16626945562298.jpg)
+
+生成：
+
+```
+from feapder import Item
+
+
+class SpiderDataItem(Item):
+    """
+    This class was generated by feapder.
+    command: feapder create -i spider_data 1.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # self.id = kwargs.get('id')
+        self.title = kwargs.get('title')
+```
+
+这样当我们请求回来的json数据时，可直接赋值，如
+
+```
+response_data = {"title":" 测试"} # 模拟请求回来的数据
+item = SpiderDataItem(**response_data)
+```
+
+
+### 4. 创建json或有序json
+
+此命令和快速将 `xxx:xxx` 这种字符串格式转为json格式，常用于将网页或者抓包工具抓取出来的header、cookie转为json
+
+用法示例：
+
+1. 输入命令，回车
+
+        > feapder create -j
+        请输入需要转换的内容： （xxx:xxx格式，支持多行）
+
+
+1. copy 请求头，粘贴到提示下方
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127849396722.jpg)
+
+1. 输出如下：
+
+    ![-w1394](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127850065269.jpg)
+
+**sort_json** 与json命令类似，只不过该命令生成的json是按照key排序的有序字典， 命令为
+
+    feapder create -sj
+
+### 5. 根据json创建表
+
+有时，我们需要解析的字段特别多，手动建表太麻烦，此命令可根据json内容的key创建表，根据value推断字段类型
+
+运行前，请参考**创建item**过程，将数据库配置好
+
+命令：
+
+    feapder create -t <table_name>
+
+用的示例：
+
+    > feapder create -t test
+
+    请输入表数据 json格式 如 {"name":"张三"}
+    等待输入：
+
+     {"name":"张三"}
+
+    请设置注释 回车跳过
+    name : varchar(255)  -> comment：
+
+    是否添加batch_date 字段 （y/n）:n
+
+    请设置唯一索引, 多个逗号间隔
+    等待输入：
+    id
+
+                CREATE TABLE `feapder`.`test` (
+                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id 自动递增',
+                    `name` varchar(255) COMMENT '',
+
+                    `gtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '抓取时间',
+                    PRIMARY KEY (`id`),
+                    UNIQUE `idx` USING BTREE (`id`) comment ''
+                ) COMMENT='';
+
+
+    test 创建成功
+
+创建过程会提示添加字段注释、唯一索引等。batch_date用于记录采集批次的，不用可输入n。看到创建成功后，我们去数据库里就可以看到表了
+
+### 6. 创建init
+
+该命令用于创建\__init__.py的，并自动会引入当前目录下的所有py文件到\__all__中
+
+示例如下：
+
+    feapder create -init
+
+观察生成的\__init__.py文件，已自动包含当前目录下的py文件
+![-w880](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/02/08/16127859798201.jpg)
+
+
+## 3. feapder shell
+
+下载调试器，可方便测试抽取规则是否正确，输入`feapder shell -h`查看使用帮助
+
+    > feapder shell -h
+
+    下载调试器
+
+    usage: feapder shell [options] [args]
+
+    optional arguments:
+      -u, --url     抓取指定url
+      -c, --curl    抓取curl格式的请求
+
+由提示可以看出，支持url及curl两种方式
+
+1. 以url为例，请求百度：
+
+    请求
+
+        > feapder shell -u https://www.baidu.com
+        MainThread|2020-06-21 23:21:37,208|request.py|get_response|line:283|DEBUG|
+                        -------------- None.parser request for ----------------
+                        url  = https://www.baidu.com
+                        method = GET
+                        body = {'proxies': None, 'timeout': 22, 'stream': True, 'verify': False, 'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1866.237 Safari/537.36'}}
+
+        <Response [200]>
+        Python 3.6.3 (v3.6.3:2c5fed86e0, Oct  3 2017, 00:32:08)
+        Type 'copyright', 'credits' or 'license' for more information
+        IPython 7.14.0 -- An enhanced Interactive Python. Type '?' for help.
+
+
+        now you can use response
+
+        In [1]:
+
+    测试抽取title的xpath是否正确
+
+        In [1]: response.xpath('//title/text()').extract_first()
+        Out[1]: '百度一下，你就知道'
+
+    可以看出，我们可以直接使用response， response支持xpath表达式
+
+    若想查看都支持哪些函数，可输入`response.` 然后敲两次`tab键`，如下：
+    ![-w1738](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/21/15927532396490.jpg)
+
+1. 以curl为例，请求百度（通常用来测试post接口比较方便）
+
+    1. 打开浏览器检查工具，复制需要测试的接口为curl格式
+    ![-w569](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/21/15927533333272.jpg)
+
+    1. 测试 输入`feapder shell --`, 粘贴刚刚复制的curl
+
+            > feapder shell --curl 'https://www.baidu.com/' \
+              -H 'Connection: keep-alive' \
+              -H 'Pragma: no-cache' \
+              -H 'Cache-Control: no-cache' \
+              -H 'Upgrade-Insecure-Requests: 1' \
+              -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36' \
+              -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+              -H 'Sec-Fetch-Site: none' \
+              -H 'Sec-Fetch-Mode: navigate' \
+              -H 'Sec-Fetch-User: ?1' \
+              -H 'Sec-Fetch-Dest: document' \
+              -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' \
+              -H 'Cookie: PSTM=1589621705; BAIDUID=BC3B63E7833EB3D77970A2CF9AE7F4A2:FG=1; BIDUPSID=016405978E2364A4AFD0227A36DA60DE; BD_UPN=123253; BDUSS=nl2a3EzNGp-aGdham5xanhVYjZLbXNWTENBRWl0VTJuLTVEUGJOa2VodjhGTzVlRVFBQUFBJCQAAAAAAAAAAAEAAACCgXjpQm9yaXMwNjIxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPyHxl78h8ZeW; delPer=0; BD_CK_SAM=1; BD_HOME=1; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; PSINO=1; ZD_ENTRY=google; H_PS_PSSID=1442_31672_21102_32046_31321_30823_32107_26350; BDRCVFR[dG2JNJb_ajR]=mk3SLVN4HKm; BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm' \
+              --compressed
+            MainThread|2020-06-21 23:29:48,773|request.py|get_response|line:283|DEBUG|
+                            -------------- None.parser request for ----------------
+                            url  = https://www.baidu.com/
+                            method = POST
+                            body = {'data': {}, 'headers': {'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Sec-Fetch-Site': 'none', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1', 'Sec-Fetch-Dest': 'document', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8', 'Cookie': 'PSTM=1589621705; BAIDUID=BC3B63E7833EB3D77970A2CF9AE7F4A2:FG=1; BIDUPSID=016405978E2364A4AFD0227A36DA60DE; BD_UPN=123253; BDUSS=nl2a3EzNGp-aGdham5xanhVYjZLbXNWTENBRWl0VTJuLTVEUGJOa2VodjhGTzVlRVFBQUFBJCQAAAAAAAAAAAEAAACCgXjpQm9yaXMwNjIxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPyHxl78h8ZeW; delPer=0; BD_CK_SAM=1; BD_HOME=1; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; PSINO=1; ZD_ENTRY=google; H_PS_PSSID=1442_31672_21102_32046_31321_30823_32107_26350; BDRCVFR[dG2JNJb_ajR]=mk3SLVN4HKm; BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm'}, 'proxies': None, 'timeout': 22, 'stream': True, 'verify': False}
+
+            <Response [200]>
+            Python 3.6.3 (v3.6.3:2c5fed86e0, Oct  3 2017, 00:32:08)
+            Type 'copyright', 'credits' or 'license' for more information
+            IPython 7.14.0 -- An enhanced Interactive Python. Type '?' for help.
+            now you can use response
+
+            In [1]:
+
+
+ 
+
+### 代码文件: docs\feapder_platform\question.md
+ 
+# FEAPLAT常见问题
+
+## 常用命令
+
+1. 运行：`docker-compose up -d`
+2. 停止：`docker-compose stop`
+3. 查看后端日志：`docker logs -f feapder_backend`
+4. 查看爬虫日志：
+    1. 查看爬虫实例：`docker service ps task_任务id`
+    2. 查看爬虫实例日志：`docker service logs -n 行数 -f ID`
+
+    举例：
+    
+    ```
+    docker service ps task_9
+    ```
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318829484192.jpg)
+    
+    ```
+    docker service logs -n 20 -f u6qhyu2dauiu
+    ```
+    
+6. 查看正在运行的容器：`docker ps` 
+5. 进入容器：`docker exec -it 容器ID bash`
+    
+
+## 修改端口
+
+默认端口如下：
+
+```
+# 前端端口
+FRONT_PORT=6385
+# 后端端口
+BACKEND_PORT=8000
+# MYSQL端口
+MYSQL_PORT=33306
+# REDIS 端口
+REDIS_PORT=6379
+# 监控系统端口配置
+INFLUXDB_PORT_TCP=8086
+INFLUXDB_PORT_UDP=8089
+```
+
+通过 `vim .env` 敲击`i` 进入编辑模式，修改完按 `esc`退出编辑，敲击 `:wq` 保存
+
+
+## 启动失败
+
+> 以下列的是几种可能原因，可按照这个顺序排查，但不是所有步骤都需要走一遍
+
+1. 查看后端日志，观察报错
+    1. 若是docker版本问题，参考部署一节安装最新版本，
+    2. 若是报 `This node is not a swarm manager`，则是部署环境没准备好，执行`docker swarm init`，可参考参考部署一节
+2. 查看worker状态：
+    ```
+    docker service ps task_任务id --no-trunc
+    ```
+    看看error信息
+
+4. 查看镜像`docker images`，若不存在爬虫镜像`registry.cn-hangzhou.aliyuncs.com/feapderd/feapder`，可能自动拉取失败了，可手动拉取，拉取命令：`docker pull registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:版本号`，版本号在`.env`里查看
+5. 重启docker服务，Centos对应的命令为：`service docker restart`，其他自行查资料
+
+## 依赖包安装失败，可手动安装包
+
+1. 在项目配置处将 requirements.txt 一栏置空，使其不自动安装依赖
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318840168908.jpg)
+
+
+2. 添加一个常驻任务：执行命令可填写 `while true; do echo hello world; sleep 1; done`
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16303761085876.jpg)
+
+1. 查看容器id`docker ps`（若您有多台worker服务器，该任务会被随机分配到一台机器上，您需要在对应的机器上查看）
+
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/17/16318842799082.jpg)
+2. 进入容器 `docker exec -it 容器ID bash`
+
+3. 接来下就和在centos服务器上操作一样了，你可以`pip`安装依赖
+
+## 授权问题
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/02/21/16454346779741.jpg)
+
+此问题为服务器时间和时区问题, 可以在服务器上输入 `date` ，命令检查时间及时区是否正确
+
+正常应该为 `Mon Feb 21 17:03:11 CST 2022` 注意是 CST 不是 UTC
+
+修改时区及矫正时间命令
+
+```
+# 改时区
+rm -f /etc/localtime
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+# 校对时间 方式1
+clock --hctosys
+# 校对时间 方式2
+ntpdate 0.asia.pool.ntp.org
+```
+
+## 我搭建了个集群，如何让主节点不跑任务
+
+在主节点上执行下面命令，将其设置成drain状态即可
+
+    docker node update --availability drain 节点id
+ 
+ ## Network 问题
+
+attaching to network failed, make sure your network options are correct and check manager logs: context deadline exceeded
+ ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/02/16/16765140608308.jpg)
+
+1. 确定当前节点是不是Drain节点：docker node ls
+    
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2023/02/16/16765145635622.jpg)
+    
+    是则继续往下看，不是则在评论区留言
+    
+1. 修复
+
+    ```
+    docker node update --availability active 节点id
+    docker node update --availability drain 节点id
+    ```    
+    
+原因是Drain节点，不能为其分配网络资源，需要先改成active，然后启动，之后在改回drain
+
+**若不是以上情况，可能是network内的可分配的ip满了（老版本feaplat会有这个问题），那么可继续往下看**
+
+1. 先检查feaplat目录下的docker-compost.yaml，翻到最后，看network相关配置是否为如下。若不是，则改成下面这样的。若下面指定的11 ip段和主机有冲突，可以写12、13等
+
+    ```
+    networks:
+      default:
+        name: feaplat
+        driver: overlay
+        attachable: true
+        ipam:
+          config:
+            - subnet: 11.0.0.0/8
+              gateway: 11.0.0.1
+    ```
+    
+    完整配置见：https://github.com/Boris-code/feaplat/blob/develop/docker-compose.yaml
+
+
+2. 改完后，需要删除之前的network，使其重新创建，命令如下：
+
+    ```
+    docker service ls -q | xargs docker service rm # 注意 这个会停止掉所有任务。
+    docker network rm feaplat # 删除网络
+    docker compose rm # 删除之前feaplat运行环境
+    docker compose up -d # 启动
+    ```
+ 
+
+### 代码文件: docs\source_code\pipeline.md
+ 
+# Pipeline
+
+Pipeline是数据入库时流经的管道，用户可自定义，以便对接其他数据库。
+
+框架已内置mysql及mongo管道，其他管道作为扩展方式提供，可从[feapder_pipelines](https://github.com/Boris-code/feapder_pipelines)项目中按需安装
+
+项目地址：https://github.com/Boris-code/feapder_pipelines
+
+## 使用方式
+
+注：item会被聚合成多条一起流经pipeline，方便批量入库
+
+### 1. 编写pipeline
+
+```python
+from feapder.pipelines import BasePipeline
+from typing import Dict, List, Tuple
+
+
+class Pipeline(BasePipeline):
+    """
+    pipeline 是单线程的，批量保存数据的操作，不建议在这里写网络请求代码，如下载图片等
+    """
+
+    def save_items(self, table, items: List[Dict]) -> bool:
+        """
+        保存数据
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+
+        Returns: 是否保存成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        print("自定义pipeline， 保存数据 >>>>", table, items)
+
+        return True
+
+    def update_items(self, table, items: List[Dict], update_keys=Tuple) -> bool:
+        """
+        更新数据, 与UpdateItem配合使用，若爬虫中没使用UpdateItem，则可不实现此接口
+        Args:
+            table: 表名
+            items: 数据，[{},{},...]
+            update_keys: 更新的字段, 如 ("title", "publish_time")
+
+        Returns: 是否更新成功 True / False
+                 若False，不会将本批数据入到去重库，以便再次入库
+
+        """
+
+        print("自定义pipeline， 更新数据 >>>>", table, items, update_keys)
+
+        return True
+```
+
+`Pipeline`需继承`BasePipeline`，类名和存放位置随意，需要实现`save_items`接口。一定要有返回值，返回`False`表示数据没保存成功，会触发重试逻辑
+
+`update_items`接口与`UpdateItem`配合使用，更新数据时使用，若爬虫中没使用UpdateItem，则可不实现此接口
+
+### 2. 编写配置文件
+
+```python
+# 数据入库的pipeline，支持多个
+ITEM_PIPELINES = [
+    "pipeline.Pipeline"
+]
+``` 
+
+将编写好的pipeline配置进来，值为类的模块路径，需要指定到具体的类名
+
+## 示例
+
+地址：https://github.com/Boris-code/feapder/tree/master/tests/test-pipeline
+
+ 
+
+### 代码文件: docs\source_code\监控打点.md
+ 
+# 监控打点
+
+需配合爬虫管理系统 **feaplat**
+
+监控数据默认保留180天，滚动删除
+
+## 爬虫中使用
+
+> 需feapder>=1.6.6
+
+feapder内置了监控打点，只需要部署到feaplat爬虫管理系统即可实现对请求和数据监控
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+- 注意使用 `yield item` 的方式入库的数据，才能看到数据监控的指标，图表的title是表名，折线图展示了每个字段是否有值的情况以及数据总量（total count）
+
+- document为下载情况
+
+若想监控些其他的指标，参考自定义监控：
+
+
+## 自定义监控
+
+举例：编写`test_metrics.py`代码如下：
+
+```python
+from feapder.utils import metrics
+
+# 初始化打点系统
+metrics.init()
+
+metrics.emit_counter("key", count=1, classify="test")
+
+metrics.close()
+```
+
+部署到feaplat：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315065474223.jpg)
+
+查看监控：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315067391666.jpg)
+
+再来解释下
+```
+metrics.emit_counter("key", count=1, classify="test")
+```
+- key 对应上图中的折线
+- count 对应上图中的点数
+- classify 对应上图中的图表标题
+
+若代码如下：
+```python
+from feapder.utils import metrics
+
+# 初始化打点系统
+metrics.init()
+
+metrics.emit_counter("key", count=1, classify="test")
+metrics.emit_counter("key2", count=1, classify="test")
+metrics.emit_counter("key3", count=1, classify="test")
+
+metrics.emit_counter("哈哈", count=1, classify="test2")
+
+metrics.close()
+```
+
+应该生成两张图表，第一个图表3条折线，实际生成如下：
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/13/16315071385604.jpg)
+
+
+如在feapder爬虫中使用，示例如下：
+
+```python
+import feapder
+from feapder.utils import metrics
+
+
+class TestSpider(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        # 自定义监控
+        metrics.emit_counter("success", count=1, classify="自定义的监控指标")
+
+
+if __name__ == "__main__":
+    TestSpider().start()
+```
+
+我们只需要导包，然后`metrics.emit_counter`即可，不需要关心 `metrics.init`和`metrics.close`， 若在scrapy或其他python脚本中使用，必须调用`metrics.init`和`metrics.close`
+
+ 
+
+### 代码文件: docs\_sidebar.md
+ 
+* 序章
+  * [简介及安装](README.md)
+  * [10分钟快速上手](foreword/10分钟上手.md)
+  * [架构设计](foreword/架构设计.md)
+  * [功能概览](foreword/功能概览.md)
+
+* 常用工具
+  * [命令行工具](command/cmdline.md)
+
+* 使用说明
+  * [使用前必读](usage/使用前必读.md)
+  * [轻量爬虫-AirSpider](usage/AirSpider.md)
+  * [分布式爬虫-Spider](usage/Spider.md)
+  * [任务爬虫-TaskSpider](usage/TaskSpider.md)
+  * [批次爬虫-BatchSpider](usage/BatchSpider.md)
+  * [爬虫集成](usage/爬虫集成.md)
+
+* 使用进阶
+  * [请求-Request](source_code/Request.md)
+  * [响应-Response](source_code/Response.md)
+  * [代理使用说明](source_code/proxy.md)
+  * [用户池说明](source_code/UserPool.md)
+  * [浏览器渲染-Selenium](source_code/浏览器渲染-Selenium.md)
+  * [浏览器渲染-Playwright](source_code/浏览器渲染-Playwright)
+  * [解析器-BaseParser](source_code/BaseParser.md)
+  * [批次解析器-BatchParser](source_code/BatchParser.md)
+  * [Spider进阶](source_code/Spider进阶.md)
+  * [BatchSpider进阶](source_code/BatchSpider进阶.md)
+  * [配置文件](source_code/配置文件.md)
+  * [Item](source_code/Item.md)
+  * [UpdateItem](source_code/UpdateItem.md)
+  * [数据管道-pipeline](source_code/pipeline.md)
+  * [MysqlDB](source_code/MysqlDB.md)
+  * [MongoDB](source_code/MongoDB.md)
+  * [RedisDB](source_code/RedisDB.md)
+  * [工具库-tools](source_code/tools.md)
+  * [日志配置及使用](source_code/logger.md)
+  * [海量数据去重-dedup](source_code/dedup.md)
+  * [报警及监控](source_code/报警及监控.md)
+  * [监控打点](source_code/监控打点.md)
+  * [自定义下载器](source_code/custom_downloader.md)
+
+* 爬虫管理系统
+  * [简介及部署](feapder_platform/feaplat.md)
+  * [使用说明](feapder_platform/usage.md)
+  * [常见问题](feapder_platform/question.md)
+
+* 常见问题
+  * [安装问题](question/安装问题.md)
+  * [运行问题](question/运行问题.md)
+  * [请求问题](question/请求问题.md)
+  * [setting不生效问题](question/setting不生效问题.md)
+ 
+
+### 代码文件: docs\feapder_platform\feaplat.md
+ 
+# 爬虫管理系统 - FEAPLAT
+
+> 生而为虫，不止于虫
+
+**feaplat**命名源于 feapder 与 platform 的缩写
+
+读音： `[ˈfiːplæt] `
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655602840534.jpg)
+
+
+## 特性
+
+1. 支持部署任何程序，包括不限于`feapder`、`scrapy`
+2. 支持集群管理，部署分布式爬虫可一键扩展进程数
+3. 支持部署服务，且可自动实现服务负载均衡
+4. 支持程序异常报警、重启、保活
+5. 支持监控，监控内容可自定义
+6. 支持4种定时调度模式
+7. 自动从git仓库拉取最新的代码运行，支持指定分支
+8. 支持多人协同
+9. 支持浏览器渲染，支持有头模式。浏览器支持`playwright`、`selenium`
+10. 支持弹性伸缩
+12. 支持自定义worker镜像，如自定义java的运行环境、node运行环境等，即根据自己的需求自定义（feaplat分为`master-调度端`和`worker-运行任务端`）
+13. docker一键部署，架设在docker swarm集群上
+
+## 功能概览
+
+暂时不支持 苹果电脑的Apple芯片
+
+### 1. 项目管理
+
+添加/编辑项目
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655603474851.jpg)
+
+- 支持 git和zip两种方式上传项目
+- 根据requirements.txt自动安装依赖包 
+- 可选择多个人参与项目
+
+### 2. 任务管理
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655604191030.jpg)
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655604736752.jpg)
+
+- 支持一键启动多个任务实例（分布式爬虫场景或者需要启动多个进程的场景）
+- 支持4种调度模式
+- 标签：给任务分类使用
+- 强制运行：（上一次任务没结束，本次是否运行，是则会停止上一次任务，然后运行本次调度）
+- 异常重启：当部署的程序异常退出，是否自动重启，且会报警
+    ![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655607031254.jpg)
+- 支持限制程序运行的CPU、内存等。
+
+
+### 3. 任务实例
+
+一键部署了20份程序，每个程序独占一个进程，可从列表看每个进程部署到哪台服务器上了，运行状态是什么
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655608218525.jpg)
+
+实时查看日志
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655618630971.jpg)
+
+### 4. 爬虫监控
+
+feaplat支持对feapder爬虫的运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+若scrapy爬虫或其他python脚本使用监控功能，也可通过自定义监控的功能来支持，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+注：需 feapder>=1.6.6
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655595870715.jpg)
+
+### 5. 报警
+
+调度异常、程序异常自动报警
+支持钉钉、企业微信、飞书、邮箱
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/10/12/16655607031254.jpg)
+
+## 为什么用feaplat爬虫管理系统
+
+**稳！很稳！！相当稳！！！**
+
+### 市面上的爬虫管理系统
+
+![feapderd](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/feapderd.png)
+
+worker节点常驻，且运行多个任务，不能弹性伸缩，任务之前会相互影响，稳定性得不到保障
+
+### feaplat爬虫管理系统
+
+![pic](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/pic.gif)
+
+worker节点根据任务动态生成，一个worker只运行一个任务实例，任务做完worker销毁，稳定性高；多个服务器间自动均衡分配，弹性伸缩
+
+## 部署
+
+> 安装方式参考docker官方文档：https://docs.docker.com/compose/install/
+
+### 1. 安装docker
+
+#### 1.1 centos系统
+
+> docker --version
+> 作者的docker版本为 20.10.12，低于此版本的可能会存在问题
+
+删除旧版本（可选，需要重装升级docker时执行）
+
+```shell
+yum remove docker  docker-common docker-selinux docker-engine
+```
+
+安装：
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+国内用户推荐使用
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+或者使用国内 daocloud 一键安装命令
+```
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+启动docker服务
+
+```shell
+systemctl enable docker
+systemctl start docker
+```
+
+验证: 打开终端，输入
+
+```shell
+docker ps
+```
+
+#### 1.2 ubuntu系统
+
+```
+sudo apt update
+sudo apt install docker.io docker-compose
+```
+
+启动docker服务
+
+```shell
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+验证: 打开终端，输入
+
+```shell
+sudo docker ps
+```
+
+#### 1.3 window系统
+
+访问下面的链接，下载Docker Desktop, 然后安装即可
+
+<a href="https://docs.docker.com/desktop/setup/install/windows-install/" target="_blank">https://docs.docker.com/desktop/setup/install/windows-install/ </a>
+
+
+运行安装好的Docker Desktop
+
+验证: 打开cmd终端，输入
+
+```shell
+docker ps
+```
+
+#### 1.4 mac系统
+
+访问下面的链接，下载Docker Desktop, 然后安装即可
+
+<a href="https://docs.docker.com/desktop/setup/install/mac-install/" target="_blank">https://docs.docker.com/desktop/setup/install/mac-install/</a>
+
+
+运行安装好的Docker Desktop
+
+验证: 打开终端，输入
+```shell
+docker ps
+```
+
+
+### 2. 安装 docker swarm
+    
+    docker swarm init
+    
+    # 如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 --advertise-addr 指定 IP
+    docker swarm init --advertise-addr 192.168.99.100
+
+### 3. 安装docker-compose(非必须)
+一般安装完docker后，会自带 docker compose。可先输入下面的命令验证是否有改环境，若有则不需要安装
+``` shell
+docker compose
+```
+若无`docker compose`命令，则按照下面的安装
+
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+国内用户推荐使用
+```shell
+sudo curl -L "https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+安装后输入`docker-compose`验证是否成功
+
+注：`docker-compose` 与 `docker compose` 两种命令用法一样，是一个东西，只不过不同版本的docker可能叫法不一
+
+### 4. 部署feaplat爬虫管理系统
+#### 预备项
+安装git(1.8.3的版本已够用)
+```shell
+yum -y install git
+```
+#### 1. 下载项目
+
+> 先按照下面命令拉取develop分支代码运行。
+> master分支不支持urllib3>=2.0版本，现在已经运行不起来了，但之前老用户不受影响。待后续测试好兼容性，不影响老用户后，会将develop分支合并到master
+
+gitub
+```shell
+git clone -b develop https://github.com/Boris-code/feaplat.git
+```
+gitee
+```shell
+git clone -b develop https://gitee.com/Boris-code/feaplat.git
+```
+
+#### 2. 运行 
+
+首次运行需拉取镜像，时间比较久，且运行可能会报错，再次运行下就好了
+
+```shell
+cd feaplat
+docker compose up -d
+或者
+docker-compose up -d
+```
+
+- 若端口冲突，可修改.env文件，参考[常见问题](feapder_platform/question?id=修改端口)
+
+#### 3. 访问爬虫管理系统
+
+默认地址：`http://localhost`
+默认账密：admin / admin
+
+- 若未成功，参考[常见问题](feapder_platform/question)
+- 使用说明，参考[使用说明](feapder_platform/usage)
+
+#### 4. 停止（可选）
+
+```shell
+docker-compose stop
+```
+
+### 5. 添加服务器（可选）
+
+> 用于搭建集群，扩展爬虫（worker）节点服务器
+
+#### 1. 安装docker
+
+参考部署步骤1
+
+#### 2. 部署
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令，查看token
+
+```shell
+docker swarm join-token worker
+```
+
+输出举例如下
+
+```shell
+docker swarm join --token SWMTKN-1-1mix1x7noormwig1pjqzmrvgnw2m8zxqdzctqa8t3o8s25fjgg-9ot0h1gatxfh0qrxiee38xxxx 172.17.5.110:2377
+```
+
+**在需扩充的服务器上执行**
+
+```shell
+docker swarm join --token [token] [ip]
+```
+
+若服务器彼此之间不是内网，为公网环境，则需要将ip改成公网，且开放端口2377
+
+开启并检查2377端口
+```shell
+firewall-cmd --zone=public --add-port=2377/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --query-port=2377/tcp
+```
+
+#### 3. 验证是否成功
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令
+
+```shell
+docker node ls
+```
+
+若打印结果包含刚加入的服务器，则添加服务器成功
+
+#### 4. 下线服务器（可选）
+
+在需要下线的服务器上执行
+
+```shell
+docker swarm leave
+```
+
+## 使用
+
+见 [FEAPLAT使用说明](feapder_platform/usage)
+
+## 自定义爬虫镜像
+
+默认的爬虫镜像只打包了`feapder`、`scrapy`框架，若需要其它环境，可基于`.env`文件里的`SPIDER_IMAGE`镜像自行构建
+
+如自定义python版本，安装常用的库等，需修改feaplat下的`feapder_dockerfile`
+
+```
+# 基于最新的版本，若需要自定义python版本，则要求feapder版本号>=2.4
+FROM registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:2.4
+
+# 安装自定义的python版本，3.10.8
+RUN set -ex \
+    && wget https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz \
+    && tar -zxvf Python-3.10.8.tgz \
+    && cd Python-3.10.8 \
+    && ./configure prefix=/usr/local/python-3.10.8 \
+    && make \
+    && make install \
+    && make clean \
+    && rm -rf /Python-3.10.8* \
+    # 配置软链接
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python3.10.8 \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip3.10.8
+
+# 删除之前的默认python版本
+RUN set -ex \
+    && rm -rf /usr/bin/python3 \
+    && rm -rf /usr/bin/pip3 \
+    && rm -rf /usr/bin/python \
+    && rm -rf /usr/bin/pip
+
+# 设置默认为python3.10.8
+RUN set -ex \
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python \
+    && ln -s /usr/local/python-3.10.8/bin/python3 /usr/bin/python3 \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip \
+    && ln -s /usr/local/python-3.10.8/bin/pip3 /usr/bin/pip3
+
+# 将python3.10.8加入到环境变量
+ENV PATH=$PATH:/usr/local/python-3.10.8/bin/
+
+# 安装依赖
+RUN pip3 install feapder \
+    && pip3 install scrapy
+    
+# 安装node依赖包，内置的node为v10.15.3版本
+# RUN npm install packageName -g
+
+```
+
+改好后要打包镜像，打包命令：
+```
+docker build -f feapder_dockerfile -t 镜像名:版本号 .
+```
+如
+```
+docker build -f feapder_dockerfile -t my_feapder:1.0 .
+```
+
+打包好后修改下 `.env`文件里的 SPIDER_IMAGE 的值即可如：
+```
+SPIDER_IMAGE=my_feapder:1.0
+```
+
+注：
+1. 若有多个worker服务器，且没将镜像传到镜像服务，则需要手动将镜像推到其他服务器上，否则无法拉取此镜像运行
+2. 若自定义了python版本，则需要添加挂载，否则feaplat上自动安装的依赖库不会保留。挂载方式：修改`docker-compose.yaml`的        SPIDER_RUN_ARGS参数。如
+   ```
+   SPIDER_RUN_ARGS=["--mount type=volume,source=feapder_python3.10,destination=/usr/local/python-3.10.8"]
+   ```
+
+## 价格
+
+可免费部署20个任务，超出额度时，需购买授权码，在授权有效期内不限额度，可换绑服务器
+
+| 授权时长   | 价格   | 说明 |
+|------|------|---------------------|
+| 1个月  | 168元   | 无折扣|
+| 6个月| 666元   | 原价1008元，减免342元|
+| 1年 | 888元 | 原价2016元，减免1128元|
+| 2年 | 1500元 | 原价4032元，减免2532元|
+
+**删除任务不可恢复额度**
+
+购买方式：添加微信 `boris_tm`
+
+随着功能的完善，价格会逐步调整
+
+## 学习交流
+
+<table border="0">
+    <tr>
+     <td> 知识星球：17321694 </td>
+     <td> 作者微信： boris_tm </td>
+     <td> QQ群号：521494615</td>
+    </tr>
+    <tr>
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg?x-oss-process=style/markdown-media" width="250px" /> </td>
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2024/04/28/17142933285892.jpg" width="250px" /> </td>
+    </tr>
+  </table>
+
+  加好友备注：feapder
+
+ 
+
+### 代码文件: docs\feapder_platform\feaplat_bak.md
+ 
+# 爬虫管理系统 - FEAPLAT
+
+> 生而为虫，不止于虫
+
+**feaplat**命名源于 feapder 与 platform 的缩写
+
+读音： `[ˈfiːplæt] `
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+## 特性
+
+1. 支持任何python脚本，包括不限于`feapder`、`scrapy`
+2. 支持浏览器渲染，支持有头模式。浏览器支持`playwright`、`selenium`
+3. 支持部署服务，可自动负载均衡
+4. 支持服务器集群管理
+5. 支持监控，监控内容可自定义
+6. 支持起多个实例，如分布式爬虫场景
+7. 支持弹性伸缩
+8. 支持4种定时启动方式
+9. 支持自定义worker镜像，如自定义java的运行环境、机器学习环境等，即根据自己的需求自定义（feaplat分为`master-调度端`和`worker-运行任务端`）
+10. docker一键部署，架设在docker swarm集群上
+
+
+## 为什么用feaplat爬虫管理系统
+
+**市面上的爬虫管理系统**
+
+![feapderd](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/feapderd.png)
+
+worker节点常驻，且运行多个任务，不能弹性伸缩，任务之前会相互影响，稳定性得不到保障
+
+**feaplat爬虫管理系统**
+
+![pic](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/23/pic.gif)
+
+worker节点根据任务动态生成，一个worker只运行一个任务实例，任务做完worker销毁，稳定性高；多个服务器间自动均衡分配，弹性伸缩
+
+
+## 功能概览
+
+### 1. 项目管理
+
+添加/编辑项目
+![-w1785](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/06/16254968151490.jpg)
+
+### 2. 任务管理
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/03/03/16463109796998.jpg)
+
+
+### 3. 任务实例
+
+日志
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2022/03/03/16463117042527.jpg)
+
+
+### 4. 爬虫监控
+
+feaplat支持对feapder爬虫的运行情况进行监控，除了数据监控和请求监控外，用户还可自定义监控内容，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+若scrapy爬虫或其他python脚本使用监控功能，也可通过自定义监控的功能来支持，详情参考[自定义监控](source_code/监控打点?id=自定义监控)
+
+注：需 feapder>=1.6.6
+
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/09/14/16316112326191.jpg)
+
+
+
+## 部署
+
+> 下面部署以centos为例， 其他平台docker安装方式可参考docker官方文档：https://docs.docker.com/compose/install/
+
+### 1. 安装docker
+
+删除旧版本（可选，需要重装升级时执行）
+
+```shell
+yum remove docker  docker-common docker-selinux docker-engine
+```
+
+安装：
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+国内用户推荐使用
+```shell
+yum install -y yum-utils device-mapper-persistent-data lvm2 && python2 /usr/bin/yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo && yum install docker-ce -y
+```
+或者使用国内 daocloud 一键安装命令
+```
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+
+
+启动
+```shell
+systemctl enable docker
+systemctl start docker
+```
+
+### 2. 安装 docker swarm
+    
+    docker swarm init
+    
+    # 如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 --advertise-addr 指定 IP
+    docker swarm init --advertise-addr 192.168.99.100
+
+### 3. 安装docker-compose
+
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+国内用户推荐使用
+```shell
+sudo curl -L "https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### 4. 部署feaplat爬虫管理系统
+#### 预备项
+安装git(1.8.3的版本已够用)
+```shell
+yum -y install git
+```
+#### 1. 下载项目
+
+gitub
+```shell
+git clone https://github.com/Boris-code/feaplat.git
+```
+gitee
+```shell
+git clone https://gitee.com/Boris-code/feaplat.git
+```
+
+#### 2. 运行 
+
+首次运行需拉取镜像，时间比较久，且运行可能会报错，再次运行下就好了
+
+```shell
+cd feaplat
+docker-compose up -d
+```
+
+- 若端口冲突，可修改.env文件，参考[常见问题](feapder_platform/question?id=修改端口)
+
+#### 3. 访问爬虫管理系统
+
+默认地址：`http://localhost`
+默认账密：admin / admin
+
+- 若未成功，参考[常见问题](feapder_platform/question)
+- 使用说明，参考[使用说明](feapder_platform/usage)
+
+#### 4. 停止（可选）
+
+```shell
+docker-compose stop
+```
+
+### 5. 添加服务器（可选）
+
+> 用于搭建集群，扩展爬虫（worker）节点服务器
+
+#### 1. 安装docker
+
+参考部署步骤1
+
+#### 2. 部署
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令，查看token
+
+```shell
+docker swarm join-token worker
+```
+
+输出举例如下
+
+```shell
+docker swarm join --token SWMTKN-1-1mix1x7noormwig1pjqzmrvgnw2m8zxqdzctqa8t3o8s25fjgg-9ot0h1gatxfh0qrxiee38xxxx 172.17.5.110:2377
+```
+
+**在需扩充的服务器上执行**
+
+```shell
+docker swarm join --token [token] [ip]
+```
+
+若服务器彼此之间不是内网，为公网环境，则需要将ip改成公网，且开放端口2377
+
+开启并检查2377端口
+```shell
+firewall-cmd --zone=public --add-port=2377/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --query-port=2377/tcp
+```
+
+#### 3. 验证是否成功
+
+在master服务器（feaplat爬虫管理系统所在服务器）执行下面命令
+
+```shell
+docker node ls
+```
+
+若打印结果包含刚加入的服务器，则添加服务器成功
+
+#### 4. 下线服务器（可选）
+
+在需要下线的服务器上执行
+
+```shell
+docker swarm leave
+```
+
+## 拉取私有项目
+
+拉取私有项目需在git仓库里添加如下公钥
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd/k/tjbcMislEunjtYQNXxz5tgEDc/fSvuLHBNUX4PtfmMQ07TuUX2XJIIzLRPaqv3nsMn3+QZrV0xQd545FG1Cq83JJB98ATTW7k5Q0eaWXkvThdFeG5+n85KeVV2W4BpdHHNZ5h9RxBUmVZPpAZacdC6OUSBYTyCblPfX9DvjOk+KfwAZVwpJSkv4YduwoR3DNfXrmK5P+wrYW9z/VHUf0hcfWEnsrrHktCKgohZn9Fe8uS3B5wTNd9GgVrLGRk85ag+CChoqg80DjgFt/IhzMCArqwLyMn7rGG4Iu2Ie0TcdMc0TlRxoBhqrfKkN83cfQ3gDf41tZwp67uM9ZN feapder@qq.com
+```
+
+或在系统设置页面配置您的SSH私钥，然后在git仓库里添加您的公钥，例如：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/10/19/16346353514967.jpg)
+
+注意，公私钥加密方式为RSA，其他的可能会有问题
+
+生成RSA公私钥方式如下：
+```shell
+ssh-keygen -t rsa -C "备注" -f 生成路径/文件名
+```
+如：
+`ssh-keygen -t rsa -C "feaplat" -f id_rsa`
+然后一路回车，不要输密码
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/11/17/16371210640228.jpg)
+最终生成 `id_rsa`、`id_rsa.pub` 文件，复制`id_rsa.pub`文件内容到git仓库，复制`id_rsa`文件内容到feaplat爬虫管理系统
+
+## 自定义爬虫镜像
+
+默认的爬虫镜像只打包了`feapder`、`scrapy`框架，若需要其它环境，可基于`.env`文件里的`SPIDER_IMAGE`镜像自行构建
+
+如将常用的python库打包到镜像
+```
+FROM registry.cn-hangzhou.aliyuncs.com/feapderd/feapder:[最新版本号]
+
+# 安装依赖
+RUN pip3 install feapder \
+    && pip3 install scrapy
+
+```
+
+自己随便搞事情，搞完修改下 `.env`文件里的 SPIDER_IMAGE 的值即可
+
+
+## 价格
+
+| 类型   | 价格   | 说明                  |
+|------|------|---------------------|
+| 试用版  | 0元   | 可部署20个任务，删除任务不可恢复额度 |
+| 正式版 | 888元 | 有效期一年，可换绑服务器        |
+
+**部署后默认为试用版，购买授权码后配置到系统里即为正式版**
+
+购买方式：添加微信 `boris_tm`
+
+随着功能的完善，价格会逐步调整
+
+## 学习交流
+
+<table border="0"> 
+    <tr> 
+     <td> 知识星球：17321694 </td> 
+     <td> 作者微信： boris_tm </td> 
+     <td> QQ群号：750614606 </td> 
+    </tr> 
+    <tr> 
+    <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/02/16/zhi-shi-xing-qiu.jpeg" width=250px>
+ </td> 
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/er-wei-ma.jpeg" width="250px" /> </td> 
+     <td> <img src="http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/07/12/16260897330897.jpg" width="250px" /> </td> 
+    </tr> 
+  </table> 
+  
+  加好友备注：feaplat
+
+ 
+
+### 代码文件: docs\source_code\BatchSpider进阶.md
+ 
+# BatchSpider
+
+## BatchSpider参数
+
+```python
+def __init__(
+    self,
+    task_table,
+    batch_record_table,
+    batch_name,
+    batch_interval,
+    task_keys,
+    task_state="state",
+    min_task_count=10000,
+    check_task_interval=5,
+    task_limit=10000,
+    related_redis_key=None,
+    related_batch_record=None,
+    task_condition="",
+    task_order_by="",
+    redis_key=None,
+    thread_count=None,
+    begin_callback=None,
+    end_callback=None,
+    delete_keys=(),
+    keep_alive=None,
+    send_run_time=False,
+):
+    """
+    @summary: 批次爬虫
+    必要条件
+    1、需有任务表
+        任务表中必须有id 及 任务状态字段 如 state。如指定parser_name字段，则任务会自动下发到对应的parser下, 否则会下发到所有的parser下。其他字段可根据爬虫需要的参数自行扩充
+
+        参考建表语句如下：
+        CREATE TABLE `table_name` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `param` varchar(1000) DEFAULT NULL COMMENT '爬虫需要的抓取数据需要的参数',
+          `state` int(11) DEFAULT NULL COMMENT '任务状态',
+          `parser_name` varchar(255) DEFAULT NULL COMMENT '任务解析器的脚本类名',
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `nui` (`param`) USING BTREE
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+    2、需有批次记录表 不存在自动创建
+    ---------
+    @param task_table: mysql中的任务表
+    @param batch_record_table: mysql 中的批次记录表
+    @param batch_name: 批次采集程序名称
+    @param batch_interval: 批次间隔 天为单位。 如想一小时一批次，可写成1/24
+    @param task_keys: 需要获取的任务字段 列表 [] 如需指定解析的parser，则需将parser_name字段取出来。
+    @param task_state: mysql中任务表的任务状态字段
+    @param min_task_count: redis 中最少任务数, 少于这个数量会从mysql的任务表取任务
+    @param check_task_interval: 检查是否还有任务的时间间隔；
+    @param task_limit: 从数据库中取任务的数量
+    @param redis_key: 任务等数据存放在redis中的key前缀
+    @param thread_count: 线程数，默认为配置文件中的线程数
+    @param begin_callback: 爬虫开始回调函数
+    @param end_callback: 爬虫结束回调函数
+    @param delete_keys: 爬虫启动时删除的key，类型: 元组/bool/string。 支持正则; 常用于清空任务队列，否则重启时会断点续爬
+    @param keep_alive: 爬虫是否常驻，默认否
+    @param send_run_time: 发送运行时间
+    @param related_redis_key: 有关联的其他爬虫任务表（redis）注意：要避免环路 如 A -> B & B -> A 。
+    @param related_batch_record: 有关联的其他爬虫批次表（mysql）注意：要避免环路 如 A -> B & B -> A 。
+        related_redis_key 与 related_batch_record 选其一配置即可；用于相关联的爬虫没结束时，本爬虫也不结束
+        若相关连的爬虫为批次爬虫，推荐以related_batch_record配置，
+        若相关连的爬虫为普通爬虫，无批次表，可以以related_redis_key配置
+    @param task_condition: 任务条件 用于从一个大任务表中挑选出数据自己爬虫的任务，即where后的条件语句
+    @param task_order_by: 取任务时的排序条件 如 id desc
+    ---------
+    @result:
+    """
+```
+
+下面介绍下理解起来可能有疑惑的参数
+
+### 1. related_redis_key 与 related_batch_record
+
+这两个参数用于采集之间有关联的爬虫，比如列表爬虫和详情爬虫，详情的任务需依赖列表爬虫生产，列表爬虫没采集完毕，详情爬虫要处于等待状态。
+
+举例说明：BatchSpider依赖Spider
+
+```
+
+def crawl_list():
+    """
+    普通爬虫 Spider
+    """
+    spider = spider_test.SpiderTest(redis_key="feapder:list")
+    spider.start()
+
+
+def crawl_detail(args):
+    """
+    批次爬虫 BatchSpider
+    @param args: 1 / 2 / init
+    """
+    spider = batch_spider_test.BatchSpiderTest(
+        task_table="list_task",  # mysql中的任务表
+        batch_record_table="list_batch_record",  # mysql中的批次记录表
+        batch_name="详情爬虫(周全)",  # 批次名字
+        batch_interval=7,  # 批次时间 天为单位 若为小时 可写 1 / 24
+        task_keys=["id", "item_id"],  # 需要获取任务表里的字段名，可添加多个
+        redis_key="feapder:detail",  # redis中存放request等信息的根key
+        task_state="state",  # mysql中任务状态字段
+        related_redis_key="feapder:list:z_requsets"
+    )
+
+    if args == 1:
+        spider.start_monitor_task()
+    elif args == 2:
+        spider.start()
+```
+
+若批次爬虫和批次爬虫之间有依赖，除了设置related_redis_key参数外，还支持设置related_batch_record参数，指定对方的批次记录表即可。两个参数二选一
+
+### 2. task_condition
+
+取任务的条件，可以理解为sql后面的where条件。如获取url不为空的任务且id大于10的任务
+
+    task_condition="url is not null and id > 10"
+
+
+## BatchSpider方法
+
+BatchSpider继承至BatchParser，并且BatchParser是对开发者暴露的常用方法接口，因此推荐先看[BatchParser](source_code/BatchParser)，BatchSpider方法如下：
+
+### init_task 任务初始化
+
+init_task函数会在每个批次开始时调用，用于将已完成的任务状态重置为0。
+
+因此当本函数被重写为空时，可实现增量抓取
+
+```
+def init_task(self):
+    pass
+```
+
+当手动调用本函数时，可将任务状态刷新为0，开发阶段经常使用
+
+    spider.init_task()
+    
+
+## 其他细节
+
+### 1. 任务防丢
+
+BatchSpider除了支持Spider的[任务防丢机制](source_code/Spider进阶?id=_1-任务防丢)外，还多了一层mysql任务表的保障，mysql任务表中每条任务都有任务状态，BatchSpider有任务丢失重发机制，直到所有任务都处于成功或者失败两种状态，才算采集结束。
+
+### 2. 任务重试
+
+> 与Spider相同
+
+任务请求失败或解析函数抛出异常时，会自动重试，默认重试次数为100次，可通过配置文件`SPIDER_MAX_RETRY_TIMES`参数修改。当任务超过最大重试次数时，默认会将失败的任务存储到Redis的`{redis_key}:z_failed_requsets`里，供人工排查。
+
+相关配置为：
+
+```python
+# 每个请求最大重试次数
+SPIDER_MAX_RETRY_TIMES = 100 
+# 重新尝试失败的requests 当requests重试次数超过允许的最大重试次数算失败
+RETRY_FAILED_REQUESTS = False
+# 保存失败的request
+SAVE_FAILED_REQUEST = True
+# 任务失败数 超过WARNING_FAILED_COUNT则报警
+WARNING_FAILED_COUNT = 1000
+```
+
+当`RETRY_FAILED_REQUESTS=True`时，爬虫再次启动时会将失败的任务重新下发到任务队列中，重新抓取
+
+### 3. 去重
+
+> 与Spider相同
+
+支持任务去重和数据去重，任务默认是临时去重，去重库保留1个月，即只去重1个月内的任务，数据是永久去重。默认去重是关闭的，相关配置为：
+
+```
+ITEM_FILTER_ENABLE = False # item 去重
+REQUEST_FILTER_ENABLE = False # request 去重
+```
+
+修改默认去重库：
+
+```
+from feapder.buffer.request_buffer import RequestBuffer
+from feapder.buffer.item_buffer import ItemBuffer
+from feapder.dedup import Dedup
+
+RequestBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+ItemBuffer.dedup = Dedup(filter_type=Dedup.MemoryFilter)
+```
+
+RequestBuffer 为任务入库前缓冲的buffer，ItemBuffer为数据入库前缓冲的buffer
+
+关于去重库详情见：[海量数据去重](source_code/dedup)
+
+### 4. 加速采集
+
+> 与Spider相同
+
+与爬虫采集速度的相关配置为：
+
+```python
+# 爬虫相关
+# COLLECTOR
+COLLECTOR_SLEEP_TIME = 1 # 从任务队列中获取任务到内存队列的间隔
+COLLECTOR_TASK_COUNT = 10 # 每次获取任务数量
+
+# SPIDER
+SPIDER_THREAD_COUNT = 1 # 爬虫并发数
+SPIDER_SLEEP_TIME = 0 # 下载时间间隔（解析完一个response后休眠时间）
+SPIDER_MAX_RETRY_TIMES = 100 # 每个请求最大重试次数
+# 是否主动执行添加 设置为False 需要手动调用start_monitor_task，适用于多进程情况下
+
+```
+
+COLLECTOR 为从任务队列中取任务到内存队列的线程，SPIDER为实际采集的线程
+
+`COLLECTOR_TASK_COUNT` 建议 >= `SPIDER_THREAD_COUNT`, 这样每个线程的爬虫才有任务可做。但COLLECTOR_TASK_COUNT不建议过大，不然分布式时，一个池子里的任务都被节点A取走了，其他节点取不到任务了。
+
+### 了解更多
+
+更多配置，详见[配置文件](source_code/配置文件)
+
+ 
+
+### 代码文件: docs\source_code\Request.md
+ 
+# Request
+
+## 简介
+
+Request为feapder的下载器，基于requests进行了封装，因此支持requests的所有参数
+
+我们可以直接调用框架中的Request发起请求，使用示例：
+
+```
+from feapder import Request
+
+request = Request("https://www.baidu.com", data={}, params=None)
+response = request.get_response()
+print(response)
+```
+
+返回的response支持xpath、css等表达式，具体用法见[Response](source_code/Response)
+
+Request除了支持requests的所有参数外，更需要关心的是框架中支持的参数
+
+## 参数详解
+
+```python
+@summary: Request参数
+---------
+框架参数
+@param url: 待抓取url
+@param retry_times: 当前重试次数
+@param priority: 请求优先级 越小越优先 默认300
+@param parser_name: 回调函数所在的类名 默认为当前类
+@param callback: 回调函数 可以是函数 也可是函数名（如想跨类回调时，parser_name指定那个类名，callback指定那个类想回调的方法名即可）
+@param filter_repeat: 是否需要去重 (True/False) 当setting中的REQUEST_FILTER_ENABLE设置为True时该参数生效 默认True
+@param auto_request: 是否需要自动请求下载网页 默认是。设置为False时返回的response为空，需要自己去请求网页
+@param request_sync: 是否同步请求下载网页，默认异步。如果该请求url过期时间快，可设置为True，相当于yield的reqeust会立即响应，而不是去排队
+@param use_session: 是否使用session方式
+@param random_user_agent: 是否随机User-Agent (True/False) 当setting中的RANDOM_HEADERS设置为True时该参数生效 默认True
+@param download_midware: 下载中间件。默认为parser中的download_midware
+@param is_abandoned: 当发生异常时是否放弃重试 True/False. 默认False
+@param render: 是否用浏览器渲染
+@param render_time: 渲染时长，即打开网页等待指定时间后再获取源码
+--
+以下参数于requests参数使用方式一致
+@param method: 请求方式，如POST或GET，默认根据data值是否为空来判断
+@param params: 请求参数
+@param data: 请求body
+@param json: 请求json字符串，同 json.dumps(data)
+@param headers:
+@param cookies: 字典 或 CookieJar 对象
+@param files: 
+@param auth: 
+@param timeout: (浮点或元组)等待服务器数据的超时限制，是一个浮点数，或是一个(connect timeout, read timeout) 元组
+@param allow_redirects : Boolean. True 表示允许跟踪 POST/PUT/DELETE 方法的重定向
+@param proxies: 代理 {"http":"http://xxx", "https":"https://xxx"}
+@param verify: 为 True 时将会验证 SSL 证书
+@param stream: 如果为 False，将会立即下载响应内容
+@param cert: 
+--
+@param **kwargs: 其他值: 如 Request(item=item) 则item可直接用 request.item 取出
+---------
+```
+
+举例说明：如果我们不想用内置的下载器，写法如下：
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", auto_request=False)
+
+    def parse(self, request, response):
+        # response 为None， 需要自己去下载
+        pass
+        
+        
+## 方法详解
+
+### 1. 发起请求，获取响应
+
+```
+def get_response(self, save_cached=False):
+    """
+    获取带有selector功能的response
+    @param save_cached: 保存缓存 方便调试时不用每次都重新下载
+    @return:
+    """
+```
+
+save_cached 参数用于设置是否把响应缓存到redis，若为True, 需要配置redis连接信息。redis连接信息会读取setting.py文件，所以需要保证工作区间下有setting.py。
+
+或者可以将连接信息设置为环境变量
+以mac电脑为例
+
+```
+> vim ~/.bash_profile
+
+export REDISDB_IP_PORTS='ip:port' # 多个地址用逗号隔开
+export REDISDB_USER_PASS='xxx'
+export REDISDB_DB='xxx' # 默认是0, 可不设置
+export REDISDB_SERVICE_NAME='xxx' # 用于redis的哨兵模式，单节点或集群模式可不设置
+
+```
+
+这样，当框架读取不到setting时，便会取环境变量里的值
+
+### 2. 从缓存中取响应
+
+```
+def get_response_from_cached(self, save_cached=True):
+    pass
+```
+
+用于从上面的缓存中取response。当缓存不存在时，会先下载，然后将响应存入缓存，之后再返回响应。缓存同样依赖redis，因此需要先配置好redis连接信息
+
+### 3. 删除缓存
+
+```
+def del_response_cached(self)
+    pass
+```
+
+### 4. 复制Request
+
+```
+def copy(self):
+    pass
+```
+
+## 缓存机制
+
+### 1. 缓存有效期
+
+缓存使用redis的str结构存储，每条缓存对应一个key，默认有效期20分钟，可以通过 `Request.cached_expire_time=过期时间`来设置
+
+### 2. 缓存key
+
+默认的key为 `response_cached:test:request指纹`
+
+可通过`Request.cached_redis_key`设置，设置后为 `response_cached:自定义的key:request指纹`
+
+## 代理及UserAgent
+
+ 代理及UA的设置优先取传递的参数，若参数没指定，则依赖`setting.py`的配置，默认如下：
+
+```python
+# 设置代理
+PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+PROXY_ENABLE = True
+
+# 随机headers
+RANDOM_HEADERS = True
+# requests 使用session
+USE_SESSION = False
+```
+
+PROXY_EXTRACT_API 为代理的提取地址，如
+
+```python
+PROXY_EXTRACT_API="http://xxxx"
+```
+
+返回的代理格式为：
+
+```
+ip:port
+ip:port
+ip:port
+```
+
+ 
+
+### 代码文件: docs\source_code\浏览器渲染-Selenium.md
+ 
+# 浏览器渲染-Selenium
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+框架内置一个浏览器渲染池，默认的池子大小为1，请求时重复利用浏览器实例，只有当代理失效请求异常时，才会销毁、创建一个新的浏览器实例
+
+内置浏览器渲染支持 **CHROME**、**EDGE**、**PHANTOMJS**、**FIREFOX**
+
+## 使用方式：
+
+```python
+def start_requests(self):
+    yield feapder.Request("https://news.qq.com/", render=True)
+```
+在返回的Request中传递`render=True`即可
+
+框架支持`CHROME`、`EDGE`、`PHANTOMJS`、`FIREFOX` 三种浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+# 浏览器渲染
+WEBDRIVER = dict(
+    pool_size=1,  # 浏览器的数量
+    load_images=True,  # 是否加载图片
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    render_time=0, # 渲染时长，即打开网页等待指定时间后再获取源码
+    custom_argument=["--ignore-certificate-errors"],  # 自定义浏览器渲染参数
+    xhr_url_regexes=None,  # 拦截xhr接口，支持正则，数组类型
+    auto_install_driver=False,  # 自动下载浏览器驱动 支持chrome 和 firefox
+)
+```
+
+ - `feapder.Request` 也支持`render_time`参数， 优先级大于配置文件中的`render_time`
+
+ - 代理使用优先级：`feapder.Request`指定的代理 > 配置文件中的`PROXY_EXTRACT_API` > webdriver配置文件中的`proxy`
+
+ - user_agent使用优先级：`feapder.Request`指定的header里的`User-Agent` > 框架随机的`User-Agent` > webdriver配置文件中的`user_agent`
+
+## 设置User-Agent
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `user_agent` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "User-Agent": "xxxxxxxx"
+    }
+    return request
+```
+
+## 设置代理
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `proxy` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.proxies = {
+        "https": "https://xxx.xxx.xxx.xxx:xxxx"
+    }
+    return request
+```
+
+## 设置Cookie
+
+通过 `feapder.Request`携带，如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "Cookie": "key=value; key2=value2"
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = {
+        "key": "value",
+        "key2": "value2",
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = [
+        {
+            "domain": "xxx",
+            "name": "xxx",
+            "value": "xxx",
+            "expirationDate": "xxx"
+        },
+    ]
+    return request
+```
+
+## 操作浏览器对象
+
+通过 `response.browser` 获取浏览器对象
+
+代码示例：请求百度，搜索feapder
+
+```python
+import time
+
+import feapder
+from feapder.utils.webdriver import WebDriver
+
+
+class TestRender(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("http://www.baidu.com", render=True)
+
+    def parse(self, request, response):
+        browser: WebDriver = response.browser
+        browser.find_element_by_id("kw").send_keys("feapder")
+        browser.find_element_by_id("su").click()
+        time.sleep(5)
+        print(browser.page_source)
+
+        # response也是可以正常使用的
+        # response.xpath("//title")
+
+        # 若有滚动，可通过如下方式更新response，使其加载滚动后的内容
+        # response.text = browser.page_source
+
+
+if __name__ == "__main__":
+    TestRender().start()
+
+```
+
+## 拦截xhr数据
+
+### 设置拦截规则
+
+```python
+WEBDRIVER = dict(
+    ...
+    xhr_url_regexes=[
+        "接口1正则",
+        "接口2正则",
+    ]
+)
+```
+
+### 获取数据
+
+```python
+browser: WebDriver = response.browser
+text = browser.xhr_text("接口1正则")
+```
+
+### 获取json格式数据
+
+```python
+browser: WebDriver = response.browser
+data = browser.xhr_json("接口1正则")
+```
+
+### 获取response
+
+```python
+browser: WebDriver = response.browser
+xhr_response = browser.xhr_response("接口1正则")
+print("请求接口", xhr_response.request.url)
+print("请求头", xhr_response.request.headers)
+print("请求体", xhr_response.request.data)
+print("返回头", xhr_response.headers)
+print("返回地址", xhr_response.url)
+print("返回内容", xhr_response.content)
+```
+
+
+### 示例：
+
+需求：
+![](http://markdown-media.oss-cn-beijing.aliyuncs.com/2021/12/30/16408610725756.jpg)
+
+代码：
+
+```python
+import time
+
+import feapder
+from feapder.utils.webdriver import WebDriver
+
+
+class TestRender(feapder.AirSpider):
+    __custom_setting__ = dict(
+        WEBDRIVER=dict(
+            pool_size=1,  # 浏览器的数量
+            load_images=True,  # 是否加载图片
+            user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+            proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless=False,  # 是否为无头浏览器
+            driver_type="CHROME",  # CHROME、EDGE、PHANTOMJS、FIREFOX
+            timeout=30,  # 请求超时时间
+            window_size=(1024, 800),  # 窗口大小
+            executable_path=None,  # 浏览器路径，默认为默认路径
+            render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+            custom_argument=["--ignore-certificate-errors"],  # 自定义浏览器渲染参数
+            xhr_url_regexes=[
+                "/ad",
+            ],  # 拦截 http://www.spidertools.cn/spidertools/ad 接口
+        )
+    )
+
+    def start_requests(self):
+        yield feapder.Request("http://www.spidertools.cn", render=True)
+
+    def parse(self, request, response):
+        browser: WebDriver = response.browser
+        time.sleep(3)
+
+        # 获取接口数据 文本类型
+        ad = browser.xhr_text("/ad")
+        print(ad)
+
+        # 获取接口数据 转成json，本例因为返回的接口是文本，所以不转了
+        # browser.xhr_json("/ad")
+
+        xhr_response = browser.xhr_response("/ad")
+        print("请求接口", xhr_response.request.url)
+        # 请求头目前获取的不完整
+        print("请求头", xhr_response.request.headers)
+        print("请求体", xhr_response.request.data)
+        print("返回头", xhr_response.headers)
+        print("返回地址", xhr_response.url)
+        print("返回内容", xhr_response.content)
+
+
+if __name__ == "__main__":
+    TestRender().start()
+
+```
+
+## 驱动版本自动适配
+
+```python
+WEBDRIVER = dict(
+    ...
+    auto_install_driver=True
+)
+```
+
+即浏览器渲染相关配置 `auto_install_driver` 设置True，让其自动对比驱动版本，版本不符或驱动不存在时自动下载
+
+## 关闭当前浏览器
+
+```python
+def parse(self, request, response):
+    response.close_browser(request)
+```
+
+关闭会自动重开一个新的浏览器实例
+
+ 
+
+### 代码文件: docs\source_code\tools.md
+ 
+
+# tools
+
+`feapder.utils.tools`里封装了爬虫中常用的函数，目前共计**129**个，可通过阅读源码了解使用
+
+## 举例
+
+### 时间格式化
+
+```python
+from feapder.utils import tools
+
+time = "昨天"
+
+date = tools.format_time(time)
+assert date == "2021-03-15 00:00:00"
+```
+
+ 
+
+### 代码文件: docs\foreword\架构设计.md
+ 
+
+# 框架流程图
+
+![boris-spider -1-](http://markdown-media.oss-cn-beijing.aliyuncs.com/2020/06/08/borisspider-1.png)
+
+## 模块说明：
+
+* spider **框架调度核心**
+* parser_control **模版控制器**，负责调度parser
+* collector **任务收集器**，负责从任务队里中批量取任务到内存，以减少爬虫对任务队列数据库的访问频率及并发量
+* parser **数据解析器**
+* start_request 初始任务下发函数
+* item_buffer **数据缓冲队列**，批量将数据存储到数据库中
+* request_buffer **请求任务缓冲队列**，批量将请求任务存储到任务队列中
+* request **数据下载器**，封装了requests，用于从互联网上下载数据
+* response **请求响应**，封装了response, 支持xpath、css、re等解析方式，自动处理中文乱码
+
+## 流程说明：
+
+1. spider调度**start_request**生产任务
+2. **start_request**下发任务到request_buffer中
+3. spider调度**request_buffer**批量将任务存储到任务队列数据库中
+4. spider调度**collector**从任务队列中批量获取任务到内存队列
+5. spider调度**parser_control**从collector的内存队列中获取任务
+6. **parser_control**调度**request**请求数据
+7. **request**请求与下载数据
+8. request将下载后的数据给**response**，进一步封装
+9. 将封装好的**response**返回给**parser_control**（图示为多个parser_control，表示多线程）
+10. parser_control调度对应的**parser**，解析返回的response（图示多组parser表示不同的网站解析器）
+11. parser_control将parser解析到的数据item及新产生的request分发到**item_buffer**与**request_buffer**
+12. spider调度**item_buffer**与**request_buffer**将数据批量入库
+
+
+ 
+
+### 代码文件: docs\source_code\浏览器渲染-Playwright.md
+ 
+# 浏览器渲染-Playwright
+
+采集动态页面时（Ajax渲染的页面），常用的有两种方案。一种是找接口拼参数，这种方式比较复杂但效率高，需要一定的爬虫功底；另外一种是采用浏览器渲染的方式，直接获取源码，简单方便
+
+框架支持playwright渲染下载，每个线程持有一个playwright实例
+
+
+## 使用方式：
+
+1. 修改配置文件的渲染下载器：
+
+    ```
+    RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader"
+    ```
+2. 使用
+
+    ```python
+    def start_requests(self):
+        yield feapder.Request("https://news.qq.com/", render=True)
+    ```
+
+在返回的Request中传递`render=True`即可
+
+框架支持`chromium`、`firefox`、`webkit` 三种浏览器渲染，可通过[配置文件](source_code/配置文件)进行配置。相关配置如下：
+
+```python
+PLAYWRIGHT = dict(
+    user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+    proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+    headless=False,  # 是否为无头浏览器
+    driver_type="chromium",  # chromium、firefox、webkit
+    timeout=30,  # 请求超时时间
+    window_size=(1024, 800),  # 窗口大小
+    executable_path=None,  # 浏览器路径，默认为默认路径
+    download_path=None,  # 下载文件的路径
+    render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+    wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+    use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+    page_on_event_callback=None,  # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+    storage_state_path=None,  # 保存浏览器状态的路径
+    url_regexes=None,  # 拦截接口，支持正则，数组类型
+    save_all=False,  # 是否保存所有拦截的接口, 配合url_regexes使用，为False时只保存最后一次拦截的接口
+)
+```
+
+ - `feapder.Request` 也支持`render_time`参数， 优先级大于配置文件中的`render_time`
+
+ - 代理使用优先级：`feapder.Request`指定的代理 > 配置文件中的`PROXY_EXTRACT_API` > webdriver配置文件中的`proxy`
+
+ - user_agent使用优先级：`feapder.Request`指定的header里的`User-Agent` > 框架随机的`User-Agent` > webdriver配置文件中的`user_agent`
+
+## 设置User-Agent
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `user_agent` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "User-Agent": "xxxxxxxx"
+    }
+    return request
+```
+
+## 设置代理
+
+> 每次生成一个新的浏览器实例时生效
+
+### 方式1：
+
+通过配置文件的 `proxy` 参数设置
+
+### 方式2：
+
+通过 `feapder.Request`携带，优先级大于配置文件, 如：
+
+```python
+def download_midware(self, request):
+    request.proxies = {
+        "https": "https://xxx.xxx.xxx.xxx:xxxx"
+    }
+    return request
+```
+    
+## 设置Cookie
+
+通过 `feapder.Request`携带，如：
+
+```python
+def download_midware(self, request):
+    request.headers = {
+        "Cookie": "key=value; key2=value2"
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = {
+        "key": "value",
+        "key2": "value2",
+    }
+    return request
+```
+
+或者
+
+```python
+def download_midware(self, request):
+    request.cookies = [
+        {
+            "domain": "xxx",
+            "name": "xxx",
+            "value": "xxx",
+            "expirationDate": "xxx"
+        },
+    ]
+    return request
+```
+
+## 拦截数据示例
+
+> 注意：主函数使用run方法运行，不能使用start
+
+```python
+from playwright.sync_api import Response
+from feapder.utils.webdriver import (
+    PlaywrightDriver,
+    InterceptResponse,
+    InterceptRequest,
+)
+
+import feapder
+
+
+def on_response(response: Response):
+    print(response.url)
+
+
+class TestPlaywright(feapder.AirSpider):
+    __custom_setting__ = dict(
+        RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+        PLAYWRIGHT=dict(
+            user_agent=None,  # 字符串 或 无参函数，返回值为user_agent
+            proxy=None,  # xxx.xxx.xxx.xxx:xxxx 或 无参函数，返回值为代理地址
+            headless=False,  # 是否为无头浏览器
+            driver_type="chromium",  # chromium、firefox、webkit
+            timeout=30,  # 请求超时时间
+            window_size=(1024, 800),  # 窗口大小
+            executable_path=None,  # 浏览器路径，默认为默认路径
+            download_path=None,  # 下载文件的路径
+            render_time=0,  # 渲染时长，即打开网页等待指定时间后再获取源码
+            wait_until="networkidle",  # 等待页面加载完成的事件,可选值："commit", "domcontentloaded", "load", "networkidle"
+            use_stealth_js=False,  # 使用stealth.min.js隐藏浏览器特征
+            # page_on_event_callback=dict(response=on_response),  # 监听response事件
+            # page.on() 事件的回调 如 page_on_event_callback={"dialog": lambda dialog: dialog.accept()}
+            storage_state_path=None,  # 保存浏览器状态的路径
+            url_regexes=["wallpaper/list"],  # 拦截接口，支持正则，数组类型
+            save_all=True,  # 是否保存所有拦截的接口
+        ),
+    )
+
+    def start_requests(self):
+        yield feapder.Request(
+            "http://www.soutushenqi.com/image/search/?searchWord=%E6%A0%91%E5%8F%B6",
+            render=True,
+        )
+
+    def parse(self, reqeust, response):
+        driver: PlaywrightDriver = response.driver
+
+        intercept_response: InterceptResponse = driver.get_response("wallpaper/list")
+        intercept_request: InterceptRequest = intercept_response.request
+
+        req_url = intercept_request.url
+        req_header = intercept_request.headers
+        req_data = intercept_request.data
+        print("请求url", req_url)
+        print("请求header", req_header)
+        print("请求data", req_data)
+
+        data = driver.get_json("wallpaper/list")
+        print("接口返回的数据", data)
+
+        print("------ 测试save_all=True ------- ")
+
+        # 测试save_all=True
+        all_intercept_response: list = driver.get_all_response("wallpaper/list")
+        for intercept_response in all_intercept_response:
+            intercept_request: InterceptRequest = intercept_response.request
+            req_url = intercept_request.url
+            req_header = intercept_request.headers
+            req_data = intercept_request.data
+            print("请求url", req_url)
+            print("请求header", req_header)
+            print("请求data", req_data)
+
+        all_intercept_json = driver.get_all_json("wallpaper/list")
+        for intercept_json in all_intercept_json:
+            print("接口返回的数据", intercept_json)
+
+        # 千万别忘了
+        driver.clear_cache()
+
+
+if __name__ == "__main__":
+    TestPlaywright(thread_count=1).run()
+```
+可通过配置的`page_on_event_callback`参数自定义事件的回调，如设置`on_response`的事件回调，亦可直接使用`url_regexes`设置拦截的接口
+
+## 操作浏览器对象示例
+
+> 注意：主函数使用run方法运行，不能使用start
+
+```python
+import time
+
+from playwright.sync_api import Page
+
+import feapder
+from feapder.utils.webdriver import PlaywrightDriver
+
+
+class TestPlaywright(feapder.AirSpider):
+    __custom_setting__ = dict(
+        RENDER_DOWNLOADER="feapder.network.downloader.PlaywrightDownloader",
+    )
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com", render=True)
+
+    def parse(self, reqeust, response):
+        driver: PlaywrightDriver = response.driver
+        page: Page = driver.page
+
+        page.type("#kw", "feapder")
+        page.click("#su")
+        page.wait_for_load_state("networkidle")
+        time.sleep(1)
+
+        html = page.content()
+        response.text = html  # 使response加载最新的页面
+        for data_container in response.xpath("//div[@class='c-container']"):
+            print(data_container.xpath("string(.//h3)").extract_first())
+
+
+if __name__ == "__main__":
+    TestPlaywright(thread_count=1).run()
+```
+ 
+
+### 代码文件: docs\source_code\proxy.md
+ 
+# 代理使用说明
+
+代理使用有三种方式
+1. 使用框架内置代理池
+2. 自定义代理池
+3. 请求中直接指定
+
+## 方式1. 使用框架内置代理池
+
+### 配置代理
+
+在配置文件中配置代理提取接口
+
+```python
+# 设置代理
+PROXY_EXTRACT_API = None  # 代理提取API ，返回的代理分割符为\r\n
+PROXY_ENABLE = True
+PROXY_MAX_FAILED_TIMES = 5  # 代理最大失败次数，超过则不使用，自动删除
+```
+
+要求API返回的代理格式为使用 /r/n 分隔：
+
+```
+ip:port
+ip:port
+ip:port
+```
+
+这样feapder在请求时会自动随机使用上面的代理请求了
+
+## 管理代理
+
+1. 删除代理（默认是请求异常连续5次，再删除代理）
+
+    例如在发生异常时删除代理
+    
+    ```python
+    import feapder
+    class TestProxy(feapder.AirSpider):
+        def start_requests(self):
+            yield feapder.Request("https://www.baidu.com")
+        
+        def parse(self, request, response):
+            print(response)
+        
+        def exception_request(self, request, response):
+            request.del_proxy()
+            
+    ```
+    
+## 方式2. 自定义代理池
+
+1. 编写代理池：例如在你的项目下创建个my_proxypool.py，实现下面的函数
+    
+    ```python
+    from feapder.network.proxy_pool import BaseProxyPool 
+        
+    class MyProxyPool(BaseProxyPool):
+        def get_proxy(self):
+            """
+            获取代理
+            Returns:
+                {"http": "xxx", "https": "xxx"}
+            """
+            pass
+        
+        def del_proxy(self, proxy):
+            """
+            @summary: 删除代理
+            ---------
+            @param proxy: xxx
+            """
+            pass
+    ```
+
+3. 修改setting的代理配置
+
+    ```
+    PROXY_POOL = "my_proxypool.MyProxyPool"  # 代理池
+    ```
+    
+    将编写好的代理池配置进来，值为类的模块路径，需要指定到具体的类名
+ 
+
+
+## 方式3. 不使用代理池，直接给请求指定代理
+
+直接给request.proxies赋值即可，例如在下载中间件里使用
+
+```python
+import feapder
+
+class TestProxy(feapder.AirSpider):
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+        
+    def download_midware(self, request):
+        # 这里使用代理使用即可
+        request.proxies = {"https": "https://ip:port", "http": "http://ip:port"} 
+        return request
+
+    def parse(self, request, response):
+        print(response)
+```
+ 
+
+### 代码文件: docs\source_code\MongoDB.md
+ 
+# MongoDB
+
+## 数据自动入Mongo库使用须知
+
+- 使用`MongoDb`存储数据，需要使用`MongoPipeline`
+
+示例:
+
+```python
+import feapder
+from feapder import Item
+
+
+class TestMongo(feapder.AirSpider):
+    __custom_setting__ = dict(
+        ITEM_PIPELINES=["feapder.pipelines.mongo_pipeline.MongoPipeline"],
+        MONGO_IP="localhost",
+        MONGO_PORT=27017,
+        MONGO_DB="feapder",
+        MONGO_USER_NAME="",
+        MONGO_USER_PASS="",
+    )
+
+    def start_requests(self):
+        yield feapder.Request("https://www.baidu.com")
+
+    def parse(self, request, response):
+        title = response.xpath("//title/text()").extract_first()  # 取标题
+        item = Item()  # 声明一个item
+        item.table_name = "test_mongo" # 指定存储的表名
+        item.title = title  # 给item属性赋值
+        yield item  # 返回item， item会自动批量入库
+
+
+if __name__ == "__main__":
+    TestMongo().start()
+```
+
+
+## 直接使用
+
+### 连接
+
+```python
+from feapder.db.mongodb import MongoDB
+
+
+db = MongoDB(
+    ip="localhost", port=27017, db="feapder", user_name="feapder", user_pass="feapder123"
+)
+```
+
+若环境变量中配置了数据库连接方式或者setting中已配置，则可不传参 
+
+```python
+db = MongoDB()
+```
+    
+或者可以根据url连接
+
+```python
+db = MongoDB.from_url("mongodb://username:password@ip:port/db")
+```
+    
+### 方法
+
+> MongoDB封装了增删改查等方法，方便使用
+
+#### 查
+
+```python
+def find(self, table, limit=0) -> List[Dict]:
+    """
+    @summary:
+    无数据： 返回()
+    有数据： 若limit == 1 则返回 (data1, data2)
+            否则返回 ((data1, data2),)
+    ---------
+    @param table:
+    @param limit:
+    ---------
+    @result:
+    """
+```
+    
+
+#### 增
+
+```python
+def add(self, table, data, **kwargs):
+    """
+
+    Args:
+        table:
+        data:
+        kwargs:
+            auto_update: 覆盖更新，将替换唯一索引重复的数据，默认False
+            update_columns: 更新指定的列（如果数据的唯一索引存在，则更新指定字段，如 update_columns = ["name", "title"]
+            insert_ignore: 唯一索引冲突时是否忽略，默认为False
+            condition_fields: 用于条件查找的字段，默认以`_id`作为查找条件，默认：['_id']
+            exception_callfunc: 异常回调
+
+    Returns: 添加行数
+
+    """
+```
+
+```python
+def add_batch(self, table: str, datas: List[Dict], **kwargs):
+    """
+    @summary: 批量添加数据
+    ---------
+    @param command: 字典
+    @param datas: 列表 [[..], [...]]
+    @param **kwargs:
+        auto_update: 覆盖更新，将替换唯一索引重复的数据，默认False
+        update_columns: 更新指定的列（如果数据的唯一索引存在，则更新指定字段，如 update_columns = ["name", "title"]
+        update_columns_value: 指定更新的字段对应的值
+        condition_fields: 用于条件查找的字段，默认以`_id`作为查找条件，默认：['_id']
+    ---------
+    @result: 添加行数
+    """
+```
+
+#### 更新
+
+```python
+def update(self, coll_name, data: Dict, condition: Dict, upsert: bool = False):
+    """
+    更新
+    Args:
+        coll_name: 集合名
+        data: 单条数据 {"xxx":"xxx"}
+        condition: 更新条件 {"_id": "xxxx"}
+        upsert: 数据不存在则插入,默认为 False
+
+    Returns: True / False
+    """
+```
+
+#### 删除
+
+```python
+def delete(self, table, condition: Dict):
+    """
+    删除
+    Args:
+        table:
+        condition: 查找条件
+    Returns: True / False
+    """
+```
+
+ 
+
+### 代码文件: docs\source_code\BatchParser.md
+ 
+# BatchParser
+
+BaseParser为BatchSpider的基类，用来定义任务下发与数据解析，是面向用户提供的接口
+
+除了提供[BaseParser](source_code/BaseParser)所有接口外，还提供以下方法
+
+## 方法详解
+
+### 1. 添加任务 add_task
+
+add_task, 每次执行start_monitor都会调用，且在init_task之前调用, 用于在批次爬虫启动前添加任务到数据库
+
+```
+class TestSpider(feapder.BatchSpider):
+    def add_task(self):
+        pass
+```
+
+### 2. 更新任务
+
+#### 方法一：
+
+一条条更新
+
+```python
+def update_task_state(self, task_id, state=1, **kwargs):
+    """
+    @summary: 更新任务表中任务状态，做完每个任务时代码逻辑中要主动调用
+    调用方法为 yield lambda : self.update_task_state(task_id, state)
+    ---------
+    @param task_id: 任务id
+    @param state: 任务状态
+    ---------
+    @result:
+    """
+```
+
+举例说明
+
+```
+def parse(self, request, response):
+    yield item  # 返回item， item会自动批量入库
+    yield lambda : self.update_task_state(request.task_id, 1)
+```
+
+ 在`yield item`后，调用`self.update_task_state`函数实现任务状态更新。
+ 
+ 这里为什么使用`yield lambda`方式呢？因为`yield item`后，item不会马上入库，会存在一个buffer中，批量入库，如果我们直接调用`self.update_task_state`更新任务状态，可能这时item还并未入库，如果此时程序意外退出，那么缓存中的这一部分item数据将会丢失，但是此时任务状态已更新，任务不会重做，这便会导致这个任务所对应的数据丢失
+ 
+ `yield lambda`返回的是一个回调函数，这个函数并不会马上执行，系统会保证item入库后再执行，因此这么写的用意在于item入库后再更新任务状态
+ 
+#### 方法二：
+
+批量更新
+
+```python
+def update_task_batch(self, task_id, state=1, **kwargs):
+    """
+    批量更新任务 多处调用，更新的字段必须一致
+    注意：需要 写成 yield update_task_batch(...) 否则不会更新
+    @param task_id:
+    @param state:
+    @param kwargs:
+    @return:
+    """
+```
+
+举例说明
+
+```python
+def parse(self, request, response):
+    yield item  # 返回item， item会自动批量入库
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+```
+
+在`yield item`后调用`self.update_task_batch`实现批量更新
+
+注意，批量更新必须使用 `yield`, 因为`update_task_batch`函数并未实现更新逻辑，只是返回了`UpdateItem`， `UpdateItem`与`Item`类似，只不过带有更新功能，框架会在Item入库后在调用`UpdateItem`实现批量更新。关于`UpdateItem`详解，请参考[UpdateItem]()
+
+#### 两种方式选取
+
+同一张表，若更新字段相同，推荐使用批量更新的方式，效率更高，若字段不同，用一条条更新的方式。因为批量更新，这一批的更新字段必须一致
+
+比如当请求失败时，将任务更新为-1，同时标记失败原因，成功时将任务更新为1，写法如下：
+
+```python
+def parse(self, request, response):
+    yield self.update_task_batch(request.task_id, 1) # 更新任务状态为1
+
+def failed_request(self, request, response):
+    """
+    @summary: 超过最大重试次数的request
+    ---------
+    @param request:
+    ---------
+    @result: request / item / callback / None (返回值必须可迭代)
+    """
+
+    yield request
+    yield lambda : self.update_task_state(request.task_id, -1, remark="失败原因") # 更新任务状态为-1
+```
+
+因任务失败时多更新了个remark字段，与任务成功时只更新state字段不同，因此需要将此更新操作单独拆出来，用`update_task_state`方式更新
+
+### 3. 获取批次时间
+
+示例：
+
+    def parse(self, request, response):
+        item = SpiderDataItem()  # 声明一个item
+        item.batch_data = self.batch_date
+        item.title = title  # 给item属性赋值
+        yield item  # 返回item， item会自动批量入库
+        
+使用`self.batch_date`可获取当前批次时间，然后拼接到item入库
+
+数据示例
+
+| id | title | batch_date |
+| --- | --- | --- |
+| 1 | 百度一下 | 2021-01-01 |
+ 
+
+### 代码文件: docs\question\请求问题.md
+ 
+# 请求问题
+
+## ValueError: check_hostname requires server_hostname
+
+    pip install urllib3==1.25.8
+    
+参考：https://stackoverflow.com/questions/66642705/why-requests-raise-this-exception-check-hostname-requires-server-hostname
+ 
+
+### 代码文件: docs\.nojekyll
+```nojekyll
+
+```
