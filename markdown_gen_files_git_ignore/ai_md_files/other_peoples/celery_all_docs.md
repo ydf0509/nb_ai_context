@@ -1,171 +1,925 @@
-# celery 教程大全 
+﻿
+# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
+
+> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
+> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+
+## 🧠 AI 认知与解析准则
+
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+
+### 1. 信息的层级与互补
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
+*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
+*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+
+### 2. 文件边界与架构感知
+*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
+    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
+*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
+*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+
+### 3. 代码生成与交互
+*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
+*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
+*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
+    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
+    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+
+---
+# markdown content namespace: celery project summary 
 
 
-### 代码文件: docs\AUTHORS.txt
-```txt
-=========
- AUTHORS
-=========
-:order: sorted
 
-Aaron Ross <aaron@wawd.com>
-Adam Endicott
-Adriano Petrich <petrich@gmail.com>
-Akira Matsuzaki <akira.matsuzaki.1977@gmail.com>
-Alan Brogan <github@al-got-rhythm.net>
-Alec Clowes <aclowes@gmail.com>
-Ales Zoulek <ales.zoulek@gmail.com>
-Allan Caffee <allan.caffee@gmail.com>
-Andrew McFague <amcfague@wgen.net>
-Andrew Watts <andrewwatts@gmail.com>
-Armin Ronacher <armin.ronacher@active-4.com>
-Arpan Shah <arpanshah29@gmail.com>
-Ask Solem <ask@celeryproject.org>
-Augusto Becciu <augusto@becciu.org>
-Balachandran C <balachandran.c@gramvaani.org>
-Bartosz Ptaszynski
-Ben Firshman <ben@firshman.co.uk>
-Brad Jasper <bjasper@gmail.com>
-Branko Čibej <brane@apache.org>
-Brendon Crawford <brendon@aphexcreations.net>
-Brian Bouterse <bmbouter@redhat.com>
-Brian Rosner <brosner@gmail.com>
-Bryan Berg <bryan@mixedmedialabs.com>
-Chase Seibert <chase.seibert+github@gmail.com>
-Chris Adams <chris@improbable.org>
-Chris Angove <cangove@wgen.net>
-Chris Chamberlin <chamberlincd@gmail.com>
-Chris Rose <offby1@offby1.net>
-Chris St. Pierre <chris.a.st.pierre@gmail.com>
-Chris Streeter <chris@chrisstreeter.com>
-Christoph Burgmer <christoph@nwebs.de>
-Christopher Peplin <peplin@bueda.com>
-Clay Gerrard
-Dan McGee <dan@archlinux.org>
-Daniel Hepper <daniel.hepper@gmail.com>
-Daniel Lundin <dln@eintr.org>
-Daniel Watkins <daniel@daniel-watkins.co.uk>
-David Arthur <mumrah@gmail.com>
-David Cramer <dcramer@gmail.com>
-David Miller <il.livid.dream@gmail.com>
-David Strauss <david@davidstrauss.net>
-David White <dpwhite2@ncsu.edu>
-Eran Rundstein
-Felix Berger <bflat1@gmx.net
-Flavio Percoco Premoli <flaper87@gmail.com>
-Florian Apolloner
-Frédéric Junod <frederic.junod@camptocamp.com>
-Gert Van Gool <gertvangool@gmail.com>
-Greg Haskins <greg@greghaskins.com>
-Greg Taylor <gtaylor@duointeractive.com>
-Grégoire Cachet <gregoire@audacy.fr>
-Gunnlaugur Thor Briem <gunnlaugur@gmail.com>
-Hari <haridara@gmail.com>
-Harm Verhagen <harm.verhagen@gmail.com>
-Honza Kral <honza.kral@gmail.com>
-Ian A Wilson <ian@ianawilson.com>
-Ignas Mikalajūnas <ignas.mikalajunas@gmail.com>
-Ionel Maries Cristian <contact@ionelmc.ro>
-Ionut Turturica <jonozzz@yahoo.com>
-Iurii Kriachko <iurii.kriachko@gmail.com>
-Ivan Metzlar <metzlar@gmail.com>
-Jannis Leidel <jannis@leidel.info>
-Jason Baker <amnorvend@gmail.com>
-Jay McGrath <jaymcgrath@users.noreply.github.com>
-Jeff Balogh <me@jeffbalogh.org>
-Jeff Terrace <jterrace@gmail.com>
-Jerzy Kozera <jerzy.kozera@gmail.com>
-Jesper Noehr <jesper@noehr.org>
-John Watson <johnw@mahalo.com>
-John Whitlock <john-whitlock@ieee.org>
-Jonas Haag <jonas@lophus.org>
-Jonas Obrist <me@ojii.ch>
-Jonatan Heyman <jonatan@heyman.info>
-Joshua Ginsberg <jag@flowtheory.net>
-Juan Ignacio Catalano <catalanojuan@gmail.com>
-Juarez Bochi <jbochi@gmail.com>
-Jude Nagurney <jude@pwan.org>
-Julien Poissonnier <julien@caffeine.lu>
-Keith Perkins <keith@tasteoftheworld.us>
-Kevin Tran <hekevintran@gmail.com>
-Kornelijus Survila <kornholijo@gmail.com>
-Leo Dirac <leo@banyanbranch.com>
-Luis Clara Gomez <ekkolabs@gmail.com>
-Lukas Linhart <lukas.linhart@centrumholdings.com>
-Luke Zapart <drx@drx.pl>
-Marcin Kuźmiński <marcin@python-works.com>
-Marcin Lulek <info@webreactor.eu>
-Mark Hellewell <mark.hellewell@gmail.com>
-Mark Lavin <mlavin@caktusgroup.com>
-Mark Parncutt <me@markparncutt.com>
-Mark Stover <stovenator@gmail.com>
-Mark Thurman <mthurman@gmail.com>
-Martin Galpin <m@66laps.com>
-Martin Melin <git@martinmelin.com>
-Matt Ullman <staticfox@staticfox.net>
-Matt Williamson <dawsdesign@gmail.com>
-Matthew J Morrison <mattj.morrison@gmail.com>
-Matthew Miller <matthewgarrettmiller@gmail.com>
-Mauro Rocco <fireantology@gmail.com>
-Maxim Bodyansky <bodyansky@gmail.com>
-Mher Movsisyan <mher.movsisyan@gmail.com>
-Michael Elsdoerfer <michael@elsdoerfer.com>
-Michael Fladischer <FladischerMichael@fladi.at>
-Miguel Hernandez Martos <enlavin@gmail.com>
-Mikhail Gusarov <dottedmag@dottedmag.net>
-Mikhail Korobov <kmike84@gmail.com>
-Mitar <mitar@tnode.com>
-Môshe van der Sterre <me@moshe.nl>
-Neil Chintomby
-Noah Kantrowitz <noah@coderanger.net>
-Norman Richards <orb@nostacktrace.com>
-Patrick Altman <paltman@gmail.com>
-Peter Bittner <django@bittner.it>
-Piotr Sikora <piotr.sikora@frickle.com>
-Primož Kerin <kerin.primoz@gmail.com>
-Remy Noel <mocramis@gmail.com>
-Reza Lotun <rlotun@gmail.com>
-Roberto Gaiser <gaiser@geekbunker.org>
-Roger Hu <rhu@hearsaycorp.com>
-Rune Halvorsen <runefh@gmail.com>
-Ryan P. Kelly <rpkelly@cpan.org>
-Ryan Petrello <lists@ryanpetrello.com>
-Sam Cooke <sam@mixcloud.com>
-Sean Creeley <sean.creeley@gmail.com>
-Sean O'Connor <sean@seanoc.com>
-Seong Won Mun <longfinfunnel@gmail.com>
-Simon Josi <simon.josi@atizo.com>
-Steeve Morin <steeve.morin@gmail.com>
-Stefan Kjartansson <esteban.supreme@gmail.com>
-Steven Skoczen
-Tayfun Sen <tayfun.sen@markafoni.com>
-Thomas Johansson <prencher@prencher.dk>
-Thomas Forbes <tom@tomforb.es>
-Timo Sugliani <timo.sugliani@gmail.com>
-Travis Swicegood <development@domain51.com>
-Vincent Driessen <vincent@datafox.nl>
-Vitaly Babiy <vbabiy86@gmail.com>
-Vladimir Kryachko <vladimir.kryachko@etvnet.com>
-Wes Turner <wes.turner@gmail.com>
-Wes Winham <winhamwr@gmail.com>
-Yury V. Zaytsev <yury@shurup.com>
-jpellerin
-kuno <neokuno@gmail.com>
-lookfwd <lookfwd@gmail.com>
-sdcooke
-Łukasz Langa <lukasz@langa.pl>
-Łukasz Oleś <lukaszoles@gmail.com>
+- `celery` is a powerful task queue library for Python. 
 
-```
 
-### 代码文件: docs\changelog.rst
-```rst
+## 📋 celery most core source files metadata (Entry Points)
+
+
+以下是项目 celery 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project celery most core source code files as follows: 
+- `celery/__init__.py`
+
+
+### 📄 Python File Metadata: `celery/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Distributed Task Queue.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import re`
+- `import sys`
+- `from collections import namedtuple`
+- `from  import local`
+- `import builtins`
+- `from celery._state import current_app`
+- `from celery._state import current_task`
+- `from celery.app import shared_task`
+- `from celery.app.base import Celery`
+- `from celery.app.task import Task`
+- `from celery.app.utils import bugreport`
+- `from celery.canvas import chain`
+- `from celery.canvas import chord`
+- `from celery.canvas import chunks`
+- `from celery.canvas import group`
+- `from celery.canvas import maybe_signature`
+- `from celery.canvas import signature`
+- `from celery.canvas import subtask`
+- `from celery.canvas import xmap`
+- `from celery.canvas import xstarmap`
+- `from celery.utils import uuid`
+- `import eventlet.debug`
+- `import gevent.monkey`
+- `import gevent.signal`
+- `from celery import concurrency`
+
+#### 🔧 Public Functions (2)
+
+- `def maybe_patch_concurrency(argv = None, short_opts = None, long_opts = None, patches = None)`
+  - *Line: 123*
+  - **Docstring:**
+  `````
+  Apply eventlet/gevent monkeypatches.
+  
+  With short and long opt alternatives that specify the command line
+  option to set the pool, this makes sure that anything that needs
+  to be patched is completed as early as possible.
+  (e.g., eventlet/gevent monkey patches).
+  `````
+
+- `def debug_import(name, locals = None, globals = None, fromlist = None, level = -1, real_import = builtins.__import__)`
+  - *Line: 61*
+
+
+---
+
+
+
+## 🔗 celery Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Entry Points (not imported by other project files):
+  ★ celery/__init__.py
+
+`````
+
+### 📋 Detailed Dependencies
+
+### 📦 Third-party Dependencies
+
+项目使用的第三方库：
+
+- `eventlet`
+- `gevent`
+- ......以及更多的第三方库......
+
+
+---
+# markdown content namespace: celery docs 
+
+
+## celery File Tree (relative dir: `docs`)
+
+
+`````
+
+└── docs
+    ├── _ext
+    │   └── celerydocs.py
+    ├── _templates
+    │   └── sidebardonations.html
+    ├── changelog.rst
+    ├── changelog_formatter.py
+    ├── community.rst
+    ├── conf.py
+    ├── configuration.html
+    ├── contributing.rst
+    ├── copyright.rst
+    ├── django
+    │   ├── first-steps-with-django.rst
+    │   └── index.rst
+    ├── faq.rst
+    ├── getting-started
+    │   ├── backends-and-brokers
+    │   │   ├── gcpubsub.rst
+    │   │   ├── index.rst
+    │   │   ├── kafka.rst
+    │   │   ├── rabbitmq.rst
+    │   │   ├── redis.rst
+    │   │   └── sqs.rst
+    │   ├── first-steps-with-celery.rst
+    │   ├── index.rst
+    │   ├── introduction.rst
+    │   ├── next-steps.rst
+    │   └── resources.rst
+    ├── glossary.rst
+    ├── history
+    │   ├── changelog-1.0.rst
+    │   ├── changelog-2.0.rst
+    │   ├── changelog-2.1.rst
+    │   ├── changelog-2.2.rst
+    │   ├── changelog-2.3.rst
+    │   ├── changelog-2.4.rst
+    │   ├── changelog-2.5.rst
+    │   ├── changelog-3.0.rst
+    │   ├── changelog-3.1.rst
+    │   ├── changelog-4.0.rst
+    │   ├── changelog-4.1.rst
+    │   ├── changelog-4.2.rst
+    │   ├── changelog-4.3.rst
+    │   ├── changelog-4.4.rst
+    │   ├── changelog-5.0.rst
+    │   ├── changelog-5.1.rst
+    │   ├── changelog-5.3.rst
+    │   ├── changelog-5.4.rst
+    │   ├── changelog-5.5.rst
+    │   ├── changelog-5.6.rst
+    │   ├── index.rst
+    │   ├── whatsnew-2.5.rst
+    │   ├── whatsnew-3.0.rst
+    │   ├── whatsnew-3.1.rst
+    │   ├── whatsnew-4.0.rst
+    │   ├── whatsnew-4.1.rst
+    │   ├── whatsnew-4.2.rst
+    │   ├── whatsnew-4.3.rst
+    │   ├── whatsnew-4.4.rst
+    │   ├── whatsnew-5.0.rst
+    │   ├── whatsnew-5.1.rst
+    │   ├── whatsnew-5.3.rst
+    │   ├── whatsnew-5.4.rst
+    │   ├── whatsnew-5.5.rst
+    │   └── whatsnew-5.6.rst
+    ├── index.rst
+    ├── internals
+    │   ├── app-overview.rst
+    │   ├── deprecation.rst
+    │   ├── guide.rst
+    │   ├── index.rst
+    │   ├── protocol.rst
+    │   ├── reference
+    │   │   ├── celery._state.rst
+    │   │   ├── celery.app.annotations.rst
+    │   │   ├── celery.app.routes.rst
+    │   │   ├── celery.app.trace.rst
+    │   │   ├── celery.backends.arangodb.rst
+    │   │   ├── celery.backends.asynchronous.rst
+    │   │   ├── celery.backends.azureblockblob.rst
+    │   │   ├── celery.backends.base.rst
+    │   │   ├── celery.backends.cache.rst
+    │   │   ├── celery.backends.cassandra.rst
+    │   │   ├── celery.backends.consul.rst
+    │   │   ├── celery.backends.cosmosdbsql.rst
+    │   │   ├── celery.backends.couchbase.rst
+    │   │   ├── celery.backends.couchdb.rst
+    │   │   ├── celery.backends.database.models.rst
+    │   │   ├── celery.backends.database.rst
+    │   │   ├── celery.backends.database.session.rst
+    │   │   ├── celery.backends.dynamodb.rst
+    │   │   ├── celery.backends.elasticsearch.rst
+    │   │   ├── celery.backends.filesystem.rst
+    │   │   ├── celery.backends.gcs.rst
+    │   │   ├── celery.backends.mongodb.rst
+    │   │   ├── celery.backends.redis.rst
+    │   │   ├── celery.backends.rpc.rst
+    │   │   ├── celery.backends.rst
+    │   │   ├── celery.backends.s3.rst
+    │   │   ├── celery.concurrency.base.rst
+    │   │   ├── celery.concurrency.eventlet.rst
+    │   │   ├── celery.concurrency.gevent.rst
+    │   │   ├── celery.concurrency.prefork.rst
+    │   │   ├── celery.concurrency.rst
+    │   │   ├── celery.concurrency.solo.rst
+    │   │   ├── celery.concurrency.thread.rst
+    │   │   ├── celery.events.cursesmon.rst
+    │   │   ├── celery.events.dumper.rst
+    │   │   ├── celery.events.snapshot.rst
+    │   │   ├── celery.platforms.rst
+    │   │   ├── celery.security.certificate.rst
+    │   │   ├── celery.security.key.rst
+    │   │   ├── celery.security.serialization.rst
+    │   │   ├── celery.security.utils.rst
+    │   │   ├── celery.utils.abstract.rst
+    │   │   ├── celery.utils.collections.rst
+    │   │   ├── celery.utils.deprecated.rst
+    │   │   ├── celery.utils.dispatch.rst
+    │   │   ├── celery.utils.dispatch.signal.rst
+    │   │   ├── celery.utils.functional.rst
+    │   │   ├── celery.utils.graph.rst
+    │   │   ├── celery.utils.imports.rst
+    │   │   ├── celery.utils.iso8601.rst
+    │   │   ├── celery.utils.log.rst
+    │   │   ├── celery.utils.nodenames.rst
+    │   │   ├── celery.utils.objects.rst
+    │   │   ├── celery.utils.rst
+    │   │   ├── celery.utils.saferepr.rst
+    │   │   ├── celery.utils.serialization.rst
+    │   │   ├── celery.utils.sysinfo.rst
+    │   │   ├── celery.utils.term.rst
+    │   │   ├── celery.utils.text.rst
+    │   │   ├── celery.utils.threads.rst
+    │   │   ├── celery.utils.time.rst
+    │   │   ├── celery.utils.timer2.rst
+    │   │   ├── celery.worker.autoscale.rst
+    │   │   ├── celery.worker.components.rst
+    │   │   ├── celery.worker.control.rst
+    │   │   ├── celery.worker.heartbeat.rst
+    │   │   ├── celery.worker.loops.rst
+    │   │   ├── celery.worker.pidbox.rst
+    │   │   └── index.rst
+    │   └── worker.rst
+    ├── reference
+    │   ├── celery.app.amqp.rst
+    │   ├── celery.app.autoretry.rst
+    │   ├── celery.app.backends.rst
+    │   ├── celery.app.builtins.rst
+    │   ├── celery.app.control.rst
+    │   ├── celery.app.defaults.rst
+    │   ├── celery.app.events.rst
+    │   ├── celery.app.log.rst
+    │   ├── celery.app.registry.rst
+    │   ├── celery.app.rst
+    │   ├── celery.app.task.rst
+    │   ├── celery.app.utils.rst
+    │   ├── celery.apps.beat.rst
+    │   ├── celery.apps.multi.rst
+    │   ├── celery.apps.worker.rst
+    │   ├── celery.beat.rst
+    │   ├── celery.bin.amqp.rst
+    │   ├── celery.bin.base.rst
+    │   ├── celery.bin.beat.rst
+    │   ├── celery.bin.call.rst
+    │   ├── celery.bin.celery.rst
+    │   ├── celery.bin.control.rst
+    │   ├── celery.bin.events.rst
+    │   ├── celery.bin.graph.rst
+    │   ├── celery.bin.list.rst
+    │   ├── celery.bin.logtool.rst
+    │   ├── celery.bin.migrate.rst
+    │   ├── celery.bin.multi.rst
+    │   ├── celery.bin.purge.rst
+    │   ├── celery.bin.result.rst
+    │   ├── celery.bin.shell.rst
+    │   ├── celery.bin.upgrade.rst
+    │   ├── celery.bin.worker.rst
+    │   ├── celery.bootsteps.rst
+    │   ├── celery.contrib.abortable.rst
+    │   ├── celery.contrib.django.task.rst
+    │   ├── celery.contrib.migrate.rst
+    │   ├── celery.contrib.pytest.rst
+    │   ├── celery.contrib.rdb.rst
+    │   ├── celery.contrib.sphinx.rst
+    │   ├── celery.contrib.testing.app.rst
+    │   ├── celery.contrib.testing.manager.rst
+    │   ├── celery.contrib.testing.mocks.rst
+    │   ├── celery.contrib.testing.worker.rst
+    │   ├── celery.events.dispatcher.rst
+    │   ├── celery.events.event.rst
+    │   ├── celery.events.receiver.rst
+    │   ├── celery.events.rst
+    │   ├── celery.events.state.rst
+    │   ├── celery.exceptions.rst
+    │   ├── celery.loaders.app.rst
+    │   ├── celery.loaders.base.rst
+    │   ├── celery.loaders.default.rst
+    │   ├── celery.loaders.rst
+    │   ├── celery.result.rst
+    │   ├── celery.rst
+    │   ├── celery.schedules.rst
+    │   ├── celery.security.rst
+    │   ├── celery.signals.rst
+    │   ├── celery.states.rst
+    │   ├── celery.utils.debug.rst
+    │   ├── celery.worker.consumer.agent.rst
+    │   ├── celery.worker.consumer.connection.rst
+    │   ├── celery.worker.consumer.consumer.rst
+    │   ├── celery.worker.consumer.control.rst
+    │   ├── celery.worker.consumer.events.rst
+    │   ├── celery.worker.consumer.gossip.rst
+    │   ├── celery.worker.consumer.heart.rst
+    │   ├── celery.worker.consumer.mingle.rst
+    │   ├── celery.worker.consumer.rst
+    │   ├── celery.worker.consumer.tasks.rst
+    │   ├── celery.worker.request.rst
+    │   ├── celery.worker.rst
+    │   ├── celery.worker.state.rst
+    │   ├── celery.worker.strategy.rst
+    │   ├── celery.worker.worker.rst
+    │   ├── cli.rst
+    │   └── index.rst
+    ├── tutorials
+    │   ├── daemonizing.html
+    │   ├── debugging.html
+    │   ├── index.rst
+    │   └── task-cookbook.rst
+    └── userguide
+        ├── application.rst
+        ├── calling.rst
+        ├── canvas.rst
+        ├── concurrency
+        │   ├── eventlet.rst
+        │   ├── gevent.rst
+        │   └── index.rst
+        ├── configuration.rst
+        ├── daemonizing.rst
+        ├── debugging.rst
+        ├── extending.rst
+        ├── index.rst
+        ├── monitoring.rst
+        ├── optimizing.rst
+        ├── periodic-tasks.rst
+        ├── routing.rst
+        ├── security.rst
+        ├── signals.rst
+        ├── sphinx.rst
+        ├── tasks.rst
+        ├── testing.rst
+        └── workers.rst
+
+`````
+
+---
+
+
+## celery (relative dir: `docs`)  Included Files (total: 238 files)
+
+
+- `docs/changelog.rst`
+
+- `docs/changelog_formatter.py`
+
+- `docs/community.rst`
+
+- `docs/conf.py`
+
+- `docs/configuration.html`
+
+- `docs/contributing.rst`
+
+- `docs/copyright.rst`
+
+- `docs/faq.rst`
+
+- `docs/glossary.rst`
+
+- `docs/index.rst`
+
+- `docs/django/first-steps-with-django.rst`
+
+- `docs/django/index.rst`
+
+- `docs/getting-started/first-steps-with-celery.rst`
+
+- `docs/getting-started/index.rst`
+
+- `docs/getting-started/introduction.rst`
+
+- `docs/getting-started/next-steps.rst`
+
+- `docs/getting-started/resources.rst`
+
+- `docs/getting-started/backends-and-brokers/gcpubsub.rst`
+
+- `docs/getting-started/backends-and-brokers/index.rst`
+
+- `docs/getting-started/backends-and-brokers/kafka.rst`
+
+- `docs/getting-started/backends-and-brokers/rabbitmq.rst`
+
+- `docs/getting-started/backends-and-brokers/redis.rst`
+
+- `docs/getting-started/backends-and-brokers/sqs.rst`
+
+- `docs/history/changelog-1.0.rst`
+
+- `docs/history/changelog-2.0.rst`
+
+- `docs/history/changelog-2.1.rst`
+
+- `docs/history/changelog-2.2.rst`
+
+- `docs/history/changelog-2.3.rst`
+
+- `docs/history/changelog-2.4.rst`
+
+- `docs/history/changelog-2.5.rst`
+
+- `docs/history/changelog-3.0.rst`
+
+- `docs/history/changelog-3.1.rst`
+
+- `docs/history/changelog-4.0.rst`
+
+- `docs/history/changelog-4.1.rst`
+
+- `docs/history/changelog-4.2.rst`
+
+- `docs/history/changelog-4.3.rst`
+
+- `docs/history/changelog-4.4.rst`
+
+- `docs/history/changelog-5.0.rst`
+
+- `docs/history/changelog-5.1.rst`
+
+- `docs/history/changelog-5.3.rst`
+
+- `docs/history/changelog-5.4.rst`
+
+- `docs/history/changelog-5.5.rst`
+
+- `docs/history/changelog-5.6.rst`
+
+- `docs/history/index.rst`
+
+- `docs/history/whatsnew-2.5.rst`
+
+- `docs/history/whatsnew-3.0.rst`
+
+- `docs/history/whatsnew-3.1.rst`
+
+- `docs/history/whatsnew-4.0.rst`
+
+- `docs/history/whatsnew-4.1.rst`
+
+- `docs/history/whatsnew-4.2.rst`
+
+- `docs/history/whatsnew-4.3.rst`
+
+- `docs/history/whatsnew-4.4.rst`
+
+- `docs/history/whatsnew-5.0.rst`
+
+- `docs/history/whatsnew-5.1.rst`
+
+- `docs/history/whatsnew-5.3.rst`
+
+- `docs/history/whatsnew-5.4.rst`
+
+- `docs/history/whatsnew-5.5.rst`
+
+- `docs/history/whatsnew-5.6.rst`
+
+- `docs/internals/app-overview.rst`
+
+- `docs/internals/deprecation.rst`
+
+- `docs/internals/guide.rst`
+
+- `docs/internals/index.rst`
+
+- `docs/internals/protocol.rst`
+
+- `docs/internals/worker.rst`
+
+- `docs/internals/reference/celery.app.annotations.rst`
+
+- `docs/internals/reference/celery.app.routes.rst`
+
+- `docs/internals/reference/celery.app.trace.rst`
+
+- `docs/internals/reference/celery.backends.arangodb.rst`
+
+- `docs/internals/reference/celery.backends.asynchronous.rst`
+
+- `docs/internals/reference/celery.backends.azureblockblob.rst`
+
+- `docs/internals/reference/celery.backends.base.rst`
+
+- `docs/internals/reference/celery.backends.cache.rst`
+
+- `docs/internals/reference/celery.backends.cassandra.rst`
+
+- `docs/internals/reference/celery.backends.consul.rst`
+
+- `docs/internals/reference/celery.backends.cosmosdbsql.rst`
+
+- `docs/internals/reference/celery.backends.couchbase.rst`
+
+- `docs/internals/reference/celery.backends.couchdb.rst`
+
+- `docs/internals/reference/celery.backends.database.models.rst`
+
+- `docs/internals/reference/celery.backends.database.rst`
+
+- `docs/internals/reference/celery.backends.database.session.rst`
+
+- `docs/internals/reference/celery.backends.dynamodb.rst`
+
+- `docs/internals/reference/celery.backends.elasticsearch.rst`
+
+- `docs/internals/reference/celery.backends.filesystem.rst`
+
+- `docs/internals/reference/celery.backends.gcs.rst`
+
+- `docs/internals/reference/celery.backends.mongodb.rst`
+
+- `docs/internals/reference/celery.backends.redis.rst`
+
+- `docs/internals/reference/celery.backends.rpc.rst`
+
+- `docs/internals/reference/celery.backends.rst`
+
+- `docs/internals/reference/celery.backends.s3.rst`
+
+- `docs/internals/reference/celery.concurrency.base.rst`
+
+- `docs/internals/reference/celery.concurrency.eventlet.rst`
+
+- `docs/internals/reference/celery.concurrency.gevent.rst`
+
+- `docs/internals/reference/celery.concurrency.prefork.rst`
+
+- `docs/internals/reference/celery.concurrency.rst`
+
+- `docs/internals/reference/celery.concurrency.solo.rst`
+
+- `docs/internals/reference/celery.concurrency.thread.rst`
+
+- `docs/internals/reference/celery.events.cursesmon.rst`
+
+- `docs/internals/reference/celery.events.dumper.rst`
+
+- `docs/internals/reference/celery.events.snapshot.rst`
+
+- `docs/internals/reference/celery.platforms.rst`
+
+- `docs/internals/reference/celery.security.certificate.rst`
+
+- `docs/internals/reference/celery.security.key.rst`
+
+- `docs/internals/reference/celery.security.serialization.rst`
+
+- `docs/internals/reference/celery.security.utils.rst`
+
+- `docs/internals/reference/celery.utils.abstract.rst`
+
+- `docs/internals/reference/celery.utils.collections.rst`
+
+- `docs/internals/reference/celery.utils.deprecated.rst`
+
+- `docs/internals/reference/celery.utils.dispatch.rst`
+
+- `docs/internals/reference/celery.utils.dispatch.signal.rst`
+
+- `docs/internals/reference/celery.utils.functional.rst`
+
+- `docs/internals/reference/celery.utils.graph.rst`
+
+- `docs/internals/reference/celery.utils.imports.rst`
+
+- `docs/internals/reference/celery.utils.iso8601.rst`
+
+- `docs/internals/reference/celery.utils.log.rst`
+
+- `docs/internals/reference/celery.utils.nodenames.rst`
+
+- `docs/internals/reference/celery.utils.objects.rst`
+
+- `docs/internals/reference/celery.utils.rst`
+
+- `docs/internals/reference/celery.utils.saferepr.rst`
+
+- `docs/internals/reference/celery.utils.serialization.rst`
+
+- `docs/internals/reference/celery.utils.sysinfo.rst`
+
+- `docs/internals/reference/celery.utils.term.rst`
+
+- `docs/internals/reference/celery.utils.text.rst`
+
+- `docs/internals/reference/celery.utils.threads.rst`
+
+- `docs/internals/reference/celery.utils.time.rst`
+
+- `docs/internals/reference/celery.utils.timer2.rst`
+
+- `docs/internals/reference/celery.worker.autoscale.rst`
+
+- `docs/internals/reference/celery.worker.components.rst`
+
+- `docs/internals/reference/celery.worker.control.rst`
+
+- `docs/internals/reference/celery.worker.heartbeat.rst`
+
+- `docs/internals/reference/celery.worker.loops.rst`
+
+- `docs/internals/reference/celery.worker.pidbox.rst`
+
+- `docs/internals/reference/celery._state.rst`
+
+- `docs/internals/reference/index.rst`
+
+- `docs/reference/celery.app.amqp.rst`
+
+- `docs/reference/celery.app.autoretry.rst`
+
+- `docs/reference/celery.app.backends.rst`
+
+- `docs/reference/celery.app.builtins.rst`
+
+- `docs/reference/celery.app.control.rst`
+
+- `docs/reference/celery.app.defaults.rst`
+
+- `docs/reference/celery.app.events.rst`
+
+- `docs/reference/celery.app.log.rst`
+
+- `docs/reference/celery.app.registry.rst`
+
+- `docs/reference/celery.app.rst`
+
+- `docs/reference/celery.app.task.rst`
+
+- `docs/reference/celery.app.utils.rst`
+
+- `docs/reference/celery.apps.beat.rst`
+
+- `docs/reference/celery.apps.multi.rst`
+
+- `docs/reference/celery.apps.worker.rst`
+
+- `docs/reference/celery.beat.rst`
+
+- `docs/reference/celery.bin.amqp.rst`
+
+- `docs/reference/celery.bin.base.rst`
+
+- `docs/reference/celery.bin.beat.rst`
+
+- `docs/reference/celery.bin.call.rst`
+
+- `docs/reference/celery.bin.celery.rst`
+
+- `docs/reference/celery.bin.control.rst`
+
+- `docs/reference/celery.bin.events.rst`
+
+- `docs/reference/celery.bin.graph.rst`
+
+- `docs/reference/celery.bin.list.rst`
+
+- `docs/reference/celery.bin.logtool.rst`
+
+- `docs/reference/celery.bin.migrate.rst`
+
+- `docs/reference/celery.bin.multi.rst`
+
+- `docs/reference/celery.bin.purge.rst`
+
+- `docs/reference/celery.bin.result.rst`
+
+- `docs/reference/celery.bin.shell.rst`
+
+- `docs/reference/celery.bin.upgrade.rst`
+
+- `docs/reference/celery.bin.worker.rst`
+
+- `docs/reference/celery.bootsteps.rst`
+
+- `docs/reference/celery.contrib.abortable.rst`
+
+- `docs/reference/celery.contrib.django.task.rst`
+
+- `docs/reference/celery.contrib.migrate.rst`
+
+- `docs/reference/celery.contrib.pytest.rst`
+
+- `docs/reference/celery.contrib.rdb.rst`
+
+- `docs/reference/celery.contrib.sphinx.rst`
+
+- `docs/reference/celery.contrib.testing.app.rst`
+
+- `docs/reference/celery.contrib.testing.manager.rst`
+
+- `docs/reference/celery.contrib.testing.mocks.rst`
+
+- `docs/reference/celery.contrib.testing.worker.rst`
+
+- `docs/reference/celery.events.dispatcher.rst`
+
+- `docs/reference/celery.events.event.rst`
+
+- `docs/reference/celery.events.receiver.rst`
+
+- `docs/reference/celery.events.rst`
+
+- `docs/reference/celery.events.state.rst`
+
+- `docs/reference/celery.exceptions.rst`
+
+- `docs/reference/celery.loaders.app.rst`
+
+- `docs/reference/celery.loaders.base.rst`
+
+- `docs/reference/celery.loaders.default.rst`
+
+- `docs/reference/celery.loaders.rst`
+
+- `docs/reference/celery.result.rst`
+
+- `docs/reference/celery.rst`
+
+- `docs/reference/celery.schedules.rst`
+
+- `docs/reference/celery.security.rst`
+
+- `docs/reference/celery.signals.rst`
+
+- `docs/reference/celery.states.rst`
+
+- `docs/reference/celery.utils.debug.rst`
+
+- `docs/reference/celery.worker.consumer.agent.rst`
+
+- `docs/reference/celery.worker.consumer.connection.rst`
+
+- `docs/reference/celery.worker.consumer.consumer.rst`
+
+- `docs/reference/celery.worker.consumer.control.rst`
+
+- `docs/reference/celery.worker.consumer.events.rst`
+
+- `docs/reference/celery.worker.consumer.gossip.rst`
+
+- `docs/reference/celery.worker.consumer.heart.rst`
+
+- `docs/reference/celery.worker.consumer.mingle.rst`
+
+- `docs/reference/celery.worker.consumer.rst`
+
+- `docs/reference/celery.worker.consumer.tasks.rst`
+
+- `docs/reference/celery.worker.request.rst`
+
+- `docs/reference/celery.worker.rst`
+
+- `docs/reference/celery.worker.state.rst`
+
+- `docs/reference/celery.worker.strategy.rst`
+
+- `docs/reference/celery.worker.worker.rst`
+
+- `docs/reference/cli.rst`
+
+- `docs/reference/index.rst`
+
+- `docs/tutorials/daemonizing.html`
+
+- `docs/tutorials/debugging.html`
+
+- `docs/tutorials/index.rst`
+
+- `docs/tutorials/task-cookbook.rst`
+
+- `docs/userguide/application.rst`
+
+- `docs/userguide/calling.rst`
+
+- `docs/userguide/canvas.rst`
+
+- `docs/userguide/configuration.rst`
+
+- `docs/userguide/daemonizing.rst`
+
+- `docs/userguide/debugging.rst`
+
+- `docs/userguide/extending.rst`
+
+- `docs/userguide/index.rst`
+
+- `docs/userguide/monitoring.rst`
+
+- `docs/userguide/optimizing.rst`
+
+- `docs/userguide/periodic-tasks.rst`
+
+- `docs/userguide/routing.rst`
+
+- `docs/userguide/security.rst`
+
+- `docs/userguide/signals.rst`
+
+- `docs/userguide/sphinx.rst`
+
+- `docs/userguide/tasks.rst`
+
+- `docs/userguide/testing.rst`
+
+- `docs/userguide/workers.rst`
+
+- `docs/userguide/concurrency/eventlet.rst`
+
+- `docs/userguide/concurrency/gevent.rst`
+
+- `docs/userguide/concurrency/index.rst`
+
+- `docs/_ext/celerydocs.py`
+
+- `docs/_templates/sidebardonations.html`
+
+
+---
+
+
+--- **start of file: docs/changelog.rst** (project: celery) --- 
+
+`````text
 .. include:: ../Changelog.rst
 
-```
+`````
 
-### 代码文件: docs\changelog_formatter.py
-```python
+--- **end of file: docs/changelog.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/changelog_formatter.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `docs/changelog_formatter.py`
+
+#### 📦 Imports
+
+- `import re`
+- `import sys`
+- `import click`
+- `import pyperclip`
+- `from colorama import Fore`
+- `from colorama import init`
+
+#### 🔧 Public Functions (4)
+
+- `def read_changes_file(filename)`
+  - *Line: 17*
+
+- `def read_from_clipboard()`
+  - *Line: 26*
+
+- `def process_line(line)`
+  - *Line: 31*
+
+- `def main(source, dest, clipboard)` `click.command()` `click.option('--source', '-s', type=click.Path(exists=True), help='Source file to read from. If not provided, reads from clipboard.')` `click.option('--dest', '-d', type=click.File('w'), default='-', help='Destination file to write to. Defaults to standard output.')` `click.option('--clipboard', '-c', is_flag=True, help='Read input from clipboard explicitly.')`
+  - *Line: 77*
+
+
+---
+
+`````python
 #!/usr/bin/env python3
 
 import re
@@ -297,10 +1051,16 @@ What's Changed
 if __name__ == "__main__":
     main()
 
-```
+`````
 
-### 代码文件: docs\community.rst
-```rst
+--- **end of file: docs/changelog_formatter.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/community.rst** (project: celery) --- 
+
+`````text
 .. _community:
 
 =======================
@@ -357,10 +1117,39 @@ News
 This section has moved to the Celery homepage:
 http://celeryproject.org/community/
 
-```
+`````
 
-### 代码文件: docs\conf.py
-```python
+--- **end of file: docs/community.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/conf.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `docs/conf.py`
+
+#### 📦 Imports
+
+- `from sphinx_celery import conf`
+- `from celery.app.defaults import NAMESPACES`
+- `from celery.app.defaults import flatten`
+
+#### 🔧 Public Functions (3)
+
+- `def configcheck_project_settings()`
+  - *Line: 90*
+
+- `def is_deprecated_setting(setting)`
+  - *Line: 96*
+
+- `def configcheck_should_ignore(setting)`
+  - *Line: 103*
+
+
+---
+
+`````python
 from sphinx_celery import conf
 
 globals().update(conf.build_config(
@@ -466,10 +1255,16 @@ def is_deprecated_setting(setting):
 def configcheck_should_ignore(setting):
     return setting in ignored_settings or is_deprecated_setting(setting)
 
-```
+`````
 
-### 代码文件: docs\configuration.html
-```html
+--- **end of file: docs/conf.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/configuration.html** (project: celery) --- 
+
+`````html
 Moved
 =====
 
@@ -477,16 +1272,28 @@ This document has now moved into the userguide:
 
 :ref:`configuration`
 
-```
+`````
 
-### 代码文件: docs\contributing.rst
-```rst
+--- **end of file: docs/configuration.html** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/contributing.rst** (project: celery) --- 
+
+`````text
 .. include:: ../CONTRIBUTING.rst
 
-```
+`````
 
-### 代码文件: docs\copyright.rst
-```rst
+--- **end of file: docs/contributing.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/copyright.rst** (project: celery) --- 
+
+`````text
 Copyright
 =========
 
@@ -516,10 +1323,16 @@ a license compatible to this one.
    the Celery *software* is offered under the
    `BSD License (3 Clause) <http://www.opensource.org/licenses/BSD-3-Clause>`_
 
-```
+`````
 
-### 代码文件: docs\faq.rst
-```rst
+--- **end of file: docs/copyright.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/faq.rst** (project: celery) --- 
+
+`````text
 .. _faq:
 
 ============================
@@ -1312,7 +2125,8 @@ consume as many tasks as it can, as fast as possible.
 
 You can use the :option:`--disable-prefetch <celery worker --disable-prefetch>`
 flag (or set :setting:`worker_disable_prefetch` to ``True``) so that a worker
-only fetches a task when one of its processes is free.
+only fetches a task when one of its processes is free. This feature is currently
+only supported when using Redis as the broker.
 
 A discussion on prefetch limits, and configuration settings for a worker
 that only reserves one task at a time is found here:
@@ -1484,10 +2298,16 @@ Since Celery 4.x, Windows is no longer supported due to lack of resources.
 
 But it may still work and we are happy to accept patches.
 
-```
+`````
 
-### 代码文件: docs\glossary.rst
-```rst
+--- **end of file: docs/faq.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/glossary.rst** (project: celery) --- 
+
+`````text
 .. _glossary:
 
 Glossary
@@ -1596,6 +2416,13 @@ Glossary
         :setting:`worker_prefetch_multiplier` setting, which is multiplied
         by the number of pool slots (threads/processes/greenthreads).
 
+        .. note::
+            If you are using eta or countdown tasks, the :setting:`worker_prefetch_multiplier`
+            still determines the base prefetch count. The :setting:`worker_eta_task_limit`
+            setting, when enabled, instead caps the total number of unacknowledged
+            messages the worker will hold (including eta/countdown tasks). See
+            :setting:`worker_eta_task_limit`.
+
     `prefetch count`
         Maximum number of unacknowledged messages a consumer can hold and if
         exceeded the transport shouldn't deliver any more messages to that
@@ -1604,10 +2431,16 @@ Glossary
     pidbox
         A process mailbox, used to implement remote control commands.
 
-```
+`````
 
-### 代码文件: docs\index.rst
-```rst
+--- **end of file: docs/glossary.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/index.rst** (project: celery) --- 
+
+`````text
 =================================
  Celery - Distributed Task Queue
 =================================
@@ -1679,1165 +2512,16 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-```
+`````
 
-### 代码文件: docs\make.bat
-```bat
-@ECHO OFF
+--- **end of file: docs/index.rst** (project: celery) --- 
 
-REM Command file for Sphinx documentation
+---
 
-if "%SPHINXBUILD%" == "" (
-	set SPHINXBUILD=sphinx-build
-)
-set BUILDDIR=_build
-set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
-set I18NSPHINXOPTS=%SPHINXOPTS% .
-if NOT "%PAPER%" == "" (
-	set ALLSPHINXOPTS=-D latex_paper_size=%PAPER% %ALLSPHINXOPTS%
-	set I18NSPHINXOPTS=-D latex_paper_size=%PAPER% %I18NSPHINXOPTS%
-)
 
-if "%1" == "" goto help
+--- **start of file: docs/django/first-steps-with-django.rst** (project: celery) --- 
 
-if "%1" == "help" (
-	:help
-	echo.Please use `make ^<target^>` where ^<target^> is one of
-	echo.  html       to make standalone HTML files
-	echo.  livehtml   to start a local server hosting the docs
-	echo.  dirhtml    to make HTML files named index.html in directories
-	echo.  singlehtml to make a single large HTML file
-	echo.  pickle     to make pickle files
-	echo.  json       to make JSON files
-	echo.  htmlhelp   to make HTML files and a HTML help project
-	echo.  qthelp     to make HTML files and a qthelp project
-	echo.  devhelp    to make HTML files and a Devhelp project
-	echo.  epub       to make an epub
-	echo.  epub3      to make an epub3
-	echo.  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter
-	echo.  text       to make text files
-	echo.  man        to make manual pages
-	echo.  texinfo    to make Texinfo files
-	echo.  gettext    to make PO message catalogs
-	echo.  changes    to make an overview over all changed/added/deprecated items
-	echo.  xml        to make Docutils-native XML files
-	echo.  pseudoxml  to make pseudoxml-XML files for display purposes
-	echo.  linkcheck  to check all external links for integrity
-	echo.  doctest    to run all doctests embedded in the documentation if enabled
-	echo.  coverage   to run coverage check of the documentation if enabled
-	goto end
-)
-
-if "%1" == "clean" (
-	for /d %%i in (%BUILDDIR%\*) do rmdir /q /s %%i
-	del /q /s %BUILDDIR%\*
-	goto end
-)
-
-
-REM Check if sphinx-build is available and fallback to Python version if any
-%SPHINXBUILD% 1>NUL 2>NUL
-if errorlevel 9009 goto sphinx_python
-goto sphinx_ok
-
-:sphinx_python
-
-set SPHINXBUILD=python -m sphinx.__init__
-%SPHINXBUILD% 2> nul
-if errorlevel 9009 (
-	echo.
-	echo.The 'sphinx-build' command was not found. Make sure you have Sphinx
-	echo.installed, then set the SPHINXBUILD environment variable to point
-	echo.to the full path of the 'sphinx-build' executable. Alternatively you
-	echo.may add the Sphinx directory to PATH.
-	echo.
-	echo.If you don't have Sphinx installed, grab it from
-	echo.http://sphinx-doc.org/
-	exit /b 1
-)
-
-:sphinx_ok
-
-
-if "%1" == "html" (
-	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %BUILDDIR%/html
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/html.
-	goto end
-)
-
-if "%1" == "dirhtml" (
-	%SPHINXBUILD% -b dirhtml %ALLSPHINXOPTS% %BUILDDIR%/dirhtml
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/dirhtml.
-	goto end
-)
-
-if "%1" == "singlehtml" (
-	%SPHINXBUILD% -b singlehtml %ALLSPHINXOPTS% %BUILDDIR%/singlehtml
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/singlehtml.
-	goto end
-)
-
-if "%1" == "pickle" (
-	%SPHINXBUILD% -b pickle %ALLSPHINXOPTS% %BUILDDIR%/pickle
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished; now you can process the pickle files.
-	goto end
-)
-
-if "%1" == "json" (
-	%SPHINXBUILD% -b json %ALLSPHINXOPTS% %BUILDDIR%/json
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished; now you can process the JSON files.
-	goto end
-)
-
-if "%1" == "htmlhelp" (
-	%SPHINXBUILD% -b htmlhelp %ALLSPHINXOPTS% %BUILDDIR%/htmlhelp
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished; now you can run HTML Help Workshop with the ^
-.hhp project file in %BUILDDIR%/htmlhelp.
-	goto end
-)
-
-if "%1" == "qthelp" (
-	%SPHINXBUILD% -b qthelp %ALLSPHINXOPTS% %BUILDDIR%/qthelp
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished; now you can run "qcollectiongenerator" with the ^
-.qhcp project file in %BUILDDIR%/qthelp, like this:
-	echo.^> qcollectiongenerator %BUILDDIR%\qthelp\PROJ.qhcp
-	echo.To view the help file:
-	echo.^> assistant -collectionFile %BUILDDIR%\qthelp\PROJ.ghc
-	goto end
-)
-
-if "%1" == "devhelp" (
-	%SPHINXBUILD% -b devhelp %ALLSPHINXOPTS% %BUILDDIR%/devhelp
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished.
-	goto end
-)
-
-if "%1" == "epub" (
-	%SPHINXBUILD% -b epub %ALLSPHINXOPTS% %BUILDDIR%/epub
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The epub file is in %BUILDDIR%/epub.
-	goto end
-)
-
-if "%1" == "epub3" (
-	%SPHINXBUILD% -b epub3 %ALLSPHINXOPTS% %BUILDDIR%/epub3
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The epub3 file is in %BUILDDIR%/epub3.
-	goto end
-)
-
-if "%1" == "latex" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished; the LaTeX files are in %BUILDDIR%/latex.
-	goto end
-)
-
-if "%1" == "latexpdf" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
-	cd %BUILDDIR%/latex
-	make all-pdf
-	cd %~dp0
-	echo.
-	echo.Build finished; the PDF files are in %BUILDDIR%/latex.
-	goto end
-)
-
-if "%1" == "latexpdfja" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
-	cd %BUILDDIR%/latex
-	make all-pdf-ja
-	cd %~dp0
-	echo.
-	echo.Build finished; the PDF files are in %BUILDDIR%/latex.
-	goto end
-)
-
-if "%1" == "text" (
-	%SPHINXBUILD% -b text %ALLSPHINXOPTS% %BUILDDIR%/text
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The text files are in %BUILDDIR%/text.
-	goto end
-)
-
-if "%1" == "man" (
-	%SPHINXBUILD% -b man %ALLSPHINXOPTS% %BUILDDIR%/man
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The manual pages are in %BUILDDIR%/man.
-	goto end
-)
-
-if "%1" == "texinfo" (
-	%SPHINXBUILD% -b texinfo %ALLSPHINXOPTS% %BUILDDIR%/texinfo
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The Texinfo files are in %BUILDDIR%/texinfo.
-	goto end
-)
-
-if "%1" == "gettext" (
-	%SPHINXBUILD% -b gettext %I18NSPHINXOPTS% %BUILDDIR%/locale
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The message catalogs are in %BUILDDIR%/locale.
-	goto end
-)
-
-if "%1" == "changes" (
-	%SPHINXBUILD% -b changes %ALLSPHINXOPTS% %BUILDDIR%/changes
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.The overview file is in %BUILDDIR%/changes.
-	goto end
-)
-
-if "%1" == "linkcheck" (
-	%SPHINXBUILD% -b linkcheck %ALLSPHINXOPTS% %BUILDDIR%/linkcheck
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Link check complete; look for any errors in the above output ^
-or in %BUILDDIR%/linkcheck/output.txt.
-	goto end
-)
-
-if "%1" == "doctest" (
-	%SPHINXBUILD% -b doctest %ALLSPHINXOPTS% %BUILDDIR%/doctest
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Testing of doctests in the sources finished, look at the ^
-results in %BUILDDIR%/doctest/output.txt.
-	goto end
-)
-
-if "%1" == "coverage" (
-	%SPHINXBUILD% -b coverage %ALLSPHINXOPTS% %BUILDDIR%/coverage
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Testing of coverage in the sources finished, look at the ^
-results in %BUILDDIR%/coverage/python.txt.
-	goto end
-)
-
-if "%1" == "xml" (
-	%SPHINXBUILD% -b xml %ALLSPHINXOPTS% %BUILDDIR%/xml
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The XML files are in %BUILDDIR%/xml.
-	goto end
-)
-
-if "%1" == "pseudoxml" (
-	%SPHINXBUILD% -b pseudoxml %ALLSPHINXOPTS% %BUILDDIR%/pseudoxml
-	if errorlevel 1 exit /b 1
-	echo.
-	echo.Build finished. The pseudo-XML files are in %BUILDDIR%/pseudoxml.
-	goto end
-)
-
-if "%1" == "livehtml" (
-	sphinx-autobuild -b html --open-browser -p 7000 --watch %APP% -c . %SOURCEDIR% %BUILDDIR%/html
-	goto end
-)
-
-:end
-
-```
-
-### 代码文件: docs\Makefile
-```docs\Makefile
-# Makefile for Sphinx documentation
-#
-
-# You can set these variables from the command line.
-SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
-PAPER         =
-BUILDDIR      = _build
-SOURCEDIR     = .
-APP 		  = /docs
-
-# Internal variables.
-PAPEROPT_a4     = -D latex_paper_size=a4
-PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
-# the i18n builder cannot share the environment and doctrees with the others
-I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
-
-.PHONY: help
-help:
-	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  html       to make standalone HTML files"
-	@echo "  livehtml   to start a local server hosting the docs"
-	@echo "  dirhtml    to make HTML files named index.html in directories"
-	@echo "  singlehtml to make a single large HTML file"
-	@echo "  pickle     to make pickle files"
-	@echo "  json       to make JSON files"
-	@echo "  htmlhelp   to make HTML files and a HTML help project"
-	@echo "  qthelp     to make HTML files and a qthelp project"
-	@echo "  applehelp  to make an Apple Help Book"
-	@echo "  devhelp    to make HTML files and a Devhelp project"
-	@echo "  epub       to make an epub"
-	@echo "  epub3      to make an epub3"
-	@echo "  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
-	@echo "  latexpdf   to make LaTeX files and run them through pdflatex"
-	@echo "  latexpdfja to make LaTeX files and run them through platex/dvipdfmx"
-	@echo "  text       to make text files"
-	@echo "  man        to make manual pages"
-	@echo "  texinfo    to make Texinfo files"
-	@echo "  info       to make Texinfo files and run them through makeinfo"
-	@echo "  gettext    to make PO message catalogs"
-	@echo "  changes    to make an overview of all changed/added/deprecated items"
-	@echo "  xml        to make Docutils-native XML files"
-	@echo "  pseudoxml  to make pseudoxml-XML files for display purposes"
-	@echo "  linkcheck  to check all external links for integrity"
-	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
-	@echo "  coverage   to run coverage check of the documentation (if enabled)"
-	@echo "  apicheck   to verify that all modules are present in autodoc"
-	@echo "  configcheck to verify that all modules are present in autodoc"
-	@echo "  spelling   to perform a spell check"
-	@echo "  changelog  to generate a changelog from GitHub auto-generated release notes"
-
-.PHONY: clean
-clean:
-	rm -rf $(BUILDDIR)/*
-
-.PHONY: html
-html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
-
-.PHONY: dirhtml
-dirhtml:
-	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
-
-.PHONY: singlehtml
-singlehtml:
-	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
-	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
-
-.PHONY: pickle
-pickle:
-	$(SPHINXBUILD) -b pickle $(ALLSPHINXOPTS) $(BUILDDIR)/pickle
-	@echo
-	@echo "Build finished; now you can process the pickle files."
-
-.PHONY: json
-json:
-	$(SPHINXBUILD) -b json $(ALLSPHINXOPTS) $(BUILDDIR)/json
-	@echo
-	@echo "Build finished; now you can process the JSON files."
-
-.PHONY: htmlhelp
-htmlhelp:
-	$(SPHINXBUILD) -b htmlhelp $(ALLSPHINXOPTS) $(BUILDDIR)/htmlhelp
-	@echo
-	@echo "Build finished; now you can run HTML Help Workshop with the" \
-	      ".hhp project file in $(BUILDDIR)/htmlhelp."
-
-.PHONY: qthelp
-qthelp:
-	$(SPHINXBUILD) -b qthelp $(ALLSPHINXOPTS) $(BUILDDIR)/qthelp
-	@echo
-	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
-	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/PROJ.qhcp"
-	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/PROJ.qhc"
-
-.PHONY: applehelp
-applehelp:
-	$(SPHINXBUILD) -b applehelp $(ALLSPHINXOPTS) $(BUILDDIR)/applehelp
-	@echo
-	@echo "Build finished. The help book is in $(BUILDDIR)/applehelp."
-	@echo "N.B. You won't be able to view it unless you put it in" \
-	      "~/Library/Documentation/Help or install it in your application" \
-	      "bundle."
-
-.PHONY: devhelp
-devhelp:
-	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
-	@echo
-	@echo "Build finished."
-	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/PROJ"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/PROJ"
-	@echo "# devhelp"
-
-.PHONY: epub
-epub:
-	$(SPHINXBUILD) -b epub $(ALLSPHINXOPTS) $(BUILDDIR)/epub
-	@echo
-	@echo "Build finished. The epub file is in $(BUILDDIR)/epub."
-
-.PHONY: epub3
-epub3:
-	$(SPHINXBUILD) -b epub3 $(ALLSPHINXOPTS) $(BUILDDIR)/epub3
-	@echo
-	@echo "Build finished. The epub3 file is in $(BUILDDIR)/epub3."
-
-.PHONY: latex
-latex:
-	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
-	@echo
-	@echo "Build finished; the LaTeX files are in $(BUILDDIR)/latex."
-	@echo "Run \`make' in that directory to run these through (pdf)latex" \
-	      "(use \`make latexpdf' here to do that automatically)."
-
-.PHONY: latexpdf
-latexpdf:
-	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
-	@echo "Running LaTeX files through pdflatex..."
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf
-	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
-
-.PHONY: latexpdfja
-latexpdfja:
-	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
-	@echo "Running LaTeX files through platex and dvipdfmx..."
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf-ja
-	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
-
-.PHONY: text
-text:
-	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(BUILDDIR)/text
-	@echo
-	@echo "Build finished. The text files are in $(BUILDDIR)/text."
-
-.PHONY: man
-man:
-	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(BUILDDIR)/man
-	@echo
-	@echo "Build finished. The manual pages are in $(BUILDDIR)/man."
-
-.PHONY: texinfo
-texinfo:
-	$(SPHINXBUILD) -b texinfo $(ALLSPHINXOPTS) $(BUILDDIR)/texinfo
-	@echo
-	@echo "Build finished. The Texinfo files are in $(BUILDDIR)/texinfo."
-	@echo "Run \`make' in that directory to run these through makeinfo" \
-	      "(use \`make info' here to do that automatically)."
-
-.PHONY: info
-info:
-	$(SPHINXBUILD) -b texinfo $(ALLSPHINXOPTS) $(BUILDDIR)/texinfo
-	@echo "Running Texinfo files through makeinfo..."
-	make -C $(BUILDDIR)/texinfo info
-	@echo "makeinfo finished; the Info files are in $(BUILDDIR)/texinfo."
-
-.PHONY: gettext
-gettext:
-	$(SPHINXBUILD) -b gettext $(I18NSPHINXOPTS) $(BUILDDIR)/locale
-	@echo
-	@echo "Build finished. The message catalogs are in $(BUILDDIR)/locale."
-
-.PHONY: changes
-changes:
-	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) $(BUILDDIR)/changes
-	@echo
-	@echo "The overview file is in $(BUILDDIR)/changes."
-
-.PHONY: linkcheck
-linkcheck:
-	$(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
-	@echo
-	@echo "Link check complete; look for any errors in the above output " \
-	      "or in $(BUILDDIR)/linkcheck/output.txt."
-
-.PHONY: doctest
-doctest:
-	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
-	@echo "Testing of doctests in the sources finished, look at the " \
-	      "results in $(BUILDDIR)/doctest/output.txt."
-
-.PHONY: coverage
-coverage:
-	$(SPHINXBUILD) -b coverage $(ALLSPHINXOPTS) $(BUILDDIR)/coverage
-	@echo "Testing of coverage in the sources finished, look at the " \
-	      "results in $(BUILDDIR)/coverage/python.txt."
-
-.PHONY: apicheck
-apicheck:
-	$(SPHINXBUILD) -b apicheck $(ALLSPHINXOPTS) $(BUILDDIR)/apicheck
-
-.PHONY: configcheck
-configcheck:
-	$(SPHINXBUILD) -b configcheck $(ALLSPHINXOPTS) $(BUILDDIR)/configcheck
-
-.PHONY: spelling
-spelling:
-	SPELLCHECK=1 $(SPHINXBUILD) -b spelling $(ALLSPHINXOPTS) $(BUILDDIR)/spelling
-
-.PHONY: xml
-xml:
-	$(SPHINXBUILD) -b xml $(ALLSPHINXOPTS) $(BUILDDIR)/xml
-	@echo
-	@echo "Build finished. The XML files are in $(BUILDDIR)/xml."
-
-.PHONY: pseudoxml
-pseudoxml:
-	$(SPHINXBUILD) -b pseudoxml $(ALLSPHINXOPTS) $(BUILDDIR)/pseudoxml
-	@echo
-	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
-
-.PHONY: livehtml
-livehtml:
-	sphinx-autobuild -b html --host 0.0.0.0 --port 7000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
-
-.PHONY: changelog
-changelog:
-	@echo "Usage Instructions:"
-	@echo "1. Generate release notes using GitHub: https://github.com/celery/celery/releases/new"
-	@echo "   - Copy everything that's generated to your clipboard."
-	@echo "   - pre-commit lines will be removed automatically."
-	@echo "2. Run 'make -C docs changelog' from the root dir, to manually process the changes and output the formatted text."
-	@echo ""
-	@echo "Processing changelog from clipboard..."
-	python ./changelog_formatter.py --clipboard
-
-```
-
-### 代码文件: docs\spelling_wordlist.txt
-```txt
-許邱翔
-AMQP
-Adriaenssens
-Adrien
-Agris
-Ahmet
-Aitor
-Akira
-Alain
-Alcides
-Aleksandr
-Alexey
-Allard
-Alman
-Almeer
-Ameriks
-Andreas
-Andrey
-Andriy
-Aneil
-ArangoDB
-Areski
-Armin
-Artyom
-Atanasov
-Attias
-Attwood
-Autechre
-Axel
-Aziz
-Azovskov
-Babiy
-Bargen
-Baumgold
-Belaid
-Bence
-Berker
-Bevan
-Biel
-Bistuer
-Bolshakov
-Bouterse
-Bozorgkhan
-Brakhane
-Brendon
-Breshears
-Bridgen
-Briem
-Brodie
-Bryson
-Buckens
-Bujniewicz
-Buttu
-CPython
-Carvalho
-Cassandra
-Catalano
-Catalin
-Chamberlin
-Chiastic
-Chintomby
-Christoph
-Cipater
-Clowes
-Cobertura
-Codeb
-CouchDB
-Couchbase
-Cramer
-Cristian
-Cron
-Crontab
-Crontabs
-Czajka
-Danilo
-Daodao
-Dartiguelongue
-Davanum
-Davide
-Davidsson
-Deane
-Dees
-Dein
-Delalande
-Demir
-Django
-Dmitry
-Dubus
-Dudás
-Duggan
-Duryee
-Elasticsearch
-Engledew
-Eran
-Erway
-Esquivel
-Farrimond
-Farwell
-Fatih
-Feanil
-Fladischer
-Flavio
-Floering
-Fokau
-Frantisek
-Gao
-Garnero
-Gauvrit
-Gedminas
-Georgievsky
-Germán
-Gheem
-Gilles
-GitHub
-Gómez
-Goiri
-Gorbunov
-Grainger
-Greinhofer
-Grégoire
-Groner
-Grossi
-Guillaume
-Guinet
-Gunnlaugur
-Gylfason
-Haag
-Harnly
-Harrigan
-Haskins
-Helmers
-Helmig
-Henrik
-Heroku
-Hoch
-Hoeve
-Hogni
-Holop
-Homebrew
-Honza
-Hsad
-Hu
-Hynek
-IP
-Iacob
-Idan
-Ignas
-Illes
-Ilya
-Ionel
-IronCache
-Iurii
-Jaillet
-Jameel
-Janež
-Jelle
-Jellick
-Jerzy
-Jevnik
-Jiangmiao
-Jirka
-Johansson
-Julien
-Jython
-Kai
-Kalinowski
-Kamara
-Katz
-Khera
-KiB
-Kilgo
-Kirill
-Kiriukha
-Kirkham
-Kjartansson
-Klindukh
-Kombu
-Konstantin
-Konstantinos
-Kornelijus
-Korner
-Koshelev
-Kotlyarov
-Kouhei
-Koukopoulos
-Koval
-Kozera
-Kracekumar
-Kral
-Kriachko
-Krybus
-Krzysztof
-Kumar
-Kupershmidt
-Kuznetsov
-Lamport
-Langford
-Latitia
-Lavin
-Lawley
-Lebedev
-Ledesma
-Legrand
-Loic
-Luckie
-Maeda
-Maślanka
-Malinovsky
-Mallavarapu
-Manipon
-Marcio
-Maries
-Markey
-Markus
-Marlow
-Masiero
-Matsuzaki
-Maxime
-McGregor
-Melin
-Memcached
-Metzlar
-Mher
-Mickaël
-Mikalajūnas
-Milen
-Mitar
-Modrzejewski
-MongoDB
-Movsisyan
-Mărieș
-Môshe
-Munin
-Nagurney
-Nextdoor
-Nik
-Nikolov
-Node.js
-Northway
-Nyby
-ORM
-O'Reilly
-Oblovatniy
-Omer
-Ordoquy
-Ori
-Parncutt
-Patrin
-Paulo
-Pavel
-Pavlovic
-Pearce
-Peksag
-Penhard
-Pepijn
-Permana
-Petersson
-Petrello
-Pika
-Piotr
-Podshumok
-Poissonnier
-Pomfrey
-Pär
-Pravec
-Pulec
-Pyro
-QoS
-Qpid
-Quarta
-RPC
-RSS
-Rabbaglietti
-RabbitMQ
-Rackspace
-Radek
-Raghuram
-Ramaraju
-Rao
-Raphaël
-Rattray
-Redis
-Remigiusz
-Remy
-Renberg
-Riak
-Ribeiro
-Rinat
-Rémy
-Robenolt
-Rodionoff
-Romuald
-Ronacher
-Rongze
-Rossi
-Rouberol
-Rudakou
-Rundstein
-SQLAlchemy
-SQS
-Sadaoui
-Savchenko
-Savvides
-Schlawack
-Schottdorf
-Schwarz
-Selivanov
-SemVer
-Seong
-Sergey
-Seungha
-Shigapov
-Slinckx
-Smirnov
-Solem
-Solt
-Sosnovskiy
-Srinivas
-Srinivasan
-Stas
-StateDB
-Steeve
-Sterre
-Streeter
-Sucu
-Sukrit
-Survila
-SysV
-Tadej
-Tallon
-Tamas
-Tantiras
-Taub
-Tewfik
-Theo
-Thrift
-Tikhonov
-Tobias
-Tochev
-Tocho
-Tsigularov
-Twomey
-URI
-Ullmann
-Unix
-Valentyn
-Vanderbauwhede
-Varona
-Vdb
-Veatch
-Vejrazka
-Verhagen
-Verstraaten
-Viamontes
-Viktor
-Vitaly
-Vixie
-Voronov
-Vos
-Vsevolod
-Webber
-Werkzeug
-Whitlock
-Widman
-Wieslander
-Wil
-Wiman
-Wun
-Yaroslav
-Younkins
-Yu
-Yurchuk
-Yury
-Yuval
-Zarowny
-Zatelepin
-Zaytsev
-Zhaorong
-Zhavoronkov
-Zhu
-Zoë
-Zoran
-abortable
-ack
-acked
-acking
-acks
-acyclic
-arg
-args
-arity
-async
-autocommit
-autodoc
-autoscale
-autoscaler
-autoscalers
-autoscaling
-backend
-backends
-backport
-backported
-backtrace
-bootstep
-bootsteps
-bufsize
-bugfix
-callbacks
-celerymon
-changelog
-chunking
-cipater
-committer
-committers
-compat
-conf
-config
-contrib
-coroutine
-coroutines
-cronjob
-cryptographic
-daemonization
-daemonize
-daemonizing
-dburi
-de
-deprecated
-deprecations
-der
-deserialization
-deserialize
-deserialized
-deserializes
-deserializing
-destructor
-distro
-Ádám
-docstring
-docstrings
-embeddable
-encodable
-errbacks
-euid
-eventlet
-exc
-execv
-exitcode
-failover
-fanout
-filename
-gevent
-gid
-greenlet
-greenlets
-greenthreads
-hashable
-hostname
-http
-idempotence
-ident
-indices
-init
-initializer
-instantiation
-interoperability
-iterable
-js
-json
-kombu
-kwargs
-logfile
-login
-loglevel
-lookup
-memoization
-memoize
-memoized
-misconfiguration
-misconfigure
-misconfigured
-msgpack
-multi
-mutex
-mutexes
-natively
-nodename
-nullipotent
-optimizations
-persister
-pickleable
-pid
-pidbox
-pidfile
-pidfiles
-pluggable
-poller
-pre
-prefetch
-prefetched
-prefetching
-prefork
-preload
-preloading
-prepend
-prepended
-programmatically
-proj
-protobuf
-rdb
-reStructured
-rebased
-rebasing
-redelivered
-redelivery
-reentrancy
-reentrant
-refactor
-refactored
-refactoring
-referenceable
-regex
-regexes
-reloader
-resize
-resized
-resizing
-rtype
-runlevel
-runtime
-screenshot
-screenshots
-semipredicate
-semipredicates
-serializable
-serialized
-serializer
-serializers
-serializes
-serializing
-starmap
-stderr
-stdlib
-stdout
-subclasses
-subclassing
-submodule
-subtask
-subtasks
-supervisord
-symlink
-symlinked
-symlinks
-taskset
-timezones
-tracebacks
-tuple
-tuples
-uid
-Łukasz
-umask
-unacked
-undeliverable
-unencrypted
-unlink
-unlinked
-unlinks
-unmanaged
-unorderable
-unpickleable
-unpickled
-unregister
-unrepresentable
-unroutable
-untrusted
-username
-usernames
-utcoffset
-utils
-versa
-versioning
-wbits
-weakref
-weakrefs
-webhook
-webhooks
-writable
-yaml
-
-metavar
-const
-nargs
-dest
-questionark
-amongst
-requeue
-wildcard
-
-```
-
-### 代码文件: docs\THANKS
-```docs\THANKS
-Thanks to Rune Halvorsen <runeh@opera.com> for the name.
-Thanks to Anton Tsigularov <antont@opera.com> for the previous name (crunchy)
-    that we had to abandon because of an existing project with that name.
-Thanks to Armin Ronacher for the Sphinx theme.
-Thanks to Brian K. Jones for bunny.py (https://github.com/bkjones/bunny), the
-    tool that inspired 'celery amqp'.
-Thanks to Barry Pederson for amqplib (the project py-amqp forked).
-Thanks to Ty Wilkins for the Celery stalk logo (2016).
-
-```
-
-### 代码文件: docs\django\first-steps-with-django.rst
-```rst
+`````text
 .. _django-first-steps:
 
 =========================
@@ -3056,6 +2740,16 @@ However, if your app :ref:`uses a custom task base class <task-custom-classes>`,
 you'll need inherit from :class:`~celery.contrib.django.task.DjangoTask` instead of
 :class:`~celery.app.task.Task` to get this behaviour.
 
+Django Connection pool
+----------------------
+From Django 5.1+ there is built-in support for database connection pooling.
+If you enable it in Django ``DATABASES`` settings Celery will automatically
+handle connection pool closing in worker processes via ``close_pool``
+database backend method as
+`sharing connections across processes is not possible. <https://github.com/psycopg/psycopg/issues/544#issuecomment-1500886864>`_
+
+You can find more about Connection pool at `Django docs. <https://docs.djangoproject.com/en/dev/ref/databases/#connection-pool>`_
+
 Extensions
 ==========
 
@@ -3154,10 +2848,16 @@ If you want to learn more you should continue to the
 :ref:`Next Steps <next-steps>` tutorial, and after that you
 can study the :ref:`User Guide <guide>`.
 
-```
+`````
 
-### 代码文件: docs\django\index.rst
-```rst
+--- **end of file: docs/django/first-steps-with-django.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/django/index.rst** (project: celery) --- 
+
+`````text
 .. _django:
 
 =========
@@ -3172,10 +2872,16 @@ can study the :ref:`User Guide <guide>`.
 
     first-steps-with-django
 
-```
+`````
 
-### 代码文件: docs\getting-started\first-steps-with-celery.rst
-```rst
+--- **end of file: docs/django/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/first-steps-with-celery.rst** (project: celery) --- 
+
+`````text
 .. _tut-celery:
 .. _first-steps:
 
@@ -3664,10 +3370,16 @@ the task id, after all).
         >>> result = task.delay()
         >>> print(result.backend)
 
-```
+`````
 
-### 代码文件: docs\getting-started\index.rst
-```rst
+--- **end of file: docs/getting-started/first-steps-with-celery.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/index.rst** (project: celery) --- 
+
+`````text
 =================
  Getting Started
 =================
@@ -3684,10 +3396,16 @@ the task id, after all).
     next-steps
     resources
 
-```
+`````
 
-### 代码文件: docs\getting-started\introduction.rst
-```rst
+--- **end of file: docs/getting-started/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/introduction.rst** (project: celery) --- 
+
+`````text
 .. _intro:
 
 ========================
@@ -4003,10 +3721,16 @@ Quick Jump
 
 .. include:: ../includes/installation.txt
 
-```
+`````
 
-### 代码文件: docs\getting-started\next-steps.rst
-```rst
+--- **end of file: docs/getting-started/introduction.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/next-steps.rst** (project: celery) --- 
+
+`````text
 .. _next-steps:
 
 ============
@@ -4785,10 +4509,16 @@ to the :ref:`User Guide <guide>`.
 
 There's also an :ref:`API reference <apiref>` if you're so inclined.
 
-```
+`````
 
-### 代码文件: docs\getting-started\resources.rst
-```rst
+--- **end of file: docs/getting-started/next-steps.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/resources.rst** (project: celery) --- 
+
+`````text
 .. _resources:
 
 ===========
@@ -4801,10 +4531,16 @@ There's also an :ref:`API reference <apiref>` if you're so inclined.
 
 .. include:: ../includes/resources.txt
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\gcpubsub.rst
-```rst
+--- **end of file: docs/getting-started/resources.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/gcpubsub.rst** (project: celery) --- 
+
+`````text
 .. _broker-gcpubsub:
 
 =====================
@@ -4950,10 +4686,16 @@ Caveats
 - Max message size is limited to 10MB, as a workaround you can use GCS Backend to
   store the message in GCS and pass the GCS URL to the task.
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\index.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/gcpubsub.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/index.rst** (project: celery) --- 
+
+`````text
 .. _brokers:
 
 ======================
@@ -5073,10 +4815,16 @@ If you already integrate tightly with Google Cloud, and are familiar with Pub/Su
 
 :ref:`See documentation for details <broker-gcpubsub>`
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\kafka.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/kafka.rst** (project: celery) --- 
+
+`````text
 .. _broker-kafka:
 
 =============
@@ -5120,7 +4868,7 @@ For celeryconfig.py:
             "sasl.password": sasl_password,
             "security.protocol": "SASL_SSL",
             "sasl.mechanism": "SCRAM-SHA-512",
-            "bootstrap_servers": "broker:9094",
+            "bootstrap.servers": "broker:9094",
         }
     })
     
@@ -5162,10 +4910,16 @@ Limitations
 Currently, using Kafka as a broker means that only one worker can be used.
 See https://github.com/celery/kombu/issues/1785.
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\rabbitmq.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/kafka.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/rabbitmq.rst** (project: celery) --- 
+
+`````text
 .. _broker-rabbitmq:
 
 ================
@@ -5391,7 +5145,7 @@ To migrate from classic mirrored queues to quorum queues, please refer to Rabbit
 Limitations
 -----------
 
-Disabling global QoS means that the the per-channel QoS is now static.
+Disabling global QoS means that the per-channel QoS is now static.
 This means that some Celery features won't work when using Quorum Queues.
 
 Autoscaling relies on increasing and decreasing the prefetch count whenever a new process is instantiated
@@ -5424,10 +5178,16 @@ By default the Native Delayed Delivery queues are quorum queues.
 If you'd like to change them to classic queues you can set the :setting:`broker_native_delayed_delivery_queue_type`
 to classic.
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\redis.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/rabbitmq.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/redis.rst** (project: celery) --- 
+
+`````text
 .. _broker-redis:
 
 =============
@@ -5467,6 +5227,13 @@ Where the URL is in the format of:
 
 all fields after the scheme are optional, and will default to ``localhost``
 on port 6379, using database 0.
+
+If redis credential provider should be used, the URL needs to be in the following format:
+
+.. code-block:: text
+
+    redis://@hostname:port/db_number?credential_provider=mymodule.myfile.myclass
+
 
 If a Unix socket connection should be used, the URL needs to be in the format:
 
@@ -5691,7 +5458,7 @@ Group result ordering
 
 Versions of Celery up to and including 4.4.6 used an unsorted list to store
 result objects for groups in the Redis backend. This can cause those results to
-be be returned in a different order to their associated tasks in the original
+be returned in a different order to their associated tasks in the original
 group instantiation. Celery 4.4.7 introduced an opt-in behaviour which fixes
 this issue and ensures that group results are returned in the same order the
 tasks were defined, matching the behaviour of other backends. In Celery 5.0
@@ -5716,10 +5483,16 @@ workers running 4.4.7, it is recommended that `result_chord_ordered` be set to
 will disrupt results currently held in the Redis backend and cause breakage if
 downstream tasks are run by migrated workers - plan accordingly.
 
-```
+`````
 
-### 代码文件: docs\getting-started\backends-and-brokers\sqs.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/redis.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/getting-started/backends-and-brokers/sqs.rst** (project: celery) --- 
+
+`````text
 .. _broker-sqs:
 
 ==================
@@ -6086,10 +5859,16 @@ at this point.
     not be collected. This could cost you money that would be better
     spent contributing an AWS result store backend back to Celery :)
 
-```
+`````
 
-### 代码文件: docs\history\changelog-1.0.rst
-```rst
+--- **end of file: docs/getting-started/backends-and-brokers/sqs.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-1.0.rst** (project: celery) --- 
+
+`````text
 .. _changelog-1.0:
 
 ===============================
@@ -7975,10 +7754,16 @@ them here into actual content to ensure they are included :-(
 .. image:: ../images/celery-banner.png
 .. image:: ../images/celery-banner-small.png
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.0.rst
-```rst
+--- **end of file: docs/history/changelog-1.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.0.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.0:
 
 ===============================
@@ -9059,10 +8844,16 @@ News
 
 * AMQP result backend now supports Pika.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.1.rst
-```rst
+--- **end of file: docs/history/changelog-2.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.1.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.1:
 
 ===============================
@@ -9831,10 +9622,16 @@ Documentation
 
 
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.2.rst
-```rst
+--- **end of file: docs/history/changelog-2.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.2.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.2:
 
 ===============================
@@ -10864,10 +10661,16 @@ Experimental
         with pool.acquire() as publisher:
             add.apply_async((2, 2), publisher=publisher, retry=True)
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.3.rst
-```rst
+--- **end of file: docs/history/changelog-2.2.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.3.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.3:
 
 ===============================
@@ -11239,10 +11042,16 @@ Fixes
 * Remote control command ``add_consumer`` now does nothing if the
   queue is already being consumed from.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.4.rst
-```rst
+--- **end of file: docs/history/changelog-2.3.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.4.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.4:
 
 ===============================
@@ -11659,10 +11468,16 @@ News
     Also, as you may have noticed the contributors of new features/fixes are
     now mentioned in the Changelog.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-2.5.rst
-```rst
+--- **end of file: docs/history/changelog-2.4.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-2.5.rst** (project: celery) --- 
+
+`````text
 .. _changelog-2.5:
 
 ===============================
@@ -11882,10 +11697,16 @@ documents for major version changes.
 Bugfix releases will still be found in the changelog.
 
 
-```
+`````
 
-### 代码文件: docs\history\changelog-3.0.rst
-```rst
+--- **end of file: docs/history/changelog-2.5.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-3.0.rst** (project: celery) --- 
+
+`````text
 .. _changelog-3.0:
 
 ===============================
@@ -13492,10 +13313,16 @@ If you're looking for versions prior to 3.0.x you should go to :ref:`history`.
 
 See :ref:`whatsnew-3.0`.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-3.1.rst
-```rst
+--- **end of file: docs/history/changelog-3.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-3.1.rst** (project: celery) --- 
+
+`````text
 .. _changelog-3.1:
 
 ================
@@ -14529,7 +14356,7 @@ News
 - **Beat**: No longer attempts to upgrade a newly created database file
   (Issue #1923).
 
-- **Beat**: New setting :setting:``CELERYBEAT_SYNC_EVERY`` can be be used
+- **Beat**: New setting :setting:``CELERYBEAT_SYNC_EVERY`` can be used
   to control file sync by specifying the number of tasks to send between
   each sync.
 
@@ -15232,11 +15059,16 @@ Fixes
 :release-by: Ask Solem
 
 See :ref:`whatsnew-3.1`.
+`````
 
-```
+--- **end of file: docs/history/changelog-3.1.rst** (project: celery) --- 
 
-### 代码文件: docs\history\changelog-4.0.rst
-```rst
+---
+
+
+--- **start of file: docs/history/changelog-4.0.rst** (project: celery) --- 
+
+`````text
 .. _changelog-4.0:
 
 ================
@@ -15469,10 +15301,16 @@ Important notes
     it can return a group or any other type depending on how the
     workflow can be optimized.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-4.1.rst
-```rst
+--- **end of file: docs/history/changelog-4.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-4.1.rst** (project: celery) --- 
+
+`````text
 .. _changelog-4.1:
 
 ================
@@ -15818,10 +15656,16 @@ Contributed by **Omer Katz & Asif Saifuddin Auvi**
     - :github_user:`orf`
     - :github_user:`3lnc`
 
-```
+`````
 
-### 代码文件: docs\history\changelog-4.2.rst
-```rst
+--- **end of file: docs/history/changelog-4.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-4.2.rst** (project: celery) --- 
+
+`````text
 .. _changelog-4.2:
 
 ================
@@ -16275,10 +16119,16 @@ Documentation, CI, Installation and Tests fixes:
     - **Kamil Breguła**
     - **Juan Gutierrez**
 
-```
+`````
 
-### 代码文件: docs\history\changelog-4.3.rst
-```rst
+--- **end of file: docs/history/changelog-4.2.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-4.3.rst** (project: celery) --- 
+
+`````text
 .. _changelog-4.3:
 
 ================
@@ -16839,10 +16689,16 @@ Documentation Fixes by:
   - **Omer Katz**
   - **Milind Shakya**
 
-```
+`````
 
-### 代码文件: docs\history\changelog-4.4.rst
-```rst
+--- **end of file: docs/history/changelog-4.3.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-4.4.rst** (project: celery) --- 
+
+`````text
 .. _changelog-4.4:
 
 ===============
@@ -17620,10 +17476,16 @@ Documentation Fixes by:
   - **Omer Katz**
   - **Milind Shakya**
 
-```
+`````
 
-### 代码文件: docs\history\changelog-5.0.rst
-```rst
+--- **end of file: docs/history/changelog-4.4.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.0.rst** (project: celery) --- 
+
+`````text
 ================
  Change history
 ================
@@ -17798,10 +17660,16 @@ an overview of what's new in Celery 5.0.
 - Removed most of the compatibility code that supports Python 2 (#5686).
 - Modernized code to work on Python 3.6 and above (#5686).
 
-```
+`````
 
-### 代码文件: docs\history\changelog-5.1.rst
-```rst
+--- **end of file: docs/history/changelog-5.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.1.rst** (project: celery) --- 
+
+`````text
 .. _changelog-5.1:
 
 ================
@@ -17942,10 +17810,16 @@ an overview of what's new in Celery 5.1.
 - Updated docker.
 - Initial support of python 3.9 added.
 
-```
+`````
 
-### 代码文件: docs\history\changelog-5.3.rst
-```rst
+--- **end of file: docs/history/changelog-5.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.3.rst** (project: celery) --- 
+
+`````text
 .. _changelog-5.3:
 
 ================
@@ -18451,10 +18325,16 @@ The code changes are mostly fix for regressions. More details can be found below
 - test kombu>=5.3.0a1,<6.0 (#7598).
 - Canvas Header Stamping (#7384).
 
-```
+`````
 
-### 代码文件: docs\history\changelog-5.4.rst
-```rst
+--- **end of file: docs/history/changelog-5.3.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.4.rst** (project: celery) --- 
+
+`````text
 .. _changelog-5.4:
 
 ================
@@ -18650,10 +18530,16 @@ The official release is planned for March-April 2024.
 - Bugfix: Worker not consuming tasks after Redis broker restart (#8796)
 - Bugfix: Missing id on chain (#8798)
 
-```
+`````
 
-### 代码文件: docs\history\changelog-5.5.rst
-```rst
+--- **end of file: docs/history/changelog-5.4.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.5.rst** (project: celery) --- 
+
+`````text
 .. _changelog-5.5:
 
 ================
@@ -20377,10 +20263,335 @@ What's Changed
 - docs(README): link invalid (#9148)
 - Prepare for (pre) release: v5.5.0b1 (#9146)
 
-```
+`````
 
-### 代码文件: docs\history\index.rst
-```rst
+--- **end of file: docs/history/changelog-5.5.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/changelog-5.6.rst** (project: celery) --- 
+
+`````text
+.. _changelog-5.6:
+
+================
+ Change history
+================
+
+This document contains change notes for bugfix & new features
+in the main branch & 5.6.x series, please see :ref:`whatsnew-5.6` for
+an overview of what's new in Celery 5.6.
+
+.. _version-5.6.2:
+
+5.6.2
+=====
+
+:release-date: 2026-01-04
+:release-by: Tomer Nosrati
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- Fix recursive WorkController instantiation in DjangoWorkerFixup + AttributeError when pool_cls is a string (#10045)
+- Bugfix: Revoked tasks now immediately update backend status to REVOKED (#9869)
+- Prepare for release: v5.6.2 (#10049)
+
+.. _version-5.6.1:
+
+5.6.1
+=====
+
+:release-date: 2025-12-29
+:release-by: Tomer Nosrati
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- Fix Redis Sentinel ACL authentication support (#10013)
+- Fix: Broker heartbeats not sent during graceful shutdown (#9986)
+- docs #5410 -- Document confirm_publish broker transport option (#10016)
+- close DB pools only in prefork mode (#10020)
+- Fix: Avoid unnecessary Django database connection creation during cleanup (#10015)
+- reliable prefork detection (#10023)
+- better coverage (#10029)
+- Docs: clarify `result_extended` vs periodic task metadata and show `headers["periodic_task_name"]` example (#10030)
+- Stop importing pytest_subtests (#10032)
+- Only use exceptiongroup backport for Python < 3.11 (#10033)
+- Prepare for release: v5.6.1 (#10037)
+
+.. _version-5.6.0:
+
+5.6.0
+=====
+
+:release-date: 2025-11-30
+:release-by: Tomer Nosrati
+
+Celery v5.6.0 is now available.
+
+Key Highlights
+~~~~~~~~~~~~~~
+
+See :ref:`whatsnew-5.6` for a complete overview or read the main highlights below.
+
+Python 3.9 Minimum Version
+--------------------------
+
+Celery 5.6.0 drops support for Python 3.8 (EOL). The minimum required Python
+version is now 3.9. Users still on Python 3.8 must upgrade their Python version
+before upgrading to Celery 5.6.0.
+
+Additionally, this release includes initial support for Python 3.14.
+
+SQS: Reverted to ``pycurl`` from ``urllib3``
+--------------------------------------------
+
+The switch from ``pycurl`` to ``urllib3`` for the SQS transport (introduced in
+Celery 5.5.0 via Kombu) has been reverted due to critical issues affecting SQS
+users:
+
+- Processing throughput dropped from ~100 tasks/sec to ~3/sec in some environments
+- ``UnknownOperationException`` errors causing container crash loops
+- Silent message processing failures with no error logs
+
+Users of the SQS transport must ensure ``pycurl`` is installed. If you removed
+``pycurl`` after upgrading to Celery 5.5.0, you will need to reinstall it.
+
+Contributed by `@auvipy <https://github.com/auvipy>`_ in
+`#9620 <https://github.com/celery/celery/pull/9620>`_.
+
+Security Fix: Broker Credential Leak Prevention
+------------------------------------------------
+
+Fixed a security issue where broker URLs containing passwords were being logged
+in plaintext by the delayed delivery mechanism. Broker credentials are now
+properly sanitized in all log output.
+
+Contributed by `@giancarloromeo <https://github.com/giancarloromeo>`_ in
+`#9997 <https://github.com/celery/celery/pull/9997>`_.
+
+Memory Leak Fixes
+-----------------
+
+Two significant memory leaks have been fixed in this release:
+
+**Exception Handling Memory Leak**: Fixed a critical memory leak in task exception
+handling that was particularly severe on Python 3.11+ due to enhanced traceback
+data. The fix properly breaks reference cycles in tracebacks to allow garbage
+collection.
+
+Contributed by `@jaiganeshs21 <https://github.com/jaiganeshs21>`_ in
+`#9799 <https://github.com/celery/celery/pull/9799>`_.
+
+**Pending Result Memory Leak**: Fixed a memory leak where ``AsyncResult``
+subscriptions were not being cleaned up when results were forgotten.
+
+Contributed by `@tsoos99dev <https://github.com/tsoos99dev>`_ in
+`#9806 <https://github.com/celery/celery/pull/9806>`_.
+
+ETA Task Memory Limit
+---------------------
+
+New configuration option :setting:`worker_eta_task_limit` to prevent out-of-memory
+crashes when workers fetch large numbers of ETA or countdown tasks. Previously,
+workers could exhaust available memory when the broker contained many scheduled tasks.
+
+Example usage:
+
+.. code-block:: python
+
+    app.conf.worker_eta_task_limit = 1000
+
+Contributed by `@sashu2310 <https://github.com/sashu2310>`_ in
+`#9853 <https://github.com/celery/celery/pull/9853>`_.
+
+Queue Type Selection for Auto-created Queues
+--------------------------------------------
+
+New configuration options allow specifying the queue type and exchange type when
+Celery auto-creates missing queues. This is particularly useful for RabbitMQ users
+who want to use quorum queues with auto-created queues.
+
+Configuration options:
+
+- :setting:`task_create_missing_queue_type`: Sets the queue type for auto-created
+  queues (e.g., ``quorum``, ``classic``)
+- :setting:`task_create_missing_queue_exchange_type`: Sets the exchange type for
+  auto-created queues
+
+Example usage:
+
+.. code-block:: python
+
+    app.conf.task_create_missing_queue_type = 'quorum'
+
+Contributed by `@ghirailghiro <https://github.com/ghirailghiro>`_ in
+`#9815 <https://github.com/celery/celery/pull/9815>`_.
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- Prepare for release: v5.6.0 (#10010)
+
+.. _version-5.6.0rc2:
+
+5.6.0rc2
+========
+
+:release-date: 2025-11-22
+:release-by: Tomer Nosrati
+
+Celery v5.6.0 Release Candidate 2 is now available for testing.
+Please help us test this version and report any issues.
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- Remove Python 4.0 version condition for pytest dependencies (#9993)
+- Sanitize broker URL in delayed delivery logs (avoid leaking credentials) (#9997)
+- Don't fail task on timeout during cold shutdown (#9678)
+- Add Py39-314t to CI (#9999)
+- asynpool: Don't return from inside a finally block (#10000)
+- Prepare for (pre) release: v5.6.0rc2 (#10005)
+
+.. _version-5.6.0rc1:
+
+5.6.0rc1
+========
+
+:release-date: 2025-11-02
+:release-by: Tomer Nosrati
+
+Celery v5.6.0 Release Candidate 1 is now available for testing.
+Please help us test this version and report any issues.
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- Add support for Django Connection pool (#9953)
+- Pin tblib to ==3.1.0 (#9967)
+- fix(worker): continue to attempt to bind other queues after a native delayed delivery binding failure has occurred (#9959)
+- Handle UnpicklingError in persistent scheduler initialization (#9952)
+- Bug Fix: Nested Chords Fail When Using django-celery-results with a Redis Backend (#9950)
+- Add support pymongo  4.12 (#9665)
+- Make tests compatible with pymongo >= 4.14 (#9968)
+- tblib updated from 3.1.0 to 3.2.0 (#9970)
+- Fix remaining function typing and docstring (#9971)
+- Fix regex pattern in version parsing and remove duplicate entry in __all__ (#9978)
+- Bump Kombu to v5.6.0 and removed <5.7 limit on kombu (#9981)
+- Prepare for (pre) release: v5.6.0rc1 (#9982)
+
+.. _version-5.6.0b2:
+
+5.6.0b2
+=======
+
+:release-date: 2025-10-20
+:release-by: Tomer Nosrati
+
+Celery v5.6.0 Beta 2 is now available for testing.
+Please help us test this version and report any issues.
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- GitHub Actions: Test on Python 3.14 release candidate 2 (#9891)
+- Update pypy to python 3.11 (#9896)
+- Feature: Add support credential_provider to Redis Backend (#9879)
+- Celery.timezone: try tzlocal.get_localzone() before using LocalTimezone (#9862)
+- Run integration tests on Python 3.14 (#9903)
+- Fix arithmetic overflow for MSSQL result backend (#9904)
+- Add documentation for task_id param for apply_async function (#9906)
+- Support redis client name (#9900)
+- Bump Kombu to v5.6.0rc1 (#9918)
+- Fix broker connection retry attempt counter in the error log (#9911)
+- fix: restrict disable-prefetch feature to Redis brokers only (#9919)
+- fix(): preserve group order in replaced signature (#9910)
+- Remove Python 3.8 from CI workflow (#9930)
+- Update default Python versions in integration tests (#9931)
+- Update tox.ini to remove Python 3.8 (#9932)
+- Remove Python 3.8 from Dockerfile (#9933)
+- Update Python version requirement to 3.9 (#9935)
+- Update pypy version from 3.10 to 3.11 in Dockerfile (#9934)
+- Flake8 fixes (#9955)
+- Remove test-pypy3.txt from Dockerfile dependencies (#9939)
+- Remove backports.zoneinfo for Python 3.9 compatibility (#9956)
+- Update pytest-cov version for Python compatibility (#9957)
+- Update pytest-rerunfailures and pre-commit versions (#9958)
+- Prepare for (pre) release: v5.6.0b2 (#9938)
+
+.. _version-5.6.0b1:
+
+5.6.0b1
+=======
+
+:release-date: 2025-09-15
+:release-by: Tomer Nosrati
+
+Celery v5.6.0 Beta 1 is now available for testing.
+Please help us test this version and report any issues.
+
+What's Changed
+~~~~~~~~~~~~~~
+
+- docs: mention of json serializer recursive reference message size blowup (#5000) (#9743)
+- docs: typo in canvas.rst (#9744)
+- Makes _on_retry return a float as required to be used as errback on retry_over_time (#9741)
+- Update canvas.rst doc calculation order for callback (#9758)
+- Updated Blacksmith logo (#9763)
+- Made the Sponsors logos link to their website (#9764)
+- add missing cloudamqp logo (#9767)
+- Improve sponsor visibility (#9768)
+- fix: (#9773) task_id must not be empty with chain as body of a chord (#9774)
+- Update setup.py to fix deprecation warning (#9771)
+- Adds integration test for chord_unlock bug when routed to quorum/topic queue (#9766)
+- Add xfail test for default queue/exchange fallback ignoring task_default_* settings (#9765)
+- Add xfail test for RabbitMQ quorum queue global QoS race condition (#9770)
+- fix: (#8786) time out when chord header fails with group body (#9788)
+- Fix #9738 : Add root_id and parent_id to .apply() (#9784)
+- Replace DelayedDelivery connection creation to use context manger (#9793)
+- Fix #9794: Pydantic integration fails with __future__.annotations. (#9795)
+- add go and rust implementation in docs (#9800)
+- Fix memory leak in exception handling (Issue #8882) (#9799)
+- Fix handlers docs (Issue #9787) (#9804)
+- Remove importlib_metadata leftovers (#9791)
+- Update timeout minutes for smoke tests CI (#9807)
+- Revert "Remove dependency on `pycurl`" (#9620)
+- Add Blacksmith Docker layer caching to all Docker builds (#9840)
+- Bump Kombu to v5.6.0b1 (#9839)
+- Disable pytest-xdist for smoke tests and increase retries (CI ONLY) (#9842)
+- Fix Python 3.13 compatibility in events dumper (#9826)
+- Dockerfile Build Optimizations (#9733)
+- Migrated from useblacksmith/build-push-action@v1 to useblacksmith/setup-docker-builder@v1 in the CI (#9846)
+- Remove incorrect example (#9854)
+- Revert "Use Django DB max age connection setting" (#9824)
+- Fix pending_result memory leak (#9806)
+- Update python-package.yml (#9856)
+- Bump Kombu to v5.6.0b2 (#9858)
+- Refactor integration and smoke tests CI (#9855)
+- Fix `AsyncResult.forget()` with couchdb backend method raises `TypeError: a bytes-like object is required, not 'str'` (#9865)
+- Improve Docs for SQS Authentication (#9868)
+- Added `.github/copilot-instructions.md` for GitHub Copilot (#9874)
+- misc: credit removal (#9877)
+- Choose queue type and exchange type when creating missing queues (fix #9671) (#9815)
+- fix: prevent celery from hanging due to spawned greenlet errors in greenlet drainers (#9371)
+- Feature/disable prefetch fixes (#9863)
+- Add worker_eta_task_limit configuration to manage ETA task memory usage (#9853)
+- Update runner version in Docker workflow (#9884)
+- Prepare for (pre) release: v5.6.0b1 (#9890)
+
+`````
+
+--- **end of file: docs/history/changelog-5.6.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/index.rst** (project: celery) --- 
+
+`````text
 .. _history:
 
 =========
@@ -20396,6 +20607,8 @@ version please visit :ref:`changelog`.
 .. toctree::
     :maxdepth: 2
 
+    whatsnew-5.6
+    changelog-5.6
     whatsnew-5.5
     changelog-5.5
     whatsnew-5.4
@@ -20429,10 +20642,16 @@ version please visit :ref:`changelog`.
     changelog-2.0
     changelog-1.0
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-2.5.rst
-```rst
+--- **end of file: docs/history/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-2.5.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-2.5:
 
 ==========================
@@ -20951,10 +21170,16 @@ Fixes
 - ``celeryctl`` now exits with exit status ``EX_UNAVAILABLE`` (69) if no replies
   have been received.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-3.0.rst
-```rst
+--- **end of file: docs/history/whatsnew-2.5.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-3.0.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-3.0:
 
 ===========================================
@@ -21988,10 +22213,16 @@ Fixes
 
     Fix contributed by Eran Rundstein
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-3.1.rst
-```rst
+--- **end of file: docs/history/whatsnew-3.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-3.1.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-3.1:
 
 ===========================================
@@ -23271,10 +23502,16 @@ Internal changes
 - The ``celery.results.BaseDictBackend`` class has been removed and is replaced by
   :class:`celery.results.BaseBackend`.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-4.0.rst
-```rst
+--- **end of file: docs/history/whatsnew-3.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-4.0.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-4.0:
 
 ===========================================
@@ -25627,10 +25864,16 @@ Deprecation Time-line Changes
 
 See the :ref:`deprecation-timeline`.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-4.1.rst
-```rst
+--- **end of file: docs/history/whatsnew-4.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-4.1.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-4.1:
 
 ===========================================
@@ -25890,10 +26133,16 @@ Canvas
 
 Multiple bugs were resolved resulting in a much smoother experience when using Canvas.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-4.2.rst
-```rst
+--- **end of file: docs/history/whatsnew-4.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-4.2.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-4.2:
 
 ===========================================
@@ -26893,10 +27142,16 @@ The code that would have allowed automatic documentation had a few bugs which ar
 
 Also, The extension is now documented properly. See :ref:`sphinx` for more information.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-4.3.rst
-```rst
+--- **end of file: docs/history/whatsnew-4.2.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-4.3.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-4.3:
 
 ===================================
@@ -27454,10 +27709,16 @@ The :setting:`result_chord_join_timeout` setting now allows you to change it.
 
 The default remains 3 seconds.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-4.4.rst
-```rst
+--- **end of file: docs/history/whatsnew-4.3.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-4.4.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-4.4:
 
 ==================================
@@ -27709,10 +27970,16 @@ one after another::
      >>> result.get()
      [6, 6]
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-5.0.rst
-```rst
+--- **end of file: docs/history/whatsnew-4.4.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-5.0.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-5.0:
 
 =======================================
@@ -28040,10 +28307,16 @@ the result backend transport options.
 
 Please refer to the :ref:`documentation <redis-result-backend-timeout>` for details.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-5.1.rst
-```rst
+--- **end of file: docs/history/whatsnew-5.0.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-5.1.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-5.1:
 
 =========================================
@@ -28484,10 +28757,16 @@ Support Redis Sentinel with SSL
 See documentation for more info:
 :doc:`/getting-started/backends-and-brokers/redis`
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-5.3.rst
-```rst
+--- **end of file: docs/history/whatsnew-5.1.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-5.3.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-5.3:
 
 =========================================
@@ -28739,9 +29018,9 @@ A switch have been made to zoneinfo for handling timezone data instead of pytz.
 Support for out-of-tree worker pool implementations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Prior to version 5.3, Celery had a fixed notion of the worker pool types it supports.
-Celery v5.3.0 introduces the the possibility of an out-of-tree worker pool implementation.
-This feature ensure that the current worker pool implementations consistently call into
-BasePool._get_info(), and enhance it to report the work pool class in use via the 
+Celery v5.3.0 introduces the possibility of an out-of-tree worker pool implementation.
+This feature ensures that the current worker pool implementations consistently call into
+BasePool._get_info(), and enhances it to report the worker pool class in use via the
 "celery inspect stats" command. For example:
 
 $ celery -A ... inspect stats
@@ -28839,11 +29118,16 @@ environment and is not safe for production use at the moment.
 
 
 
+`````
 
-```
+--- **end of file: docs/history/whatsnew-5.3.rst** (project: celery) --- 
 
-### 代码文件: docs\history\whatsnew-5.4.rst
-```rst
+---
+
+
+--- **start of file: docs/history/whatsnew-5.4.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-5.4:
 
 =========================================
@@ -29078,10 +29362,16 @@ Django
 Minimum django version is bumped to v2.2.28.
 Also added --skip-checks flag to bypass django core checks.
 
-```
+`````
 
-### 代码文件: docs\history\whatsnew-5.5.rst
-```rst
+--- **end of file: docs/history/whatsnew-5.4.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/history/whatsnew-5.5.rst** (project: celery) --- 
+
+`````text
 .. _whatsnew-5.5:
 
 =========================================
@@ -29443,588 +29733,313 @@ more control over database schema management.
 
 See :ref:`conf-database-result-backend` for complete documentation.
 
-```
+`````
 
-### 代码文件: docs\images\blacksmith-logo-white-on-black.svg
-```svg
-<svg width="334" height="77" viewBox="0 0 334 77" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="334" height="77" fill="#F0FB29"/>
-<path d="M21.8622 43.668C20.5836 43.668 19.5802 43.2387 18.8522 42.38C18.1242 41.512 17.7602 40.2567 17.7602 38.614C17.7602 37.7927 17.8536 37.0693 18.0402 36.444C18.2269 35.8187 18.4976 35.2913 18.8522 34.862C19.2069 34.4327 19.6362 34.1107 20.1402 33.896C20.6536 33.672 21.2276 33.56 21.8622 33.56C22.7116 33.56 23.4209 33.7467 23.9902 34.12C24.5689 34.4933 25.0216 35.044 25.3482 35.772L24.0182 36.5C23.8502 36.0333 23.5889 35.6647 23.2342 35.394C22.8889 35.114 22.4316 34.974 21.8622 34.974C21.1062 34.974 20.5136 35.2307 20.0842 35.744C19.6549 36.2573 19.4402 36.9667 19.4402 37.872V39.356C19.4402 40.2613 19.6549 40.9707 20.0842 41.484C20.5136 41.9973 21.1062 42.254 21.8622 42.254C22.4502 42.254 22.9262 42.1047 23.2902 41.806C23.6636 41.498 23.9389 41.106 24.1162 40.63L25.3902 41.4C25.0636 42.1093 24.6062 42.6647 24.0182 43.066C23.4302 43.4673 22.7116 43.668 21.8622 43.668ZM26.6473 43.5V42.212H27.9773V35.016H26.6473V33.728H30.9033V35.016H29.5593V42.212H30.9033V43.5H26.6473ZM36.0881 36.22H37.6141V37.424H37.6841C37.8428 36.9853 38.0994 36.6493 38.4541 36.416C38.8181 36.1733 39.2428 36.052 39.7281 36.052C40.6521 36.052 41.3661 36.388 41.8701 37.06C42.3741 37.7227 42.6261 38.656 42.6261 39.86C42.6261 41.064 42.3741 42.002 41.8701 42.674C41.3661 43.3367 40.6521 43.668 39.7281 43.668C39.2428 43.668 38.8181 43.5467 38.4541 43.304C38.0994 43.0613 37.8428 42.7253 37.6841 42.296H37.6141V46.3H36.0881V36.22ZM39.2661 42.352C39.7981 42.352 40.2228 42.184 40.5401 41.848C40.8574 41.5027 41.0161 41.05 41.0161 40.49V39.23C41.0161 38.67 40.8574 38.222 40.5401 37.886C40.2228 37.5407 39.7981 37.368 39.2661 37.368C38.7994 37.368 38.4074 37.4847 38.0901 37.718C37.7728 37.942 37.6141 38.2407 37.6141 38.614V41.106C37.6141 41.4793 37.7728 41.7827 38.0901 42.016C38.4074 42.24 38.7994 42.352 39.2661 42.352ZM47.2293 43.668C46.7253 43.668 46.2633 43.5793 45.8433 43.402C45.4326 43.2247 45.0826 42.9727 44.7933 42.646C44.5039 42.31 44.2799 41.9087 44.1213 41.442C43.9626 40.966 43.8833 40.4387 43.8833 39.86C43.8833 39.2813 43.9626 38.7587 44.1213 38.292C44.2799 37.816 44.5039 37.4147 44.7933 37.088C45.0826 36.752 45.4326 36.4953 45.8433 36.318C46.2633 36.1407 46.7253 36.052 47.2293 36.052C47.7333 36.052 48.1906 36.1407 48.6013 36.318C49.0213 36.4953 49.3759 36.752 49.6653 37.088C49.9546 37.4147 50.1786 37.816 50.3373 38.292C50.4959 38.7587 50.5753 39.2813 50.5753 39.86C50.5753 40.4387 50.4959 40.966 50.3373 41.442C50.1786 41.9087 49.9546 42.31 49.6653 42.646C49.3759 42.9727 49.0213 43.2247 48.6013 43.402C48.1906 43.5793 47.7333 43.668 47.2293 43.668ZM47.2293 42.408C47.7519 42.408 48.1719 42.2493 48.4893 41.932C48.8066 41.6053 48.9653 41.12 48.9653 40.476V39.244C48.9653 38.6 48.8066 38.1193 48.4893 37.802C48.1719 37.4753 47.7519 37.312 47.2293 37.312C46.7066 37.312 46.2866 37.4753 45.9693 37.802C45.6519 38.1193 45.4933 38.6 45.4933 39.244V40.476C45.4933 41.12 45.6519 41.6053 45.9693 41.932C46.2866 42.2493 46.7066 42.408 47.2293 42.408ZM51.4519 36.22H52.9359L53.6779 39.272L54.3359 42.03H54.3779L55.1339 39.272L56.0159 36.22H57.3879L58.2839 39.272L59.0539 42.03H59.0959L59.7399 39.272L60.4959 36.22H61.9099L59.9499 43.5H58.2279L57.2759 40.182L56.6879 38.138H56.6599L56.0859 40.182L55.1199 43.5H53.4399L51.4519 36.22ZM66.1238 43.668C65.6011 43.668 65.1344 43.5793 64.7238 43.402C64.3131 43.2247 63.9631 42.9727 63.6738 42.646C63.3844 42.31 63.1604 41.9087 63.0018 41.442C62.8524 40.966 62.7778 40.4387 62.7778 39.86C62.7778 39.2813 62.8524 38.7587 63.0018 38.292C63.1604 37.816 63.3844 37.4147 63.6738 37.088C63.9631 36.752 64.3131 36.4953 64.7238 36.318C65.1344 36.1407 65.6011 36.052 66.1238 36.052C66.6558 36.052 67.1224 36.1453 67.5238 36.332C67.9344 36.5187 68.2751 36.78 68.5458 37.116C68.8164 37.4427 69.0171 37.8253 69.1478 38.264C69.2878 38.7027 69.3578 39.174 69.3578 39.678V40.252H64.3598V40.49C64.3598 41.05 64.5231 41.512 64.8498 41.876C65.1858 42.2307 65.6618 42.408 66.2778 42.408C66.7258 42.408 67.1038 42.31 67.4118 42.114C67.7198 41.918 67.9811 41.652 68.1958 41.316L69.0918 42.198C68.8211 42.646 68.4291 43.0053 67.9158 43.276C67.4024 43.5373 66.8051 43.668 66.1238 43.668ZM66.1238 37.242C65.8624 37.242 65.6198 37.2887 65.3958 37.382C65.1811 37.4753 64.9944 37.606 64.8358 37.774C64.6864 37.942 64.5698 38.1427 64.4858 38.376C64.4018 38.6093 64.3598 38.866 64.3598 39.146V39.244H67.7478V39.104C67.7478 38.544 67.6031 38.096 67.3138 37.76C67.0244 37.4147 66.6278 37.242 66.1238 37.242ZM71.0471 43.5V36.22H72.5731V37.62H72.6431C72.7457 37.2467 72.9604 36.92 73.2871 36.64C73.6137 36.36 74.0664 36.22 74.6451 36.22H75.0511V37.69H74.4491C73.8424 37.69 73.3757 37.788 73.0491 37.984C72.7317 38.18 72.5731 38.4693 72.5731 38.852V43.5H71.0471ZM79.1941 43.668C78.6714 43.668 78.2048 43.5793 77.7941 43.402C77.3834 43.2247 77.0334 42.9727 76.7441 42.646C76.4548 42.31 76.2308 41.9087 76.0721 41.442C75.9228 40.966 75.8481 40.4387 75.8481 39.86C75.8481 39.2813 75.9228 38.7587 76.0721 38.292C76.2308 37.816 76.4548 37.4147 76.7441 37.088C77.0334 36.752 77.3834 36.4953 77.7941 36.318C78.2048 36.1407 78.6714 36.052 79.1941 36.052C79.7261 36.052 80.1928 36.1453 80.5941 36.332C81.0048 36.5187 81.3454 36.78 81.6161 37.116C81.8868 37.4427 82.0874 37.8253 82.2181 38.264C82.3581 38.7027 82.4281 39.174 82.4281 39.678V40.252H77.4301V40.49C77.4301 41.05 77.5934 41.512 77.9201 41.876C78.2561 42.2307 78.7321 42.408 79.3481 42.408C79.7961 42.408 80.1741 42.31 80.4821 42.114C80.7901 41.918 81.0514 41.652 81.2661 41.316L82.1621 42.198C81.8914 42.646 81.4994 43.0053 80.9861 43.276C80.4728 43.5373 79.8754 43.668 79.1941 43.668ZM79.1941 37.242C78.9328 37.242 78.6901 37.2887 78.4661 37.382C78.2514 37.4753 78.0648 37.606 77.9061 37.774C77.7568 37.942 77.6401 38.1427 77.5561 38.376C77.4721 38.6093 77.4301 38.866 77.4301 39.146V39.244H80.8181V39.104C80.8181 38.544 80.6734 38.096 80.3841 37.76C80.0948 37.4147 79.6981 37.242 79.1941 37.242ZM88.6954 42.296H88.6254C88.4667 42.7253 88.2054 43.0613 87.8414 43.304C87.4867 43.5467 87.0667 43.668 86.5814 43.668C85.6574 43.668 84.9434 43.3367 84.4394 42.674C83.9354 42.002 83.6834 41.064 83.6834 39.86C83.6834 38.656 83.9354 37.7227 84.4394 37.06C84.9434 36.388 85.6574 36.052 86.5814 36.052C87.0667 36.052 87.4867 36.1733 87.8414 36.416C88.2054 36.6493 88.4667 36.9853 88.6254 37.424H88.6954V33.14H90.2214V43.5H88.6954V42.296ZM87.0434 42.352C87.5101 42.352 87.9021 42.24 88.2194 42.016C88.5367 41.7827 88.6954 41.4793 88.6954 41.106V38.614C88.6954 38.2407 88.5367 37.942 88.2194 37.718C87.9021 37.4847 87.5101 37.368 87.0434 37.368C86.5114 37.368 86.0867 37.5407 85.7694 37.886C85.4521 38.222 85.2934 38.67 85.2934 39.23V40.49C85.2934 41.05 85.4521 41.5027 85.7694 41.848C86.0867 42.184 86.5114 42.352 87.0434 42.352ZM95.7111 33.14H97.2371V37.424H97.3071C97.4658 36.9853 97.7225 36.6493 98.0771 36.416C98.4411 36.1733 98.8658 36.052 99.3511 36.052C100.275 36.052 100.989 36.388 101.493 37.06C101.997 37.7227 102.249 38.656 102.249 39.86C102.249 41.064 101.997 42.002 101.493 42.674C100.989 43.3367 100.275 43.668 99.3511 43.668C98.8658 43.668 98.4411 43.5467 98.0771 43.304C97.7225 43.0613 97.4658 42.7253 97.3071 42.296H97.2371V43.5H95.7111V33.14ZM98.8891 42.352C99.4211 42.352 99.8458 42.184 100.163 41.848C100.48 41.5027 100.639 41.05 100.639 40.49V39.23C100.639 38.67 100.48 38.222 100.163 37.886C99.8458 37.5407 99.4211 37.368 98.8891 37.368C98.4225 37.368 98.0305 37.4847 97.7131 37.718C97.3958 37.942 97.2371 38.2407 97.2371 38.614V41.106C97.2371 41.4793 97.3958 41.7827 97.7131 42.016C98.0305 42.24 98.4225 42.352 98.8891 42.352ZM108.367 36.22H109.837L106.771 44.942C106.687 45.1847 106.589 45.39 106.477 45.558C106.374 45.7353 106.248 45.8753 106.099 45.978C105.959 46.09 105.786 46.1693 105.581 46.216C105.375 46.272 105.133 46.3 104.853 46.3H103.971V45.054H105.203L105.623 43.822L102.977 36.22H104.503L105.959 40.504L106.379 42.086H106.449L106.911 40.504L108.367 36.22Z" fill="#202020"/>
-<path d="M193.764 16.0294H126V38.5C138.28 38.5 148.272 48.2483 148.581 60.3903L148.589 60.9706H193.764V16.0294Z" fill="#202020"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M226.735 18.9287H229.679V25.1522H226.735V27.7148H229.679V33.9382H226.735V36.8669H211.647V27.7148H214.591V25.1522H211.647V16H226.735V18.9287ZM214.959 33.5722H226.367V28.0809H214.959V33.5722ZM214.959 24.7861H226.367V19.2948H214.959V24.7861Z" fill="#202020"/>
-<path d="M237.772 33.5722H249.548V36.8669H234.46V16H237.772V33.5722Z" fill="#202020"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M269.418 18.9287H272.362V36.8669H269.05V28.0809H257.642V36.8669H254.33V18.9287H257.274V16H269.418V18.9287ZM257.642 24.7861H269.05V19.2948H257.642V24.7861Z" fill="#202020"/>
-<path d="M292.231 18.9287H295.175V22.2235H291.863V19.2948H280.455V33.5722H291.863V30.6435H295.175V33.9382H292.231V36.8669H280.087V33.9382H277.143V18.9287H280.087V16H292.231V18.9287Z" fill="#202020"/>
-<path d="M303.269 24.7861H311.733V21.8574H314.677V16H317.989V22.2235H315.045V25.1522H312.101V27.7148H315.045V30.6435H317.989V36.8669H314.677V31.0096H311.733V28.0809H303.269V36.8669H299.957V16H303.269V24.7861Z" fill="#202020"/>
-<path d="M226.735 43.0618H229.679V46.3565H226.367V43.4278H214.959V48.9191H226.735V51.8478H229.679V58.0713H226.735V61H214.591V58.0713H211.647V54.7765H214.959V57.7052H226.367V52.2139H214.591V49.2852H211.647V43.0618H214.591V40.1331H226.735V43.0618Z" fill="#202020"/>
-<path d="M242.191 43.0618H244.767V40.1331H251.023V43.0618H253.967V61H250.655V43.4278H245.135V61H241.823V43.4278H236.303V61H232.991V43.0618H235.935V40.1331H242.191V43.0618Z" fill="#202020"/>
-<path d="M263.535 43.0618H266.111V40.1331H272.368V43.4278H266.479V57.7052H272.368V61H266.111V58.0713H263.535V61H257.279V57.7052H263.167V43.4278H257.279V40.1331H263.535V43.0618Z" fill="#202020"/>
-<path d="M284.88 43.0618H287.456V40.1331H296.656V43.4278H287.824V61H284.512V43.4278H275.68V40.1331H284.88V43.0618Z" fill="#202020"/>
-<path d="M303.28 48.9191H314.688V40.1331H318V61H314.688V52.2139H303.28V61H299.968V40.1331H303.28V48.9191Z" fill="#202020"/>
-</svg>
+--- **end of file: docs/history/whatsnew-5.5.rst** (project: celery) --- 
 
-```
+---
 
-### 代码文件: docs\images\cloudamqp-logo-lightbg.svg
-```svg
-<svg width="620" height="157" viewBox="0 0 620 157" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="620" height="157" fill="#F7F6F2"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M40 77.1185C40 56.9962 54.9455 41.563 75.5556 41.563C87.9612 41.563 98.9009 47.7166 104.859 57.387L91.3796 65.202C88.352 59.9269 82.4907 56.8009 75.5556 56.8009C63.4437 56.8009 55.6287 64.9083 55.6287 77.1185C55.6287 89.3288 63.4437 97.4362 75.5556 97.4362C82.4907 97.4362 88.4503 94.3088 91.3796 89.0337L104.859 96.8487C98.9992 106.52 88.0582 112.673 75.5556 112.673C54.9455 112.673 40 97.2395 40 77.1185Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M111.7 111.305H126.351V40H111.7V111.305Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M170.796 86.8867C170.796 79.9515 165.912 75.3609 159.563 75.3609C153.214 75.3609 148.329 79.9515 148.329 86.8867C148.329 93.8204 153.214 98.4124 159.563 98.4124C165.912 98.4124 170.796 93.8204 170.796 86.8867ZM133.678 86.8867C133.678 72.3319 145.203 61.0985 159.563 61.0985C173.922 61.0985 185.448 72.3319 185.448 86.8867C185.448 101.44 173.922 112.673 159.563 112.673C145.203 112.673 133.678 101.44 133.678 86.8867Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M238.982 62.467V111.307H224.33V106.715C221.693 110.33 216.809 112.673 210.361 112.673C200.497 112.673 192.096 105.641 192.096 92.4537V62.467H206.748V90.3059C206.748 96.3612 210.557 99.1935 215.246 99.1935C220.618 99.1935 224.33 96.0675 224.33 89.1337V62.467H238.982Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M284.207 86.8868C284.207 79.5609 279.323 74.9703 272.583 74.9703C265.843 74.9703 260.959 79.5609 260.959 86.8868C260.959 94.2127 265.843 98.8033 272.583 98.8033C279.323 98.8033 284.207 94.2127 284.207 86.8868ZM298.859 42.9301V111.306H284.207V106.715C280.983 110.427 276.198 112.674 269.652 112.674C256.856 112.674 246.307 101.44 246.307 86.8868C246.307 72.332 256.856 61.0986 269.652 61.0986C276.198 61.0986 280.983 63.3461 284.207 67.0582V42.9301H298.859Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M344.477 85.9091L336.467 60.8068L328.456 85.9091H344.477ZM349.164 100.561H323.768L320.35 111.307H303.255L326.503 42.9306H346.43L369.677 111.307H352.584L349.164 100.561Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M442.943 111.306H427.314V71.5505L409.633 100.56H407.876L390.197 71.5505V111.306H374.567V42.9301H390.197L408.755 73.3089L427.314 42.9301H442.943V111.306Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M491.108 96.9476L481.242 86.4943L492.475 76.5316L503.415 88.1557C505.173 85.0297 506.247 81.3176 506.247 77.119C506.247 64.9088 497.457 56.8014 486.32 56.8014C475.187 56.8014 466.395 64.9088 466.395 77.119C466.395 89.3293 475.187 97.4353 486.32 97.4353C487.982 97.4353 489.545 97.24 491.108 96.9476ZM514.062 99.4874L520.899 106.715L509.666 116.679L502.341 108.961C497.554 111.306 492.085 112.673 486.32 112.673C466.687 112.673 450.766 97.24 450.766 77.119C450.766 56.9967 466.687 41.5635 486.32 41.5635C505.955 41.5635 521.877 56.9967 521.877 77.119C521.877 85.7128 518.947 93.4308 514.062 99.4874Z" fill="#141414"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M564.37 66.3733C564.37 61.3919 560.855 57.5828 556.067 57.5828H545.812V75.1652H556.067C560.855 75.1652 564.37 71.3547 564.37 66.3733ZM580 66.3733C580 79.3651 569.548 89.8156 556.067 89.8156H545.812V111.306H530.182V42.931H556.067C569.548 42.931 580 53.3816 580 66.3733Z" fill="#141414"/>
-</svg>
 
-```
+--- **start of file: docs/history/whatsnew-5.6.rst** (project: celery) --- 
 
-### 代码文件: docs\images\dragonfly.svg
-```svg
-<svg width="600" height="304" viewBox="0 0 600 304" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M293.371 120.52L295.001 143.333C295.001 143.333 295.834 146.667 300.001 146.667C304.167 146.667 305.001 143.333 305.001 143.333L306.63 120.52C306.57 120.545 306.509 120.57 306.447 120.595C304.969 121.186 302.877 121.667 300.001 121.667C297.125 121.667 295.033 121.186 293.555 120.595C293.492 120.57 293.431 120.545 293.371 120.52Z" fill="url(#paint0_linear_1356_82148)"/>
-<path d="M290.071 79.1411L293.334 116.667C293.334 116.667 295.001 118.333 300.001 118.333C305.001 118.333 306.668 116.667 306.668 116.667L309.931 79.1409C307.884 80.3319 304.562 81.6667 300.001 81.6667C295.438 81.6667 292.117 80.3315 290.071 79.1411Z" fill="url(#paint1_linear_1356_82148)"/>
-<path d="M288.725 42.2741C288.189 42.6515 287.764 43.187 287.523 43.8296L284.163 52.7901C283.626 54.2199 283.597 55.7904 284.08 57.2391L289.503 73.507C289.83 74.4888 290.378 75.3913 291.247 75.9534C292.77 76.9385 295.688 78.3333 300.001 78.3333C304.313 78.3333 307.231 76.9385 308.754 75.9534C309.623 75.3913 310.171 74.4888 310.498 73.507L315.921 57.2391C316.404 55.7904 316.375 54.2199 315.838 52.7901L312.478 43.8296C312.237 43.187 311.812 42.6515 311.276 42.2741C308.308 45.0015 304.349 46.6667 300.001 46.6667C295.652 46.6667 291.693 45.0015 288.725 42.2741Z" fill="url(#paint2_linear_1356_82148)"/>
-<path d="M286.667 30C286.667 28.0055 285.484 26.0403 283.724 25.1001C279.525 22.8554 276.667 18.428 276.667 13.3333C276.667 5.96954 282.637 0 290.001 0C291.287 0 292.531 0.182103 293.707 0.521932C297.56 1.63468 302.441 1.63467 306.294 0.52193C307.471 0.182102 308.715 0 310.001 0C317.365 0 323.334 5.96954 323.334 13.3333C323.334 18.428 320.477 22.8554 316.277 25.1001C314.518 26.0403 313.334 28.0055 313.334 30C313.334 37.3638 307.365 43.3333 300.001 43.3333C292.637 43.3333 286.667 37.3638 286.667 30Z" fill="url(#paint3_linear_1356_82148)"/>
-<path d="M215.001 50H281.334C278.334 55 280.509 58.193 281.667 61.6667L219.391 79.5014C215.414 80.6216 211.158 79.1811 208.679 75.876L204.76 70.6504C202.488 67.6202 202.122 63.5661 203.816 60.1782L206.141 55.5275C207.822 52.1671 211.244 50.032 215.001 50Z" fill="url(#paint4_linear_1356_82148)"/>
-<path d="M282.501 46.6667L206.667 44.8876C202.434 44.7111 198.73 42.2702 197.484 38.2209L193.777 26.2459C193.481 25.285 193.337 24.3042 193.334 23.3333C193.326 20.2745 194.724 17.3136 197.234 15.3814L204.884 9.49196C207.751 7.28419 211.588 6.79807 214.916 8.22088C223.481 11.7497 274.875 33.9566 283.709 37.7748C284.467 38.1024 284.844 38.9237 284.641 39.7242C284.498 40.2938 284.328 40.9799 284.167 41.6667C283.698 43.6708 282.501 46.6667 282.501 46.6667Z" fill="url(#paint5_linear_1356_82148)"/>
-<path d="M385.001 50H318.667C321.667 55 319.492 58.193 318.334 61.6667L380.61 79.5014C384.587 80.6216 388.843 79.1811 391.322 75.876L395.241 70.6504C397.514 67.6202 397.879 63.5661 396.185 60.1783L393.86 55.5275C392.18 52.1671 388.758 50.032 385.001 50Z" fill="url(#paint6_linear_1356_82148)"/>
-<path d="M317.501 46.6667L393.334 44.8876C397.567 44.7112 401.271 42.2702 402.517 38.2209L406.225 26.2459C406.52 25.285 406.665 24.3043 406.667 23.3333C406.676 20.2745 405.277 17.3136 402.767 15.3814L395.118 9.49198C392.25 7.28421 388.413 6.79809 385.086 8.22091C376.52 11.7497 325.126 33.9566 316.293 37.7748C315.535 38.1024 315.158 38.9237 315.36 39.7242C315.504 40.2938 315.673 40.9799 315.834 41.6667C316.303 43.6708 317.501 46.6667 317.501 46.6667Z" fill="url(#paint7_linear_1356_82148)"/>
-<path d="M465.582 176.493C464.604 179.329 464.115 182.36 464.115 185.587V196.733H452.822V209.347H464.115V273.88H479.369V209.347H493.742V196.733H479.369V186.173C479.369 183.924 479.907 182.213 480.982 181.04C482.155 179.867 483.915 179.28 486.262 179.28H493.742L497.076 168.573C496.098 168.182 494.973 167.84 493.702 167.547C492.431 167.253 491.062 167.058 489.595 166.96C488.227 166.764 486.858 166.667 485.489 166.667C480.698 166.667 473.649 167.596 471.009 169.453C468.467 171.311 466.658 173.658 465.582 176.493Z" fill="url(#paint8_linear_1356_82148)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M65.4133 268.6C58.08 272.12 49.2311 273.88 38.8667 273.88H0V173.267H38.8667C49.2311 173.267 58.08 175.076 65.4133 178.693C72.7467 182.213 78.3689 187.689 82.28 195.12C86.2889 202.453 88.2933 211.938 88.2933 223.573C88.2933 235.111 86.2889 244.596 82.28 252.027C78.3689 259.458 72.7467 264.982 65.4133 268.6ZM52.5067 189.4C48.4978 188.031 43.9022 187.347 38.72 187.347H16.4267V259.8H38.72C43.9022 259.8 48.4978 259.116 52.5067 257.747C56.6133 256.378 60.0356 254.276 62.7733 251.44C65.6089 248.604 67.7111 245.036 69.08 240.733C70.5467 236.333 71.28 231.151 71.28 225.187V222.107C71.28 216.044 70.5467 210.862 69.08 206.56C67.7111 202.16 65.6089 198.542 62.7733 195.707C60.0356 192.871 56.6133 190.769 52.5067 189.4Z" fill="url(#paint9_linear_1356_82148)"/>
-<path d="M112.947 223.28C112.262 226.018 111.92 229.098 111.92 232.52V273.88H96.6665V196.733H109.28L110.6 209.2H111.48C112.36 206.756 113.484 204.458 114.853 202.307C116.32 200.156 118.178 198.396 120.427 197.027C122.773 195.658 125.609 194.973 128.933 194.973C130.498 194.973 131.867 195.12 133.04 195.413C134.311 195.707 135.289 195.951 135.973 196.147V210.52H130.84C127.711 210.52 124.924 211.009 122.48 211.987C120.133 212.964 118.129 214.431 116.467 216.387C114.902 218.244 113.729 220.542 112.947 223.28Z" fill="url(#paint10_linear_1356_82148)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M157.256 274.76C160.092 275.347 162.732 275.64 165.176 275.64C169.185 275.64 172.803 275.151 176.03 274.173C179.256 273.293 182.092 272.022 184.536 270.36C187.078 268.6 189.23 266.596 190.99 264.347H191.87V275.64L205.8 275.627L205.803 218.733C205.803 213.747 204.678 209.493 202.43 205.973C200.181 202.453 196.807 199.764 192.31 197.907C187.91 195.951 182.385 194.973 175.736 194.973C169.576 194.973 164.15 195.804 159.456 197.467C154.763 199.129 151.096 201.573 148.456 204.8C145.914 207.929 144.643 211.791 144.643 216.387V218.147C144.643 218.636 144.692 219.124 144.79 219.613H159.456V217.413C159.456 215.653 159.896 214.04 160.776 212.573C161.754 211.009 163.367 209.738 165.616 208.76C167.963 207.684 171.19 207.147 175.296 207.147C179.403 207.147 182.532 207.684 184.683 208.76C186.932 209.836 188.447 211.351 189.23 213.307C190.11 215.262 190.55 217.511 190.55 220.053V227.68C183.314 227.68 176.616 228.071 170.456 228.853C164.394 229.636 159.163 231.004 154.763 232.96C150.363 234.916 146.941 237.604 144.496 241.027C142.052 244.449 140.83 248.8 140.83 254.08C140.83 258.578 141.612 262.244 143.176 265.08C144.741 267.818 146.745 269.969 149.19 271.533C151.732 273.098 154.421 274.173 157.256 274.76ZM177.79 261.707C175.247 262.587 172.461 263.027 169.43 263.027C166.79 263.027 164.492 262.636 162.536 261.853C160.581 261.071 159.114 259.947 158.136 258.48C157.158 256.916 156.67 255.009 156.67 252.76C156.67 249.044 158.087 246.16 160.923 244.107C163.758 241.956 167.718 240.489 172.803 239.707C177.887 238.924 183.803 238.533 190.55 238.533V243.667C190.55 246.502 190.012 249.142 188.936 251.587C187.861 253.933 186.394 255.987 184.536 257.747C182.678 259.409 180.43 260.729 177.79 261.707Z" fill="url(#paint11_linear_1356_82148)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M232.548 300.573C229.028 300.573 225.703 299.84 222.574 298.373C219.543 296.907 217.099 294.804 215.241 292.067C213.383 289.329 212.454 286.004 212.454 282.093C212.454 277.791 213.628 274.32 215.974 271.68C218.419 268.942 221.254 266.889 224.481 265.52C222.134 264.444 220.228 262.88 218.761 260.827C217.392 258.773 216.708 256.427 216.708 253.787C216.708 250.169 218.028 247.236 220.668 244.987C223.308 242.738 226.388 241.271 229.908 240.587C226.485 238.338 223.796 235.502 221.841 232.08C219.983 228.658 219.054 224.796 219.054 220.493C219.054 215.311 220.276 210.862 222.721 207.147C225.165 203.333 228.783 200.351 233.574 198.2C238.463 196.049 244.379 194.973 251.321 194.973H293.333L290 204.427H277.915C279.607 206.317 280.911 208.446 281.828 210.813C283.099 213.747 283.734 216.973 283.734 220.493C283.734 225.578 282.561 230.027 280.214 233.84C277.868 237.653 274.299 240.636 269.508 242.787C264.814 244.938 258.996 246.013 252.054 246.013H240.028C237.681 246.013 235.774 246.502 234.308 247.48C232.939 248.458 232.254 249.924 232.254 251.88C232.254 253.542 232.939 254.911 234.308 255.987C235.676 257.062 237.485 257.6 239.734 257.6H272.294C277.965 257.6 282.659 259.507 286.374 263.32C290.09 267.036 291.948 271.827 291.948 277.693C291.948 281.996 290.823 285.858 288.574 289.28C286.423 292.8 283.343 295.538 279.334 297.493C275.423 299.547 270.876 300.573 265.694 300.573H232.548ZM230.494 286.64C232.352 288.4 234.699 289.28 237.534 289.28H265.548C267.601 289.28 269.459 288.889 271.121 288.107C272.783 287.324 274.103 286.2 275.081 284.733C276.059 283.364 276.548 281.8 276.548 280.04C276.548 277.107 275.619 274.809 273.761 273.147C272.001 271.484 269.801 270.653 267.161 270.653H237.534C234.796 270.653 232.499 271.582 230.641 273.44C228.783 275.2 227.854 277.4 227.854 280.04C227.854 282.778 228.734 284.978 230.494 286.64ZM251.468 235.013C257.236 235.013 261.539 233.742 264.374 231.2C267.21 228.56 268.628 224.991 268.628 220.493C268.628 215.898 267.21 212.378 264.374 209.933C261.539 207.391 257.236 206.12 251.468 206.12C245.699 206.12 241.396 207.391 238.561 209.933C235.725 212.378 234.308 215.898 234.308 220.493C234.308 223.427 234.894 226.018 236.068 228.267C237.339 230.418 239.245 232.08 241.788 233.253C244.428 234.427 247.654 235.013 251.468 235.013Z" fill="url(#paint12_linear_1356_82148)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M311.573 271.387C317.147 274.222 323.942 275.64 331.96 275.64C340.173 275.64 347.018 274.222 352.493 271.387C357.969 268.453 362.075 264.004 364.813 258.04C367.649 252.076 369.067 244.498 369.067 235.307C369.067 226.018 367.649 218.44 364.813 212.573C362.075 206.609 357.969 202.209 352.493 199.373C347.018 196.44 340.173 194.973 331.96 194.973C323.942 194.973 317.147 196.44 311.573 199.373C306.098 202.209 301.942 206.609 299.107 212.573C296.369 218.44 295 226.018 295 235.307C295 244.498 296.369 252.076 299.107 258.04C301.942 264.004 306.098 268.453 311.573 271.387ZM343.987 260.24C340.858 262.098 336.849 263.027 331.96 263.027C327.169 263.027 323.209 262.098 320.08 260.24C316.951 258.284 314.604 255.351 313.04 251.44C311.573 247.529 310.84 242.591 310.84 236.627V233.987C310.84 228.022 311.573 223.084 313.04 219.173C314.604 215.262 316.951 212.378 320.08 210.52C323.209 208.564 327.169 207.587 331.96 207.587C336.849 207.587 340.858 208.564 343.987 210.52C347.115 212.378 349.413 215.262 350.88 219.173C352.444 223.084 353.227 228.022 353.227 233.987V236.627C353.227 242.591 352.444 247.529 350.88 251.44C349.413 255.351 347.115 258.284 343.987 260.24Z" fill="url(#paint13_linear_1356_82148)"/>
-<path d="M397.893 218C396.133 221.031 395.253 224.6 395.253 228.707V273.88H380V196.733H392.613L393.933 207.733H394.96C396.818 204.898 399.018 202.551 401.56 200.693C404.102 198.836 406.889 197.418 409.92 196.44C413.049 195.462 416.471 194.973 420.187 194.973C425.075 194.973 429.378 195.853 433.093 197.613C436.809 199.276 439.693 202.013 441.747 205.827C443.898 209.64 444.973 214.773 444.973 221.227V273.88H429.72V223.573C429.72 220.64 429.329 218.196 428.547 216.24C427.862 214.284 426.836 212.72 425.467 211.547C424.098 210.373 422.484 209.542 420.627 209.053C418.769 208.564 416.715 208.32 414.467 208.32C410.947 208.32 407.72 209.2 404.787 210.96C401.951 212.622 399.653 214.969 397.893 218Z" fill="url(#paint14_linear_1356_82148)"/>
-<path d="M600 196.592L564.8 300.952H549.25C549.25 300.952 556.733 276.47 557.907 273.244L526.96 196.592H542.947L557.907 231.685C558.591 233.445 559.324 235.645 560.107 238.285C560.987 240.925 561.818 243.614 562.6 246.352C563.48 249.09 564.213 251.534 564.8 253.685H565.533C566.022 252.219 566.511 250.557 567 248.699C567.587 246.743 568.173 244.739 568.76 242.685C569.347 240.632 569.933 238.677 570.52 236.819C571.107 234.863 571.596 233.201 571.987 231.832L584.453 196.592H600Z" fill="url(#paint15_linear_1356_82148)"/>
-<path d="M503.715 167.84V273.88H518.969V167.84H503.715Z" fill="url(#paint16_linear_1356_82148)"/>
-<defs>
-<linearGradient id="paint0_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint1_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint2_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint3_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint4_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint5_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint6_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint7_linear_1356_82148" x1="300.001" y1="0" x2="300.001" y2="146.667" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint8_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint9_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint10_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint11_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint12_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint13_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint14_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint15_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-<linearGradient id="paint16_linear_1356_82148" x1="300" y1="166.667" x2="300" y2="300.952" gradientUnits="userSpaceOnUse">
-<stop stop-color="#5A3EE0"/>
-<stop offset="1" stop-color="#3E74E0"/>
-</linearGradient>
-</defs>
-</svg>
+`````text
+.. _whatsnew-5.6:
 
-```
+=========================================
+ What's new in Celery 5.6 (Recovery)
+=========================================
+:Author: Tomer Nosrati (``tomer.nosrati at gmail.com``).
 
-### 代码文件: docs\includes\installation.txt
-```txt
-.. _celery-installation:
+.. sidebar:: Change history
 
-Installation
-============
+    What's new documents describe the changes in major versions,
+    we also have a :ref:`changelog` that lists the changes in bugfix
+    releases (0.0.x), while older series are archived under the :ref:`history`
+    section.
 
-You can install Celery either via the Python Package Index (PyPI)
-or from source.
+Celery is a simple, flexible, and reliable distributed programming framework
+to process vast amounts of messages, while providing operations with
+the tools required to maintain a distributed system with python.
 
-To install using :command:`pip`:
+It's a task queue with focus on real-time processing, while also
+supporting task scheduling.
 
+Celery has a large and diverse community of users and contributors,
+you should come join us :ref:`on IRC <irc-channel>`
+or :ref:`our mailing-list <mailing-list>`.
 
-.. code-block:: console
+.. note::
 
-    $ pip install -U Celery
+    Following the problems with Freenode, we migrated our IRC channel to Libera Chat
+    as most projects did.
+    You can also join us using `Gitter <https://gitter.im/celery/celery>`_.
 
-.. _bundles:
+    We're sometimes there to answer questions. We welcome you to join.
 
-Bundles
--------
+To read more about Celery you should go read the :ref:`introduction <intro>`.
 
-Celery also defines a group of bundles that can be used
-to install Celery and the dependencies for a given feature.
+While this version is **mostly** backward compatible with previous versions
+it's important that you read the following section as this release
+is a new major version.
 
-You can specify these in your requirements or on the :command:`pip`
-command-line by using brackets. Multiple bundles can be specified by
-separating them by commas.
+This version is officially supported on CPython 3.9, 3.10, 3.11, 3.12 and 3.13,
+and is also supported on PyPy3.11+.
 
+.. _`website`: https://celery.readthedocs.io
 
-.. code-block:: console
+.. topic:: Table of Contents
 
-    $ pip install "celery[librabbitmq]"
+    Make sure you read the important notes before upgrading to this version.
 
-    $ pip install "celery[librabbitmq,redis,auth,msgpack]"
+.. contents::
+    :local:
+    :depth: 3
 
-The following bundles are available:
-
-Serializers
-~~~~~~~~~~~
-
-:``celery[auth]``:
-    for using the ``auth`` security serializer.
-
-:``celery[msgpack]``:
-    for using the msgpack serializer.
-
-:``celery[yaml]``:
-    for using the yaml serializer.
-
-Concurrency
-~~~~~~~~~~~
-
-:``celery[eventlet]``:
-    for using the :pypi:`eventlet` pool.
-
-:``celery[gevent]``:
-    for using the :pypi:`gevent` pool.
-
-Transports and Backends
-~~~~~~~~~~~~~~~~~~~~~~~
-
-:``celery[librabbitmq]``:
-    for using the librabbitmq C library.
-
-:``celery[redis]``:
-    for using Redis as a message transport or as a result backend.
-
-:``celery[sqs]``:
-    for using Amazon SQS as a message transport (*experimental*).
-
-:``celery[tblib]``:
-    for using the :setting:`task_remote_tracebacks` feature.
-
-:``celery[memcache]``:
-    for using Memcached as a result backend (using :pypi:`pylibmc`)
-
-:``celery[pymemcache]``:
-    for using Memcached as a result backend (pure-Python implementation).
-
-:``celery[cassandra]``:
-    for using Apache Cassandra/Astra DB as a result backend with DataStax driver.
-
-:``celery[couchbase]``:
-    for using Couchbase as a result backend.
-
-:``celery[arangodb]``:
-    for using ArangoDB as a result backend.
-
-:``celery[elasticsearch]``:
-    for using Elasticsearch as a result backend.
-
-:``celery[riak]``:
-    for using Riak as a result backend.
-
-:``celery[dynamodb]``:
-    for using AWS DynamoDB as a result backend.
-
-:``celery[zookeeper]``:
-    for using Zookeeper as a message transport.
-
-:``celery[sqlalchemy]``:
-    for using SQLAlchemy as a result backend (*supported*).
-
-:``celery[pyro]``:
-    for using the Pyro4 message transport (*experimental*).
-
-:``celery[slmq]``:
-    for using the SoftLayer Message Queue transport (*experimental*).
-
-:``celery[consul]``:
-    for using the Consul.io Key/Value store as a message transport or result backend (*experimental*).
-
-:``celery[django]``:
-    specifies the lowest version possible for Django support.
-
-    You should probably not use this in your requirements, it's here
-    for informational purposes only.
-
-:``celery[gcs]``:
-    for using the Google Cloud Storage as a result backend (*experimental*).
-
-:``celery[gcpubsub]``:
-    for using the Google Cloud Pub/Sub as a message transport (*experimental*)..
-
-
-
-.. _celery-installing-from-source:
-
-Downloading and installing from source
---------------------------------------
-
-Download the latest version of Celery from PyPI:
-
-https://pypi.org/project/celery/
-
-You can install it by doing the following,:
-
-
-.. code-block:: console
-
-    $ tar xvfz celery-0.0.0.tar.gz
-    $ cd celery-0.0.0
-    $ python setup.py build
-    # python setup.py install
-
-The last command must be executed as a privileged user if
-you aren't currently using a virtualenv.
-
-.. _celery-installing-from-git:
-
-Using the development version
------------------------------
-
-With pip
-~~~~~~~~
-
-The Celery development version also requires the development
-versions of :pypi:`kombu`, :pypi:`amqp`, :pypi:`billiard`, and :pypi:`vine`.
-
-You can install the latest snapshot of these using the following
-pip commands:
-
-
-.. code-block:: console
-
-    $ pip install https://github.com/celery/celery/zipball/main#egg=celery
-    $ pip install https://github.com/celery/billiard/zipball/main#egg=billiard
-    $ pip install https://github.com/celery/py-amqp/zipball/main#egg=amqp
-    $ pip install https://github.com/celery/kombu/zipball/main#egg=kombu
-    $ pip install https://github.com/celery/vine/zipball/main#egg=vine
-
-With git
-~~~~~~~~
-
-Please see the :ref:`Contributing <contributing>` section.
-
-```
-
-### 代码文件: docs\includes\introduction.txt
-```txt
-:Version: 5.5.3 (immunity)
-:Web: https://docs.celeryq.dev/en/stable/index.html
-:Download: https://pypi.org/project/celery/
-:Source: https://github.com/celery/celery/
-:Keywords: task, queue, job, async, rabbitmq, amqp, redis,
-  python, distributed, actors
-
---
-
-What's a Task Queue?
-====================
-
-Task queues are used as a mechanism to distribute work across threads or
-machines.
-
-A task queue's input is a unit of work, called a task, dedicated worker
-processes then constantly monitor the queue for new work to perform.
-
-Celery communicates via messages, usually using a broker
-to mediate between clients and workers. To initiate a task a client puts a
-message on the queue, the broker then delivers the message to a worker.
-
-A Celery system can consist of multiple workers and brokers, giving way
-to high availability and horizontal scaling.
-
-Celery is written in Python, but the protocol can be implemented in any
-language. In addition to Python there's node-celery_ and node-celery-ts_ for Node.js,
-and a `PHP client`_.
-
-Language interoperability can also be achieved by using webhooks
-in such a way that the client enqueues an URL to be requested by a worker.
-
-.. _node-celery: https://github.com/mher/node-celery
-.. _`PHP client`: https://github.com/gjedeer/celery-php
-.. _node-celery-ts: https://github.com/IBM/node-celery-ts
-
-What do I need?
-===============
-
-Celery version 5.1.x runs on,
-
-- Python 3.6 or newer versions
-- PyPy3.6 (7.3) or newer
-
-
-From the next major version (Celery 6.x) Python 3.7 or newer is required.
-
-If you're running an older version of Python, you need to be running
-an older version of Celery:
-
-- Python 2.6: Celery series 3.1 or earlier.
-- Python 2.5: Celery series 3.0 or earlier.
-- Python 2.4 was Celery series 2.2 or earlier.
-
-Celery is a project with minimal funding,
-so we don't support Microsoft Windows.
-Please don't open any issues related to that platform.
-
-*Celery* is usually used with a message broker to send and receive messages.
-The RabbitMQ, Redis transports are feature complete,
-but there's also experimental support for a myriad of other solutions, including
-using SQLite for local development.
-
-*Celery* can run on a single machine, on multiple machines, or even
-across datacenters.
-
-Get Started
-===========
-
-If this is the first time you're trying to use Celery, or you're
-new to Celery 5.0.x or 5.1.x coming from previous versions then you should read our
-getting started tutorials:
-
-- `First steps with Celery`_
-
-    Tutorial teaching you the bare minimum needed to get started with Celery.
-
-- `Next steps`_
-
-    A more complete overview, showing more features.
-
-.. _`First steps with Celery`:
-    https://docs.celeryq.dev/en/latest/getting-started/first-steps-with-celery.html
-
-.. _`Next steps`:
-    https://docs.celeryq.dev/en/latest/getting-started/next-steps.html
-
-Celery is…
-=============
-
-- **Simple**
-
-    Celery is easy to use and maintain, and does *not need configuration files*.
-
-    It has an active, friendly community you can talk to for support,
-    like at our `mailing-list`_, or the IRC channel.
-
-    Here's one of the simplest applications you can make::
-
-        from celery import Celery
-
-        app = Celery('hello', broker='amqp://guest@localhost//')
-
-        @app.task
-        def hello():
-            return 'hello world'
-
-- **Highly Available**
-
-    Workers and clients will automatically retry in the event
-    of connection loss or failure, and some brokers support
-    HA in way of *Primary/Primary* or *Primary/Replica* replication.
-
-- **Fast**
-
-    A single Celery process can process millions of tasks a minute,
-    with sub-millisecond round-trip latency (using RabbitMQ,
-    py-librabbitmq, and optimized settings).
-
-- **Flexible**
-
-    Almost every part of *Celery* can be extended or used on its own,
-    Custom pool implementations, serializers, compression schemes, logging,
-    schedulers, consumers, producers, broker transports, and much more.
-
-It supports…
-================
-
-    - **Message Transports**
-
-        - RabbitMQ_, Redis_, Amazon SQS
-
-    - **Concurrency**
-
-        - Prefork, Eventlet_, gevent_, single threaded (``solo``), thread
-
-    - **Result Stores**
-
-        - AMQP, Redis
-        - memcached
-        - SQLAlchemy, Django ORM
-        - Apache Cassandra, IronCache, Elasticsearch
-
-    - **Serialization**
-
-        - *pickle*, *json*, *yaml*, *msgpack*.
-        - *zlib*, *bzip2* compression.
-        - Cryptographic message signing.
-
-.. _`Eventlet`: http://eventlet.net/
-.. _`gevent`: http://gevent.org/
-
-.. _RabbitMQ: https://rabbitmq.com
-.. _Redis: https://redis.io
-.. _SQLAlchemy: http://sqlalchemy.org
-
-Framework Integration
-=====================
-
-Celery is easy to integrate with web frameworks, some of which even have
-integration packages:
-
-    +--------------------+------------------------+
-    | `Django`_          | not needed             |
-    +--------------------+------------------------+
-    | `Pyramid`_         | `pyramid_celery`_      |
-    +--------------------+------------------------+
-    | `Pylons`_          | `celery-pylons`_       |
-    +--------------------+------------------------+
-    | `Flask`_           | not needed             |
-    +--------------------+------------------------+
-    | `web2py`_          | `web2py-celery`_       |
-    +--------------------+------------------------+
-    | `Tornado`_         | `tornado-celery`_      |
-    +--------------------+------------------------+
-
-The integration packages aren't strictly necessary, but they can make
-development easier, and sometimes they add important hooks like closing
-database connections at ``fork``.
-
-.. _`Django`: https://djangoproject.com/
-.. _`Pylons`: http://pylonsproject.org/
-.. _`Flask`: http://flask.pocoo.org/
-.. _`web2py`: http://web2py.com/
-.. _`Bottle`: https://bottlepy.org/
-.. _`Pyramid`: http://docs.pylonsproject.org/en/latest/docs/pyramid.html
-.. _`pyramid_celery`: https://pypi.org/project/pyramid_celery/
-.. _`celery-pylons`: https://pypi.org/project/celery-pylons/
-.. _`web2py-celery`: https://code.google.com/p/web2py-celery/
-.. _`Tornado`: http://www.tornadoweb.org/
-.. _`tornado-celery`: https://github.com/mher/tornado-celery/
-
-.. _celery-documentation:
-
-Documentation
-=============
-
-The `latest documentation`_ is hosted at Read The Docs, containing user guides,
-tutorials, and an API reference.
-
-.. _`latest documentation`: https://docs.celeryq.dev/en/latest/
-
-```
-
-### 代码文件: docs\includes\resources.txt
-```txt
-.. _getting-help:
-
-Getting Help
-============
-
-.. warning::
-
-    Our `Google Groups account <https://groups.google.com/group/celery-users/>`_ has been
-    `compromised <https://github.com/celery/celery/discussions/9525>`_.
-
-.. _social-media:
-
-Social Media
-============
-
-Follow us on social media:
-
-- `X <https://x.com/celeryorg>`_
-- `LinkedIn <https://linkedin.com/company/celeryorg>`_
-
-These accounts will (mostly) mirror each other, but we encourage you to
-follow us on all platforms to ensure you don't miss any important updates.
-
-.. _bug-tracker:
-
-Bug tracker
-===========
-
-If you have any suggestions, bug reports, or annoyances please report them
-to our issue tracker at https://github.com/celery/celery/issues/
-
-.. _contributing-short:
-
-Contributing
-============
-
-Development of `celery` happens at GitHub: https://github.com/celery/celery
-
-You're highly encouraged to participate in the development
-of `celery`. If you don't like GitHub (for some reason) you're welcome
-to send regular patches.
-
-Be sure to also read the `Contributing to Celery`_ section in the
-documentation.
-
-.. _`Contributing to Celery`:
-    https://docs.celeryq.dev/en/main/contributing.html
-
-.. _license:
-
-License
+Preface
 =======
 
-This software is licensed under the `New BSD License`. See the :file:`LICENSE`
-file in the top distribution directory for the full license text.
+.. note::
 
-.. # vim: syntax=rst expandtab tabstop=4 shiftwidth=4 shiftround
+    **This release contains fixes for many long standing bugs & stability issues.
+    We encourage our users to upgrade to this release as soon as possible.**
 
-```
+The 5.6.0 release is a new feature release for Celery.
 
-### 代码文件: docs\internals\app-overview.rst
-```rst
+Releases in the 5.x series are codenamed after songs of `Jon Hopkins <https://en.wikipedia.org/wiki/Jon_Hopkins>`_.
+This release has been codenamed `Recovery <https://www.youtube.com/watch?v=MaqlsAmlbzo>`_.
+
+This is the last version to support Python 3.9.
+Support for Python 3.8 was removed after v5.6.0b1.
+
+*— Tomer Nosrati*
+
+Long Term Support Policy
+------------------------
+
+We no longer support Celery 4.x as we don't have the resources to do so.
+If you'd like to help us, all contributions are welcome.
+
+Celery 5.x **is not** an LTS release. We will support it until the release
+of Celery 6.x.
+
+We're in the process of defining our Long Term Support policy.
+Watch the next "What's New" document for updates.
+
+Upgrading from Celery 4.x
+=========================
+
+Step 1: Adjust your command line invocation
+-------------------------------------------
+
+Celery 5.0 introduces a new CLI implementation which isn't completely backwards compatible.
+
+The global options can no longer be positioned after the sub-command.
+Instead, they must be positioned as an option for the `celery` command like so::
+
+    celery --app path.to.app worker
+
+If you were using our :ref:`daemonizing` guide to deploy Celery in production,
+you should revisit it for updates.
+
+Step 2: Update your configuration with the new setting names
+------------------------------------------------------------
+
+If you haven't already updated your configuration when you migrated to Celery 4.0,
+please do so now.
+
+We elected to extend the deprecation period until 6.0 since
+we did not loudly warn about using these deprecated settings.
+
+Please refer to the :ref:`migration guide <conf-old-settings-map>` for instructions.
+
+Step 3: Read the important notes in this document
+-------------------------------------------------
+
+Make sure you are not affected by any of the important upgrade notes
+mentioned in the :ref:`following section <v560-important>`.
+
+You should verify that none of the breaking changes in the CLI
+do not affect you. Please refer to :ref:`New Command Line Interface <new_command_line_interface>` for details.
+
+Step 4: Migrate your code to Python 3
+-------------------------------------
+
+Celery 5.x only supports Python 3. Therefore, you must ensure your code is
+compatible with Python 3.
+
+If you haven't ported your code to Python 3, you must do so before upgrading.
+
+You can use tools like `2to3 <https://docs.python.org/3.8/library/2to3.html>`_
+and `pyupgrade <https://github.com/asottile/pyupgrade>`_ to assist you with
+this effort.
+
+After the migration is done, run your test suite with Celery 5 to ensure
+nothing has been broken.
+
+Step 5: Upgrade to Celery 5.6
+-----------------------------
+
+At this point you can upgrade your workers and clients with the new version.
+
+.. _v560-important:
+
+Important Notes
+===============
+
+Supported Python Versions
+-------------------------
+
+The supported Python versions are:
+
+- CPython 3.9
+- CPython 3.10
+- CPython 3.11
+- CPython 3.12
+- CPython 3.13
+- PyPy3.11 (``pypy3``)
+
+Python 3.9 Support
+------------------
+
+Python 3.9 will reach EOL in October, 2025.
+
+Minimum Dependencies
+--------------------
+
+Kombu
+~~~~~
+
+Starting from Celery v5.6, the minimum required version is Kombu 5.6.
+
+Redis
+~~~~~
+
+redis-py 4.5.2 is the new minimum required version.
+
+
+SQLAlchemy
+~~~~~~~~~~
+
+SQLAlchemy 1.4.x & 2.0.x is now supported in Celery v5.6.
+
+Billiard
+~~~~~~~~
+
+Minimum required version is now 4.2.4.
+
+Django
+~~~~~~
+
+Minimum django version is bumped to v2.2.28.
+Also added --skip-checks flag to bypass django core checks.
+
+.. _v560-news:
+
+News
+====
+
+SQS: Reverted to ``pycurl`` from ``urllib3``
+--------------------------------------------
+
+The switch from ``pycurl`` to ``urllib3`` for the SQS transport (introduced in
+Celery 5.5.0 via Kombu) has been reverted due to critical issues affecting SQS
+users.
+
+Security Fix: Broker Credential Leak Prevention
+------------------------------------------------
+
+Fixed a security issue where broker URLs containing passwords were being logged
+in plaintext by the delayed delivery mechanism. Broker credentials are now
+properly sanitized in all log output.
+
+Memory Leak Fixes
+-----------------
+
+Two significant memory leaks have been fixed in this release:
+
+**Exception Handling Memory Leak**: Fixed a critical memory leak in task exception
+handling that was particularly severe on Python 3.11+ due to enhanced traceback
+data. The fix properly breaks reference cycles in tracebacks to allow garbage
+collection. This resolves a long-standing issue that caused worker memory to grow
+unbounded over time.
+
+**Pending Result Memory Leak**: Fixed a memory leak where ``AsyncResult``
+subscriptions were not being cleaned up when results were forgotten. This affected
+users who frequently use ``AsyncResult.forget()`` in their workflows.
+
+ETA Task Memory Limit
+---------------------
+
+New configuration option to prevent out-of-memory crashes when workers fetch
+large numbers of ETA or countdown tasks. Previously, workers could exhaust
+available memory when the broker contained many scheduled tasks.
+
+Configuration option:
+
+- :setting:`worker_eta_task_limit`: Sets the maximum number of ETA tasks to hold
+  in worker memory at once (default: ``None``, unlimited)
+
+Example usage:
+
+.. code-block:: python
+
+    app.conf.worker_eta_task_limit = 1000
+
+Queue Type Selection for Auto-created Queues
+--------------------------------------------
+
+New configuration options allow specifying the queue type and exchange type when
+Celery auto-creates missing queues. This is particularly useful for RabbitMQ users
+who want to use quorum queues with auto-created queues.
+
+Configuration options:
+
+- :setting:`task_create_missing_queue_type`: Sets the queue type for auto-created
+  queues (e.g., ``quorum``, ``classic``)
+- :setting:`task_create_missing_queue_exchange_type`: Sets the exchange type for
+  auto-created queues
+
+Example usage:
+
+.. code-block:: python
+
+    app.conf.task_create_missing_queue_type = 'quorum'
+
+Django Connection Pool Support
+------------------------------
+
+Fixed an issue where Django applications using psycopg3 connection pooling would
+experience ``psycopg_pool.PoolTimeout`` errors after worker forks. Celery now
+properly closes Django's connection pools before forking, similar to how Django
+itself handles this in its autoreload mechanism.
+
+Redis Backend Improvements
+--------------------------
+
+**Credential Provider Support**: Added the :setting:`redis_backend_credential_provider`
+setting to the Redis backend. This enables integration with AWS ElastiCache using
+IAM authentication and other credential provider mechanisms.
+
+**Client Name Support**: Added the :setting:`redis_client_name` setting to the Redis
+backend, making it easier to identify Celery connections when monitoring Redis servers.
+
+Cold Shutdown Improvements
+--------------------------
+
+Fixed an issue where tasks would incorrectly fail with a timeout error during
+cold shutdown. The worker now properly skips timeout failure handling during
+the cold shutdown phase, allowing tasks to complete or be properly requeued.
+
+`````
+
+--- **end of file: docs/history/whatsnew-5.6.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/app-overview.rst** (project: celery) --- 
+
+`````text
 =============================
  "The Big Instance" Refactor
 =============================
@@ -30240,10 +30255,16 @@ App Dependency Tree
         * ``celery.beat.Service``
             * ``celery.beat.Scheduler``
 
-```
+`````
 
-### 代码文件: docs\internals\deprecation.rst
-```rst
+--- **end of file: docs/internals/app-overview.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/deprecation.rst** (project: celery) --- 
+
+`````text
 .. _deprecation-timeline:
 
 ==============================
@@ -30483,10 +30504,16 @@ Removals for version 2.0
 * :meth:`TaskSet.run`. Use :meth:`celery.task.base.TaskSet.apply_async`
     instead.
 
-```
+`````
 
-### 代码文件: docs\internals\guide.rst
-```rst
+--- **end of file: docs/internals/deprecation.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/guide.rst** (project: celery) --- 
+
+`````text
 .. _internals-guide:
 
 ================================
@@ -30822,10 +30849,16 @@ Worker overview
 
    This is the real worker, built up around bootsteps.
 
-```
+`````
 
-### 代码文件: docs\internals\index.rst
-```rst
+--- **end of file: docs/internals/guide.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/index.rst** (project: celery) --- 
+
+`````text
 .. _internals:
 
 ===========
@@ -30845,10 +30878,16 @@ Worker overview
     app-overview
     reference/index
 
-```
+`````
 
-### 代码文件: docs\internals\protocol.rst
-```rst
+--- **end of file: docs/internals/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/protocol.rst** (project: celery) --- 
+
+`````text
 .. _message-protocol:
 
 ===================
@@ -30900,7 +30939,8 @@ Definition
         'argsrepr': str repr(args),
         'kwargsrepr': str repr(kwargs),
         'origin': str nodename,
-        'replaced_task_nesting': int
+        'replaced_task_nesting': int,
+        'compression': string compression_method (optional; omitted when no compression is used, matches kombu compressor names such as 'zlib', 'bzip2', 'gzip'),
     }
 
     body = (
@@ -31247,10 +31287,16 @@ This is the message fields for a ``task-succeeded`` event:
         'runtime': 0.0003212,
     )
 
-```
+`````
 
-### 代码文件: docs\internals\worker.rst
-```rst
+--- **end of file: docs/internals/protocol.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/worker.rst** (project: celery) --- 
+
+`````text
 .. _internals-worker:
 
 =======================
@@ -31309,10 +31355,16 @@ It mostly works the same way, except it makes sure all of the workers
 are running at all times. If a worker is missing, it replaces
 it with a new one.
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.app.annotations.rst
-```rst
+--- **end of file: docs/internals/worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.app.annotations.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.app.annotations``
 ==========================================
@@ -31325,10 +31377,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.app.routes.rst
-```rst
+--- **end of file: docs/internals/reference/celery.app.annotations.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.app.routes.rst** (project: celery) --- 
+
+`````text
 =================================
  ``celery.app.routes``
 =================================
@@ -31341,10 +31399,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.app.trace.rst
-```rst
+--- **end of file: docs/internals/reference/celery.app.routes.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.app.trace.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.app.trace``
 ==========================================
@@ -31357,10 +31421,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.arangodb.rst
-```rst
+--- **end of file: docs/internals/reference/celery.app.trace.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.arangodb.rst** (project: celery) --- 
+
+`````text
 ============================================
  ``celery.backends.arangodb``
 ============================================
@@ -31373,10 +31443,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.asynchronous.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.arangodb.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.asynchronous.rst** (project: celery) --- 
+
+`````text
 =====================================
  ``celery.backends.asynchronous``
 =====================================
@@ -31391,10 +31467,16 @@ it with a new one.
 
 
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.azureblockblob.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.asynchronous.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.azureblockblob.rst** (project: celery) --- 
+
+`````text
 ================================================
  ``celery.backends.azureblockblob``
 ================================================
@@ -31407,10 +31489,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.base.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.azureblockblob.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.base.rst** (project: celery) --- 
+
+`````text
 =====================================
  ``celery.backends.base``
 =====================================
@@ -31425,10 +31513,16 @@ it with a new one.
 
 
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.cache.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.base.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.cache.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.backends.cache``
 ===========================================
@@ -31441,10 +31535,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.cassandra.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.cache.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.cassandra.rst** (project: celery) --- 
+
+`````text
 ================================================
  ``celery.backends.cassandra``
 ================================================
@@ -31457,10 +31557,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.consul.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.cassandra.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.consul.rst** (project: celery) --- 
+
+`````text
 ==========================================
  celery.backends.consul
 ==========================================
@@ -31473,10 +31579,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.cosmosdbsql.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.consul.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.cosmosdbsql.rst** (project: celery) --- 
+
+`````text
 ================================================
  ``celery.backends.cosmosdbsql``
 ================================================
@@ -31489,10 +31601,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.couchbase.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.cosmosdbsql.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.couchbase.rst** (project: celery) --- 
+
+`````text
 ============================================
  ``celery.backends.couchbase``
 ============================================
@@ -31505,10 +31623,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.couchdb.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.couchbase.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.couchdb.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.backends.couchdb``
 ===========================================
@@ -31521,10 +31645,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.database.models.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.couchdb.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.database.models.rst** (project: celery) --- 
+
+`````text
 ======================================
  ``celery.backends.database.models``
 ======================================
@@ -31537,10 +31667,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.database.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.database.models.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.database.rst** (project: celery) --- 
+
+`````text
 =========================================================
  ``celery.backends.database``
 =========================================================
@@ -31553,10 +31689,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.database.session.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.database.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.database.session.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery.backends.database.session``
 ========================================
@@ -31569,10 +31711,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.dynamodb.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.database.session.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.dynamodb.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.backends.dynamodb``
 ===========================================
@@ -31585,10 +31733,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.elasticsearch.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.dynamodb.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.elasticsearch.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.backends.elasticsearch``
 ===========================================
@@ -31601,10 +31755,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.filesystem.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.elasticsearch.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.filesystem.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.backends.filesystem``
 ==========================================
@@ -31617,10 +31777,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.gcs.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.filesystem.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.gcs.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.backends.gcs``
 ==========================================
@@ -31633,10 +31799,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.mongodb.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.gcs.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.mongodb.rst** (project: celery) --- 
+
+`````text
 ============================================
  ``celery.backends.mongodb``
 ============================================
@@ -31649,10 +31821,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.redis.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.mongodb.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.redis.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.backends.redis``
 ==========================================
@@ -31665,10 +31843,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.rpc.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.redis.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.rpc.rst** (project: celery) --- 
+
+`````text
 =======================================
  ``celery.backends.rpc``
 =======================================
@@ -31681,10 +31865,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.rpc.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.rst** (project: celery) --- 
+
+`````text
 ===========================
  ``celery.backends``
 ===========================
@@ -31697,10 +31887,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.backends.s3.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.backends.s3.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.backends.s3``
 ==========================================
@@ -31713,10 +31909,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.base.rst
-```rst
+--- **end of file: docs/internals/reference/celery.backends.s3.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.base.rst** (project: celery) --- 
+
+`````text
 ===============================================
  ``celery.concurrency.base``
 ===============================================
@@ -31729,10 +31931,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.eventlet.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.base.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.eventlet.rst** (project: celery) --- 
+
+`````text
 =============================================================
  ``celery.concurrency.eventlet``
 =============================================================
@@ -31745,10 +31953,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.gevent.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.eventlet.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.gevent.rst** (project: celery) --- 
+
+`````text
 =============================================================
  ``celery.concurrency.gevent``
 =============================================================
@@ -31761,10 +31975,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.prefork.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.gevent.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.prefork.rst** (project: celery) --- 
+
+`````text
 =============================================================
  ``celery.concurrency.prefork``
 =============================================================
@@ -31777,10 +31997,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.prefork.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.rst** (project: celery) --- 
+
+`````text
 ==================================
  ``celery.concurrency``
 ==================================
@@ -31793,10 +32019,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.solo.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.solo.rst** (project: celery) --- 
+
+`````text
 ===================================================================
  ``celery.concurrency.solo``
 ===================================================================
@@ -31809,10 +32041,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.concurrency.thread.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.solo.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.concurrency.thread.rst** (project: celery) --- 
+
+`````text
 =============================================================
  ``celery.concurrency.thread``
 =============================================================
@@ -31825,10 +32063,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.events.cursesmon.rst
-```rst
+--- **end of file: docs/internals/reference/celery.concurrency.thread.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.events.cursesmon.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.events.cursesmon``
 ==========================================
@@ -31841,10 +32085,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.events.dumper.rst
-```rst
+--- **end of file: docs/internals/reference/celery.events.cursesmon.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.events.dumper.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.events.dumper``
 ==========================================
@@ -31857,10 +32107,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.events.snapshot.rst
-```rst
+--- **end of file: docs/internals/reference/celery.events.dumper.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.events.snapshot.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.events.snapshot``
 ==========================================
@@ -31873,10 +32129,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.platforms.rst
-```rst
+--- **end of file: docs/internals/reference/celery.events.snapshot.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.platforms.rst** (project: celery) --- 
+
+`````text
 ======================================
  ``celery.platforms``
 ======================================
@@ -31889,10 +32151,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.security.certificate.rst
-```rst
+--- **end of file: docs/internals/reference/celery.platforms.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.security.certificate.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.security.certificate``
 ==========================================
@@ -31905,10 +32173,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.security.key.rst
-```rst
+--- **end of file: docs/internals/reference/celery.security.certificate.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.security.key.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.security.key``
 ==========================================
@@ -31921,10 +32195,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.security.serialization.rst
-```rst
+--- **end of file: docs/internals/reference/celery.security.key.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.security.serialization.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.security.serialization``
 ==========================================
@@ -31937,10 +32217,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.security.utils.rst
-```rst
+--- **end of file: docs/internals/reference/celery.security.serialization.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.security.utils.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.security.utils``
 ==========================================
@@ -31953,10 +32239,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.abstract.rst
-```rst
+--- **end of file: docs/internals/reference/celery.security.utils.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.abstract.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.utils.abstract``
 ===========================================
@@ -31969,10 +32261,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.collections.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.abstract.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.collections.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.utils.collections``
 ====================================
@@ -31986,10 +32284,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.deprecated.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.collections.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.deprecated.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.utils.deprecated``
 ==========================================
@@ -32002,10 +32306,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.dispatch.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.deprecated.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.dispatch.rst** (project: celery) --- 
+
+`````text
 =========================================
  ``celery.utils.dispatch``
 =========================================
@@ -32018,10 +32328,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.dispatch.signal.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.dispatch.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.dispatch.signal.rst** (project: celery) --- 
+
+`````text
 ====================================================
  ``celery.utils.dispatch.signal``
 ====================================================
@@ -32034,10 +32350,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.functional.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.dispatch.signal.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.functional.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.utils.functional``
 =====================================================
@@ -32050,10 +32372,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.graph.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.functional.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.graph.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.utils.graph``
 ==========================================
@@ -32066,10 +32394,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.imports.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.graph.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.imports.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.utils.imports``
 =====================================================
@@ -32082,10 +32416,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.iso8601.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.imports.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.iso8601.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.utils.iso8601``
 ==================================================
@@ -32098,10 +32438,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.log.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.iso8601.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.log.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.utils.log``
 =====================================================
@@ -32114,10 +32460,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.nodenames.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.log.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.nodenames.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.utils.nodenames``
 ==========================================
@@ -32130,10 +32482,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.objects.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.nodenames.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.objects.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.utils.objects``
 ==================================================
@@ -32146,10 +32504,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.objects.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.rst** (project: celery) --- 
+
+`````text
 ==========================
  ``celery.utils``
 ==========================
@@ -32162,10 +32526,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.saferepr.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.saferepr.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.utils.saferepr``
 ===========================================
@@ -32178,10 +32548,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.serialization.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.saferepr.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.serialization.rst** (project: celery) --- 
+
+`````text
 ============================================
  ``celery.utils.serialization``
 ============================================
@@ -32194,10 +32570,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.sysinfo.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.serialization.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.sysinfo.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.utils.sysinfo``
 ==================================================
@@ -32210,10 +32592,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.term.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.sysinfo.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.term.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.utils.term``
 =====================================================
@@ -32226,10 +32614,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.text.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.term.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.text.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.utils.text``
 =====================================================
@@ -32242,10 +32636,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.threads.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.text.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.threads.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.utils.threads``
 ==========================================
@@ -32258,10 +32658,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.time.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.threads.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.time.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.utils.time``
 ==================================================
@@ -32274,10 +32680,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.utils.timer2.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.time.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.utils.timer2.rst** (project: celery) --- 
+
+`````text
 ==============================
  ``celery.utils.timer2``
 ==============================
@@ -32290,10 +32702,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.autoscale.rst
-```rst
+--- **end of file: docs/internals/reference/celery.utils.timer2.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.autoscale.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery.worker.autoscale``
 ========================================
@@ -32306,10 +32724,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.components.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.autoscale.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.components.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery.worker.components``
 ========================================
@@ -32322,10 +32746,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.control.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.components.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.control.rst** (project: celery) --- 
+
+`````text
 =============================================
  ``celery.worker.control``
 =============================================
@@ -32338,10 +32768,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.heartbeat.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.control.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.heartbeat.rst** (project: celery) --- 
+
+`````text
 =============================================
  ``celery.worker.heartbeat``
 =============================================
@@ -32354,10 +32790,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.loops.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.heartbeat.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.loops.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.worker.loops``
 ====================================
@@ -32370,10 +32812,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery.worker.pidbox.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.loops.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery.worker.pidbox.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.worker.pidbox``
 ====================================
@@ -32386,10 +32834,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\celery._state.rst
-```rst
+--- **end of file: docs/internals/reference/celery.worker.pidbox.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/celery._state.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery._state``
 ========================================
@@ -32402,10 +32856,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\internals\reference\index.rst
-```rst
+--- **end of file: docs/internals/reference/celery._state.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/internals/reference/index.rst** (project: celery) --- 
+
+`````text
 ===========================
  Internal Module Reference
 ===========================
@@ -32485,10 +32945,16 @@ it with a new one.
     celery.platforms
     celery._state
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.amqp.rst
-```rst
+--- **end of file: docs/internals/reference/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.amqp.rst** (project: celery) --- 
+
+`````text
 .. currentmodule:: celery.app.amqp
 
 .. automodule:: celery.app.amqp
@@ -32546,10 +33012,16 @@ it with a new one.
         :members:
         :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.autoretry.rst
-```rst
+--- **end of file: docs/reference/celery.app.amqp.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.autoretry.rst** (project: celery) --- 
+
+`````text
 ===================================
  ``celery.app.autoretry``
 ===================================
@@ -32562,10 +33034,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.backends.rst
-```rst
+--- **end of file: docs/reference/celery.app.autoretry.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.backends.rst** (project: celery) --- 
+
+`````text
 ===================================
  ``celery.app.backends``
 ===================================
@@ -32578,10 +33056,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.builtins.rst
-```rst
+--- **end of file: docs/reference/celery.app.backends.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.builtins.rst** (project: celery) --- 
+
+`````text
 ====================================================
  ``celery.app.builtins``
 ====================================================
@@ -32594,10 +33078,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.control.rst
-```rst
+--- **end of file: docs/reference/celery.app.builtins.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.control.rst** (project: celery) --- 
+
+`````text
 ====================================================
  ``celery.app.control``
 ====================================================
@@ -32610,10 +33100,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.defaults.rst
-```rst
+--- **end of file: docs/reference/celery.app.control.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.defaults.rst** (project: celery) --- 
+
+`````text
 ===============================================================
  ``celery.app.defaults``
 ===============================================================
@@ -32626,10 +33122,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.events.rst
-```rst
+--- **end of file: docs/reference/celery.app.defaults.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.events.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.app.events``
 ================================
@@ -32642,10 +33144,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.log.rst
-```rst
+--- **end of file: docs/reference/celery.app.events.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.log.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.app.log``
 ================================
@@ -32658,10 +33166,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.registry.rst
-```rst
+--- **end of file: docs/reference/celery.app.log.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.registry.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.app.registry``
 ================================
@@ -32674,10 +33188,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.rst
-```rst
+--- **end of file: docs/reference/celery.app.registry.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.rst** (project: celery) --- 
+
+`````text
 .. currentmodule:: celery.app
 
 .. automodule:: celery.app
@@ -32698,10 +33218,16 @@ it with a new one.
     .. autofunction:: enable_trace
     .. autofunction:: disable_trace
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.task.rst
-```rst
+--- **end of file: docs/reference/celery.app.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.task.rst** (project: celery) --- 
+
+`````text
 ===================================
  ``celery.app.task``
 ===================================
@@ -32713,10 +33239,16 @@ it with a new one.
 .. automodule:: celery.app.task
     :members: Task, Context, TaskType
 
-```
+`````
 
-### 代码文件: docs\reference\celery.app.utils.rst
-```rst
+--- **end of file: docs/reference/celery.app.task.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.app.utils.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.app.utils``
 ================================
@@ -32729,10 +33261,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.apps.beat.rst
-```rst
+--- **end of file: docs/reference/celery.app.utils.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.apps.beat.rst** (project: celery) --- 
+
+`````text
 =================================================
  ``celery.apps.beat``
 =================================================
@@ -32745,10 +33283,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.apps.multi.rst
-```rst
+--- **end of file: docs/reference/celery.apps.beat.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.apps.multi.rst** (project: celery) --- 
+
+`````text
 =======================================
  ``celery.apps.multi``
 =======================================
@@ -32761,10 +33305,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.apps.worker.rst
-```rst
+--- **end of file: docs/reference/celery.apps.multi.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.apps.worker.rst** (project: celery) --- 
+
+`````text
 =======================================
  ``celery.apps.worker``
 =======================================
@@ -32777,10 +33327,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.beat.rst
-```rst
+--- **end of file: docs/reference/celery.apps.worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.beat.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery.beat``
 ========================================
@@ -32793,10 +33349,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.amqp.rst
-```rst
+--- **end of file: docs/reference/celery.beat.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.amqp.rst** (project: celery) --- 
+
+`````text
 ====================
  ``celery.bin.amqp``
 ====================
@@ -32809,10 +33371,16 @@ it with a new one.
    :members:
    :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.base.rst
-```rst
+--- **end of file: docs/reference/celery.bin.amqp.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.base.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.bin.base``
 ================================
@@ -32825,10 +33393,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.beat.rst
-```rst
+--- **end of file: docs/reference/celery.bin.base.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.beat.rst** (project: celery) --- 
+
+`````text
 ===================================================
  ``celery.bin.beat``
 ===================================================
@@ -32841,10 +33415,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.call.rst
-```rst
+--- **end of file: docs/reference/celery.bin.beat.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.call.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.call``
 =====================================================
@@ -32857,10 +33437,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.celery.rst
-```rst
+--- **end of file: docs/reference/celery.bin.call.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.celery.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.bin.celery``
 ==========================================
@@ -32873,10 +33459,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.control.rst
-```rst
+--- **end of file: docs/reference/celery.bin.celery.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.control.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.control``
 =====================================================
@@ -32889,10 +33481,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.events.rst
-```rst
+--- **end of file: docs/reference/celery.bin.control.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.events.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.events``
 =====================================================
@@ -32905,10 +33503,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.graph.rst
-```rst
+--- **end of file: docs/reference/celery.bin.events.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.graph.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.graph``
 =====================================================
@@ -32921,10 +33525,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.list.rst
-```rst
+--- **end of file: docs/reference/celery.bin.graph.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.list.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.list``
 =====================================================
@@ -32937,10 +33547,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.logtool.rst
-```rst
+--- **end of file: docs/reference/celery.bin.list.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.logtool.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.logtool``
 =====================================================
@@ -32953,10 +33569,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.migrate.rst
-```rst
+--- **end of file: docs/reference/celery.bin.logtool.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.migrate.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.migrate``
 =====================================================
@@ -32969,10 +33591,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.multi.rst
-```rst
+--- **end of file: docs/reference/celery.bin.migrate.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.multi.rst** (project: celery) --- 
+
+`````text
 ===============================================
  ``celery.bin.multi``
 ===============================================
@@ -32985,10 +33613,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.purge.rst
-```rst
+--- **end of file: docs/reference/celery.bin.multi.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.purge.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.purge``
 =====================================================
@@ -33001,10 +33635,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.result.rst
-```rst
+--- **end of file: docs/reference/celery.bin.purge.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.result.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.result``
 =====================================================
@@ -33017,10 +33657,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.shell.rst
-```rst
+--- **end of file: docs/reference/celery.bin.result.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.shell.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.shell``
 =====================================================
@@ -33033,10 +33679,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.upgrade.rst
-```rst
+--- **end of file: docs/reference/celery.bin.shell.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.upgrade.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.bin.upgrade``
 =====================================================
@@ -33049,10 +33701,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bin.worker.rst
-```rst
+--- **end of file: docs/reference/celery.bin.upgrade.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bin.worker.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.bin.worker``
 ==========================================
@@ -33065,10 +33723,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.bootsteps.rst
-```rst
+--- **end of file: docs/reference/celery.bin.worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.bootsteps.rst** (project: celery) --- 
+
+`````text
 ==========================================
  ``celery.bootsteps``
 ==========================================
@@ -33081,10 +33745,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.abortable.rst
-```rst
+--- **end of file: docs/reference/celery.bootsteps.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.abortable.rst** (project: celery) --- 
+
+`````text
 =======================================================
  ``celery.contrib.abortable``
 =======================================================
@@ -33098,10 +33768,16 @@ it with a new one.
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.django.task.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.abortable.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.django.task.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.django.task``
 ====================================
@@ -33120,10 +33796,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.migrate.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.django.task.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.migrate.rst** (project: celery) --- 
+
+`````text
 ============================
  ``celery.contrib.migrate``
 ============================
@@ -33137,10 +33819,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.pytest.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.migrate.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.pytest.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.pytest``
 ====================================
@@ -33158,10 +33846,16 @@ API Reference
     :undoc-members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.rdb.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.pytest.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.rdb.rst** (project: celery) --- 
+
+`````text
 ==================================
  ``celery.contrib.rdb``
 ==================================
@@ -33174,10 +33868,16 @@ API Reference
     .. autofunction:: debugger
     .. autoclass:: Rdb
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.sphinx.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.rdb.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.sphinx.rst** (project: celery) --- 
+
+`````text
 ================================
  celery.contrib.sphinx
 ================================
@@ -33187,10 +33887,16 @@ API Reference
 .. automodule:: celery.contrib.sphinx
     :members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.testing.app.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.sphinx.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.testing.app.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.testing.app``
 ====================================
@@ -33208,10 +33914,16 @@ API Reference
     :undoc-members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.testing.manager.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.testing.app.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.testing.manager.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.testing.manager``
 ====================================
@@ -33229,10 +33941,16 @@ API Reference
     :undoc-members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.testing.mocks.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.testing.manager.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.testing.mocks.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.testing.mocks``
 ====================================
@@ -33250,10 +33968,16 @@ API Reference
     :undoc-members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.contrib.testing.worker.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.testing.mocks.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.contrib.testing.worker.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.contrib.testing.worker``
 ====================================
@@ -33271,10 +33995,16 @@ API Reference
     :undoc-members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.events.dispatcher.rst
-```rst
+--- **end of file: docs/reference/celery.contrib.testing.worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.events.dispatcher.rst** (project: celery) --- 
+
+`````text
 =================================================================
  ``celery.events.state``
 =================================================================
@@ -33287,10 +34017,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.events.event.rst
-```rst
+--- **end of file: docs/reference/celery.events.dispatcher.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.events.event.rst** (project: celery) --- 
+
+`````text
 =================================================================
  ``celery.events.event``
 =================================================================
@@ -33303,10 +34039,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.events.receiver.rst
-```rst
+--- **end of file: docs/reference/celery.events.event.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.events.receiver.rst** (project: celery) --- 
+
+`````text
 =================================================================
  ``celery.events.receiver``
 =================================================================
@@ -33319,10 +34061,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.events.rst
-```rst
+--- **end of file: docs/reference/celery.events.receiver.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.events.rst** (project: celery) --- 
+
+`````text
 ========================
  ``celery.events``
 ========================
@@ -33335,10 +34083,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.events.state.rst
-```rst
+--- **end of file: docs/reference/celery.events.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.events.state.rst** (project: celery) --- 
+
+`````text
 =================================================================
  ``celery.events.state``
 =================================================================
@@ -33351,10 +34105,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.exceptions.rst
-```rst
+--- **end of file: docs/reference/celery.events.state.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.exceptions.rst** (project: celery) --- 
+
+`````text
 ================================
  ``celery.exceptions``
 ================================
@@ -33367,10 +34127,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.loaders.app.rst
-```rst
+--- **end of file: docs/reference/celery.exceptions.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.loaders.app.rst** (project: celery) --- 
+
+`````text
 =================================
  ``celery.loaders.app``
 =================================
@@ -33383,10 +34149,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.loaders.base.rst
-```rst
+--- **end of file: docs/reference/celery.loaders.app.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.loaders.base.rst** (project: celery) --- 
+
+`````text
 ===========================================
  ``celery.loaders.base``
 ===========================================
@@ -33399,10 +34171,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.loaders.default.rst
-```rst
+--- **end of file: docs/reference/celery.loaders.base.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.loaders.default.rst** (project: celery) --- 
+
+`````text
 =========================================
  ``celery.loaders.default``
 =========================================
@@ -33415,10 +34193,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.loaders.rst
-```rst
+--- **end of file: docs/reference/celery.loaders.default.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.loaders.rst** (project: celery) --- 
+
+`````text
 ============================================
  ``celery.loaders``
 ============================================
@@ -33431,10 +34215,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.result.rst
-```rst
+--- **end of file: docs/reference/celery.loaders.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.result.rst** (project: celery) --- 
+
+`````text
 =============================
  ``celery.result``
 =============================
@@ -33447,10 +34237,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.rst
-```rst
+--- **end of file: docs/reference/celery.result.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.rst** (project: celery) --- 
+
+`````text
 ===========================================
  :mod:`celery` --- Distributed processing
 ===========================================
@@ -33579,7 +34375,14 @@ and creating Celery applications.
 
     .. data:: on_after_finalize
 
-        Signal sent after app has been finalized.
+        Signal sent after the app has been finalized — that is, after all
+        pending task decorators have been evaluated, built-in tasks loaded,
+        and every task registered at that point has been bound to the app.
+        At this stage the task registry is initialized and stable enough to
+        import and inspect task objects reliably.
+
+        See :meth:`~celery.Celery.finalize` for more details on what
+        finalization does.
 
     .. data:: on_after_fork
 
@@ -33612,10 +34415,16 @@ Proxies
     The task currently being executed
     (only set in the worker, or when eager/apply is used).
 
-```
+`````
 
-### 代码文件: docs\reference\celery.schedules.rst
-```rst
+--- **end of file: docs/reference/celery.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.schedules.rst** (project: celery) --- 
+
+`````text
 =====================================================
  ``celery.schedules``
 =====================================================
@@ -33628,10 +34437,16 @@ Proxies
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.security.rst
-```rst
+--- **end of file: docs/reference/celery.schedules.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.security.rst** (project: celery) --- 
+
+`````text
 ========================
  ``celery.security``
 ========================
@@ -33644,10 +34459,16 @@ Proxies
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.signals.rst
-```rst
+--- **end of file: docs/reference/celery.security.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.signals.rst** (project: celery) --- 
+
+`````text
 ======================================================
  ``celery.signals``
 ======================================================
@@ -33660,10 +34481,16 @@ Proxies
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.states.rst
-```rst
+--- **end of file: docs/reference/celery.signals.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.states.rst** (project: celery) --- 
+
+`````text
 .. currentmodule:: celery.states
 
 .. contents::
@@ -33673,10 +34500,16 @@ Proxies
     :members:
 
 
-```
+`````
 
-### 代码文件: docs\reference\celery.utils.debug.rst
-```rst
+--- **end of file: docs/reference/celery.states.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.utils.debug.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.utils.debug``
 ====================================
@@ -33726,10 +34559,16 @@ API Reference
 
     .. autofunction:: ps
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.agent.rst
-```rst
+--- **end of file: docs/reference/celery.utils.debug.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.agent.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.agent``
 ==================================================
@@ -33742,10 +34581,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.connection.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.agent.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.connection.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.connection``
 ==================================================
@@ -33758,10 +34603,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.consumer.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.connection.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.consumer.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.consumer``
 ==================================================
@@ -33774,10 +34625,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.control.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.consumer.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.control.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.control``
 ==================================================
@@ -33790,10 +34647,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.events.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.control.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.events.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.events``
 ==================================================
@@ -33806,10 +34669,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.gossip.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.events.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.gossip.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.gossip``
 ==================================================
@@ -33822,10 +34691,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.heart.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.gossip.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.heart.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.heart``
 ==================================================
@@ -33838,10 +34713,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.mingle.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.heart.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.mingle.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.mingle``
 ==================================================
@@ -33854,10 +34735,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.mingle.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer``
 ==================================================
@@ -33870,10 +34757,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.consumer.tasks.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.consumer.tasks.rst** (project: celery) --- 
+
+`````text
 ==================================================
  ``celery.worker.consumer.tasks``
 ==================================================
@@ -33886,10 +34779,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.request.rst
-```rst
+--- **end of file: docs/reference/celery.worker.consumer.tasks.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.request.rst** (project: celery) --- 
+
+`````text
 =====================================
  ``celery.worker.request``
 =====================================
@@ -33902,10 +34801,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.rst
-```rst
+--- **end of file: docs/reference/celery.worker.request.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.rst** (project: celery) --- 
+
+`````text
 ========================================
  ``celery.worker``
 ========================================
@@ -33918,10 +34823,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.state.rst
-```rst
+--- **end of file: docs/reference/celery.worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.state.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.worker.state``
 ====================================
@@ -33934,10 +34845,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.strategy.rst
-```rst
+--- **end of file: docs/reference/celery.worker.state.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.strategy.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.worker.strategy``
 ====================================
@@ -33950,10 +34867,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\celery.worker.worker.rst
-```rst
+--- **end of file: docs/reference/celery.worker.strategy.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/celery.worker.worker.rst** (project: celery) --- 
+
+`````text
 ====================================
  ``celery.worker.worker``
 ====================================
@@ -33966,10 +34889,16 @@ API Reference
     :members:
     :undoc-members:
 
-```
+`````
 
-### 代码文件: docs\reference\cli.rst
-```rst
+--- **end of file: docs/reference/celery.worker.worker.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/cli.rst** (project: celery) --- 
+
+`````text
 =======================
  Command Line Interface
 =======================
@@ -33981,10 +34910,16 @@ API Reference
    :prog: celery
    :nested: full
 
-```
+`````
 
-### 代码文件: docs\reference\index.rst
-```rst
+--- **end of file: docs/reference/cli.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/reference/index.rst** (project: celery) --- 
+
+`````text
 .. _apiref:
 
 ===============
@@ -34075,304 +35010,16 @@ API Reference
     celery.bin.shell
     celery.bin.upgrade
 
-```
+`````
 
-### 代码文件: docs\sec\CELERYSA-0001.txt
-```txt
-=========================================
- CELERYSA-0001: Celery Security Advisory
-=========================================
-:contact: security@celeryproject.org
-:author: Ask Solem
-:CVE id: CVE-2011-4356
-:date: 2011-11-25 04:35:00 p.m. GMT
+--- **end of file: docs/reference/index.rst** (project: celery) --- 
 
-Details
-=======
+---
 
-:package: celery
-:vulnerability: privilege escalation
-:problem type: local
-:risk: medium
-:bug-no: Celery #544
-:versions-affected: 2.1, 2.2, 2.3, 2.4
 
-Description
-===========
+--- **start of file: docs/tutorials/daemonizing.html** (project: celery) --- 
 
-The --uid and --gid arguments to the celeryd-multi,
-celeryd_detach, celerybeat and celeryev programs shipped
-with Celery versions 2.1 and later wasn't handled properly:
-only the effective user was changed, with the real id remaining
-unchanged.
-
-In practice for affected users the vulnerability means that malicious code
-loaded in the worker process would be allowed to escalate privileges.
-
-We take this issue seriously since the Pickle serializer used by
-default makes it possible to execute arbitrary code.
-
-We recommend that users takes steps to secure their systems so that
-malicious users cannot abuse the message broker to send messages,
-or disable the pickle serializer used in Celery so that arbitrary code
-execution isn't possible.
-
-Patches are now available for all maintained versions (see below),
-and users are urged to upgrade, even if not directly
-affected.
-
-Systems affected
-================
-
-Users of Celery versions 2.1, 2.2, 2.3, 2.4; except the recently
-released 2.2.8, 2.3.4, and 2.4.4, daemonizing the Celery programs
-as the root user, using either:
-    1) the --uid or --gid arguments, or
-    2) the provided generic init-scripts with the environment variables
-       CELERYD_USER or CELERYD_GROUP defined,
-are affected.
-
-Users using the Debian init-scripts, CentOS init-scripts, macOS launchctl
-scripts, Supervisor, or users not starting the programs as the root user
-are *not* affected.
-
-Solution
-========
-
-Users of the 2.4 series should upgrade to 2.4.4:
-
-    * ``pip install -U celery``, or
-    * ``easy_install -U celery``, or
-    * https://pypi.org/project/celery/2.4.4/
-
-Users of the 2.3 series should upgrade to 2.3.4:
-
-    * ``pip install -U celery==2.3.4``, or
-    * ``easy_install -U celery==2.3.4``, or
-    * https://pypi.org/project/celery/2.3.4/
-
-Users of the 2.2 series should upgrade to 2.2.8:
-
-    * ``pip install -U celery==2.2.8``, or
-    * ``easy_install -U celery==2.2.8``, or
-    * https://pypi.org/project/celery/2.2.8/
-
-The 2.1 series is no longer being maintained, so we urge users
-of that series to upgrade to a more recent version.
-
-Distribution package maintainers are urged to provide their users
-with updated packages.
-
-
-Please direct questions to the celery-users mailing-list:
-https://groups.google.com/group/celery-users/,
-
-or if you're planning to report a security issue we request that
-you keep the information confidential by contacting
-security@celeryproject.org, so that a fix can be issued as quickly as possible.
-
-Thank you!
-
-```
-
-### 代码文件: docs\sec\CELERYSA-0002.txt
-```txt
-=========================================
- CELERYSA-0002: Celery Security Advisory
-=========================================
-:contact: security@celeryproject.org
-:CVE id: TBA
-:date: 2014-07-10 05:00:00 p.m. UTC
-
-Details
-=======
-
-:package: celery
-:vulnerability: Environment error
-:problem type: local
-:risk: low
-:versions-affected: 2.5, 3.0, 3.1
-
-Description
-===========
-
-The built-in utility used to daemonize the Celery worker service sets
-an insecure umask by default (umask 0).
-
-This means that any files or directories created by the worker will
-end up having world-writable permissions.
-
-In practice this means that local users will be able to modify and possibly
-corrupt the files created by user tasks.
-
-This isn't immediately exploitable but can be if those files are later
-evaluated as a program, for example a task that creates Python program files
-that are later executed.
-
-Patches are now available for all maintained versions (see below),
-and users are urged to upgrade, even if not directly
-affected.
-
-Acknowledgments
-===============
-
-Special thanks to Red Hat for originally discovering and reporting the issue.
-
-Systems affected
-================
-
-Users of Celery versions 3.0, and 3.1, except the recently
-released 3.1.13, are affected if daemonizing the
-Celery programs using the `--detach` argument or using the `celery multi` program
-to start workers in the background, without setting a custom `--umask`
-argument.
-
-Solution
-========
-
-NOTE:
-    Not all users of Celery will use it to create files, but if you do
-    then files may already have been created with insecure permissions.
-
-    So after upgrading, or using the workaround, then please make sure
-    that files already created aren't world writable.
-
-To work around the issue you can set a custom umask using the ``--umask``
-argument:
-
-    $ celery worker -l info --detach --umask=18   # (022)
-
-Or you can upgrade to a more recent version:
-
-- Users of the 3.1 series should upgrade to 3.1.13:
-
-    * ``pip install -U celery``, or
-    * ``easy_install -U celery``, or
-    * https://pypi.org/project/celery/3.1.13/
-
-- Users of the 3.0 series should upgrade to 3.0.25:
-
-    * ``pip install -U celery==3.0.25``, or
-    * ``easy_install -U celery==3.0.25``, or
-    * https://pypi.org/project/celery/3.0.25/
-
-Distribution package maintainers are urged to provide their users
-with updated packages.
-
-Please direct questions to the celery-users mailing-list:
-https://groups.google.com/group/celery-users/,
-
-or if you're planning to report a new security related issue we request that
-you keep the information confidential by contacting
-security@celeryproject.org instead.
-
-Thank you!
-
-```
-
-### 代码文件: docs\sec\CELERYSA-0003.txt
-```txt
-=========================================
- CELERYSA-0003: Celery Security Advisory
-=========================================
-:contact: security@celeryproject.org
-:CVE id: TBA
-:date: 2016-12-08 05:00:00 p.m. PST
-
-Details
-=======
-
-:package: celery
-:vulnerability: Configuration Error
-:problem type: remote
-:risk: low
-:versions-affected: 4.0.0
-
-Description
-===========
-
-The default configuration in Celery 4.0.0 allowed for deserialization
-of pickled messages, even if the software is configured to send
-messages in the JSON format.
-
-The particular configuration in question is the `accept_content` setting,
-which by default was set to:
-
-    app.conf.accept_content = ['json', 'pickle', 'msgpack', 'yaml']
-
-The risk is still set to low considering that an attacker would require access
-to the message broker used to send messages to Celery workers.
-
-Systems affected
-================
-
-Users of Celery version 4.0.0 with no explicit accept_content setting set.
-
-Solution
-========
-
-To work around the issue you can explicitly configure the accept_content
-setting:
-
-    app.conf.accept_content = ['json']
-
-Or you can upgrade to the Celery 4.0.1 version:
-
-    $ pip install -U celery
-
-Distribution package maintainers are urged to provide their users
-with updated packages.
-
-Please direct questions to the celery-users mailing-list:
-https://groups.google.com/group/celery-users/,
-
-or if you're planning to report a new security related issue we request that
-you keep the information confidential by contacting
-security@celeryproject.org instead.
-
-Thank you!
-
-```
-
-### 代码文件: docs\templates\readme.txt
-```txt
-.. image:: https://docs.celeryq.dev/en/latest/_images/celery-banner-small.png
-
-|build-status| |license| |wheel| |pyversion| |pyimp|
-
-.. include:: ../includes/introduction.txt
-
-.. include:: ../includes/installation.txt
-
-.. include:: ../includes/resources.txt
-
-.. |build-status| image:: https://secure.travis-ci.org/celery/celery.png?branch=main
-    :alt: Build status
-    :target: https://travis-ci.org/celery/celery
-
-.. |coverage| image:: https://codecov.io/github/celery/celery/coverage.svg?branch=main
-    :target: https://codecov.io/github/celery/celery?branch=main
-
-.. |license| image:: https://img.shields.io/pypi/l/celery.svg
-    :alt: BSD License
-    :target: https://opensource.org/licenses/BSD-3-Clause
-
-.. |wheel| image:: https://img.shields.io/pypi/wheel/celery.svg
-    :alt: Celery can be installed via wheel
-    :target: https://pypi.org/project/celery/
-
-.. |pyversion| image:: https://img.shields.io/pypi/pyversions/celery.svg
-    :alt: Supported Python versions.
-    :target: https://pypi.org/project/celery/
-
-.. |pyimp| image:: https://img.shields.io/pypi/implementation/celery.svg
-    :alt: Support Python implementations.
-    :target: https://pypi.org/project/celery/
-
-```
-
-### 代码文件: docs\tutorials\daemonizing.html
-```html
+`````html
 Moved
 =====
 
@@ -34380,10 +35027,16 @@ This document has been moved into the userguide.
 
 See :ref:`daemonizing`
 
-```
+`````
 
-### 代码文件: docs\tutorials\debugging.html
-```html
+--- **end of file: docs/tutorials/daemonizing.html** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/tutorials/debugging.html** (project: celery) --- 
+
+`````html
 Moved
 =====
 
@@ -34391,10 +35044,16 @@ This document has been moved into the userguide.
 
 See :ref:`guide-debugging`.
 
-```
+`````
 
-### 代码文件: docs\tutorials\index.rst
-```rst
+--- **end of file: docs/tutorials/debugging.html** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/tutorials/index.rst** (project: celery) --- 
+
+`````text
 ===========
  Tutorials
 ===========
@@ -34407,10 +35066,16 @@ See :ref:`guide-debugging`.
 
     task-cookbook
 
-```
+`````
 
-### 代码文件: docs\tutorials\task-cookbook.rst
-```rst
+--- **end of file: docs/tutorials/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/tutorials/task-cookbook.rst** (project: celery) --- 
+
+`````text
 .. _cookbook-tasks:
 
 ================
@@ -34492,10 +35157,16 @@ For this reason your tasks run-time shouldn't exceed the timeout.
         logger.debug(
             'Feed %s is already being imported by another worker', feed_url)
 
-```
+`````
 
-### 代码文件: docs\userguide\application.rst
-```rst
+--- **end of file: docs/tutorials/task-cookbook.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/application.rst** (project: celery) --- 
+
+`````text
 .. _guide-app:
 
 =============
@@ -35053,10 +35724,16 @@ by changing its :meth:`@Task` attribute:
      <unbound Task>,
      <type 'object'>]
 
-```
+`````
 
-### 代码文件: docs\userguide\calling.rst
-```rst
+--- **end of file: docs/userguide/application.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/calling.rst** (project: celery) --- 
+
+`````text
 .. _guide-calling:
 
 ===============
@@ -35115,6 +35792,8 @@ The API defines a standard set of execution options, as well as three methods:
     - ``T.apply_async(expires=now + timedelta(days=2))``
         expires in 2 days, set using :class:`~datetime.datetime`.
 
+    - ``T.apply_async(task_id=f'my_own_task_id')``
+        sets the id of the task to my_own_task_id instead of a uuid that is normally generated
 
 Example
 -------
@@ -35517,6 +36196,13 @@ You can handle this error too:
     ... except add.OperationalError as exc:
     ...     logger.exception('Sending task raised: %r', exc)
 
+.. note::
+
+    With RabbitMQ, these errors only indicate the broker is unreachable.
+    Messages can still be silently dropped when the broker hits resource
+    limits. Enable ``confirm_publish`` in :setting:`broker_transport_options`
+    to detect this.
+
 .. _calling-serializers:
 
 Serializers
@@ -35862,6 +36548,24 @@ setting or by using the ``ignore_result`` option:
 If you'd like to store additional metadata about the task in the result backend
 set the :setting:`result_extended` setting to ``True``.
 
+.. note::
+
+   ``result_extended`` controls what *Celery* includes as extended task metadata,
+   but it does not automatically add scheduler-specific metadata.
+   For example, some integrations (e.g. :pypi:`django-celery-beat` together with
+   :pypi:`django-celery-results`) may record the *periodic task name* in the result
+   backend only when the scheduler provides it as part of the published message.
+
+   When you call tasks manually using ``apply_async``/``delay``, that periodic task
+   context is usually not present unless you add it explicitly (e.g. via message
+   headers/properties in ``apply_async`` options). For example:
+
+   .. code-block:: python
+
+      result = task.apply_async(
+          headers={"periodic_task_name": "task_name"},
+      )
+
 .. seealso::
 
    For more information on tasks, please see :ref:`guide-tasks`.
@@ -35888,10 +36592,16 @@ AMQP's full routing capabilities. Interested parties may read the
 
     Supported by: RabbitMQ, Redis (priority reversed, 0 is highest).
 
-```
+`````
 
-### 代码文件: docs\userguide\canvas.rst
-```rst
+--- **end of file: docs/userguide/calling.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/canvas.rst** (project: celery) --- 
+
+`````text
 .. _guide-canvas:
 
 ==============================
@@ -36030,6 +36740,24 @@ creates partials:
         >>> partial = add.s(2)          # incomplete signature
         >>> partial.delay(4)            # 4 + 2
         >>> partial.apply_async((4,))  # same
+
+    .. note::
+
+        Additional args passed to ``delay``/``apply_async`` are **prepended**
+        to the signature args. Since ``add`` is commutative, the ordering may
+        not be obvious. A non-commutative task like
+        ``subtract(x, y) -> x - y`` makes this clear:
+
+        .. code-block:: python
+
+            @app.task
+            def subtract(x, y):
+                return x - y
+
+            partial = subtract.s(10)    # incomplete: second arg only
+            partial.delay(30)           # -> subtract(30, 10) = 20
+        Here ``delay(30)`` prepends ``30`` as the first argument, resulting
+        in ``subtract(30, 10)`` — not ``subtract(10, 30)``.
 
 - Any keyword arguments added will be merged with the kwargs in the signature,
   with the new keyword arguments taking precedence:
@@ -37258,10 +37986,16 @@ This example will result in the following stamps:
     >>> c.body.options['link_error'][0].options
     {'header': 'value', 'on_errback': True, 'stamped_headers': ['header', 'on_errback']}
 
-```
+`````
 
-### 代码文件: docs\userguide\configuration.rst
-```rst
+--- **end of file: docs/userguide/canvas.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/configuration.rst** (project: celery) --- 
+
+`````text
 .. _configuration:
 
 ============================
@@ -37378,6 +38112,7 @@ have been moved into a new  ``task_`` prefix.
 ``CELERY_REDIS_PASSWORD``                  :setting:`redis_password`
 ``CELERY_REDIS_PORT``                      :setting:`redis_port`
 ``CELERY_REDIS_BACKEND_USE_SSL``           :setting:`redis_backend_use_ssl`
+``CELERY_REDIS_BACKEND_CREDENTIAL_PROVIDER`` :setting:`redis_backend_credential_provider`
 ``CELERY_RESULT_BACKEND``                  :setting:`result_backend`
 ``CELERY_MAX_CACHED_RESULTS``              :setting:`result_cache_max`
 ``CELERY_MESSAGE_COMPRESSION``             :setting:`result_compression`
@@ -37879,10 +38614,45 @@ has been executed, not *right before* (the default behavior).
 ``task_acks_on_failure_or_timeout``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. deprecated:: 6.0
+    Use :setting:`task_acks_on_failure` and :setting:`task_acks_on_timeout` instead.
+
 Default: Enabled
 
 When enabled messages for all tasks will be acknowledged even if they
 fail or time out.
+
+Configuring this setting only applies to tasks that are
+acknowledged **after** they have been executed and only if
+:setting:`task_acks_late` is enabled.
+
+.. setting:: task_acks_on_failure
+
+``task_acks_on_failure``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.7
+
+Default: :const:`None` (falls back to :setting:`task_acks_on_failure_or_timeout`)
+
+When enabled messages for tasks that fail will be acknowledged.
+When disabled failed task messages will be rejected without requeue.
+
+Configuring this setting only applies to tasks that are
+acknowledged **after** they have been executed and only if
+:setting:`task_acks_late` is enabled.
+
+.. setting:: task_acks_on_timeout
+
+``task_acks_on_timeout``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.7
+
+Default: :const:`None` (falls back to :setting:`task_acks_on_failure_or_timeout`)
+
+When enabled, messages for tasks that time out will be acknowledged.
+When disabled, timed-out task messages will be rejected and requeued.
 
 Configuring this setting only applies to tasks that are
 acknowledged **after** they have been executed and only if
@@ -38027,6 +38797,7 @@ Can be one of the following:
 .. _`AzureBlockBlob`: https://azure.microsoft.com/en-us/services/storage/blobs/
 .. _`S3`: https://aws.amazon.com/s3/
 .. _`GCS`: https://cloud.google.com/storage/
+.. _`RedisCredentialProvider`: https://redis.readthedocs.io/en/stable/examples/connection_examples.html#Connecting-to-a-redis-instance-with-standard-credential-provider
 
 
 .. setting:: result_backend_always_retry
@@ -38036,8 +38807,17 @@ Can be one of the following:
 
 Default: :const:`False`
 
-If enable, backend will try to retry on the event of recoverable exceptions instead of propagating the exception.
-It will use an exponential backoff sleep time between 2 retries.
+.. versionchanged:: 5.7
+
+    The :class:`~celery.backends.database.DatabaseBackend` overrides this
+    setting to :const:`True` by default to preserve backward compatibility
+    with the automatic retry behavior that was previously provided by an
+    internal ``@retry`` decorator. Other backends continue to default to
+    :const:`False`.
+
+If enabled, the backend will try to retry on the event of recoverable
+exceptions instead of propagating the exception.
+It will use an exponential backoff sleep time between retries.
 
 
 .. setting:: result_backend_max_sleep_between_retries_ms
@@ -38067,7 +38847,14 @@ This specifies the base amount of sleep time between two backend operation retry
 
 Default: Inf
 
-This is the maximum of retries in case of recoverable exceptions.
+.. versionchanged:: 5.7
+
+    The :class:`~celery.backends.database.DatabaseBackend` overrides this
+    setting to ``3`` by default to preserve backward compatibility with the
+    behavior previously provided by an internal ``@retry`` decorator.
+    Other backends continue to default to :const:`Inf` (unlimited retries).
+
+This is the maximum number of retries in case of recoverable exceptions.
 
 
 .. setting:: result_backend_thread_safe
@@ -38220,6 +39007,34 @@ Example:
 Database backend settings
 -------------------------
 
+.. note::
+
+    **Retry configuration for the Database backend**
+
+    As of Celery 5.7, :class:`~celery.backends.database.DatabaseBackend`
+    uses the unified retry mechanism provided by
+    :class:`~celery.backends.base.BaseBackend` for all backend operations
+    (``store_result``, ``get_task_meta``, ``save_group``, ``delete_group``,
+    ``get_group_meta``, and ``forget``).  The database backend preserves
+    backward-compatible defaults:
+
+    * :setting:`result_backend_always_retry` defaults to :const:`True`
+    * :setting:`result_backend_max_retries` defaults to ``3``
+
+    These defaults can be overridden via the standard configuration settings.
+    For example, to disable automatic retries:
+
+    .. code-block:: python
+
+        result_backend_always_retry = False
+
+    Or to increase the retry limit:
+
+    .. code-block:: python
+
+        result_backend_always_retry = True
+        result_backend_max_retries = 10
+
 Database URL Examples
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -38257,6 +39072,38 @@ strings (this is the part of the URI that comes after the ``db+`` prefix).
 .. _`Connection String`:
     http://www.sqlalchemy.org/docs/core/engines.html#database-urls
 
+.. note::
+
+    If you are upgrading from Celery 5.6 or earlier, the ``date_done`` column
+    in ``celery_taskmeta`` and ``celery_tasksetmeta`` tables does not have a
+    database index. The built-in periodic task ``celery.backend_cleanup``
+    queries on ``date_done`` to delete expired task results, so adding an
+    index significantly improves cleanup performance on large tables.
+
+    Since SQLAlchemy's ``create_all()`` will not alter existing tables, you
+    will need to update your database schema. If you are using Alembic for
+    schema migrations, you can generate an empty revision and apply the
+    following operations:
+
+    .. code-block:: python
+
+        from alembic import op
+
+        def upgrade():
+            op.create_index('ix_celery_taskmeta_date_done', 'celery_taskmeta', ['date_done'])
+            op.create_index('ix_celery_tasksetmeta_date_done', 'celery_tasksetmeta', ['date_done'])
+
+        def downgrade():
+            op.drop_index('ix_celery_tasksetmeta_date_done', table_name='celery_tasksetmeta')
+            op.drop_index('ix_celery_taskmeta_date_done', table_name='celery_taskmeta')
+
+    Otherwise, you can add the indexes manually using SQL:
+
+    .. code-block:: sql
+
+        CREATE INDEX ix_celery_taskmeta_date_done ON celery_taskmeta (date_done);
+        CREATE INDEX ix_celery_tasksetmeta_date_done ON celery_tasksetmeta (date_done);
+
 .. setting:: database_create_tables_at_setup
 
 ``database_create_tables_at_setup``
@@ -38279,13 +39126,23 @@ Default: True by default.
 ``database_engine_options``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Default: ``{}`` (empty mapping).
+Default: ``{'pool_pre_ping': True, 'pool_recycle': 3600}``
+
+.. versionchanged:: 5.7
+
+    The default was changed from ``{}`` to include ``pool_pre_ping=True``
+    and ``pool_recycle=3600`` for improved connection health handling.
+    This helps prevent stale connection errors such as
+    ``(OperationalError) (2006, 'MySQL server has gone away')``.
 
 To specify additional SQLAlchemy database engine options you can use
 the :setting:`database_engine_options` setting::
 
     # echo enables verbose logging from SQLAlchemy.
     app.conf.database_engine_options = {'echo': True}
+
+    # To disable the default pool health options:
+    app.conf.database_engine_options = {'pool_pre_ping': False, 'pool_recycle': None}
 
 .. setting:: database_short_lived_sessions
 
@@ -38470,6 +39327,12 @@ This is a dict supporting the following keys:
     constructor.  See the :mod:`pymongo` docs to see a list of arguments
     supported.
 
+.. note::
+
+    With pymongo>=4.14, options are case-sensitive when they were previously
+    case-insensitive.  See :class:`~pymongo.mongo_client.MongoClient` to
+    determine the correct case.
+
 .. _example-mongodb-result-config:
 
 Example configuration
@@ -38608,6 +39471,19 @@ the form of a dictionary. The valid key-value pairs are
 the same as the ones mentioned in the ``redis`` sub-section
 under :setting:`broker_use_ssl`.
 
+.. setting:: redis_backend_credential_provider
+
+.. versionadded:: 5.6
+
+``redis_backend_credential_provider``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: Disabled.
+
+The Redis backend supports credential provider. This value must be set in
+the form of a class path string or a class instance. e.g. ``mymodule.myfile.myclass``
+check more details in `RedisCredentialProvider`_ doc.
+
 .. setting:: redis_max_connections
 
 ``redis_max_connections``
@@ -38668,6 +39544,18 @@ Default: :const:`False`
 
 Socket TCP keepalive to keep connections healthy to the Redis server,
 used by the redis result backend.
+
+.. setting:: redis_client_name
+
+``redis_client_name``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.6
+
+Default: :const:`None`
+
+Sets the client name for Redis connections used by the result backend.
+This can help identify connections in Redis monitoring tools.
 
 .. _conf-cassandra-result-backend:
 
@@ -40354,6 +41242,14 @@ won't retry forever if the broker isn't available at the first task execution):
 
     broker_transport_options = {'max_retries': 5}
 
+Example enabling publisher confirms (supported by the ``pyamqp`` transport).
+Without this, messages can be silently dropped when the broker hits resource
+limits:
+
+.. code-block:: python
+
+    broker_transport_options = {'confirm_publish': True}
+
 .. _conf-worker:
 
 Worker
@@ -40454,6 +41350,10 @@ early acknowledgments, enable :setting:`worker_disable_prefetch`.
 When this option is enabled the worker only fetches a task from the broker
 when one of its processes is available.
 
+.. note::
+
+    This feature is currently only supported when using Redis as the broker.
+
 You can also enable this via the :option:`--disable-prefetch <celery worker --disable-prefetch>`
 command line flag.
 
@@ -40479,8 +41379,18 @@ memory, potentially causing out-of-memory issues.
 
 .. note::
 
-    Tasks with ETA/countdown aren't affected by prefetch limits.
+    Tasks with ETA/countdown are fetched into memory and scheduled on an internal
+    timer, so they are not constrained by the per-process prefetch window derived
+    from :setting:`worker_prefetch_multiplier` in the same way as immediately
+    executed tasks. This is why ``--prefetch-multiplier=1`` can appear to have no
+    effect when many ETA/countdown tasks are present.
 
+    :setting:`worker_eta_task_limit` configures the maximum number of ETA/countdown
+    tasks a worker will hold in memory and also sets an overall cap on
+    unacknowledged messages via kombu's QoS ``max_prefetch``. If the prefetch count
+    implied by :setting:`worker_prefetch_multiplier` would exceed this cap, the
+    worker will stop consuming new messages until previously received tasks have
+    been acknowledged.
 .. setting:: worker_disable_prefetch
 
 ``worker_disable_prefetch``
@@ -40494,6 +41404,12 @@ When enabled, a worker will only consume messages from the broker when it
 has an available process to execute them. This disables prefetching while
 still using early acknowledgments, ensuring that tasks are fairly
 distributed between workers.
+
+.. note::
+
+    This feature is currently only supported when using Redis as the broker.
+    Using this setting with other brokers will result in a warning and the
+    setting will be ignored.
 
 .. setting:: worker_enable_prefetch_count_reduction
 
@@ -41410,10 +42326,16 @@ Default: :const:`None`
 
 An optional `python` executable path for :program:`celery beat` to use when deaemonizing (defaults to :data:`sys.executable`).
 
-```
+`````
 
-### 代码文件: docs\userguide\daemonizing.rst
-```rst
+--- **end of file: docs/userguide/configuration.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/daemonizing.rst** (project: celery) --- 
+
+`````text
 .. _daemonizing:
 
 ======================================================================
@@ -41969,10 +42891,16 @@ or production environment (inadvertently) as root.
 .. _`extra/macOS`:
     https://github.com/celery/celery/tree/main/extra/macOS/
 
-```
+`````
 
-### 代码文件: docs\userguide\debugging.rst
-```rst
+--- **end of file: docs/userguide/daemonizing.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/debugging.rst** (project: celery) --- 
+
+`````text
 .. _guide-debugging:
 
 ======================================
@@ -42093,10 +43021,16 @@ You can start an rdb session for any of the worker processes by executing:
 
     $ kill -USR2 <pid>
 
-```
+`````
 
-### 代码文件: docs\userguide\extending.rst
-```rst
+--- **end of file: docs/userguide/debugging.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/extending.rst** (project: celery) --- 
+
+`````text
 .. _guide-extending:
 
 ==========================
@@ -42318,21 +43252,6 @@ Attributes
 
         class WorkerStep(bootsteps.StartStopStep):
             requires = ('celery.worker.autoscaler:Autoscaler',)
-
-.. _extending-worker-autoreloader:
-
-.. attribute:: autoreloader
-
-    :class:`~celery.worker.autoreloder.Autoreloader` used to automatically
-    reload use code when the file-system changes.
-
-    This is only defined if the ``autoreload`` argument is enabled.
-    Your worker bootstep must require the `Autoreloader` bootstep to use this;
-
-    .. code-block:: python
-
-        class WorkerStep(bootsteps.StartStopStep):
-            requires = ('celery.worker.autoreloader:Autoreloader',)
 
 Example worker bootstep
 -----------------------
@@ -43027,10 +43946,16 @@ Timer - Scheduling events
 .. method:: timer.call_at(eta, callback, args=(), kwargs=(),
                           priority=0)
 
-```
+`````
 
-### 代码文件: docs\userguide\index.rst
-```rst
+--- **end of file: docs/userguide/extending.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/index.rst** (project: celery) --- 
+
+`````text
 .. _guide:
 
 ============
@@ -43062,10 +43987,16 @@ Timer - Scheduling events
     configuration
     sphinx
 
-```
+`````
 
-### 代码文件: docs\userguide\monitoring.rst
-```rst
+--- **end of file: docs/userguide/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/monitoring.rst** (project: celery) --- 
+
+`````text
 .. _guide-monitoring:
 
 =================================
@@ -43528,6 +44459,18 @@ The default queue is named `celery`. To get all available queues, invoke:
     hosts), but this won't affect the monitoring events used by for example
     Flower as Redis pub/sub commands are global rather than database based.
 
+.. _monitoring-prometheus:
+
+Prometheus
+=========
+
+While Prometheus monitoring is not a native part of Celery,
+you can easily monitor your Celery workers using Prometheus via Flower.
+Flower also provides pre-made Grafana dashboards to easily graph the amount
+of tasks, workers and other instrumental statistics.
+
+To set up Prometheus, refer to the Flower documentation: https://flower.readthedocs.io/en/latest/prometheus-integration.html
+
 .. _monitoring-munin:
 
 Munin
@@ -43904,10 +44847,16 @@ The following parameters are now supported by `Mailbox`:
 
 See :setting:`event_queue_durable` and :setting:`event_queue_exclusive` for advanced configuration.
 
-```
+`````
 
-### 代码文件: docs\userguide\optimizing.rst
-```rst
+--- **end of file: docs/userguide/monitoring.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/optimizing.rst** (project: celery) --- 
+
+`````text
 .. _guide-optimizing:
 
 ============
@@ -44096,7 +45045,8 @@ prefetching by enabling :setting:`worker_disable_prefetch`. With this
 setting the worker fetches a new task only when an execution slot is
 free, preventing tasks from waiting behind long running ones on busy
 workers. This can also be set from the command line using
-:option:`--disable-prefetch <celery worker --disable-prefetch>`.
+:option:`--disable-prefetch <celery worker --disable-prefetch>`. This feature
+is currently only supported when using Redis as the broker.
 
 Memory Usage
 ------------
@@ -44145,10 +45095,16 @@ instantly). A similar issue can occur when your tasks always exceed
 .. [*] This is the concurrency setting; :setting:`worker_concurrency` or the
        :option:`celery worker -c` option.
 
-```
+`````
 
-### 代码文件: docs\userguide\periodic-tasks.rst
-```rst
+--- **end of file: docs/userguide/optimizing.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/periodic-tasks.rst** (project: celery) --- 
+
+`````text
 .. _guide-beat:
 
 ================
@@ -44635,10 +45591,16 @@ To install and use this extension:
 
 #. Visit the Django-Admin interface to set up some periodic tasks.
 
-```
+`````
 
-### 代码文件: docs\userguide\routing.rst
-```rst
+--- **end of file: docs/userguide/periodic-tasks.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/routing.rst** (project: celery) --- 
+
+`````text
 .. _guide-routing:
 
 ===============
@@ -44917,7 +45879,7 @@ This means that even though there are 10 (0-9) priority levels, these are
 consolidated into 4 levels by default to save resources. This means that a
 queue named celery will really be split into 4 queues.
 
-The highest priority queue will be named celery, and the the other queues will
+The highest priority queue will be named celery, and the other queues will
 have a separator (by default `\x06\x16`) and their priority number appended to
 the queue name.
 
@@ -45453,10 +46415,16 @@ a :program:`celery beat` schedule:
     It's a good idea to set the ``task.ignore_result`` attribute in
     this case.
 
-```
+`````
 
-### 代码文件: docs\userguide\security.rst
-```rst
+--- **end of file: docs/userguide/routing.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/security.rst** (project: celery) --- 
+
+`````text
 .. _guide-security:
 
 ==========
@@ -45717,10 +46685,16 @@ that can be used.
 
 .. [*] https://blog.nelhage.com/2011/03/exploiting-pickle/
 
-```
+`````
 
-### 代码文件: docs\userguide\signals.rst
-```rst
+--- **end of file: docs/userguide/security.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/signals.rst** (project: celery) --- 
+
+`````text
 .. _signals:
 
 =======
@@ -45962,6 +46936,12 @@ Provides arguments:
     Detailed exception information, including traceback
     (a :class:`billiard.einfo.ExceptionInfo` object).
 
+.. note::
+
+    Only the ``request`` argument is guaranteed to be provided in all cases.
+    The ``reason`` and ``einfo`` arguments may be ``None`` or not provided
+    in certain scenarios, such as when a task is cancelled and retried.
+    Signal handlers should not assume these arguments are always present.
 
 .. signal:: task_success
 
@@ -46543,20 +47523,23 @@ It can be used to add additional command-line arguments to the
 
 .. code-block:: python
 
-    from celery import Celery
-    from celery import signals
-    from celery.bin.base import Option
+    from celery import Celery, signals
+    from click import Option
 
     app = Celery()
+    
+    # Celery 5.0+ uses click for its command-line interface.
+    # Use click.option to add new command-line arguments.
     app.user_options['preload'].add(Option(
-        '--monitoring', action='store_true',
+        ('--monitoring',), is_flag=True,
         help='Enable our external monitoring utility, blahblah',
     ))
 
     @signals.user_preload_options.connect
     def handle_preload_options(options, **kwargs):
-        if options['monitoring']:
+        if options.get('monitoring'):
             enable_monitoring()
+
 
 
 Sender is the :class:`~celery.bin.base.Command` instance, and the value depends
@@ -46583,10 +47566,16 @@ Deprecated Signals
 
 This signal is deprecated, please use :signal:`after_task_publish` instead.
 
-```
+`````
 
-### 代码文件: docs\userguide\sphinx.rst
-```rst
+--- **end of file: docs/userguide/signals.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/sphinx.rst** (project: celery) --- 
+
+`````text
 .. _sphinx:
 
 ==============================
@@ -46604,10 +47593,16 @@ This document describes how auto-generate documentation for Tasks using Sphinx.
     :members:
     :noindex:
 
-```
+`````
 
-### 代码文件: docs\userguide\tasks.rst
-```rst
+--- **end of file: docs/userguide/sphinx.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/tasks.rst** (project: celery) --- 
+
+`````text
 .. _guide-tasks:
 
 =====================================================================
@@ -47652,6 +48647,13 @@ General
     If :const:`True`, errors will be stored even if the task is configured
     to ignore results.
 
+    .. versionchanged:: 5.7
+        Previously, if the ``ignore_result`` key was missing from the request 
+        message, ``store_errors`` would default to ``True``, ignoring the 
+        task's own ``ignore_result`` setting. The worker now correctly 
+        falls back to ``Task.ignore_result`` when no per-request override 
+        is present.
+
 .. attribute:: Task.serializer
 
     A string identifying the default serialization
@@ -48206,7 +49208,8 @@ The following diagram shows the exact order of execution:
     │  4. on_success() OR     ← Outcome-specific handler            │
     │     on_retry() OR       │                                     │
     │     on_failure()        │                                     │
-    │  5. after_return()      ← Always runs last                    │
+    │  5. after_return()      ← Runs last on terminal states        │
+    │                       (skipped for RETRY/REJECTED/IGNORED)    │
     └───────────────────────────────────────────────────────────────┘
 
 .. important::
@@ -48216,7 +49219,9 @@ The following diagram shows the exact order of execution:
    - All handlers run in the **same worker process** as your task
    - ``before_start`` **blocks** the task - ``run()`` won't start until it completes
    - Result backend is updated **before** ``on_success``/``on_failure`` - other clients can see the task as finished while handlers are still running
-   - ``after_return`` **always** executes, regardless of task outcome
+   - ``after_return`` executes when the task reaches a terminal state.
+     It does not run for ``RETRY``, ``REJECTED``, or ``IGNORED``. If you need
+     a hook that fires on every attempt, use the :signal:`task_postrun` signal.
 
 Available handlers
 ~~~~~~~~~~~~~~~~~~
@@ -48297,8 +49302,13 @@ Available handlers
     Handler called after the task returns.
 
     .. note::
-       Executes **after** ``on_success``/``on_retry``/``on_failure``. This is the
-       final hook in the task lifecycle and **always** runs, regardless of outcome.
+        Executes after the outcome-specific handler when the task reaches a
+        terminal state.
+
+        In practice, this means it runs after ``on_success`` or ``on_failure``.
+        It is not executed for ``RETRY``, ``REJECTED``, or ``IGNORED`` states.
+        If a hook is needed for every attempt, consider using the
+        :signal:`task_postrun` signal.
 
     :param status: Current task state.
     :param retval: Task return value/exception.
@@ -48921,10 +49931,16 @@ To make API calls to `Akismet`_ I use the `akismet.py`_ library written by
 .. _`jitter`: https://en.wikipedia.org/wiki/Jitter
 .. _`Pydantic`: https://docs.pydantic.dev/
 
-```
+`````
 
-### 代码文件: docs\userguide\testing.rst
-```rst
+--- **end of file: docs/userguide/tasks.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/testing.rst** (project: celery) --- 
+
+`````text
 .. _testing:
 
 ================================================================
@@ -49327,10 +50343,16 @@ the ``depends_on_current_app`` fixture:
     def test_something():
         something()
 
-```
+`````
 
-### 代码文件: docs\userguide\workers.rst
-```rst
+--- **end of file: docs/userguide/testing.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/workers.rst** (project: celery) --- 
+
+`````text
 .. _guide-workers:
 
 ===============
@@ -49441,7 +50463,7 @@ Worker Shutdown
 
 We will use the terms *Warm, Soft, Cold, Hard* to describe the different stages of worker shutdown.
 The worker will initiate the shutdown process when it receives the :sig:`TERM` or :sig:`QUIT` signal.
-The :sig:`INT` (Ctrl-C) signal is also handled during the shutdown process and always triggers the 
+The :sig:`INT` (Ctrl-C) signal is also handled during the shutdown process and always triggers the
 next stage of the shutdown process.
 
 .. _worker-warm-shutdown:
@@ -49458,6 +50480,12 @@ and will call :func:`WorkController.stop() <celery.worker.worker.WorkController.
 
 - Additional :sig:`TERM` signals will be ignored during the warm shutdown process.
 - The next :sig:`INT` signal will trigger the next stage of the shutdown process.
+
+.. versionchanged:: 5.6
+    In previous versions of Celery, when the prefork pool was in use, heartbeats to the broker were not sent during
+    warm shutdown. This caused the broker to terminate the connection, which meant that tasks were not able to complete.
+    As of version 5.6, when the prefork pool is in use, heartbeats are now maintained during warm shutdown and tasks are
+    able to complete before the worker terminates.
 
 .. _worker-cold-shutdown:
 
@@ -49870,6 +50898,14 @@ of any signal defined in the :mod:`signal` module in the Python Standard
 Library.
 
 Terminating a task also revokes it.
+
+.. versionchanged:: 5.6
+
+   When a task is revoked, the result backend is now immediately updated
+   to reflect the ``REVOKED`` status. Previously, the backend was only
+   updated when a worker attempted to process the revoked task, which
+   could leave tasks with ETA/countdown in ``PENDING`` status indefinitely
+   if the worker was shut down before the scheduled time.
 
 **Example**
 
@@ -50577,10 +51613,16 @@ After restarting the worker you can now query this value using the
 
     $ celery -A proj inspect current_prefetch_count
 
-```
+`````
 
-### 代码文件: docs\userguide\concurrency\eventlet.rst
-```rst
+--- **end of file: docs/userguide/workers.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/concurrency/eventlet.rst** (project: celery) --- 
+
+`````text
 .. _concurrency-eventlet:
 
 ===========================
@@ -50653,10 +51695,16 @@ some examples taking use of Eventlet support.
     https://github.com/celery/celery/tree/main/examples/eventlet
 
 
-```
+`````
 
-### 代码文件: docs\userguide\concurrency\gevent.rst
-```rst
+--- **end of file: docs/userguide/concurrency/eventlet.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/concurrency/gevent.rst** (project: celery) --- 
+
+`````text
 .. _concurrency-eventlet:
 
 ===========================
@@ -50737,10 +51785,16 @@ Upgrading to greenlet 3.0 solves it.
 .. _here: https://github.com/celery/celery/issues/8425
 .. _gevent issue: https://github.com/gevent/gevent/issues/1985
 
-```
+`````
 
-### 代码文件: docs\userguide\concurrency\index.rst
-```rst
+--- **end of file: docs/userguide/concurrency/gevent.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/userguide/concurrency/index.rst** (project: celery) --- 
+
+`````text
 .. _concurrency:
 
 =============
@@ -50784,10 +51838,57 @@ Overview of Concurrency Options
     may lack certain features compared to `prefork`. We recommend `prefork` as
     the starting point unless specific requirements dictate otherwise.
 
-```
+`````
 
-### 代码文件: docs\_ext\celerydocs.py
-```python
+--- **end of file: docs/userguide/concurrency/index.rst** (project: celery) --- 
+
+---
+
+
+--- **start of file: docs/_ext/celerydocs.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `docs/_ext/celerydocs.py`
+
+#### 📦 Imports
+
+- `import typing`
+- `from docutils import nodes`
+- `from sphinx.errors import NoUri`
+
+#### 🔧 Public Functions (9)
+
+- `def typeify(S, type)`
+  - *Line: 54*
+
+- `def shorten(S, newtarget, src_dict)`
+  - *Line: 60*
+
+- `def get_abbr(pre, rest, type, orig = None)`
+  - *Line: 70*
+
+- `def resolve(S, type)`
+  - *Line: 89*
+
+- `def pkg_of(module_fqdn)`
+  - *Line: 110*
+
+- `def basename(module_fqdn)`
+  - *Line: 114*
+
+- `def modify_textnode(T, newtarget, node, src_dict, type)`
+  - *Line: 118*
+
+- `def maybe_resolve_abbreviations(app, env, node, contnode)`
+  - *Line: 127*
+
+- `def setup(app)`
+  - *Line: 151*
+
+
+---
+
+`````python
 import typing
 
 from docutils import nodes
@@ -50969,15 +52070,16 @@ def setup(app):
         'parallel_read_safe': True
     }
 
-```
+`````
 
-### 代码文件: docs\_static\.keep
-```keep
+--- **end of file: docs/_ext/celerydocs.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: docs\_templates\sidebardonations.html
-```html
+
+--- **start of file: docs/_templates/sidebardonations.html** (project: celery) --- 
+
+`````html
 <iframe src="https://ghbtns.com/github-btn.html?user=celery&repo=celery&type=watch&count=true&size=large"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 <div id="donate">
@@ -50988,4 +52090,9 @@ def setup(app):
     </a>
 </div>
 
-```
+`````
+
+--- **end of file: docs/_templates/sidebardonations.html** (project: celery) --- 
+
+---
+

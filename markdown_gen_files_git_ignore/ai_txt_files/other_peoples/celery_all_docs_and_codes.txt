@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
 > **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
@@ -128,6 +128,290 @@ Entry Points (not imported by other project files):
 
 
 ---
+# markdown content namespace: celery Project Root Dir Some Files 
+
+
+## celery File Tree (relative dir: `.`)
+
+
+`````
+
+├── pyproject.toml
+└── setup.py
+
+`````
+
+---
+
+
+## celery (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `setup.py`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: setup.py** (project: celery) --- 
+
+`````python
+#!/usr/bin/env python3
+import codecs
+import os
+import re
+
+import setuptools
+
+NAME = 'celery'
+
+# -*- Extras -*-
+
+EXTENSIONS = (
+    'arangodb',
+    'auth',
+    'azureblockblob',
+    'brotli',
+    'cassandra',
+    'consul',
+    'cosmosdbsql',
+    'couchbase',
+    'couchdb',
+    'django',
+    'dynamodb',
+    'elasticsearch',
+    'eventlet',
+    'gevent',
+    'gcs',
+    'librabbitmq',
+    'memcache',
+    'mongodb',
+    'msgpack',
+    'pymemcache',
+    'pydantic',
+    'pyro',
+    'pytest',
+    'redis',
+    's3',
+    'slmq',
+    'solar',
+    'sqlalchemy',
+    'sqs',
+    'tblib',
+    'yaml',
+    'zookeeper',
+    'zstd'
+)
+
+# -*- Distribution Meta -*-
+
+re_meta = re.compile(r'__(\w+?)__\s*=\s*(.*)')
+re_doc = re.compile(r'^"""(.+?)"""')
+
+
+def _add_default(m):
+    attr_name, attr_value = m.groups()
+    return ((attr_name, attr_value.strip("\"'")),)
+
+
+def _add_doc(m):
+    return (('doc', m.groups()[0]),)
+
+
+def parse_dist_meta():
+    """Extract metadata information from ``$dist/__init__.py``."""
+    pats = {re_meta: _add_default, re_doc: _add_doc}
+    here = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(here, NAME, '__init__.py')) as meta_fh:
+        distmeta = {}
+        for line in meta_fh:
+            if line.strip() == '# -eof meta-':
+                break
+            for pattern, handler in pats.items():
+                m = pattern.match(line.strip())
+                if m:
+                    distmeta.update(handler(m))
+        return distmeta
+
+# -*- Requirements -*-
+
+
+def _strip_comments(l):
+    return l.split('#', 1)[0].strip()
+
+
+def _pip_requirement(req):
+    if req.startswith('-r '):
+        _, path = req.split()
+        return reqs(*path.split('/'))
+    return [req]
+
+
+def _reqs(*f):
+    return [
+        _pip_requirement(r) for r in (
+            _strip_comments(l) for l in open(
+                os.path.join(os.getcwd(), 'requirements', *f)).readlines()
+        ) if r]
+
+
+def reqs(*f):
+    """Parse requirement file.
+
+    Example:
+        reqs('default.txt')          # requirements/default.txt
+        reqs('extras', 'redis.txt')  # requirements/extras/redis.txt
+    Returns:
+        List[str]: list of requirements specified in the file.
+    """
+    return [req for subreq in _reqs(*f) for req in subreq]
+
+
+def extras(*p):
+    """Parse requirement in the requirements/extras/ directory."""
+    return reqs('extras', *p)
+
+
+def install_requires():
+    """Get list of requirements required for installation."""
+    return reqs('default.txt')
+
+
+def extras_require():
+    """Get map of all extra requirements."""
+    return {x: extras(x + '.txt') for x in EXTENSIONS}
+
+# -*- Long Description -*-
+
+
+def long_description():
+    try:
+        return codecs.open('README.rst', 'r', 'utf-8').read()
+    except OSError:
+        return 'Long description error: Missing README.rst file'
+
+
+meta = parse_dist_meta()
+setuptools.setup(
+    name=NAME,
+    packages=setuptools.find_packages(exclude=['t', 't.*']),
+    version=meta['version'],
+    description=meta['doc'],
+    long_description=long_description(),
+    keywords=meta['keywords'],
+    author=meta['author'],
+    author_email=meta['contact'],
+    url=meta['homepage'],
+    license='BSD-3-Clause',
+    platforms=['any'],
+    install_requires=install_requires(),
+    python_requires=">=3.10",
+    tests_require=reqs('test.txt'),
+    extras_require=extras_require(),
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'celery = celery.__main__:main',
+        ]
+    },
+    project_urls={
+        "Documentation": "https://docs.celeryq.dev/en/stable/",
+        "Changelog": "https://docs.celeryq.dev/en/stable/changelog.html",
+        "Code": "https://github.com/celery/celery",
+        "Tracker": "https://github.com/celery/celery/issues",
+        "Funding": "https://opencollective.com/celery"
+    },
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: System :: Distributed Computing",
+        "Topic :: Software Development :: Object Brokering",
+        "Framework :: Celery",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Operating System :: OS Independent"
+    ]
+)
+
+`````
+
+--- **end of file: setup.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: pyproject.toml** (project: celery) --- 
+
+`````text
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+testpaths = "t/unit/"
+python_classes = "test_*"
+xfail_strict=true
+markers = ["sleepdeprived_patched_module", "masked_modules", "patched_environ", "patched_module", "flaky", "timeout", "amqp"]
+
+[tool.mypy]
+warn_unused_configs = true
+strict = false
+follow_imports = "skip"
+show_error_codes = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+files = [
+    "celery/__main__.py",
+    "celery/states.py",
+    "celery/signals.py",
+    "celery/fixups",
+    "celery/concurrency/thread.py",
+    "celery/security/certificate.py",
+    "celery/utils/text.py",
+    "celery/schedules.py",
+    "celery/apps/beat.py",
+]
+
+[tool.codespell]
+ignore-words-list = "assertin"
+skip = "./.*,docs/AUTHORS.txt,docs/history/*,docs/spelling_wordlist.txt,Changelog.rst,CONTRIBUTORS.txt,*.key"
+
+[tool.coverage.run]
+branch = true
+cover_pylib = false
+include = ["*celery/*"]
+omit = ["celery.tests.*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "except ImportError:"
+]
+omit = [
+    "*/python?.?/*",
+    "*/site-packages/*",
+    "*/pypy/*",
+    "*/celery/bin/graph.py",
+    "*celery/bin/logtool.py",
+    "*celery/task/base.py",
+    "*celery/contrib/sphinx.py",
+    "*celery/concurrency/asynpool.py",
+    "*celery/utils/debug.py",
+    "*celery/contrib/testing/*",
+    "*celery/contrib/pytest.py"
+]
+
+`````
+
+--- **end of file: pyproject.toml** (project: celery) --- 
+
+---
+
 # markdown content namespace: celery docs 
 
 
@@ -52093,421 +52377,6 @@ def setup(app):
 `````
 
 --- **end of file: docs/_templates/sidebardonations.html** (project: celery) --- 
-
----
-
-
-﻿
-# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
-
-> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
-> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
-
-## 🧠 AI 认知与解析准则
-
-这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
-
-### 1. 信息的层级与互补
-*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
-*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
-*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
-
-### 2. 文件边界与架构感知
-*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
-    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
-*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
-*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
-
-### 3. 代码生成与交互
-*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
-*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
-*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
-    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
-    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
-
----
-# markdown content namespace: celery project summary 
-
-
-
-- `celery` is a powerful task queue library for Python. 
-
-
-## 📋 celery most core source files metadata (Entry Points)
-
-
-以下是项目 celery 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
-
-
-
-### the project celery most core source code files as follows: 
-- `celery/__init__.py`
-
-
-### 📄 Python File Metadata: `celery/__init__.py`
-
-#### 📝 Module Docstring
-
-`````
-Distributed Task Queue.
-`````
-
-#### 📦 Imports
-
-- `import os`
-- `import re`
-- `import sys`
-- `from collections import namedtuple`
-- `from  import local`
-- `import builtins`
-- `from celery._state import current_app`
-- `from celery._state import current_task`
-- `from celery.app import shared_task`
-- `from celery.app.base import Celery`
-- `from celery.app.task import Task`
-- `from celery.app.utils import bugreport`
-- `from celery.canvas import chain`
-- `from celery.canvas import chord`
-- `from celery.canvas import chunks`
-- `from celery.canvas import group`
-- `from celery.canvas import maybe_signature`
-- `from celery.canvas import signature`
-- `from celery.canvas import subtask`
-- `from celery.canvas import xmap`
-- `from celery.canvas import xstarmap`
-- `from celery.utils import uuid`
-- `import eventlet.debug`
-- `import gevent.monkey`
-- `import gevent.signal`
-- `from celery import concurrency`
-
-#### 🔧 Public Functions (2)
-
-- `def maybe_patch_concurrency(argv = None, short_opts = None, long_opts = None, patches = None)`
-  - *Line: 123*
-  - **Docstring:**
-  `````
-  Apply eventlet/gevent monkeypatches.
-  
-  With short and long opt alternatives that specify the command line
-  option to set the pool, this makes sure that anything that needs
-  to be patched is completed as early as possible.
-  (e.g., eventlet/gevent monkey patches).
-  `````
-
-- `def debug_import(name, locals = None, globals = None, fromlist = None, level = -1, real_import = builtins.__import__)`
-  - *Line: 61*
-
-
----
-
-
-
-## 🔗 celery Some File Dependencies Analysis
-
-以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
-
-### 📊 Internal Dependencies Graph
-
-`````
-Entry Points (not imported by other project files):
-  ★ celery/__init__.py
-
-`````
-
-### 📋 Detailed Dependencies
-
-### 📦 Third-party Dependencies
-
-项目使用的第三方库：
-
-- `eventlet`
-- `gevent`
-- ......以及更多的第三方库......
-
-
----
-# markdown content namespace: celery Project Root Dir Some Files 
-
-
-## celery File Tree (relative dir: `.`)
-
-
-`````
-
-├── pyproject.toml
-└── setup.py
-
-`````
-
----
-
-
-## celery (relative dir: `.`)  Included Files (total: 2 files)
-
-
-- `setup.py`
-
-- `pyproject.toml`
-
-
----
-
-
---- **start of file: setup.py** (project: celery) --- 
-
-`````python
-#!/usr/bin/env python3
-import codecs
-import os
-import re
-
-import setuptools
-
-NAME = 'celery'
-
-# -*- Extras -*-
-
-EXTENSIONS = (
-    'arangodb',
-    'auth',
-    'azureblockblob',
-    'brotli',
-    'cassandra',
-    'consul',
-    'cosmosdbsql',
-    'couchbase',
-    'couchdb',
-    'django',
-    'dynamodb',
-    'elasticsearch',
-    'eventlet',
-    'gevent',
-    'gcs',
-    'librabbitmq',
-    'memcache',
-    'mongodb',
-    'msgpack',
-    'pymemcache',
-    'pydantic',
-    'pyro',
-    'pytest',
-    'redis',
-    's3',
-    'slmq',
-    'solar',
-    'sqlalchemy',
-    'sqs',
-    'tblib',
-    'yaml',
-    'zookeeper',
-    'zstd'
-)
-
-# -*- Distribution Meta -*-
-
-re_meta = re.compile(r'__(\w+?)__\s*=\s*(.*)')
-re_doc = re.compile(r'^"""(.+?)"""')
-
-
-def _add_default(m):
-    attr_name, attr_value = m.groups()
-    return ((attr_name, attr_value.strip("\"'")),)
-
-
-def _add_doc(m):
-    return (('doc', m.groups()[0]),)
-
-
-def parse_dist_meta():
-    """Extract metadata information from ``$dist/__init__.py``."""
-    pats = {re_meta: _add_default, re_doc: _add_doc}
-    here = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(here, NAME, '__init__.py')) as meta_fh:
-        distmeta = {}
-        for line in meta_fh:
-            if line.strip() == '# -eof meta-':
-                break
-            for pattern, handler in pats.items():
-                m = pattern.match(line.strip())
-                if m:
-                    distmeta.update(handler(m))
-        return distmeta
-
-# -*- Requirements -*-
-
-
-def _strip_comments(l):
-    return l.split('#', 1)[0].strip()
-
-
-def _pip_requirement(req):
-    if req.startswith('-r '):
-        _, path = req.split()
-        return reqs(*path.split('/'))
-    return [req]
-
-
-def _reqs(*f):
-    return [
-        _pip_requirement(r) for r in (
-            _strip_comments(l) for l in open(
-                os.path.join(os.getcwd(), 'requirements', *f)).readlines()
-        ) if r]
-
-
-def reqs(*f):
-    """Parse requirement file.
-
-    Example:
-        reqs('default.txt')          # requirements/default.txt
-        reqs('extras', 'redis.txt')  # requirements/extras/redis.txt
-    Returns:
-        List[str]: list of requirements specified in the file.
-    """
-    return [req for subreq in _reqs(*f) for req in subreq]
-
-
-def extras(*p):
-    """Parse requirement in the requirements/extras/ directory."""
-    return reqs('extras', *p)
-
-
-def install_requires():
-    """Get list of requirements required for installation."""
-    return reqs('default.txt')
-
-
-def extras_require():
-    """Get map of all extra requirements."""
-    return {x: extras(x + '.txt') for x in EXTENSIONS}
-
-# -*- Long Description -*-
-
-
-def long_description():
-    try:
-        return codecs.open('README.rst', 'r', 'utf-8').read()
-    except OSError:
-        return 'Long description error: Missing README.rst file'
-
-
-meta = parse_dist_meta()
-setuptools.setup(
-    name=NAME,
-    packages=setuptools.find_packages(exclude=['t', 't.*']),
-    version=meta['version'],
-    description=meta['doc'],
-    long_description=long_description(),
-    keywords=meta['keywords'],
-    author=meta['author'],
-    author_email=meta['contact'],
-    url=meta['homepage'],
-    license='BSD-3-Clause',
-    platforms=['any'],
-    install_requires=install_requires(),
-    python_requires=">=3.10",
-    tests_require=reqs('test.txt'),
-    extras_require=extras_require(),
-    include_package_data=True,
-    entry_points={
-        'console_scripts': [
-            'celery = celery.__main__:main',
-        ]
-    },
-    project_urls={
-        "Documentation": "https://docs.celeryq.dev/en/stable/",
-        "Changelog": "https://docs.celeryq.dev/en/stable/changelog.html",
-        "Code": "https://github.com/celery/celery",
-        "Tracker": "https://github.com/celery/celery/issues",
-        "Funding": "https://opencollective.com/celery"
-    },
-    classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Topic :: System :: Distributed Computing",
-        "Topic :: Software Development :: Object Brokering",
-        "Framework :: Celery",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python :: 3.13",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
-        "Operating System :: OS Independent"
-    ]
-)
-
-`````
-
---- **end of file: setup.py** (project: celery) --- 
-
----
-
-
---- **start of file: pyproject.toml** (project: celery) --- 
-
-`````text
-[tool.pytest.ini_options]
-addopts = "--strict-markers"
-testpaths = "t/unit/"
-python_classes = "test_*"
-xfail_strict=true
-markers = ["sleepdeprived_patched_module", "masked_modules", "patched_environ", "patched_module", "flaky", "timeout", "amqp"]
-
-[tool.mypy]
-warn_unused_configs = true
-strict = false
-follow_imports = "skip"
-show_error_codes = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-files = [
-    "celery/__main__.py",
-    "celery/states.py",
-    "celery/signals.py",
-    "celery/fixups",
-    "celery/concurrency/thread.py",
-    "celery/security/certificate.py",
-    "celery/utils/text.py",
-    "celery/schedules.py",
-    "celery/apps/beat.py",
-]
-
-[tool.codespell]
-ignore-words-list = "assertin"
-skip = "./.*,docs/AUTHORS.txt,docs/history/*,docs/spelling_wordlist.txt,Changelog.rst,CONTRIBUTORS.txt,*.key"
-
-[tool.coverage.run]
-branch = true
-cover_pylib = false
-include = ["*celery/*"]
-omit = ["celery.tests.*"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "except ImportError:"
-]
-omit = [
-    "*/python?.?/*",
-    "*/site-packages/*",
-    "*/pypy/*",
-    "*/celery/bin/graph.py",
-    "*celery/bin/logtool.py",
-    "*celery/task/base.py",
-    "*celery/contrib/sphinx.py",
-    "*celery/concurrency/asynpool.py",
-    "*celery/utils/debug.py",
-    "*celery/contrib/testing/*",
-    "*celery/contrib/pytest.py"
-]
-
-`````
-
---- **end of file: pyproject.toml** (project: celery) --- 
 
 ---
 
@@ -115944,5 +115813,4 @@ __all__ = (
 --- **end of file: celery/worker/consumer/__init__.py** (project: celery) --- 
 
 ---
-
 
