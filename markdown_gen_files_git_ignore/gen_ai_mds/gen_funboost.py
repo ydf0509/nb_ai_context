@@ -137,12 +137,8 @@ funboost_most_core_source_code_file_list=[
     ai_md_docs
     .clear_text()
     .add_ai_reading_guide()
-    .merge_from_files(
-        relative_file_name_list=[r'funboost/md_for_ai/funboost_ai_coding_编程指南_rules_and_skills.md'],
-        as_title=f"funboost 框架 ai coding 的 rules 和skills ,ai谨记",
-        project_root=r'D:/codes/funboost/',
-    )
-    .append_text(f'''
+    .append_text( # 添加 funboost 教程 标题大全
+        f'''
 
 ## funboost 教程 标题大全：             
 `````text
@@ -151,7 +147,13 @@ funboost_most_core_source_code_file_list=[
 
 `````
                  
-                 ''')
+                 '''
+                 )
+    .merge_from_files(
+        relative_file_name_list=[r'funboost/md_for_ai/funboost_ai_coding_编程指南_rules_and_skills.md'],
+        as_title=f"funboost 框架 ai coding 的 rules 和skills ,ai谨记",
+        project_root=r'D:/codes/funboost/',
+    )
     .add_project_summary(
         project_summary=project_summary, 
         project_root=r"D:\codes\funboost",
