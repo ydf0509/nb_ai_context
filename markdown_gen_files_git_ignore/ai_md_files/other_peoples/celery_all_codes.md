@@ -1,8 +1,1275 @@
-# celery 项目代码文件大全 
+﻿
+# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
+
+> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
+> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+
+## 🧠 AI 认知与解析准则
+
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+
+### 1. 信息的层级与互补
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
+*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
+*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+
+### 2. 文件边界与架构感知
+*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
+    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
+*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
+*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+
+### 3. 代码生成与交互
+*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
+*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
+*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
+    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
+    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+
+---
+# markdown content namespace: celery project summary 
 
 
-### 代码文件: celery\beat.py
-```python
+
+- `celery` is a powerful task queue library for Python. 
+
+
+## 📋 celery most core source files metadata (Entry Points)
+
+
+以下是项目 celery 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project celery most core source code files as follows: 
+- `celery/__init__.py`
+
+
+### 📄 Python File Metadata: `celery/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Distributed Task Queue.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import re`
+- `import sys`
+- `from collections import namedtuple`
+- `from  import local`
+- `import builtins`
+- `from celery._state import current_app`
+- `from celery._state import current_task`
+- `from celery.app import shared_task`
+- `from celery.app.base import Celery`
+- `from celery.app.task import Task`
+- `from celery.app.utils import bugreport`
+- `from celery.canvas import chain`
+- `from celery.canvas import chord`
+- `from celery.canvas import chunks`
+- `from celery.canvas import group`
+- `from celery.canvas import maybe_signature`
+- `from celery.canvas import signature`
+- `from celery.canvas import subtask`
+- `from celery.canvas import xmap`
+- `from celery.canvas import xstarmap`
+- `from celery.utils import uuid`
+- `import eventlet.debug`
+- `import gevent.monkey`
+- `import gevent.signal`
+- `from celery import concurrency`
+
+#### 🔧 Public Functions (2)
+
+- `def maybe_patch_concurrency(argv = None, short_opts = None, long_opts = None, patches = None)`
+  - *Line: 123*
+  - **Docstring:**
+  `````
+  Apply eventlet/gevent monkeypatches.
+  
+  With short and long opt alternatives that specify the command line
+  option to set the pool, this makes sure that anything that needs
+  to be patched is completed as early as possible.
+  (e.g., eventlet/gevent monkey patches).
+  `````
+
+- `def debug_import(name, locals = None, globals = None, fromlist = None, level = -1, real_import = builtins.__import__)`
+  - *Line: 61*
+
+
+---
+
+
+
+## 🔗 celery Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Entry Points (not imported by other project files):
+  ★ celery/__init__.py
+
+`````
+
+### 📋 Detailed Dependencies
+
+### 📦 Third-party Dependencies
+
+项目使用的第三方库：
+
+- `eventlet`
+- `gevent`
+- ......以及更多的第三方库......
+
+
+---
+# markdown content namespace: celery Project Root Dir Some Files 
+
+
+## celery File Tree (relative dir: `.`)
+
+
+`````
+
+├── pyproject.toml
+└── setup.py
+
+`````
+
+---
+
+
+## celery (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `setup.py`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: setup.py** (project: celery) --- 
+
+`````python
+#!/usr/bin/env python3
+import codecs
+import os
+import re
+
+import setuptools
+
+NAME = 'celery'
+
+# -*- Extras -*-
+
+EXTENSIONS = (
+    'arangodb',
+    'auth',
+    'azureblockblob',
+    'brotli',
+    'cassandra',
+    'consul',
+    'cosmosdbsql',
+    'couchbase',
+    'couchdb',
+    'django',
+    'dynamodb',
+    'elasticsearch',
+    'eventlet',
+    'gevent',
+    'gcs',
+    'librabbitmq',
+    'memcache',
+    'mongodb',
+    'msgpack',
+    'pymemcache',
+    'pydantic',
+    'pyro',
+    'pytest',
+    'redis',
+    's3',
+    'slmq',
+    'solar',
+    'sqlalchemy',
+    'sqs',
+    'tblib',
+    'yaml',
+    'zookeeper',
+    'zstd'
+)
+
+# -*- Distribution Meta -*-
+
+re_meta = re.compile(r'__(\w+?)__\s*=\s*(.*)')
+re_doc = re.compile(r'^"""(.+?)"""')
+
+
+def _add_default(m):
+    attr_name, attr_value = m.groups()
+    return ((attr_name, attr_value.strip("\"'")),)
+
+
+def _add_doc(m):
+    return (('doc', m.groups()[0]),)
+
+
+def parse_dist_meta():
+    """Extract metadata information from ``$dist/__init__.py``."""
+    pats = {re_meta: _add_default, re_doc: _add_doc}
+    here = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(here, NAME, '__init__.py')) as meta_fh:
+        distmeta = {}
+        for line in meta_fh:
+            if line.strip() == '# -eof meta-':
+                break
+            for pattern, handler in pats.items():
+                m = pattern.match(line.strip())
+                if m:
+                    distmeta.update(handler(m))
+        return distmeta
+
+# -*- Requirements -*-
+
+
+def _strip_comments(l):
+    return l.split('#', 1)[0].strip()
+
+
+def _pip_requirement(req):
+    if req.startswith('-r '):
+        _, path = req.split()
+        return reqs(*path.split('/'))
+    return [req]
+
+
+def _reqs(*f):
+    return [
+        _pip_requirement(r) for r in (
+            _strip_comments(l) for l in open(
+                os.path.join(os.getcwd(), 'requirements', *f)).readlines()
+        ) if r]
+
+
+def reqs(*f):
+    """Parse requirement file.
+
+    Example:
+        reqs('default.txt')          # requirements/default.txt
+        reqs('extras', 'redis.txt')  # requirements/extras/redis.txt
+    Returns:
+        List[str]: list of requirements specified in the file.
+    """
+    return [req for subreq in _reqs(*f) for req in subreq]
+
+
+def extras(*p):
+    """Parse requirement in the requirements/extras/ directory."""
+    return reqs('extras', *p)
+
+
+def install_requires():
+    """Get list of requirements required for installation."""
+    return reqs('default.txt')
+
+
+def extras_require():
+    """Get map of all extra requirements."""
+    return {x: extras(x + '.txt') for x in EXTENSIONS}
+
+# -*- Long Description -*-
+
+
+def long_description():
+    try:
+        return codecs.open('README.rst', 'r', 'utf-8').read()
+    except OSError:
+        return 'Long description error: Missing README.rst file'
+
+
+meta = parse_dist_meta()
+setuptools.setup(
+    name=NAME,
+    packages=setuptools.find_packages(exclude=['t', 't.*']),
+    version=meta['version'],
+    description=meta['doc'],
+    long_description=long_description(),
+    keywords=meta['keywords'],
+    author=meta['author'],
+    author_email=meta['contact'],
+    url=meta['homepage'],
+    license='BSD-3-Clause',
+    platforms=['any'],
+    install_requires=install_requires(),
+    python_requires=">=3.10",
+    tests_require=reqs('test.txt'),
+    extras_require=extras_require(),
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'celery = celery.__main__:main',
+        ]
+    },
+    project_urls={
+        "Documentation": "https://docs.celeryq.dev/en/stable/",
+        "Changelog": "https://docs.celeryq.dev/en/stable/changelog.html",
+        "Code": "https://github.com/celery/celery",
+        "Tracker": "https://github.com/celery/celery/issues",
+        "Funding": "https://opencollective.com/celery"
+    },
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: System :: Distributed Computing",
+        "Topic :: Software Development :: Object Brokering",
+        "Framework :: Celery",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Operating System :: OS Independent"
+    ]
+)
+
+`````
+
+--- **end of file: setup.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: pyproject.toml** (project: celery) --- 
+
+`````text
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+testpaths = "t/unit/"
+python_classes = "test_*"
+xfail_strict=true
+markers = ["sleepdeprived_patched_module", "masked_modules", "patched_environ", "patched_module", "flaky", "timeout", "amqp"]
+
+[tool.mypy]
+warn_unused_configs = true
+strict = false
+follow_imports = "skip"
+show_error_codes = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+files = [
+    "celery/__main__.py",
+    "celery/states.py",
+    "celery/signals.py",
+    "celery/fixups",
+    "celery/concurrency/thread.py",
+    "celery/security/certificate.py",
+    "celery/utils/text.py",
+    "celery/schedules.py",
+    "celery/apps/beat.py",
+]
+
+[tool.codespell]
+ignore-words-list = "assertin"
+skip = "./.*,docs/AUTHORS.txt,docs/history/*,docs/spelling_wordlist.txt,Changelog.rst,CONTRIBUTORS.txt,*.key"
+
+[tool.coverage.run]
+branch = true
+cover_pylib = false
+include = ["*celery/*"]
+omit = ["celery.tests.*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "except ImportError:"
+]
+omit = [
+    "*/python?.?/*",
+    "*/site-packages/*",
+    "*/pypy/*",
+    "*/celery/bin/graph.py",
+    "*celery/bin/logtool.py",
+    "*celery/task/base.py",
+    "*celery/contrib/sphinx.py",
+    "*celery/concurrency/asynpool.py",
+    "*celery/utils/debug.py",
+    "*celery/contrib/testing/*",
+    "*celery/contrib/pytest.py"
+]
+
+`````
+
+--- **end of file: pyproject.toml** (project: celery) --- 
+
+---
+
+# markdown content namespace: celery codes 
+
+
+## celery File Tree (relative dir: `celery`)
+
+
+`````
+
+└── celery
+    ├── __init__.py
+    ├── __main__.py
+    ├── _state.py
+    ├── app
+    │   ├── __init__.py
+    │   ├── amqp.py
+    │   ├── annotations.py
+    │   ├── autoretry.py
+    │   ├── backends.py
+    │   ├── base.py
+    │   ├── builtins.py
+    │   ├── control.py
+    │   ├── defaults.py
+    │   ├── events.py
+    │   ├── log.py
+    │   ├── registry.py
+    │   ├── routes.py
+    │   ├── task.py
+    │   ├── trace.py
+    │   └── utils.py
+    ├── apps
+    │   ├── __init__.py
+    │   ├── beat.py
+    │   ├── multi.py
+    │   └── worker.py
+    ├── backends
+    │   ├── __init__.py
+    │   ├── arangodb.py
+    │   ├── asynchronous.py
+    │   ├── azureblockblob.py
+    │   ├── base.py
+    │   ├── cache.py
+    │   ├── cassandra.py
+    │   ├── consul.py
+    │   ├── cosmosdbsql.py
+    │   ├── couchbase.py
+    │   ├── couchdb.py
+    │   ├── database
+    │   │   ├── __init__.py
+    │   │   ├── models.py
+    │   │   └── session.py
+    │   ├── dynamodb.py
+    │   ├── elasticsearch.py
+    │   ├── filesystem.py
+    │   ├── gcs.py
+    │   ├── mongodb.py
+    │   ├── redis.py
+    │   ├── rpc.py
+    │   └── s3.py
+    ├── beat.py
+    ├── bin
+    │   ├── __init__.py
+    │   ├── amqp.py
+    │   ├── base.py
+    │   ├── beat.py
+    │   ├── call.py
+    │   ├── celery.py
+    │   ├── control.py
+    │   ├── events.py
+    │   ├── graph.py
+    │   ├── list.py
+    │   ├── logtool.py
+    │   ├── migrate.py
+    │   ├── multi.py
+    │   ├── purge.py
+    │   ├── result.py
+    │   ├── shell.py
+    │   ├── upgrade.py
+    │   └── worker.py
+    ├── bootsteps.py
+    ├── canvas.py
+    ├── concurrency
+    │   ├── __init__.py
+    │   ├── asynpool.py
+    │   ├── base.py
+    │   ├── eventlet.py
+    │   ├── gevent.py
+    │   ├── prefork.py
+    │   ├── solo.py
+    │   └── thread.py
+    ├── contrib
+    │   ├── __init__.py
+    │   ├── abortable.py
+    │   ├── django
+    │   │   ├── __init__.py
+    │   │   └── task.py
+    │   ├── migrate.py
+    │   ├── pytest.py
+    │   ├── rdb.py
+    │   ├── sphinx.py
+    │   └── testing
+    │       ├── __init__.py
+    │       ├── app.py
+    │       ├── manager.py
+    │       ├── mocks.py
+    │       ├── tasks.py
+    │       └── worker.py
+    ├── events
+    │   ├── __init__.py
+    │   ├── cursesmon.py
+    │   ├── dispatcher.py
+    │   ├── dumper.py
+    │   ├── event.py
+    │   ├── receiver.py
+    │   ├── snapshot.py
+    │   └── state.py
+    ├── exceptions.py
+    ├── fixups
+    │   ├── __init__.py
+    │   └── django.py
+    ├── loaders
+    │   ├── __init__.py
+    │   ├── app.py
+    │   ├── base.py
+    │   └── default.py
+    ├── local.py
+    ├── platforms.py
+    ├── result.py
+    ├── schedules.py
+    ├── security
+    │   ├── __init__.py
+    │   ├── certificate.py
+    │   ├── key.py
+    │   ├── serialization.py
+    │   └── utils.py
+    ├── signals.py
+    ├── states.py
+    ├── utils
+    │   ├── __init__.py
+    │   ├── abstract.py
+    │   ├── annotations.py
+    │   ├── collections.py
+    │   ├── debug.py
+    │   ├── deprecated.py
+    │   ├── dispatch
+    │   │   ├── __init__.py
+    │   │   └── signal.py
+    │   ├── functional.py
+    │   ├── graph.py
+    │   ├── imports.py
+    │   ├── iso8601.py
+    │   ├── log.py
+    │   ├── nodenames.py
+    │   ├── objects.py
+    │   ├── quorum_queues.py
+    │   ├── saferepr.py
+    │   ├── serialization.py
+    │   ├── static
+    │   │   └── __init__.py
+    │   ├── sysinfo.py
+    │   ├── term.py
+    │   ├── text.py
+    │   ├── threads.py
+    │   ├── time.py
+    │   └── timer2.py
+    └── worker
+        ├── __init__.py
+        ├── autoscale.py
+        ├── components.py
+        ├── consumer
+        │   ├── __init__.py
+        │   ├── agent.py
+        │   ├── connection.py
+        │   ├── consumer.py
+        │   ├── control.py
+        │   ├── delayed_delivery.py
+        │   ├── events.py
+        │   ├── gossip.py
+        │   ├── heart.py
+        │   ├── mingle.py
+        │   └── tasks.py
+        ├── control.py
+        ├── heartbeat.py
+        ├── loops.py
+        ├── pidbox.py
+        ├── request.py
+        ├── state.py
+        ├── strategy.py
+        └── worker.py
+
+`````
+
+---
+
+
+## celery (relative dir: `celery`)  Included Files (total: 161 files)
+
+
+- `celery/beat.py`
+
+- `celery/bootsteps.py`
+
+- `celery/canvas.py`
+
+- `celery/exceptions.py`
+
+- `celery/local.py`
+
+- `celery/platforms.py`
+
+- `celery/result.py`
+
+- `celery/schedules.py`
+
+- `celery/signals.py`
+
+- `celery/states.py`
+
+- `celery/_state.py`
+
+- `celery/__init__.py`
+
+- `celery/__main__.py`
+
+- `celery/app/amqp.py`
+
+- `celery/app/annotations.py`
+
+- `celery/app/autoretry.py`
+
+- `celery/app/backends.py`
+
+- `celery/app/base.py`
+
+- `celery/app/builtins.py`
+
+- `celery/app/control.py`
+
+- `celery/app/defaults.py`
+
+- `celery/app/events.py`
+
+- `celery/app/log.py`
+
+- `celery/app/registry.py`
+
+- `celery/app/routes.py`
+
+- `celery/app/task.py`
+
+- `celery/app/trace.py`
+
+- `celery/app/utils.py`
+
+- `celery/app/__init__.py`
+
+- `celery/apps/beat.py`
+
+- `celery/apps/multi.py`
+
+- `celery/apps/worker.py`
+
+- `celery/apps/__init__.py`
+
+- `celery/backends/arangodb.py`
+
+- `celery/backends/asynchronous.py`
+
+- `celery/backends/azureblockblob.py`
+
+- `celery/backends/base.py`
+
+- `celery/backends/cache.py`
+
+- `celery/backends/cassandra.py`
+
+- `celery/backends/consul.py`
+
+- `celery/backends/cosmosdbsql.py`
+
+- `celery/backends/couchbase.py`
+
+- `celery/backends/couchdb.py`
+
+- `celery/backends/dynamodb.py`
+
+- `celery/backends/elasticsearch.py`
+
+- `celery/backends/filesystem.py`
+
+- `celery/backends/gcs.py`
+
+- `celery/backends/mongodb.py`
+
+- `celery/backends/redis.py`
+
+- `celery/backends/rpc.py`
+
+- `celery/backends/s3.py`
+
+- `celery/backends/__init__.py`
+
+- `celery/backends/database/models.py`
+
+- `celery/backends/database/session.py`
+
+- `celery/backends/database/__init__.py`
+
+- `celery/bin/amqp.py`
+
+- `celery/bin/base.py`
+
+- `celery/bin/beat.py`
+
+- `celery/bin/call.py`
+
+- `celery/bin/celery.py`
+
+- `celery/bin/control.py`
+
+- `celery/bin/events.py`
+
+- `celery/bin/graph.py`
+
+- `celery/bin/list.py`
+
+- `celery/bin/logtool.py`
+
+- `celery/bin/migrate.py`
+
+- `celery/bin/multi.py`
+
+- `celery/bin/purge.py`
+
+- `celery/bin/result.py`
+
+- `celery/bin/shell.py`
+
+- `celery/bin/upgrade.py`
+
+- `celery/bin/worker.py`
+
+- `celery/bin/__init__.py`
+
+- `celery/concurrency/asynpool.py`
+
+- `celery/concurrency/base.py`
+
+- `celery/concurrency/eventlet.py`
+
+- `celery/concurrency/gevent.py`
+
+- `celery/concurrency/prefork.py`
+
+- `celery/concurrency/solo.py`
+
+- `celery/concurrency/thread.py`
+
+- `celery/concurrency/__init__.py`
+
+- `celery/contrib/abortable.py`
+
+- `celery/contrib/migrate.py`
+
+- `celery/contrib/pytest.py`
+
+- `celery/contrib/rdb.py`
+
+- `celery/contrib/sphinx.py`
+
+- `celery/contrib/__init__.py`
+
+- `celery/contrib/django/task.py`
+
+- `celery/contrib/django/__init__.py`
+
+- `celery/contrib/testing/app.py`
+
+- `celery/contrib/testing/manager.py`
+
+- `celery/contrib/testing/mocks.py`
+
+- `celery/contrib/testing/tasks.py`
+
+- `celery/contrib/testing/worker.py`
+
+- `celery/contrib/testing/__init__.py`
+
+- `celery/events/cursesmon.py`
+
+- `celery/events/dispatcher.py`
+
+- `celery/events/dumper.py`
+
+- `celery/events/event.py`
+
+- `celery/events/receiver.py`
+
+- `celery/events/snapshot.py`
+
+- `celery/events/state.py`
+
+- `celery/events/__init__.py`
+
+- `celery/fixups/django.py`
+
+- `celery/fixups/__init__.py`
+
+- `celery/loaders/app.py`
+
+- `celery/loaders/base.py`
+
+- `celery/loaders/default.py`
+
+- `celery/loaders/__init__.py`
+
+- `celery/security/certificate.py`
+
+- `celery/security/key.py`
+
+- `celery/security/serialization.py`
+
+- `celery/security/utils.py`
+
+- `celery/security/__init__.py`
+
+- `celery/utils/abstract.py`
+
+- `celery/utils/annotations.py`
+
+- `celery/utils/collections.py`
+
+- `celery/utils/debug.py`
+
+- `celery/utils/deprecated.py`
+
+- `celery/utils/functional.py`
+
+- `celery/utils/graph.py`
+
+- `celery/utils/imports.py`
+
+- `celery/utils/iso8601.py`
+
+- `celery/utils/log.py`
+
+- `celery/utils/nodenames.py`
+
+- `celery/utils/objects.py`
+
+- `celery/utils/quorum_queues.py`
+
+- `celery/utils/saferepr.py`
+
+- `celery/utils/serialization.py`
+
+- `celery/utils/sysinfo.py`
+
+- `celery/utils/term.py`
+
+- `celery/utils/text.py`
+
+- `celery/utils/threads.py`
+
+- `celery/utils/time.py`
+
+- `celery/utils/timer2.py`
+
+- `celery/utils/__init__.py`
+
+- `celery/utils/dispatch/signal.py`
+
+- `celery/utils/dispatch/__init__.py`
+
+- `celery/utils/static/__init__.py`
+
+- `celery/worker/autoscale.py`
+
+- `celery/worker/components.py`
+
+- `celery/worker/control.py`
+
+- `celery/worker/heartbeat.py`
+
+- `celery/worker/loops.py`
+
+- `celery/worker/pidbox.py`
+
+- `celery/worker/request.py`
+
+- `celery/worker/state.py`
+
+- `celery/worker/strategy.py`
+
+- `celery/worker/worker.py`
+
+- `celery/worker/__init__.py`
+
+- `celery/worker/consumer/agent.py`
+
+- `celery/worker/consumer/connection.py`
+
+- `celery/worker/consumer/consumer.py`
+
+- `celery/worker/consumer/control.py`
+
+- `celery/worker/consumer/delayed_delivery.py`
+
+- `celery/worker/consumer/events.py`
+
+- `celery/worker/consumer/gossip.py`
+
+- `celery/worker/consumer/heart.py`
+
+- `celery/worker/consumer/mingle.py`
+
+- `celery/worker/consumer/tasks.py`
+
+- `celery/worker/consumer/__init__.py`
+
+
+---
+
+
+--- **start of file: celery/beat.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/beat.py`
+
+#### 📝 Module Docstring
+
+`````
+The periodic task scheduler.
+`````
+
+#### 📦 Imports
+
+- `import copy`
+- `import dbm`
+- `import errno`
+- `import heapq`
+- `import os`
+- `import shelve`
+- `import sys`
+- `import time`
+- `import traceback`
+- `from calendar import timegm`
+- `from collections import namedtuple`
+- `from functools import total_ordering`
+- `from pickle import UnpicklingError`
+- `from threading import Event`
+- `from threading import Thread`
+- `from billiard import ensure_multiprocessing`
+- `from billiard.common import reset_signals`
+- `from billiard.context import Process`
+- `from kombu.utils.functional import maybe_evaluate`
+- `from kombu.utils.functional import reprcall`
+- `from kombu.utils.objects import cached_property`
+- `from  import __version__`
+- `from  import platforms`
+- `from  import signals`
+- `from exceptions import reraise`
+- `from schedules import crontab`
+- `from schedules import maybe_schedule`
+- `from utils.functional import is_numeric_value`
+- `from utils.imports import load_extension_class_names`
+- `from utils.imports import symbol_by_name`
+- `from utils.log import get_logger`
+- `from utils.log import iter_open_logger_fds`
+- `from utils.time import humanize_seconds`
+- `from utils.time import maybe_make_aware`
+
+#### 🏛️ Classes (8)
+
+##### 📌 `class SchedulingError(Exception)`
+*Line: 46*
+
+**Docstring:**
+`````
+An error occurred while scheduling a task.
+`````
+
+##### 📌 `class BeatLazyFunc`
+*Line: 50*
+
+**Docstring:**
+`````
+A lazy function declared in 'beat_schedule' and called before sending to worker.
+
+Example:
+
+    beat_schedule = {
+        'test-every-5-minutes': {
+            'task': 'test',
+            'schedule': 300,
+            'kwargs': {
+                "current": BeatCallBack(datetime.datetime.now)
+            }
+        }
+    }
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, func, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `func`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def delay(self)`
+
+##### 📌 `class ScheduleEntry`
+*Line: 82*
+
+**Docstring:**
+`````
+An entry in the scheduler.
+
+Arguments:
+    name (str): see :attr:`name`.
+    schedule (~celery.schedules.schedule): see :attr:`schedule`.
+    args (Tuple): see :attr:`args`.
+    kwargs (Dict): see :attr:`kwargs`.
+    options (Dict): see :attr:`options`.
+    last_run_at (~datetime.datetime): see :attr:`last_run_at`.
+    total_run_count (int): see :attr:`total_run_count`.
+    relative (bool): Is the time relative to when the server starts?
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, name = None, task = None, last_run_at = None, total_run_count = None, schedule = None, args = (), kwargs = None, options = None, relative = False, app = None)`
+  - **Parameters:**
+    - `self`
+    - `name = None`
+    - `task = None`
+    - `last_run_at = None`
+    - `total_run_count = None`
+    - `schedule = None`
+    - `args = ()`
+    - `kwargs = None`
+    - `options = None`
+    - `relative = False`
+    - `app = None`
+
+**Public Methods (4):**
+- `def default_now(self)`
+- `def update(self, other)`
+  - **Docstring:**
+  `````
+  Update values from another entry.
+  
+  Will only update "editable" fields:
+      ``task``, ``schedule``, ``args``, ``kwargs``, ``options``.
+  `````
+- `def is_due(self)`
+  - *See :meth:`~celery.schedules.schedule.is_due`.*
+- `def editable_fields_equal(self, other)`
+
+**Class Variables (10):**
+- `name = None`
+- `schedule = None`
+- `args = None`
+- `kwargs = None`
+- `options = None`
+- `last_run_at = None`
+- `total_run_count = 0`
+- `_default_now = default_now`
+- `__next__ = _next_instance`
+- `next = _next_instance`
+
+##### 📌 `class Scheduler`
+*Line: 219*
+
+**Docstring:**
+`````
+Scheduler for periodic tasks.
+
+The :program:`celery beat` program may instantiate this class
+multiple times for introspection purposes, but then with the
+``lazy`` argument set.  It's important for subclasses to
+be idempotent when this argument is set.
+
+Arguments:
+    schedule (~celery.schedules.schedule): see :attr:`schedule`.
+    max_interval (int): see :attr:`max_interval`.
+    lazy (bool): Don't set up the schedule.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, schedule = None, max_interval = None, Producer = None, lazy = False, sync_every_tasks = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `schedule = None`
+    - `max_interval = None`
+    - `Producer = None`
+    - `lazy = False`
+    - `sync_every_tasks = None`
+    - `**kwargs`
+
+**Public Methods (19):**
+- `def install_default_entries(self, data)`
+- `def apply_entry(self, entry, producer = None)`
+- `def adjust(self, n, drift = -0.01)`
+- `def is_due(self, entry)`
+- `def populate_heap(self, event_t = event_t, heapify = heapq.heapify)`
+  - *Populate the heap with the data contained in the schedule.*
+- `def tick(self, event_t = event_t, min = min, heappop = heapq.heappop, heappush = heapq.heappush)`
+  - **Docstring:**
+  `````
+  Run a tick - one iteration of the scheduler.
+  
+  Executes one due task per call.
+  
+  Returns:
+      float: preferred delay in seconds for next call.
+  `````
+- `def schedules_equal(self, old_schedules, new_schedules)`
+- `def should_sync(self)`
+- `def reserve(self, entry)`
+- `def apply_async(self, entry, producer = None, advance = True, **kwargs)`
+- `def send_task(self, *args, **kwargs)`
+- `def setup_schedule(self)`
+- `def sync(self)`
+- `def close(self)`
+- `def add(self, **kwargs)`
+- `def update_from_dict(self, dict_)`
+- `def merge_inplace(self, b)`
+- `def get_schedule(self)`
+- `def set_schedule(self, schedule)`
+
+**Properties (3):**
+- `@property connection`
+- `@property producer`
+- `@property info`
+
+**Class Variables (9):**
+- `Entry = ScheduleEntry`
+- `schedule = None`
+- `max_interval = DEFAULT_MAX_INTERVAL`
+- `sync_every = 3 * 60`
+- `sync_every_tasks = None`
+- `_last_sync = None`
+- `_tasks_since_sync = 0`
+- `logger = logger`
+- `schedule = property(get_schedule, set_schedule)`
+
+##### 📌 `class PersistentScheduler(Scheduler)`
+*Line: 505*
+
+**Docstring:**
+`````
+Scheduler backed by :mod:`shelve` database.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def setup_schedule(self)`
+- `def get_schedule(self)`
+- `def set_schedule(self, schedule)`
+- `def sync(self)`
+- `def close(self)`
+
+**Properties (1):**
+- `@property info`
+
+**Class Variables (4):**
+- `persistence = shelve`
+- `known_suffixes = ('', '.db', '.dat', '.bak', '.dir')`
+- `_store = None`
+- `schedule = property(get_schedule, set_schedule)`
+
+##### 📌 `class Service`
+*Line: 612*
+
+**Docstring:**
+`````
+Celery periodic task service.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, max_interval = None, schedule_filename = None, scheduler_cls = None)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `max_interval = None`
+    - `schedule_filename = None`
+    - `scheduler_cls = None`
+
+**Public Methods (4):**
+- `def start(self, embedded_process = False)`
+- `def sync(self)`
+- `def stop(self, wait = False)`
+- `def get_scheduler(self, lazy = False, extension_namespace = 'celery.beat_schedulers')`
+
+**Properties (1):**
+- `@property scheduler`
+
+**Class Variables (1):**
+- `scheduler_cls = PersistentScheduler`
+
+##### 📌 `class _Threaded(Thread)`
+*Line: 682*
+
+**Docstring:**
+`````
+Embedded task scheduler using threading.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `**kwargs`
+
+**Public Methods (2):**
+- `def run(self)`
+- `def stop(self)`
+
+##### 📌 `class _Process(Process)`
+*Line: 705*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `**kwargs`
+
+**Public Methods (2):**
+- `def run(self)`
+- `def stop(self)`
+
+#### 🔧 Public Functions (1)
+
+- `def EmbeddedService(app, max_interval = None, **kwargs)`
+  - *Line: 727*
+  - **Docstring:**
+  `````
+  Return embedded clock service.
+  
+  Arguments:
+      thread (bool): Run threaded instead of as a separate process.
+          Uses :mod:`multiprocessing` by default, if available.
+  `````
+
+
+---
+
+`````python
 """The periodic task scheduler."""
 
 import copy
@@ -17,6 +1284,7 @@ import traceback
 from calendar import timegm
 from collections import namedtuple
 from functools import total_ordering
+from pickle import UnpicklingError
 from threading import Event, Thread
 
 from billiard import ensure_multiprocessing
@@ -574,11 +1842,11 @@ class PersistentScheduler(Scheduler):
         for _ in (1, 2):
             try:
                 self._store['entries']
-            except (KeyError, UnicodeDecodeError, TypeError):
+            except (KeyError, UnicodeDecodeError, TypeError, UnpicklingError):
                 # new schedule db
                 try:
                     self._store['entries'] = {}
-                except (KeyError, UnicodeDecodeError, TypeError) + dbm.error as exc:
+                except (KeyError, UnicodeDecodeError, TypeError, UnpicklingError) + dbm.error as exc:
                     self._store = self._destroy_open_corrupted_schedule(exc)
                     continue
             else:
@@ -631,8 +1899,8 @@ class Service:
         self._is_stopped = Event()
 
     def __reduce__(self):
-        return self.__class__, (self.max_interval, self.schedule_filename,
-                                self.scheduler_cls, self.app)
+        return self.__class__, (self.app, self.max_interval,
+                                self.schedule_filename, self.scheduler_cls)
 
     def start(self, embedded_process=False):
         info('beat: Starting...')
@@ -741,10 +2009,221 @@ def EmbeddedService(app, max_interval=None, **kwargs):
         return _Threaded(app, max_interval=1, **kwargs)
     return _Process(app, max_interval=max_interval, **kwargs)
 
-```
+`````
 
-### 代码文件: celery\bootsteps.py
-```python
+--- **end of file: celery/beat.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bootsteps.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bootsteps.py`
+
+#### 📝 Module Docstring
+
+`````
+A directed acyclic graph of reusable components.
+`````
+
+#### 📦 Imports
+
+- `from collections import deque`
+- `from threading import Event`
+- `from kombu.common import ignore_errors`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.imports import symbol_by_name`
+- `from utils.graph import DependencyGraph`
+- `from utils.graph import GraphFormatter`
+- `from utils.imports import instantiate`
+- `from utils.imports import qualname`
+- `from utils.log import get_logger`
+- `from greenlet import GreenletExit`
+
+#### 🏛️ Classes (6)
+
+##### 📌 `class StepFormatter(GraphFormatter)`
+*Line: 39*
+
+**Docstring:**
+`````
+Graph formatter for :class:`Blueprint`.
+`````
+
+**Public Methods (3):**
+- `def label(self, step)`
+- `def node(self, obj, **attrs)`
+- `def edge(self, a, b, **attrs)`
+
+**Class Variables (3):**
+- `blueprint_prefix = '⧉'`
+- `conditional_prefix = '∘'`
+- `blueprint_scheme = {'shape': 'parallelogram', 'color': 'slategray4', 'fillcolor': 'slategray3'}`
+
+##### 📌 `class Blueprint`
+*Line: 74*
+
+**Docstring:**
+`````
+Blueprint containing bootsteps that can be applied to objects.
+
+Arguments:
+    steps Sequence[Union[str, Step]]: List of steps.
+    name (str): Set explicit name for this blueprint.
+    on_start (Callable): Optional callback applied after blueprint start.
+    on_close (Callable): Optional callback applied before blueprint close.
+    on_stopped (Callable): Optional callback applied after
+        blueprint stopped.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, steps = None, name = None, on_start = None, on_close = None, on_stopped = None)`
+  - **Parameters:**
+    - `self`
+    - `steps = None`
+    - `name = None`
+    - `on_start = None`
+    - `on_close = None`
+    - `on_stopped = None`
+
+**Public Methods (12):**
+- `def start(self, parent)`
+- `def human_state(self)`
+- `def info(self, parent)`
+- `def close(self, parent)`
+- `def restart(self, parent, method = 'stop', description = 'restarting', propagate = False)`
+- `def send_all(self, parent, method, description = None, reverse = True, propagate = True, args = ())`
+- `def stop(self, parent, close = True, terminate = False)`
+- `def join(self, timeout = None)`
+- `def apply(self, parent, **kwargs)`
+  - **Docstring:**
+  `````
+  Apply the steps in this blueprint to an object.
+  
+  This will apply the ``__init__`` and ``include`` methods
+  of each step, with the object as argument::
+  
+      step = Step(obj)
+      ...
+      step.include(obj)
+  
+  For :class:`StartStopStep` the services created
+  will also be added to the objects ``steps`` attribute.
+  `````
+- `def connect_with(self, other)`
+- `def claim_steps(self)`
+- `def load_step(self, step)`
+
+**Properties (1):**
+- `@property alias`
+
+**Class Variables (6):**
+- `GraphFormatter = StepFormatter`
+- `name = None`
+- `state = None`
+- `started = 0`
+- `default_steps = set()`
+- `state_to_name = {0: 'initializing', RUN: 'running', CLOSE: 'closing', TERMINATE: 'terminating'}`
+
+##### 📌 `class StepType(type)`
+*Line: 266*
+
+**Docstring:**
+`````
+Meta-class for steps.
+`````
+
+**Class Variables (2):**
+- `name = None`
+- `requires = None`
+
+##### 📌 `class Step`
+*Line: 288*
+
+**Docstring:**
+`````
+A Bootstep.
+
+The :meth:`__init__` method is called when the step
+is bound to a parent object, and can as such be used
+to initialize attributes in the parent object at
+parent instantiation-time.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, parent, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `parent`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def include_if(self, parent)`
+  - **Docstring:**
+  `````
+  Return true if bootstep should be included.
+  
+  You can define this as an optional predicate that decides whether
+  this step should be created.
+  `````
+- `def instantiate(self, name, *args, **kwargs)`
+- `def include(self, parent)`
+- `def create(self, parent)`
+  - *Create the step.*
+- `def info(self, obj)`
+
+**Properties (1):**
+- `@property alias`
+
+**Class Variables (6):**
+- `name = None`
+- `label = None`
+- `conditional = False`
+- `requires = ()`
+- `last = False`
+- `enabled = True`
+
+##### 📌 `class StartStopStep(Step)`
+*Line: 355*
+
+**Docstring:**
+`````
+Bootstep that must be started and stopped in order.
+`````
+
+**Public Methods (5):**
+- `def start(self, parent)`
+- `def stop(self, parent)`
+- `def close(self, parent)`
+- `def terminate(self, parent)`
+- `def include(self, parent)`
+
+**Class Variables (1):**
+- `obj = None`
+
+##### 📌 `class ConsumerStep(StartStopStep)`
+*Line: 386*
+
+**Docstring:**
+`````
+Bootstep that starts a message consumer.
+`````
+
+**Public Methods (4):**
+- `def get_consumers(self, channel)`
+- `def start(self, c)`
+- `def stop(self, c)`
+- `def shutdown(self, c)`
+
+**Class Variables (2):**
+- `requires = ('celery.worker.consumer:Connection',)`
+- `consumers = None`
+
+
+---
+
+`````python
 """A directed acyclic graph of reusable components."""
 
 from collections import deque
@@ -1050,7 +2529,7 @@ class Step(metaclass=StepType):
     #: Set this to true if the step is enabled based on some condition.
     conditional = False
 
-    #: List of other steps that that must be started before this step.
+    #: List of other steps that must be started before this step.
     #: Note that all dependencies must be in the same blueprint.
     requires = ()
 
@@ -1161,10 +2640,991 @@ class ConsumerStep(StartStopStep):
         for channel in channels:
             ignore_errors(c.connection, channel.close)
 
-```
+`````
 
-### 代码文件: celery\canvas.py
-```python
+--- **end of file: celery/bootsteps.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/canvas.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/canvas.py`
+
+#### 📝 Module Docstring
+
+`````
+Composing task work-flows.
+
+.. seealso:
+
+    You should import these from :mod:`celery` and not this module.
+`````
+
+#### 📦 Imports
+
+- `import itertools`
+- `import operator`
+- `import types`
+- `import warnings`
+- `from abc import ABCMeta`
+- `from abc import abstractmethod`
+- `from collections import deque`
+- `from collections.abc import MutableSequence`
+- `from copy import deepcopy`
+- `from functools import partial as _partial`
+- `from functools import reduce`
+- `from operator import itemgetter`
+- `from types import GeneratorType`
+- `from kombu.utils.functional import fxrange`
+- `from kombu.utils.functional import reprcall`
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.uuid import uuid`
+- `from vine import barrier`
+- `from celery._state import current_app`
+- `from celery.exceptions import CPendingDeprecationWarning`
+- `from celery.result import GroupResult`
+- `from celery.result import allow_join_result`
+- `from celery.utils import abstract`
+- `from celery.utils.collections import ChainMap`
+- `from celery.utils.functional import _regen`
+- `from celery.utils.functional import chunks as _chunks`
+- `from celery.utils.functional import is_list`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.functional import regen`
+- `from celery.utils.functional import seq_concat_item`
+- `from celery.utils.functional import seq_concat_seq`
+- `from celery.utils.objects import getitem_property`
+- `from celery.utils.text import remove_repeating_from_task`
+- `from celery.utils.text import truncate`
+
+#### 🏛️ Classes (10)
+
+##### 📌 `class StampingVisitor`
+*Line: 119*
+
+**Docstring:**
+`````
+Stamping API.  A class that provides a stamping API possibility for
+canvas primitives. If you want to implement stamping behavior for
+a canvas primitive override method that represents it.
+`````
+
+**Public Methods (10):**
+- `def on_group_start(self, group, **headers) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on group stamping start.
+  
+  Arguments:
+      group (group): Group that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_group_end(self, group, **headers) -> None`
+  - **Docstring:**
+  `````
+  Method that is called on group stamping end.
+  
+  Arguments:
+      group (group): Group that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  `````
+- `def on_chain_start(self, chain, **headers) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on chain stamping start.
+  
+  Arguments:
+      chain (chain): Chain that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_chain_end(self, chain, **headers) -> None`
+  - **Docstring:**
+  `````
+  Method that is called on chain stamping end.
+  
+  Arguments:
+      chain (chain): Chain that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  `````
+- `def on_signature(self, sig, **headers) -> dict` `abstractmethod`
+  - **Docstring:**
+  `````
+  Method that is called on signature stamping.
+  
+  Arguments:
+      sig (Signature): Signature that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_chord_header_start(self, sig, **header) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on сhord header stamping start.
+  
+  Arguments:
+      sig (chord): chord that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_chord_header_end(self, sig, **header) -> None`
+  - **Docstring:**
+  `````
+  Method that is called on сhord header stamping end.
+  
+  Arguments:
+      sig (chord): chord that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  `````
+- `def on_chord_body(self, sig, **header) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on chord body stamping.
+  
+  Arguments:
+      sig (chord): chord that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_callback(self, callback, **header) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on callback stamping.
+  
+  Arguments:
+      callback (Signature): callback that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+- `def on_errback(self, errback, **header) -> dict`
+  - **Docstring:**
+  `````
+  Method that is called on errback stamping.
+  
+  Arguments:
+      errback (Signature): errback that is stamped.
+      headers (Dict): Partial headers that could be merged with existing headers.
+  Returns:
+      Dict: headers to update.
+  `````
+
+##### 📌 `class Signature(dict)`
+*Line: 233*
+
+**Docstring:**
+`````
+Task Signature.
+
+Class that wraps the arguments and execution options
+for a single task invocation.
+
+Used as the parts in a :class:`group` and other constructs,
+or to pass tasks around as callbacks while being compatible
+with serializers with a strict type subset.
+
+Signatures can also be created from tasks:
+
+- Using the ``.signature()`` method that has the same signature
+  as ``Task.apply_async``:
+
+    .. code-block:: pycon
+
+        >>> add.signature(args=(1,), kwargs={'kw': 2}, options={})
+
+- or the ``.s()`` shortcut that works for star arguments:
+
+    .. code-block:: pycon
+
+        >>> add.s(1, kw=2)
+
+- the ``.s()`` shortcut does not allow you to specify execution options
+  but there's a chaining `.set` method that returns the signature:
+
+    .. code-block:: pycon
+
+        >>> add.s(2, 2).set(countdown=10).set(expires=30).delay()
+
+Note:
+    You should use :func:`~celery.signature` to create new signatures.
+    The ``Signature`` class is the type returned by that function and
+    should be used for ``isinstance`` checks for signatures.
+
+See Also:
+    :ref:`guide-canvas` for the complete guide.
+
+Arguments:
+    task (Union[Type[celery.app.task.Task], str]): Either a task
+        class/instance, or the name of a task.
+    args (Tuple): Positional arguments to apply.
+    kwargs (Dict): Keyword arguments to apply.
+    options (Dict): Additional options to :meth:`Task.apply_async`.
+
+Note:
+    If the first argument is a :class:`dict`, the other
+    arguments will be ignored and the values in the dict will be used
+    instead::
+
+        >>> s = signature('tasks.add', args=(2, 2))
+        >>> signature(s)
+        {'task': 'tasks.add', args=(2, 2), kwargs={}, options={}}
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, task = None, args = None, kwargs = None, options = None, type = None, subtask_type = None, immutable = False, app = None, **ex)`
+  - **Parameters:**
+    - `self`
+    - `task = None`
+    - `args = None`
+    - `kwargs = None`
+    - `options = None`
+    - `type = None`
+    - `subtask_type = None`
+    - `immutable = False`
+    - `app = None`
+    - `**ex`
+
+**Public Methods (21):**
+- `def register_type(cls, name = None)` `classmethod`
+  - **Docstring:**
+  `````
+  Register a new type of signature.
+  Used as a class decorator, for example:
+  >>> @Signature.register_type()
+  >>> class mysig(Signature):
+  >>>     pass
+  `````
+- `def from_dict(cls, d, app = None)` `classmethod`
+  - **Docstring:**
+  `````
+  Create a new signature from a dict.
+  Subclasses can override this method to customize how are
+  they created from a dict.
+  `````
+- `def delay(self, *partial_args, **partial_kwargs)`
+  - *Shortcut to :meth:`apply_async` using star arguments.*
+- `def apply(self, args = None, kwargs = None, **options)`
+  - **Docstring:**
+  `````
+  Call task locally.
+  
+  Same as :meth:`apply_async` but executed the task inline instead
+  of sending a task message.
+  `````
+- `def apply_async(self, args = None, kwargs = None, route_name = None, **options)`
+  - **Docstring:**
+  `````
+  Apply this task asynchronously.
+  
+  Arguments:
+      args (Tuple): Partial args to be prepended to the existing args.
+      kwargs (Dict): Partial kwargs to be merged with existing kwargs.
+      options (Dict): Partial options to be merged
+          with existing options.
+  
+  Returns:
+      ~@AsyncResult: promise of future evaluation.
+  
+  See also:
+      :meth:`~@Task.apply_async` and the :ref:`guide-calling` guide.
+  `````
+- `def clone(self, args = None, kwargs = None, **opts)`
+  - **Docstring:**
+  `````
+  Create a copy of this signature.
+  
+  Arguments:
+      args (Tuple): Partial args to be prepended to the existing args.
+      kwargs (Dict): Partial kwargs to be merged with existing kwargs.
+      options (Dict): Partial options to be merged with
+          existing options.
+  `````
+- `def freeze(self, _id = None, group_id = None, chord = None, root_id = None, parent_id = None, group_index = None)`
+  - **Docstring:**
+  `````
+  Finalize the signature by adding a concrete task id.
+  
+  The task won't be called and you shouldn't call the signature
+  twice after freezing it as that'll result in two task messages
+  using the same task id.
+  
+  The arguments are used to override the signature's headers during
+  freezing.
+  
+  Arguments:
+      _id (str): Task id to use if it didn't already have one.
+          New UUID is generated if not provided.
+      group_id (str): Group id to use if it didn't already have one.
+      chord (Signature): Chord body when freezing a chord header.
+      root_id (str): Root id to use.
+      parent_id (str): Parent id to use.
+      group_index (int): Group index to use.
+  
+  Returns:
+      ~@AsyncResult: promise of future evaluation.
+  `````
+- `def replace(self, args = None, kwargs = None, options = None)`
+  - **Docstring:**
+  `````
+  Replace the args, kwargs or options set for this signature.
+  
+  These are only replaced if the argument for the section is
+  not :const:`None`.
+  `````
+- `def set(self, immutable = None, **options)`
+  - **Docstring:**
+  `````
+  Set arbitrary execution options (same as ``.options.update(…)``).
+  
+  Returns:
+      Signature: This is a chaining method call
+          (i.e., it will return ``self``).
+  `````
+- `def set_immutable(self, immutable)`
+- `def stamp(self, visitor = None, append_stamps = False, **headers)`
+  - **Docstring:**
+  `````
+  Stamp this signature with additional custom headers.
+  Using a visitor will pass on responsibility for the stamping
+  to the visitor.
+  
+  .. versionadded:: 5.3
+  
+  Arguments:
+      visitor (StampingVisitor): Visitor API object.
+      append_stamps (bool):
+          If True, duplicated stamps will be appended to a list.
+          If False, duplicated stamps will be replaced by the last stamp.
+      headers (Dict): Stamps that should be added to headers.
+  `````
+- `def stamp_links(self, visitor, append_stamps = False, **headers)`
+  - **Docstring:**
+  `````
+  Stamp this signature links (callbacks and errbacks).
+  Using a visitor will pass on responsibility for the stamping
+  to the visitor.
+  
+  Arguments:
+      visitor (StampingVisitor): Visitor API object.
+      append_stamps (bool):
+          If True, duplicated stamps will be appended to a list.
+          If False, duplicated stamps will be replaced by the last stamp.
+      headers (Dict): Stamps that should be added to headers.
+  `````
+- `def append_to_list_option(self, key, value)`
+  - *Appends the given value to the list at the given key in self.options.*
+- `def extend_list_option(self, key, value)`
+  - **Docstring:**
+  `````
+  Extends the list at the given key in self.options with the given value.
+  
+  If the value is not a list, it will be converted to one.
+  `````
+- `def link(self, callback)`
+  - **Docstring:**
+  `````
+  Add callback task to be applied if this task succeeds.
+  
+  Returns:
+      Signature: the argument passed, for chaining
+          or use with :func:`~functools.reduce`.
+  `````
+- `def link_error(self, errback)`
+  - **Docstring:**
+  `````
+  Add callback task to be applied on error in task execution.
+  
+  Returns:
+      Signature: the argument passed, for chaining
+          or use with :func:`~functools.reduce`.
+  `````
+- `def on_error(self, errback)`
+  - **Docstring:**
+  `````
+  Version of :meth:`link_error` that supports chaining.
+  
+  on_error chains the original signature, not the errback so::
+  
+      >>> add.s(2, 2).on_error(errback.s()).delay()
+  
+  calls the ``add`` task, not the ``errback`` task, but the
+  reverse is true for :meth:`link_error`.
+  `````
+- `def flatten_links(self)`
+  - **Docstring:**
+  `````
+  Return a recursive list of dependencies.
+  
+  "unchain" if you will, but with links intact.
+  `````
+- `def election(self)`
+- `def reprcall(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Return a string representation of the signature.
+  
+  Merges the given arguments with the signature's arguments
+  only for the purpose of generating the string representation.
+  The signature itself is not modified.
+  
+  Example:
+      >>> add.s(2, 2).reprcall()
+      'add(2, 2)'
+  `````
+- `def items(self)`
+
+**Properties (5):**
+- `@property name`
+- `@property type`
+- `@property app`
+- `@property AsyncResult`
+- `@property _apply_async`
+
+**Class Variables (16):**
+- `TYPES = {}`
+- `_app = None`
+- `_type = None`
+- `_IMMUTABLE_OPTIONS = {'group_id', 'stamped_headers'}`
+- `partial = clone`
+- `_freeze = freeze`
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+- `id = getitem_property('options.task_id', 'Task UUID')`
+- `parent_id = getitem_property('options.parent_id', 'Task parent UUID.')`
+- `root_id = getitem_property('options.root_id', 'Task root UUID.')`
+- `task = getitem_property('task', 'Name of task.')`
+- `args = getitem_property('args', 'Positional arguments to task.')`
+- `kwargs = getitem_property('kwargs', 'Keyword arguments to task.')`
+- `options = getitem_property('options', 'Task execution options.')`
+- `subtask_type = getitem_property('subtask_type', 'Type of signature')`
+- `immutable = getitem_property('immutable', 'Flag set if no longer accepts new arguments')`
+
+##### 📌 `class _chain(Signature)`
+*Line: 935*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *tasks, **options)`
+  - **Parameters:**
+    - `self`
+    - `*tasks`
+    - `**options`
+
+**Public Methods (9):**
+- `def from_dict(cls, d, app = None)` `classmethod`
+- `def clone(self, *args, **kwargs)`
+- `def unchain_tasks(self)`
+  - **Docstring:**
+  `````
+  Return a list of tasks in the chain.
+  
+  The tasks list would be cloned from the chain's tasks.
+  All of the chain callbacks would be added to the last task in the (cloned) chain.
+  All of the tasks would be linked to the same error callback
+  as the chain itself, to ensure that the correct error callback is called
+  if any of the (cloned) tasks of the chain fail.
+  `````
+- `def apply_async(self, args = None, kwargs = None, **options)`
+- `def run(self, args = None, kwargs = None, group_id = None, chord = None, task_id = None, link = None, link_error = None, publisher = None, producer = None, root_id = None, parent_id = None, app = None, group_index = None, **options)`
+  - **Docstring:**
+  `````
+  Executes the chain.
+  
+  Responsible for executing the chain in the correct order.
+  In a case of a chain of a single task, the task is executed directly
+  and the result is returned for that task specifically.
+  `````
+- `def freeze(self, _id = None, group_id = None, chord = None, root_id = None, parent_id = None, group_index = None)`
+- `def stamp(self, visitor = None, append_stamps = False, **headers)`
+- `def prepare_steps(self, args, kwargs, tasks, root_id = None, parent_id = None, link_error = None, app = None, last_task_id = None, group_id = None, chord_body = None, clone = True, from_dict = Signature.from_dict, group_index = None)`
+  - **Docstring:**
+  `````
+  Prepare the chain for execution.
+  
+  To execute a chain, we first need to unpack it correctly.
+  During the unpacking, we might encounter other chains, groups, or chords
+  which we need to unpack as well.
+  
+  For example:
+  chain(signature1, chain(signature2, signature3)) --> Upgrades to chain(signature1, signature2, signature3)
+  chain(group(signature1, signature2), signature3) --> Upgrades to chord([signature1, signature2], signature3)
+  
+  The responsibility of this method is to ensure that the chain is
+  correctly unpacked, and then the correct callbacks are set up along the way.
+  
+  Arguments:
+      args (Tuple): Partial args to be prepended to the existing args.
+      kwargs (Dict): Partial kwargs to be merged with existing kwargs.
+      tasks (List[Signature]): The tasks of the chain.
+      root_id (str): The id of the root task.
+      parent_id (str): The id of the parent task.
+      link_error (Union[List[Signature], Signature]): The error callback.
+          will be set for all tasks in the chain.
+      app (Celery): The Celery app instance.
+      last_task_id (str): The id of the last task in the chain.
+      group_id (str): The id of the group that the chain is a part of.
+      chord_body (Signature): The body of the chord, used to synchronize with the chain's
+          last task and the chord's body when used together.
+      clone (bool): Whether to clone the chain's tasks before modifying them.
+      from_dict (Callable): A function that takes a dict and returns a Signature.
+  
+  Returns:
+      Tuple[List[Signature], List[AsyncResult]]: The frozen tasks of the chain, and the async results
+  `````
+- `def apply(self, args = None, kwargs = None, **options)`
+
+**Properties (1):**
+- `@property app`
+
+**Class Variables (1):**
+- `tasks = getitem_property('kwargs.tasks', 'Tasks in chain.')`
+
+##### 📌 `class chain(_chain)`
+*Line: 1311*
+
+**Docstring:**
+`````
+Chain tasks together.
+
+Each tasks follows one another,
+by being applied as a callback of the previous task.
+
+Note:
+    If called with only one argument, then that argument must
+    be an iterable of tasks to chain: this allows us
+    to use generator expressions.
+
+Example:
+    This is effectively :math:`((2 + 2) + 4)`:
+
+    .. code-block:: pycon
+
+        >>> res = chain(add.s(2, 2), add.s(4))()
+        >>> res.get()
+        8
+
+    Calling a chain will return the result of the last task in the chain.
+    You can get to the other tasks by following the ``result.parent``'s:
+
+    .. code-block:: pycon
+
+        >>> res.parent.get()
+        4
+
+    Using a generator expression:
+
+    .. code-block:: pycon
+
+        >>> lazy_chain = chain(add.s(i) for i in range(10))
+        >>> res = lazy_chain(3)
+
+Arguments:
+    *tasks (Signature): List of task signatures to chain.
+        If only one argument is passed and that argument is
+        an iterable, then that'll be used as the list of signatures
+        to chain instead.  This means that you can use a generator
+        expression.
+
+Returns:
+    ~celery.chain: A lazy signature that can be called to apply the first
+        task in the chain.  When that task succeeds the next task in the
+        chain is applied, and so on.
+`````
+
+##### 📌 `class _basemap(Signature)`
+*Line: 1374*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, task, it, **options)`
+  - **Parameters:**
+    - `self`
+    - `task`
+    - `it`
+    - `**options`
+
+**Public Methods (2):**
+- `def from_dict(cls, d, app = None)` `classmethod`
+- `def apply_async(self, args = None, kwargs = None, **opts)`
+
+**Class Variables (2):**
+- `_task_name = None`
+- `_unpack_args = itemgetter('task', 'it')`
+
+##### 📌 `class xmap(_basemap)`
+*Line: 1399*
+
+**Docstring:**
+`````
+Map operation for tasks.
+
+Note:
+    Tasks executed sequentially in process, this is not a
+    parallel operation like :class:`group`.
+`````
+
+**Class Variables (1):**
+- `_task_name = 'celery.map'`
+
+##### 📌 `class xstarmap(_basemap)`
+*Line: 1415*
+
+**Docstring:**
+`````
+Map operation for tasks, using star arguments.
+`````
+
+**Class Variables (1):**
+- `_task_name = 'celery.starmap'`
+
+##### 📌 `class chunks(Signature)`
+*Line: 1426*
+
+**Docstring:**
+`````
+Partition of tasks into chunks of size n.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, task, it, n, **options)`
+  - **Parameters:**
+    - `self`
+    - `task`
+    - `it`
+    - `n`
+    - `**options`
+
+**Public Methods (4):**
+- `def from_dict(cls, d, app = None)` `classmethod`
+- `def apply_async(self, args = None, kwargs = None, **opts)`
+- `def group(self)`
+- `def apply_chunks(cls, task, it, n, app = None)` `classmethod`
+
+**Class Variables (1):**
+- `_unpack_args = itemgetter('task', 'it', 'n')`
+
+##### 📌 `class group(Signature)`
+*Line: 1481*
+
+**Docstring:**
+`````
+Creates a group of tasks to be executed in parallel.
+
+A group is lazy so you must call it to take action and evaluate
+the group.
+
+Note:
+    If only one argument is passed, and that argument is an iterable
+    then that'll be used as the list of tasks instead: this
+    allows us to use ``group`` with generator expressions.
+
+Example:
+    >>> lazy_group = group([add.s(2, 2), add.s(4, 4)])
+    >>> promise = lazy_group()  # <-- evaluate: returns lazy result.
+    >>> promise.get()  # <-- will wait for the task to return
+    [4, 8]
+
+Arguments:
+    *tasks (List[Signature]): A list of signatures that this group will
+        call. If there's only one argument, and that argument is an
+        iterable, then that'll define the list of signatures instead.
+    **options (Any): Execution options applied to all tasks
+        in the group.
+
+Returns:
+    ~celery.group: signature that when called will then call all of the
+        tasks in the group (and return a :class:`GroupResult` instance
+        that can be used to inspect the state of the group).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *tasks, **options)`
+  - **Parameters:**
+    - `self`
+    - `*tasks`
+    - `**options`
+
+**Public Methods (9):**
+- `def from_dict(cls, d, app = None)` `classmethod`
+  - **Docstring:**
+  `````
+  Create a group signature from a dictionary that represents a group.
+  
+  Example:
+      >>> group_dict = {
+          "task": "celery.group",
+          "args": [],
+          "kwargs": {
+              "tasks": [
+                  {
+                      "task": "add",
+                      "args": [
+                          1,
+                          2
+                      ],
+                      "kwargs": {},
+                      "options": {},
+                      "subtask_type": None,
+                      "immutable": False
+                  },
+                  {
+                      "task": "add",
+                      "args": [
+                          3,
+                          4
+                      ],
+                      "kwargs": {},
+                      "options": {},
+                      "subtask_type": None,
+                      "immutable": False
+                  }
+              ]
+          },
+          "options": {},
+          "subtask_type": "group",
+          "immutable": False
+      }
+      >>> group_sig = group.from_dict(group_dict)
+  
+  Iterates over the given tasks in the dictionary and convert them to signatures.
+  Tasks needs to be defined in d['kwargs']['tasks'] as a sequence
+  of tasks.
+  
+  The tasks themselves can be dictionaries or signatures (or both).
+  `````
+- `def skew(self, start = 1.0, stop = None, step = 1.0)`
+- `def apply_async(self, args = None, kwargs = None, add_to_parent = True, producer = None, link = None, link_error = None, **options)`
+- `def apply(self, args = None, kwargs = None, **options)`
+- `def set_immutable(self, immutable)`
+- `def stamp(self, visitor = None, append_stamps = False, **headers)`
+- `def link(self, sig)`
+- `def link_error(self, sig)`
+- `def freeze(self, _id = None, group_id = None, chord = None, root_id = None, parent_id = None, group_index = None)`
+
+**Properties (1):**
+- `@property app`
+
+**Class Variables (2):**
+- `tasks = getitem_property('kwargs.tasks', 'Tasks in group.')`
+- `_freeze = freeze`
+
+##### 📌 `class _chord(Signature)`
+*Line: 1953*
+
+**Docstring:**
+`````
+Barrier synchronization primitive.
+
+A chord consists of a header and a body.
+
+The header is a group of tasks that must complete before the callback is
+called.  A chord is essentially a callback for a group of tasks.
+
+The body is applied with the return values of all the header
+tasks as a list.
+
+Example:
+
+    The chord:
+
+    .. code-block:: pycon
+
+        >>> res = chord([add.s(2, 2), add.s(4, 4)])(sum_task.s())
+
+    is effectively :math:`\Sigma ((2 + 2) + (4 + 4))`:
+
+    .. code-block:: pycon
+
+        >>> res.get()
+        12
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, header, body = None, task = 'celery.chord', args = None, kwargs = None, app = None, **options)`
+  - **Parameters:**
+    - `self`
+    - `header`
+    - `body = None`
+    - `task = 'celery.chord'`
+    - `args = None`
+    - `kwargs = None`
+    - `app = None`
+    - `**options`
+
+**Public Methods (10):**
+- `def from_dict(cls, d, app = None)` `classmethod`
+  - **Docstring:**
+  `````
+  Create a chord signature from a dictionary that represents a chord.
+  
+  Example:
+      >>> chord_dict = {
+          "task": "celery.chord",
+          "args": [],
+          "kwargs": {
+              "kwargs": {},
+              "header": [
+                  {
+                      "task": "add",
+                      "args": [
+                          1,
+                          2
+                      ],
+                      "kwargs": {},
+                      "options": {},
+                      "subtask_type": None,
+                      "immutable": False
+                  },
+                  {
+                      "task": "add",
+                      "args": [
+                          3,
+                          4
+                      ],
+                      "kwargs": {},
+                      "options": {},
+                      "subtask_type": None,
+                      "immutable": False
+                  }
+              ],
+              "body": {
+                  "task": "xsum",
+                  "args": [],
+                  "kwargs": {},
+                  "options": {},
+                  "subtask_type": None,
+                  "immutable": False
+              }
+          },
+          "options": {},
+          "subtask_type": "chord",
+          "immutable": False
+      }
+      >>> chord_sig = chord.from_dict(chord_dict)
+  
+  Iterates over the given tasks in the dictionary and convert them to signatures.
+  Chord header needs to be defined in d['kwargs']['header'] as a sequence
+  of tasks.
+  Chord body needs to be defined in d['kwargs']['body'] as a single task.
+  
+  The tasks themselves can be dictionaries or signatures (or both).
+  `````
+- `def freeze(self, _id = None, group_id = None, chord = None, root_id = None, parent_id = None, group_index = None)`
+- `def stamp(self, visitor = None, append_stamps = False, **headers)`
+- `def apply_async(self, args = None, kwargs = None, task_id = None, producer = None, publisher = None, connection = None, router = None, result_cls = None, **options)`
+- `def apply(self, args = None, kwargs = None, propagate = True, body = None, **options)`
+- `def run(self, header, body, partial_args, app = None, interval = None, countdown = 1, max_retries = None, eager = False, task_id = None, kwargs = None, **options)`
+  - **Docstring:**
+  `````
+  Execute the chord.
+  
+  Executing the chord means executing the header and sending the
+  result to the body. In case of an empty header, the body is
+  executed immediately.
+  
+  Arguments:
+      header (group): The header to execute.
+      body (Signature): The body to execute.
+      partial_args (tuple): Arguments to pass to the header.
+      app (Celery): The Celery app instance.
+      interval (float): The interval between retries.
+      countdown (int): The countdown between retries.
+      max_retries (int): The maximum number of retries.
+      task_id (str): The task id to use for the body.
+      kwargs (dict): Keyword arguments to pass to the header.
+      options (dict): Options to pass to the header.
+  
+  Returns:
+      AsyncResult: The result of the body (with the result of the header in the parent of the body).
+  `````
+- `def clone(self, *args, **kwargs)`
+- `def link(self, callback)`
+  - *Links a callback to the chord body only.*
+- `def link_error(self, errback)`
+  - **Docstring:**
+  `````
+  Links an error callback to the chord body, and potentially the header as well.
+  
+  Note:
+      The ``task_allow_error_cb_on_chord_header`` setting controls whether
+      error callbacks are allowed on the header. If this setting is
+      ``False`` (the current default), then the error callback will only be
+      applied to the body.
+  `````
+- `def set_immutable(self, immutable)`
+  - **Docstring:**
+  `````
+  Sets the immutable flag on the chord header only.
+  
+  Note:
+      Does not affect the chord body.
+  
+  Arguments:
+      immutable (bool): The new mutability value for chord header.
+  `````
+
+**Properties (1):**
+- `@property app`
+
+**Class Variables (2):**
+- `tasks = getitem_property('kwargs.header', 'Tasks in chord header.')`
+- `body = getitem_property('kwargs.body', 'Body task of chord.')`
+
+#### 🔧 Public Functions (4)
+
+- `def maybe_unroll_group(group)`
+  - *Line: 43*
+  - **Docstring:**
+  `````
+  Unroll group with only one member.
+  This allows treating a group of a single task as if it
+  was a single task without pre-knowledge.
+  `````
+
+- `def task_name_from(task)`
+  - *Line: 61*
+
+- `def signature(varies, *args, **kwargs)`
+  - *Line: 2376*
+  - **Docstring:**
+  `````
+  Create new signature.
+  
+  - if the first argument is a signature already then it's cloned.
+  - if the first argument is a dict, then a Signature version is returned.
+  
+  Returns:
+      Signature: The resulting signature.
+  `````
+
+- `def maybe_signature(d, app = None, clone = False)`
+  - *Line: 2396*
+  - **Docstring:**
+  `````
+  Ensure obj is a signature, or None.
+  
+  Arguments:
+      d (Optional[Union[abstract.CallableSignature, Mapping]]):
+          Signature or dict-serialized signature.
+      app (celery.Celery):
+          App to bind signature to.
+      clone (bool):
+          If d' is already a signature, the signature
+         will be cloned when this flag is enabled.
+  
+  Returns:
+      Optional[abstract.CallableSignature]
+  `````
+
+
+---
+
+`````python
 """Composing task work-flows.
 
 .. seealso:
@@ -1174,6 +3634,7 @@ class ConsumerStep(StartStopStep):
 
 import itertools
 import operator
+import types
 import warnings
 from abc import ABCMeta, abstractmethod
 from collections import deque
@@ -1977,6 +4438,8 @@ class Signature(dict):
         args, kwargs, _ = self._merge(args, kwargs, {}, force=True)
         return reprcall(self['task'], args, kwargs)
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
     def __deepcopy__(self, memo):
         memo[id(self)] = self
         return dict(self)  # TODO: Potential bug of being a shallow copy
@@ -2156,13 +4619,13 @@ class _chain(Signature):
                     sig.tasks[-2].body = sig.tasks[-2].body | sig.tasks[-1]
                     sig.tasks = sig.tasks[:-1]
                 return sig
-            elif self.tasks and isinstance(self.tasks[-1], chord):
-                # CHAIN [last item is chord] -> chain with chord body.
+            elif self.tasks and isinstance(self.tasks[-1], chord) and not isinstance(other, chord):
+                # CHAIN [last item is chord] | TASK -> chain with chord body.
                 sig = self.clone()
                 sig.tasks[-1].body = sig.tasks[-1].body | other
                 return sig
             else:
-                # chain | task -> chain
+                # chain | task/chord -> chain
                 # use type(self) for _chain subclasses
                 return type(self)(seq_concat_item(
                     self.unchain_tasks(), other), app=self._app)
@@ -2908,7 +5371,7 @@ class group(Signature):
 
     def _apply_tasks(self, tasks, producer=None, app=None, p=None,
                      add_to_parent=None, chord=None,
-                     args=None, kwargs=None, **options):
+                     args=None, kwargs=None, group_index=None, **options):
         """Run all the tasks in the group.
 
         This is used by :meth:`apply_async` to run all the tasks in the group
@@ -3586,10 +6049,400 @@ def maybe_signature(d, app=None, clone=False):
 
 maybe_subtask = maybe_signature  # XXX compat
 
-```
+`````
 
-### 代码文件: celery\exceptions.py
-```python
+--- **end of file: celery/canvas.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/exceptions.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/exceptions.py`
+
+#### 📝 Module Docstring
+
+`````
+Celery error types.
+
+Error Hierarchy
+===============
+
+- :exc:`Exception`
+    - :exc:`celery.exceptions.CeleryError`
+        - :exc:`~celery.exceptions.ImproperlyConfigured`
+        - :exc:`~celery.exceptions.SecurityError`
+        - :exc:`~celery.exceptions.TaskPredicate`
+            - :exc:`~celery.exceptions.Ignore`
+            - :exc:`~celery.exceptions.Reject`
+            - :exc:`~celery.exceptions.Retry`
+        - :exc:`~celery.exceptions.TaskError`
+            - :exc:`~celery.exceptions.QueueNotFound`
+            - :exc:`~celery.exceptions.IncompleteStream`
+            - :exc:`~celery.exceptions.NotRegistered`
+            - :exc:`~celery.exceptions.AlreadyRegistered`
+            - :exc:`~celery.exceptions.TimeoutError`
+            - :exc:`~celery.exceptions.MaxRetriesExceededError`
+            - :exc:`~celery.exceptions.TaskRevokedError`
+            - :exc:`~celery.exceptions.InvalidTaskError`
+            - :exc:`~celery.exceptions.ChordError`
+        - :exc:`~celery.exceptions.BackendError`
+            - :exc:`~celery.exceptions.BackendGetMetaError`
+            - :exc:`~celery.exceptions.BackendStoreError`
+    - :class:`kombu.exceptions.KombuError`
+        - :exc:`~celery.exceptions.OperationalError`
+
+            Raised when a transport connection error occurs while
+            sending a message (be it a task, remote control command error).
+
+            .. note::
+                This exception does not inherit from
+                :exc:`~celery.exceptions.CeleryError`.
+    - **billiard errors** (prefork pool)
+        - :exc:`~celery.exceptions.SoftTimeLimitExceeded`
+        - :exc:`~celery.exceptions.TimeLimitExceeded`
+        - :exc:`~celery.exceptions.WorkerLostError`
+        - :exc:`~celery.exceptions.Terminated`
+- :class:`UserWarning`
+    - :class:`~celery.exceptions.CeleryWarning`
+        - :class:`~celery.exceptions.AlwaysEagerIgnored`
+        - :class:`~celery.exceptions.DuplicateNodenameWarning`
+        - :class:`~celery.exceptions.FixupWarning`
+        - :class:`~celery.exceptions.NotConfigured`
+        - :class:`~celery.exceptions.SecurityWarning`
+- :exc:`BaseException`
+    - :exc:`SystemExit`
+        - :exc:`~celery.exceptions.WorkerTerminate`
+        - :exc:`~celery.exceptions.WorkerShutdown`
+`````
+
+#### 📦 Imports
+
+- `import numbers`
+- `from billiard.exceptions import SoftTimeLimitExceeded`
+- `from billiard.exceptions import Terminated`
+- `from billiard.exceptions import TimeLimitExceeded`
+- `from billiard.exceptions import WorkerLostError`
+- `from click import ClickException`
+- `from kombu.exceptions import OperationalError`
+- `from celery.utils.serialization import get_pickleable_exception`
+- `from kombu.utils.encoding import safe_repr`
+
+#### 🏛️ Classes (31)
+
+##### 📌 `class CeleryWarning(UserWarning)`
+*Line: 113*
+
+**Docstring:**
+`````
+Base class for all Celery warnings.
+`````
+
+##### 📌 `class AlwaysEagerIgnored(CeleryWarning)`
+*Line: 117*
+
+**Docstring:**
+`````
+send_task ignores :setting:`task_always_eager` option.
+`````
+
+##### 📌 `class DuplicateNodenameWarning(CeleryWarning)`
+*Line: 121*
+
+**Docstring:**
+`````
+Multiple workers are using the same nodename.
+`````
+
+##### 📌 `class FixupWarning(CeleryWarning)`
+*Line: 125*
+
+**Docstring:**
+`````
+Fixup related warning.
+`````
+
+##### 📌 `class NotConfigured(CeleryWarning)`
+*Line: 129*
+
+**Docstring:**
+`````
+Celery hasn't been configured, as no config module has been found.
+`````
+
+##### 📌 `class SecurityWarning(CeleryWarning)`
+*Line: 133*
+
+**Docstring:**
+`````
+Potential security issue found.
+`````
+
+##### 📌 `class CeleryError(Exception)`
+*Line: 137*
+
+**Docstring:**
+`````
+Base class for all Celery errors.
+`````
+
+##### 📌 `class TaskPredicate(CeleryError)`
+*Line: 141*
+
+**Docstring:**
+`````
+Base class for task-related semi-predicates.
+`````
+
+##### 📌 `class Retry(TaskPredicate)`
+*Line: 145*
+
+**Docstring:**
+`````
+The task is to be retried later.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, message = None, exc = None, when = None, is_eager = False, sig = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `message = None`
+    - `exc = None`
+    - `when = None`
+    - `is_eager = False`
+    - `sig = None`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def humanize(self)`
+
+**Class Variables (3):**
+- `message = None`
+- `exc = None`
+- `when = None`
+
+##### 📌 `class Ignore(TaskPredicate)`
+*Line: 190*
+
+**Docstring:**
+`````
+A task can raise this to ignore doing state updates.
+`````
+
+##### 📌 `class Reject(TaskPredicate)`
+*Line: 194*
+
+**Docstring:**
+`````
+A task can raise this if it wants to reject/re-queue the message.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, reason = None, requeue = False)`
+  - **Parameters:**
+    - `self`
+    - `reason = None`
+    - `requeue = False`
+
+##### 📌 `class ImproperlyConfigured(CeleryError)`
+*Line: 206*
+
+**Docstring:**
+`````
+Celery is somehow improperly configured.
+`````
+
+##### 📌 `class SecurityError(CeleryError)`
+*Line: 210*
+
+**Docstring:**
+`````
+Security related exception.
+`````
+
+##### 📌 `class TaskError(CeleryError)`
+*Line: 214*
+
+**Docstring:**
+`````
+Task related errors.
+`````
+
+##### 📌 `class QueueNotFound(KeyError, TaskError)`
+*Line: 218*
+
+**Docstring:**
+`````
+Task routed to a queue not in ``conf.queues``.
+`````
+
+##### 📌 `class IncompleteStream(TaskError)`
+*Line: 222*
+
+**Docstring:**
+`````
+Found the end of a stream of data, but the data isn't complete.
+`````
+
+##### 📌 `class NotRegistered(KeyError, TaskError)`
+*Line: 226*
+
+**Docstring:**
+`````
+The task is not registered.
+`````
+
+##### 📌 `class AlreadyRegistered(TaskError)`
+*Line: 233*
+
+**Docstring:**
+`````
+The task is already registered.
+`````
+
+##### 📌 `class TimeoutError(TaskError)`
+*Line: 238*
+
+**Docstring:**
+`````
+The operation timed out.
+`````
+
+##### 📌 `class MaxRetriesExceededError(TaskError)`
+*Line: 242*
+
+**Docstring:**
+`````
+The tasks max restart limit has been exceeded.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class TaskRevokedError(TaskError)`
+*Line: 251*
+
+**Docstring:**
+`````
+The task has been revoked, so no result available.
+`````
+
+##### 📌 `class InvalidTaskError(TaskError)`
+*Line: 255*
+
+**Docstring:**
+`````
+The task has invalid data or ain't properly constructed.
+`````
+
+##### 📌 `class ChordError(TaskError)`
+*Line: 259*
+
+**Docstring:**
+`````
+A task part of the chord raised an exception.
+`````
+
+##### 📌 `class CPendingDeprecationWarning(PendingDeprecationWarning)`
+*Line: 263*
+
+**Docstring:**
+`````
+Warning of pending deprecation.
+`````
+
+##### 📌 `class CDeprecationWarning(DeprecationWarning)`
+*Line: 267*
+
+**Docstring:**
+`````
+Warning of deprecation.
+`````
+
+##### 📌 `class WorkerTerminate(SystemExit)`
+*Line: 271*
+
+**Docstring:**
+`````
+Signals that the worker should terminate immediately.
+`````
+
+##### 📌 `class WorkerShutdown(SystemExit)`
+*Line: 278*
+
+**Docstring:**
+`````
+Signals that the worker should perform a warm shutdown.
+`````
+
+##### 📌 `class BackendError(Exception)`
+*Line: 282*
+
+**Docstring:**
+`````
+An issue writing or reading to/from the backend.
+`````
+
+##### 📌 `class BackendGetMetaError(BackendError)`
+*Line: 286*
+
+**Docstring:**
+`````
+An issue reading from the backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class BackendStoreError(BackendError)`
+*Line: 296*
+
+**Docstring:**
+`````
+An issue writing to the backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class CeleryCommandException(ClickException)`
+*Line: 307*
+
+**Docstring:**
+`````
+A general command exception which stores an exit code.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, message, exit_code)`
+  - **Parameters:**
+    - `self`
+    - `message`
+    - `exit_code`
+
+#### 🔧 Public Functions (1)
+
+- `def reraise(tp, value, tb = None)`
+  - *Line: 106*
+  - *Reraise exception.*
+
+
+---
+
+`````python
 """Celery error types.
 
 Error Hierarchy
@@ -3903,10 +6756,156 @@ class CeleryCommandException(ClickException):
         super().__init__(message=message)
         self.exit_code = exit_code
 
-```
+`````
 
-### 代码文件: celery\local.py
-```python
+--- **end of file: celery/exceptions.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/local.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/local.py`
+
+#### 📝 Module Docstring
+
+`````
+Proxy/PromiseProxy implementation.
+
+This module contains critical utilities that needs to be loaded as
+soon as possible, and that shall not load any third party modules.
+
+Parts of this module is Copyright by Werkzeug Team.
+`````
+
+#### 📦 Imports
+
+- `import operator`
+- `import sys`
+- `import types`
+- `from functools import reduce`
+- `from importlib import import_module`
+- `from types import ModuleType`
+- `from celery import current_app`
+- `from collections import deque`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class Proxy`
+*Line: 52*
+
+**Docstring:**
+`````
+Proxy to another object.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, local, args = None, kwargs = None, name = None, __doc__ = None)`
+  - **Parameters:**
+    - `self`
+    - `local`
+    - `args = None`
+    - `kwargs = None`
+    - `name = None`
+    - `__doc__ = None`
+
+**Properties (2):**
+- `@property __class__`
+- `@property __dict__`
+
+**Class Variables (2):**
+- `__slots__ = ('__local', '__args', '__kwargs', '__dict__')`
+- `__nonzero__ = __bool__`
+
+##### 📌 `class PromiseProxy(Proxy)`
+*Line: 282*
+
+**Docstring:**
+`````
+Proxy that evaluates object once.
+
+:class:`Proxy` will evaluate the object each time, while the
+promise will only evaluate it once.
+`````
+
+**Class Variables (1):**
+- `__slots__ = ('__pending__', '__weakref__')`
+
+##### 📌 `class class_property`
+*Line: 419*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, getter = None, setter = None)`
+  - **Parameters:**
+    - `self`
+    - `getter = None`
+    - `setter = None`
+
+**Public Methods (1):**
+- `def setter(self, setter)`
+
+**Class Variables (1):**
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+
+##### 📌 `class LazyModule(ModuleType)`
+*Line: 454*
+
+**Class Variables (4):**
+- `_compat_modules = ()`
+- `_all_by_module = {}`
+- `_direct = {}`
+- `_object_origins = {}`
+
+#### 🔧 Public Functions (10)
+
+- `def try_import(module, default = None)`
+  - *Line: 41*
+  - **Docstring:**
+  `````
+  Try to import and return module.
+  
+  Returns None if the module does not exist.
+  `````
+
+- `def maybe_evaluate(obj)`
+  - *Line: 353*
+  - *Attempt to evaluate promise, even if obj is not a promise.*
+
+- `def fun_of_method(method)`
+  - *Line: 380*
+
+- `def getappattr(path)`
+  - *Line: 384*
+  - **Docstring:**
+  `````
+  Get attribute from current_app recursively.
+  
+  Example: ``getappattr('amqp.get_task_consumer')``.
+  `````
+
+- `def reclassmethod(method)`
+  - *Line: 450*
+
+- `def create_module(name, attrs, cls_attrs = None, pkg = None, base = LazyModule, prepare_attr = None)`
+  - *Line: 483*
+
+- `def recreate_module(name, compat_modules = None, by_module = None, direct = None, base = LazyModule, **attrs)`
+  - *Line: 500*
+
+- `def get_compat_module(pkg, name)`
+  - *Line: 526*
+
+- `def get_origins(defs)`
+  - *Line: 541*
+
+- `def prepare(attr)`
+  - *Line: 527*
+
+
+---
+
+`````python
 """Proxy/PromiseProxy implementation.
 
 This module contains critical utilities that needs to be loaded as
@@ -3917,6 +6916,7 @@ Parts of this module is Copyright by Werkzeug Team.
 
 import operator
 import sys
+import types
 from functools import reduce
 from importlib import import_module
 from types import ModuleType
@@ -4339,6 +7339,8 @@ class class_property:
         self.__name__ = info.__name__
         self.__module__ = info.__module__
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
     def __get__(self, obj, type=None):
         if obj and type is None:
             type = obj.__class__
@@ -4450,10 +7452,426 @@ def get_origins(defs):
         origins.update({attr: module for attr in attrs})
     return origins
 
-```
+`````
 
-### 代码文件: celery\platforms.py
-```python
+--- **end of file: celery/local.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/platforms.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/platforms.py`
+
+#### 📝 Module Docstring
+
+`````
+Platforms.
+
+Utilities dealing with platform specifics: signals, daemonization,
+users, groups, and so on.
+`````
+
+#### 📦 Imports
+
+- `import atexit`
+- `import errno`
+- `import math`
+- `import numbers`
+- `import os`
+- `import platform as _platform`
+- `import signal as _signal`
+- `import sys`
+- `import warnings`
+- `from contextlib import contextmanager`
+- `from billiard.compat import close_open_fds`
+- `from billiard.compat import get_fdmax`
+- `from billiard.util import set_pdeathsig as _set_pdeathsig`
+- `from kombu.utils.compat import maybe_fileno`
+- `from kombu.utils.encoding import safe_str`
+- `from exceptions import SecurityError`
+- `from exceptions import SecurityWarning`
+- `from exceptions import reraise`
+- `from local import try_import`
+- `from billiard.process import current_process`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class LockFailed(Exception)`
+*Line: 121*
+
+**Docstring:**
+`````
+Raised if a PID lock can't be acquired.
+`````
+
+##### 📌 `class Pidfile`
+*Line: 125*
+
+**Docstring:**
+`````
+Pidfile.
+
+This is the type returned by :func:`create_pidlock`.
+
+See Also:
+    Best practice is to not use this directly but rather use
+    the :func:`create_pidlock` function instead:
+    more convenient and also removes stale pidfiles (when
+    the process holding the lock is no longer running).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, path)`
+  - **Parameters:**
+    - `self`
+    - `path`
+
+**Public Methods (7):**
+- `def acquire(self)`
+  - *Acquire lock.*
+- `def is_locked(self)`
+  - *Return true if the pid lock exists.*
+- `def release(self, *args)`
+  - *Release lock.*
+- `def read_pid(self)`
+  - *Read and return the current pid.*
+- `def remove(self)`
+  - *Remove the lock.*
+- `def remove_if_stale(self)`
+  - **Docstring:**
+  `````
+  Remove the lock if the process isn't running.
+  
+  I.e. process does not respond to signal.
+  `````
+- `def write_pid(self)`
+
+**Class Variables (3):**
+- `path = None`
+- `__enter__ = acquire`
+- `__exit__ = release`
+
+##### 📌 `class DaemonContext`
+*Line: 310*
+
+**Docstring:**
+`````
+Context manager daemonizing the process.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, pidfile = None, workdir = None, umask = None, fake = False, after_chdir = None, after_forkers = True, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `pidfile = None`
+    - `workdir = None`
+    - `umask = None`
+    - `fake = False`
+    - `after_chdir = None`
+    - `after_forkers = True`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def redirect_to_null(self, fd)`
+- `def open(self)`
+- `def close(self, *args)`
+
+**Class Variables (3):**
+- `_is_open = False`
+- `__enter__ = open`
+- `__exit__ = close`
+
+##### 📌 `class Signals`
+*Line: 594*
+
+**Docstring:**
+`````
+Convenience interface to :mod:`signals`.
+
+If the requested signal isn't supported on the current platform,
+the operation will be ignored.
+
+Example:
+    >>> from celery.platforms import signals
+
+    >>> from proj.handlers import my_handler
+    >>> signals['INT'] = my_handler
+
+    >>> signals['INT']
+    my_handler
+
+    >>> signals.supported('INT')
+    True
+
+    >>> signals.signum('INT')
+    2
+
+    >>> signals.ignore('USR1')
+    >>> signals['USR1'] == signals.ignored
+    True
+
+    >>> signals.reset('USR1')
+    >>> signals['USR1'] == signals.default
+    True
+
+    >>> from proj.handlers import exit_handler, hup_handler
+    >>> signals.update(INT=exit_handler,
+    ...                TERM=exit_handler,
+    ...                HUP=hup_handler)
+`````
+
+**Public Methods (7):**
+- `def arm_alarm(self, seconds)`
+- `def reset_alarm(self)`
+- `def supported(self, name)`
+  - *Return true value if signal by ``name`` exists on this platform.*
+- `def signum(self, name)`
+  - *Get signal number by name.*
+- `def reset(self, *signal_names)`
+  - **Docstring:**
+  `````
+  Reset signals to the default signal handler.
+  
+  Does nothing if the platform has no support for signals,
+  or the specified signal in particular.
+  `````
+- `def ignore(self, *names)`
+  - **Docstring:**
+  `````
+  Ignore signal using :const:`SIG_IGN`.
+  
+  Does nothing if the platform has no support for signals,
+  or the specified signal in particular.
+  `````
+- `def update(self, _d_ = None, **sigmap)`
+  - *Set signal handlers from a mapping.*
+
+**Class Variables (2):**
+- `ignored = _signal.SIG_IGN`
+- `default = _signal.SIG_DFL`
+
+#### 🔧 Public Functions (23)
+
+- `def isatty(fh)`
+  - *Line: 98*
+  - *Return true if the process has a controlling terminal.*
+
+- `def pyimplementation()`
+  - *Line: 106*
+  - *Return string identifying the current Python implementation.*
+
+- `def create_pidlock(pidfile)`
+  - *Line: 244*
+  - **Docstring:**
+  `````
+  Create and verify pidfile.
+  
+  If the pidfile already exists the program exits with an error message,
+  however if the process it refers to isn't running anymore, the pidfile
+  is deleted and the program continues.
+  
+  This function will automatically install an :mod:`atexit` handler
+  to release the lock at exit, you can skip this by calling
+  :func:`_create_pidlock` instead.
+  
+  Returns:
+     Pidfile: used to manage the lock.
+  
+  Example:
+      >>> pidlock = create_pidlock('/var/run/app.pid')
+  `````
+
+- `def fd_by_path(paths)`
+  - *Line: 275*
+  - **Docstring:**
+  `````
+  Return a list of file descriptors.
+  
+  This method returns list of file descriptors corresponding to
+  file paths passed in paths variable.
+  
+  Arguments:
+      paths: List[str]: List of file paths.
+  
+  Returns:
+      List[int]: List of file descriptors.
+  
+  Example:
+      >>> keep = fd_by_path(['/dev/urandom', '/my/precious/'])
+  `````
+
+- `def detached(logfile = None, pidfile = None, uid = None, gid = None, umask = 0, workdir = None, fake = False, **opts)`
+  - *Line: 376*
+  - **Docstring:**
+  `````
+  Detach the current process in the background (daemonize).
+  
+  Arguments:
+      logfile (str): Optional log file.
+          The ability to write to this file
+          will be verified before the process is detached.
+      pidfile (str): Optional pid file.
+          The pidfile won't be created,
+          as this is the responsibility of the child.  But the process will
+          exit if the pid lock exists and the pid written is still running.
+      uid (int, str): Optional user id or user name to change
+          effective privileges to.
+      gid (int, str): Optional group id or group name to change
+          effective privileges to.
+      umask (str, int): Optional umask that'll be effective in
+          the child process.
+      workdir (str): Optional new working directory.
+      fake (bool): Don't actually detach, intended for debugging purposes.
+      **opts (Any): Ignored.
+  
+  Example:
+      >>> from celery.platforms import detached, create_pidlock
+      >>> with detached(
+      ...           logfile='/var/log/app.log',
+      ...           pidfile='/var/run/app.pid',
+      ...           uid='nobody'):
+      ... # Now in detached child process with effective user set to nobody,
+      ... # and we know that our logfile can be written to, and that
+      ... # the pidfile isn't locked.
+      ... pidlock = create_pidlock('/var/run/app.pid')
+      ...
+      ... # Run the program
+      ... program.run(logfile='/var/log/app.log')
+  `````
+
+- `def parse_uid(uid)`
+  - *Line: 432*
+  - **Docstring:**
+  `````
+  Parse user id.
+  
+  Arguments:
+      uid (str, int): Actual uid, or the username of a user.
+  Returns:
+      int: The actual uid.
+  `````
+
+- `def parse_gid(gid)`
+  - *Line: 449*
+  - **Docstring:**
+  `````
+  Parse group id.
+  
+  Arguments:
+      gid (str, int): Actual gid, or the name of a group.
+  Returns:
+      int: The actual gid of the group.
+  `````
+
+- `def setgroups(groups)`
+  - *Line: 485*
+  - *Set active groups from a list of group ids.*
+
+- `def initgroups(uid, gid)`
+  - *Line: 502*
+  - **Docstring:**
+  `````
+  Init process group permissions.
+  
+  Compat version of :func:`os.initgroups` that was first
+  added to Python 2.7.
+  `````
+
+- `def setgid(gid)`
+  - *Line: 518*
+  - *Version of :func:`os.setgid` supporting group names.*
+
+- `def setuid(uid)`
+  - *Line: 523*
+  - *Version of :func:`os.setuid` supporting usernames.*
+
+- `def maybe_drop_privileges(uid = None, gid = None)`
+  - *Line: 528*
+  - **Docstring:**
+  `````
+  Change process privileges to new user/group.
+  
+  If UID and GID is specified, the real user/group is changed.
+  
+  If only UID is specified, the real user is changed, and the group is
+  changed to the users primary group.
+  
+  If only GID is specified, only the group is changed.
+  `````
+
+- `def signal_name(signum)`
+  - *Line: 701*
+  - *Return name of signal from signal number.*
+
+- `def strargv(argv)`
+  - *Line: 706*
+
+- `def set_pdeathsig(name)`
+  - *Line: 713*
+  - *Sends signal ``name`` to process when parent process terminates.*
+
+- `def set_process_title(progname, info = None)`
+  - *Line: 723*
+  - **Docstring:**
+  `````
+  Set the :command:`ps` name for the currently running process.
+  
+  Only works if :pypi:`setproctitle` is installed.
+  `````
+
+- `def get_errno_name(n)`
+  - *Line: 752*
+  - *Get errno for string (e.g., ``ENOENT``).*
+
+- `def ignore_errno(*errnos, **kwargs)` `contextmanager`
+  - *Line: 760*
+  - **Docstring:**
+  `````
+  Context manager to ignore specific POSIX error codes.
+  
+  Takes a list of error codes to ignore: this can be either
+  the name of the code, or the code integer itself::
+  
+      >>> with ignore_errno('ENOENT'):
+      ...     with open('foo', 'r') as fh:
+      ...         return fh.read()
+  
+      >>> with ignore_errno(errno.ENOENT, errno.EPERM):
+      ...    pass
+  
+  Arguments:
+      types (Tuple[Exception]): A tuple of exceptions to ignore
+          (when the errno matches).  Defaults to :exc:`Exception`.
+  `````
+
+- `def check_privileges(accept_content)`
+  - *Line: 788*
+
+- `def fd_in_stats(fd)`
+  - *Line: 301*
+
+- `def after_chdir_do()`
+  - *Line: 419*
+
+- `def set_mp_process_title(*a, **k)`
+  - *Line: 737*
+  - *Disabled feature.*
+
+- `def set_mp_process_title(progname, info = None, hostname = None)`
+  - *Line: 741*
+  - **Docstring:**
+  `````
+  Set the :command:`ps` name from the current process name.
+  
+  Only works if :pypi:`setproctitle` is installed.
+  `````
+
+
+---
+
+`````python
 """Platforms.
 
 Utilities dealing with platform specifics: signals, daemonization,
@@ -5298,14 +8716,608 @@ def _warn_or_raise_security_error(egid, euid, gid, uid, pickle_or_serialize):
         uid=uid, euid=euid, gid=gid, egid=egid,
     )))
 
-```
+`````
 
-### 代码文件: celery\result.py
-```python
+--- **end of file: celery/platforms.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/result.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/result.py`
+
+#### 📝 Module Docstring
+
+`````
+Task results/state and results for groups of tasks.
+`````
+
+#### 📦 Imports
+
+- `import datetime`
+- `import time`
+- `import types`
+- `from collections import deque`
+- `from contextlib import contextmanager`
+- `from weakref import proxy`
+- `from dateutil.parser import isoparse`
+- `from kombu.utils.objects import cached_property`
+- `from vine import Thenable`
+- `from vine import barrier`
+- `from vine import promise`
+- `from  import current_app`
+- `from  import states`
+- `from _state import _set_task_join_will_block`
+- `from _state import task_join_will_block`
+- `from app import app_or_default`
+- `from exceptions import ImproperlyConfigured`
+- `from exceptions import IncompleteStream`
+- `from exceptions import TimeoutError`
+- `from utils.graph import DependencyGraph`
+- `from utils.graph import GraphFormatter`
+- `import tblib`
+
+#### 🏛️ Classes (5)
+
+##### 📌 `class ResultBase`
+*Line: 62*
+
+**Docstring:**
+`````
+Base class for results.
+`````
+
+**Class Variables (1):**
+- `parent = None`
+
+##### 📌 `class AsyncResult(ResultBase)`
+*Line: 70*
+
+**Docstring:**
+`````
+Query task state.
+
+Arguments:
+    id (str): See :attr:`id`.
+    backend (Backend): See :attr:`backend`.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, id, backend = None, task_name = None, app = None, parent = None)`
+  - **Parameters:**
+    - `self`
+    - `id`
+    - `backend = None`
+    - `task_name = None`
+    - `app = None`
+    - `parent = None`
+
+**Public Methods (19):**
+- `def ignored(self, value)` `ignored.setter`
+  - *Enable/disable task result retrieval.*
+- `def then(self, callback, on_error = None, weak = False)`
+- `def as_tuple(self)`
+- `def as_list(self)`
+  - *Return as a list of task IDs.*
+- `def forget(self)`
+  - *Forget the result of this task and its parents.*
+- `def revoke(self, connection = None, terminate = False, signal = None, wait = False, timeout = None)`
+  - **Docstring:**
+  `````
+  Send revoke signal to all workers.
+  
+  Any worker receiving the task, or having reserved the
+  task, *must* ignore it.
+  
+  Arguments:
+      terminate (bool): Also terminate the process currently working
+          on the task (if any).
+      signal (str): Name of signal to send to process if terminate.
+          Default is TERM.
+      wait (bool): Wait for replies from workers.
+          The ``timeout`` argument specifies the seconds to wait.
+          Disabled by default.
+      timeout (float): Time in seconds to wait for replies when
+          ``wait`` is enabled.
+  `````
+- `def revoke_by_stamped_headers(self, headers, connection = None, terminate = False, signal = None, wait = False, timeout = None)`
+  - **Docstring:**
+  `````
+  Send revoke signal to all workers only for tasks with matching headers values.
+  
+  Any worker receiving the task, or having reserved the
+  task, *must* ignore it.
+  All header fields *must* match.
+  
+  Arguments:
+      headers (dict[str, Union(str, list)]): Headers to match when revoking tasks.
+      terminate (bool): Also terminate the process currently working
+          on the task (if any).
+      signal (str): Name of signal to send to process if terminate.
+          Default is TERM.
+      wait (bool): Wait for replies from workers.
+          The ``timeout`` argument specifies the seconds to wait.
+          Disabled by default.
+      timeout (float): Time in seconds to wait for replies when
+          ``wait`` is enabled.
+  `````
+- `def get(self, timeout = None, propagate = True, interval = 0.5, no_ack = True, follow_parents = True, callback = None, on_message = None, on_interval = None, disable_sync_subtasks = True, EXCEPTION_STATES = states.EXCEPTION_STATES, PROPAGATE_STATES = states.PROPAGATE_STATES)`
+  - **Docstring:**
+  `````
+  Wait until task is ready, and return its result.
+  
+  Warning:
+     Waiting for tasks within a task may lead to deadlocks.
+     Please read :ref:`task-synchronous-subtasks`.
+  
+  Warning:
+     Backends use resources to store and transmit results. To ensure
+     that resources are released, you must eventually call
+     :meth:`~@AsyncResult.get` or :meth:`~@AsyncResult.forget` on
+     EVERY :class:`~@AsyncResult` instance returned after calling
+     a task.
+  
+  Arguments:
+      timeout (float): How long to wait, in seconds, before the
+          operation times out. This is the setting for the publisher
+          (celery client) and is different from `timeout` parameter of
+          `@app.task`, which is the setting for the worker. The task
+          isn't terminated even if timeout occurs.
+      propagate (bool): Re-raise exception if the task failed.
+      interval (float): Time to wait (in seconds) before retrying to
+          retrieve the result.  Note that this does not have any effect
+          when using the RPC/redis result store backends, as they don't
+          use polling.
+      no_ack (bool): Enable amqp no ack (automatically acknowledge
+          message).  If this is :const:`False` then the message will
+          **not be acked**.
+      follow_parents (bool): Re-raise any exception raised by
+          parent tasks.
+      disable_sync_subtasks (bool): Disable tasks to wait for sub tasks
+          this is the default configuration. CAUTION do not enable this
+          unless you must.
+  
+  Raises:
+      celery.exceptions.TimeoutError: if `timeout` isn't
+          :const:`None` and the result does not arrive within
+          `timeout` seconds.
+      Exception: If the remote call raised an exception then that
+          exception will be re-raised in the caller process.
+  `````
+- `def collect(self, intermediate = False, **kwargs)`
+  - **Docstring:**
+  `````
+  Collect results as they return.
+  
+  Iterator, like :meth:`get` will wait for the task to complete,
+  but will also follow :class:`AsyncResult` and :class:`ResultSet`
+  returned by the task, yielding ``(result, value)`` tuples for each
+  result in the tree.
+  
+  An example would be having the following tasks:
+  
+  .. code-block:: python
+  
+      from celery import group
+      from proj.celery import app
+  
+      @app.task(trail=True)
+      def A(how_many):
+          return group(B.s(i) for i in range(how_many))()
+  
+      @app.task(trail=True)
+      def B(i):
+          return pow2.delay(i)
+  
+      @app.task(trail=True)
+      def pow2(i):
+          return i ** 2
+  
+  .. code-block:: pycon
+  
+      >>> from celery.result import ResultBase
+      >>> from proj.tasks import A
+  
+      >>> result = A.delay(10)
+      >>> [v for v in result.collect()
+      ...  if not isinstance(v, (ResultBase, tuple))]
+      [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+  
+  Note:
+      The ``Task.trail`` option must be enabled
+      so that the list of children is stored in ``result.children``.
+      This is the default but enabled explicitly for illustration.
+  
+  Yields:
+      Tuple[AsyncResult, Any]: tuples containing the result instance
+      of the child task, and the return value of that task.
+  `````
+- `def get_leaf(self)`
+- `def iterdeps(self, intermediate = False)`
+- `def exists(self)`
+  - **Docstring:**
+  `````
+  Return :const:`True` if a result exists in the backend for this task.
+  
+  This can be used to distinguish between a task that is truly
+  pending (waiting for execution) and a task ID that has never
+  been submitted or whose result has been forgotten/expired.
+  
+  Without this method, both cases return ``PENDING`` as the state,
+  making them indistinguishable.
+  
+  .. versionadded:: 5.7.0
+  
+  Returns:
+      bool: :const:`True` if the backend has a result stored for
+          this task ID, :const:`False` otherwise.
+  `````
+- `def ready(self)`
+  - **Docstring:**
+  `````
+  Return :const:`True` if the task has executed.
+  
+  If the task is still running, pending, or is waiting
+  for retry then :const:`False` is returned.
+  `````
+- `def successful(self)`
+  - *Return :const:`True` if the task executed successfully.*
+- `def failed(self)`
+  - *Return :const:`True` if the task failed.*
+- `def throw(self, *args, **kwargs)`
+- `def maybe_throw(self, propagate = True, callback = None)`
+- `def build_graph(self, intermediate = False, formatter = None)`
+- `def task_id(self, id)` `task_id.setter`
+
+**Properties (15):**
+- `@property ignored`
+- `@property graph`
+- `@property supports_native_join`
+- `@property children`
+- `@property result`
+- `@property traceback`
+- `@property state`
+- `@property task_id`
+- `@property name`
+- `@property args`
+- `@property kwargs`
+- `@property worker`
+- `@property date_done`
+- `@property retries`
+- `@property queue`
+
+**Class Variables (9):**
+- `app = None`
+- `TimeoutError = TimeoutError`
+- `id = None`
+- `backend = None`
+- `wait = get`
+- `maybe_reraise = maybe_throw`
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+- `info = result`
+- `status = state`
+
+##### 📌 `class ResultSet(ResultBase)`
+*Line: 572*
+
+**Docstring:**
+`````
+A collection of results.
+
+Arguments:
+    results (Sequence[AsyncResult]): List of result instances.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, results, app = None, ready_barrier = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `results`
+    - `app = None`
+    - `ready_barrier = None`
+    - `**kwargs`
+
+**Public Methods (19):**
+- `def add(self, result)`
+  - **Docstring:**
+  `````
+  Add :class:`AsyncResult` as a new member of the set.
+  
+  Does nothing if the result is already a member.
+  `````
+- `def remove(self, result)`
+  - **Docstring:**
+  `````
+  Remove result from the set; it must be a member.
+  
+  Raises:
+      KeyError: if the result isn't a member.
+  `````
+- `def discard(self, result)`
+  - **Docstring:**
+  `````
+  Remove result from the set if it is a member.
+  
+  Does nothing if it's not a member.
+  `````
+- `def update(self, results)`
+  - *Extend from iterable of results.*
+- `def clear(self)`
+  - *Remove all results from this set.*
+- `def successful(self)`
+  - **Docstring:**
+  `````
+  Return true if all tasks successful.
+  
+  Returns:
+      bool: true if all of the tasks finished
+          successfully (i.e. didn't raise an exception).
+  `````
+- `def failed(self)`
+  - **Docstring:**
+  `````
+  Return true if any of the tasks failed.
+  
+  Returns:
+      bool: true if one of the tasks failed.
+          (i.e., raised an exception)
+  `````
+- `def maybe_throw(self, callback = None, propagate = True)`
+- `def waiting(self)`
+  - **Docstring:**
+  `````
+  Return true if any of the tasks are incomplete.
+  
+  Returns:
+      bool: true if one of the tasks are still
+          waiting for execution.
+  `````
+- `def ready(self)`
+  - **Docstring:**
+  `````
+  Did all of the tasks complete? (either by success of failure).
+  
+  Returns:
+      bool: true if all of the tasks have been executed.
+  `````
+- `def completed_count(self)`
+  - **Docstring:**
+  `````
+  Task completion count.
+  
+  Note that `complete` means `successful` in this context. In other words, the
+  return value of this method is the number of ``successful`` tasks.
+  
+  Returns:
+      int: the number of complete (i.e. successful) tasks.
+  `````
+- `def forget(self)`
+  - *Forget about (and possible remove the result of) all the tasks.*
+- `def revoke(self, connection = None, terminate = False, signal = None, wait = False, timeout = None)`
+  - **Docstring:**
+  `````
+  Send revoke signal to all workers for all tasks in the set.
+  
+  Arguments:
+      terminate (bool): Also terminate the process currently working
+          on the task (if any).
+      signal (str): Name of signal to send to process if terminate.
+          Default is TERM.
+      wait (bool): Wait for replies from worker.
+          The ``timeout`` argument specifies the number of seconds
+          to wait.  Disabled by default.
+      timeout (float): Time in seconds to wait for replies when
+          the ``wait`` argument is enabled.
+  `````
+- `def get(self, timeout = None, propagate = True, interval = 0.5, callback = None, no_ack = True, on_message = None, disable_sync_subtasks = True, on_interval = None)`
+  - **Docstring:**
+  `````
+  See :meth:`join`.
+  
+  This is here for API compatibility with :class:`AsyncResult`,
+  in addition it uses :meth:`join_native` if available for the
+  current result backend.
+  `````
+- `def join(self, timeout = None, propagate = True, interval = 0.5, callback = None, no_ack = True, on_message = None, disable_sync_subtasks = True, on_interval = None)`
+  - **Docstring:**
+  `````
+  Gather the results of all tasks as a list in order.
+  
+  Note:
+      This can be an expensive operation for result store
+      backends that must resort to polling (e.g., database).
+  
+      You should consider using :meth:`join_native` if your backend
+      supports it.
+  
+  Warning:
+      Waiting for tasks within a task may lead to deadlocks.
+      Please see :ref:`task-synchronous-subtasks`.
+  
+  Arguments:
+      timeout (float): The number of seconds to wait for results
+          before the operation times out.
+      propagate (bool): If any of the tasks raises an exception,
+          the exception will be re-raised when this flag is set.
+      interval (float): Time to wait (in seconds) before retrying to
+          retrieve a result from the set.  Note that this does not have
+          any effect when using the amqp result store backend,
+          as it does not use polling.
+      callback (Callable): Optional callback to be called for every
+          result received.  Must have signature ``(task_id, value)``
+          No results will be returned by this function if a callback
+          is specified.  The order of results is also arbitrary when a
+          callback is used.  To get access to the result object for
+          a particular id you'll have to generate an index first:
+          ``index = {r.id: r for r in gres.results.values()}``
+          Or you can create new result objects on the fly:
+          ``result = app.AsyncResult(task_id)`` (both will
+          take advantage of the backend cache anyway).
+      no_ack (bool): Automatic message acknowledgment (Note that if this
+          is set to :const:`False` then the messages
+          *will not be acknowledged*).
+      disable_sync_subtasks (bool): Disable tasks to wait for sub tasks
+          this is the default configuration. CAUTION do not enable this
+          unless you must.
+  
+  Raises:
+      celery.exceptions.TimeoutError: if ``timeout`` isn't
+          :const:`None` and the operation takes longer than ``timeout``
+          seconds.
+  `````
+- `def then(self, callback, on_error = None, weak = False)`
+- `def iter_native(self, timeout = None, interval = 0.5, no_ack = True, on_message = None, on_interval = None)`
+  - **Docstring:**
+  `````
+  Backend optimized version of :meth:`iterate`.
+  
+  .. versionadded:: 2.2
+  
+  Note that this does not support collecting the results
+  for different task types using different backends.
+  
+  This is currently only supported by the amqp, Redis and cache
+  result backends.
+  `````
+- `def join_native(self, timeout = None, propagate = True, interval = 0.5, callback = None, no_ack = True, on_message = None, on_interval = None, disable_sync_subtasks = True)`
+  - **Docstring:**
+  `````
+  Backend optimized version of :meth:`join`.
+  
+  .. versionadded:: 2.2
+  
+  Note that this does not support collecting the results
+  for different task types using different backends.
+  
+  This is currently only supported by the amqp, Redis and cache
+  result backends.
+  `````
+- `def app(self, app)` `app.setter`
+
+**Properties (3):**
+- `@property supports_native_join`
+- `@property app`
+- `@property backend`
+
+**Class Variables (3):**
+- `_app = None`
+- `results = None`
+- `maybe_reraise = maybe_throw`
+
+##### 📌 `class GroupResult(ResultSet)`
+*Line: 911*
+
+**Docstring:**
+`````
+Like :class:`ResultSet`, but with an associated id.
+
+This type is returned by :class:`~celery.group`.
+
+It enables inspection of the tasks state and return values as
+a single entity.
+
+Arguments:
+    id (str): The id of the group.
+    results (Sequence[AsyncResult]): List of result instances.
+    parent (ResultBase): Parent result of this group.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, id = None, results = None, parent = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `id = None`
+    - `results = None`
+    - `parent = None`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def save(self, backend = None)`
+  - **Docstring:**
+  `````
+  Save group-result for later retrieval using :meth:`restore`.
+  
+  Example:
+      >>> def save_and_restore(result):
+      ...     result.save()
+      ...     result = GroupResult.restore(result.id)
+  `````
+- `def delete(self, backend = None)`
+  - *Remove this result if it was previously saved.*
+- `def as_tuple(self)`
+- `def restore(cls, id, backend = None, app = None)` `classmethod`
+  - *Restore previously saved group result.*
+
+**Properties (1):**
+- `@property children`
+
+**Class Variables (3):**
+- `id = None`
+- `results = None`
+- `__nonzero__ = __bool__`
+
+##### 📌 `class EagerResult(AsyncResult)`
+*Line: 1007*
+
+**Docstring:**
+`````
+Result that we know has already been executed.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, id, ret_value, state, traceback = None, name = None)`
+  - **Parameters:**
+    - `self`
+    - `id`
+    - `ret_value`
+    - `state`
+    - `traceback = None`
+    - `name = None`
+
+**Public Methods (5):**
+- `def then(self, callback, on_error = None, weak = False)`
+- `def ready(self)`
+- `def get(self, timeout = None, propagate = True, disable_sync_subtasks = True, **kwargs)`
+- `def forget(self)`
+- `def revoke(self, *args, **kwargs)`
+
+**Properties (5):**
+- `@property _cache`
+- `@property result`
+- `@property state`
+- `@property traceback`
+- `@property supports_native_join`
+
+**Class Variables (2):**
+- `wait = get`
+- `status = state`
+
+#### 🔧 Public Functions (4)
+
+- `def assert_will_not_block()`
+  - *Line: 37*
+
+- `def allow_join_result()` `contextmanager`
+  - *Line: 43*
+
+- `def denied_join_result()` `contextmanager`
+  - *Line: 53*
+
+- `def result_from_tuple(r, app = None)`
+  - *Line: 1094*
+  - *Deserialize result from tuple.*
+
+
+---
+
+`````python
 """Task results/state and results for groups of tasks."""
 
 import datetime
 import time
+import types
 from collections import deque
 from contextlib import contextmanager
 from weakref import proxy
@@ -5644,6 +9656,24 @@ class AsyncResult(ResultBase):
                 if is_incomplete_stream:
                     raise IncompleteStream()
 
+    def exists(self):
+        """Return :const:`True` if a result exists in the backend for this task.
+
+        This can be used to distinguish between a task that is truly
+        pending (waiting for execution) and a task ID that has never
+        been submitted or whose result has been forgotten/expired.
+
+        Without this method, both cases return ``PENDING`` as the state,
+        making them indistinguishable.
+
+        .. versionadded:: 5.7.0
+
+        Returns:
+            bool: :const:`True` if the backend has a result stored for
+                this task ID, :const:`False` otherwise.
+        """
+        return self.backend.task_result_exists(self.id)
+
     def ready(self):
         """Return :const:`True` if the task has executed.
 
@@ -5687,6 +9717,8 @@ class AsyncResult(ResultBase):
             if parent:
                 graph.add_edge(parent, node)
         return graph
+
+    __class_getitem__ = classmethod(types.GenericAlias)
 
     def __str__(self):
         """`str(self) -> self.id`."""
@@ -6395,10 +10427,442 @@ def result_from_tuple(r, app=None):
         return Result(id, parent=parent)
     return r
 
-```
+`````
 
-### 代码文件: celery\schedules.py
-```python
+--- **end of file: celery/result.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/schedules.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/schedules.py`
+
+#### 📝 Module Docstring
+
+`````
+Schedules define the intervals at which periodic tasks run.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import re`
+- `from bisect import bisect`
+- `from bisect import bisect_left`
+- `from collections import namedtuple`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from datetime import tzinfo`
+- `from typing import Any`
+- `from typing import Callable`
+- `from typing import Iterable`
+- `from typing import Mapping`
+- `from typing import Sequence`
+- `from typing import Union`
+- `from kombu.utils.objects import cached_property`
+- `from celery import Celery`
+- `from  import current_app`
+- `from utils.collections import AttributeDict`
+- `from utils.time import ffwd`
+- `from utils.time import humanize_seconds`
+- `from utils.time import localize`
+- `from utils.time import maybe_make_aware`
+- `from utils.time import maybe_timedelta`
+- `from utils.time import remaining`
+- `from utils.time import timezone`
+- `from utils.time import weekday`
+- `from utils.time import yearmonth`
+
+#### 🏛️ Classes (6)
+
+##### 📌 `class ParseException(Exception)`
+*Line: 61*
+
+**Docstring:**
+`````
+Raised by :class:`crontab_parser` when the input can't be parsed.
+`````
+
+##### 📌 `class BaseSchedule`
+*Line: 65*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, nowfun: Callable | None = None, app: Celery | None = None)`
+  - **Parameters:**
+    - `self`
+    - `nowfun: Callable | None = None`
+    - `app: Celery | None = None`
+
+**Public Methods (6):**
+- `def now(self) -> datetime`
+- `def remaining_estimate(self, last_run_at: datetime) -> timedelta`
+- `def is_due(self, last_run_at: datetime) -> tuple[bool, datetime]`
+- `def maybe_make_aware(self, dt: datetime, naive_as_utc: bool = True) -> datetime`
+- `def app(self, app: Celery) -> None` `app.setter`
+- `def to_local(self, dt: datetime) -> datetime`
+
+**Properties (3):**
+- `@property app -> Celery`
+- `@property tz -> tzinfo`
+- `@property utc_enabled -> bool`
+
+##### 📌 `class schedule(BaseSchedule)`
+*Line: 111*
+
+**Docstring:**
+`````
+Schedule for periodic task.
+
+Arguments:
+    run_every (float, ~datetime.timedelta): Time interval.
+    relative (bool):  If set to True the run time will be rounded to the
+        resolution of the interval.
+    nowfun (Callable): Function returning the current date and time
+        (:class:`~datetime.datetime`).
+    app (Celery): Celery app instance.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, run_every: float | timedelta | None = None, relative: bool = False, nowfun: Callable | None = None, app: Celery | None = None)`
+  - **Parameters:**
+    - `self`
+    - `run_every: float | timedelta | None = None`
+    - `relative: bool = False`
+    - `nowfun: Callable | None = None`
+    - `app: Celery | None = None`
+
+**Public Methods (2):**
+- `def remaining_estimate(self, last_run_at: datetime) -> timedelta`
+- `def is_due(self, last_run_at: datetime) -> tuple[bool, datetime]`
+  - **Docstring:**
+  `````
+  Return tuple of ``(is_due, next_time_to_check)``.
+  
+  Notes:
+      - next time to check is in seconds.
+  
+      - ``(True, 20)``, means the task should be run now, and the next
+          time to check is in 20 seconds.
+  
+      - ``(False, 12.3)``, means the task is not due, but that the
+        scheduler should check again in 12.3 seconds.
+  
+  The next time to check is used to save energy/CPU cycles,
+  it does not need to be accurate but will influence the precision
+  of your schedule.  You must also keep in mind
+  the value of :setting:`beat_max_loop_interval`,
+  that decides the maximum number of seconds the scheduler can
+  sleep between re-checking the periodic task intervals.  So if you
+  have a task that changes schedule at run-time then your next_run_at
+  check will decide how long it will take before a change to the
+  schedule takes effect.  The max loop interval takes precedence
+  over the next check at value returned.
+  
+  .. admonition:: Scheduler max interval variance
+  
+      The default max loop interval may vary for different schedulers.
+      For the default scheduler the value is 5 minutes, but for example
+      the :pypi:`django-celery-beat` database scheduler the value
+      is 5 seconds.
+  `````
+
+**Properties (2):**
+- `@property seconds -> int | float`
+- `@property human_seconds -> str`
+
+**Class Variables (1):**
+- `relative: bool = False`
+
+##### 📌 `class crontab_parser`
+*Line: 196*
+
+**Docstring:**
+`````
+Parser for Crontab expressions.
+
+Any expression of the form 'groups'
+(see BNF grammar below) is accepted and expanded to a set of numbers.
+These numbers represent the units of time that the Crontab needs to
+run on:
+
+.. code-block:: bnf
+
+    digit   :: '0'..'9'
+    dow     :: 'a'..'z'
+    number  :: digit+ | dow+
+    steps   :: number
+    range   :: number ( '-' number ) ?
+    numspec :: '*' | range
+    expr    :: numspec ( '/' steps ) ?
+    groups  :: expr ( ',' expr ) *
+
+The parser is a general purpose one, useful for parsing hours, minutes and
+day of week expressions.  Example usage:
+
+.. code-block:: pycon
+
+    >>> minutes = crontab_parser(60).parse('*/15')
+    [0, 15, 30, 45]
+    >>> hours = crontab_parser(24).parse('*/4')
+    [0, 4, 8, 12, 16, 20]
+    >>> day_of_week = crontab_parser(7).parse('*')
+    [0, 1, 2, 3, 4, 5, 6]
+
+It can also parse day of month and month of year expressions if initialized
+with a minimum of 1.  Example usage:
+
+.. code-block:: pycon
+
+    >>> days_of_month = crontab_parser(31, 1).parse('*/3')
+    [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31]
+    >>> months_of_year = crontab_parser(12, 1).parse('*/2')
+    [1, 3, 5, 7, 9, 11]
+    >>> months_of_year = crontab_parser(12, 1).parse('2-12/2')
+    [2, 4, 6, 8, 10, 12]
+
+The maximum possible expanded value returned is found by the formula:
+
+    :math:`max_ + min_ - 1`
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, max_: int = 60, min_: int = 0)`
+  - **Parameters:**
+    - `self`
+    - `max_: int = 60`
+    - `min_: int = 0`
+
+**Public Methods (1):**
+- `def parse(self, spec: str) -> set[int]`
+
+**Class Variables (4):**
+- `ParseException = ParseException`
+- `_range = '(\\w+?)-(\\w+)'`
+- `_steps = '/(\\w+)?'`
+- `_star = '\\*'`
+
+##### 📌 `class crontab(BaseSchedule)`
+*Line: 323*
+
+**Docstring:**
+`````
+Crontab schedule.
+
+A Crontab can be used as the ``run_every`` value of a
+periodic task entry to add :manpage:`crontab(5)`-like scheduling.
+
+Like a :manpage:`cron(5)`-job, you can specify units of time of when
+you'd like the task to execute.  It's a reasonably complete
+implementation of :command:`cron`'s features, so it should provide a fair
+degree of scheduling needs.
+
+You can specify a minute, an hour, a day of the week, a day of the
+month, and/or a month in the year in any of the following formats:
+
+.. attribute:: minute
+
+    - A (list of) integers from 0-59 that represent the minutes of
+      an hour of when execution should occur; or
+    - A string representing a Crontab pattern.  This may get pretty
+      advanced, like ``minute='*/15'`` (for every quarter) or
+      ``minute='1,13,30-45,50-59/2'``.
+
+.. attribute:: hour
+
+    - A (list of) integers from 0-23 that represent the hours of
+      a day of when execution should occur; or
+    - A string representing a Crontab pattern.  This may get pretty
+      advanced, like ``hour='*/3'`` (for every three hours) or
+      ``hour='0,8-17/2'`` (at midnight, and every two hours during
+      office hours).
+
+.. attribute:: day_of_week
+
+    - A (list of) integers from 0-6, where Sunday = 0 and Saturday =
+      6, that represent the days of a week that execution should
+      occur.
+    - A string representing a Crontab pattern.  This may get pretty
+      advanced, like ``day_of_week='mon-fri'`` (for weekdays only).
+      (Beware that ``day_of_week='*/2'`` does not literally mean
+      'every two days', but 'every day that is divisible by two'!)
+
+.. attribute:: day_of_month
+
+    - A (list of) integers from 1-31 that represents the days of the
+      month that execution should occur.
+    - A string representing a Crontab pattern.  This may get pretty
+      advanced, such as ``day_of_month='2-30/2'`` (for every even
+      numbered day) or ``day_of_month='1-7,15-21'`` (for the first and
+      third weeks of the month).
+
+.. attribute:: month_of_year
+
+    - A (list of) integers from 1-12 that represents the months of
+      the year during which execution can occur.
+    - A string representing a Crontab pattern.  This may get pretty
+      advanced, such as ``month_of_year='*/3'`` (for the first month
+      of every quarter) or ``month_of_year='2-12/2'`` (for every even
+      numbered month).
+
+.. attribute:: nowfun
+
+    Function returning the current date and time
+    (:class:`~datetime.datetime`).
+
+.. attribute:: app
+
+    The Celery app instance.
+
+It's important to realize that any day on which execution should
+occur must be represented by entries in all three of the day and
+month attributes.  For example, if ``day_of_week`` is 0 and
+``day_of_month`` is every seventh day, only months that begin
+on Sunday and are also in the ``month_of_year`` attribute will have
+execution events.  Or, ``day_of_week`` is 1 and ``day_of_month``
+is '1-7,15-21' means every first and third Monday of every month
+present in ``month_of_year``.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, minute: Cronspec = '*', hour: Cronspec = '*', day_of_week: Cronspec = '*', day_of_month: Cronspec = '*', month_of_year: Cronspec = '*', **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `minute: Cronspec = '*'`
+    - `hour: Cronspec = '*'`
+    - `day_of_week: Cronspec = '*'`
+    - `day_of_month: Cronspec = '*'`
+    - `month_of_year: Cronspec = '*'`
+    - `**kwargs: Any`
+
+**Public Methods (4):**
+- `def from_string(cls, crontab: str) -> crontab` `classmethod`
+  - **Docstring:**
+  `````
+  Create a Crontab from a cron expression string. For example ``crontab.from_string('* * * * *')``.
+  
+  .. code-block:: text
+  
+      ┌───────────── minute (0–59)
+      │ ┌───────────── hour (0–23)
+      │ │ ┌───────────── day of the month (1–31)
+      │ │ │ ┌───────────── month (1–12)
+      │ │ │ │ ┌───────────── day of the week (0–6) (Sunday to Saturday)
+      * * * * *
+  `````
+- `def remaining_delta(self, last_run_at: datetime, tz: tzinfo | None = None, ffwd: type = ffwd) -> tuple[datetime, Any, datetime]`
+- `def remaining_estimate(self, last_run_at: datetime, ffwd: type = ffwd) -> timedelta`
+  - **Docstring:**
+  `````
+  Estimate of next run time.
+  
+  Returns when the periodic task should run next as a
+  :class:`~datetime.timedelta`.
+  `````
+- `def is_due(self, last_run_at: datetime) -> tuple[bool, datetime]`
+  - **Docstring:**
+  `````
+  Return tuple of ``(is_due, next_time_to_run)``.
+  
+  If :setting:`beat_cron_starting_deadline`  has been specified, the
+  scheduler will make sure that the `last_run_at` time is within the
+  deadline. This prevents tasks that could have been run according to
+  the crontab, but didn't, from running again unexpectedly.
+  
+  Note:
+      Next time to run is in seconds.
+  
+  SeeAlso:
+      :meth:`celery.schedules.schedule.is_due` for more information.
+  `````
+
+##### 📌 `class solar(BaseSchedule)`
+*Line: 717*
+
+**Docstring:**
+`````
+Solar event.
+
+A solar event can be used as the ``run_every`` value of a
+periodic task entry to schedule based on certain solar events.
+
+Notes:
+
+    Available event values are:
+
+        - ``dawn_astronomical``
+        - ``dawn_nautical``
+        - ``dawn_civil``
+        - ``sunrise``
+        - ``solar_noon``
+        - ``sunset``
+        - ``dusk_civil``
+        - ``dusk_nautical``
+        - ``dusk_astronomical``
+
+Arguments:
+    event (str): Solar event that triggers this task.
+        See note for available values.
+    lat (float): The latitude of the observer.
+    lon (float): The longitude of the observer.
+    nowfun (Callable): Function returning the current date and time
+        as a class:`~datetime.datetime`.
+    app (Celery): Celery app instance.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, event: str, lat: int | float, lon: int | float, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `event: str`
+    - `lat: int | float`
+    - `lon: int | float`
+    - `**kwargs: Any`
+
+**Public Methods (2):**
+- `def remaining_estimate(self, last_run_at: datetime) -> timedelta`
+  - **Docstring:**
+  `````
+  Return estimate of next time to run.
+  
+  Returns:
+      ~datetime.timedelta: when the periodic task should
+          run next, or if it shouldn't run today (e.g., the sun does
+          not rise today), returns the time when the next check
+          should take place.
+  `````
+- `def is_due(self, last_run_at: datetime) -> tuple[bool, datetime]`
+  - **Docstring:**
+  `````
+  Return tuple of ``(is_due, next_time_to_run)``.
+  
+  Note:
+      next time to run is in seconds.
+  
+  See Also:
+      :meth:`celery.schedules.schedule.is_due` for more information.
+  `````
+
+**Class Variables (4):**
+- `_all_events = {'dawn_astronomical', 'dawn_nautical', 'dawn_civil', 'sunrise', 'solar_noon', 'sunset', 'dusk_civil', 'dusk_nautical', 'dusk_astronomical'}`
+- `_horizons = {'dawn_astronomical': '-18', 'dawn_nautical': '-12', 'dawn_civil': '-6', 'sunrise': '-0:34', 'solar_noon': '0', 'sunset': '-0:34', 'dusk_civil': '-6', 'dusk_nautical': '-12', 'dusk_astronomical': '-18'}`
+- `_methods = {'dawn_astronomical': 'next_rising', 'dawn_nautical': 'next_rising', 'dawn_civil': 'next_rising', 'sunrise': 'next_rising', 'solar_noon': 'next_transit', 'sunset': 'next_setting', 'dusk_civil': 'next_setting', 'dusk_nautical': 'next_setting', 'dusk_astronomical': 'next_setting'}`
+- `_use_center_l = {'dawn_astronomical': True, 'dawn_nautical': True, 'dawn_civil': True, 'sunrise': False, 'solar_noon': False, 'sunset': False, 'dusk_civil': True, 'dusk_nautical': True, 'dusk_astronomical': True}`
+
+#### 🔧 Public Functions (2)
+
+- `def cronfield(s: Cronspec | None) -> Cronspec`
+  - *Line: 57*
+
+- `def maybe_schedule(s: int | float | timedelta | BaseSchedule, relative: bool = False, app: Celery | None = None) -> float | timedelta | BaseSchedule`
+  - *Line: 703*
+  - *Return schedule from number, timedelta, or actual schedule.*
+
+
+---
+
+`````python
 """Schedules define the intervals at which periodic tasks run."""
 from __future__ import annotations
 
@@ -7165,7 +11629,7 @@ class solar(BaseSchedule):
         'sunset': '-0:34',
         'dusk_civil': '-6',
         'dusk_nautical': '-12',
-        'dusk_astronomical': '18',
+        'dusk_astronomical': '-18',
     }
     _methods = {
         'dawn_astronomical': 'next_rising',
@@ -7287,10 +11751,42 @@ class solar(BaseSchedule):
             )
         return NotImplemented
 
-```
+`````
 
-### 代码文件: celery\signals.py
-```python
+--- **end of file: celery/schedules.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/signals.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/signals.py`
+
+#### 📝 Module Docstring
+
+`````
+Celery Signals.
+
+This module defines the signals (Observer pattern) sent by
+both workers and clients.
+
+Functions can be connected to these signals, and connected
+functions are called whenever a signal is called.
+
+.. seealso::
+
+    :ref:`signals` for more information.
+`````
+
+#### 📦 Imports
+
+- `from utils.dispatch import Signal`
+
+
+---
+
+`````python
 """Celery Signals.
 
 This module defines the signals (Observer pattern) sent by
@@ -7446,10 +11942,116 @@ user_preload_options = Signal(
     providing_args={'app', 'options'},
 )
 
-```
+`````
 
-### 代码文件: celery\states.py
-```python
+--- **end of file: celery/signals.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/states.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/states.py`
+
+#### 📝 Module Docstring
+
+`````
+Built-in task states.
+
+.. _states:
+
+States
+------
+
+See :ref:`task-states`.
+
+.. _statesets:
+
+Sets
+----
+
+.. state:: READY_STATES
+
+READY_STATES
+~~~~~~~~~~~~
+
+Set of states meaning the task result is ready (has been executed).
+
+.. state:: UNREADY_STATES
+
+UNREADY_STATES
+~~~~~~~~~~~~~~
+
+Set of states meaning the task result is not ready (hasn't been executed).
+
+.. state:: EXCEPTION_STATES
+
+EXCEPTION_STATES
+~~~~~~~~~~~~~~~~
+
+Set of states meaning the task returned an exception.
+
+.. state:: PROPAGATE_STATES
+
+PROPAGATE_STATES
+~~~~~~~~~~~~~~~~
+
+Set of exception states that should propagate exceptions to the user.
+
+.. state:: ALL_STATES
+
+ALL_STATES
+~~~~~~~~~~
+
+Set of all possible states.
+
+Misc
+----
+`````
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class state(str)`
+*Line: 92*
+
+**Docstring:**
+`````
+Task state.
+
+State is a subclass of :class:`str`, implementing comparison
+methods adhering to state precedence rules::
+
+    >>> from celery.states import state, PENDING, SUCCESS
+
+    >>> state(PENDING) < state(SUCCESS)
+    True
+
+Any custom state is considered to be lower than :state:`FAILURE` and
+:state:`SUCCESS`, but higher than any of the other built-in states::
+
+    >>> state('PROGRESS') > state(STARTED)
+    True
+
+    >>> state('PROGRESS') > state('SUCCESS')
+    False
+`````
+
+#### 🔧 Public Functions (1)
+
+- `def precedence(state: str) -> int`
+  - *Line: 81*
+  - **Docstring:**
+  `````
+  Get the precedence index for state.
+  
+  Lower index means higher precedence.
+  `````
+
+
+---
+
+`````python
 """Built-in task states.
 
 .. _states:
@@ -7602,10 +12204,97 @@ ALL_STATES = frozenset({
     PENDING, RECEIVED, STARTED, SUCCESS, FAILURE, RETRY, REVOKED,
 })
 
-```
+`````
 
-### 代码文件: celery\_state.py
-```python
+--- **end of file: celery/states.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/_state.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/_state.py`
+
+#### 📝 Module Docstring
+
+`````
+Internal state.
+
+This is an internal module containing thread state
+like the ``current_app``, and ``current_task``.
+
+This module shouldn't be used directly.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `import threading`
+- `import weakref`
+- `from celery.local import Proxy`
+- `from celery.utils.threads import LocalStack`
+- `from traceback import print_stack`
+- `from celery.app.base import Celery`
+- `from billiard.process import current_process`
+- `import traceback`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class _TLS(threading.local)`
+*Line: 64*
+
+**Class Variables (1):**
+- `current_app = None`
+
+#### 🔧 Public Functions (9)
+
+- `def connect_on_app_finalize(callback)`
+  - *Line: 43*
+  - *Connect callback to be called when any app is finalized.*
+
+- `def task_join_will_block()`
+  - *Line: 60*
+
+- `def set_default_app(app)`
+  - *Line: 86*
+  - *Set default app.*
+
+- `def get_current_task()`
+  - *Line: 121*
+  - *Currently executing task.*
+
+- `def get_current_worker_task()`
+  - *Line: 126*
+  - **Docstring:**
+  `````
+  Currently executing task, that was applied by the worker.
+  
+  This is used to differentiate between the actual task
+  executed by the worker and any task that was called within
+  a task (using ``task.__call__`` or ``task.apply``)
+  `````
+
+- `def enable_trace()`
+  - *Line: 182*
+  - *Enable tracing of app instances.*
+
+- `def disable_trace()`
+  - *Line: 188*
+  - *Disable tracing of app instances.*
+
+- `def get_current_app()`
+  - *Line: 108*
+  - *Return the current app.*
+
+- `def get_current_app()`
+  - *Line: 112*
+
+
+---
+
+`````python
 """Internal state.
 
 This is an internal module containing thread state
@@ -7804,10 +12493,74 @@ if os.environ.get('CELERY_TRACE_APP'):  # pragma: no cover
 else:
     disable_trace()
 
-```
+`````
 
-### 代码文件: celery\__init__.py
-```python
+--- **end of file: celery/_state.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Distributed Task Queue.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import re`
+- `import sys`
+- `from collections import namedtuple`
+- `from  import local`
+- `import builtins`
+- `from celery._state import current_app`
+- `from celery._state import current_task`
+- `from celery.app import shared_task`
+- `from celery.app.base import Celery`
+- `from celery.app.task import Task`
+- `from celery.app.utils import bugreport`
+- `from celery.canvas import chain`
+- `from celery.canvas import chord`
+- `from celery.canvas import chunks`
+- `from celery.canvas import group`
+- `from celery.canvas import maybe_signature`
+- `from celery.canvas import signature`
+- `from celery.canvas import subtask`
+- `from celery.canvas import xmap`
+- `from celery.canvas import xstarmap`
+- `from celery.utils import uuid`
+- `import eventlet.debug`
+- `import gevent.monkey`
+- `import gevent.signal`
+- `from celery import concurrency`
+
+#### 🔧 Public Functions (2)
+
+- `def maybe_patch_concurrency(argv = None, short_opts = None, long_opts = None, patches = None)`
+  - *Line: 123*
+  - **Docstring:**
+  `````
+  Apply eventlet/gevent monkeypatches.
+  
+  With short and long opt alternatives that specify the command line
+  option to set the pool, this makes sure that anything that needs
+  to be patched is completed as early as possible.
+  (e.g., eventlet/gevent monkey patches).
+  `````
+
+- `def debug_import(name, locals = None, globals = None, fromlist = None, level = -1, real_import = builtins.__import__)`
+  - *Line: 61*
+
+
+---
+
+`````python
 """Distributed Task Queue."""
 # :copyright: (c) 2017-2026 Asif Saif Uddin, celery core and individual
 #                 contributors, All rights reserved.
@@ -7825,9 +12578,16 @@ from collections import namedtuple
 # Lazy loading
 from . import local
 
-SERIES = 'immunity'
+# Save original os.write before eventlet/gevent can monkey-patch it.
+# This is needed for signal handlers (e.g., SIGINT) which may run inside
+# the eventlet hub's event loop. Using the patched os.write from within
+# the hub causes: RuntimeError('do not call blocking functions from the mainloop')
+# See: https://github.com/celery/celery/issues/10083
+_original_os_write = os.write
 
-__version__ = '5.5.3'
+SERIES = 'recovery'
+
+__version__ = '5.6.2'
 __author__ = 'Ask Solem'
 __contact__ = 'auvipy@gmail.com'
 __homepage__ = 'https://docs.celeryq.dev/'
@@ -7852,7 +12612,7 @@ version_info_t = namedtuple('version_info_t', (
 # bumpversion can only search for {current_version}
 # so we have to parse the version here.
 _temp = re.match(
-    r'(\d+)\.(\d+).(\d+)(.+)?', __version__).groups()
+    r'(\d+)\.(\d+)\.(\d+)(.+)?', __version__).groups()
 VERSION = version_info = version_info_t(
     int(_temp[0]), int(_temp[1]), int(_temp[2]), _temp[3] or '', '')
 del _temp
@@ -7979,12 +12739,43 @@ old_module, new_module = local.recreate_module(  # pragma: no cover
     version_info=version_info,
     maybe_patch_concurrency=maybe_patch_concurrency,
     _find_option_with_arg=_find_option_with_arg,
+    _original_os_write=_original_os_write,
 )
 
-```
+`````
 
-### 代码文件: celery\__main__.py
-```python
+--- **end of file: celery/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/__main__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/__main__.py`
+
+#### 📝 Module Docstring
+
+`````
+Entry-point for the :program:`celery` umbrella command.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from  import maybe_patch_concurrency`
+- `from celery.bin.celery import main as _main`
+
+#### 🔧 Public Functions (1)
+
+- `def main() -> None`
+  - *Line: 10*
+  - *Entrypoint to the ``celery`` umbrella command.*
+
+
+---
+
+`````python
 """Entry-point for the :program:`celery` umbrella command."""
 
 import sys
@@ -8005,10 +12796,199 @@ def main() -> None:
 if __name__ == '__main__':  # pragma: no cover
     main()
 
-```
+`````
 
-### 代码文件: celery\app\amqp.py
-```python
+--- **end of file: celery/__main__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/amqp.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/amqp.py`
+
+#### 📝 Module Docstring
+
+`````
+Sending/Receiving Messages (Kombu integration).
+`````
+
+#### 📦 Imports
+
+- `import numbers`
+- `from collections import namedtuple`
+- `from collections.abc import Mapping`
+- `from datetime import timedelta`
+- `from weakref import WeakValueDictionary`
+- `from kombu import Connection`
+- `from kombu import Consumer`
+- `from kombu import Exchange`
+- `from kombu import Producer`
+- `from kombu import Queue`
+- `from kombu import pools`
+- `from kombu.common import Broadcast`
+- `from kombu.utils.functional import maybe_list`
+- `from kombu.utils.objects import cached_property`
+- `from celery import signals`
+- `from celery.utils.nodenames import anon_nodename`
+- `from celery.utils.saferepr import saferepr`
+- `from celery.utils.text import indent as textindent`
+- `from celery.utils.time import maybe_make_aware`
+- `from  import routes as _routes`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Queues(dict)`
+*Line: 41*
+
+**Docstring:**
+`````
+Queue name⇒ declaration mapping.
+
+Arguments:
+    queues (Iterable): Initial list/tuple or dict of queues.
+    create_missing (bool): By default any unknown queues will be
+        added automatically, but if this flag is disabled the occurrence
+        of unknown queues in `wanted` will raise :exc:`KeyError`.
+    create_missing_queue_type (str): Type of queue to create for missing queues.
+        Must be either 'classic' (default) or 'quorum'. If set to 'quorum',
+        the broker will declare new queues using the quorum type.
+    create_missing_queue_exchange_type (str): Type of exchange to use
+        when creating missing queues. If not set, the default exchange type
+        will be used. If set, the exchange type will be set to this value
+        when creating missing queues.
+    max_priority (int): Default x-max-priority for queues with none set.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, queues = None, default_exchange = None, create_missing = True, create_missing_queue_type = None, create_missing_queue_exchange_type = None, autoexchange = None, max_priority = None, default_routing_key = None)`
+  - **Parameters:**
+    - `self`
+    - `queues = None`
+    - `default_exchange = None`
+    - `create_missing = True`
+    - `create_missing_queue_type = None`
+    - `create_missing_queue_exchange_type = None`
+    - `autoexchange = None`
+    - `max_priority = None`
+    - `default_routing_key = None`
+
+**Public Methods (7):**
+- `def add(self, queue, **kwargs)`
+  - **Docstring:**
+  `````
+  Add new queue.
+  
+  The first argument can either be a :class:`kombu.Queue` instance,
+  or the name of a queue.  If the former the rest of the keyword
+  arguments are ignored, and options are simply taken from the queue
+  instance.
+  
+  Arguments:
+      queue (kombu.Queue, str): Queue to add.
+      exchange (kombu.Exchange, str):
+          if queue is str, specifies exchange name.
+      routing_key (str): if queue is str, specifies binding key.
+      exchange_type (str): if queue is str, specifies type of exchange.
+      **options (Any): Additional declaration options used when
+          queue is a str.
+  `````
+- `def add_compat(self, name, **options)`
+- `def format(self, indent = 0, indent_first = True)`
+  - *Format routing table into string for log dumps.*
+- `def select_add(self, queue, **kwargs)`
+  - **Docstring:**
+  `````
+  Add new task queue that'll be consumed from.
+  
+  The queue will be active even when a subset has been selected
+  using the :option:`celery worker -Q` option.
+  `````
+- `def select(self, include)`
+  - **Docstring:**
+  `````
+  Select a subset of currently defined queues to consume from.
+  
+  Arguments:
+      include (Sequence[str], str): Names of queues to consume from.
+  `````
+- `def deselect(self, exclude)`
+  - **Docstring:**
+  `````
+  Deselect queues so that they won't be consumed from.
+  
+  Arguments:
+      exclude (Sequence[str], str): Names of queues to avoid
+          consuming from.
+  `````
+- `def new_missing(self, name)`
+
+**Properties (1):**
+- `@property consume_from`
+
+**Class Variables (1):**
+- `_consume_from = None`
+
+##### 📌 `class AMQP`
+*Line: 219*
+
+**Docstring:**
+`````
+App AMQP API: app.amqp.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app)`
+  - **Parameters:**
+    - `self`
+    - `app`
+
+**Public Methods (8):**
+- `def Queues(self, queues, create_missing = None, create_missing_queue_type = None, create_missing_queue_exchange_type = None, autoexchange = None, max_priority = None)`
+- `def Router(self, queues = None, create_missing = None)`
+  - *Return the current task router.*
+- `def flush_routes(self)`
+- `def TaskConsumer(self, channel, queues = None, accept = None, **kw)`
+- `def as_task_v2(self, task_id, name, args = None, kwargs = None, countdown = None, eta = None, group_id = None, group_index = None, expires = None, retries = 0, chord = None, callbacks = None, errbacks = None, reply_to = None, time_limit = None, soft_time_limit = None, create_sent_event = False, root_id = None, parent_id = None, shadow = None, chain = None, now = None, timezone = None, origin = None, ignore_result = False, argsrepr = None, kwargsrepr = None, stamped_headers = None, replaced_task_nesting = 0, **options)`
+- `def as_task_v1(self, task_id, name, args = None, kwargs = None, countdown = None, eta = None, group_id = None, group_index = None, expires = None, retries = 0, chord = None, callbacks = None, errbacks = None, reply_to = None, time_limit = None, soft_time_limit = None, create_sent_event = False, root_id = None, parent_id = None, shadow = None, now = None, timezone = None, **compat_kwargs)`
+- `def queues(self, queues)` `queues.setter`
+- `def router(self, value)` `router.setter`
+
+**Properties (10):**
+- `@property create_task_message`
+- `@property send_task_message`
+- `@property default_queue`
+- `@property queues`
+- `@property routes`
+- `@property router`
+- `@property producer_pool`
+- `@property default_exchange`
+- `@property utc`
+- `@property _event_dispatcher`
+
+**Class Variables (11):**
+- `Connection = Connection`
+- `Consumer = Consumer`
+- `Producer = Producer`
+- `BrokerConnection = Connection`
+- `queues_cls = Queues`
+- `_rtable = None`
+- `_producer_pool = None`
+- `autoexchange = None`
+- `argsrepr_maxsize = 1024`
+- `kwargsrepr_maxsize = 1024`
+- `publisher_pool = producer_pool`
+
+#### 🔧 Public Functions (1)
+
+- `def utf8dict(d, encoding = 'utf-8')`
+  - *Line: 36*
+
+
+---
+
+`````python
 """Sending/Receiving Messages (Kombu integration)."""
 import numbers
 from collections import namedtuple
@@ -8667,10 +13647,67 @@ class AMQP:
             self.router = self.Router()
         return
 
-```
+`````
 
-### 代码文件: celery\app\annotations.py
-```python
+--- **end of file: celery/app/amqp.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/annotations.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/annotations.py`
+
+#### 📝 Module Docstring
+
+`````
+Task Annotations.
+
+Annotations is a nice term for monkey-patching task classes
+in the configuration.
+
+This prepares and performs the annotations in the
+:setting:`task_annotations` setting.
+`````
+
+#### 📦 Imports
+
+- `from celery.utils.functional import firstmethod`
+- `from celery.utils.functional import mlazy`
+- `from celery.utils.imports import instantiate`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class MapAnnotation(dict)`
+*Line: 18*
+
+**Docstring:**
+`````
+Annotation map: task_name => attributes.
+`````
+
+**Public Methods (2):**
+- `def annotate_any(self)`
+- `def annotate(self, task)`
+
+#### 🔧 Public Functions (3)
+
+- `def prepare(annotations)`
+  - *Line: 34*
+  - *Expand the :setting:`task_annotations` setting.*
+
+- `def resolve_all(anno, task)`
+  - *Line: 50*
+  - *Resolve all pending annotations.*
+
+- `def expand_annotation(annotation)`
+  - *Line: 36*
+
+
+---
+
+`````python
 """Task Annotations.
 
 Annotations is a nice term for monkey-patching task classes
@@ -8724,10 +13761,44 @@ def resolve_all(anno, task):
     """Resolve all pending annotations."""
     return (x for x in (_first_match(anno, task), _first_match_any(anno)) if x)
 
-```
+`````
 
-### 代码文件: celery\app\autoretry.py
-```python
+--- **end of file: celery/app/annotations.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/autoretry.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/autoretry.py`
+
+#### 📝 Module Docstring
+
+`````
+Tasks auto-retry functionality.
+`````
+
+#### 📦 Imports
+
+- `from vine.utils import wraps`
+- `from celery.exceptions import Ignore`
+- `from celery.exceptions import Retry`
+- `from celery.utils.time import get_exponential_backoff_interval`
+
+#### 🔧 Public Functions (2)
+
+- `def add_autoretry_behaviour(task, **options)`
+  - *Line: 8*
+  - *Wrap task's `run` method with auto-retry functionality.*
+
+- `def run(*args, **kwargs)` `wraps(task.run)`
+  - *Line: 36*
+
+
+---
+
+`````python
 """Tasks auto-retry functionality."""
 from vine.utils import wraps
 
@@ -8795,10 +13866,48 @@ def add_autoretry_behaviour(task, **options):
 
         task._orig_run, task.run = task.run, run
 
-```
+`````
 
-### 代码文件: celery\app\backends.py
-```python
+--- **end of file: celery/app/autoretry.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/backends.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/backends.py`
+
+#### 📝 Module Docstring
+
+`````
+Backend selection.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `import types`
+- `from celery._state import current_app`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.exceptions import reraise`
+- `from celery.utils.imports import load_extension_class_names`
+- `from celery.utils.imports import symbol_by_name`
+
+#### 🔧 Public Functions (2)
+
+- `def by_name(backend = None, loader = None, extension_namespace = 'celery.result_backends')`
+  - *Line: 41*
+  - *Get backend class by name/alias.*
+
+- `def by_url(backend = None, loader = None)`
+  - *Line: 59*
+  - *Get backend class by URL.*
+
+
+---
+
+`````python
 """Backend selection."""
 import sys
 import types
@@ -8869,10 +13978,627 @@ def by_url(backend=None, loader=None):
             backend = scheme
     return by_name(backend, loader), url
 
-```
+`````
 
-### 代码文件: celery\app\base.py
-```python
+--- **end of file: celery/app/backends.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/base.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/base.py`
+
+#### 📝 Module Docstring
+
+`````
+Actual App instance implementation.
+`````
+
+#### 📦 Imports
+
+- `import functools`
+- `import importlib`
+- `import inspect`
+- `import os`
+- `import sys`
+- `import threading`
+- `import types`
+- `import typing`
+- `import warnings`
+- `from collections import UserDict`
+- `from collections import defaultdict`
+- `from collections import deque`
+- `from datetime import datetime`
+- `from datetime import timezone as datetime_timezone`
+- `from operator import attrgetter`
+- `from click.exceptions import Exit`
+- `from dateutil.parser import isoparse`
+- `from kombu import Exchange`
+- `from kombu import pools`
+- `from kombu.clocks import LamportClock`
+- `from kombu.common import oid_from`
+- `from kombu.transport.native_delayed_delivery import calculate_routing_key`
+- `from kombu.utils.compat import register_after_fork`
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.uuid import uuid`
+- `from vine import starpromise`
+- `from celery import platforms`
+- `from celery import signals`
+- `from celery._state import _announce_app_finalized`
+- `from celery._state import _deregister_app`
+- `from celery._state import _register_app`
+- `from celery._state import _set_current_app`
+- `from celery._state import _task_stack`
+- `from celery._state import connect_on_app_finalize`
+- `from celery._state import get_current_app`
+- `from celery._state import get_current_worker_task`
+- `from celery._state import set_default_app`
+- `from celery.exceptions import AlwaysEagerIgnored`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.loaders import get_loader_cls`
+- `from celery.local import PromiseProxy`
+- `from celery.local import maybe_evaluate`
+- `from celery.utils import abstract`
+- `from celery.utils.collections import AttributeDictMixin`
+- `from celery.utils.dispatch import Signal`
+- `from celery.utils.functional import first`
+- `from celery.utils.functional import head_from_fun`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.imports import gen_task_name`
+- `from celery.utils.imports import instantiate`
+- `from celery.utils.imports import symbol_by_name`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.objects import FallbackContext`
+- `from celery.utils.objects import mro_lookup`
+- `from celery.utils.time import maybe_make_aware`
+- `from celery.utils.time import timezone`
+- `from celery.utils.time import to_utc`
+- `from utils.annotations import annotation_is_class`
+- `from utils.annotations import annotation_issubclass`
+- `from utils.annotations import get_optional_arg`
+- `from utils.quorum_queues import detect_quorum_queues`
+- `from  import backends`
+- `from  import builtins`
+- `from annotations import prepare as prepare_annotations`
+- `from autoretry import add_autoretry_behaviour`
+- `from defaults import DEFAULT_SECURITY_DIGEST`
+- `from defaults import find_deprecated_settings`
+- `from registry import TaskRegistry`
+- `from utils import AppPickler`
+- `from utils import Settings`
+- `from utils import _new_key_to_old`
+- `from utils import _old_key_to_new`
+- `from utils import _unpickle_app`
+- `from utils import _unpickle_app_v2`
+- `from utils import appstr`
+- `from utils import bugreport`
+- `from utils import detect_settings`
+- `from pydantic import BaseModel`
+- `import annotationlib`
+- `from celery.bin.celery import celery`
+- `from celery.security import setup_security`
+- `from celery import canvas`
+- `from  import shared_task`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class PendingConfiguration(UserDict, AttributeDictMixin)`
+*Line: 205*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, conf, callback)`
+  - **Parameters:**
+    - `self`
+    - `conf`
+    - `callback`
+
+**Public Methods (3):**
+- `def clear(self)`
+- `def update(self, *args, **kwargs)`
+- `def setdefault(self, *args, **kwargs)`
+
+**Properties (1):**
+- `@property data`
+
+**Class Variables (2):**
+- `callback = None`
+- `_data = None`
+
+##### 📌 `class Celery`
+*Line: 249*
+
+**Docstring:**
+`````
+Celery application.
+
+Arguments:
+    main (str): Name of the main module if running as `__main__`.
+        This is used as the prefix for auto-generated task names.
+
+Keyword Arguments:
+    broker (str): URL of the default broker used.
+    backend (Union[str, Type[celery.backends.base.Backend]]):
+        The result store backend class, or the name of the backend
+        class to use.
+
+        Default is the value of the :setting:`result_backend` setting.
+    autofinalize (bool): If set to False a :exc:`RuntimeError`
+        will be raised if the task registry or tasks are used before
+        the app is finalized.
+    set_as_current (bool):  Make this the global current app.
+    include (List[str]): List of modules every worker should import.
+
+    amqp (Union[str, Type[AMQP]]): AMQP object or class name.
+    events (Union[str, Type[celery.app.events.Events]]): Events object or
+        class name.
+    log (Union[str, Type[Logging]]): Log object or class name.
+    control (Union[str, Type[celery.app.control.Control]]): Control object
+        or class name.
+    tasks (Union[str, Type[TaskRegistry]]): A task registry, or the name of
+        a registry class.
+    fixups (List[str]): List of fix-up plug-ins (e.g., see
+        :mod:`celery.fixups.django`).
+    config_source (Union[str, class]): Take configuration from a class,
+        or object.  Attributes may include any settings described in
+        the documentation.
+    task_cls (Union[str, Type[celery.app.task.Task]]): base task class to
+        use. See :ref:`this section <custom-task-cls-app-wide>` for usage.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, main = None, loader = None, backend = None, amqp = None, events = None, log = None, control = None, set_as_current = True, tasks = None, broker = None, include = None, changes = None, config_source = None, fixups = None, task_cls = None, autofinalize = True, namespace = None, strict_typing = True, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `main = None`
+    - `loader = None`
+    - `backend = None`
+    - `amqp = None`
+    - `events = None`
+    - `log = None`
+    - `control = None`
+    - `set_as_current = True`
+    - `tasks = None`
+    - `broker = None`
+    - `include = None`
+    - `changes = None`
+    - `config_source = None`
+    - `fixups = None`
+    - `task_cls = None`
+    - `autofinalize = True`
+    - `namespace = None`
+    - `strict_typing = True`
+    - `**kwargs`
+
+**Public Methods (34):**
+- `def on_init(self)`
+  - *Optional callback called at init.*
+- `def set_current(self)`
+  - *Make this the current app for this thread.*
+- `def set_default(self)`
+  - *Make this the default app for all threads.*
+- `def close(self)`
+  - **Docstring:**
+  `````
+  Clean up after the application.
+  
+  Only necessary for dynamically created apps, and you should
+  probably use the :keyword:`with` statement instead.
+  
+  Example:
+      >>> with Celery(set_as_current=False) as app:
+      ...     with app.connection_for_write() as conn:
+      ...         pass
+  `````
+- `def start(self, argv = None)`
+  - **Docstring:**
+  `````
+  Run :program:`celery` using `argv`.
+  
+  Uses :data:`sys.argv` if `argv` is not specified.
+  `````
+- `def worker_main(self, argv = None)`
+  - **Docstring:**
+  `````
+  Run :program:`celery worker` using `argv`.
+  
+  Uses :data:`sys.argv` if `argv` is not specified.
+  `````
+- `def task(self, *args, **opts)`
+  - **Docstring:**
+  `````
+  Decorator to create a task class out of any callable.
+  
+  See :ref:`Task options<task-options>` for a list of the
+  arguments that can be passed to this decorator.
+  
+  Examples:
+      .. code-block:: python
+  
+          @app.task
+          def refresh_feed(url):
+              store_feed(feedparser.parse(url))
+  
+      with setting extra options:
+  
+      .. code-block:: python
+  
+          @app.task(exchange='feeds')
+          def refresh_feed(url):
+              return store_feed(feedparser.parse(url))
+  
+  Note:
+      App Binding: For custom apps the task decorator will return
+      a proxy object, so that the act of creating the task is not
+      performed until the task is used or the task registry is accessed.
+  
+      If you're depending on binding to be deferred, then you must
+      not access any attributes on the returned object until the
+      application is fully set up (finalized).
+  `````
+- `def type_checker(self, fun, bound = False)`
+- `def register_task(self, task, **options)`
+  - **Docstring:**
+  `````
+  Utility for registering a task-based class.
+  
+  Note:
+      This is here for compatibility with old Celery 1.0
+      style task classes, you should not need to use this for
+      new projects.
+  `````
+- `def gen_task_name(self, name, module)`
+- `def finalize(self, auto = False)`
+  - **Docstring:**
+  `````
+  Finalize the app.
+  
+  This loads built-in tasks, evaluates pending task decorators,
+  reads configuration, etc.
+  `````
+- `def add_defaults(self, fun)`
+  - **Docstring:**
+  `````
+  Add default configuration from dict ``d``.
+  
+  If the argument is a callable function then it will be regarded
+  as a promise, and it won't be loaded until the configuration is
+  actually needed.
+  
+  This method can be compared to:
+  
+  .. code-block:: pycon
+  
+      >>> celery.conf.update(d)
+  
+  with a difference that 1) no copy will be made and 2) the dict will
+  not be transferred when the worker spawns child processes, so
+  it's important that the same configuration happens at import time
+  when pickle restores the object on the other side.
+  `````
+- `def config_from_object(self, obj, silent = False, force = False, namespace = None)`
+  - **Docstring:**
+  `````
+  Read configuration from object.
+  
+  Object is either an actual object or the name of a module to import.
+  
+  Example:
+      >>> celery.config_from_object('myapp.celeryconfig')
+  
+      >>> from myapp import celeryconfig
+      >>> celery.config_from_object(celeryconfig)
+  
+  Arguments:
+      silent (bool): If true then import errors will be ignored.
+      force (bool): Force reading configuration immediately.
+          By default the configuration will be read only when required.
+  `````
+- `def config_from_envvar(self, variable_name, silent = False, force = False)`
+  - **Docstring:**
+  `````
+  Read configuration from environment variable.
+  
+  The value of the environment variable must be the name
+  of a module to import.
+  
+  Example:
+      >>> os.environ['CELERY_CONFIG_MODULE'] = 'myapp.celeryconfig'
+      >>> celery.config_from_envvar('CELERY_CONFIG_MODULE')
+  `````
+- `def config_from_cmdline(self, argv, namespace = 'celery')`
+- `def setup_security(self, allowed_serializers = None, key = None, key_password = None, cert = None, store = None, digest = DEFAULT_SECURITY_DIGEST, serializer = 'json')`
+  - **Docstring:**
+  `````
+  Setup the message-signing serializer.
+  
+  This will affect all application instances (a global operation).
+  
+  Disables untrusted serializers and if configured to use the ``auth``
+  serializer will register the ``auth`` serializer with the provided
+  settings into the Kombu serializer registry.
+  
+  Arguments:
+      allowed_serializers (Set[str]): List of serializer names, or
+          content_types that should be exempt from being disabled.
+      key (str): Name of private key file to use.
+          Defaults to the :setting:`security_key` setting.
+      key_password (bytes): Password to decrypt the private key.
+          Defaults to the :setting:`security_key_password` setting.
+      cert (str): Name of certificate file to use.
+          Defaults to the :setting:`security_certificate` setting.
+      store (str): Directory containing certificates.
+          Defaults to the :setting:`security_cert_store` setting.
+      digest (str): Digest algorithm used when signing messages.
+          Default is ``sha256``.
+      serializer (str): Serializer used to encode messages after
+          they've been signed.  See :setting:`task_serializer` for
+          the serializers supported.  Default is ``json``.
+  `````
+- `def autodiscover_tasks(self, packages = None, related_name = 'tasks', force = False)`
+  - **Docstring:**
+  `````
+  Auto-discover task modules.
+  
+  Searches a list of packages for a "tasks.py" module (or use
+  related_name argument).
+  
+  If the name is empty, this will be delegated to fix-ups (e.g., Django).
+  
+  For example if you have a directory layout like this:
+  
+  .. code-block:: text
+  
+      foo/__init__.py
+         tasks.py
+         models.py
+  
+      bar/__init__.py
+          tasks.py
+          models.py
+  
+      baz/__init__.py
+          models.py
+  
+  Then calling ``app.autodiscover_tasks(['foo', 'bar', 'baz'])`` will
+  result in the modules ``foo.tasks`` and ``bar.tasks`` being imported.
+  
+  Arguments:
+      packages (List[str]): List of packages to search.
+          This argument may also be a callable, in which case the
+          value returned is used (for lazy evaluation).
+      related_name (Optional[str]): The name of the module to find.  Defaults
+          to "tasks": meaning "look for 'module.tasks' for every
+          module in ``packages``.".  If ``None`` will only try to import
+          the package, i.e. "look for 'module'".
+      force (bool): By default this call is lazy so that the actual
+          auto-discovery won't happen until an application imports
+          the default modules.  Forcing will cause the auto-discovery
+          to happen immediately.
+  `````
+- `def send_task(self, name, args = None, kwargs = None, countdown = None, eta = None, task_id = None, producer = None, connection = None, router = None, result_cls = None, expires = None, publisher = None, link = None, link_error = None, add_to_parent = True, group_id = None, group_index = None, retries = 0, chord = None, reply_to = None, time_limit = None, soft_time_limit = None, root_id = None, parent_id = None, route_name = None, shadow = None, chain = None, task_type = None, replaced_task_nesting = 0, **options)`
+  - **Docstring:**
+  `````
+  Send task by name.
+  
+  Supports the same arguments as :meth:`@-Task.apply_async`.
+  
+  Arguments:
+      name (str): Name of task to call (e.g., `"tasks.add"`).
+      result_cls (AsyncResult): Specify custom result class.
+  `````
+- `def connection_for_read(self, url = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Establish connection used for consuming.
+  
+  See Also:
+      :meth:`connection` for supported arguments.
+  `````
+- `def connection_for_write(self, url = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Establish connection used for producing.
+  
+  See Also:
+      :meth:`connection` for supported arguments.
+  `````
+- `def connection(self, hostname = None, userid = None, password = None, virtual_host = None, port = None, ssl = None, connect_timeout = None, transport = None, transport_options = None, heartbeat = None, login_method = None, failover_strategy = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Establish a connection to the message broker.
+  
+  Please use :meth:`connection_for_read` and
+  :meth:`connection_for_write` instead, to convey the intent
+  of use for this connection.
+  
+  Arguments:
+      url: Either the URL or the hostname of the broker to use.
+      hostname (str): URL, Hostname/IP-address of the broker.
+          If a URL is used, then the other argument below will
+          be taken from the URL instead.
+      userid (str): Username to authenticate as.
+      password (str): Password to authenticate with
+      virtual_host (str): Virtual host to use (domain).
+      port (int): Port to connect to.
+      ssl (bool, Dict): Defaults to the :setting:`broker_use_ssl`
+          setting.
+      transport (str): defaults to the :setting:`broker_transport`
+          setting.
+      transport_options (Dict): Dictionary of transport specific options.
+      heartbeat (int): AMQP Heartbeat in seconds (``pyamqp`` only).
+      login_method (str): Custom login method to use (AMQP only).
+      failover_strategy (str, Callable): Custom failover strategy.
+      **kwargs: Additional arguments to :class:`kombu.Connection`.
+  
+  Returns:
+      kombu.Connection: the lazy connection instance.
+  `````
+- `def connection_or_acquire(self, connection = None, pool = True, *_, **__)`
+  - **Docstring:**
+  `````
+  Context used to acquire a connection from the pool.
+  
+  For use within a :keyword:`with` statement to get a connection
+  from the pool if one is not already provided.
+  
+  Arguments:
+      connection (kombu.Connection): If not provided, a connection
+          will be acquired from the connection pool.
+  `````
+- `def producer_or_acquire(self, producer = None)`
+  - **Docstring:**
+  `````
+  Context used to acquire a producer from the pool.
+  
+  For use within a :keyword:`with` statement to get a producer
+  from the pool if one is not already provided
+  
+  Arguments:
+      producer (kombu.Producer): If not provided, a producer
+          will be acquired from the producer pool.
+  `````
+- `def prepare_config(self, c)`
+  - *Prepare configuration before it is merged with the defaults.*
+- `def now(self)`
+  - *Return the current time and date as a datetime.*
+- `def select_queues(self, queues = None)`
+  - **Docstring:**
+  `````
+  Select subset of queues.
+  
+  Arguments:
+      queues (Sequence[str]): a list of queue names to keep.
+  `````
+- `def either(self, default_key, *defaults)`
+  - **Docstring:**
+  `````
+  Get key from configuration or use default values.
+  
+  Fallback to the value of a configuration key if none of the
+  `*values` are true.
+  `````
+- `def bugreport(self)`
+  - *Return information useful in bug reports.*
+- `def signature(self, *args, **kwargs)`
+  - *Return a new :class:`~celery.Signature` bound to this app.*
+- `def add_periodic_task(self, schedule, sig, args = (), kwargs = (), name = None, **opts)`
+  - **Docstring:**
+  `````
+  Add a periodic task to beat schedule.
+  
+  Celery beat store tasks based on `sig` or `name` if provided. Adding the
+  same signature twice make the second task override the first one. To
+  avoid the override, use distinct `name` for them.
+  `````
+- `def create_task_cls(self)`
+  - *Create a base task class bound to this app.*
+- `def subclass_with_self(self, Class, name = None, attribute = 'app', reverse = None, keep_reduce = False, **kw)`
+  - **Docstring:**
+  `````
+  Subclass an app-compatible class.
+  
+  App-compatible means that the class has a class attribute that
+  provides the default app it should use, for example:
+  ``class Foo: app = None``.
+  
+  Arguments:
+      Class (type): The app-compatible class to subclass.
+      name (str): Custom name for the target class.
+      attribute (str): Name of the attribute holding the app,
+          Default is 'app'.
+      reverse (str): Reverse path to this object used for pickling
+          purposes. For example, to get ``app.AsyncResult``,
+          use ``"AsyncResult"``.
+      keep_reduce (bool): If enabled a custom ``__reduce__``
+          implementation won't be provided.
+  `````
+- `def conf(self, d)` `conf.setter`
+- `def uses_utc_timezone(self)`
+  - *Check if the application uses the UTC timezone.*
+
+**Properties (25):**
+- `@property Worker`
+- `@property WorkController`
+- `@property Beat`
+- `@property Task`
+- `@property annotations`
+- `@property AsyncResult`
+- `@property ResultSet`
+- `@property GroupResult`
+- `@property pool`
+- `@property current_task`
+- `@property current_worker_task`
+- `@property oid`
+- `@property thread_oid`
+- `@property amqp`
+- `@property _backend`
+- `@property backend`
+- `@property conf`
+- `@property control`
+- `@property events`
+- `@property loader`
+- `@property log`
+- `@property _canvas`
+- `@property tasks`
+- `@property producer_pool`
+- `@property timezone`
+
+**Class Variables (27):**
+- `Pickler = AppPickler`
+- `SYSTEM = platforms.SYSTEM`
+- `main = None`
+- `user_options = None`
+- `steps = None`
+- `builtin_fixups = BUILTIN_FIXUPS`
+- `amqp_cls = 'celery.app.amqp:AMQP'`
+- `backend_cls = None`
+- `events_cls = 'celery.app.events:Events'`
+- `loader_cls = None`
+- `log_cls = 'celery.app.log:Logging'`
+- `control_cls = 'celery.app.control:Control'`
+- `task_cls = 'celery.app.task:Task'`
+- `registry_cls = 'celery.app.registry:TaskRegistry'`
+- `_local = None`
+- `_fixups = None`
+- `_pool = None`
+- `_conf = None`
+- `_after_fork_registered = False`
+- `on_configure = None`
+- `on_after_configure = None`
+- `on_after_finalize = None`
+- `on_after_fork = None`
+- `broker_connection = connection`
+- `default_connection = connection_or_acquire`
+- `default_producer = producer_or_acquire`
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+
+#### 🔧 Public Functions (3)
+
+- `def app_has_custom(app, attr)`
+  - *Line: 96*
+  - **Docstring:**
+  `````
+  Return true if app has customized method `attr`.
+  
+  Note:
+      This is used for optimizations in cases where we know
+      how the default behavior works, but need to account
+      for someone using inheritance to override a method/property.
+  `````
+
+- `def pydantic_wrapper(app: 'Celery', task_fun: typing.Callable[..., typing.Any], task_name: str, strict: bool = True, context: typing.Optional[typing.Dict[str, typing.Any]] = None, dump_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None)`
+  - *Line: 124*
+  - *Wrapper to validate arguments and serialize return values using Pydantic.*
+
+- `def wrapper(*task_args, **task_kwargs)` `functools.wraps(task_fun)`
+  - *Line: 159*
+
+
+---
+
+`````python
 """Actual App instance implementation."""
 import functools
 import importlib
@@ -8880,6 +14606,7 @@ import inspect
 import os
 import sys
 import threading
+import types
 import typing
 import warnings
 from collections import UserDict, defaultdict, deque
@@ -8931,6 +14658,24 @@ if typing.TYPE_CHECKING:  # pragma: no cover  # codecov does not capture this
 __all__ = ('Celery',)
 
 logger = get_logger(__name__)
+
+if sys.version_info >= (3, 14):
+    import annotationlib
+
+    def _get_annotations(fun):
+        # In Python 3.14+, annotations are deferred by default (PEP 649).
+        # Accessing fun.__annotations__ (or inspect.get_annotations without a
+        # format) evaluates them and may raise NameError for types only
+        # available under TYPE_CHECKING. To preserve previous behavior, first
+        # try to return evaluated annotations; if that fails with NameError,
+        # fall back to returning stringified annotations instead.
+        try:
+            return inspect.get_annotations(fun)
+        except NameError:
+            return inspect.get_annotations(fun, format=annotationlib.Format.STRING)
+else:
+    def _get_annotations(fun):
+        return fun.__annotations__
 
 BUILTIN_FIXUPS = {
     'celery.fixups.django:fixup',
@@ -9183,7 +14928,11 @@ class Celery:
     #: Signal sent after app has prepared the configuration.
     on_after_configure = None
 
-    #: Signal sent after app has been finalized.
+    #: Signal sent after the app has been finalized (i.e., all pending
+    #: task decorators have been evaluated, built-in tasks loaded, and
+    #: every currently registered task has been bound to the app).  This is
+    #: the earliest point at which the task registry is initialized/stable
+    #: and safe to inspect for tasks currently registered with this app.
     on_after_finalize = None
 
     #: Signal sent by every new process after fork.
@@ -9465,7 +15214,7 @@ class Celery:
                 '_decorated': True,
                 '__doc__': fun.__doc__,
                 '__module__': fun.__module__,
-                '__annotations__': fun.__annotations__,
+                '__annotations__': _get_annotations(fun),
                 '__header__': self.type_checker(fun, bound=bind),
                 '__wrapped__': run}, **options))()
             # for some reason __qualname__ cannot be set in type()
@@ -10141,6 +15890,8 @@ class Celery:
 
         return type(name or Class.__name__, (Class,), attrs)
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
     def _rgetattr(self, path):
         return attrgetter(path)(self)
 
@@ -10399,10 +16150,122 @@ class Celery:
 
 App = Celery  # XXX compat
 
-```
+`````
 
-### 代码文件: celery\app\builtins.py
-```python
+--- **end of file: celery/app/base.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/builtins.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/builtins.py`
+
+#### 📝 Module Docstring
+
+`````
+Built-in Tasks.
+
+The built-in tasks are always available in all app instances.
+`````
+
+#### 📦 Imports
+
+- `from celery._state import connect_on_app_finalize`
+- `from celery.utils.log import get_logger`
+- `from celery.backends.base import _create_chord_error_with_cause`
+- `from celery.canvas import maybe_signature`
+- `from celery.result import allow_join_result`
+- `from celery.result import result_from_tuple`
+- `from celery.canvas import signature`
+- `from celery.canvas import signature`
+- `from celery.canvas import chunks as _chunks`
+- `from celery.canvas import maybe_signature`
+- `from celery.result import result_from_tuple`
+- `from celery import chord as _chord`
+- `from celery import group`
+- `from celery.canvas import maybe_signature`
+
+#### 🔧 Public Functions (18)
+
+- `def add_backend_cleanup_task(app)` `connect_on_app_finalize`
+  - *Line: 13*
+  - **Docstring:**
+  `````
+  Task used to clean up expired results.
+  
+  If the configured backend requires periodic cleanup this task is also
+  automatically configured to run every day at 4am (requires
+  :program:`celery beat` to be running).
+  `````
+
+- `def add_accumulate_task(app)` `connect_on_app_finalize`
+  - *Line: 27*
+  - *Task used by Task.replace when replacing task with group.*
+
+- `def add_unlock_chord_task(app)` `connect_on_app_finalize`
+  - *Line: 37*
+  - **Docstring:**
+  `````
+  Task used by result backends without native chord support.
+  
+  Will joins chord by creating a task chain polling the header
+  for completion.
+  `````
+
+- `def add_map_task(app)` `connect_on_app_finalize`
+  - *Line: 102*
+
+- `def add_starmap_task(app)` `connect_on_app_finalize`
+  - *Line: 113*
+
+- `def add_chunk_task(app)` `connect_on_app_finalize`
+  - *Line: 124*
+
+- `def add_group_task(app)` `connect_on_app_finalize`
+  - *Line: 134*
+  - *No longer used, but here for backwards compatibility.*
+
+- `def add_chain_task(app)` `connect_on_app_finalize`
+  - *Line: 157*
+  - *No longer used, but here for backwards compatibility.*
+
+- `def add_chord_task(app)` `connect_on_app_finalize`
+  - *Line: 166*
+  - *No longer used, but here for backwards compatibility.*
+
+- `def backend_cleanup()` `app.task(name='celery.backend_cleanup', shared=False, lazy=False)`
+  - *Line: 21*
+
+- `def accumulate(self, *args, **kwargs)` `app.task(bind=True, name='celery.accumulate', shared=False, lazy=False)`
+  - *Line: 30*
+
+- `def unlock_chord(self, group_id, callback, interval = None, max_retries = None, result = None, Result = app.AsyncResult, GroupResult = app.GroupResult, result_from_tuple = result_from_tuple, **kwargs)` `app.task(name='celery.chord_unlock', max_retries=None, shared=False, default_retry_delay=app.conf.result_chord_retry_interval, ignore_result=True, lazy=False, bind=True)`
+  - *Line: 49*
+
+- `def xmap(task, it)` `app.task(name='celery.map', shared=False, lazy=False)`
+  - *Line: 106*
+
+- `def xstarmap(task, it)` `app.task(name='celery.starmap', shared=False, lazy=False)`
+  - *Line: 117*
+
+- `def chunks(task, it, n)` `app.task(name='celery.chunks', shared=False, lazy=False)`
+  - *Line: 128*
+
+- `def group(self, tasks, result, group_id, partial_args, add_to_parent = True)` `app.task(name='celery.group', bind=True, shared=False, lazy=False)`
+  - *Line: 140*
+
+- `def chain(*args, **kwargs)` `app.task(name='celery.chain', shared=False, lazy=False)`
+  - *Line: 160*
+
+- `def chord(self, header, body, partial_args = (), interval = None, countdown = 1, max_retries = None, eager = False, **kwargs)` `app.task(name='celery.chord', bind=True, ignore_result=False, shared=False, lazy=False)`
+  - *Line: 174*
+
+
+---
+
+`````python
 """Built-in Tasks.
 
 The built-in tasks are always available in all app instances.
@@ -10590,10 +16453,651 @@ def add_chord_task(app):
                       countdown, max_retries, **kwargs)
     return chord
 
-```
+`````
 
-### 代码文件: celery\app\control.py
-```python
+--- **end of file: celery/app/builtins.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/control.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/control.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Remote Control Client.
+
+Client for worker remote control commands.
+Server implementation is in :mod:`celery.worker.control`.
+There are two types of remote control commands:
+
+* Inspect commands: Does not have side effects, will usually just return some value
+  found in the worker, like the list of currently registered tasks, the list of active tasks, etc.
+  Commands are accessible via :class:`Inspect` class.
+
+* Control commands: Performs side effects, like adding a new queue to consume from.
+  Commands are accessible via :class:`Control` class.
+`````
+
+#### 📦 Imports
+
+- `import warnings`
+- `from billiard.common import TERM_SIGNAME`
+- `from kombu.matcher import match`
+- `from kombu.pidbox import Mailbox`
+- `from kombu.utils.compat import register_after_fork`
+- `from kombu.utils.functional import lazy`
+- `from kombu.utils.objects import cached_property`
+- `from celery.exceptions import DuplicateNodenameWarning`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.text import pluralize`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Inspect`
+*Line: 71*
+
+**Docstring:**
+`````
+API for inspecting workers.
+
+This class provides proxy for accessing Inspect API of workers. The API is
+defined in :py:mod:`celery.worker.control`
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, destination = None, timeout = 1.0, callback = None, connection = None, app = None, limit = None, pattern = None, matcher = None)`
+  - **Parameters:**
+    - `self`
+    - `destination = None`
+    - `timeout = 1.0`
+    - `callback = None`
+    - `connection = None`
+    - `app = None`
+    - `limit = None`
+    - `pattern = None`
+    - `matcher = None`
+
+**Public Methods (16):**
+- `def report(self)`
+  - **Docstring:**
+  `````
+  Return human readable report for each worker.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: {'ok': REPORT_STRING}}``.
+  `````
+- `def clock(self)`
+  - **Docstring:**
+  `````
+  Get the Clock value on workers.
+  
+  >>> app.control.inspect().clock()
+  {'celery@node1': {'clock': 12}}
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: CLOCK_VALUE}``.
+  `````
+- `def active(self, safe = None)`
+  - **Docstring:**
+  `````
+  Return list of tasks currently executed by workers.
+  
+  Arguments:
+      safe (Boolean): Set to True to disable deserialization.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [TASK_INFO,...]}``.
+  
+  See Also:
+      For ``TASK_INFO`` details see :func:`query_task` return value.
+  `````
+- `def scheduled(self, safe = None)`
+  - **Docstring:**
+  `````
+  Return list of scheduled tasks with details.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [TASK_SCHEDULED_INFO,...]}``.
+  
+  Here is the list of ``TASK_SCHEDULED_INFO`` fields:
+  
+  * ``eta`` - scheduled time for task execution as string in ISO 8601 format
+  * ``priority`` - priority of the task
+  * ``request`` - field containing ``TASK_INFO`` value.
+  
+  See Also:
+      For more details about ``TASK_INFO``  see :func:`query_task` return value.
+  `````
+- `def reserved(self, safe = None)`
+  - **Docstring:**
+  `````
+  Return list of currently reserved tasks, not including scheduled/active.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [TASK_INFO,...]}``.
+  
+  See Also:
+      For ``TASK_INFO`` details see :func:`query_task` return value.
+  `````
+- `def stats(self)`
+  - **Docstring:**
+  `````
+  Return statistics of worker.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: STAT_INFO}``.
+  
+  Here is the list of ``STAT_INFO`` fields:
+  
+  * ``broker`` - Section for broker information.
+      * ``connect_timeout`` - Timeout in seconds (int/float) for establishing a new connection.
+      * ``heartbeat`` - Current heartbeat value (set by client).
+      * ``hostname`` - Node name of the remote broker.
+      * ``insist`` - No longer used.
+      * ``login_method`` - Login method used to connect to the broker.
+      * ``port`` - Port of the remote broker.
+      * ``ssl`` - SSL enabled/disabled.
+      * ``transport`` - Name of transport used (e.g., amqp or redis)
+      * ``transport_options`` - Options passed to transport.
+      * ``uri_prefix`` - Some transports expects the host name to be a URL.
+        E.g. ``redis+socket:///tmp/redis.sock``.
+        In this example the URI-prefix will be redis.
+      * ``userid`` - User id used to connect to the broker with.
+      * ``virtual_host`` - Virtual host used.
+  * ``clock`` - Value of the workers logical clock. This is a positive integer
+    and should be increasing every time you receive statistics.
+  * ``uptime`` - Numbers of seconds since the worker controller was started
+  * ``pid`` - Process id of the worker instance (Main process).
+  * ``pool`` - Pool-specific section.
+      * ``max-concurrency`` - Max number of processes/threads/green threads.
+      * ``max-tasks-per-child`` - Max number of tasks a thread may execute before being recycled.
+      * ``processes`` - List of PIDs (or thread-id’s).
+      * ``put-guarded-by-semaphore`` - Internal
+      * ``timeouts`` - Default values for time limits.
+      * ``writes`` - Specific to the prefork pool, this shows the distribution
+        of writes to each process in the pool when using async I/O.
+  * ``prefetch_count`` - Current prefetch count value for the task consumer.
+  * ``rusage`` - System usage statistics. The fields available may be different on your platform.
+    From :manpage:`getrusage(2)`:
+  
+      * ``stime`` - Time spent in operating system code on behalf of this process.
+      * ``utime`` - Time spent executing user instructions.
+      * ``maxrss`` - The maximum resident size used by this process (in kilobytes).
+      * ``idrss`` - Amount of non-shared memory used for data (in kilobytes times
+        ticks of execution)
+      * ``isrss`` - Amount of non-shared memory used for stack space
+        (in kilobytes times ticks of execution)
+      * ``ixrss`` - Amount of memory shared with other processes
+        (in kilobytes times ticks of execution).
+      * ``inblock`` - Number of times the file system had to read from the disk
+        on behalf of this process.
+      * ``oublock`` - Number of times the file system has to write to disk
+        on behalf of this process.
+      * ``majflt`` - Number of page faults that were serviced by doing I/O.
+      * ``minflt`` - Number of page faults that were serviced without doing I/O.
+      * ``msgrcv`` - Number of IPC messages received.
+      * ``msgsnd`` - Number of IPC messages sent.
+      * ``nvcsw`` - Number of times this process voluntarily invoked a context switch.
+      * ``nivcsw`` - Number of times an involuntary context switch took place.
+      * ``nsignals`` - Number of signals received.
+      * ``nswap`` - The number of times this process was swapped entirely
+        out of memory.
+  * ``total`` - Map of task names and the total number of tasks with that type
+    the worker has accepted since start-up.
+  `````
+- `def revoked(self)`
+  - **Docstring:**
+  `````
+  Return list of revoked tasks.
+  
+  >>> app.control.inspect().revoked()
+  {'celery@node1': ['16f527de-1c72-47a6-b477-c472b92fef7a']}
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [TASK_ID, ...]}``.
+  `````
+- `def registered(self, *taskinfoitems)`
+  - **Docstring:**
+  `````
+  Return all registered tasks per worker.
+  
+  >>> app.control.inspect().registered()
+  {'celery@node1': ['task1', 'task1']}
+  >>> app.control.inspect().registered('serializer', 'max_retries')
+  {'celery@node1': ['task_foo [serializer=json max_retries=3]', 'tasb_bar [serializer=json max_retries=3]']}
+  
+  Arguments:
+      taskinfoitems (Sequence[str]): List of :class:`~celery.app.task.Task`
+                                     attributes to include.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [TASK1_INFO, ...]}``.
+  `````
+- `def ping(self, destination = None)`
+  - **Docstring:**
+  `````
+  Ping all (or specific) workers.
+  
+  >>> app.control.inspect().ping()
+  {'celery@node1': {'ok': 'pong'}, 'celery@node2': {'ok': 'pong'}}
+  >>> app.control.inspect().ping(destination=['celery@node1'])
+  {'celery@node1': {'ok': 'pong'}}
+  
+  Arguments:
+      destination (List): If set, a list of the hosts to send the
+          command to, when empty broadcast to all workers.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: {'ok': 'pong'}}``.
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def active_queues(self)`
+  - **Docstring:**
+  `````
+  Return information about queues from which worker consumes tasks.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: [QUEUE_INFO, QUEUE_INFO,...]}``.
+  
+  Here is the list of ``QUEUE_INFO`` fields:
+  
+  * ``name``
+  * ``exchange``
+      * ``name``
+      * ``type``
+      * ``arguments``
+      * ``durable``
+      * ``passive``
+      * ``auto_delete``
+      * ``delivery_mode``
+      * ``no_declare``
+  * ``routing_key``
+  * ``queue_arguments``
+  * ``binding_arguments``
+  * ``consumer_arguments``
+  * ``durable``
+  * ``exclusive``
+  * ``auto_delete``
+  * ``no_ack``
+  * ``alias``
+  * ``bindings``
+  * ``no_declare``
+  * ``expires``
+  * ``message_ttl``
+  * ``max_length``
+  * ``max_length_bytes``
+  * ``max_priority``
+  
+  See Also:
+      See the RabbitMQ/AMQP documentation for more details about
+      ``queue_info`` fields.
+  Note:
+      The ``queue_info`` fields are RabbitMQ/AMQP oriented.
+      Not all fields applies for other transports.
+  `````
+- `def query_task(self, *ids)`
+  - **Docstring:**
+  `````
+  Return detail of tasks currently executed by workers.
+  
+  Arguments:
+      *ids (str): IDs of tasks to be queried.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: {TASK_ID: [STATE, TASK_INFO]}}``.
+  
+  Here is the list of ``TASK_INFO`` fields:
+      * ``id`` - ID of the task
+      * ``name`` - Name of the task
+      * ``args`` - Positinal arguments passed to the task
+      * ``kwargs`` - Keyword arguments passed to the task
+      * ``type`` - Type of the task
+      * ``hostname`` - Hostname of the worker processing the task
+      * ``time_start`` - Time of processing start
+      * ``acknowledged`` - True when task was acknowledged to broker
+      * ``delivery_info`` - Dictionary containing delivery information
+          * ``exchange`` - Name of exchange where task was published
+          * ``routing_key`` - Routing key used when task was published
+          * ``priority`` - Priority used when task was published
+          * ``redelivered`` - True if the task was redelivered
+      * ``worker_pid`` - PID of worker processing the task
+  `````
+- `def conf(self, with_defaults = False)`
+  - **Docstring:**
+  `````
+  Return configuration of each worker.
+  
+  Arguments:
+      with_defaults (bool): if set to True, method returns also
+                             configuration options with default values.
+  
+  Returns:
+      Dict: Dictionary ``{HOSTNAME: WORKER_CONFIGURATION}``.
+  
+  See Also:
+      ``WORKER_CONFIGURATION`` is a dictionary containing current configuration options.
+      See :ref:`configuration` for possible values.
+  `````
+- `def hello(self, from_node, revoked = None)`
+- `def memsample(self)`
+  - **Docstring:**
+  `````
+  Return sample current RSS memory usage.
+  
+  Note:
+      Requires the psutils library.
+  `````
+- `def memdump(self, samples = 10)`
+  - **Docstring:**
+  `````
+  Dump statistics of previous memsample requests.
+  
+  Note:
+      Requires the psutils library.
+  `````
+- `def objgraph(self, type = 'Request', n = 200, max_depth = 10)`
+  - **Docstring:**
+  `````
+  Create graph of uncollected objects (memory-leak debugging).
+  
+  Arguments:
+      n (int): Max number of objects to graph.
+      max_depth (int): Traverse at most n levels deep.
+      type (str): Name of object to graph.  Default is ``"Request"``.
+  
+  Returns:
+      Dict: Dictionary ``{'filename': FILENAME}``
+  
+  Note:
+      Requires the objgraph library.
+  `````
+
+**Class Variables (2):**
+- `app = None`
+- `registered_tasks = registered`
+
+##### 📌 `class Control`
+*Line: 424*
+
+**Docstring:**
+`````
+Worker remote control client.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app = None)`
+  - **Parameters:**
+    - `self`
+    - `app = None`
+
+**Public Methods (19):**
+- `def purge(self, connection = None)`
+  - **Docstring:**
+  `````
+  Discard all waiting tasks.
+  
+  This will ignore all tasks waiting for execution, and they will
+  be deleted from the messaging server.
+  
+  Arguments:
+      connection (kombu.Connection): Optional specific connection
+          instance to use.  If not provided a connection will
+          be acquired from the connection pool.
+  
+  Returns:
+      int: the number of tasks discarded.
+  `````
+- `def election(self, id, topic, action = None, connection = None)`
+- `def revoke(self, task_id, destination = None, terminate = False, signal = TERM_SIGNAME, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to revoke a task by id (or list of ids).
+  
+  If a task is revoked, the workers will ignore the task and
+  not execute it after all.
+  
+  Arguments:
+      task_id (Union(str, list)): Id of the task to revoke
+          (or list of ids).
+      terminate (bool): Also terminate the process currently working
+          on the task (if any).
+      signal (str): Name of signal to send to process if terminate.
+          Default is TERM.
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def revoke_by_stamped_headers(self, headers, destination = None, terminate = False, signal = TERM_SIGNAME, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to revoke a task by headers.
+  
+  If a task is revoked, the workers will ignore the task and
+  not execute it after all.
+  
+  Arguments:
+      headers (dict[str, Union(str, list)]): Headers to match when revoking tasks.
+      terminate (bool): Also terminate the process currently working
+          on the task (if any).
+      signal (str): Name of signal to send to process if terminate.
+          Default is TERM.
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def terminate(self, task_id, destination = None, signal = TERM_SIGNAME, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to terminate a task by id (or list of ids).
+  
+  See Also:
+      This is just a shortcut to :meth:`revoke` with the terminate
+      argument enabled.
+  `````
+- `def ping(self, destination = None, timeout = 1.0, **kwargs)`
+  - **Docstring:**
+  `````
+  Ping all (or specific) workers.
+  
+  >>> app.control.ping()
+  [{'celery@node1': {'ok': 'pong'}}, {'celery@node2': {'ok': 'pong'}}]
+  >>> app.control.ping(destination=['celery@node2'])
+  [{'celery@node2': {'ok': 'pong'}}]
+  
+  Returns:
+      List[Dict]: List of ``{HOSTNAME: {'ok': 'pong'}}`` dictionaries.
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def rate_limit(self, task_name, rate_limit, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell workers to set a new rate limit for task by type.
+  
+  Arguments:
+      task_name (str): Name of task to change rate limit for.
+      rate_limit (int, str): The rate limit as tasks per second,
+          or a rate limit string (`'100/m'`, etc.
+          see :attr:`celery.app.task.Task.rate_limit` for
+          more information).
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def add_consumer(self, queue, exchange = None, exchange_type = 'direct', routing_key = None, options = None, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to start consuming from a new queue.
+  
+  Only the queue name is required as if only the queue is specified
+  then the exchange/routing key will be set to the same name (
+  like automatic queues do).
+  
+  Note:
+      This command does not respect the default queue/exchange
+      options in the configuration.
+  
+  Arguments:
+      queue (str): Name of queue to start consuming from.
+      exchange (str): Optional name of exchange.
+      exchange_type (str): Type of exchange (defaults to 'direct')
+          command to, when empty broadcast to all workers.
+      routing_key (str): Optional routing key.
+      options (Dict): Additional options as supported
+          by :meth:`kombu.entity.Queue.from_dict`.
+  
+  See Also:
+      :meth:`broadcast` for supported keyword arguments.
+  `````
+- `def cancel_consumer(self, queue, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to stop consuming from ``queue``.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def time_limit(self, task_name, soft = None, hard = None, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell workers to set time limits for a task by type.
+  
+  Arguments:
+      task_name (str): Name of task to change time limits for.
+      soft (float): New soft time limit (in seconds).
+      hard (float): New hard time limit (in seconds).
+      **kwargs (Any): arguments passed on to :meth:`broadcast`.
+  `````
+- `def enable_events(self, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to enable events.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def disable_events(self, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to disable events.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def pool_grow(self, n = 1, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to grow the pool by ``n``.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def pool_shrink(self, n = 1, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell all (or specific) workers to shrink the pool by ``n``.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def autoscale(self, max, min, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Change worker(s) autoscale setting.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`.
+  `````
+- `def shutdown(self, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Shutdown worker(s).
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`
+  `````
+- `def pool_restart(self, modules = None, reload = False, reloader = None, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Restart the execution pools of all or specific workers.
+  
+  Keyword Arguments:
+      modules (Sequence[str]): List of modules to reload.
+      reload (bool): Flag to enable module reloading.  Default is False.
+      reloader (Any): Function to reload a module.
+      destination (Sequence[str]): List of worker names to send this
+          command to.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`
+  `````
+- `def heartbeat(self, destination = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Tell worker(s) to send a heartbeat immediately.
+  
+  See Also:
+      Supports the same arguments as :meth:`broadcast`
+  `````
+- `def broadcast(self, command, arguments = None, destination = None, connection = None, reply = False, timeout = 1.0, limit = None, callback = None, channel = None, pattern = None, matcher = None, **extra_kwargs)`
+  - **Docstring:**
+  `````
+  Broadcast a control command to the celery workers.
+  
+  Arguments:
+      command (str): Name of command to send.
+      arguments (Dict): Keyword arguments for the command.
+      destination (List): If set, a list of the hosts to send the
+          command to, when empty broadcast to all workers.
+      connection (kombu.Connection): Custom broker connection to use,
+          if not set, a connection will be acquired from the pool.
+      reply (bool): Wait for and return the reply.
+      timeout (float): Timeout in seconds to wait for the reply.
+      limit (int): Limit number of replies.
+      callback (Callable): Callback called immediately for
+          each reply received.
+      pattern (str): Custom pattern string to match
+      matcher (Callable): Custom matcher to run the pattern to match
+  `````
+
+**Properties (1):**
+- `@property inspect`
+
+**Class Variables (2):**
+- `Mailbox = Mailbox`
+- `discard_all = purge`
+
+#### 🔧 Public Functions (1)
+
+- `def flatten_reply(reply)`
+  - *Line: 38*
+  - **Docstring:**
+  `````
+  Flatten node replies.
+  
+  Convert from a list of replies in this format::
+  
+      [{'a@example.com': reply},
+       {'b@example.com': reply}]
+  
+  into this format::
+  
+      {'a@example.com': reply,
+       'b@example.com': reply}
+  `````
+
+
+---
+
+`````python
 """Worker Remote Control Client.
 
 Client for worker remote control commands.
@@ -11383,10 +17887,84 @@ class Control:
                     limit, callback, channel=channel,
                 )
 
-```
+`````
 
-### 代码文件: celery\app\defaults.py
-```python
+--- **end of file: celery/app/control.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/defaults.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/defaults.py`
+
+#### 📝 Module Docstring
+
+`````
+Configuration introspection and defaults.
+`````
+
+#### 📦 Imports
+
+- `from collections import deque`
+- `from collections import namedtuple`
+- `from datetime import timedelta`
+- `from celery.utils.functional import memoize`
+- `from celery.utils.serialization import strtobool`
+- `from celery.utils import deprecated`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Option`
+*Line: 42*
+
+**Docstring:**
+`````
+Describes a Celery configuration option.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, default = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `default = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def to_python(self, value)`
+
+**Class Variables (5):**
+- `alt = None`
+- `deprecate_by = None`
+- `remove_by = None`
+- `old = set()`
+- `typemap = {'string': str, 'int': int, 'float': float, 'any': lambda v: v, 'bool': strtobool, 'dict': dict, 'tuple': tuple}`
+
+#### 🔧 Public Functions (5)
+
+- `def Namespace(__old__ = None, **options)`
+  - *Line: 30*
+
+- `def old_ns(ns)`
+  - *Line: 38*
+
+- `def flatten(d, root = '', keyfilter = _flatten_keys)`
+  - *Line: 389*
+  - *Flatten settings.*
+
+- `def find_deprecated_settings(source)`
+  - *Line: 414*
+
+- `def find(name, namespace = 'celery')` `memoize(maxsize=None)`
+  - *Line: 426*
+  - *Find setting by name.*
+
+
+---
+
+`````python
 """Configuration introspection and defaults."""
 from collections import deque, namedtuple
 from datetime import timedelta
@@ -11636,6 +18214,10 @@ NAMESPACES = Namespace(
     database=Namespace(
         url=Option(old={'celery_result_dburi'}),
         engine_options=Option(
+            {
+                'pool_pre_ping': True,
+                'pool_recycle': 3600,
+            },
             type='dict', old={'celery_result_engine_options'},
         ),
         short_lived_sessions=Option(
@@ -11648,7 +18230,13 @@ NAMESPACES = Namespace(
     task=Namespace(
         __old__=OLD_NS,
         acks_late=Option(False, type='bool'),
-        acks_on_failure_or_timeout=Option(True, type='bool'),
+        acks_on_failure_or_timeout=Option(
+            True, type='bool',
+            deprecate_by='6.0', remove_by='7.0',
+            alt='task_acks_on_failure and task_acks_on_timeout',
+        ),
+        acks_on_failure=Option(None, type='bool'),
+        acks_on_timeout=Option(None, type='bool'),
         always_eager=Option(False, type='bool'),
         annotations=Option(type='any'),
         compression=Option(type='string', old={'celery_message_compression'}),
@@ -11793,7 +18381,7 @@ _OLD_SETTING_KEYS = set(_TO_NEW_KEY.keys())
 def find_deprecated_settings(source):  # pragma: no cover
     from celery.utils import deprecated
     for name, opt in flatten(NAMESPACES):
-        if (opt.deprecate_by or opt.remove_by) and getattr(source, name, None):
+        if (opt.deprecate_by or opt.remove_by) and getattr(source, name, None) is not None:
             deprecated.warn(description=f'The {name!r} setting',
                             deprecation=opt.deprecate_by,
                             removal=opt.remove_by,
@@ -11823,10 +18411,62 @@ def find(name, namespace='celery'):
     # - See if name is a qualname last.
     return searchresult(None, name.lower(), DEFAULTS[name.lower()])
 
-```
+`````
 
-### 代码文件: celery\app\events.py
-```python
+--- **end of file: celery/app/defaults.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/events.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/events.py`
+
+#### 📝 Module Docstring
+
+`````
+Implementation for the app.events shortcuts.
+`````
+
+#### 📦 Imports
+
+- `from contextlib import contextmanager`
+- `from kombu.utils.objects import cached_property`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Events`
+*Line: 7*
+
+**Docstring:**
+`````
+Implements app.events.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app = None)`
+  - **Parameters:**
+    - `self`
+    - `app = None`
+
+**Public Methods (1):**
+- `def default_dispatcher(self, hostname = None, enabled = True, buffer_while_offline = False)` `contextmanager`
+
+**Properties (3):**
+- `@property Receiver`
+- `@property Dispatcher`
+- `@property State`
+
+**Class Variables (3):**
+- `receiver_cls = 'celery.events.receiver:EventReceiver'`
+- `dispatcher_cls = 'celery.events.dispatcher:EventDispatcher'`
+- `state_cls = 'celery.events.state:State'`
+
+
+---
+
+`````python
 """Implementation for the app.events shortcuts."""
 from contextlib import contextmanager
 
@@ -11868,10 +18508,119 @@ class Events:
                                  prod.channel, buffer_while_offline) as d:
                 yield d
 
-```
+`````
 
-### 代码文件: celery\app\log.py
-```python
+--- **end of file: celery/app/events.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/log.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/log.py`
+
+#### 📝 Module Docstring
+
+`````
+Logging configuration.
+
+The Celery instances logging section: ``Celery.log``.
+
+Sets up logging for the worker and other programs,
+redirects standard outs, colors log output, patches logging
+related compatibility fixes, and so on.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import os`
+- `import sys`
+- `import warnings`
+- `from logging.handlers import WatchedFileHandler`
+- `from kombu.utils.encoding import set_default_encoding_file`
+- `from celery import signals`
+- `from celery._state import get_current_task`
+- `from celery.exceptions import CDeprecationWarning`
+- `from celery.exceptions import CPendingDeprecationWarning`
+- `from celery.local import class_property`
+- `from celery.platforms import isatty`
+- `from celery.utils.log import ColorFormatter`
+- `from celery.utils.log import LoggingProxy`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.log import get_multiprocessing_logger`
+- `from celery.utils.log import mlevel`
+- `from celery.utils.log import reset_multiprocessing_logger`
+- `from celery.utils.nodenames import node_format`
+- `from celery.utils.term import colored`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class TaskFormatter(ColorFormatter)`
+*Line: 32*
+
+**Docstring:**
+`````
+Formatter for tasks, adding the task name and id.
+`````
+
+**Public Methods (1):**
+- `def format(self, record)`
+
+##### 📌 `class Logging`
+*Line: 46*
+
+**Docstring:**
+`````
+Application logging setup (app.log).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app)`
+  - **Parameters:**
+    - `self`
+    - `app`
+
+**Public Methods (10):**
+- `def setup(self, loglevel = None, logfile = None, redirect_stdouts = False, redirect_level = 'WARNING', colorize = None, hostname = None)`
+- `def redirect_stdouts(self, loglevel = None, name = 'celery.redirected')`
+- `def setup_logging_subsystem(self, loglevel = None, logfile = None, format = None, colorize = None, hostname = None, **kwargs)`
+- `def setup_task_loggers(self, loglevel = None, logfile = None, format = None, colorize = None, propagate = False, **kwargs)`
+  - **Docstring:**
+  `````
+  Setup the task logger.
+  
+  If `logfile` is not specified, then `sys.stderr` is used.
+  
+  Will return the base task logger object.
+  `````
+- `def redirect_stdouts_to_logger(self, logger, loglevel = None, stdout = True, stderr = True)`
+  - **Docstring:**
+  `````
+  Redirect :class:`sys.stdout` and :class:`sys.stderr` to logger.
+  
+  Arguments:
+      logger (logging.Logger): Logger instance to redirect to.
+      loglevel (int, str): The loglevel redirected message
+          will be logged as.
+  `````
+- `def supports_color(self, colorize = None, logfile = None)`
+- `def colored(self, logfile = None, enabled = None)`
+- `def setup_handlers(self, logger, logfile, format, colorize, formatter = ColorFormatter, **kwargs)`
+- `def get_default_logger(self, name = 'celery', **kwargs)`
+- `def already_setup(self, was_setup)` `already_setup.setter`
+
+**Properties (1):**
+- `@property already_setup`
+
+**Class Variables (1):**
+- `_setup = False`
+
+
+---
+
+`````python
 """Logging configuration.
 
 The Celery instances logging section: ``Celery.log``.
@@ -12121,10 +18870,75 @@ class Logging:
     def already_setup(self, was_setup):
         self._setup = was_setup
 
-```
+`````
 
-### 代码文件: celery\app\registry.py
-```python
+--- **end of file: celery/app/log.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/registry.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/registry.py`
+
+#### 📝 Module Docstring
+
+`````
+Registry of available tasks.
+`````
+
+#### 📦 Imports
+
+- `import inspect`
+- `from importlib import import_module`
+- `from celery._state import get_current_app`
+- `from celery.app.autoretry import add_autoretry_behaviour`
+- `from celery.exceptions import InvalidTaskError`
+- `from celery.exceptions import NotRegistered`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class TaskRegistry(dict)`
+*Line: 12*
+
+**Docstring:**
+`````
+Map of registered tasks.
+`````
+
+**Public Methods (5):**
+- `def register(self, task)`
+  - **Docstring:**
+  `````
+  Register a task in the task registry.
+  
+  The task will be automatically instantiated if not already an
+  instance. Name must be configured prior to registration.
+  `````
+- `def unregister(self, name)`
+  - **Docstring:**
+  `````
+  Unregister task by name.
+  
+  Arguments:
+      name (str): name of the task to unregister, or a
+          :class:`celery.app.task.Task` with a valid `name` attribute.
+  
+  Raises:
+      celery.exceptions.NotRegistered: if the task is not registered.
+  `````
+- `def regular(self)`
+- `def periodic(self)`
+- `def filter_types(self, type)`
+
+**Class Variables (1):**
+- `NotRegistered = NotRegistered`
+
+
+---
+
+`````python
 """Registry of available tasks."""
 import inspect
 from importlib import import_module
@@ -12194,10 +19008,94 @@ def _unpickle_task_v2(name, module=None):
         import_module(module)
     return get_current_app().tasks[name]
 
-```
+`````
 
-### 代码文件: celery\app\routes.py
-```python
+--- **end of file: celery/app/registry.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/routes.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/routes.py`
+
+#### 📝 Module Docstring
+
+`````
+Task Routing.
+
+Contains utilities for working with task routers, (:setting:`task_routes`).
+`````
+
+#### 📦 Imports
+
+- `import fnmatch`
+- `import re`
+- `from collections import OrderedDict`
+- `from collections.abc import Mapping`
+- `from kombu import Queue`
+- `from celery.exceptions import QueueNotFound`
+- `from celery.utils.collections import lpmerge`
+- `from celery.utils.functional import maybe_evaluate`
+- `from celery.utils.functional import mlazy`
+- `from celery.utils.imports import symbol_by_name`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class MapRoute`
+*Line: 26*
+
+**Docstring:**
+`````
+Creates a router out of a :class:`dict`.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, map)`
+  - **Parameters:**
+    - `self`
+    - `map`
+
+##### 📌 `class Router`
+*Line: 56*
+
+**Docstring:**
+`````
+Route tasks based on the :setting:`task_routes` setting.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, routes = None, queues = None, create_missing = False, app = None)`
+  - **Parameters:**
+    - `self`
+    - `routes = None`
+    - `queues = None`
+    - `create_missing = False`
+    - `app = None`
+
+**Public Methods (4):**
+- `def route(self, options, name, args = (), kwargs = None, task_type = None)`
+- `def expand_destination(self, route)`
+- `def lookup_route(self, name, args = None, kwargs = None, options = None, task_type = None)`
+- `def query_router(self, router, task, args, kwargs, options, task_type)`
+
+#### 🔧 Public Functions (3)
+
+- `def expand_router_string(router)`
+  - *Line: 114*
+
+- `def prepare(routes)`
+  - *Line: 122*
+  - *Expand the :setting:`task_routes` setting.*
+
+- `def expand_route(route)`
+  - *Line: 125*
+
+
+---
+
+`````python
 """Task Routing.
 
 Contains utilities for working with task routers, (:setting:`task_routes`).
@@ -12335,12 +19233,642 @@ def prepare(routes):
         routes = (routes,)
     return [expand_route(route) for route in routes]
 
-```
+`````
 
-### 代码文件: celery\app\task.py
-```python
+--- **end of file: celery/app/routes.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/task.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/task.py`
+
+#### 📝 Module Docstring
+
+`````
+Task implementation: request context and the task base class.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `import types`
+- `from billiard.einfo import ExceptionInfo`
+- `from billiard.einfo import ExceptionWithTraceback`
+- `from kombu import serialization`
+- `from kombu.exceptions import OperationalError`
+- `from kombu.utils.uuid import uuid`
+- `from celery import current_app`
+- `from celery import states`
+- `from celery._state import _task_stack`
+- `from celery.canvas import _chain`
+- `from celery.canvas import group`
+- `from celery.canvas import signature`
+- `from celery.exceptions import Ignore`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.exceptions import MaxRetriesExceededError`
+- `from celery.exceptions import Reject`
+- `from celery.exceptions import Retry`
+- `from celery.local import class_property`
+- `from celery.result import EagerResult`
+- `from celery.result import denied_join_result`
+- `from celery.utils import abstract`
+- `from celery.utils.functional import mattrgetter`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.imports import instantiate`
+- `from celery.utils.nodenames import gethostname`
+- `from celery.utils.serialization import raise_with_context`
+- `from annotations import resolve_all as resolve_all_annotations`
+- `from registry import _unpickle_task_v2`
+- `from utils import appstr`
+- `from celery.app.trace import build_tracer`
+- `from celery import chunks`
+- `from celery import xmap`
+- `from celery import xstarmap`
+- `from celery.utils.threads import LocalStack`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Context`
+*Line: 72*
+
+**Docstring:**
+`````
+Task request variables (Task.request).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def update(self, *args, **kwargs)`
+- `def clear(self)`
+- `def get(self, key, default = None)`
+- `def as_execution_options(self)`
+
+**Properties (1):**
+- `@property children`
+
+**Class Variables (35):**
+- `_children = None`
+- `_protected = 0`
+- `args = None`
+- `callbacks = None`
+- `called_directly = True`
+- `chain = None`
+- `chord = None`
+- `correlation_id = None`
+- `delivery_info = None`
+- `errbacks = None`
+- `eta = None`
+- `expires = None`
+- `group = None`
+- `group_index = None`
+- `headers = None`
+- `hostname = None`
+- `id = None`
+- `ignore_result = False`
+- `is_eager = False`
+- `kwargs = None`
+- `logfile = None`
+- `loglevel = None`
+- `origin = None`
+- `parent_id = None`
+- `properties = None`
+- `retries = 0`
+- `reply_to = None`
+- `replaced_task_nesting = 0`
+- `root_id = None`
+- `shadow = None`
+- `taskset = None`
+- `timelimit = None`
+- `utc = None`
+- `stamped_headers = None`
+- `stamps = None`
+
+##### 📌 `class Task`
+*Line: 184*
+
+**Docstring:**
+`````
+Task base class.
+
+Note:
+    When called tasks apply the :meth:`run` method.  This method must
+    be defined by all tasks (that is unless the :meth:`__call__` method
+    is overridden).
+`````
+
+**Public Methods (33):**
+- `def bind(cls, app)` `classmethod`
+- `def on_bound(cls, app)` `classmethod`
+  - **Docstring:**
+  `````
+  Called when the task is bound to an app.
+  
+  Note:
+      This class method can be defined to do additional actions when
+      the task class is bound to an app.
+  `````
+- `def annotate(cls)` `classmethod`
+- `def add_around(cls, attr, around)` `classmethod`
+- `def run(self, *args, **kwargs)`
+  - *The body of the task executed by workers.*
+- `def start_strategy(self, app, consumer, **kwargs)`
+- `def delay(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Star argument version of :meth:`apply_async`.
+  
+  Does not support the extra options enabled by :meth:`apply_async`.
+  
+  Arguments:
+      *args (Any): Positional arguments passed on to the task.
+      **kwargs (Any): Keyword arguments passed on to the task.
+  Returns:
+      celery.result.AsyncResult: Future promise.
+  `````
+- `def apply_async(self, args = None, kwargs = None, task_id = None, producer = None, link = None, link_error = None, shadow = None, **options)`
+  - **Docstring:**
+  `````
+  Apply tasks asynchronously by sending a message.
+  
+  Arguments:
+      args (Tuple): The positional arguments to pass on to the task.
+  
+      kwargs (Dict): The keyword arguments to pass on to the task.
+  
+      countdown (float): Number of seconds into the future that the
+          task should execute.  Defaults to immediate execution.
+  
+      eta (~datetime.datetime): Absolute time and date of when the task
+          should be executed.  May not be specified if `countdown`
+          is also supplied.
+  
+      expires (float, ~datetime.datetime): Datetime or
+          seconds in the future for the task should expire.
+          The task won't be executed after the expiration time.
+  
+      shadow (str): Override task name used in logs/monitoring.
+          Default is retrieved from :meth:`shadow_name`.
+  
+      connection (kombu.Connection): Reuse existing broker connection
+          instead of acquiring one from the connection pool.
+  
+      retry (bool): If enabled sending of the task message will be
+          retried in the event of connection loss or failure.
+          Default is taken from the :setting:`task_publish_retry`
+          setting.  Note that you need to handle the
+          producer/connection manually for this to work.
+  
+      retry_policy (Mapping): Override the retry policy used.
+          See the :setting:`task_publish_retry_policy` setting.
+  
+      time_limit (int): If set, overrides the default time limit.
+  
+      soft_time_limit (int): If set, overrides the default soft
+          time limit.
+  
+      queue (str, kombu.Queue): The queue to route the task to.
+          This must be a key present in :setting:`task_queues`, or
+          :setting:`task_create_missing_queues` must be
+          enabled.  See :ref:`guide-routing` for more
+          information.
+  
+      exchange (str, kombu.Exchange): Named custom exchange to send the
+          task to.  Usually not used in combination with the ``queue``
+          argument.
+  
+      routing_key (str): Custom routing key used to route the task to a
+          worker server.  If in combination with a ``queue`` argument
+          only used to specify custom routing keys to topic exchanges.
+  
+      priority (int): The task priority, a number between 0 and 9.
+          Defaults to the :attr:`priority` attribute.
+  
+      serializer (str): Serialization method to use.
+          Can be `pickle`, `json`, `yaml`, `msgpack` or any custom
+          serialization method that's been registered
+          with :mod:`kombu.serialization.registry`.
+          Defaults to the :attr:`serializer` attribute.
+  
+      compression (str): Optional compression method
+          to use.  Can be one of ``zlib``, ``bzip2``,
+          or any custom compression methods registered with
+          :func:`kombu.compression.register`.
+          Defaults to the :setting:`task_compression` setting.
+  
+      link (Signature): A single, or a list of tasks signatures
+          to apply if the task returns successfully.
+  
+      link_error (Signature): A single, or a list of task signatures
+          to apply if an error occurs while executing the task.
+  
+      producer (kombu.Producer): custom producer to use when publishing
+          the task.
+  
+      add_to_parent (bool): If set to True (default) and the task
+          is applied while executing another task, then the result
+          will be appended to the parent tasks ``request.children``
+          attribute.  Trailing can also be disabled by default using the
+          :attr:`trail` attribute
+  
+      ignore_result (bool): If set to `False` (default) the result
+          of a task will be stored in the backend. If set to `True`
+          the result will not be stored. This can also be set
+          using the :attr:`ignore_result` in the `app.task` decorator.
+  
+      publisher (kombu.Producer): Deprecated alias to ``producer``.
+  
+      headers (Dict): Message headers to be included in the message.
+          The headers can be used as an overlay for custom labeling
+          using the :ref:`canvas-stamping` feature.
+  
+      task_id (str): Optional argument to override the default task id.
+          By default, Celery generates a unique id (UUID4) for every task
+          submission. You can instead provide your own string identifier.
+          If supplied, this value will be used as the task’s id instead
+          of generating one automatically. Be careful to avoid collisions
+          when overriding task ids.
+  
+  Returns:
+      celery.result.AsyncResult: Promise of future evaluation.
+  
+  Raises:
+      TypeError: If not enough arguments are passed, or too many
+          arguments are passed.  Note that signature checks may
+          be disabled by specifying ``@task(typing=False)``.
+      ValueError: If soft_time_limit and time_limit both are set
+          but soft_time_limit is greater than time_limit
+      kombu.exceptions.OperationalError: If a connection to the
+         transport cannot be made, or if the connection is lost.
+  
+  Note:
+      Also supports all keyword arguments supported by
+      :meth:`kombu.Producer.publish`.
+  `````
+- `def shadow_name(self, args, kwargs, options)`
+  - **Docstring:**
+  `````
+  Override for custom task name in worker logs/monitoring.
+  
+  Example:
+      .. code-block:: python
+  
+          from celery.utils.imports import qualname
+  
+          def shadow_name(task, args, kwargs, options):
+              return qualname(args[0])
+  
+          @app.task(shadow_name=shadow_name, serializer='pickle')
+          def apply_function_async(fun, *args, **kwargs):
+              return fun(*args, **kwargs)
+  
+  Arguments:
+      args (Tuple): Task positional arguments.
+      kwargs (Dict): Task keyword arguments.
+      options (Dict): Task execution options.
+  `````
+- `def signature_from_request(self, request = None, args = None, kwargs = None, queue = None, **extra_options)`
+- `def retry(self, args = None, kwargs = None, exc = None, throw = True, eta = None, countdown = None, max_retries = None, **options)`
+  - **Docstring:**
+  `````
+  Retry the task, adding it to the back of the queue.
+  
+  Example:
+      >>> from imaginary_twitter_lib import Twitter
+      >>> from proj.celery import app
+  
+      >>> @app.task(bind=True)
+      ... def tweet(self, auth, message):
+      ...     twitter = Twitter(oauth=auth)
+      ...     try:
+      ...         twitter.post_status_update(message)
+      ...     except twitter.FailWhale as exc:
+      ...         # Retry in 5 minutes.
+      ...         raise self.retry(countdown=60 * 5, exc=exc)
+  
+  Note:
+      Although the task will never return above as `retry` raises an
+      exception to notify the worker, we use `raise` in front of the
+      retry to convey that the rest of the block won't be executed.
+  
+  Arguments:
+      args (Tuple): Positional arguments to retry with.
+      kwargs (Dict): Keyword arguments to retry with.
+      exc (Exception): Custom exception to report when the max retry
+          limit has been exceeded (default:
+          :exc:`~@MaxRetriesExceededError`).
+  
+          If this argument is set and retry is called while
+          an exception was raised (``sys.exc_info()`` is set)
+          it will attempt to re-raise the current exception.
+  
+          If no exception was raised it will raise the ``exc``
+          argument provided.
+      countdown (float): Time in seconds to delay the retry for.
+      eta (~datetime.datetime): Explicit time and date to run the
+          retry at.
+      max_retries (int): If set, overrides the default retry limit for
+          this execution.  Changes to this parameter don't propagate to
+          subsequent task retry attempts.  A value of :const:`None`,
+          means "use the default", so if you want infinite retries you'd
+          have to set the :attr:`max_retries` attribute of the task to
+          :const:`None` first.
+      time_limit (int): If set, overrides the default time limit.
+      soft_time_limit (int): If set, overrides the default soft
+          time limit.
+      throw (bool): If this is :const:`False`, don't raise the
+          :exc:`~@Retry` exception, that tells the worker to mark
+          the task as being retried.  Note that this means the task
+          will be marked as failed if the task raises an exception,
+          or successful if it returns after the retry call.
+      **options (Any): Extra options to pass on to :meth:`apply_async`.
+  
+  Raises:
+  
+      celery.exceptions.Retry:
+          To tell the worker that the task has been re-sent for retry.
+          This always happens, unless the `throw` keyword argument
+          has been explicitly set to :const:`False`, and is considered
+          normal operation.
+  `````
+- `def apply(self, args = None, kwargs = None, link = None, link_error = None, task_id = None, retries = None, throw = None, logfile = None, loglevel = None, headers = None, **options)`
+  - **Docstring:**
+  `````
+  Execute this task locally, by blocking until the task returns.
+  
+  Arguments:
+      args (Tuple): positional arguments passed on to the task.
+      kwargs (Dict): keyword arguments passed on to the task.
+      throw (bool): Re-raise task exceptions.
+          Defaults to the :setting:`task_eager_propagates` setting.
+  
+  Returns:
+      celery.result.EagerResult: pre-evaluated result.
+  `````
+- `def AsyncResult(self, task_id, **kwargs)`
+  - **Docstring:**
+  `````
+  Get AsyncResult instance for the specified task.
+  
+  Arguments:
+      task_id (str): Task id to get result for.
+  `````
+- `def signature(self, args = None, *starargs, **starkwargs)`
+  - **Docstring:**
+  `````
+  Create signature.
+  
+  Returns:
+      :class:`~celery.signature`:  object for
+          this task, wrapping arguments and execution options
+          for a single task invocation.
+  `````
+- `def s(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Create signature.
+  
+  Shortcut for ``.s(*a, **k) -> .signature(a, k)``.
+  `````
+- `def si(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Create immutable signature.
+  
+  Shortcut for ``.si(*a, **k) -> .signature(a, k, immutable=True)``.
+  `````
+- `def chunks(self, it, n)`
+  - *Create a :class:`~celery.canvas.chunks` task for this task.*
+- `def map(self, it)`
+  - *Create a :class:`~celery.canvas.xmap` task from ``it``.*
+- `def starmap(self, it)`
+  - *Create a :class:`~celery.canvas.xstarmap` task from ``it``.*
+- `def send_event(self, type_, retry = True, retry_policy = None, **fields)`
+  - **Docstring:**
+  `````
+  Send monitoring event message.
+  
+  This can be used to add custom event types in :pypi:`Flower`
+  and other monitors.
+  
+  Arguments:
+      type_ (str):  Type of event, e.g. ``"task-failed"``.
+  
+  Keyword Arguments:
+      retry (bool):  Retry sending the message
+          if the connection is lost.  Default is taken from the
+          :setting:`task_publish_retry` setting.
+      retry_policy (Mapping): Retry settings.  Default is taken
+          from the :setting:`task_publish_retry_policy` setting.
+      **fields (Any): Map containing information about the event.
+          Must be JSON serializable.
+  `````
+- `def replace(self, sig)`
+  - **Docstring:**
+  `````
+  Replace this task, with a new task inheriting the task id.
+  
+  Execution of the host task ends immediately and no subsequent statements
+  will be run.
+  
+  .. versionadded:: 4.0
+  
+  Arguments:
+      sig (Signature): signature to replace with.
+      visitor (StampingVisitor): Visitor API object.
+  
+  Raises:
+      ~@Ignore: This is always raised when called in asynchronous context.
+      It is best to always use ``return self.replace(...)`` to convey
+      to the reader that the task won't continue after being replaced.
+  `````
+- `def add_to_chord(self, sig, lazy = False)`
+  - **Docstring:**
+  `````
+  Add signature to the chord the current task is a member of.
+  
+  .. versionadded:: 4.0
+  
+  Currently only supported by the Redis result backend.
+  
+  Arguments:
+      sig (Signature): Signature to extend chord with.
+      lazy (bool): If enabled the new task won't actually be called,
+          and ``sig.delay()`` must be called manually.
+  `````
+- `def update_state(self, task_id = None, state = None, meta = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Update task state.
+  
+  Arguments:
+      task_id (str): Id of the task to update.
+          Defaults to the id of the current task.
+      state (str): New state.
+      meta (Dict): State meta-data.
+  `````
+- `def before_start(self, task_id, args, kwargs)`
+  - **Docstring:**
+  `````
+  Handler called before the task starts.
+  
+  .. versionadded:: 5.2
+  
+  Arguments:
+      task_id (str): Unique id of the task to execute.
+      args (Tuple): Original arguments for the task to execute.
+      kwargs (Dict): Original keyword arguments for the task to execute.
+  
+  Returns:
+      None: The return value of this handler is ignored.
+  `````
+- `def on_success(self, retval, task_id, args, kwargs)`
+  - **Docstring:**
+  `````
+  Success handler.
+  
+  Run by the worker if the task executes successfully.
+  
+  Arguments:
+      retval (Any): The return value of the task.
+      task_id (str): Unique id of the executed task.
+      args (Tuple): Original arguments for the executed task.
+      kwargs (Dict): Original keyword arguments for the executed task.
+  
+  Returns:
+      None: The return value of this handler is ignored.
+  `````
+- `def on_retry(self, exc, task_id, args, kwargs, einfo)`
+  - **Docstring:**
+  `````
+  Retry handler.
+  
+  This is run by the worker when the task is to be retried.
+  
+  Arguments:
+      exc (Exception): The exception sent to :meth:`retry`.
+      task_id (str): Unique id of the retried task.
+      args (Tuple): Original arguments for the retried task.
+      kwargs (Dict): Original keyword arguments for the retried task.
+      einfo (~billiard.einfo.ExceptionInfo): Exception information.
+  
+  Returns:
+      None: The return value of this handler is ignored.
+  `````
+- `def on_failure(self, exc, task_id, args, kwargs, einfo)`
+  - **Docstring:**
+  `````
+  Error handler.
+  
+  This is run by the worker when the task fails.
+  
+  Arguments:
+      exc (Exception): The exception raised by the task.
+      task_id (str): Unique id of the failed task.
+      args (Tuple): Original arguments for the task that failed.
+      kwargs (Dict): Original keyword arguments for the task that failed.
+      einfo (~billiard.einfo.ExceptionInfo): Exception information.
+  
+  Returns:
+      None: The return value of this handler is ignored.
+  `````
+- `def after_return(self, status, retval, task_id, args, kwargs, einfo)`
+  - **Docstring:**
+  `````
+  Handler called after the task returns.
+  
+  Arguments:
+      status (str): Current task state.
+      retval (Any): Task return value/exception.
+      task_id (str): Unique id of the task.
+      args (Tuple): Original arguments for the task.
+      kwargs (Dict): Original keyword arguments for the task.
+      einfo (~billiard.einfo.ExceptionInfo): Exception information.
+  
+  Returns:
+      None: The return value of this handler is ignored.
+  `````
+- `def on_replace(self, sig)`
+  - **Docstring:**
+  `````
+  Handler called when the task is replaced.
+  
+  Must return super().on_replace(sig) when overriding to ensure the task replacement
+  is properly handled.
+  
+  .. versionadded:: 5.3
+  
+  Arguments:
+      sig (Signature): signature to replace with.
+  `````
+- `def add_trail(self, result)`
+- `def push_request(self, *args, **kwargs)`
+- `def pop_request(self)`
+- `def backend(self, value)` `backend.setter`
+
+**Properties (2):**
+- `@property backend`
+- `@property __name__`
+
+**Class Variables (42):**
+- `__trace__ = None`
+- `__v2_compat__ = False`
+- `MaxRetriesExceededError = MaxRetriesExceededError`
+- `OperationalError = OperationalError`
+- `Strategy = 'celery.worker.strategy:default'`
+- `Request = 'celery.worker.request:Request'`
+- `_app = None`
+- `name = None`
+- `typing = None`
+- `max_retries = 3`
+- `default_retry_delay = 3 * 60`
+- `rate_limit = None`
+- `ignore_result = None`
+- `trail = True`
+- `send_events = True`
+- `store_errors_even_if_ignored = None`
+- `serializer = None`
+- `time_limit = None`
+- `soft_time_limit = None`
+- `backend = None`
+- `track_started = None`
+- `acks_late = None`
+- `acks_on_failure_or_timeout = None`
+- `acks_on_failure = None`
+- `acks_on_timeout = None`
+- `reject_on_worker_lost = None`
+- `throws = ()`
+- `expires = None`
+- `priority = None`
+- `resultrepr_maxsize = 1024`
+- `request_stack = None`
+- `_default_request = None`
+- `abstract = True`
+- `_exec_options = None`
+- `__bound__ = False`
+- `from_config = (('serializer', 'task_serializer'), ('rate_limit', 'task_default_rate_limit'), ('priority', 'task_default_priority'), ('track_started', 'task_track_started'), ('acks_late', 'task_acks_late'), ('acks_on_failure_or_timeout', 'task_acks_on_failure_or_timeout'), ('acks_on_failure', 'task_acks_on_failure'), ('acks_on_timeout', 'task_acks_on_timeout'), ('reject_on_worker_lost', 'task_reject_on_worker_lost'), ('ignore_result', 'task_ignore_result'), ('store_eager_result', 'task_store_eager_result'), ('store_errors_even_if_ignored', 'task_store_errors_even_if_ignored'))`
+- `_backend = None`
+- `app = class_property(_get_app, bind)`
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+- `subtask_from_request = signature_from_request`
+- `subtask = signature`
+- `request = property(_get_request)`
+
+
+---
+
+`````python
 """Task implementation: request context and the task base class."""
 import sys
+import types
 
 from billiard.einfo import ExceptionInfo, ExceptionWithTraceback
 from kombu import serialization
@@ -12376,6 +19904,17 @@ extract_exec_options = mattrgetter(
 R_BOUND_TASK = '<class {0.__name__} of {app}{flags}>'
 R_UNBOUND_TASK = '<unbound {0.__name__}{flags}>'
 R_INSTANCE = '<@task: {0.name} of {app}{flags}>'
+
+# Filtered headers relating to dead-lettering in RabbitMQ.
+X_DEATH_HEADERS = {
+    'x-death',
+    'x-first-death-exchange',
+    'x-first-death-queue',
+    'x-first-death-reason',
+    'x-last-death-exchange',
+    'x-last-death-queue',
+    'x-last-death-reason',
+}
 
 #: Here for backwards compatibility as tasks no longer use a custom meta-class.
 TaskType = type
@@ -12464,6 +20003,14 @@ class Context:
     def __repr__(self):
         return f'<Context: {vars(self)!r}>'
 
+    def _filter_x_death_headers(self, headers):
+        """Filter out X-Death headers to prevent RabbitMQ cycle detection."""
+        headers = headers.copy() if headers else {}
+        for x_death_header in X_DEATH_HEADERS:
+            headers.pop(x_death_header, None)
+
+        return headers
+
     def as_execution_options(self):
         limit_hard, limit_soft = self.timelimit or (None, None)
         execution_options = {
@@ -12480,7 +20027,7 @@ class Context:
             'expires': self.expires,
             'soft_time_limit': limit_soft,
             'time_limit': limit_hard,
-            'headers': self.headers,
+            'headers': self._filter_x_death_headers(self.headers),
             'retries': self.retries,
             'reply_to': self.reply_to,
             'replaced_task_nesting': self.replaced_task_nesting,
@@ -12618,7 +20165,32 @@ class Task:
     #:
     #: The application default can be overridden with the
     #: :setting:`task_acks_on_failure_or_timeout` setting.
+    #:
+    #: .. deprecated:: 6.0
+    #:     Use :attr:`acks_on_failure` and :attr:`acks_on_timeout` instead.
     acks_on_failure_or_timeout = None
+
+    #: When enabled messages for this task will be acknowledged on failure.
+    #: Falls back to :attr:`acks_on_failure_or_timeout` if :const:`None`.
+    #:
+    #: Configuring this setting only applies to tasks that are
+    #: acknowledged **after** they have been executed and only if
+    #: :setting:`task_acks_late` is enabled.
+    #:
+    #: The application default can be overridden with the
+    #: :setting:`task_acks_on_failure` setting.
+    acks_on_failure = None
+
+    #: When enabled messages for this task will be acknowledged on timeout.
+    #: Falls back to :attr:`acks_on_failure_or_timeout` if :const:`None`.
+    #:
+    #: Configuring this setting only applies to tasks that are
+    #: acknowledged **after** they have been executed and only if
+    #: :setting:`task_acks_late` is enabled.
+    #:
+    #: The application default can be overridden with the
+    #: :setting:`task_acks_on_timeout` setting.
+    acks_on_timeout = None
 
     #: Even if :attr:`acks_late` is enabled, the worker will
     #: acknowledge tasks when the worker process executing them abruptly
@@ -12670,6 +20242,8 @@ class Task:
         ('track_started', 'task_track_started'),
         ('acks_late', 'task_acks_late'),
         ('acks_on_failure_or_timeout', 'task_acks_on_failure_or_timeout'),
+        ('acks_on_failure', 'task_acks_on_failure'),
+        ('acks_on_timeout', 'task_acks_on_timeout'),
         ('reject_on_worker_lost', 'task_reject_on_worker_lost'),
         ('ignore_result', 'task_ignore_result'),
         ('store_eager_result', 'task_store_eager_result'),
@@ -12694,6 +20268,19 @@ class Task:
         for attr_name, config_name in cls.from_config:
             if getattr(cls, attr_name, None) is None:
                 setattr(cls, attr_name, conf[config_name])
+
+        if cls.acks_on_failure is None:
+            cls.acks_on_failure = (
+                cls.acks_on_failure_or_timeout
+                if cls.acks_on_failure_or_timeout is not None
+                else True
+            )
+        if cls.acks_on_timeout is None:
+            cls.acks_on_timeout = (
+                cls.acks_on_failure_or_timeout
+                if cls.acks_on_failure_or_timeout is not None
+                else True
+            )
 
         # decorate with annotations from config.
         if not was_bound:
@@ -12753,6 +20340,8 @@ class Task:
         finally:
             self.pop_request()
             _task_stack.pop()
+
+    __class_getitem__ = classmethod(types.GenericAlias)
 
     def __reduce__(self):
         # - tasks are pickled into the name of the task only, and the receiver
@@ -12878,6 +20467,13 @@ class Task:
             headers (Dict): Message headers to be included in the message.
                 The headers can be used as an overlay for custom labeling
                 using the :ref:`canvas-stamping` feature.
+
+            task_id (str): Optional argument to override the default task id.
+                By default, Celery generates a unique id (UUID4) for every task
+                submission. You can instead provide your own string identifier.
+                If supplied, this value will be used as the task’s id instead
+                of generating one automatically. Be careful to avoid collisions
+                when overriding task ids.
 
         Returns:
             celery.result.AsyncResult: Promise of future evaluation.
@@ -13511,10 +21107,195 @@ class Task:
 
 BaseTask = Task  # XXX compat alias
 
-```
+`````
 
-### 代码文件: celery\app\trace.py
-```python
+--- **end of file: celery/app/task.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/trace.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/trace.py`
+
+#### 📝 Module Docstring
+
+`````
+Trace task execution.
+
+This module defines how the task execution is traced:
+errors are recorded, handlers are applied and so on.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import os`
+- `import sys`
+- `import time`
+- `from collections import namedtuple`
+- `from warnings import warn`
+- `from billiard.einfo import ExceptionInfo`
+- `from billiard.einfo import ExceptionWithTraceback`
+- `from kombu.exceptions import EncodeError`
+- `from kombu.serialization import loads as loads_message`
+- `from kombu.serialization import prepare_accept_content`
+- `from kombu.utils.encoding import safe_repr`
+- `from kombu.utils.encoding import safe_str`
+- `from celery import current_app`
+- `from celery import group`
+- `from celery import signals`
+- `from celery import states`
+- `from celery._state import _task_stack`
+- `from celery.app.task import Context`
+- `from celery.app.task import Task as BaseTask`
+- `from celery.exceptions import BackendGetMetaError`
+- `from celery.exceptions import Ignore`
+- `from celery.exceptions import InvalidTaskError`
+- `from celery.exceptions import Reject`
+- `from celery.exceptions import Retry`
+- `from celery.result import AsyncResult`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.nodenames import gethostname`
+- `from celery.utils.objects import mro_lookup`
+- `from celery.utils.saferepr import saferepr`
+- `from celery.utils.serialization import get_pickleable_etype`
+- `from celery.utils.serialization import get_pickleable_exception`
+- `from celery.utils.serialization import get_pickled_exception`
+- `from celery.worker.state import successful_requests`
+- `from celery import canvas`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class TraceInfo`
+*Line: 179*
+
+**Docstring:**
+`````
+Information about task execution.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, state, retval = None)`
+  - **Parameters:**
+    - `self`
+    - `state`
+    - `retval = None`
+
+**Public Methods (5):**
+- `def handle_error_state(self, task, req, eager = False, call_errbacks = True)`
+- `def handle_reject(self, task, req, **kwargs)`
+- `def handle_ignore(self, task, req, **kwargs)`
+- `def handle_retry(self, task, req, store_errors = True, **kwargs)`
+  - *Handle retry exception.*
+- `def handle_failure(self, task, req, store_errors = True, call_errbacks = True)`
+  - *Handle exception.*
+
+**Class Variables (1):**
+- `__slots__ = ('state', 'retval')`
+
+#### 🔧 Public Functions (15)
+
+- `def info(fmt, context)`
+  - *Line: 123*
+  - **Docstring:**
+  `````
+  Log 'fmt % context' with severity 'INFO'.
+  
+  'context' is also passed in extra with key 'data' for custom handlers.
+  `````
+
+- `def task_has_custom(task, attr)`
+  - *Line: 131*
+  - *Return true if the task overrides ``attr``.*
+
+- `def get_log_policy(task, einfo, exc)`
+  - *Line: 137*
+
+- `def get_task_name(request, default)`
+  - *Line: 150*
+  - *Use 'shadow' in request for the task name if applicable.*
+
+- `def get_actual_ignore_result(task, req)`
+  - *Line: 157*
+  - **Docstring:**
+  `````
+  Return the effective ignore_result, with request overriding task.
+  
+  If req provides an explicit ignore_result, that value is used;
+  otherwise task.ignore_result is returned.
+  `````
+
+- `def traceback_clear(exc = None)`
+  - *Line: 314*
+  - **Docstring:**
+  `````
+  Clear traceback frames to prevent memory leaks.
+  
+  MEMORY LEAK FIX: This function helps break reference cycles between
+  traceback objects and frame objects that can prevent garbage collection.
+  Clearing frames releases local variables that may be holding large objects.
+  `````
+
+- `def build_tracer(name, task, loader = None, hostname = None, store_errors = True, Info = TraceInfo, eager = False, propagate = False, app = None, monotonic = time.monotonic, trace_ok_t = trace_ok_t, IGNORE_STATES = IGNORE_STATES)`
+  - *Line: 344*
+  - **Docstring:**
+  `````
+  Return a function that traces task execution.
+  
+  Catches all exceptions and updates result backend with the
+  state and result.
+  
+  If the call was successful, it saves the result to the task result
+  backend, and sets the task status to `"SUCCESS"`.
+  
+  If the call raises :exc:`~@Retry`, it extracts
+  the original exception, uses that as the result and sets the task state
+  to `"RETRY"`.
+  
+  If the call results in an exception, it saves the exception as the task
+  result, and sets the task state to `"FAILURE"`.
+  
+  Return a function that takes the following arguments:
+  
+      :param uuid: The id of the task.
+      :param args: List of positional args to pass on to the function.
+      :param kwargs: Keyword arguments mapping to pass on to the function.
+      :keyword request: Request dict.
+  `````
+
+- `def trace_task(task, uuid, args, kwargs, request = None, **opts)`
+  - *Line: 689*
+  - *Trace task execution.*
+
+- `def trace_task_ret(name, uuid, request, body, content_type, content_encoding, loads = loads_message, app = None, **extra_request)`
+  - *Line: 735*
+
+- `def fast_trace_task(task, uuid, request, body, content_type, content_encoding, loads = loads_message, _loc = None, hostname = None, **_)`
+  - *Line: 757*
+
+- `def report_internal_error(task, exc)`
+  - *Line: 779*
+
+- `def setup_worker_optimizations(app, hostname = None)`
+  - *Line: 792*
+  - *Setup worker related optimizations.*
+
+- `def reset_worker_optimizations(app = current_app)`
+  - *Line: 822*
+  - *Reset previously configured optimizations.*
+
+- `def on_error(request, exc, state = FAILURE, call_errbacks = True)`
+  - *Line: 417*
+
+- `def trace_task(uuid, args, kwargs, request = None)`
+  - *Line: 475*
+
+
+---
+
+`````python
 """Trace task execution.
 
 This module defines how the task execution is traced:
@@ -13671,6 +21452,28 @@ def get_task_name(request, default):
     return getattr(request, 'shadow', None) or default
 
 
+def get_actual_ignore_result(task, req):
+    """Return the effective ignore_result, with request overriding task.
+
+    If req provides an explicit ignore_result, that value is used;
+    otherwise task.ignore_result is returned.
+    """
+    if req is None:
+        return task.ignore_result
+
+    actual = getattr(req, 'ignore_result', None)
+
+    # Context defines `ignore_result = False` at class level (see Context
+    # in celery/app/task.py). getattr() above would return the class default
+    # (False) even when the request never set it explicitly, making it
+    # impossible to distinguish "override=False" from "not set". We check
+    # __dict__ to detect only instance-level (i.e., explicitly set) values.
+    if isinstance(req, Context) and 'ignore_result' not in req.__dict__:
+        actual = None
+
+    return actual if actual is not None else task.ignore_result
+
+
 class TraceInfo:
     """Information about task execution."""
 
@@ -13682,7 +21485,9 @@ class TraceInfo:
 
     def handle_error_state(self, task, req,
                            eager=False, call_errbacks=True):
-        if task.ignore_result:
+        ignore_result = get_actual_ignore_result(task, req)
+
+        if ignore_result:
             store_errors = task.store_errors_even_if_ignored
         elif eager and task.store_eager_result:
             store_errors = True
@@ -13870,16 +21675,6 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
     fun = task if task_has_custom(task, '__call__') else task.run
 
     loader = loader or app.loader
-    ignore_result = task.ignore_result
-    track_started = task.track_started
-    track_started = not eager and (task.track_started and not ignore_result)
-
-    # #6476
-    if eager and not ignore_result and task.store_eager_result:
-        publish_result = True
-    else:
-        publish_result = not eager and not ignore_result
-
     deduplicate_successful_tasks = ((app.conf.task_acks_late or task.acks_late)
                                     and app.conf.worker_deduplicate_successful_tasks
                                     and app.backend.persistent)
@@ -13926,6 +21721,55 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
         )
         return I, R, I.state, I.retval
 
+    def _dispatch_callbacks_and_chain(
+        retval, callbacks, chain, parent_id, root_id, priority,
+    ):
+        """Dispatch callbacks and chain for a completed task.
+
+        Dispatches link callbacks and then the next chain step.
+        Does NOT fire task lifecycle signals (on_success, task_postrun)
+        or call mark_as_done — callers handle those separately.
+
+        Note: dispatch is not atomic.  If callbacks succeed but the
+        chain step fails (or vice-versa), a Reject + redeliver may
+        re-dispatch the already-sent callbacks.  This is acceptable
+        under Celery's at-least-once delivery model.
+        """
+        if callbacks:
+            if len(callbacks) > 1:
+                sigs, groups = [], []
+                for sig in callbacks:
+                    sig = signature(sig, app=app)
+                    if isinstance(sig, group):
+                        groups.append(sig)
+                    else:
+                        sigs.append(sig)
+                for group_ in groups:
+                    group_.apply_async(
+                        (retval,),
+                        parent_id=parent_id, root_id=root_id,
+                        priority=priority,
+                    )
+                if sigs:
+                    group(sigs, app=app).apply_async(
+                        (retval,),
+                        parent_id=parent_id, root_id=root_id,
+                        priority=priority,
+                    )
+            else:
+                signature(callbacks[0], app=app).apply_async(
+                    (retval,),
+                    parent_id=parent_id, root_id=root_id,
+                    priority=priority,
+                )
+        if chain:
+            _chsig = signature(chain[-1], app=app)
+            _chsig.apply_async(
+                (retval,), chain=chain[:-1],
+                parent_id=parent_id, root_id=root_id,
+                priority=priority,
+            )
+
     def trace_task(uuid, args, kwargs, request=None):
         # R      - is the possibly prepared return value.
         # I      - is the Info object.
@@ -13951,6 +21795,14 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
             task_request = Context(request or {}, args=args,
                                    called_directly=False, kwargs=kwargs)
 
+            ignore_result = get_actual_ignore_result(task, task_request)
+            track_started = not eager and (task.track_started and not ignore_result)
+            # #6476
+            if eager and not ignore_result and task.store_eager_result:
+                publish_result = True
+            else:
+                publish_result = not eager and not ignore_result
+
             redelivered = (task_request.delivery_info
                            and task_request.delivery_info.get('redelivered', False))
             if deduplicate_successful_tasks and redelivered:
@@ -13969,6 +21821,41 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
                             'name': get_task_name(task_request, name),
                             'description': 'Task already completed successfully.'
                         })
+                        _root_id = task_request.root_id or uuid
+                        _priority = task_request.delivery_info.get('priority') if \
+                            inherit_parent_priority else None
+                        try:
+                            _meta = r._get_task_meta()
+                            stored_retval = _meta.get('result')
+                            # Children are populated by mark_as_done on the
+                            # original execution.  If present, callbacks were
+                            # already dispatched — skip to avoid duplicates.
+                            # Requires the backend to persist extended result
+                            # metadata (result_extended=True).
+                            _children = _meta.get('children')
+                            _callbacks = task_request.callbacks
+                            _chain = task_request.chain
+                            if (_callbacks or _chain) and not _children:
+                                _dispatch_callbacks_and_chain(
+                                    stored_retval, _callbacks, _chain,
+                                    parent_id=uuid, root_id=_root_id,
+                                    priority=_priority,
+                                )
+                            successful_requests.add(task_request.id)
+                        except MemoryError:
+                            raise
+                        except Exception as exc:
+                            # Permanent failures (malformed signature, etc.)
+                            # will requeue indefinitely.  Broker-level
+                            # dead-letter / max-delivery-count policies are
+                            # the intended circuit-breaker.
+                            logger.error(
+                                'Failed to dispatch chain/callbacks for '
+                                'deduplicated task %s',
+                                task_request.id,
+                                exc_info=True,
+                            )
+                            raise Reject(exc, requeue=True)
                         return trace_ok_t(R, I, T, Rstr)
 
             push_task(task)
@@ -14027,43 +21914,12 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
                         # separately, so need to call them separately
                         # so that the trail's not added multiple times :(
                         # (Issue #1936)
-                        callbacks = task.request.callbacks
-                        if callbacks:
-                            if len(task.request.callbacks) > 1:
-                                sigs, groups = [], []
-                                for sig in callbacks:
-                                    sig = signature(sig, app=app)
-                                    if isinstance(sig, group):
-                                        groups.append(sig)
-                                    else:
-                                        sigs.append(sig)
-                                for group_ in groups:
-                                    group_.apply_async(
-                                        (retval,),
-                                        parent_id=uuid, root_id=root_id,
-                                        priority=task_priority
-                                    )
-                                if sigs:
-                                    group(sigs, app=app).apply_async(
-                                        (retval,),
-                                        parent_id=uuid, root_id=root_id,
-                                        priority=task_priority
-                                    )
-                            else:
-                                signature(callbacks[0], app=app).apply_async(
-                                    (retval,), parent_id=uuid, root_id=root_id,
-                                    priority=task_priority
-                                )
-
-                        # execute first task in chain
-                        chain = task_request.chain
-                        if chain:
-                            _chsig = signature(chain.pop(), app=app)
-                            _chsig.apply_async(
-                                (retval,), chain=chain,
-                                parent_id=uuid, root_id=root_id,
-                                priority=task_priority
-                            )
+                        _dispatch_callbacks_and_chain(
+                            retval, task.request.callbacks,
+                            task_request.chain,
+                            parent_id=uuid, root_id=root_id,
+                            priority=task_priority,
+                        )
                         task.backend.mark_as_done(
                             uuid, retval, task_request, publish_result,
                         )
@@ -14114,6 +21970,8 @@ def build_tracer(name, task, loader=None, hostname=None, store_errors=True,
                                          exc_info=True)
         except MemoryError:
             raise
+        except Reject:
+            raise
         except Exception as exc:
             _signal_internal_error(task, uuid, args, kwargs, request, exc)
             if eager:
@@ -14133,6 +21991,8 @@ def trace_task(task, uuid, args, kwargs, request=None, **opts):
         if task.__trace__ is None:
             task.__trace__ = build_tracer(task.name, task, **opts)
         return task.__trace__(uuid, args, kwargs, request)
+    except Reject:
+        raise
     except Exception as exc:
         _signal_internal_error(task, uuid, args, kwargs, request, exc)
         return trace_ok_t(report_internal_error(task, exc), TraceInfo(FAILURE, exc), 0.0, None)
@@ -14298,10 +22158,167 @@ def _install_stack_protection():
         BaseTask.__call__ = __protected_call__
         BaseTask._stackprotected = True
 
-```
+`````
 
-### 代码文件: celery\app\utils.py
-```python
+--- **end of file: celery/app/trace.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/utils.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/utils.py`
+
+#### 📝 Module Docstring
+
+`````
+App utilities: Compat settings, bug-report tool, pickling apps.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import platform as _platform`
+- `import re`
+- `from collections import namedtuple`
+- `from collections.abc import Mapping`
+- `from copy import deepcopy`
+- `from types import ModuleType`
+- `from kombu.utils.url import maybe_sanitize_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.platforms import pyimplementation`
+- `from celery.utils.collections import ConfigurationView`
+- `from celery.utils.imports import import_from_cwd`
+- `from celery.utils.imports import qualname`
+- `from celery.utils.imports import symbol_by_name`
+- `from celery.utils.text import pretty`
+- `from defaults import _OLD_DEFAULTS`
+- `from defaults import _OLD_SETTING_KEYS`
+- `from defaults import _TO_NEW_KEY`
+- `from defaults import _TO_OLD_KEY`
+- `from defaults import DEFAULTS`
+- `from defaults import SETTING_KEYS`
+- `from defaults import find`
+- `import billiard`
+- `import kombu`
+- `import celery`
+- `from base import Celery`
+- `from celery.app.defaults import _TO_NEW_KEY`
+- `from celery.utils import deprecated`
+- `from kombu import Connection`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Settings(ConfigurationView)`
+*Line: 70*
+
+**Docstring:**
+`````
+Celery settings object.
+
+.. seealso:
+
+    :ref:`configuration` for a full list of configuration keys.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (9):**
+- `def without_defaults(self)`
+  - *Return the current configuration, but without defaults.*
+- `def value_set_for(self, key)`
+- `def find_option(self, name, namespace = '')`
+  - **Docstring:**
+  `````
+  Search for option by name.
+  
+  Example:
+      >>> from proj.celery import app
+      >>> app.conf.find_option('disable_rate_limits')
+      ('worker', 'prefetch_multiplier',
+       <Option: type->bool default->False>))
+  
+  Arguments:
+      name (str): Name of option, cannot be partial.
+      namespace (str): Preferred name-space (``None`` by default).
+  Returns:
+      Tuple: of ``(namespace, key, type)``.
+  `````
+- `def find_value_for_key(self, name, namespace = 'celery')`
+  - *Shortcut to ``get_by_parts(*find_option(name)[:-1])``.*
+- `def get_by_parts(self, *parts)`
+  - **Docstring:**
+  `````
+  Return the current value for setting specified as a path.
+  
+  Example:
+      >>> from proj.celery import app
+      >>> app.conf.get_by_parts('worker', 'disable_rate_limits')
+      False
+  `````
+- `def finalize(self)`
+- `def table(self, with_defaults = False, censored = True)`
+- `def humanize(self, with_defaults = False, censored = True)`
+  - *Return a human readable text showing configuration changes.*
+- `def maybe_warn_deprecated_settings(self)`
+
+**Properties (7):**
+- `@property broker_read_url`
+- `@property broker_write_url`
+- `@property broker_url`
+- `@property result_backend`
+- `@property task_default_exchange`
+- `@property task_default_routing_key`
+- `@property timezone`
+
+##### 📌 `class AppPickler`
+*Line: 289*
+
+**Docstring:**
+`````
+Old application pickler/unpickler (< 3.1).
+`````
+
+**Public Methods (4):**
+- `def prepare(self, app, **kwargs)`
+- `def build_kwargs(self, *args)`
+- `def build_standard_kwargs(self, main, changes, loader, backend, amqp, events, log, control, accept_magic_kwargs, config_source = None)`
+- `def construct(self, cls, **kwargs)`
+
+#### 🔧 Public Functions (6)
+
+- `def appstr(app)`
+  - *Line: 65*
+  - *String used in __repr__ etc, to id app instances.*
+
+- `def detect_settings(conf, preconf = None, ignore_keys = None, prefix = None, all_keys = None, old_keys = None)`
+  - *Line: 232*
+
+- `def filter_hidden_settings(conf)`
+  - *Line: 327*
+  - *Filter sensitive settings.*
+
+- `def bugreport(app)`
+  - *Line: 346*
+  - *Return a string containing information useful in bug-reports.*
+
+- `def find_app(app, symbol_by_name = symbol_by_name, imp = import_from_cwd)`
+  - *Line: 378*
+  - *Find app by name.*
+
+- `def maybe_censor(key, value, mask = '*' * 8)`
+  - *Line: 329*
+
+
+---
+
+`````python
 """App utilities: Compat settings, bug-report tool, pickling apps."""
 import os
 import platform as _platform
@@ -14718,10 +22735,80 @@ def find_app(app, symbol_by_name=symbol_by_name, imp=import_from_cwd):
             return found
     return sym
 
-```
+`````
 
-### 代码文件: celery\app\__init__.py
-```python
+--- **end of file: celery/app/utils.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/app/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/app/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Celery Application.
+`````
+
+#### 📦 Imports
+
+- `from celery import _state`
+- `from celery._state import app_or_default`
+- `from celery._state import disable_trace`
+- `from celery._state import enable_trace`
+- `from celery._state import pop_current_task`
+- `from celery._state import push_current_task`
+- `from celery.local import Proxy`
+- `from base import Celery`
+- `from utils import AppPickler`
+
+#### 🔧 Public Functions (4)
+
+- `def bugreport(app = None)`
+  - *Line: 19*
+  - *Return information useful in bug reports.*
+
+- `def shared_task(*args, **kwargs)`
+  - *Line: 24*
+  - **Docstring:**
+  `````
+  Create shared task (decorator).
+  
+  This can be used by library authors to create tasks that'll work
+  for any app environment.
+  
+  Returns:
+      ~celery.local.Proxy: A proxy that always takes the task from the
+      current apps task registry.
+  
+  Example:
+  
+      >>> from celery import Celery, shared_task
+      >>> @shared_task
+      ... def add(x, y):
+      ...     return x + y
+      ...
+      >>> app1 = Celery(broker='amqp://')
+      >>> add.app is app1
+      True
+      >>> app2 = Celery(broker='redis://')
+      >>> add.app is app2
+      True
+  `````
+
+- `def create_shared_task(**options)`
+  - *Line: 48*
+
+- `def task_by_cons()`
+  - *Line: 66*
+
+
+---
+
+`````python
 """Celery Application."""
 from celery import _state
 from celery._state import app_or_default, disable_trace, enable_trace, pop_current_task, push_current_task
@@ -14799,10 +22886,97 @@ def shared_task(*args, **kwargs):
         return create_shared_task(**kwargs)(args[0])
     return create_shared_task(*args, **kwargs)
 
-```
+`````
 
-### 代码文件: celery\apps\beat.py
-```python
+--- **end of file: celery/app/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/apps/beat.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/apps/beat.py`
+
+#### 📝 Module Docstring
+
+`````
+Beat command-line program.
+
+This module is the 'program-version' of :mod:`celery.beat`.
+
+It does everything necessary to run that module
+as an actual application, like installing signal handlers
+and so on.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import numbers`
+- `import socket`
+- `import sys`
+- `from datetime import datetime`
+- `from signal import Signals`
+- `from types import FrameType`
+- `from typing import Any`
+- `from celery import VERSION_BANNER`
+- `from celery import Celery`
+- `from celery import beat`
+- `from celery import platforms`
+- `from celery.utils.imports import qualname`
+- `from celery.utils.log import LOG_LEVELS`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.time import humanize_seconds`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Beat`
+*Line: 40*
+
+**Docstring:**
+`````
+Beat as a service.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, max_interval: int | None = None, app: Celery | None = None, socket_timeout: int = 30, pidfile: str | None = None, no_color: bool | None = None, loglevel: str = 'WARN', logfile: str | None = None, schedule: str | None = None, scheduler: str | None = None, scheduler_cls: str | None = None, redirect_stdouts: bool | None = None, redirect_stdouts_level: str | None = None, quiet: bool = False, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `max_interval: int | None = None`
+    - `app: Celery | None = None`
+    - `socket_timeout: int = 30`
+    - `pidfile: str | None = None`
+    - `no_color: bool | None = None`
+    - `loglevel: str = 'WARN'`
+    - `logfile: str | None = None`
+    - `schedule: str | None = None`
+    - `scheduler: str | None = None`
+    - `scheduler_cls: str | None = None`
+    - `redirect_stdouts: bool | None = None`
+    - `redirect_stdouts_level: str | None = None`
+    - `quiet: bool = False`
+    - `**kwargs: Any`
+
+**Public Methods (8):**
+- `def run(self) -> None`
+- `def setup_logging(self, colorize: bool | None = None) -> None`
+- `def start_scheduler(self) -> None`
+- `def banner(self, service: beat.Service) -> str`
+- `def init_loader(self) -> None`
+- `def startup_info(self, service: beat.Service) -> str`
+- `def set_process_title(self) -> None`
+- `def install_sync_handler(self, service: beat.Service) -> None`
+  - *Install a `SIGTERM` + `SIGINT` handler saving the schedule.*
+
+**Class Variables (2):**
+- `Service = beat.Service`
+- `app: Celery = None`
+
+
+---
+
+`````python
 """Beat command-line program.
 
 This module is the 'program-version' of :mod:`celery.beat`.
@@ -14964,10 +23138,187 @@ class Beat:
             raise SystemExit()
         platforms.signals.update(SIGTERM=_sync, SIGINT=_sync)
 
-```
+`````
 
-### 代码文件: celery\apps\multi.py
-```python
+--- **end of file: celery/apps/beat.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/apps/multi.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/apps/multi.py`
+
+#### 📝 Module Docstring
+
+`````
+Start/stop/manage workers.
+`````
+
+#### 📦 Imports
+
+- `import errno`
+- `import os`
+- `import shlex`
+- `import signal`
+- `import sys`
+- `from collections import OrderedDict`
+- `from collections import UserList`
+- `from collections import defaultdict`
+- `from functools import partial`
+- `from subprocess import Popen`
+- `from time import sleep`
+- `from kombu.utils.encoding import from_utf8`
+- `from kombu.utils.objects import cached_property`
+- `from celery.platforms import IS_WINDOWS`
+- `from celery.platforms import Pidfile`
+- `from celery.platforms import signal_name`
+- `from celery.utils.nodenames import gethostname`
+- `from celery.utils.nodenames import host_format`
+- `from celery.utils.nodenames import node_format`
+- `from celery.utils.nodenames import nodesplit`
+- `from celery.utils.saferepr import saferepr`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class NamespacedOptionParser`
+*Line: 70*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, args)`
+  - **Parameters:**
+    - `self`
+    - `args`
+
+**Public Methods (5):**
+- `def parse(self)`
+- `def process_long_opt(self, arg, value = None)`
+- `def process_short_opt(self, arg, value = None)`
+- `def optmerge(self, ns, defaults = None)`
+- `def add_option(self, name, value, short = False, ns = None)`
+
+##### 📌 `class Node`
+*Line: 122*
+
+**Docstring:**
+`````
+Represents a node in a cluster.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, name, cmd = None, append = None, options = None, extra_args = None)`
+  - **Parameters:**
+    - `self`
+    - `name`
+    - `cmd = None`
+    - `append = None`
+    - `options = None`
+    - `extra_args = None`
+
+**Public Methods (8):**
+- `def alive(self)`
+- `def send(self, sig, on_error = None)`
+- `def start(self, env = None, **kwargs)`
+- `def handle_process_exit(self, retcode, on_signalled = None, on_failure = None)`
+- `def prepare_argv(self, argv, path)`
+- `def getopt(self, *alt)`
+- `def pid(self, value)` `pid.setter`
+- `def from_kwargs(cls, name, **kwargs)` `classmethod`
+
+**Properties (5):**
+- `@property pidfile`
+- `@property logfile`
+- `@property pid`
+- `@property executable`
+- `@property argv_with_executable`
+
+##### 📌 `class MultiParser`
+*Line: 285*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, cmd = 'celery worker', append = '', prefix = '', suffix = '', range_prefix = 'celery')`
+  - **Parameters:**
+    - `self`
+    - `cmd = 'celery worker'`
+    - `append = ''`
+    - `prefix = ''`
+    - `suffix = ''`
+    - `range_prefix = 'celery'`
+
+**Public Methods (1):**
+- `def parse(self, p)`
+
+**Class Variables (1):**
+- `Node = Node`
+
+##### 📌 `class Cluster(UserList)`
+*Line: 367*
+
+**Docstring:**
+`````
+Represent a cluster of workers.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, nodes, cmd = None, env = None, on_stopping_preamble = None, on_send_signal = None, on_still_waiting_for = None, on_still_waiting_progress = None, on_still_waiting_end = None, on_node_start = None, on_node_restart = None, on_node_shutdown_ok = None, on_node_status = None, on_node_signal = None, on_node_signal_dead = None, on_node_down = None, on_child_spawn = None, on_child_signalled = None, on_child_failure = None)`
+  - **Parameters:**
+    - `self`
+    - `nodes`
+    - `cmd = None`
+    - `env = None`
+    - `on_stopping_preamble = None`
+    - `on_send_signal = None`
+    - `on_still_waiting_for = None`
+    - `on_still_waiting_progress = None`
+    - `on_still_waiting_end = None`
+    - `on_node_start = None`
+    - `on_node_restart = None`
+    - `on_node_shutdown_ok = None`
+    - `on_node_status = None`
+    - `on_node_signal = None`
+    - `on_node_signal_dead = None`
+    - `on_node_down = None`
+    - `on_child_spawn = None`
+    - `on_child_signalled = None`
+    - `on_child_failure = None`
+
+**Public Methods (10):**
+- `def start(self)`
+- `def start_node(self, node)`
+- `def send_all(self, sig)`
+- `def kill(self)`
+- `def restart(self, sig = signal.SIGTERM)`
+- `def stop(self, retry = None, callback = None, sig = signal.SIGTERM)`
+- `def stopwait(self, retry = 2, callback = None, sig = signal.SIGTERM)`
+- `def shutdown_nodes(self, nodes, sig = signal.SIGTERM, retry = None)`
+- `def find(self, name)`
+- `def getpids(self, on_down = None)`
+
+**Properties (1):**
+- `@property data`
+
+#### 🔧 Public Functions (5)
+
+- `def celery_exe(*args)`
+  - *Line: 24*
+
+- `def build_nodename(name, prefix, suffix)`
+  - *Line: 28*
+
+- `def build_expander(nodename, shortname, hostname)`
+  - *Line: 42*
+
+- `def format_opt(opt, value)`
+  - *Line: 54*
+
+- `def maybe_call(fun, *args, **kwargs)`
+  - *Line: 280*
+
+
+---
+
+`````python
 """Start/stop/manage workers."""
 import errno
 import os
@@ -15475,10 +23826,228 @@ class Cluster(UserList):
     def data(self):
         return self.nodes
 
-```
+`````
 
-### 代码文件: celery\apps\worker.py
-```python
+--- **end of file: celery/apps/multi.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/apps/worker.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/apps/worker.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker command-line program.
+
+This module is the 'program-version' of :mod:`celery.worker`.
+
+It does everything necessary to run that module
+as an actual application, like installing signal handlers,
+platform tweaks, and so on.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import os`
+- `import platform as _platform`
+- `import sys`
+- `from datetime import datetime`
+- `from functools import partial`
+- `from billiard.common import REMAP_SIGTERM`
+- `from billiard.process import current_process`
+- `from kombu.utils.encoding import safe_str`
+- `from celery import VERSION_BANNER`
+- `from celery import _original_os_write`
+- `from celery import platforms`
+- `from celery import signals`
+- `from celery.app import trace`
+- `from celery.loaders.app import AppLoader`
+- `from celery.platforms import EX_FAILURE`
+- `from celery.platforms import EX_OK`
+- `from celery.platforms import check_privileges`
+- `from celery.platforms import isatty`
+- `from celery.utils import static`
+- `from celery.utils import term`
+- `from celery.utils.debug import cry`
+- `from celery.utils.imports import qualname`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.log import in_sighandler`
+- `from celery.utils.log import set_in_sighandler`
+- `from celery.utils.text import pluralize`
+- `from celery.worker import WorkController`
+- `from threading import enumerate`
+- `from celery.exceptions import WorkerTerminate`
+- `from celery.worker import state`
+- `import atexit`
+- `from celery.worker import state`
+- `from celery.worker import state`
+- `from celery.contrib.rdb import _frame`
+- `from celery.contrib.rdb import set_trace`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Worker(WorkController)`
+*Line: 91*
+
+**Docstring:**
+`````
+Worker as a program.
+`````
+
+**Public Methods (14):**
+- `def on_before_init(self, quiet = False, **kwargs)`
+- `def on_after_init(self, purge = False, no_color = None, redirect_stdouts = None, redirect_stdouts_level = None, **kwargs)`
+- `def on_init_blueprint(self)`
+- `def on_start(self)`
+- `def emit_banner(self)`
+- `def on_consumer_ready(self, consumer)`
+- `def setup_logging(self, colorize = None)`
+- `def purge_messages(self)`
+- `def tasklist(self, include_builtins = True, sep = '\n', int_ = 'celery.')`
+- `def extra_info(self)`
+- `def startup_info(self, artlines = True)`
+- `def install_platform_tweaks(self, worker)`
+  - *Install platform specific tweaks and workarounds.*
+- `def macOS_proxy_detection_workaround(self)`
+  - *See https://github.com/celery/celery/issues#issue/161.*
+- `def set_process_status(self, info)`
+
+#### 🔧 Public Functions (15)
+
+- `def active_thread_count()`
+  - *Line: 74*
+
+- `def safe_say(msg, f = sys.__stderr__)`
+  - *Line: 80*
+  - **Docstring:**
+  `````
+  Uses the original (unpatched) os.write to avoid issues with eventlet/gevent
+  monkey-patching. When using eventlet>=0.37.0, the patched os.write calls
+  hubs.trampoline() which raises RuntimeError if called from within the
+  hub's event loop (e.g., during signal handling).
+  `````
+
+- `def on_hard_shutdown(worker: Worker)`
+  - *Line: 319*
+  - **Docstring:**
+  `````
+  Signal handler for hard shutdown.
+  
+  The handler will terminate the worker immediately by force using the exit code ``EX_FAILURE``.
+  
+  In practice, you should never get here, as the standard shutdown process should be enough.
+  This handler is only for the worst-case scenario, where the worker is stuck and cannot be
+  terminated gracefully (e.g., spamming the Ctrl+C in the terminal to force the worker to terminate).
+  
+  Args:
+      worker (Worker): The worker that received the signal.
+  
+  Raises:
+      WorkerTerminate: This exception will be raised in the MainProcess to terminate the worker immediately.
+  `````
+
+- `def during_soft_shutdown(worker: Worker)`
+  - *Line: 338*
+  - **Docstring:**
+  `````
+  This signal handler is called when the worker is in the middle of the soft shutdown process.
+  
+  When the worker is in the soft shutdown process, it is waiting for tasks to finish. If the worker
+  receives a SIGINT (Ctrl+C) or SIGQUIT signal (or possibly SIGTERM if REMAP_SIGTERM is set to "SIGQUIT"),
+  the handler will cancels all unacked requests to allow the worker to terminate gracefully and replace the
+  signal handler for SIGINT and SIGQUIT with the hard shutdown handler ``on_hard_shutdown`` to terminate
+  the worker immediately by force next time the signal is received.
+  
+  It will give the worker once last chance to gracefully terminate (the cold shutdown), after canceling all
+  unacked requests, before using the hard shutdown handler to terminate the worker forcefully.
+  
+  Args:
+      worker (Worker): The worker that received the signal.
+  `````
+
+- `def on_cold_shutdown(worker: Worker)`
+  - *Line: 369*
+  - **Docstring:**
+  `````
+  Signal handler for cold shutdown.
+  
+  Registered for SIGQUIT and SIGINT (Ctrl+C) signals. If REMAP_SIGTERM is set to "SIGQUIT", this handler will also
+  be registered for SIGTERM.
+  
+  This handler will initiate the cold (and soft if enabled) shutdown procesdure for the worker.
+  
+  Worker running with N tasks:
+      - SIGTERM:
+          -The worker will initiate the warm shutdown process until all tasks are finished. Additional.
+          SIGTERM signals will be ignored. SIGQUIT will transition to the cold shutdown process described below.
+      - SIGQUIT:
+          - The worker will initiate the cold shutdown process.
+          - If the soft shutdown is enabled, the worker will wait for the tasks to finish up to the soft
+          shutdown timeout (practically having a limited warm shutdown just before the cold shutdown).
+          - Cancel all tasks (from the MainProcess) and allow the worker to complete the cold shutdown
+          process gracefully.
+  
+  Caveats:
+      - SIGINT (Ctrl+C) signal is defined to replace itself with the cold shutdown (SIGQUIT) after first use,
+      and to emit a message to the user to hit Ctrl+C again to initiate the cold shutdown process. But, most
+      important, it will also be caught in WorkController.start() to initiate the warm shutdown process.
+      - SIGTERM will also be handled in WorkController.start() to initiate the warm shutdown process (the same).
+      - If REMAP_SIGTERM is set to "SIGQUIT", the SIGTERM signal will be remapped to SIGQUIT, and the cold
+      shutdown process will be initiated instead of the warm shutdown process using SIGTERM.
+      - If SIGQUIT is received (also via SIGINT) during the cold/soft shutdown process, the handler will cancel all
+      unacked requests but still wait for the soft shutdown process to finish before terminating the worker
+      gracefully. The next time the signal is received though, the worker will terminate immediately by force.
+  
+  So, the purpose of this handler is to allow waiting for the soft shutdown timeout, then cancel all tasks from
+  the MainProcess and let the WorkController.terminate() to terminate the worker naturally. If the soft shutdown
+  is disabled, it will immediately cancel all tasks let the cold shutdown finish normally.
+  
+  Args:
+      worker (Worker): The worker that received the signal.
+  `````
+
+- `def on_SIGINT(worker)`
+  - *Line: 453*
+
+- `def install_worker_restart_handler(worker, sig = 'SIGHUP')`
+  - *Line: 476*
+
+- `def install_cry_handler(sig = 'SIGUSR1')`
+  - *Line: 490*
+
+- `def install_rdb_handler(envvar = 'CELERY_RDBSIG', sig = 'SIGUSR2')`
+  - *Line: 502*
+
+- `def install_HUP_not_supported_handler(worker, sig = 'SIGHUP')`
+  - *Line: 517*
+
+- `def install_worker_int_handler(*args, **kwargs)`
+  - *Line: 465*
+
+- `def restart_worker_sig_handler(*args)`
+  - *Line: 478*
+  - *Signal handler restarting the current python program.*
+
+- `def cry_handler(*args)`
+  - *Line: 495*
+  - *Signal handler logging the stack-trace of all active threads.*
+
+- `def rdb_handler(*args)`
+  - *Line: 505*
+  - *Signal handler setting a rdb breakpoint at the current frame.*
+
+- `def warn_on_HUP_handler(signum, frame)`
+  - *Line: 519*
+
+
+---
+
+`````python
 """Worker command-line program.
 
 This module is the 'program-version' of :mod:`celery.worker`.
@@ -15498,7 +24067,7 @@ from billiard.common import REMAP_SIGTERM
 from billiard.process import current_process
 from kombu.utils.encoding import safe_str
 
-from celery import VERSION_BANNER, platforms, signals
+from celery import VERSION_BANNER, _original_os_write, platforms, signals
 from celery.app import trace
 from celery.loaders.app import AppLoader
 from celery.platforms import EX_FAILURE, EX_OK, check_privileges, isatty
@@ -15559,8 +24128,14 @@ def active_thread_count():
 
 
 def safe_say(msg, f=sys.__stderr__):
+    """
+    Uses the original (unpatched) os.write to avoid issues with eventlet/gevent
+    monkey-patching. When using eventlet>=0.37.0, the patched os.write calls
+    hubs.trampoline() which raises RuntimeError if called from within the
+    hub's event loop (e.g., during signal handling).
+    """
     if hasattr(f, 'fileno') and f.fileno() is not None:
-        os.write(f.fileno(), f'\n{msg}\n'.encode())
+        _original_os_write(f.fileno(), f'\n{msg}\n'.encode())
 
 
 class Worker(WorkController):
@@ -15831,7 +24406,7 @@ def during_soft_shutdown(worker: Worker):
     install_worker_term_hard_handler(worker, sig='SIGQUIT', callback=on_hard_shutdown)
 
     # Cancel all unacked requests and allow the worker to terminate naturally
-    worker.consumer.cancel_all_unacked_requests()
+    worker.consumer.cancel_active_requests()
 
     # We get here if the worker was in the middle of the soft (cold) shutdown process,
     # and the matching signal was received. This can typically happen when the worker is
@@ -15890,11 +24465,19 @@ def on_cold_shutdown(worker: Worker):
     # Initiate soft shutdown process (if enabled and tasks are running)
     worker.wait_for_soft_shutdown()
 
+    # Stop consuming new tasks to prevents requeued messages from being immediately redelivered
+    if worker.consumer.task_consumer:
+        worker.consumer.task_consumer.cancel()
+
     # Cancel all unacked requests and allow the worker to terminate naturally
-    worker.consumer.cancel_all_unacked_requests()
+    worker.consumer.cancel_active_requests()
+
+    from celery.worker import state
+    state.should_terminate = True
 
     # Stop the pool to allow successful tasks call on_success()
-    worker.consumer.pool.stop()
+    if worker.consumer.pool:
+        worker.consumer.pool.stop()
 
 
 # Allow SIGTERM to be remapped to SIGQUIT to initiate cold shutdown instead of warm shutdown using SIGTERM
@@ -15989,15 +24572,113 @@ def install_HUP_not_supported_handler(worker, sig='SIGHUP'):
                      'unstable on this platform!'.format(sig=sig))
     platforms.signals[sig] = warn_on_HUP_handler
 
-```
+`````
 
-### 代码文件: celery\apps\__init__.py
-```python
+--- **end of file: celery/apps/worker.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: celery\backends\arangodb.py
-```python
+
+--- **start of file: celery/apps/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/apps/__init__.py`
+
+
+---
+
+`````python
+
+`````
+
+--- **end of file: celery/apps/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/arangodb.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/arangodb.py`
+
+#### 📝 Module Docstring
+
+`````
+ArangoDb result store backend.
+`````
+
+#### 📦 Imports
+
+- `from datetime import timedelta`
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.url import _parse_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import KeyValueStoreBackend`
+- `from pyArango import connection as py_arango_connection`
+- `from pyArango.theExceptions import AQLQueryError`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ArangoDbBackend(KeyValueStoreBackend)`
+*Line: 23*
+
+**Docstring:**
+`````
+ArangoDb backend.
+
+Sample url
+"arangodb://username:password@host:port/database/collection"
+*arangodb_backend_settings* is where the settings are present
+(in the app.conf)
+Settings should contain the host, port, username, password, database name,
+collection name else the default will be chosen.
+Default database name and collection name is celery.
+
+Raises
+------
+celery.exceptions.ImproperlyConfigured:
+    if module :pypi:`pyArango` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Parse the url or load the settings from settings object.
+  `````
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+- `def cleanup(self)`
+
+**Properties (3):**
+- `@property connection`
+- `@property db`
+- `@property expires_delta`
+
+**Class Variables (9):**
+- `host = '127.0.0.1'`
+- `port = '8529'`
+- `database = 'celery'`
+- `collection = 'celery'`
+- `username = None`
+- `password = None`
+- `http_protocol = 'http'`
+- `verify = False`
+- `key_t = str`
+
+
+---
+
+`````python
 """ArangoDb result store backend."""
 
 # pylint: disable=W1202,W0703
@@ -16189,10 +24870,194 @@ class ArangoDbBackend(KeyValueStoreBackend):
             },
         )
 
-```
+`````
 
-### 代码文件: celery\backends\asynchronous.py
-```python
+--- **end of file: celery/backends/arangodb.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/asynchronous.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/asynchronous.py`
+
+#### 📝 Module Docstring
+
+`````
+Async I/O backend support utilities.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import socket`
+- `import threading`
+- `import time`
+- `from collections import deque`
+- `from contextlib import contextmanager`
+- `from queue import Empty`
+- `from time import sleep`
+- `from weakref import WeakKeyDictionary`
+- `from kombu.utils.compat import detect_environment`
+- `from celery import states`
+- `from celery.exceptions import TimeoutError`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.threads import THREAD_TIMEOUT_MAX`
+- `import eventlet`
+- `from eventlet import sleep`
+- `from eventlet import spawn`
+- `import gevent`
+- `from gevent.event import Event`
+
+#### 🏛️ Classes (7)
+
+##### 📌 `class EventletAdaptedEvent`
+*Line: 35*
+
+**Docstring:**
+`````
+An adapted eventlet event, designed to match the API of `threading.Event` and
+`gevent.event.Event`.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (3):**
+- `def is_set(self)`
+- `def set(self)`
+- `def wait(self, timeout = None)`
+
+##### 📌 `class Drainer`
+*Line: 67*
+
+**Docstring:**
+`````
+Result draining service.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, result_consumer)`
+  - **Parameters:**
+    - `self`
+    - `result_consumer`
+
+**Public Methods (4):**
+- `def start(self)`
+- `def stop(self)`
+- `def drain_events_until(self, p, timeout = None, interval = 1, on_interval = None, wait = None)`
+- `def wait_for(self, p, wait, timeout = None)`
+
+##### 📌 `class greenletDrainer(Drainer)`
+*Line: 115*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def run(self)`
+- `def start(self)`
+- `def stop(self)`
+- `def wait_for(self, p, wait, timeout = None)`
+
+**Class Variables (4):**
+- `spawn = None`
+- `_exc = None`
+- `_g = None`
+- `_drain_complete_event = None`
+
+##### 📌 `class eventletDrainer(greenletDrainer)`
+*Line: 199*
+
+**Public Methods (1):**
+- `def spawn(self, func)`
+
+##### 📌 `class geventDrainer(greenletDrainer)`
+*Line: 212*
+
+**Public Methods (1):**
+- `def spawn(self, func)`
+
+##### 📌 `class AsyncBackendMixin`
+*Line: 225*
+
+**Docstring:**
+`````
+Mixin for backends that enables the async API.
+`````
+
+**Public Methods (6):**
+- `def iter_native(self, result, no_ack = True, **kwargs)`
+- `def add_pending_result(self, result, weak = False, start_drainer = True)`
+- `def add_pending_results(self, results, weak = False)`
+- `def remove_pending_result(self, result)`
+- `def on_result_fulfilled(self, result)`
+- `def wait_for_pending(self, result, callback = None, propagate = True, **kwargs)`
+
+**Properties (1):**
+- `@property is_async`
+
+##### 📌 `class BaseResultConsumer`
+*Line: 316*
+
+**Docstring:**
+`````
+Manager responsible for consuming result messages.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, backend, app, accept, pending_results, pending_messages)`
+  - **Parameters:**
+    - `self`
+    - `backend`
+    - `app`
+    - `accept`
+    - `pending_results`
+    - `pending_messages`
+
+**Public Methods (11):**
+- `def start(self, initial_task_id, **kwargs)`
+- `def reconnect_on_error(self)` `contextmanager`
+  - **Docstring:**
+  `````
+  Context manager that catches connection errors and reconnects.
+  
+  Wraps a block of code so that any :attr:`_connection_errors` raised
+  inside it trigger a call to :meth:`_reconnect`.  If reconnection
+  itself raises a connection error the consumer is considered
+  unrecoverable and a :exc:`RuntimeError` is raised to signal that
+  the Celery application must be restarted.
+  `````
+- `def stop(self)`
+- `def drain_events(self, timeout = None)`
+- `def consume_from(self, task_id)`
+- `def cancel_for(self, task_id)`
+- `def on_after_fork(self)`
+- `def drain_events_until(self, p, timeout = None, on_interval = None)`
+- `def on_wait_for_pending(self, result, timeout = None, **kwargs)`
+- `def on_out_of_band_result(self, message)`
+- `def on_state_change(self, meta, message)`
+
+**Class Variables (1):**
+- `_connection_errors = ()`
+
+#### 🔧 Public Functions (1)
+
+- `def register_drainer(name)`
+  - *Line: 58*
+  - *Decorator used to register a new result drainer type.*
+
+
+---
+
+`````python
 """Async I/O backend support utilities."""
 
 import logging
@@ -16200,6 +25065,7 @@ import socket
 import threading
 import time
 from collections import deque
+from contextlib import contextmanager
 from queue import Empty
 from time import sleep
 from weakref import WeakKeyDictionary
@@ -16208,9 +25074,17 @@ from kombu.utils.compat import detect_environment
 
 from celery import states
 from celery.exceptions import TimeoutError
+from celery.utils.log import get_logger
 from celery.utils.threads import THREAD_TIMEOUT_MAX
 
 E_CELERY_RESTART_REQUIRED = "Celery must be restarted because a shutdown signal was detected."
+
+E_RETRY_LIMIT_EXCEEDED = """
+Retry limit exceeded while trying to reconnect to the Celery result store
+backend. The Celery application must be restarted.
+"""
+
+logger = get_logger(__name__)
 
 __all__ = (
     'AsyncBackendMixin', 'BaseResultConsumer', 'Drainer',
@@ -16274,6 +25148,18 @@ class Drainer:
                 yield self.wait_for(p, wait, timeout=interval)
             except socket.timeout:
                 pass
+            except OSError:
+                # Recoverable connection error (e.g. broker restart).
+                # drain_events handles reconnection internally; if an
+                # OSError still leaks through, we log, sleep for one
+                # interval, and continue rather than spinning hot.
+                logging.warning(
+                    'Drainer: connection error during drain_events, '
+                    'will retry on next loop iteration.',
+                    exc_info=True,
+                )
+                time.sleep(interval)
+
             if on_interval:
                 on_interval()
             if p.ready:  # got event on the wanted channel.
@@ -16314,6 +25200,17 @@ class greenletDrainer(Drainer):
                     self._send_drain_complete_event()
                 except socket.timeout:
                     pass
+                except OSError:
+                    # Recoverable connection errors (e.g. broker restart)
+                    # are handled inside drain_events via reconnection.
+                    # If something still leaks through, we log, back off
+                    # briefly, and retry instead of spinning hot.
+                    logging.warning(
+                        'Drainer: connection error during drain_events, '
+                        'will retry on next loop iteration.',
+                        exc_info=True,
+                    )
+                    time.sleep(1)
         except Exception as e:
             self._exc = e
             raise
@@ -16479,6 +25376,11 @@ class AsyncBackendMixin:
 class BaseResultConsumer:
     """Manager responsible for consuming result messages."""
 
+    #: Tuple of transport-layer exceptions that signal a lost connection.
+    #: Subclasses should override this with the appropriate exception types
+    #: so that :meth:`reconnect_on_error` can catch and recover from them.
+    _connection_errors = ()
+
     def __init__(self, backend, app, accept,
                  pending_results, pending_messages):
         self.backend = backend
@@ -16492,6 +25394,34 @@ class BaseResultConsumer:
 
     def start(self, initial_task_id, **kwargs):
         raise NotImplementedError()
+
+    @contextmanager
+    def reconnect_on_error(self):
+        """Context manager that catches connection errors and reconnects.
+
+        Wraps a block of code so that any :attr:`_connection_errors` raised
+        inside it trigger a call to :meth:`_reconnect`.  If reconnection
+        itself raises a connection error the consumer is considered
+        unrecoverable and a :exc:`RuntimeError` is raised to signal that
+        the Celery application must be restarted.
+        """
+        try:
+            yield
+        except self._connection_errors:
+            try:
+                self._reconnect()
+            except self._connection_errors as exc:
+                logger.critical(E_RETRY_LIMIT_EXCEEDED)
+                raise RuntimeError(E_RETRY_LIMIT_EXCEEDED) from exc
+
+    def _reconnect(self):
+        """Re-establish the backend connection.
+
+        Subclasses must override this method to perform the transport-specific
+        reconnection logic that should be executed when a connection error is
+        caught by :meth:`reconnect_on_error`.
+        """
+        pass
 
     def stop(self):
         pass
@@ -16572,10 +25502,107 @@ class BaseResultConsumer:
                     bucket.append(result)
         sleep(0)
 
-```
+`````
 
-### 代码文件: celery\backends\azureblockblob.py
-```python
+--- **end of file: celery/backends/asynchronous.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/azureblockblob.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/azureblockblob.py`
+
+#### 📝 Module Docstring
+
+`````
+The Azure Storage Block Blob backend for Celery.
+`````
+
+#### 📦 Imports
+
+- `from kombu.transport.azurestoragequeues import Transport as AzureStorageQueuesTransport`
+- `from kombu.utils import cached_property`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `from base import KeyValueStoreBackend`
+- `import azure.storage.blob as azurestorage`
+- `from azure.core.exceptions import ResourceExistsError`
+- `from azure.core.exceptions import ResourceNotFoundError`
+- `from azure.storage.blob import BlobServiceClient`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AzureBlockBlobBackend(KeyValueStoreBackend)`
+*Line: 24*
+
+**Docstring:**
+`````
+Azure Storage Block Blob backend for Celery.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, container_name = None, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Supported URL formats:
+  
+  azureblockblob://CONNECTION_STRING
+  azureblockblob://DefaultAzureCredential@STORAGE_ACCOUNT_URL
+  azureblockblob://ManagedIdentityCredential@STORAGE_ACCOUNT_URL
+  `````
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `container_name = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def get(self, key)`
+  - **Docstring:**
+  `````
+  Read the value stored at the given key.
+  
+  Args:
+        key: The key for which to read the value.
+  `````
+- `def set(self, key, value)`
+  - **Docstring:**
+  `````
+  Store a value for a given key.
+  
+  Args:
+        key: The key at which to store the value.
+        value: The value to store.
+  `````
+- `def mget(self, keys)`
+  - **Docstring:**
+  `````
+  Read all the values for the provided keys.
+  
+  Args:
+        keys: The list of keys to read.
+  `````
+- `def delete(self, key)`
+  - **Docstring:**
+  `````
+  Delete the value at a given key.
+  
+  Args:
+        key: The key of the value to delete.
+  `````
+- `def as_uri(self, include_password = False)`
+
+**Properties (1):**
+- `@property _blob_service_client`
+
+
+---
+
+`````python
 """The Azure Storage Block Blob backend for Celery."""
 from kombu.transport.azurestoragequeues import Transport as AzureStorageQueuesTransport
 from kombu.utils import cached_property
@@ -16765,10 +25792,346 @@ class AzureBlockBlobBackend(KeyValueStoreBackend):
             f'{";".join(redacted_connection_string_parts)}'
         )
 
-```
+`````
 
-### 代码文件: celery\backends\base.py
-```python
+--- **end of file: celery/backends/azureblockblob.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/base.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/base.py`
+
+#### 📝 Module Docstring
+
+`````
+Result backend base classes.
+
+- :class:`BaseBackend` defines the interface.
+
+- :class:`KeyValueStoreBackend` is a common base class
+    using K/V semantics like _get and _put.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `import time`
+- `import warnings`
+- `from collections import namedtuple`
+- `from datetime import timedelta`
+- `from functools import partial`
+- `from weakref import WeakValueDictionary`
+- `from billiard.einfo import ExceptionInfo`
+- `from kombu.serialization import dumps`
+- `from kombu.serialization import loads`
+- `from kombu.serialization import prepare_accept_content`
+- `from kombu.serialization import registry as serializer_registry`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from kombu.utils.url import maybe_sanitize_url`
+- `import celery.exceptions`
+- `from celery import current_app`
+- `from celery import group`
+- `from celery import maybe_signature`
+- `from celery import states`
+- `from celery._state import get_current_task`
+- `from celery.app.task import Context`
+- `from celery.exceptions import BackendGetMetaError`
+- `from celery.exceptions import BackendStoreError`
+- `from celery.exceptions import ChordError`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.exceptions import NotRegistered`
+- `from celery.exceptions import SecurityError`
+- `from celery.exceptions import TaskRevokedError`
+- `from celery.exceptions import TimeoutError`
+- `from celery.result import GroupResult`
+- `from celery.result import ResultBase`
+- `from celery.result import ResultSet`
+- `from celery.result import allow_join_result`
+- `from celery.result import result_from_tuple`
+- `from celery.utils.collections import BufferMap`
+- `from celery.utils.functional import LRUCache`
+- `from celery.utils.functional import arity_greater`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.serialization import create_exception_cls`
+- `from celery.utils.serialization import ensure_serializable`
+- `from celery.utils.serialization import get_pickleable_exception`
+- `from celery.utils.serialization import get_pickled_exception`
+- `from celery.utils.serialization import raise_with_context`
+- `from celery.utils.time import get_exponential_backoff_interval`
+
+#### 🏛️ Classes (7)
+
+##### 📌 `class _nulldict(dict)`
+*Line: 95*
+
+**Public Methods (1):**
+- `def ignore(self, *a, **kw)`
+
+**Class Variables (3):**
+- `__setitem__ = ignore`
+- `update = ignore`
+- `setdefault = ignore`
+
+##### 📌 `class Backend`
+*Line: 108*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, serializer = None, max_cached_results = None, accept = None, expires = None, expires_type = None, url = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `serializer = None`
+    - `max_cached_results = None`
+    - `accept = None`
+    - `expires = None`
+    - `expires_type = None`
+    - `url = None`
+    - `**kwargs`
+
+**Public Methods (45):**
+- `def as_uri(self, include_password = False)`
+  - *Return the backend as an URI, sanitizing the password or not.*
+- `def mark_as_started(self, task_id, **meta)`
+  - *Mark a task as started.*
+- `def mark_as_done(self, task_id, result, request = None, store_result = True, state = states.SUCCESS)`
+  - *Mark task as successfully executed.*
+- `def mark_as_failure(self, task_id, exc, traceback = None, request = None, store_result = True, call_errbacks = True, state = states.FAILURE)`
+  - *Mark task as executed with failure.*
+- `def mark_as_revoked(self, task_id, reason = '', request = None, store_result = True, state = states.REVOKED)`
+- `def mark_as_retry(self, task_id, exc, traceback = None, request = None, store_result = True, state = states.RETRY)`
+  - **Docstring:**
+  `````
+  Mark task as being retries.
+  
+  Note:
+      Stores the current exception (if any).
+  `````
+- `def chord_error_from_stack(self, callback, exc = None)`
+- `def fail_from_current_stack(self, task_id, exc = None)`
+- `def prepare_exception(self, exc, serializer = None)`
+  - *Prepare exception for serialization.*
+- `def exception_to_python(self, exc)`
+  - *Convert serialized exception to Python exception.*
+- `def prepare_value(self, result)`
+  - *Prepare value for storage.*
+- `def encode(self, data)`
+- `def meta_from_decoded(self, meta)`
+- `def decode_result(self, payload)`
+- `def decode(self, payload)`
+- `def prepare_expires(self, value, type = None)`
+- `def prepare_persistent(self, enabled = None)`
+- `def encode_result(self, result, state)`
+- `def is_cached(self, task_id)`
+- `def store_result(self, task_id, result, state, traceback = None, request = None, **kwargs)`
+  - **Docstring:**
+  `````
+  Update task state and result.
+  
+  if always_retry_backend_operation is activated, in the event of a recoverable exception,
+  then retry operation with an exponential backoff until a limit has been reached.
+  `````
+- `def forget(self, task_id)`
+- `def get_state(self, task_id)`
+  - *Get the state of a task.*
+- `def get_traceback(self, task_id)`
+  - *Get the traceback for a failed task.*
+- `def get_result(self, task_id)`
+  - *Get the result of a task.*
+- `def get_children(self, task_id)`
+  - *Get the list of subtasks sent by a task.*
+- `def exception_safe_to_retry(self, exc)`
+  - **Docstring:**
+  `````
+  Check if an exception is safe to retry.
+  
+  Backends have to overload this method with correct predicates dealing with their exceptions.
+  
+  By default no exception is safe to retry, it's up to backend implementation
+  to define which exceptions are safe.
+  `````
+- `def on_backend_retryable_error(self, exc)`
+  - *Hook called before retrying a recoverable backend exception.*
+- `def get_task_meta(self, task_id, cache = True)`
+  - **Docstring:**
+  `````
+  Get task meta from backend.
+  
+  if always_retry_backend_operation is activated, in the event of a recoverable exception,
+  then retry operation with an exponential backoff until a limit has been reached.
+  `````
+- `def reload_task_result(self, task_id)`
+  - *Reload task result, even if it has been previously fetched.*
+- `def task_result_exists(self, task_id)`
+  - **Docstring:**
+  `````
+  Check if a result exists in the backend for the given task ID.
+  
+  .. versionadded:: 5.7.0
+  
+  Returns:
+      bool: :const:`True` if the backend has a result for the task,
+          :const:`False` otherwise.
+  `````
+- `def reload_group_result(self, group_id)`
+  - *Reload group result, even if it has been previously fetched.*
+- `def get_group_meta(self, group_id, cache = True)`
+- `def restore_group(self, group_id, cache = True)`
+  - *Get the result for a group.*
+- `def save_group(self, group_id, result)`
+  - *Store the result of an executed group.*
+- `def delete_group(self, group_id)`
+- `def cleanup(self)`
+  - *Backend cleanup.*
+- `def process_cleanup(self)`
+  - *Cleanup actions to do at the end of a task worker process.*
+- `def on_task_call(self, producer, task_id)`
+- `def add_to_chord(self, chord_id, result)`
+- `def on_chord_part_return(self, request, state, result, **kwargs)`
+- `def set_chord_size(self, group_id, chord_size)`
+- `def fallback_chord_unlock(self, header_result, body, countdown = 1, **kwargs)`
+- `def ensure_chords_allowed(self)`
+- `def apply_chord(self, header_result_args, body, **kwargs)`
+- `def current_task_children(self, request = None)`
+
+**Class Variables (10):**
+- `READY_STATES = states.READY_STATES`
+- `UNREADY_STATES = states.UNREADY_STATES`
+- `EXCEPTION_STATES = states.EXCEPTION_STATES`
+- `TimeoutError = TimeoutError`
+- `subpolling_interval = None`
+- `supports_native_join = False`
+- `supports_autoexpire = False`
+- `persistent = True`
+- `retry_policy = {'max_retries': 20, 'interval_start': 0, 'interval_step': 1, 'interval_max': 1}`
+- `get_status = get_state`
+
+##### 📌 `class SyncBackendMixin`
+*Line: 855*
+
+**Public Methods (5):**
+- `def iter_native(self, result, timeout = None, interval = 0.5, no_ack = True, on_message = None, on_interval = None)`
+- `def wait_for_pending(self, result, timeout = None, interval = 0.5, no_ack = True, on_message = None, on_interval = None, callback = None, propagate = True)`
+- `def wait_for(self, task_id, timeout = None, interval = 0.5, no_ack = True, on_interval = None)`
+  - **Docstring:**
+  `````
+  Wait for task and return its result.
+  
+  If the task raises an exception, this exception
+  will be re-raised by :func:`wait_for`.
+  
+  Raises:
+      celery.exceptions.TimeoutError:
+          If `timeout` is not :const:`None`, and the operation
+          takes longer than `timeout` seconds.
+  `````
+- `def add_pending_result(self, result, weak = False)`
+- `def remove_pending_result(self, result)`
+
+**Properties (1):**
+- `@property is_async`
+
+##### 📌 `class BaseBackend(Backend, SyncBackendMixin)`
+*Line: 933*
+
+**Docstring:**
+`````
+Base (synchronous) result backend.
+`````
+
+##### 📌 `class BaseKeyValueStoreBackend(Backend)`
+*Line: 940*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (12):**
+- `def get(self, key)`
+- `def mget(self, keys)`
+- `def set(self, key, value)`
+- `def delete(self, key)`
+- `def incr(self, key)`
+- `def expire(self, key, value)`
+- `def get_key_for_task(self, task_id, key = '')`
+  - *Get the cache key for a task by id.*
+- `def get_key_for_group(self, group_id, key = '')`
+  - *Get the cache key for a group by id.*
+- `def get_key_for_chord(self, group_id, key = '')`
+  - *Get the cache key for the chord waiting on group with given id.*
+- `def get_many(self, task_ids, timeout = None, interval = 0.5, no_ack = True, on_message = None, on_interval = None, max_iterations = None, READY_STATES = states.READY_STATES)`
+- `def task_result_exists(self, task_id)`
+  - **Docstring:**
+  `````
+  Check if a result exists in the backend for the given task ID.
+  
+  This overrides the base implementation to directly check for
+  the existence of the key in the store, which is more accurate
+  than checking the status since tasks stored with PENDING status
+  would still be detected.
+  
+  .. versionadded:: 5.7.0
+  
+  Returns:
+      bool: :const:`True` if the backend has a result for the task,
+          :const:`False` otherwise.
+  `````
+- `def on_chord_part_return(self, request, state, result, **kwargs)`
+
+**Class Variables (5):**
+- `key_t = ensure_bytes`
+- `task_keyprefix = 'celery-task-meta-'`
+- `group_keyprefix = 'celery-taskset-meta-'`
+- `chord_keyprefix = 'chord-unlock-'`
+- `implements_incr = False`
+
+##### 📌 `class KeyValueStoreBackend(BaseKeyValueStoreBackend, SyncBackendMixin)`
+*Line: 1235*
+
+**Docstring:**
+`````
+Result backend base class for key/value stores.
+`````
+
+##### 📌 `class DisabledBackend(BaseBackend)`
+*Line: 1239*
+
+**Docstring:**
+`````
+Dummy result backend.
+`````
+
+**Public Methods (3):**
+- `def store_result(self, *args, **kwargs)`
+- `def ensure_chords_allowed(self)`
+- `def as_uri(self, *args, **kwargs)`
+
+**Class Variables (8):**
+- `_cache = {}`
+- `get_state = _is_disabled`
+- `get_status = _is_disabled`
+- `get_result = _is_disabled`
+- `get_traceback = _is_disabled`
+- `get_task_meta_for = _is_disabled`
+- `wait_for = _is_disabled`
+- `get_many = _is_disabled`
+
+#### 🔧 Public Functions (1)
+
+- `def unpickle_backend(cls, args, kwargs)`
+  - *Line: 63*
+  - *Return an unpickled backend.*
+
+
+---
+
+`````python
 """Result backend base classes.
 
 - :class:`BaseBackend` defines the interface.
@@ -17380,6 +26743,44 @@ class Backend:
     def _sleep(self, amount):
         time.sleep(amount)
 
+    def _ensure_retryable(self, func, *args, fallback_exc=None, fallback_msg=None, **kwargs):
+        """Helper to execute a function with the backend's retry policy."""
+        retries = 0
+        while True:
+            try:
+                return func(*args, **kwargs)
+            except Exception as exc:
+                if self.always_retry and self.exception_safe_to_retry(exc):
+                    if retries < self.max_retries:
+                        retries += 1
+                        logger.warning(
+                            'Failed operation %s. Retrying %s more times.',
+                            getattr(func, '__name__', repr(func)), self.max_retries - retries,
+                            exc_info=True)
+                        try:
+                            self.on_backend_retryable_error(exc)
+                        except Exception:
+                            logger.exception(
+                                "on_backend_retryable_error hook failed; continuing retry loop",
+                            )
+
+                        # get_exponential_backoff_interval computes integers
+                        # and time.sleep accept floats for sub second sleep
+                        sleep_amount = get_exponential_backoff_interval(
+                            self.base_sleep_between_retries_ms, retries,
+                            self.max_sleep_between_retries_ms, True) / 1000
+                        self._sleep(sleep_amount)
+                    else:
+                        if fallback_exc:
+                            exc_kwargs = {}
+                            for key in ("task_id", "state"):
+                                if key in kwargs:
+                                    exc_kwargs[key] = kwargs[key]
+                            raise_with_context(fallback_exc(fallback_msg, **exc_kwargs))
+                        raise
+                else:
+                    raise
+
     def store_result(self, task_id, result, state,
                      traceback=None, request=None, **kwargs):
         """Update task state and result.
@@ -17389,34 +26790,22 @@ class Backend:
         """
         result = self.encode_result(result, state)
 
-        retries = 0
+        kwargs.update({'task_id': task_id, 'state': state})
 
-        while True:
-            try:
-                self._store_result(task_id, result, state, traceback,
-                                   request=request, **kwargs)
-                return result
-            except Exception as exc:
-                if self.always_retry and self.exception_safe_to_retry(exc):
-                    if retries < self.max_retries:
-                        retries += 1
-
-                        # get_exponential_backoff_interval computes integers
-                        # and time.sleep accept floats for sub second sleep
-                        sleep_amount = get_exponential_backoff_interval(
-                            self.base_sleep_between_retries_ms, retries,
-                            self.max_sleep_between_retries_ms, True) / 1000
-                        self._sleep(sleep_amount)
-                    else:
-                        raise_with_context(
-                            BackendStoreError("failed to store result on the backend", task_id=task_id, state=state),
-                        )
-                else:
-                    raise
+        self._ensure_retryable(
+            self._store_result,
+            fallback_exc=BackendStoreError,
+            fallback_msg="failed to store result on the backend",
+            result=result,
+            traceback=traceback,
+            request=request,
+            **kwargs
+        )
+        return result
 
     def forget(self, task_id):
         self._cache.pop(task_id, None)
-        self._forget(task_id)
+        self._ensure_retryable(self._forget, task_id=task_id)
 
     def _forget(self, task_id):
         raise NotImplementedError('backend does not implement forget.')
@@ -17460,6 +26849,10 @@ class Backend:
         """
         return False
 
+    def on_backend_retryable_error(self, exc):
+        """Hook called before retrying a recoverable backend exception."""
+        return None
+
     def get_task_meta(self, task_id, cache=True):
         """Get task meta from backend.
 
@@ -17472,28 +26865,13 @@ class Backend:
                 return self._cache[task_id]
             except KeyError:
                 pass
-        retries = 0
-        while True:
-            try:
-                meta = self._get_task_meta_for(task_id)
-                break
-            except Exception as exc:
-                if self.always_retry and self.exception_safe_to_retry(exc):
-                    if retries < self.max_retries:
-                        retries += 1
 
-                        # get_exponential_backoff_interval computes integers
-                        # and time.sleep accept floats for sub second sleep
-                        sleep_amount = get_exponential_backoff_interval(
-                            self.base_sleep_between_retries_ms, retries,
-                            self.max_sleep_between_retries_ms, True) / 1000
-                        self._sleep(sleep_amount)
-                    else:
-                        raise_with_context(
-                            BackendGetMetaError("failed to get meta", task_id=task_id),
-                        )
-                else:
-                    raise
+        meta = self._ensure_retryable(
+            self._get_task_meta_for,
+            fallback_exc=BackendGetMetaError,
+            fallback_msg="failed to get meta",
+            task_id=task_id
+        )
 
         if cache and meta.get('status') == states.SUCCESS:
             self._cache[task_id] = meta
@@ -17502,6 +26880,17 @@ class Backend:
     def reload_task_result(self, task_id):
         """Reload task result, even if it has been previously fetched."""
         self._cache[task_id] = self.get_task_meta(task_id, cache=False)
+
+    def task_result_exists(self, task_id):
+        """Check if a result exists in the backend for the given task ID.
+
+        .. versionadded:: 5.7.0
+
+        Returns:
+            bool: :const:`True` if the backend has a result for the task,
+                :const:`False` otherwise.
+        """
+        return self._get_task_meta_for(task_id)["status"] != states.PENDING
 
     def reload_group_result(self, group_id):
         """Reload group result, even if it has been previously fetched."""
@@ -17515,7 +26904,7 @@ class Backend:
             except KeyError:
                 pass
 
-        meta = self._restore_group(group_id)
+        meta = self._ensure_retryable(self._restore_group, group_id=group_id)
         if cache and meta is not None:
             self._cache[group_id] = meta
         return meta
@@ -17528,11 +26917,15 @@ class Backend:
 
     def save_group(self, group_id, result):
         """Store the result of an executed group."""
-        return self._save_group(group_id, result)
+        return self._ensure_retryable(
+            self._save_group,
+            group_id=group_id,
+            result=result
+        )
 
     def delete_group(self, group_id):
         self._cache.pop(group_id, None)
-        return self._delete_group(group_id)
+        return self._ensure_retryable(self._delete_group, group_id=group_id)
 
     def cleanup(self):
         """Backend cleanup."""
@@ -17869,6 +27262,22 @@ class BaseKeyValueStoreBackend(Backend):
             return {'status': states.PENDING, 'result': None}
         return self.decode_result(meta)
 
+    def task_result_exists(self, task_id):
+        """Check if a result exists in the backend for the given task ID.
+
+        This overrides the base implementation to directly check for
+        the existence of the key in the store, which is more accurate
+        than checking the status since tasks stored with PENDING status
+        would still be detected.
+
+        .. versionadded:: 5.7.0
+
+        Returns:
+            bool: :const:`True` if the backend has a result for the task,
+                :const:`False` otherwise.
+        """
+        return bool(self.get(self.get_key_for_task(task_id)))
+
     def _restore_group(self, group_id):
         """Get task meta-data for a task by id."""
         meta = self.get(self.get_key_for_group(group_id))
@@ -17981,10 +27390,113 @@ class DisabledBackend(BaseBackend):
     get_state = get_status = get_result = get_traceback = _is_disabled
     get_task_meta_for = wait_for = get_many = _is_disabled
 
-```
+`````
 
-### 代码文件: celery\backends\cache.py
-```python
+--- **end of file: celery/backends/base.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/cache.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/cache.py`
+
+#### 📝 Module Docstring
+
+`````
+Memcached and in-memory cache result backend.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from kombu.utils.objects import cached_property`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.functional import LRUCache`
+- `from base import KeyValueStoreBackend`
+- `import pylibmc as memcache`
+- `import memcache`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class DummyClient`
+*Line: 57*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (6):**
+- `def get(self, key, *args, **kwargs)`
+- `def get_multi(self, keys)`
+- `def set(self, key, value, *args, **kwargs)`
+- `def delete(self, key, *args, **kwargs)`
+- `def incr(self, key, delta = 1)`
+- `def touch(self, key, expire)`
+
+##### 📌 `class CacheBackend(KeyValueStoreBackend)`
+*Line: 90*
+
+**Docstring:**
+`````
+Cache result backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, expires = None, backend = None, options = None, url = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `expires = None`
+    - `backend = None`
+    - `options = None`
+    - `url = None`
+    - `**kwargs`
+
+**Public Methods (7):**
+- `def get(self, key)`
+- `def mget(self, keys)`
+- `def set(self, key, value)`
+- `def delete(self, key)`
+- `def incr(self, key)`
+- `def expire(self, key, value)`
+- `def as_uri(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Return the backend as an URI.
+  
+  This properly handles the case of multiple servers.
+  `````
+
+**Properties (1):**
+- `@property client`
+
+**Class Variables (4):**
+- `servers = None`
+- `supports_autoexpire = True`
+- `supports_native_join = True`
+- `implements_incr = True`
+
+#### 🔧 Public Functions (3)
+
+- `def import_best_memcache()`
+  - *Line: 28*
+
+- `def get_best_memcache(*args, **kwargs)`
+  - *Line: 43*
+
+- `def Client(*args, **kwargs)`
+  - *Line: 50*
+
+
+---
+
+`````python
 """Memcached and in-memory cache result backend."""
 from kombu.utils.encoding import bytes_to_str, ensure_bytes
 from kombu.utils.objects import cached_property
@@ -18149,10 +27661,81 @@ class CacheBackend(KeyValueStoreBackend):
         servers = ';'.join(self.servers)
         return f'{self.backend}://{servers}/'
 
-```
+`````
 
-### 代码文件: celery\backends\cassandra.py
-```python
+--- **end of file: celery/backends/cache.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/cassandra.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/cassandra.py`
+
+#### 📝 Module Docstring
+
+`````
+Apache Cassandra result store backend using the DataStax driver.
+`````
+
+#### 📦 Imports
+
+- `import threading`
+- `from celery import states`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `from base import BaseBackend`
+- `import cassandra`
+- `import cassandra.auth`
+- `import cassandra.cluster`
+- `import cassandra.query`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class CassandraBackend(BaseBackend)`
+*Line: 71*
+
+**Docstring:**
+`````
+Cassandra/AstraDB backend utilizing DataStax driver.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`cassandra-driver` is not available,
+        or not-exactly-one of the :setting:`cassandra_servers` and
+        the :setting:`cassandra_secure_bundle_path` settings is set.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, servers = None, keyspace = None, table = None, entry_ttl = None, port = None, bundle_path = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `servers = None`
+    - `keyspace = None`
+    - `table = None`
+    - `entry_ttl = None`
+    - `port = None`
+    - `bundle_path = None`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def as_uri(self, include_password = True)`
+
+**Class Variables (3):**
+- `servers = None`
+- `bundle_path = None`
+- `supports_autoexpire = True`
+
+#### 🔧 Public Functions (1)
+
+- `def buf_t(x)`
+  - *Line: 67*
+
+
+---
+
+`````python
 """Apache Cassandra result store backend using the DataStax driver."""
 import threading
 
@@ -18410,10 +27993,82 @@ class CassandraBackend(BaseBackend):
              'table': self.table})
         return super().__reduce__(args, kwargs)
 
-```
+`````
 
-### 代码文件: celery\backends\consul.py
-```python
+--- **end of file: celery/backends/cassandra.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/consul.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/consul.py`
+
+#### 📝 Module Docstring
+
+`````
+Consul result store backend.
+
+- :class:`ConsulBackend` implements KeyValueStoreBackend to store results
+    in the key-value store of Consul.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.url import parse_url`
+- `from celery.backends.base import KeyValueStoreBackend`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `import consul`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ConsulBackend(KeyValueStoreBackend)`
+*Line: 27*
+
+**Docstring:**
+`````
+Consul.io K/V store backend for Celery.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def client(self)`
+- `def get(self, key)`
+- `def mget(self, keys)`
+- `def set(self, key, value)`
+  - **Docstring:**
+  `````
+  Set a key in Consul.
+  
+  Before creating the key it will create a session inside Consul
+  where it creates a session with a TTL
+  
+  The key created afterwards will reference to the session's ID.
+  
+  If the session expires it will remove the key so that results
+  can auto expire from the K/V store
+  `````
+- `def delete(self, key)`
+
+**Class Variables (4):**
+- `consul = consul`
+- `supports_autoexpire = True`
+- `consistency = 'consistent'`
+- `path = None`
+
+
+---
+
+`````python
 """Consul result store backend.
 
 - :class:`ConsulBackend` implements KeyValueStoreBackend to store results
@@ -18531,10 +28186,107 @@ class ConsulBackend(KeyValueStoreBackend):
         logger.debug('Removing key %s from Consul', key)
         return self.client().kv.delete(key)
 
-```
+`````
 
-### 代码文件: celery\backends\cosmosdbsql.py
-```python
+--- **end of file: celery/backends/consul.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/cosmosdbsql.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/cosmosdbsql.py`
+
+#### 📝 Module Docstring
+
+`````
+The CosmosDB/SQL backend for Celery (experimental).
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils import cached_property`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.url import _parse_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `from base import KeyValueStoreBackend`
+- `import pydocumentdb`
+- `from pydocumentdb.document_client import DocumentClient`
+- `from pydocumentdb.documents import ConnectionPolicy`
+- `from pydocumentdb.documents import ConsistencyLevel`
+- `from pydocumentdb.documents import PartitionKind`
+- `from pydocumentdb.errors import HTTPFailure`
+- `from pydocumentdb.retry_options import RetryOptions`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class CosmosDBSQLBackend(KeyValueStoreBackend)`
+*Line: 30*
+
+**Docstring:**
+`````
+CosmosDB/SQL backend for Celery.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, database_name = None, collection_name = None, consistency_level = None, max_retry_attempts = None, max_retry_wait_time = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `database_name = None`
+    - `collection_name = None`
+    - `consistency_level = None`
+    - `max_retry_attempts = None`
+    - `max_retry_wait_time = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def get(self, key)`
+  - **Docstring:**
+  `````
+  Read the value stored at the given key.
+  
+  Args:
+        key: The key for which to read the value.
+  `````
+- `def set(self, key, value)`
+  - **Docstring:**
+  `````
+  Store a value for a given key.
+  
+  Args:
+        key: The key at which to store the value.
+        value: The value to store.
+  `````
+- `def mget(self, keys)`
+  - **Docstring:**
+  `````
+  Read all the values for the provided keys.
+  
+  Args:
+        keys: The list of keys to read.
+  `````
+- `def delete(self, key)`
+  - **Docstring:**
+  `````
+  Delete the value at a given key.
+  
+  Args:
+        key: The key of the value to delete.
+  `````
+
+**Properties (3):**
+- `@property _client`
+- `@property _database_link`
+- `@property _collection_link`
+
+
+---
+
+`````python
 """The CosmosDB/SQL backend for Celery (experimental)."""
 from kombu.utils import cached_property
 from kombu.utils.encoding import bytes_to_str
@@ -18754,10 +28506,79 @@ class CosmosDBSQLBackend(KeyValueStoreBackend):
             self._get_document_link(key),
             self._get_partition_key(key))
 
-```
+`````
 
-### 代码文件: celery\backends\couchbase.py
-```python
+--- **end of file: celery/backends/cosmosdbsql.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/couchbase.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/couchbase.py`
+
+#### 📝 Module Docstring
+
+`````
+Couchbase result store backend.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.url import _parse_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import KeyValueStoreBackend`
+- `from couchbase.auth import PasswordAuthenticator`
+- `from couchbase.cluster import Cluster`
+- `from couchbase_core._libcouchbase import FMT_AUTO`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class CouchbaseBackend(KeyValueStoreBackend)`
+*Line: 23*
+
+**Docstring:**
+`````
+Couchbase backend.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`couchbase` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+
+**Properties (1):**
+- `@property connection`
+
+**Class Variables (9):**
+- `bucket = 'default'`
+- `host = 'localhost'`
+- `port = 8091`
+- `username = None`
+- `password = None`
+- `quiet = False`
+- `supports_autoexpire = True`
+- `timeout = 2.5`
+- `key_t = str`
+
+
+---
+
+`````python
 """Couchbase result store backend."""
 
 from kombu.utils.url import _parse_url
@@ -18873,10 +28694,75 @@ class CouchbaseBackend(KeyValueStoreBackend):
     def delete(self, key):
         self.connection.remove(key)
 
-```
+`````
 
-### 代码文件: celery\backends\couchdb.py
-```python
+--- **end of file: celery/backends/couchbase.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/couchdb.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/couchdb.py`
+
+#### 📝 Module Docstring
+
+`````
+CouchDB result store backend.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.url import _parse_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import KeyValueStoreBackend`
+- `import pycouchdb`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class CouchBackend(KeyValueStoreBackend)`
+*Line: 21*
+
+**Docstring:**
+`````
+CouchDB backend.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`pycouchdb` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+
+**Properties (1):**
+- `@property connection`
+
+**Class Variables (6):**
+- `container = 'default'`
+- `scheme = 'http'`
+- `host = 'localhost'`
+- `port = 5984`
+- `username = None`
+- `password = None`
+
+
+---
+
+`````python
 """CouchDB result store backend."""
 from kombu.utils.encoding import bytes_to_str
 from kombu.utils.url import _parse_url
@@ -18978,10 +28864,93 @@ class CouchBackend(KeyValueStoreBackend):
         key = bytes_to_str(key)
         self.connection.delete(key)
 
-```
+`````
 
-### 代码文件: celery\backends\dynamodb.py
-```python
+--- **end of file: celery/backends/couchdb.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/dynamodb.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/dynamodb.py`
+
+#### 📝 Module Docstring
+
+`````
+AWS DynamoDB result store backend.
+`````
+
+#### 📦 Imports
+
+- `from collections import namedtuple`
+- `from ipaddress import ip_address`
+- `from time import sleep`
+- `from time import time`
+- `from typing import Any`
+- `from typing import Dict`
+- `from kombu.utils.url import _parse_url as parse_url`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.log import get_logger`
+- `from base import KeyValueStoreBackend`
+- `import boto3`
+- `from botocore.exceptions import ClientError`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class DynamoDBBackend(KeyValueStoreBackend)`
+*Line: 29*
+
+**Docstring:**
+`````
+AWS DynamoDB result backend.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`boto3` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, table_name = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `table_name = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+- `def incr(self, key: bytes) -> int`
+  - *Atomically increase the chord_count and return the new count*
+
+**Properties (1):**
+- `@property client`
+
+**Class Variables (14):**
+- `table_name = 'celery'`
+- `read_capacity_units = 1`
+- `write_capacity_units = 1`
+- `aws_region = None`
+- `endpoint_url = None`
+- `time_to_live_seconds = None`
+- `supports_autoexpire = True`
+- `_key_field = DynamoDBAttribute(name='id', data_type='S')`
+- `_value_field = DynamoDBAttribute(name='result', data_type='B')`
+- `_count_filed = DynamoDBAttribute(name='chord_count', data_type='N')`
+- `_timestamp_field = DynamoDBAttribute(name='timestamp', data_type='N')`
+- `_ttl_field = DynamoDBAttribute(name='ttl', data_type='N')`
+- `_available_fields = None`
+- `implements_incr = True`
+
+
+---
+
+`````python
 """AWS DynamoDB result store backend."""
 from collections import namedtuple
 from ipaddress import ip_address
@@ -19539,10 +29508,86 @@ class DynamoDBBackend(KeyValueStoreBackend):
         return super()._apply_chord_incr(
             header_result_args, body, **kwargs)
 
-```
+`````
 
-### 代码文件: celery\backends\elasticsearch.py
-```python
+--- **end of file: celery/backends/dynamodb.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/elasticsearch.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/elasticsearch.py`
+
+#### 📝 Module Docstring
+
+`````
+Elasticsearch result store backend.
+`````
+
+#### 📦 Imports
+
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.url import _parse_url`
+- `from celery import states`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import KeyValueStoreBackend`
+- `import elasticsearch`
+- `import elastic_transport`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ElasticsearchBackend(KeyValueStoreBackend)`
+*Line: 30*
+
+**Docstring:**
+`````
+Elasticsearch Backend.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`elasticsearch` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (7):**
+- `def exception_safe_to_retry(self, exc)`
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def encode(self, data)`
+- `def decode(self, payload)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+
+**Properties (1):**
+- `@property server`
+
+**Class Variables (10):**
+- `index = 'celery'`
+- `doc_type = None`
+- `scheme = 'http'`
+- `host = 'localhost'`
+- `port = 9200`
+- `username = None`
+- `password = None`
+- `es_retry_on_timeout = False`
+- `es_timeout = 10`
+- `es_max_retries = 3`
+
+
+---
+
+`````python
 """Elasticsearch result store backend."""
 from datetime import datetime, timezone
 
@@ -19827,10 +29872,75 @@ class ElasticsearchBackend(KeyValueStoreBackend):
             self._server = self._get_server()
         return self._server
 
-```
+`````
 
-### 代码文件: celery\backends\filesystem.py
-```python
+--- **end of file: celery/backends/elasticsearch.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/filesystem.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/filesystem.py`
+
+#### 📝 Module Docstring
+
+`````
+File-system result store backend.
+`````
+
+#### 📦 Imports
+
+- `import locale`
+- `import os`
+- `from datetime import datetime`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from celery import uuid`
+- `from celery.backends.base import KeyValueStoreBackend`
+- `from celery.exceptions import ImproperlyConfigured`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class FilesystemBackend(KeyValueStoreBackend)`
+*Line: 25*
+
+**Docstring:**
+`````
+File-system result backend.
+
+Arguments:
+    url (str):  URL to the directory we should use
+    open (Callable): open function to use when opening files
+    unlink (Callable): unlink function to use when deleting files
+    sep (str): directory separator (to join the directory with the key)
+    encoding (str): encoding used on the file-system
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, url = None, open = open, unlink = os.unlink, sep = os.sep, encoding = default_encoding, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `url = None`
+    - `open = open`
+    - `unlink = os.unlink`
+    - `sep = os.sep`
+    - `encoding = default_encoding`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def mget(self, keys)`
+- `def delete(self, key)`
+- `def cleanup(self)`
+  - *Delete expired meta-data.*
+
+
+---
+
+`````python
 """File-system result store backend."""
 import locale
 import os
@@ -19944,10 +30054,123 @@ class FilesystemBackend(KeyValueStoreBackend):
                         self.unlink(path)
                     break
 
-```
+`````
 
-### 代码文件: celery\backends\gcs.py
-```python
+--- **end of file: celery/backends/filesystem.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/gcs.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/gcs.py`
+
+#### 📝 Module Docstring
+
+`````
+Google Cloud Storage result store backend for Celery.
+`````
+
+#### 📦 Imports
+
+- `from concurrent.futures import ThreadPoolExecutor`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from os import getpid`
+- `from threading import RLock`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.functional import dictfilter`
+- `from kombu.utils.url import url_to_parts`
+- `from celery.backends.base import _create_chord_error_with_cause`
+- `from celery.canvas import maybe_signature`
+- `from celery.exceptions import ChordError`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.result import GroupResult`
+- `from celery.result import allow_join_result`
+- `from celery.utils.log import get_logger`
+- `from base import KeyValueStoreBackend`
+- `import requests`
+- `from google.api_core import retry`
+- `from google.api_core.exceptions import Conflict`
+- `from google.api_core.retry import if_exception_type`
+- `from google.cloud import storage`
+- `from google.cloud.storage import Client`
+- `from google.cloud.storage.retry import DEFAULT_RETRY`
+- `from google.cloud import firestore`
+- `from google.cloud import firestore_admin_v1`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class GCSBackendBase(KeyValueStoreBackend)`
+*Line: 43*
+
+**Docstring:**
+`````
+Google Cloud Storage task result backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def delete(self, key)`
+- `def mget(self, keys)`
+
+**Properties (2):**
+- `@property client`
+- `@property bucket`
+
+##### 📌 `class GCSBackend(GCSBackendBase)`
+*Line: 161*
+
+**Docstring:**
+`````
+Google Cloud Storage task result backend.
+
+Uses Firestore for chord ref count.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `**kwargs`
+
+**Public Methods (2):**
+- `def incr(self, key: bytes) -> int`
+- `def on_chord_part_return(self, request, state, result, **kwargs)`
+  - **Docstring:**
+  `````
+  Chord part return callback.
+  
+  Called for each task in the chord.
+  Increments the counter stored in Firestore.
+  If the counter reaches the number of tasks in the chord, the callback
+  is called.
+  If the callback raises an exception, the chord is marked as errored.
+  If the callback returns a value, the chord is marked as successful.
+  `````
+
+**Properties (1):**
+- `@property firestore_client`
+
+**Class Variables (5):**
+- `implements_incr = True`
+- `supports_native_join = True`
+- `_collection_name = 'celery'`
+- `_field_count = 'chord_count'`
+- `_field_expires = 'expires_at'`
+
+
+---
+
+`````python
 """Google Cloud Storage result store backend for Celery."""
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -20303,10 +30526,112 @@ class GCSBackend(GCSBackendBase):
             self._collection_name
         ).document(bytes_to_str(key))
 
-```
+`````
 
-### 代码文件: celery\backends\mongodb.py
-```python
+--- **end of file: celery/backends/gcs.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/mongodb.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/mongodb.py`
+
+#### 📝 Module Docstring
+
+`````
+MongoDB result store backend.
+`````
+
+#### 📦 Imports
+
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from datetime import timezone`
+- `from kombu.exceptions import EncodeError`
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.url import maybe_sanitize_url`
+- `from kombu.utils.url import urlparse`
+- `from celery import states`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import BaseBackend`
+- `import pymongo`
+- `from pymongo import uri_parser`
+- `from pymongo.errors import InvalidDocument`
+- `from bson.binary import Binary`
+- `from pymongo.binary import Binary`
+- `from pymongo import MongoClient`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class MongoBackend(BaseBackend)`
+*Line: 36*
+
+**Docstring:**
+`````
+MongoDB result backend.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`pymongo` is not available.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app = None`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def encode(self, data)`
+- `def decode(self, data)`
+- `def task_result_exists(self, task_id)`
+  - **Docstring:**
+  `````
+  Check if a result exists in MongoDB for the given task ID.
+  
+  .. versionadded:: 5.7.0
+  `````
+- `def cleanup(self)`
+  - *Delete expired meta-data.*
+- `def as_uri(self, include_password = False)`
+  - **Docstring:**
+  `````
+  Return the backend as an URI.
+  
+  Arguments:
+      include_password (bool): Password censored if disabled.
+  `````
+
+**Properties (4):**
+- `@property database`
+- `@property collection`
+- `@property group_collection`
+- `@property expires_delta`
+
+**Class Variables (12):**
+- `mongo_host = None`
+- `host = 'localhost'`
+- `port = 27017`
+- `user = None`
+- `password = None`
+- `database_name = 'celery'`
+- `taskmeta_collection = 'celery_taskmeta'`
+- `groupmeta_collection = 'celery_groupmeta'`
+- `max_pool_size = 10`
+- `options = None`
+- `supports_autoexpire = False`
+- `_connection = None`
+
+##### 📌 `class InvalidDocument(Exception)`
+*Line: 28*
+
+
+---
+
+`````python
 """MongoDB result store backend."""
 from datetime import datetime, timedelta, timezone
 
@@ -20329,6 +30654,7 @@ if pymongo:
         from bson.binary import Binary
     except ImportError:
         from pymongo.binary import Binary
+    from pymongo import uri_parser
     from pymongo.errors import InvalidDocument
 else:                                       # pragma: no cover
     Binary = None
@@ -20382,7 +30708,7 @@ class MongoBackend(BaseBackend):
         if self.url:
             self.url = self._ensure_mongodb_uri_compliance(self.url)
 
-            uri_data = pymongo.uri_parser.parse_uri(self.url)
+            uri_data = uri_parser.parse_uri(self.url)
             # build the hosts list to create a mongo connection
             hostslist = [
                 f'{x[0]}:{x[1]}' for x in uri_data['nodelist']
@@ -20532,6 +30858,13 @@ class MongoBackend(BaseBackend):
             })
         return {'status': states.PENDING, 'result': None}
 
+    def task_result_exists(self, task_id):
+        """Check if a result exists in MongoDB for the given task ID.
+
+        .. versionadded:: 5.7.0
+        """
+        return bool(self.collection.find_one({"_id": task_id}))
+
     def _save_group(self, group_id, result):
         """Save the group result."""
         meta = {
@@ -20641,20 +30974,194 @@ class MongoBackend(BaseBackend):
         uri1, remainder = self.url.split(',', 1)
         return ','.join([maybe_sanitize_url(uri1), remainder])
 
-```
+`````
 
-### 代码文件: celery\backends\redis.py
-```python
+--- **end of file: celery/backends/mongodb.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/redis.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/redis.py`
+
+#### 📝 Module Docstring
+
+`````
+Redis result store backend.
+`````
+
+#### 📦 Imports
+
+- `import time`
+- `from functools import partial`
+- `from ssl import CERT_NONE`
+- `from ssl import CERT_OPTIONAL`
+- `from ssl import CERT_REQUIRED`
+- `from urllib.parse import unquote`
+- `from kombu.utils import symbol_by_name`
+- `from kombu.utils.functional import retry_over_time`
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.url import _parse_url`
+- `from kombu.utils.url import maybe_sanitize_url`
+- `from redis import CredentialProvider`
+- `from celery import states`
+- `from celery._state import task_join_will_block`
+- `from celery.backends.base import _create_chord_error_with_cause`
+- `from celery.canvas import maybe_signature`
+- `from celery.exceptions import BackendStoreError`
+- `from celery.exceptions import ChordError`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.result import GroupResult`
+- `from celery.result import allow_join_result`
+- `from celery.utils.functional import _regen`
+- `from celery.utils.functional import dictfilter`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.time import humanize_seconds`
+- `from asynchronous import AsyncBackendMixin`
+- `from asynchronous import BaseResultConsumer`
+- `from base import BaseKeyValueStoreBackend`
+- `import redis.connection`
+- `from kombu.transport.redis import get_redis_error_classes`
+- `import redis.sentinel`
+- `from celery import __version__`
+- `from redis import DriverInfo`
+- `import redis`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class ResultConsumer(BaseResultConsumer)`
+*Line: 77*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (8):**
+- `def on_after_fork(self)`
+- `def on_state_change(self, meta, message)`
+- `def start(self, initial_task_id, **kwargs)`
+- `def on_wait_for_pending(self, result, **kwargs)`
+- `def stop(self)`
+- `def drain_events(self, timeout = None)`
+- `def consume_from(self, task_id)`
+- `def cancel_for(self, task_id)`
+
+**Class Variables (1):**
+- `_pubsub = None`
+
+##### 📌 `class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin)`
+*Line: 175*
+
+**Docstring:**
+`````
+Redis task result store.
+
+It makes use of the following commands:
+GET, MGET, DEL, INCRBY, EXPIRE, SET, SETEX
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, host = None, port = None, db = None, password = None, max_connections = None, url = None, connection_pool = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `host = None`
+    - `port = None`
+    - `db = None`
+    - `password = None`
+    - `max_connections = None`
+    - `url = None`
+    - `connection_pool = None`
+    - `**kwargs`
+
+**Public Methods (15):**
+- `def exception_safe_to_retry(self, exc)`
+- `def on_task_call(self, producer, task_id)`
+- `def get(self, key)`
+- `def mget(self, keys)`
+- `def ensure(self, fun, args, **policy)`
+- `def on_connection_error(self, max_retries, exc, intervals, retries)`
+- `def set(self, key, value, **retry_policy)`
+- `def forget(self, task_id)`
+- `def delete(self, key)`
+- `def incr(self, key)`
+- `def expire(self, key, value)`
+- `def add_to_chord(self, group_id, result)`
+- `def set_chord_size(self, group_id, chord_size)`
+- `def apply_chord(self, header_result_args, body, **kwargs)`
+- `def on_chord_part_return(self, request, state, result, propagate = None, **kwargs)`
+
+**Properties (5):**
+- `@property retry_policy`
+- `@property _chord_zset`
+- `@property _transport_options`
+- `@property ConnectionPool`
+- `@property client`
+
+**Class Variables (7):**
+- `ResultConsumer = ResultConsumer`
+- `redis = redis`
+- `connection_class_ssl = redis.SSLConnection if redis else None`
+- `max_connections = None`
+- `supports_autoexpire = True`
+- `supports_native_join = True`
+- `_MAX_STR_VALUE_SIZE = 536870912`
+
+##### 📌 `class SentinelBackend(RedisBackend)`
+*Line: 654*
+
+**Docstring:**
+`````
+Redis sentinel task result store.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def as_uri(self, include_password = False)`
+  - *Return the server addresses as URIs, sanitizing the password or not.*
+
+**Class Variables (3):**
+- `_SERVER_URI_SEPARATOR = ';'`
+- `sentinel = getattr(redis, 'sentinel', None)`
+- `connection_class_ssl = SentinelManagedSSLConnection if sentinel else None`
+
+##### 📌 `class SentinelManagedSSLConnection(redis.sentinel.SentinelManagedConnection, redis.SSLConnection)`
+*Line: 643*
+
+**Docstring:**
+`````
+Connect to a Redis server using Sentinel + TLS.
+
+Use Sentinel to identify which Redis server is the current master
+to connect to and when connecting to the Master server, use an
+SSL Connection.
+`````
+
+
+---
+
+`````python
 """Redis result store backend."""
 import time
-from contextlib import contextmanager
 from functools import partial
 from ssl import CERT_NONE, CERT_OPTIONAL, CERT_REQUIRED
 from urllib.parse import unquote
 
+from kombu.utils import symbol_by_name
 from kombu.utils.functional import retry_over_time
 from kombu.utils.objects import cached_property
 from kombu.utils.url import _parse_url, maybe_sanitize_url
+from redis import CredentialProvider
 
 from celery import states
 from celery._state import task_join_will_block
@@ -20717,11 +31224,6 @@ CERT_REQUIRED, CERT_OPTIONAL, or CERT_NONE
 
 E_LOST = 'Connection to Redis lost: Retry (%s/%s) %s.'
 
-E_RETRY_LIMIT_EXCEEDED = """
-Retry limit exceeded while trying to reconnect to the Celery redis result \
-store backend. The Celery application must be restarted.
-"""
-
 logger = get_logger(__name__)
 
 
@@ -20762,23 +31264,14 @@ class ResultConsumer(BaseResultConsumer):
         if self.subscribed_to:
             self._pubsub.subscribe(*self.subscribed_to)
         else:
-            self._pubsub.connection = self._pubsub.connection_pool.get_connection(
-                'pubsub', self._pubsub.shard_hint
-            )
+            self._pubsub.connection = self._pubsub.connection_pool.get_connection()
             # even if there is nothing to subscribe, we should not lose the callback after connecting.
             # The on_connect callback will re-subscribe to any channels we previously subscribed to.
             self._pubsub.connection.register_connect_callback(self._pubsub.on_connect)
 
-    @contextmanager
-    def reconnect_on_error(self):
-        try:
-            yield
-        except self._connection_errors:
-            try:
-                self._ensure(self._reconnect_pubsub, ())
-            except self._connection_errors as e:
-                logger.critical(E_RETRY_LIMIT_EXCEEDED)
-                raise RuntimeError(E_RETRY_LIMIT_EXCEEDED) from e
+    def _reconnect(self):
+        """Re-establish the Redis pub/sub connection with retry."""
+        self._ensure(self._reconnect_pubsub, ())
 
     def _maybe_cancel_ready_task(self, meta):
         if meta['status'] in states.READY_STATES:
@@ -20877,6 +31370,7 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
         retry_on_timeout = _get('redis_retry_on_timeout')
         socket_keepalive = _get('redis_socket_keepalive')
         health_check_interval = _get('redis_backend_health_check_interval')
+        credential_provider = _get('redis_backend_credential_provider')
 
         self.connparams = {
             'host': _get('redis_host') or 'localhost',
@@ -20888,6 +31382,7 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
             'retry_on_timeout': retry_on_timeout or False,
             'socket_connect_timeout':
                 socket_connect_timeout and float(socket_connect_timeout),
+            'client_name': _get('redis_client_name'),
         }
 
         username = _get('redis_username')
@@ -20900,6 +31395,23 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
             # TODO: Include this in connparams' definition once we drop
             #       support for py-redis<3.4.0.
             self.connparams['username'] = username
+
+        if credential_provider:
+            # if credential provider passed as string or query param
+            if isinstance(credential_provider, str):
+                credential_provider_cls = symbol_by_name(credential_provider)
+                credential_provider = credential_provider_cls()
+
+            if not isinstance(credential_provider, CredentialProvider):
+                raise ValueError(
+                    "Credential provider is not an instance of a redis.CredentialProvider or a subclass"
+                )
+
+            self.connparams['credential_provider'] = credential_provider
+
+            # drop username and password if credential provider is configured
+            self.connparams.pop("username", None)
+            self.connparams.pop("password", None)
 
         if health_check_interval:
             self.connparams["health_check_interval"] = health_check_interval
@@ -20943,6 +31455,9 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
             self.connparams['ssl_cert_reqs'] = ssl_cert_reqs
 
         self.url = url
+
+        # Add driver identification for redis-py
+        self._add_driver_info()
 
         self.connection_errors, self.channel_errors = (
             get_redis_error_classes() if get_redis_error_classes
@@ -20997,6 +31512,23 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
         db = db.strip('/') if isinstance(db, str) else db
         connparams['db'] = int(db)
 
+        # credential provider as query string
+        credential_provider = query.pop("credential_provider", None)
+        if credential_provider:
+            if isinstance(credential_provider, str):
+                credential_provider_cls = symbol_by_name(credential_provider)
+                credential_provider = credential_provider_cls()
+
+            if not isinstance(credential_provider, CredentialProvider):
+                raise ValueError(
+                    "Credential provider is not an instance of a redis.CredentialProvider or a subclass"
+                )
+
+            connparams['credential_provider'] = credential_provider
+            # drop username and password if credential provider is configured
+            connparams.pop("username", None)
+            connparams.pop("password", None)
+
         for key, value in query.items():
             if key in redis.connection.URL_QUERY_ARGUMENT_PARSERS:
                 query[key] = redis.connection.URL_QUERY_ARGUMENT_PARSERS[key](
@@ -21006,6 +31538,31 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
         # Query parameters override other parameters
         connparams.update(query)
         return connparams
+
+    def _add_driver_info(self):
+        """Add driver identification to connection parameters.
+
+        Uses DriverInfo class if available, or falls back to
+        lib_name/lib_version for older versions.
+        """
+        from celery import __version__
+
+        # Try to use DriverInfo class
+        try:
+            from redis import DriverInfo
+            driver_info = DriverInfo().add_upstream_driver('celery', __version__)
+            self.connparams['driver_info'] = driver_info
+        except (ImportError, AttributeError):
+            # Fallback: use lib_name/lib_version
+            # Format: lib_name='redis-py(celery_v{version})'
+            self.connparams['lib_name'] = f'redis-py(celery_v{__version__})'
+            # lib_version should be the redis client version
+            try:
+                import redis
+                redis_version = redis.__version__
+            except (ImportError, AttributeError):
+                redis_version = 'unknown'
+            self.connparams['lib_version'] = redis_version
 
     def exception_safe_to_retry(self, exc):
         if isinstance(exc, self.connection_errors):
@@ -21149,7 +31706,7 @@ class RedisBackend(BaseKeyValueStoreBackend, AsyncBackendMixin):
                 callback = maybe_signature(request.chord, app=app)
                 total = int(chord_size_bytes) + totaldiff
                 if readycount == total:
-                    header_result = GroupResult.restore(gid)
+                    header_result = GroupResult.restore(gid, app=app)
                     if header_result is not None:
                         # If we manage to restore a `GroupResult`, then it must
                         # have been complex and saved by `apply_chord()` earlier.
@@ -21292,8 +31849,8 @@ class SentinelBackend(RedisBackend):
         for param in ("host", "port", "db", "password"):
             connparams.pop(param)
 
-        # Adding db/password in connparams to connect to the correct instance
-        for param in ("db", "password"):
+        # Adding db/password/username in connparams to connect to the correct instance
+        for param in ("db", "password", "username"):
             if connparams['hosts'] and param in connparams['hosts'][0]:
                 connparams[param] = connparams['hosts'][0].get(param)
         return connparams
@@ -21318,19 +31875,156 @@ class SentinelBackend(RedisBackend):
 
         master_name = self._transport_options.get("master_name", None)
 
+        credentials = {
+            k: params[k] for k in ("username", "password") if k in params
+        }
+
         return sentinel_instance.master_for(
             service_name=master_name,
             redis_class=self._get_client(),
+            **credentials,
         ).connection_pool
 
-```
+`````
 
-### 代码文件: celery\backends\rpc.py
-```python
+--- **end of file: celery/backends/redis.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/rpc.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/rpc.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``RPC`` result backend for AMQP brokers.
+
+RPC-style result backend, using reply-to and one queue per client.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import time`
+- `import kombu`
+- `from kombu.common import maybe_declare`
+- `from kombu.utils.compat import register_after_fork`
+- `from kombu.utils.objects import cached_property`
+- `from celery import states`
+- `from celery._state import current_task`
+- `from celery._state import task_join_will_block`
+- `from  import base`
+- `from asynchronous import AsyncBackendMixin`
+- `from asynchronous import BaseResultConsumer`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class BacklogLimitExceeded(Exception)`
+*Line: 33*
+
+**Docstring:**
+`````
+Too much state history to fast-forward.
+`````
+
+##### 📌 `class ResultConsumer(BaseResultConsumer)`
+*Line: 41*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (6):**
+- `def start(self, initial_task_id, no_ack = True, **kwargs)`
+- `def drain_events(self, timeout = None)`
+- `def stop(self)`
+- `def on_after_fork(self)`
+- `def consume_from(self, task_id)`
+- `def cancel_for(self, task_id)`
+
+**Class Variables (4):**
+- `Consumer = kombu.Consumer`
+- `_connection = None`
+- `_consumer = None`
+- `_no_ack = True`
+
+##### 📌 `class RPCBackend(base.Backend, AsyncBackendMixin)`
+*Line: 147*
+
+**Docstring:**
+`````
+Base class for the RPC result backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, connection = None, exchange = None, exchange_type = None, persistent = None, serializer = None, auto_delete = True, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `connection = None`
+    - `exchange = None`
+    - `exchange_type = None`
+    - `persistent = None`
+    - `serializer = None`
+    - `auto_delete = True`
+    - `**kwargs`
+
+**Public Methods (15):**
+- `def ensure_chords_allowed(self)`
+- `def on_task_call(self, producer, task_id)`
+- `def destination_for(self, task_id, request)`
+  - **Docstring:**
+  `````
+  Get the destination for result by task id.
+  
+  Returns:
+      Tuple[str, str]: tuple of ``(reply_to, correlation_id)``.
+  `````
+- `def on_reply_declare(self, task_id)`
+- `def on_result_fulfilled(self, result)`
+- `def as_uri(self, include_password = True)`
+- `def store_result(self, task_id, result, state, traceback = None, request = None, **kwargs)`
+  - *Send task return value and state.*
+- `def on_out_of_band_result(self, task_id, message)`
+- `def get_task_meta(self, task_id, backlog_limit = 1000)`
+- `def revive(self, channel)`
+- `def reload_task_result(self, task_id)`
+- `def reload_group_result(self, task_id)`
+  - *Reload group result, even if it has been previously fetched.*
+- `def save_group(self, group_id, result)`
+- `def restore_group(self, group_id, cache = True)`
+- `def delete_group(self, group_id)`
+
+**Properties (2):**
+- `@property binding`
+- `@property oid`
+
+**Class Variables (9):**
+- `Exchange = kombu.Exchange`
+- `Producer = kombu.Producer`
+- `ResultConsumer = ResultConsumer`
+- `BacklogLimitExceeded = BacklogLimitExceeded`
+- `persistent = False`
+- `supports_autoexpire = True`
+- `supports_native_join = True`
+- `retry_policy = {'max_retries': 20, 'interval_start': 0, 'interval_step': 1, 'interval_max': 1}`
+- `poll = get_task_meta`
+
+
+---
+
+`````python
 """The ``RPC`` result backend for AMQP brokers.
 
 RPC-style result backend, using reply-to and one queue per client.
 """
+import logging
 import time
 
 import kombu
@@ -21345,6 +32039,8 @@ from . import base
 from .asynchronous import AsyncBackendMixin, BaseResultConsumer
 
 __all__ = ('BacklogLimitExceeded', 'RPCBackend')
+
+logger = logging.getLogger(__name__)
 
 E_NO_CHORD_SUPPORT = """
 The "rpc" result backend does not support chords!
@@ -21369,13 +32065,19 @@ class ResultConsumer(BaseResultConsumer):
 
     _connection = None
     _consumer = None
+    _no_ack = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._create_binding = self.backend._create_binding
 
     def start(self, initial_task_id, no_ack=True, **kwargs):
+        self._no_ack = no_ack
         self._connection = self.app.connection()
+        self._connection_errors = (
+            self._connection.connection_errors
+            + self._connection.channel_errors
+        )
         initial_queue = self._create_binding(initial_task_id)
         self._consumer = self.Consumer(
             self._connection.default_channel, [initial_queue],
@@ -21385,9 +32087,59 @@ class ResultConsumer(BaseResultConsumer):
 
     def drain_events(self, timeout=None):
         if self._connection:
-            return self._connection.drain_events(timeout=timeout)
+            with self.reconnect_on_error():
+                return self._connection.drain_events(timeout=timeout)
         elif timeout:
             time.sleep(timeout)
+
+    def _reconnect(self):
+        """Close the stale connection and rebuild the consumer.
+
+        Re-subscribes to every queue that the old consumer was listening on
+        so that pending results can still be drained.
+        """
+        logger.warning(
+            'RPC result consumer: connection lost, attempting to reconnect...',
+            exc_info=True,
+        )
+        old_queues = []
+        if self._consumer is not None:
+            old_queues = list(self._consumer.queues)
+            try:
+                self._consumer.cancel()
+            except Exception:
+                logger.debug(
+                    'RPC result consumer: error while cancelling stale '
+                    'consumer during reconnect',
+                    exc_info=True,
+                )
+
+        if self._connection is not None:
+            try:
+                self._connection.close()
+            except Exception:
+                logger.debug(
+                    'RPC result consumer: error while closing stale '
+                    'connection during reconnect',
+                    exc_info=True,
+                )
+            self._connection = None
+
+        # Establish a fresh connection and consumer.
+        self._connection = self.app.connection()
+        self._connection_errors = (
+            self._connection.connection_errors
+            + self._connection.channel_errors
+        )
+        self._consumer = self.Consumer(
+            self._connection.default_channel,
+            old_queues,
+            callbacks=[self.on_state_change],
+            no_ack=self._no_ack,
+            accept=self.accept,
+        )
+        self._consumer.consume()
+        logger.info('RPC result consumer: reconnected successfully.')
 
     def stop(self):
         try:
@@ -21670,10 +32422,64 @@ class RPCBackend(base.Backend, AsyncBackendMixin):
         # cached here is the app thread OID: name of queue we receive results on.
         return self.app.thread_oid
 
-```
+`````
 
-### 代码文件: celery\backends\s3.py
-```python
+--- **end of file: celery/backends/rpc.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/s3.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/s3.py`
+
+#### 📝 Module Docstring
+
+`````
+s3 result store backend.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.encoding import bytes_to_str`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from base import KeyValueStoreBackend`
+- `import boto3`
+- `import botocore`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class S3Backend(KeyValueStoreBackend)`
+*Line: 20*
+
+**Docstring:**
+`````
+An S3 task result store.
+
+Raises:
+    celery.exceptions.ImproperlyConfigured:
+        if module :pypi:`boto3` is not available,
+        if the :setting:`aws_access_key_id` or
+        setting:`aws_secret_access_key` are not set,
+        or it the :setting:`bucket` is not set.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def get(self, key)`
+- `def set(self, key, value)`
+- `def delete(self, key)`
+
+
+---
+
+`````python
 """s3 result store backend."""
 
 from kombu.utils.encoding import bytes_to_str
@@ -21708,7 +32514,7 @@ class S3Backend(KeyValueStoreBackend):
         super().__init__(**kwargs)
 
         if not boto3 or not botocore:
-            raise ImproperlyConfigured('You must install boto3'
+            raise ImproperlyConfigured('You must install boto3 '
                                        'to use s3 backend')
         conf = self.app.conf
 
@@ -21762,16 +32568,139 @@ class S3Backend(KeyValueStoreBackend):
             raise ImproperlyConfigured('Missing aws s3 creds')
         return session.resource('s3', endpoint_url=self.endpoint_url)
 
-```
+`````
 
-### 代码文件: celery\backends\__init__.py
-```python
+--- **end of file: celery/backends/s3.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Result Backends.
+`````
+
+
+---
+
+`````python
 """Result Backends."""
 
-```
+`````
 
-### 代码文件: celery\backends\database\models.py
-```python
+--- **end of file: celery/backends/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/database/models.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/database/models.py`
+
+#### 📝 Module Docstring
+
+`````
+Database models used by the SQLAlchemy result store backend.
+`````
+
+#### 📦 Imports
+
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `import sqlalchemy as sa`
+- `from sqlalchemy.types import PickleType`
+- `from celery import states`
+- `from session import ResultModelBase`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Task(ResultModelBase)`
+*Line: 27*
+
+**Docstring:**
+`````
+Task result/status.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, task_id)`
+  - **Parameters:**
+    - `self`
+    - `task_id`
+
+**Public Methods (2):**
+- `def to_dict(self)`
+- `def configure(cls, schema = None, name = None)` `classmethod`
+
+**Class Variables (8):**
+- `__tablename__ = 'celery_taskmeta'`
+- `__table_args__ = {'sqlite_autoincrement': True}`
+- `id = sa.Column(DialectSpecificInteger, sa.Sequence('task_id_sequence'), primary_key=True, autoincrement=True)`
+- `task_id = sa.Column(sa.String(155), unique=True)`
+- `status = sa.Column(sa.String(50), default=states.PENDING)`
+- `result = sa.Column(PickleType, nullable=True)`
+- `date_done = sa.Column(sa.DateTime, default=_get_utc_now, onupdate=_get_utc_now, nullable=True, index=True)`
+- `traceback = sa.Column(sa.Text, nullable=True)`
+
+##### 📌 `class TaskExtended(Task)`
+*Line: 64*
+
+**Docstring:**
+`````
+For the extend result.
+`````
+
+**Public Methods (1):**
+- `def to_dict(self)`
+
+**Class Variables (8):**
+- `__tablename__ = 'celery_taskmeta'`
+- `__table_args__ = {'sqlite_autoincrement': True, 'extend_existing': True}`
+- `name = sa.Column(sa.String(155), nullable=True)`
+- `args = sa.Column(sa.LargeBinary, nullable=True)`
+- `kwargs = sa.Column(sa.LargeBinary, nullable=True)`
+- `worker = sa.Column(sa.String(155), nullable=True)`
+- `retries = sa.Column(sa.Integer, nullable=True)`
+- `queue = sa.Column(sa.String(155), nullable=True)`
+
+##### 📌 `class TaskSet(ResultModelBase)`
+*Line: 90*
+
+**Docstring:**
+`````
+TaskSet result.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, taskset_id, result)`
+  - **Parameters:**
+    - `self`
+    - `taskset_id`
+    - `result`
+
+**Public Methods (2):**
+- `def to_dict(self)`
+- `def configure(cls, schema = None, name = None)` `classmethod`
+
+**Class Variables (6):**
+- `__tablename__ = 'celery_tasksetmeta'`
+- `__table_args__ = {'sqlite_autoincrement': True}`
+- `id = sa.Column(DialectSpecificInteger, sa.Sequence('taskset_id_sequence'), autoincrement=True, primary_key=True)`
+- `taskset_id = sa.Column(sa.String(155), unique=True)`
+- `result = sa.Column(PickleType, nullable=True)`
+- `date_done = sa.Column(sa.DateTime, default=_get_utc_now, nullable=True, index=True)`
+
+
+---
+
+`````python
 """Database models used by the SQLAlchemy result store backend."""
 from datetime import datetime, timezone
 
@@ -21785,19 +32714,32 @@ from .session import ResultModelBase
 __all__ = ('Task', 'TaskExtended', 'TaskSet')
 
 
+DialectSpecificInteger = sa.Integer().with_variant(sa.BigInteger, 'mssql')
+
+
+def _get_utc_now():
+    """Return current UTC datetime.
+
+    This helper is used as a callable for SQLAlchemy column defaults
+    to ensure the timestamp is evaluated at INSERT/UPDATE time,
+    not at module import time.
+    """
+    return datetime.now(timezone.utc)
+
+
 class Task(ResultModelBase):
     """Task result/status."""
 
     __tablename__ = 'celery_taskmeta'
     __table_args__ = {'sqlite_autoincrement': True}
 
-    id = sa.Column(sa.Integer, sa.Sequence('task_id_sequence'),
+    id = sa.Column(DialectSpecificInteger, sa.Sequence('task_id_sequence'),
                    primary_key=True, autoincrement=True)
     task_id = sa.Column(sa.String(155), unique=True)
     status = sa.Column(sa.String(50), default=states.PENDING)
     result = sa.Column(PickleType, nullable=True)
-    date_done = sa.Column(sa.DateTime, default=datetime.now(timezone.utc),
-                          onupdate=datetime.now(timezone.utc), nullable=True)
+    date_done = sa.Column(sa.DateTime, default=_get_utc_now,
+                          onupdate=_get_utc_now, nullable=True, index=True)
     traceback = sa.Column(sa.Text, nullable=True)
 
     def __init__(self, task_id):
@@ -21854,12 +32796,12 @@ class TaskSet(ResultModelBase):
     __tablename__ = 'celery_tasksetmeta'
     __table_args__ = {'sqlite_autoincrement': True}
 
-    id = sa.Column(sa.Integer, sa.Sequence('taskset_id_sequence'),
+    id = sa.Column(DialectSpecificInteger, sa.Sequence('taskset_id_sequence'),
                    autoincrement=True, primary_key=True)
     taskset_id = sa.Column(sa.String(155), unique=True)
     result = sa.Column(PickleType, nullable=True)
-    date_done = sa.Column(sa.DateTime, default=datetime.now(timezone.utc),
-                          nullable=True)
+    date_done = sa.Column(sa.DateTime, default=_get_utc_now,
+                          nullable=True, index=True)
 
     def __init__(self, taskset_id, result):
         self.taskset_id = taskset_id
@@ -21881,10 +32823,63 @@ class TaskSet(ResultModelBase):
         cls.id.default.schema = schema
         cls.__table__.name = name or cls.__tablename__
 
-```
+`````
 
-### 代码文件: celery\backends\database\session.py
-```python
+--- **end of file: celery/backends/database/models.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/database/session.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/database/session.py`
+
+#### 📝 Module Docstring
+
+`````
+SQLAlchemy session.
+`````
+
+#### 📦 Imports
+
+- `import time`
+- `from kombu.utils.compat import register_after_fork`
+- `from sqlalchemy import create_engine`
+- `from sqlalchemy.exc import DatabaseError`
+- `from sqlalchemy.orm import sessionmaker`
+- `from sqlalchemy.pool import NullPool`
+- `from celery.utils.time import get_exponential_backoff_interval`
+- `from sqlalchemy.orm import declarative_base`
+- `from sqlalchemy.ext.declarative import declarative_base`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class SessionManager`
+*Line: 29*
+
+**Docstring:**
+`````
+Manage SQLAlchemy sessions.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (5):**
+- `def get_engine(self, dburi, **kwargs)`
+- `def create_session(self, dburi, short_lived_sessions = False, **kwargs)`
+- `def invalidate(self, dburi)`
+  - *Dispose cached engine/session state for a database URI.*
+- `def prepare_models(self, engine)`
+- `def session_factory(self, dburi, **kwargs)`
+
+
+---
+
+`````python
 """SQLAlchemy session."""
 import time
 
@@ -21935,8 +32930,11 @@ class SessionManager:
                 engine = self._engines[dburi] = create_engine(dburi, **kwargs)
                 return engine
         else:
-            kwargs = {k: v for k, v in kwargs.items() if
-                      not k.startswith('pool')}
+            unsupported_nullpool_kwargs = {'max_overflow', 'echo_pool'}
+            kwargs = {
+                k: v for k, v in kwargs.items()
+                if not k.startswith('pool') and k not in unsupported_nullpool_kwargs
+            }
             return create_engine(dburi, poolclass=NullPool, **kwargs)
 
     def create_session(self, dburi, short_lived_sessions=False, **kwargs):
@@ -21946,6 +32944,13 @@ class SessionManager:
                 self._sessions[dburi] = sessionmaker(bind=engine)
             return engine, self._sessions[dburi]
         return engine, sessionmaker(bind=engine)
+
+    def invalidate(self, dburi):
+        """Dispose cached engine/session state for a database URI."""
+        self._sessions.pop(dburi, None)
+        engine = self._engines.pop(dburi, None)
+        if engine is not None:
+            engine.dispose()
 
     def prepare_models(self, engine):
         if not self.prepared:
@@ -21975,15 +32980,94 @@ class SessionManager:
         self.prepare_models(engine)
         return session()
 
-```
+`````
 
-### 代码文件: celery\backends\database\__init__.py
-```python
+--- **end of file: celery/backends/database/session.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/backends/database/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/backends/database/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+SQLAlchemy result store backend.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `from contextlib import contextmanager`
+- `from celery import states`
+- `from celery.backends.base import BaseBackend`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.time import maybe_timedelta`
+- `from models import Task`
+- `from models import TaskExtended`
+- `from models import TaskSet`
+- `from session import SessionManager`
+- `from sqlalchemy.exc import DatabaseError`
+- `from sqlalchemy.exc import InterfaceError`
+- `from sqlalchemy.exc import InvalidRequestError`
+- `from sqlalchemy.orm.exc import StaleDataError`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class DatabaseBackend(BaseBackend)`
+*Line: 44*
+
+**Docstring:**
+`````
+The database result backend.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, dburi = None, engine_options = None, url = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `dburi = None`
+    - `engine_options = None`
+    - `url = None`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def exception_safe_to_retry(self, exc)`
+- `def on_backend_retryable_error(self, exc)`
+- `def ResultSession(self, session_manager = None)`
+- `def task_result_exists(self, task_id)`
+  - **Docstring:**
+  `````
+  Check if a result exists in the database for the given task ID.
+  
+  .. versionadded:: 5.7.0
+  `````
+- `def cleanup(self)`
+  - *Delete expired meta-data.*
+
+**Properties (1):**
+- `@property extended_result`
+
+**Class Variables (3):**
+- `subpolling_interval = 0.5`
+- `task_cls = Task`
+- `taskset_cls = TaskSet`
+
+#### 🔧 Public Functions (1)
+
+- `def session_cleanup(session)` `contextmanager`
+  - *Line: 34*
+
+
+---
+
+`````python
 """SQLAlchemy result store backend."""
 import logging
 from contextlib import contextmanager
-
-from vine.utils import wraps
 
 from celery import states
 from celery.backends.base import BaseBackend
@@ -21994,7 +33078,7 @@ from .models import Task, TaskExtended, TaskSet
 from .session import SessionManager
 
 try:
-    from sqlalchemy.exc import DatabaseError, InvalidRequestError
+    from sqlalchemy.exc import DatabaseError, InterfaceError, InvalidRequestError
     from sqlalchemy.orm.exc import StaleDataError
 except ImportError:
     raise ImproperlyConfigured(
@@ -22004,6 +33088,13 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 __all__ = ('DatabaseBackend',)
+
+RETRYABLE_DB_ERRORS = (
+    DatabaseError,
+    InterfaceError,
+    InvalidRequestError,
+    StaleDataError,
+)
 
 
 @contextmanager
@@ -22015,26 +33106,6 @@ def session_cleanup(session):
         raise
     finally:
         session.close()
-
-
-def retry(fun):
-
-    @wraps(fun)
-    def _inner(*args, **kwargs):
-        max_retries = kwargs.pop('max_retries', 3)
-
-        for retries in range(max_retries):
-            try:
-                return fun(*args, **kwargs)
-            except (DatabaseError, InvalidRequestError, StaleDataError):
-                logger.warning(
-                    'Failed operation %s.  Retrying %s more times.',
-                    fun.__name__, max_retries - retries - 1,
-                    exc_info=True)
-                if retries + 1 >= max_retries:
-                    raise
-
-    return _inner
 
 
 class DatabaseBackend(BaseBackend):
@@ -22054,13 +33125,24 @@ class DatabaseBackend(BaseBackend):
                          url=url, **kwargs)
         conf = self.app.conf
 
+        # Override retry defaults to preserve backward compatibility.
+        # Previously, DatabaseBackend used a custom @retry decorator that always
+        # retried with max_retries=3. We maintain this behavior by default.
+        self.always_retry = conf.get('result_backend_always_retry', True)
+        self.max_retries = conf.get('result_backend_max_retries', 3)
+
         if self.extended_result:
             self.task_cls = TaskExtended
 
         self.url = url or dburi or conf.database_url
+
+        # Merge engine options: defaults from config <- constructor overrides
+        # The defaults (pool_pre_ping=True, pool_recycle=3600) are defined in
+        # celery/app/defaults.py under database_engine_options
         self.engine_options = dict(
-            engine_options or {},
-            **conf.database_engine_options or {})
+            conf.database_engine_options or {},
+            **(engine_options or {})
+        )
         self.short_lived_sessions = kwargs.get(
             'short_lived_sessions',
             conf.database_short_lived_sessions)
@@ -22089,6 +33171,12 @@ class DatabaseBackend(BaseBackend):
     def extended_result(self):
         return self.app.conf.find_value_for_key('extended', 'result')
 
+    def exception_safe_to_retry(self, exc):
+        return isinstance(exc, RETRYABLE_DB_ERRORS)
+
+    def on_backend_retryable_error(self, exc):
+        self.session_manager.invalidate(self.url)
+
     def _create_tables(self):
         """Create the task and taskset tables."""
         self.ResultSession()
@@ -22101,7 +33189,6 @@ class DatabaseBackend(BaseBackend):
             short_lived_sessions=self.short_lived_sessions,
             **self.engine_options)
 
-    @retry
     def _store_result(self, task_id, result, state, traceback=None,
                       request=None, **kwargs):
         """Store return value and state of an executed task."""
@@ -22137,7 +33224,6 @@ class DatabaseBackend(BaseBackend):
             value = meta.get(column)
             setattr(task, column, value)
 
-    @retry
     def _get_task_meta_for(self, task_id):
         """Get task meta-data for a task by id."""
         session = self.ResultSession()
@@ -22155,7 +33241,17 @@ class DatabaseBackend(BaseBackend):
                 data['kwargs'] = self.decode(data['kwargs'])
             return self.meta_from_decoded(data)
 
-    @retry
+    def task_result_exists(self, task_id):
+        """Check if a result exists in the database for the given task ID.
+
+        .. versionadded:: 5.7.0
+        """
+        session = self.ResultSession()
+        with session_cleanup(session):
+            return session.query(self.task_cls).filter(
+                self.task_cls.task_id == task_id
+            ).first() is not None
+
     def _save_group(self, group_id, result):
         """Store the result of an executed group."""
         session = self.ResultSession()
@@ -22166,7 +33262,6 @@ class DatabaseBackend(BaseBackend):
             session.commit()
             return result
 
-    @retry
     def _restore_group(self, group_id):
         """Get meta-data for group by id."""
         session = self.ResultSession()
@@ -22176,7 +33271,6 @@ class DatabaseBackend(BaseBackend):
             if group:
                 return group.to_dict()
 
-    @retry
     def _delete_group(self, group_id):
         """Delete meta-data for group by id."""
         session = self.ResultSession()
@@ -22186,7 +33280,6 @@ class DatabaseBackend(BaseBackend):
             session.flush()
             session.commit()
 
-    @retry
     def _forget(self, task_id):
         """Forget about result."""
         session = self.ResultSession()
@@ -22214,10 +33307,99 @@ class DatabaseBackend(BaseBackend):
              'engine_options': self.engine_options})
         return super().__reduce__(args, kwargs)
 
-```
+`````
 
-### 代码文件: celery\bin\amqp.py
-```python
+--- **end of file: celery/backends/database/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/amqp.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/amqp.py`
+
+#### 📝 Module Docstring
+
+`````
+AMQP 0.9.1 REPL.
+`````
+
+#### 📦 Imports
+
+- `import pprint`
+- `import click`
+- `from amqp import Connection`
+- `from amqp import Message`
+- `from click_repl import register_repl`
+- `from celery.bin.base import handle_preload_options`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AMQPContext`
+*Line: 22*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, cli_context)`
+  - **Parameters:**
+    - `self`
+    - `cli_context`
+
+**Public Methods (4):**
+- `def respond(self, retval)`
+- `def echo_error(self, exception)`
+- `def echo_ok(self)`
+- `def reconnect(self)`
+
+**Properties (1):**
+- `@property app`
+
+#### 🔧 Public Functions (11)
+
+- `def dump_message(message)`
+  - *Line: 14*
+
+- `def amqp(ctx)` `click.group(invoke_without_command=True)` `click.pass_context` `handle_preload_options`
+  - *Line: 64*
+  - **Docstring:**
+  `````
+  AMQP Administration Shell.
+  
+  Also works for non-AMQP transports (but not ones that
+  store declarations in memory).
+  `````
+
+- `def exchange_declare(amqp_context, exchange, type, passive, durable, auto_delete)` `amqp.command(name='exchange.declare')` `click.argument('exchange', type=str)` `click.argument('type', type=str)` `click.argument('passive', type=bool, default=False)` `click.argument('durable', type=bool, default=False)` `click.argument('auto_delete', type=bool, default=False)` `click.pass_obj`
+  - *Line: 89*
+
+- `def exchange_delete(amqp_context, exchange, if_unused)` `amqp.command(name='exchange.delete')` `click.argument('exchange', type=str)` `click.argument('if_unused', type=bool)` `click.pass_obj`
+  - *Line: 114*
+
+- `def queue_bind(amqp_context, queue, exchange, routing_key)` `amqp.command(name='queue.bind')` `click.argument('queue', type=str)` `click.argument('exchange', type=str)` `click.argument('routing_key', type=str)` `click.pass_obj`
+  - *Line: 137*
+
+- `def queue_declare(amqp_context, queue, passive, durable, auto_delete)` `amqp.command(name='queue.declare')` `click.argument('queue', type=str)` `click.argument('passive', type=bool, default=False)` `click.argument('durable', type=bool, default=False)` `click.argument('auto_delete', type=bool, default=False)` `click.pass_obj`
+  - *Line: 166*
+
+- `def queue_delete(amqp_context, queue, if_unused, if_empty)` `amqp.command(name='queue.delete')` `click.argument('queue', type=str)` `click.argument('if_unused', type=bool, default=False)` `click.argument('if_empty', type=bool, default=False)` `click.pass_obj`
+  - *Line: 196*
+
+- `def queue_purge(amqp_context, queue)` `amqp.command(name='queue.purge')` `click.argument('queue', type=str)` `click.pass_obj`
+  - *Line: 219*
+
+- `def basic_get(amqp_context, queue, no_ack)` `amqp.command(name='basic.get')` `click.argument('queue', type=str)` `click.argument('no_ack', type=bool, default=False)` `click.pass_obj`
+  - *Line: 243*
+
+- `def basic_publish(amqp_context, msg, exchange, routing_key, mandatory, immediate)` `amqp.command(name='basic.publish')` `click.argument('msg', type=str)` `click.argument('exchange', type=str)` `click.argument('routing_key', type=str)` `click.argument('mandatory', type=bool, default=False)` `click.argument('immediate', type=bool, default=False)` `click.pass_obj`
+  - *Line: 272*
+
+- `def basic_ack(amqp_context, delivery_tag)` `amqp.command(name='basic.ack')` `click.argument('delivery_tag', type=int)` `click.pass_obj`
+  - *Line: 298*
+
+
+---
+
+`````python
 """AMQP 0.9.1 REPL."""
 
 import pprint
@@ -22531,10 +33713,271 @@ def basic_ack(amqp_context, delivery_tag):
 
 register_repl(amqp)
 
-```
+`````
 
-### 代码文件: celery\bin\base.py
-```python
+--- **end of file: celery/bin/amqp.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/base.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/base.py`
+
+#### 📝 Module Docstring
+
+`````
+Click customizations for Celery.
+`````
+
+#### 📦 Imports
+
+- `import json`
+- `import numbers`
+- `from collections import OrderedDict`
+- `from functools import update_wrapper`
+- `from pprint import pformat`
+- `from typing import Any`
+- `import click`
+- `from click import Context`
+- `from click import ParamType`
+- `from kombu.exceptions import OperationalError`
+- `from kombu.utils.objects import cached_property`
+- `from celery._state import get_current_app`
+- `from celery.exceptions import CeleryCommandException`
+- `from celery.platforms import EX_UNAVAILABLE`
+- `from celery.signals import user_preload_options`
+- `from celery.utils import text`
+- `from celery.utils.log import mlevel`
+- `from celery.utils.time import maybe_iso8601`
+- `from pygments import highlight`
+- `from pygments.formatters import Terminal256Formatter`
+- `from pygments.lexers import PythonLexer`
+
+#### 🏛️ Classes (11)
+
+##### 📌 `class CLIContext`
+*Line: 37*
+
+**Docstring:**
+`````
+Context Object for the CLI.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, no_color, workdir, quiet = False)`
+  - **Docstring:**
+  `````
+  Initialize the CLI context.
+  `````
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `no_color`
+    - `workdir`
+    - `quiet = False`
+
+**Public Methods (8):**
+- `def style(self, message = None, **kwargs)`
+- `def secho(self, message = None, **kwargs)`
+- `def echo(self, message = None, **kwargs)`
+- `def error(self, message = None, **kwargs)`
+- `def pretty(self, n)`
+- `def pretty_list(self, n)`
+- `def pretty_dict_ok_error(self, n)`
+- `def say_chat(self, direction, title, body = '', show_body = False)`
+
+**Properties (2):**
+- `@property OK`
+- `@property ERROR`
+
+##### 📌 `class CeleryOption(click.Option)`
+*Line: 163*
+
+**Docstring:**
+`````
+Customized option for Celery.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Initialize a Celery option.
+  `````
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def get_default(self, ctx, *args, **kwargs)`
+
+##### 📌 `class CeleryCommand(click.Command)`
+*Line: 178*
+
+**Docstring:**
+`````
+Customized command for Celery.
+`````
+
+**Public Methods (1):**
+- `def format_options(self, ctx, formatter)`
+  - *Write all the options into the formatter if they exist.*
+
+##### 📌 `class DaemonOption(CeleryOption)`
+*Line: 197*
+
+**Docstring:**
+`````
+Common daemonization option
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def daemon_setting(self, ctx: Context, opt: CeleryOption, value: Any) -> Any`
+  - **Docstring:**
+  `````
+  Try to fetch daemonization option from applications settings.
+  Use the daemon command name as prefix (eg. `worker` -> `worker_pidfile`)
+  `````
+
+##### 📌 `class CeleryDaemonCommand(CeleryCommand)`
+*Line: 214*
+
+**Docstring:**
+`````
+Daemon commands.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Initialize a Celery command with common daemon options.
+  `````
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class CommaSeparatedList(ParamType)`
+*Line: 230*
+
+**Docstring:**
+`````
+Comma separated list argument.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'comma separated list'`
+
+##### 📌 `class JsonArray(ParamType)`
+*Line: 239*
+
+**Docstring:**
+`````
+JSON formatted array argument.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'json array'`
+
+##### 📌 `class JsonObject(ParamType)`
+*Line: 259*
+
+**Docstring:**
+`````
+JSON formatted object argument.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'json object'`
+
+##### 📌 `class ISO8601DateTime(ParamType)`
+*Line: 279*
+
+**Docstring:**
+`````
+ISO 8601 Date Time argument.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'iso-86091'`
+
+##### 📌 `class ISO8601DateTimeOrFloat(ParamType)`
+*Line: 291*
+
+**Docstring:**
+`````
+ISO 8601 Date Time or float argument.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'iso-86091 or float'`
+
+##### 📌 `class LogLevel(click.Choice)`
+*Line: 308*
+
+**Docstring:**
+`````
+Log level option.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Docstring:**
+  `````
+  Initialize the log level option with the relevant choices.
+  `````
+  - **Parameters:**
+    - `self`
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+#### 🔧 Public Functions (4)
+
+- `def handle_remote_command_error(command: str, exc: Exception) -> None`
+  - *Line: 123*
+
+- `def handle_preload_options(f)`
+  - *Line: 143*
+  - *Extract preload options and return a wrapped callable.*
+
+- `def caller(ctx, *args, **kwargs)`
+  - *Line: 145*
+
+- `def highlight(s, *args, **kwargs)`
+  - *Line: 27*
+  - *Place holder function in case pygments is missing.*
+
+
+---
+
+`````python
 """Click customizations for Celery."""
 import json
 import numbers
@@ -22545,9 +33988,12 @@ from typing import Any
 
 import click
 from click import Context, ParamType
+from kombu.exceptions import OperationalError
 from kombu.utils.objects import cached_property
 
 from celery._state import get_current_app
+from celery.exceptions import CeleryCommandException
+from celery.platforms import EX_UNAVAILABLE
 from celery.signals import user_preload_options
 from celery.utils import text
 from celery.utils.log import mlevel
@@ -22652,6 +34098,26 @@ class CLIContext:
         self.echo(f'{dirstr} {title}')
         if body and show_body:
             self.echo(body)
+
+
+def handle_remote_command_error(command: str, exc: Exception) -> None:
+    if isinstance(exc, click.ClickException):
+        raise
+
+    if isinstance(exc, OperationalError):
+        raise CeleryCommandException(
+            message=(
+                'Could not connect to the message broker. '
+                'Please make sure your broker (e.g., RabbitMQ or Redis) is running and '
+                f'the connection settings are correct. Reason: {exc}'
+            ),
+            exit_code=EX_UNAVAILABLE,
+        ) from exc
+
+    raise CeleryCommandException(
+        message=f'Unable to run the `{command}` command. Reason: {exc}',
+        exit_code=EX_UNAVAILABLE,
+    ) from exc
 
 
 def handle_preload_options(f):
@@ -22842,10 +34308,45 @@ ISO8601_OR_FLOAT = ISO8601DateTimeOrFloat()
 LOG_LEVEL = LogLevel()
 COMMA_SEPARATED_LIST = CommaSeparatedList()
 
-```
+`````
 
-### 代码文件: celery\bin\beat.py
-```python
+--- **end of file: celery/bin/base.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/beat.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/beat.py`
+
+#### 📝 Module Docstring
+
+`````
+The :program:`celery beat` command.
+`````
+
+#### 📦 Imports
+
+- `from functools import partial`
+- `import click`
+- `from celery.bin.base import LOG_LEVEL`
+- `from celery.bin.base import CeleryDaemonCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.platforms import detached`
+- `from celery.platforms import maybe_drop_privileges`
+
+#### 🔧 Public Functions (1)
+
+- `def beat(ctx, detach = False, logfile = None, pidfile = None, uid = None, gid = None, umask = None, workdir = None, **kwargs)` `click.command(cls=CeleryDaemonCommand, context_settings={'allow_extra_args': True})` `click.option('--detach', cls=CeleryOption, is_flag=True, default=False, help_group='Beat Options', help='Detach and run in the background as a daemon.')` `click.option('-s', '--schedule', cls=CeleryOption, callback=lambda ctx, _, value: value or ctx.obj.app.conf.beat_schedule_filename, help_group='Beat Options', help="Path to the schedule database.  Defaults to `celerybeat-schedule`.The extension '.db' may be appended to the filename.")` `click.option('-S', '--scheduler', cls=CeleryOption, callback=lambda ctx, _, value: value or ctx.obj.app.conf.beat_scheduler, help_group='Beat Options', help='Scheduler class to use.')` `click.option('--max-interval', cls=CeleryOption, type=int, help_group='Beat Options', help='Max seconds to sleep between schedule iterations.')` `click.option('-l', '--loglevel', default='WARNING', cls=CeleryOption, type=LOG_LEVEL, help_group='Beat Options', help='Logging level.')` `click.pass_context` `handle_preload_options`
+  - *Line: 47*
+  - *Start the beat periodic task scheduler.*
+
+
+---
+
+`````python
 """The :program:`celery beat` command."""
 from functools import partial
 
@@ -22919,10 +34420,45 @@ def beat(ctx, detach=False, logfile=None, pidfile=None, uid=None,
     else:
         return beat().run()
 
-```
+`````
 
-### 代码文件: celery\bin\call.py
-```python
+--- **end of file: celery/bin/beat.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/call.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/call.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery call`` program used to send tasks from the command-line.
+`````
+
+#### 📦 Imports
+
+- `import click`
+- `from celery.bin.base import ISO8601`
+- `from celery.bin.base import ISO8601_OR_FLOAT`
+- `from celery.bin.base import JSON_ARRAY`
+- `from celery.bin.base import JSON_OBJECT`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+
+#### 🔧 Public Functions (1)
+
+- `def call(ctx, name, args, kwargs, eta, countdown, expires, serializer, queue, exchange, routing_key)` `click.command(cls=CeleryCommand)` `click.argument('name')` `click.option('-a', '--args', cls=CeleryOption, type=JSON_ARRAY, default='[]', help_group='Calling Options', help='Positional arguments.')` `click.option('-k', '--kwargs', cls=CeleryOption, type=JSON_OBJECT, default='{}', help_group='Calling Options', help='Keyword arguments.')` `click.option('--eta', cls=CeleryOption, type=ISO8601, help_group='Calling Options', help='scheduled time.')` `click.option('--countdown', cls=CeleryOption, type=float, help_group='Calling Options', help='eta in seconds from now.')` `click.option('--expires', cls=CeleryOption, type=ISO8601_OR_FLOAT, help_group='Calling Options', help='expiry time.')` `click.option('--serializer', cls=CeleryOption, default='json', help_group='Calling Options', help='task serializer.')` `click.option('--queue', cls=CeleryOption, help_group='Routing Options', help='custom queue name.')` `click.option('--exchange', cls=CeleryOption, help_group='Routing Options', help='custom exchange name.')` `click.option('--routing-key', cls=CeleryOption, help_group='Routing Options', help='custom routing key.')` `click.pass_context` `handle_preload_options`
+  - *Line: 58*
+  - *Call a task by name.*
+
+
+---
+
+`````python
 """The ``celery call`` program used to send tasks from the command-line."""
 import click
 
@@ -22995,10 +34531,83 @@ def call(ctx, name, args, kwargs, eta, countdown, expires, serializer, queue, ex
     ).id
     ctx.obj.echo(task_id)
 
-```
+`````
 
-### 代码文件: celery\bin\celery.py
-```python
+--- **end of file: celery/bin/call.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/celery.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/celery.py`
+
+#### 📝 Module Docstring
+
+`````
+Celery Command Line Interface.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import pathlib`
+- `import sys`
+- `import traceback`
+- `from importlib.metadata import entry_points`
+- `import click`
+- `import click.exceptions`
+- `from click_didyoumean import DYMGroup`
+- `from click_plugins import with_plugins`
+- `from celery import VERSION_BANNER`
+- `from celery.app.utils import find_app`
+- `from celery.bin.amqp import amqp`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import CLIContext`
+- `from celery.bin.beat import beat`
+- `from celery.bin.call import call`
+- `from celery.bin.control import control`
+- `from celery.bin.control import inspect`
+- `from celery.bin.control import status`
+- `from celery.bin.events import events`
+- `from celery.bin.graph import graph`
+- `from celery.bin.list import list_`
+- `from celery.bin.logtool import logtool`
+- `from celery.bin.migrate import migrate`
+- `from celery.bin.multi import multi`
+- `from celery.bin.purge import purge`
+- `from celery.bin.result import result`
+- `from celery.bin.shell import shell`
+- `from celery.bin.upgrade import upgrade`
+- `from celery.bin.worker import worker`
+
+#### 🔧 Public Functions (3)
+
+- `def celery(ctx, app, broker, result_backend, loader, config, workdir, no_color, quiet, version, skip_checks)` `with_plugins(_PLUGINS)` `click.group(cls=DYMGroup, invoke_without_command=True)` `click.option('-A', '--app', envvar='APP', cls=CeleryOption, type=click.UNPROCESSED, help_group='Global Options')` `click.option('-b', '--broker', envvar='BROKER_URL', cls=CeleryOption, help_group='Global Options')` `click.option('--result-backend', envvar='RESULT_BACKEND', cls=CeleryOption, help_group='Global Options')` `click.option('--loader', envvar='LOADER', cls=CeleryOption, help_group='Global Options')` `click.option('--config', envvar='CONFIG_MODULE', cls=CeleryOption, help_group='Global Options')` `click.option('--workdir', cls=CeleryOption, type=pathlib.Path, callback=lambda _, __, wd: os.chdir(wd) if wd else None, is_eager=True, help_group='Global Options')` `click.option('-C', '--no-color', envvar='NO_COLOR', is_flag=True, cls=CeleryOption, help_group='Global Options')` `click.option('-q', '--quiet', is_flag=True, cls=CeleryOption, help_group='Global Options')` `click.option('--version', cls=CeleryOption, is_flag=True, help_group='Global Options')` `click.option('--skip-checks', envvar='SKIP_CHECKS', cls=CeleryOption, is_flag=True, help_group='Global Options', help='Skip Django core checks on startup. Setting the SKIP_CHECKS environment variable to any non-empty string will have the same effect.')` `click.pass_context`
+  - *Line: 113*
+  - *Celery command entrypoint.*
+
+- `def report(ctx, **kwargs)` `celery.command(cls=CeleryCommand)` `click.pass_context`
+  - *Line: 168*
+  - *Shows information useful to include in bug-reports.*
+
+- `def main() -> int`
+  - *Line: 220*
+  - **Docstring:**
+  `````
+  Start celery umbrella command.
+  
+  This function is the main entrypoint for the CLI.
+  
+  :return: The exit code of the CLI.
+  `````
+
+
+---
+
+`````python
 """Celery Command Line Interface."""
 import os
 import pathlib
@@ -23227,10 +34836,71 @@ def main() -> int:
     """
     return celery(auto_envvar_prefix="CELERY")
 
-```
+`````
 
-### 代码文件: celery\bin\control.py
-```python
+--- **end of file: celery/bin/celery.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/control.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/control.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery control``, ``. inspect`` and ``. status`` programs.
+`````
+
+#### 📦 Imports
+
+- `from functools import partial`
+- `from typing import Literal`
+- `import click`
+- `from kombu.utils.json import dumps`
+- `from celery.bin.base import COMMA_SEPARATED_LIST`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.bin.base import handle_remote_command_error`
+- `from celery.exceptions import CeleryCommandException`
+- `from celery.platforms import EX_UNAVAILABLE`
+- `from celery.utils import text`
+- `from celery.worker.control import Panel`
+
+#### 🔧 Public Functions (4)
+
+- `def status(ctx, timeout, destination, json, **kwargs)` `click.command(cls=CeleryCommand)` `click.option('-t', '--timeout', cls=CeleryOption, type=float, default=1.0, help_group='Remote Control Options', help='Timeout in seconds waiting for reply.')` `click.option('-d', '--destination', cls=CeleryOption, type=COMMA_SEPARATED_LIST, help_group='Remote Control Options', help='Comma separated list of destination node names.')` `click.option('-j', '--json', cls=CeleryOption, is_flag=True, help_group='Remote Control Options', help='Use json as output format.')` `click.pass_context` `handle_preload_options`
+  - *Line: 129*
+  - *Show list of workers that are online.*
+
+- `def inspect(ctx, command, timeout, destination, json, **kwargs)` `click.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.argument('command')` `_list_option('inspect')` `click.option('-t', '--timeout', cls=CeleryOption, type=float, default=1.0, help_group='Remote Control Options', help='Timeout in seconds waiting for reply.')` `click.option('-d', '--destination', cls=CeleryOption, type=COMMA_SEPARATED_LIST, help_group='Remote Control Options', help='Comma separated list of destination node names.')` `click.option('-j', '--json', cls=CeleryOption, is_flag=True, help_group='Remote Control Options', help='Use json as output format.')` `click.pass_context` `handle_preload_options`
+  - *Line: 178*
+  - **Docstring:**
+  `````
+  Inspect the workers by sending them the COMMAND inspect command.
+  
+  Availability: RabbitMQ (AMQP) and Redis transports.
+  `````
+
+- `def control(ctx, command, timeout, destination, json)` `click.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.argument('command')` `_list_option('control')` `click.option('-t', '--timeout', cls=CeleryOption, type=float, default=1.0, help_group='Remote Control Options', help='Timeout in seconds waiting for reply.')` `click.option('-d', '--destination', cls=CeleryOption, type=COMMA_SEPARATED_LIST, help_group='Remote Control Options', help='Comma separated list of destination node names.')` `click.option('-j', '--json', cls=CeleryOption, is_flag=True, help_group='Remote Control Options', help='Use json as output format.')` `click.pass_context` `handle_preload_options`
+  - *Line: 236*
+  - **Docstring:**
+  `````
+  Send the COMMAND control command to the workers.
+  
+  Availability: RabbitMQ (AMQP), Redis, and MongoDB transports.
+  `````
+
+- `def callback(ctx: click.Context, param, value) -> None`
+  - *Line: 70*
+
+
+---
+
+`````python
 """The ``celery control``, ``. inspect`` and ``. status`` programs."""
 from functools import partial
 from typing import Literal
@@ -23238,7 +34908,8 @@ from typing import Literal
 import click
 from kombu.utils.json import dumps
 
-from celery.bin.base import COMMA_SEPARATED_LIST, CeleryCommand, CeleryOption, handle_preload_options
+from celery.bin.base import (COMMA_SEPARATED_LIST, CeleryCommand, CeleryOption, handle_preload_options,
+                             handle_remote_command_error)
 from celery.exceptions import CeleryCommandException
 from celery.platforms import EX_UNAVAILABLE
 from celery.utils import text
@@ -23361,9 +35032,12 @@ def _get_commands_of_type(type_: _RemoteControlType) -> dict:
 def status(ctx, timeout, destination, json, **kwargs):
     """Show list of workers that are online."""
     callback = None if json else partial(_say_remote_command_reply, ctx)
-    replies = ctx.obj.app.control.inspect(timeout=timeout,
-                                          destination=destination,
-                                          callback=callback).ping()
+    try:
+        replies = ctx.obj.app.control.inspect(timeout=timeout,
+                                              destination=destination,
+                                              callback=callback).ping()
+    except Exception as exc:
+        handle_remote_command_error('status', exc)
 
     if not replies:
         raise CeleryCommandException(
@@ -23416,7 +35090,10 @@ def inspect(ctx, command, timeout, destination, json, **kwargs):
     inspect = ctx.obj.app.control.inspect(timeout=timeout,
                                           destination=destination,
                                           callback=callback)
-    replies = inspect._request(command, **arguments)
+    try:
+        replies = inspect._request(command, **arguments)
+    except Exception as exc:
+        handle_remote_command_error(f'inspect {command}', exc)
 
     if not replies:
         raise CeleryCommandException(
@@ -23469,11 +35146,14 @@ def control(ctx, command, timeout, destination, json):
                                          show_reply=True)
     args = ctx.args
     arguments = _compile_arguments(command, args)
-    replies = ctx.obj.app.control.broadcast(command, timeout=timeout,
-                                            destination=destination,
-                                            callback=callback,
-                                            reply=True,
-                                            arguments=arguments)
+    try:
+        replies = ctx.obj.app.control.broadcast(command, timeout=timeout,
+                                                destination=destination,
+                                                callback=callback,
+                                                reply=True,
+                                                arguments=arguments)
+    except Exception as exc:
+        handle_remote_command_error(f'control {command}', exc)
 
     if not replies:
         raise CeleryCommandException(
@@ -23484,17 +35164,59 @@ def control(ctx, command, timeout, destination, json):
     if json:
         ctx.obj.echo(dumps(replies))
 
-```
+`````
 
-### 代码文件: celery\bin\events.py
-```python
+--- **end of file: celery/bin/control.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/events.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/events.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery events`` program.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from functools import partial`
+- `import click`
+- `from celery.bin.base import LOG_LEVEL`
+- `from celery.bin.base import CeleryDaemonCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.bin.base import handle_remote_command_error`
+- `from celery.platforms import detached`
+- `from celery.platforms import set_process_title`
+- `from celery.platforms import strargv`
+- `from celery.events.dumper import evdump`
+- `from celery.events.snapshot import evcam`
+- `from celery.events.cursesmon import evtop`
+
+#### 🔧 Public Functions (1)
+
+- `def events(ctx, dump, camera, detach, frequency, maxrate, loglevel, **kwargs)` `click.command(cls=CeleryDaemonCommand)` `click.option('-d', '--dump', cls=CeleryOption, is_flag=True, help_group='Dumper')` `click.option('-c', '--camera', cls=CeleryOption, help_group='Snapshot')` `click.option('-d', '--detach', cls=CeleryOption, is_flag=True, help_group='Snapshot')` `click.option('-F', '--frequency', '--freq', type=float, default=1.0, cls=CeleryOption, help_group='Snapshot')` `click.option('-r', '--maxrate', cls=CeleryOption, help_group='Snapshot')` `click.option('-l', '--loglevel', default='WARNING', cls=CeleryOption, type=LOG_LEVEL, help_group='Snapshot', help='Logging level.')` `click.pass_context` `handle_preload_options`
+  - *Line: 83*
+  - *Event-stream utilities.*
+
+
+---
+
+`````python
 """The ``celery events`` program."""
 import sys
 from functools import partial
 
 import click
 
-from celery.bin.base import LOG_LEVEL, CeleryDaemonCommand, CeleryOption, handle_preload_options
+from celery.bin.base import (LOG_LEVEL, CeleryDaemonCommand, CeleryOption, handle_preload_options,
+                             handle_remote_command_error)
 from celery.platforms import detached, set_process_title, strargv
 
 
@@ -23572,28 +35294,152 @@ def _run_evtop(app):
 def events(ctx, dump, camera, detach, frequency, maxrate, loglevel, **kwargs):
     """Event-stream utilities."""
     app = ctx.obj.app
-    if dump:
-        return _run_evdump(app)
+    try:
+        if dump:
+            return _run_evdump(app)
 
-    if camera:
-        return _run_evcam(camera, app=app, freq=frequency, maxrate=maxrate,
-                          loglevel=loglevel,
-                          detach=detach,
-                          **kwargs)
+        if camera:
+            return _run_evcam(camera, app=app, freq=frequency, maxrate=maxrate,
+                              loglevel=loglevel,
+                              detach=detach,
+                              **kwargs)
 
-    return _run_evtop(app)
+        return _run_evtop(app)
+    except Exception as exc:
+        handle_remote_command_error('events', exc)
 
-```
+`````
 
-### 代码文件: celery\bin\graph.py
-```python
+--- **end of file: celery/bin/events.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/graph.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/graph.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery graph`` command.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from operator import itemgetter`
+- `import click`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.bin.base import handle_remote_command_error`
+- `from celery.utils.graph import DependencyGraph`
+- `from celery.utils.graph import GraphFormatter`
+- `from itertools import count`
+
+#### 🏛️ Classes (6)
+
+##### 📌 `class Node`
+*Line: 50*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, label, pos = None)`
+  - **Parameters:**
+    - `self`
+    - `label`
+    - `pos = None`
+
+**Public Methods (1):**
+- `def label(self)`
+
+**Class Variables (2):**
+- `force_label = None`
+- `scheme = {}`
+
+##### 📌 `class Thread(Node)`
+*Line: 64*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, label, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `label`
+    - `**kwargs`
+
+**Class Variables (1):**
+- `scheme = {'fillcolor': 'lightcyan4', 'fontcolor': 'yellow', 'shape': 'oval', 'fontsize': 10, 'width': 0.3, 'color': 'black'}`
+
+##### 📌 `class Formatter(GraphFormatter)`
+*Line: 81*
+
+**Public Methods (4):**
+- `def label(self, obj)`
+- `def node(self, obj)`
+- `def terminal_node(self, obj)`
+- `def edge(self, a, b, **attrs)`
+
+##### 📌 `class Worker(Node)`
+*Line: 109*
+
+##### 📌 `class Backend(Node)`
+*Line: 112*
+
+**Public Methods (1):**
+- `def label(self)`
+
+**Class Variables (1):**
+- `scheme = {'shape': 'folder', 'width': 2, 'height': 1, 'color': 'black', 'fillcolor': 'peachpuff3'}`
+
+##### 📌 `class Broker(Node)`
+*Line: 124*
+
+**Public Methods (1):**
+- `def label(self)`
+
+**Class Variables (1):**
+- `scheme = {'shape': 'circle', 'fillcolor': 'cadetblue3', 'color': 'cadetblue4', 'height': 1}`
+
+#### 🔧 Public Functions (8)
+
+- `def graph(ctx)` `click.group()` `click.pass_context` `handle_preload_options`
+  - *Line: 14*
+  - *The ``celery graph`` command.*
+
+- `def bootsteps(ctx)` `graph.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.pass_context`
+  - *Line: 20*
+  - *Display bootsteps graph.*
+
+- `def workers(ctx)` `graph.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.pass_context`
+  - *Line: 35*
+  - *Display workers graph.*
+
+- `def simplearg(arg)`
+  - *Line: 37*
+
+- `def maybe_list(l, sep = ',')`
+  - *Line: 40*
+
+- `def generic_label(node)`
+  - *Line: 46*
+
+- `def subscript(n)`
+  - *Line: 104*
+
+- `def maybe_abbr(l, name, max = Wmax)`
+  - *Line: 140*
+
+
+---
+
+`````python
 """The ``celery graph`` command."""
 import sys
 from operator import itemgetter
 
 import click
 
-from celery.bin.base import CeleryCommand, handle_preload_options
+from celery.bin.base import CeleryCommand, handle_preload_options, handle_remote_command_error
 from celery.utils.graph import DependencyGraph, GraphFormatter
 
 
@@ -23743,7 +35589,10 @@ def workers(ctx):
         workers = args['nodes']
         threads = args.get('threads') or []
     except KeyError:
-        replies = app.control.inspect().stats() or {}
+        try:
+            replies = app.control.inspect().stats() or {}
+        except Exception as exc:
+            handle_remote_command_error('graph workers', exc)
         workers, threads = [], []
         for worker, reply in replies.items():
             workers.append(worker)
@@ -23760,8 +35609,11 @@ def workers(ctx):
             list(range(int(threads))), 'P', Tmax,
         )
 
-    broker = Broker(args.get(
-        'broker', app.connection_for_read().as_uri()))
+    try:
+        broker_uri = args.get('broker', app.connection_for_read().as_uri())
+    except Exception as exc:
+        handle_remote_command_error('graph workers', exc)
+    broker = Broker(broker_uri)
     backend = Backend(backend) if backend else None
     deps = DependencyGraph(formatter=Formatter())
     deps.add_arc(broker)
@@ -23785,10 +35637,54 @@ def workers(ctx):
 
     deps.to_dot(sys.stdout)
 
-```
+`````
 
-### 代码文件: celery\bin\list.py
-```python
+--- **end of file: celery/bin/graph.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/list.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/list.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery list bindings`` command, used to inspect queue bindings.
+`````
+
+#### 📦 Imports
+
+- `import click`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import handle_preload_options`
+
+#### 🔧 Public Functions (3)
+
+- `def list_(ctx)` `click.group(name='list')` `click.pass_context` `handle_preload_options`
+  - *Line: 10*
+  - **Docstring:**
+  `````
+  Get info from broker.
+  
+  Note:
+  
+      For RabbitMQ the management plugin is required.
+  `````
+
+- `def bindings(ctx)` `list_.command(cls=CeleryCommand)` `click.pass_context`
+  - *Line: 21*
+  - *Inspect queue bindings.*
+
+- `def fmt(q, e, r)`
+  - *Line: 33*
+
+
+---
+
+`````python
 """The ``celery list bindings`` command, used to inspect queue bindings."""
 import click
 
@@ -23828,10 +35724,89 @@ def bindings(ctx):
         for b in bindings:
             fmt(b['destination'], b['source'], b['routing_key'])
 
-```
+`````
 
-### 代码文件: celery\bin\logtool.py
-```python
+--- **end of file: celery/bin/list.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/logtool.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/logtool.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery logtool`` command.
+`````
+
+#### 📦 Imports
+
+- `import re`
+- `from collections import Counter`
+- `from fileinput import FileInput`
+- `import click`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import handle_preload_options`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class _task_counts(list)`
+*Line: 31*
+
+**Properties (1):**
+- `@property format`
+
+##### 📌 `class Audit`
+*Line: 43*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, on_task_error = None, on_trace = None, on_debug = None)`
+  - **Parameters:**
+    - `self`
+    - `on_task_error = None`
+    - `on_trace = None`
+    - `on_debug = None`
+
+**Public Methods (7):**
+- `def run(self, files)`
+- `def task_received(self, line, task_name, task_id)`
+- `def task_ready(self, line, task_name, task_id, result)`
+- `def task_error(self, line, task_name, task_id, result)`
+- `def feed(self, line)`
+- `def incomplete_tasks(self)`
+- `def report(self)`
+
+#### 🔧 Public Functions (7)
+
+- `def task_info(line)`
+  - *Line: 38*
+
+- `def logtool(ctx)` `click.group()` `click.pass_context` `handle_preload_options`
+  - *Line: 116*
+  - *The ``celery logtool`` command.*
+
+- `def stats(ctx, files)` `logtool.command(cls=CeleryCommand)` `click.argument('files', nargs=-1)` `click.pass_context`
+  - *Line: 123*
+
+- `def traces(ctx, files)` `logtool.command(cls=CeleryCommand)` `click.argument('files', nargs=-1)` `click.pass_context`
+  - *Line: 132*
+
+- `def errors(ctx, files)` `logtool.command(cls=CeleryCommand)` `click.argument('files', nargs=-1)` `click.pass_context`
+  - *Line: 139*
+
+- `def incomplete(ctx, files)` `logtool.command(cls=CeleryCommand)` `click.argument('files', nargs=-1)` `click.pass_context`
+  - *Line: 146*
+
+- `def debug(ctx, files)` `logtool.command(cls=CeleryCommand)` `click.argument('files', nargs=-1)` `click.pass_context`
+  - *Line: 156*
+
+
+---
+
+`````python
 """The ``celery logtool`` command."""
 import re
 from collections import Counter
@@ -23990,10 +35965,54 @@ def incomplete(ctx, files):
 def debug(ctx, files):
     Audit(on_debug=ctx.obj.echo).run(files)
 
-```
+`````
 
-### 代码文件: celery\bin\migrate.py
-```python
+--- **end of file: celery/bin/logtool.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/migrate.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/migrate.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery migrate`` command, used to filter and move messages.
+`````
+
+#### 📦 Imports
+
+- `import click`
+- `from kombu import Connection`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.contrib.migrate import migrate_tasks`
+
+#### 🔧 Public Functions (2)
+
+- `def migrate(ctx, source, destination, **kwargs)` `click.command(cls=CeleryCommand)` `click.argument('source')` `click.argument('destination')` `click.option('-n', '--limit', cls=CeleryOption, type=int, help_group='Migration Options', help='Number of tasks to consume.')` `click.option('-t', '--timeout', cls=CeleryOption, type=float, help_group='Migration Options', help='Timeout in seconds waiting for tasks.')` `click.option('-a', '--ack-messages', cls=CeleryOption, is_flag=True, help_group='Migration Options', help='Ack messages from source broker.')` `click.option('-T', '--tasks', cls=CeleryOption, help_group='Migration Options', help='List of task names to filter on.')` `click.option('-Q', '--queues', cls=CeleryOption, help_group='Migration Options', help='List of queues to migrate.')` `click.option('-F', '--forever', cls=CeleryOption, is_flag=True, help_group='Migration Options', help='Continually migrate tasks until killed.')` `click.pass_context` `handle_preload_options`
+  - *Line: 48*
+  - **Docstring:**
+  `````
+  Migrate tasks from one broker to another.
+  
+  Warning:
+  
+      This command is experimental, make sure you have a backup of
+      the tasks before you continue.
+  `````
+
+- `def on_migrate_task(state, body, message)`
+  - *Line: 57*
+
+
+---
+
+`````python
 """The ``celery migrate`` command, used to filter and move messages."""
 import click
 from kombu import Connection
@@ -24058,10 +36077,250 @@ def migrate(ctx, source, destination, **kwargs):
                   callback=on_migrate_task,
                   **kwargs)
 
-```
+`````
 
-### 代码文件: celery\bin\multi.py
-```python
+--- **end of file: celery/bin/migrate.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/multi.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/multi.py`
+
+#### 📝 Module Docstring
+
+`````
+Start multiple worker instances from the command-line.
+
+.. program:: celery multi
+
+Examples
+========
+
+.. code-block:: console
+
+    $ # Single worker with explicit name and events enabled.
+    $ celery multi start Leslie -E
+
+    $ # Pidfiles and logfiles are stored in the current directory
+    $ # by default.  Use --pidfile and --logfile argument to change
+    $ # this.  The abbreviation %n will be expanded to the current
+    $ # node name.
+    $ celery multi start Leslie -E --pidfile=/var/run/celery/%n.pid
+                                   --logfile=/var/log/celery/%n%I.log
+
+
+    $ # You need to add the same arguments when you restart,
+    $ # as these aren't persisted anywhere.
+    $ celery multi restart Leslie -E --pidfile=/var/run/celery/%n.pid
+                                     --logfile=/var/log/celery/%n%I.log
+
+    $ # To stop the node, you need to specify the same pidfile.
+    $ celery multi stop Leslie --pidfile=/var/run/celery/%n.pid
+
+    $ # 3 workers, with 3 processes each
+    $ celery multi start 3 -c 3
+    celery worker -n celery1@myhost -c 3
+    celery worker -n celery2@myhost -c 3
+    celery worker -n celery3@myhost -c 3
+
+    $ # override name prefix when using range
+    $ celery multi start 3 --range-prefix=worker -c 3
+    celery worker -n worker1@myhost -c 3
+    celery worker -n worker2@myhost -c 3
+    celery worker -n worker3@myhost -c 3
+
+    $ # start 3 named workers
+    $ celery multi start image video data -c 3
+    celery worker -n image@myhost -c 3
+    celery worker -n video@myhost -c 3
+    celery worker -n data@myhost -c 3
+
+    $ # specify custom hostname
+    $ celery multi start 2 --hostname=worker.example.com -c 3
+    celery worker -n celery1@worker.example.com -c 3
+    celery worker -n celery2@worker.example.com -c 3
+
+    $ # specify fully qualified nodenames
+    $ celery multi start foo@worker.example.com bar@worker.example.com -c 3
+
+    $ # fully qualified nodenames but using the current hostname
+    $ celery multi start foo@%h bar@%h
+
+    $ # Advanced example starting 10 workers in the background:
+    $ #   * Three of the workers processes the images and video queue
+    $ #   * Two of the workers processes the data queue with loglevel DEBUG
+    $ #   * the rest processes the default' queue.
+    $ celery multi start 10 -l INFO -Q:1-3 images,video -Q:4,5 data
+        -Q default -L:4,5 DEBUG
+
+    $ # You can show the commands necessary to start the workers with
+    $ # the 'show' command:
+    $ celery multi show 10 -l INFO -Q:1-3 images,video -Q:4,5 data
+        -Q default -L:4,5 DEBUG
+
+    $ # Additional options are added to each celery worker's command,
+    $ # but you can also modify the options for ranges of, or specific workers
+
+    $ # 3 workers: Two with 3 processes, and one with 10 processes.
+    $ celery multi start 3 -c 3 -c:1 10
+    celery worker -n celery1@myhost -c 10
+    celery worker -n celery2@myhost -c 3
+    celery worker -n celery3@myhost -c 3
+
+    $ # can also specify options for named workers
+    $ celery multi start image video data -c 3 -c:image 10
+    celery worker -n image@myhost -c 10
+    celery worker -n video@myhost -c 3
+    celery worker -n data@myhost -c 3
+
+    $ # ranges and lists of workers in options is also allowed:
+    $ # (-c:1-3 can also be written as -c:1,2,3)
+    $ celery multi start 5 -c 3  -c:1-3 10
+    celery worker -n celery1@myhost -c 10
+    celery worker -n celery2@myhost -c 10
+    celery worker -n celery3@myhost -c 10
+    celery worker -n celery4@myhost -c 3
+    celery worker -n celery5@myhost -c 3
+
+    $ # lists also works with named workers
+    $ celery multi start foo bar baz xuzzy -c 3 -c:foo,bar,baz 10
+    celery worker -n foo@myhost -c 10
+    celery worker -n bar@myhost -c 10
+    celery worker -n baz@myhost -c 10
+    celery worker -n xuzzy@myhost -c 3
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import signal`
+- `import sys`
+- `from functools import wraps`
+- `import click`
+- `from kombu.utils.objects import cached_property`
+- `from celery import VERSION_BANNER`
+- `from celery.apps.multi import Cluster`
+- `from celery.apps.multi import MultiParser`
+- `from celery.apps.multi import NamespacedOptionParser`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.platforms import EX_FAILURE`
+- `from celery.platforms import EX_OK`
+- `from celery.platforms import signals`
+- `from celery.utils import term`
+- `from celery.utils.text import pluralize`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class TermLogger`
+*Line: 170*
+
+**Public Methods (9):**
+- `def setup_terminal(self, stdout, stderr, nosplash = False, quiet = False, verbose = False, no_color = False, **kwargs)`
+- `def ok(self, m, newline = True, file = None)`
+- `def say(self, m, newline = True, file = None)`
+- `def carp(self, m, newline = True, file = None)`
+- `def error(self, msg = None)`
+- `def info(self, msg, newline = True)`
+- `def note(self, msg, newline = True)`
+- `def usage(self)` `splash`
+- `def splash(self)`
+
+**Properties (1):**
+- `@property colored`
+
+**Class Variables (3):**
+- `splash_text = 'celery multi v{version}'`
+- `splash_context = {'version': VERSION_BANNER}`
+- `retcode = 0`
+
+##### 📌 `class MultiTool(TermLogger)`
+*Line: 226*
+
+**Docstring:**
+`````
+The ``celery multi`` program.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, env = None, cmd = None, fh = None, stdout = None, stderr = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `env = None`
+    - `cmd = None`
+    - `fh = None`
+    - `stdout = None`
+    - `stderr = None`
+    - `**kwargs`
+
+**Public Methods (30):**
+- `def execute_from_commandline(self, argv, cmd = None)`
+- `def validate_arguments(self, argv)`
+- `def call_command(self, command, argv)`
+- `def start(self, cluster)` `splash` `using_cluster`
+- `def stop(self, cluster, sig, **kwargs)` `splash` `using_cluster_and_sig`
+- `def stopwait(self, cluster, sig, **kwargs)` `splash` `using_cluster_and_sig`
+- `def restart(self, cluster, sig, **kwargs)` `splash` `using_cluster_and_sig`
+- `def names(self, cluster)` `using_cluster`
+- `def get(self, wanted, *argv)`
+- `def show(self, cluster)` `using_cluster`
+- `def kill(self, cluster)` `splash` `using_cluster`
+- `def expand(self, template, *argv)`
+- `def help(self, *argv)`
+- `def cluster_from_argv(self, argv, cmd = None)`
+- `def Cluster(self, nodes, cmd = None)`
+- `def on_stopping_preamble(self, nodes)`
+- `def on_send_signal(self, node, sig)`
+- `def on_still_waiting_for(self, nodes)`
+- `def on_still_waiting_progress(self, nodes)`
+- `def on_still_waiting_end(self)`
+- `def on_node_signal_dead(self, node)`
+- `def on_node_start(self, node)`
+- `def on_node_restart(self, node)`
+- `def on_node_down(self, node)`
+- `def on_node_shutdown_ok(self, node)`
+- `def on_node_status(self, node, retval)`
+- `def on_node_signal(self, node, sig)`
+- `def on_child_spawn(self, node, argstr, env)`
+- `def on_child_signalled(self, node, signum)`
+- `def on_child_failure(self, node, retcode)`
+
+**Properties (3):**
+- `@property OK`
+- `@property FAILED`
+- `@property DOWN`
+
+**Class Variables (4):**
+- `MultiParser = MultiParser`
+- `OptionParser = NamespacedOptionParser`
+- `reserved_options = [('--nosplash', 'nosplash'), ('--quiet', 'quiet'), ('-q', 'quiet'), ('--verbose', 'verbose'), ('--no-color', 'no_color')]`
+- `stop_verify = stopwait`
+
+#### 🔧 Public Functions (5)
+
+- `def main()`
+  - *Line: 139*
+
+- `def splash(fun)`
+  - *Line: 143*
+
+- `def using_cluster(fun)`
+  - *Line: 152*
+
+- `def using_cluster_and_sig(fun)`
+  - *Line: 160*
+
+- `def multi(ctx, **kwargs)` `click.command(cls=CeleryCommand, context_settings={'allow_extra_args': True, 'ignore_unknown_options': True})` `click.pass_context` `handle_preload_options`
+  - *Line: 472*
+  - *Start multiple worker instances.*
+
+
+---
+
+`````python
 """Start multiple worker instances from the command-line.
 
 .. program:: celery multi
@@ -24543,10 +36802,50 @@ def multi(ctx, **kwargs):
     args = args[args.index('multi'):] + args[:args.index('multi')]
     return cmd.execute_from_commandline(args)
 
-```
+`````
 
-### 代码文件: celery\bin\purge.py
-```python
+--- **end of file: celery/bin/multi.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/purge.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/purge.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery purge`` program, used to delete messages from queues.
+`````
+
+#### 📦 Imports
+
+- `import click`
+- `from celery.bin.base import COMMA_SEPARATED_LIST`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.utils import text`
+
+#### 🔧 Public Functions (1)
+
+- `def purge(ctx, force, queues, exclude_queues, **kwargs)` `click.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.option('-f', '--force', cls=CeleryOption, is_flag=True, help_group='Purging Options', help="Don't prompt for verification.")` `click.option('-Q', '--queues', cls=CeleryOption, type=COMMA_SEPARATED_LIST, help_group='Purging Options', help='Comma separated list of queue names to purge.')` `click.option('-X', '--exclude-queues', cls=CeleryOption, type=COMMA_SEPARATED_LIST, help_group='Purging Options', help='Comma separated list of queues names not to purge.')` `click.pass_context` `handle_preload_options`
+  - *Line: 31*
+  - **Docstring:**
+  `````
+  Erase all messages from all known task queues.
+  
+  Warning:
+  
+      There's no undo operation for this command.
+  `````
+
+
+---
+
+`````python
 """The ``celery purge`` program, used to delete messages from queues."""
 import click
 
@@ -24618,10 +36917,41 @@ def purge(ctx, force, queues, exclude_queues, **kwargs):
         else:
             ctx.obj.echo(f"No messages purged from {qnum} {queues_headline}.")
 
-```
+`````
 
-### 代码文件: celery\bin\result.py
-```python
+--- **end of file: celery/bin/purge.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/result.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/result.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery result`` program, used to inspect task results.
+`````
+
+#### 📦 Imports
+
+- `import click`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+
+#### 🔧 Public Functions (1)
+
+- `def result(ctx, task_id, task, traceback)` `click.command(cls=CeleryCommand)` `click.argument('task_id')` `click.option('-t', '--task', cls=CeleryOption, help_group='Result Options', help='Name of task (if custom backend).')` `click.option('--traceback', cls=CeleryOption, is_flag=True, help_group='Result Options', help='Show traceback instead.')` `click.pass_context` `handle_preload_options`
+  - *Line: 21*
+  - *Print the return value for a given task id.*
+
+
+---
+
+`````python
 """The ``celery result`` program, used to inspect task results."""
 import click
 
@@ -24653,10 +36983,64 @@ def result(ctx, task_id, task, traceback):
     # TODO: Prettify result
     ctx.obj.echo(value)
 
-```
+`````
 
-### 代码文件: celery\bin\shell.py
-```python
+--- **end of file: celery/bin/result.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/shell.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/shell.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery shell`` program, used to start a REPL.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `from importlib import import_module`
+- `import click`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `import code`
+- `import bpython`
+- `from IPython import start_ipython`
+- `from IPython.frontend.terminal.ipapp import TerminalIPythonApp`
+- `from IPython.terminal import embed`
+- `from IPython.Shell import IPShell`
+- `import celery`
+- `import readline`
+- `import rlcompleter`
+- `import IPython`
+- `import bpython`
+
+#### 🔧 Public Functions (1)
+
+- `def shell(ctx, ipython = False, bpython = False, python = False, without_tasks = False, eventlet = False, gevent = False, **kwargs)` `click.command(cls=CeleryCommand, context_settings={'allow_extra_args': True})` `click.option('-I', '--ipython', is_flag=True, cls=CeleryOption, help_group='Shell Options', help='Force IPython.')` `click.option('-B', '--bpython', is_flag=True, cls=CeleryOption, help_group='Shell Options', help='Force bpython.')` `click.option('--python', is_flag=True, cls=CeleryOption, help_group='Shell Options', help='Force default Python shell.')` `click.option('-T', '--without-tasks', is_flag=True, cls=CeleryOption, help_group='Shell Options', help="Don't add tasks to locals.")` `click.option('--eventlet', is_flag=True, cls=CeleryOption, help_group='Shell Options', help='Use eventlet.')` `click.option('--gevent', is_flag=True, cls=CeleryOption, help_group='Shell Options', help='Use gevent.')` `click.pass_context` `handle_preload_options`
+  - *Line: 120*
+  - **Docstring:**
+  `````
+  Start shell session with convenient access to celery symbols.
+  
+  The following symbols will be added to the main globals:
+  - ``celery``:  the current application.
+  - ``chord``, ``group``, ``chain``, ``chunks``,
+    ``xmap``, ``xstarmap`` ``subtask``, ``Task``
+  - all registered tasks.
+  `````
+
+
+---
+
+`````python
 """The ``celery shell`` program, used to start a REPL."""
 
 import os
@@ -24831,10 +37215,49 @@ def shell(ctx, ipython=False, bpython=False,
             ctx.obj.echo(f'{ctx.obj.ERROR}: {e}')
     _invoke_default_shell(locals)
 
-```
+`````
 
-### 代码文件: celery\bin\upgrade.py
-```python
+--- **end of file: celery/bin/shell.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/upgrade.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/upgrade.py`
+
+#### 📝 Module Docstring
+
+`````
+The ``celery upgrade`` command, used to upgrade from previous versions.
+`````
+
+#### 📦 Imports
+
+- `import codecs`
+- `import sys`
+- `import click`
+- `from celery.app import defaults`
+- `from celery.bin.base import CeleryCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.utils.functional import pass1`
+
+#### 🔧 Public Functions (2)
+
+- `def upgrade(ctx)` `click.group()` `click.pass_context` `handle_preload_options`
+  - *Line: 15*
+  - *Perform upgrade between versions.*
+
+- `def settings(filename, django, compat, no_backup)` `upgrade.command(cls=CeleryCommand)` `click.argument('filename')` `click.option('--django', cls=CeleryOption, is_flag=True, help_group='Upgrading Options', help='Upgrade Django project.')` `click.option('--compat', cls=CeleryOption, is_flag=True, help_group='Upgrading Options', help='Maintain backwards compatibility.')` `click.option('--no-backup', cls=CeleryOption, is_flag=True, help_group='Upgrading Options', help="Don't backup original files.")`
+  - *Line: 72*
+  - *Migrate settings from Celery 3.x to Celery 4.x.*
+
+
+---
+
+`````python
 """The ``celery upgrade`` command, used to upgrade from previous versions."""
 import codecs
 import sys
@@ -24927,10 +37350,144 @@ def settings(filename, django, compat, no_backup):
         print('Does not seem to require any changes :-)',
               file=sys.stdout)
 
-```
+`````
 
-### 代码文件: celery\bin\worker.py
-```python
+--- **end of file: celery/bin/upgrade.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/bin/worker.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/worker.py`
+
+#### 📝 Module Docstring
+
+`````
+Program used to start a Celery worker instance.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `import click`
+- `from click import ParamType`
+- `from click.types import StringParamType`
+- `from celery import concurrency`
+- `from celery.bin.base import COMMA_SEPARATED_LIST`
+- `from celery.bin.base import LOG_LEVEL`
+- `from celery.bin.base import CeleryDaemonCommand`
+- `from celery.bin.base import CeleryOption`
+- `from celery.bin.base import handle_preload_options`
+- `from celery.concurrency.base import BasePool`
+- `from celery.exceptions import SecurityError`
+- `from celery.platforms import EX_FAILURE`
+- `from celery.platforms import EX_OK`
+- `from celery.platforms import detached`
+- `from celery.platforms import maybe_drop_privileges`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.nodenames import default_nodename`
+- `from celery.utils.nodenames import host_format`
+- `from celery.utils.nodenames import node_format`
+- `from celery import current_app`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class CeleryBeat(ParamType)`
+*Line: 22*
+
+**Docstring:**
+`````
+Celery Beat flag.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'beat'`
+
+##### 📌 `class WorkersPool(click.Choice)`
+*Line: 35*
+
+**Docstring:**
+`````
+Workers pool option.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Docstring:**
+  `````
+  Initialize the workers pool option with the relevant choices.
+  `````
+  - **Parameters:**
+    - `self`
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'pool'`
+
+##### 📌 `class Hostname(StringParamType)`
+*Line: 66*
+
+**Docstring:**
+`````
+Hostname option.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = 'hostname'`
+
+##### 📌 `class Autoscale(ParamType)`
+*Line: 75*
+
+**Docstring:**
+`````
+Autoscaling parameter.
+`````
+
+**Public Methods (1):**
+- `def convert(self, value, param, ctx)`
+
+**Class Variables (1):**
+- `name = '<min workers>, <max workers>'`
+
+#### 🔧 Public Functions (2)
+
+- `def detach(path, argv, logfile = None, pidfile = None, uid = None, gid = None, umask = None, workdir = None, fake = False, app = None, executable = None, hostname = None)`
+  - *Line: 108*
+  - *Detach program by argv.*
+
+- `def worker(ctx, hostname = None, pool_cls = None, app = None, uid = None, gid = None, loglevel = None, logfile = None, pidfile = None, statedb = None, **kwargs)` `click.command(cls=CeleryDaemonCommand, context_settings={'allow_extra_args': True})` `click.option('-n', '--hostname', default=host_format(default_nodename(None)), cls=CeleryOption, type=HOSTNAME, help_group='Worker Options', help="Set custom hostname (e.g., 'w1@%%h').  Expands: %%h (hostname), %%n (name) and %%d, (domain).")` `click.option('-D', '--detach', cls=CeleryOption, is_flag=True, default=False, help_group='Worker Options', help='Start worker as a background process.')` `click.option('-S', '--statedb', cls=CeleryOption, type=click.Path(), callback=lambda ctx, _, value: value or ctx.obj.app.conf.worker_state_db, help_group='Worker Options', help="Path to the state database. The extension '.db' may be appended to the filename.")` `click.option('-l', '--loglevel', default='WARNING', cls=CeleryOption, type=LOG_LEVEL, help_group='Worker Options', help='Logging level.')` `click.option('-O', '--optimization', default='default', cls=CeleryOption, type=click.Choice(('default', 'fair')), help_group='Worker Options', help='Apply optimization profile.')` `click.option('--prefetch-multiplier', type=int, metavar='<prefetch multiplier>', callback=lambda ctx, _, value: value or ctx.obj.app.conf.worker_prefetch_multiplier, cls=CeleryOption, help_group='Worker Options', help='Set custom prefetch multiplier value for this worker instance.')` `click.option('--disable-prefetch', is_flag=True, default=None, callback=lambda ctx, _, value: ctx.obj.app.conf.worker_disable_prefetch if value is None else value, cls=CeleryOption, help_group='Worker Options', help='Disable broker prefetching. The worker will only fetch a task when a process slot is available. Only supported with Redis brokers.')` `click.option('-c', '--concurrency', type=int, metavar='<concurrency>', callback=lambda ctx, _, value: value or ctx.obj.app.conf.worker_concurrency, cls=CeleryOption, help_group='Pool Options', help='Number of child processes processing the queue.  The default is the number of CPUs available on your system.')` `click.option('-P', '--pool', default='prefork', type=WORKERS_POOL, cls=CeleryOption, help_group='Pool Options', help='Pool implementation.')` `click.option('-E', '--task-events', '--events', is_flag=True, default=None, cls=CeleryOption, help_group='Pool Options', help='Send task-related events that can be captured by monitors like celery events, celerymon, and others.')` `click.option('--time-limit', type=float, cls=CeleryOption, help_group='Pool Options', help='Enables a hard time limit (in seconds int/float) for tasks.')` `click.option('--soft-time-limit', type=float, cls=CeleryOption, help_group='Pool Options', help='Enables a soft time limit (in seconds int/float) for tasks.')` `click.option('--max-tasks-per-child', type=int, cls=CeleryOption, help_group='Pool Options', help="Maximum number of tasks a pool worker can execute before it's terminated and replaced by a new worker.")` `click.option('--max-memory-per-child', type=int, cls=CeleryOption, help_group='Pool Options', help='Maximum amount of resident memory, in KiB, that may be consumed by a child process before it will be replaced by a new one.  If a single task causes a child process to exceed this limit, the task will be completed and the child process will be replaced afterwards.\nDefault: no limit.')` `click.option('--purge', '--discard', is_flag=True, cls=CeleryOption, help_group='Queue Options')` `click.option('--queues', '-Q', type=COMMA_SEPARATED_LIST, cls=CeleryOption, help_group='Queue Options')` `click.option('--exclude-queues', '-X', type=COMMA_SEPARATED_LIST, cls=CeleryOption, help_group='Queue Options')` `click.option('--include', '-I', type=COMMA_SEPARATED_LIST, cls=CeleryOption, help_group='Queue Options')` `click.option('--without-gossip', is_flag=True, cls=CeleryOption, help_group='Features')` `click.option('--without-mingle', is_flag=True, cls=CeleryOption, help_group='Features')` `click.option('--without-heartbeat', is_flag=True, cls=CeleryOption, help_group='Features')` `click.option('--heartbeat-interval', type=int, cls=CeleryOption, help_group='Features')` `click.option('--autoscale', type=AUTOSCALE, cls=CeleryOption, help_group='Features')` `click.option('-B', '--beat', type=CELERY_BEAT, cls=CeleryOption, is_flag=True, help_group='Embedded Beat Options')` `click.option('-s', '--schedule-filename', '--schedule', callback=lambda ctx, _, value: value or ctx.obj.app.conf.beat_schedule_filename, cls=CeleryOption, help_group='Embedded Beat Options')` `click.option('--scheduler', cls=CeleryOption, help_group='Embedded Beat Options')` `click.pass_context` `handle_preload_options`
+  - *Line: 307*
+  - **Docstring:**
+  `````
+  Start worker instance.
+  
+  
+  Examples
+  --------
+  
+  
+  $ celery --app=proj worker -l INFO
+  $ celery -A proj worker -l INFO -Q hipri,lopri
+  $ celery -A proj worker --concurrency=4
+  $ celery -A proj worker --concurrency=1000 -P eventlet
+  $ celery worker --autoscale=10,0
+  `````
+
+
+---
+
+`````python
 """Program used to start a Celery worker instance."""
 
 import os
@@ -25122,7 +37679,8 @@ def detach(path, argv, logfile=None, pidfile=None, uid=None,
               value: ctx.obj.app.conf.worker_disable_prefetch if value is None else value,
               cls=CeleryOption,
               help_group="Worker Options",
-              help="Disable broker prefetching. The worker will only fetch a task when a process slot is available.")
+              help="Disable broker prefetching. The worker will only fetch a task when a process slot is available. "
+                   "Only supported with Redis brokers.")
 @click.option('-c',
               '--concurrency',
               type=int,
@@ -25302,15 +37860,245 @@ def worker(ctx, hostname=None, pool_cls=None, app=None, uid=None, gid=None,
         ctx.obj.error(e.args[0])
         ctx.exit(1)
 
-```
+`````
 
-### 代码文件: celery\bin\__init__.py
-```python
+--- **end of file: celery/bin/worker.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: celery\concurrency\asynpool.py
-```python
+
+--- **start of file: celery/bin/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/bin/__init__.py`
+
+
+---
+
+`````python
+
+`````
+
+--- **end of file: celery/bin/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/asynpool.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/asynpool.py`
+
+#### 📝 Module Docstring
+
+`````
+Version of multiprocessing.Pool using Async I/O.
+
+.. note::
+
+    This module will be moved soon, so don't use it directly.
+
+This is a non-blocking version of :class:`multiprocessing.Pool`.
+
+This code deals with three major challenges:
+
+#. Starting up child processes and keeping them running.
+#. Sending jobs to the processes and receiving results back.
+#. Safely shutting down this system.
+`````
+
+#### 📦 Imports
+
+- `import errno`
+- `import gc`
+- `import inspect`
+- `import os`
+- `import select`
+- `import time`
+- `from collections import Counter`
+- `from collections import deque`
+- `from collections import namedtuple`
+- `from io import BytesIO`
+- `from numbers import Integral`
+- `from pickle import HIGHEST_PROTOCOL`
+- `from struct import pack`
+- `from struct import unpack`
+- `from struct import unpack_from`
+- `from time import sleep`
+- `from weakref import WeakValueDictionary`
+- `from weakref import ref`
+- `from billiard import pool as _pool`
+- `from billiard.compat import isblocking`
+- `from billiard.compat import setblocking`
+- `from billiard.pool import ACK`
+- `from billiard.pool import NACK`
+- `from billiard.pool import RUN`
+- `from billiard.pool import TERMINATE`
+- `from billiard.pool import WorkersJoined`
+- `from billiard.queues import _SimpleQueue`
+- `from kombu.asynchronous import ERR`
+- `from kombu.asynchronous import WRITE`
+- `from kombu.serialization import pickle as _pickle`
+- `from kombu.utils.eventio import SELECT_BAD_FD`
+- `from kombu.utils.functional import fxrange`
+- `from vine import promise`
+- `from celery.signals import worker_before_create_process`
+- `from celery.utils.functional import noop`
+- `from celery.utils.log import get_logger`
+- `from celery.worker import state as worker_state`
+- `from _billiard import read as __read__`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Worker(_pool.Worker)`
+*Line: 243*
+
+**Docstring:**
+`````
+Pool worker process.
+`````
+
+**Public Methods (1):**
+- `def on_loop_start(self, pid)`
+
+##### 📌 `class ResultHandler(_pool.ResultHandler)`
+*Line: 253*
+
+**Docstring:**
+`````
+Handles messages from the pool processes.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def register_with_event_loop(self, hub)`
+- `def handle_event(self, *args)`
+- `def on_stop_not_started(self)`
+
+##### 📌 `class AsynPool(_pool.Pool)`
+*Line: 414*
+
+**Docstring:**
+`````
+AsyncIO Pool (no threads).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, processes = None, synack = False, sched_strategy = None, proc_alive_timeout = None, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `processes = None`
+    - `synack = False`
+    - `sched_strategy = None`
+    - `proc_alive_timeout = None`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (16):**
+- `def WorkerProcess(self, worker)`
+- `def register_with_event_loop(self, hub)`
+  - *Register the async pool with the current event loop.*
+- `def on_job_ready(self, job, i, obj, inqW_fd)`
+- `def flush(self)`
+- `def get_process_queues(self)`
+  - **Docstring:**
+  `````
+  Get queues for a new process.
+  
+  Here we'll find an unused slot, as there should always
+  be one available when we start a new process.
+  `````
+- `def on_grow(self, n)`
+  - *Grow the pool by ``n`` processes.*
+- `def on_shrink(self, n)`
+  - *Shrink the pool by ``n`` processes.*
+- `def create_process_queues(self)`
+  - *Create new in, out, etc. queues, returned as a tuple.*
+- `def on_process_alive(self, pid)`
+  - **Docstring:**
+  `````
+  Called when receiving the :const:`WORKER_UP` message.
+  
+  Marks the process as ready to receive work.
+  `````
+- `def on_job_process_down(self, job, pid_gone)`
+  - *Called for each job when the process assigned to it exits.*
+- `def on_job_process_lost(self, job, pid, exitcode)`
+  - **Docstring:**
+  `````
+  Called when the process executing job' exits.
+  
+  This happens when the process job'
+  was assigned to exited by mysterious means (error exitcodes and
+  signals).
+  `````
+- `def human_write_stats(self)`
+- `def create_result_handler(self)`
+- `def process_flush_queues(self, proc)`
+  - **Docstring:**
+  `````
+  Flush all queues.
+  
+  Including the outbound buffer, so that
+  all tasks that haven't been started will be discarded.
+  
+  In Celery this is called whenever the transport connection is lost
+  (consumer restart), and when a process is terminated.
+  `````
+- `def on_partial_read(self, job, proc)`
+  - *Called when a job was partially written to exited child.*
+- `def destroy_queues(self, queues, proc)`
+  - **Docstring:**
+  `````
+  Destroy queues that can no longer be used.
+  
+  This way they can be replaced by new usable sockets.
+  `````
+
+**Properties (1):**
+- `@property timers`
+
+**Class Variables (3):**
+- `ResultHandler = ResultHandler`
+- `Worker = Worker`
+- `_registered_with_event_loop = False`
+
+#### 🔧 Public Functions (3)
+
+- `def gen_not_started(gen)`
+  - *Line: 92*
+  - *Return true if generator is not started.*
+
+- `def iterate_file_descriptors_safely(fds_iter, source_data, hub_method, *args, **kwargs)`
+  - *Line: 198*
+  - **Docstring:**
+  `````
+  Apply hub method to fds in iter, remove from list if failure.
+  
+  Some file descriptors may become stale through OS reasons
+  or possibly other reasons, so safely manage our lists of FDs.
+  :param fds_iter: the file descriptors to iterate and apply hub_method
+  :param source_data: data source to remove FD if it renders OSError
+  :param hub_method: the method to call with each fd and kwargs
+  :*args to pass through to the hub_method;
+  with a special syntax string '*fd*' represents a substitution
+  for the current fd object in the iteration (for some callers).
+  :**kwargs to pass through to the hub method (no substitutions needed)
+  `````
+
+- `def unpack_from(fmt, iobuf, unpack = unpack)`
+  - *Line: 61*
+
+
+---
+
+`````python
 """Version of multiprocessing.Pool using Async I/O.
 
 .. note::
@@ -25704,6 +38492,7 @@ class ResultHandler(_pool.ResultHandler):
             setblocking(reader, 1)
         except OSError:
             return remove(fd)
+        result = None
         try:
             if reader.poll(0):
                 task = reader.recv()
@@ -25711,7 +38500,7 @@ class ResultHandler(_pool.ResultHandler):
                 task = None
                 sleep(0.5)
         except (OSError, EOFError):
-            return remove(fd)
+            result = remove(fd)
         else:
             if task:
                 on_state_change(task)
@@ -25719,7 +38508,8 @@ class ResultHandler(_pool.ResultHandler):
             try:
                 setblocking(reader, 0)
             except OSError:
-                return remove(fd)
+                result = remove(fd)
+        return result
 
 
 class AsynPool(_pool.Pool):
@@ -25783,7 +38573,7 @@ class AsynPool(_pool.Pool):
 
         self.write_stats = Counter()
 
-        super().__init__(processes, *args, **kwargs)
+        super().__init__(processes, *args, synack=synack, **kwargs)
 
         for proc in self._pool:
             # create initial mappings, these will be updated
@@ -25824,10 +38614,11 @@ class AsynPool(_pool.Pool):
             self._event_process_exit, hub, proc)
 
     def _untrack_child_process(self, proc, hub):
-        if proc._sentinel_poll is not None:
-            fd, proc._sentinel_poll = proc._sentinel_poll, None
-            hub.remove(fd)
-            os.close(fd)
+        sentinel_poll = getattr(proc, '_sentinel_poll', None)
+        if sentinel_poll is not None:
+            proc._sentinel_poll = None
+            hub.remove(sentinel_poll)
+            os.close(sentinel_poll)
 
     def register_with_event_loop(self, hub):
         """Register the async pool with the current event loop."""
@@ -26310,11 +39101,14 @@ class AsynPool(_pool.Pool):
         if self._state == TERMINATE:
             return
         # cancel all tasks that haven't been accepted so that NACK is sent
-        # if synack is enabled.
-        if self.synack:
-            for job in self._cache.values():
-                if not job._accepted:
+        # if synack is enabled, otherwise discard them from the cache
+        # since they will be redelivered by the broker.
+        for job in tuple(self._cache.values()):
+            if not job._accepted:
+                if self.synack:
                     job._cancel()
+                else:
+                    job.discard()
 
         # clear the outgoing buffer as the tasks will be redelivered by
         # the broker anyway.
@@ -26339,36 +39133,47 @@ class AsynPool(_pool.Pool):
                     if writer is not None:
                         owned_by[writer] = job
 
-                if not self._active_writers:
-                    self._cache.clear()
-                else:
-                    while self._active_writers:
-                        writers = list(self._active_writers)
-                        for gen in writers:
-                            if (gen.__name__ == '_write_job' and
-                                    gen_not_started(gen)):
-                                # hasn't started writing the job so can
-                                # discard the task, but we must also remove
-                                # it from the Pool._cache.
-                                try:
-                                    job = owned_by[gen]
-                                except KeyError:
-                                    pass
-                                else:
-                                    # removes from Pool._cache
-                                    job.discard()
-                                self._active_writers.discard(gen)
+                while self._active_writers:
+                    writers = list(self._active_writers)
+                    for gen in writers:
+                        if (gen.__name__ == '_write_job' and
+                                gen_not_started(gen)):
+                            # hasn't started writing the job so can
+                            # discard the task, but we must also remove
+                            # it from the Pool._cache.
+                            try:
+                                job = owned_by[gen]
+                            except KeyError:
+                                pass
                             else:
+                                # removes from Pool._cache
+                                job.discard()
+                            self._active_writers.discard(gen)
+                        else:
+                            try:
+                                job = owned_by[gen]
+                            except KeyError:
+                                # Generator not in owned_by — not a _write_job
+                                # (e.g. a _write_ack coroutine added by send_ack()).
+                                # These *MUST* complete or the worker process will
+                                # hang waiting for the ack.  Advance it one step;
+                                # the generator raises StopIteration/OSError when
+                                # done or when the peer process has already died.
                                 try:
-                                    job = owned_by[gen]
-                                except KeyError:
-                                    pass
+                                    next(gen)
+                                except (StopIteration, OSError, EOFError):
+                                    self._active_writers.discard(gen)
+                            else:
+                                job_proc = job._write_to
+                                if job_proc._is_alive():
+                                    # _flush_writer calls
+                                    # _active_writers.discard(gen) in its finally.
+                                    self._flush_writer(job_proc, gen)
                                 else:
-                                    job_proc = job._write_to
-                                    if job_proc._is_alive():
-                                        self._flush_writer(job_proc, gen)
-
+                                    # Process is dead, job will never
+                                    # complete - discard from cache.
                                     job.discard()
+                                    self._active_writers.discard(gen)
                     # workers may have exited in the meantime.
                     self.maintain_pool()
                     sleep(next(intervals))  # don't busyloop
@@ -26681,10 +39486,119 @@ class AsynPool(_pool.Pool):
     def timers(self):
         return {self.maintain_pool: 5.0}
 
-```
+`````
 
-### 代码文件: celery\concurrency\base.py
-```python
+--- **end of file: celery/concurrency/asynpool.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/base.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/base.py`
+
+#### 📝 Module Docstring
+
+`````
+Base Execution Pool.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import os`
+- `import sys`
+- `import time`
+- `from typing import Any`
+- `from typing import Dict`
+- `from billiard.einfo import ExceptionInfo`
+- `from billiard.exceptions import WorkerLostError`
+- `from kombu.utils.encoding import safe_repr`
+- `from celery.exceptions import WorkerShutdown`
+- `from celery.exceptions import WorkerTerminate`
+- `from celery.exceptions import reraise`
+- `from celery.utils import timer2`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.text import truncate`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class BasePool`
+*Line: 47*
+
+**Docstring:**
+`````
+Task pool.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, limit = None, putlocks = True, forking_enable = True, callbacks_propagate = (), app = None, **options)`
+  - **Parameters:**
+    - `self`
+    - `limit = None`
+    - `putlocks = True`
+    - `forking_enable = True`
+    - `callbacks_propagate = ()`
+    - `app = None`
+    - `**options`
+
+**Public Methods (18):**
+- `def on_start(self)`
+- `def did_start_ok(self)`
+- `def flush(self)`
+- `def on_stop(self)`
+- `def register_with_event_loop(self, loop)`
+- `def on_apply(self, *args, **kwargs)`
+- `def on_terminate(self)`
+- `def on_soft_timeout(self, job)`
+- `def on_hard_timeout(self, job)`
+- `def maintain_pool(self, *args, **kwargs)`
+- `def terminate_job(self, pid, signal = None)`
+- `def restart(self)`
+- `def stop(self)`
+- `def terminate(self)`
+- `def start(self)`
+- `def close(self)`
+- `def on_close(self)`
+- `def apply_async(self, target, args = None, kwargs = None, **options)`
+  - **Docstring:**
+  `````
+  Equivalent of the :func:`apply` built-in function.
+  
+  Callbacks should optimally return as soon as possible since
+  otherwise the thread which handles the result will get blocked.
+  `````
+
+**Properties (3):**
+- `@property info`
+- `@property active`
+- `@property num_processes`
+
+**Class Variables (12):**
+- `RUN = 1`
+- `CLOSE = 2`
+- `TERMINATE = 3`
+- `Timer = timer2.Timer`
+- `signal_safe = True`
+- `is_green = False`
+- `_state = None`
+- `_pool = None`
+- `_does_debug = True`
+- `uses_semaphore = False`
+- `task_join_will_block = True`
+- `body_can_be_buffer = False`
+
+#### 🔧 Public Functions (1)
+
+- `def apply_target(target, args = (), kwargs = None, callback = None, accept_callback = None, pid = None, getpid = os.getpid, propagate = (), monotonic = time.monotonic, **_)`
+  - *Line: 22*
+  - *Apply function within pool context.*
+
+
+---
+
+`````python
 """Base Execution Pool."""
 import logging
 import os
@@ -26866,10 +39780,103 @@ class BasePool:
     def num_processes(self):
         return self.limit
 
-```
+`````
 
-### 代码文件: celery\concurrency\eventlet.py
-```python
+--- **end of file: celery/concurrency/base.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/eventlet.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/eventlet.py`
+
+#### 📝 Module Docstring
+
+`````
+Eventlet execution pool.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from time import monotonic`
+- `from greenlet import GreenletExit`
+- `from kombu.asynchronous import timer as _timer`
+- `from celery import signals`
+- `from  import base`
+- `from eventlet.greenthread import spawn_after`
+- `from greenlet import GreenletExit`
+- `from eventlet import greenthread`
+- `from eventlet.greenpool import GreenPool`
+- `import warnings`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Timer(_timer.Timer)`
+*Line: 36*
+
+**Docstring:**
+`````
+Eventlet Timer.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (2):**
+- `def clear(self)`
+- `def cancel(self, tref)`
+
+**Properties (1):**
+- `@property queue`
+
+##### 📌 `class TaskPool(base.BasePool)`
+*Line: 88*
+
+**Docstring:**
+`````
+Eventlet Task Pool.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (6):**
+- `def on_start(self)`
+- `def on_stop(self)`
+- `def on_apply(self, target, args = None, kwargs = None, callback = None, accept_callback = None, **_)`
+- `def grow(self, n = 1)`
+- `def shrink(self, n = 1)`
+- `def terminate_job(self, pid, signal = None)`
+
+**Class Variables (7):**
+- `Timer = Timer`
+- `signal_safe = False`
+- `is_green = True`
+- `task_join_will_block = False`
+- `_pool = None`
+- `_pool_map = None`
+- `_quick_put = None`
+
+#### 🔧 Public Functions (1)
+
+- `def apply_target(target, args = (), kwargs = None, callback = None, accept_callback = None, getpid = None)`
+  - *Line: 29*
+
+
+---
+
+`````python
 """Eventlet execution pool."""
 import sys
 from time import monotonic
@@ -27052,10 +40059,105 @@ class TaskPool(base.BasePool):
     def _cleanup_after_job_finish(greenlet, pool_map, pid):
         del pool_map[pid]
 
-```
+`````
 
-### 代码文件: celery\concurrency\gevent.py
-```python
+--- **end of file: celery/concurrency/eventlet.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/gevent.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/gevent.py`
+
+#### 📝 Module Docstring
+
+`````
+Gevent execution pool.
+`````
+
+#### 📦 Imports
+
+- `import functools`
+- `import types`
+- `from time import monotonic`
+- `from kombu.asynchronous import timer as _timer`
+- `from  import base`
+- `from gevent import Timeout`
+- `from gevent import Greenlet`
+- `from gevent import GreenletExit`
+- `from gevent import getcurrent`
+- `from gevent import spawn_raw`
+- `from gevent.pool import Pool`
+- `import gevent`
+- `from greenlet import GreenletExit`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Timer(_timer.Timer)`
+*Line: 42*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def clear(self)`
+
+**Properties (1):**
+- `@property queue`
+
+##### 📌 `class TaskPool(base.BasePool)`
+*Line: 85*
+
+**Docstring:**
+`````
+GEvent Pool.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (6):**
+- `def on_start(self)`
+- `def on_stop(self)`
+- `def on_apply(self, target, args = None, kwargs = None, callback = None, accept_callback = None, timeout = None, timeout_callback = None, apply_target = apply_target, **_)`
+- `def grow(self, n = 1)`
+- `def shrink(self, n = 1)`
+- `def terminate_job(self, pid, signal = None)`
+
+**Properties (1):**
+- `@property num_processes`
+
+**Class Variables (7):**
+- `Timer = Timer`
+- `signal_safe = False`
+- `is_green = True`
+- `task_join_will_block = False`
+- `_pool = None`
+- `_pool_map = None`
+- `_quick_put = None`
+
+#### 🔧 Public Functions (2)
+
+- `def apply_target(target, args = (), kwargs = None, callback = None, accept_callback = None, getpid = None, **_)`
+  - *Line: 21*
+
+- `def apply_timeout(target, args = (), kwargs = None, callback = None, accept_callback = None, getpid = None, timeout = None, timeout_callback = None, Timeout = Timeout, apply_target = base.apply_target, **rest)`
+  - *Line: 28*
+
+
+---
+
+`````python
 """Gevent execution pool."""
 import functools
 import types
@@ -27228,20 +40330,118 @@ def _terminate(self, signal):
     # Done in `TaskPool.terminate_job`
     pass
 
-```
+`````
 
-### 代码文件: celery\concurrency\prefork.py
-```python
+--- **end of file: celery/concurrency/gevent.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/prefork.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/prefork.py`
+
+#### 📝 Module Docstring
+
+`````
+Prefork execution pool.
+
+Pool implementation using :mod:`multiprocessing`.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import threading`
+- `import time`
+- `from billiard import forking_enable`
+- `from billiard.common import REMAP_SIGTERM`
+- `from billiard.common import TERM_SIGNAME`
+- `from billiard.pool import CLOSE`
+- `from billiard.pool import RUN`
+- `from billiard.pool import Pool as BlockingPool`
+- `from kombu.asynchronous import get_event_loop`
+- `from celery import platforms`
+- `from celery import signals`
+- `from celery._state import _set_task_join_will_block`
+- `from celery._state import set_default_app`
+- `from celery.app import trace`
+- `from celery.concurrency.base import BasePool`
+- `from celery.utils.functional import noop`
+- `from celery.utils.log import get_logger`
+- `from asynpool import AsynPool`
+- `from celery.app.trace import build_tracer`
+- `from celery.worker import state as worker_state`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class TaskPool(BasePool)`
+*Line: 95*
+
+**Docstring:**
+`````
+Multiprocessing Pool implementation.
+`````
+
+**Public Methods (7):**
+- `def on_start(self)`
+- `def restart(self)`
+- `def did_start_ok(self)`
+- `def register_with_event_loop(self, loop)`
+- `def on_stop(self)`
+  - *Gracefully stop the pool.*
+- `def on_terminate(self)`
+  - *Force terminate the pool.*
+- `def on_close(self)`
+
+**Properties (1):**
+- `@property num_processes`
+
+**Class Variables (4):**
+- `Pool = AsynPool`
+- `BlockingPool = BlockingPool`
+- `uses_semaphore = True`
+- `write_stats = None`
+
+#### 🔧 Public Functions (2)
+
+- `def process_initializer(app, hostname)`
+  - *Line: 41*
+  - **Docstring:**
+  `````
+  Pool child process initializer.
+  
+  Initialize the child pool process to ensure the correct
+  app instance is used and things like logging works.
+  `````
+
+- `def process_destructor(pid, exitcode)`
+  - *Line: 85*
+  - **Docstring:**
+  `````
+  Pool child process destructor.
+  
+  Dispatch the :signal:`worker_process_shutdown` signal.
+  `````
+
+
+---
+
+`````python
 """Prefork execution pool.
 
 Pool implementation using :mod:`multiprocessing`.
 """
 import os
+import threading
+import time
 
 from billiard import forking_enable
 from billiard.common import REMAP_SIGTERM, TERM_SIGNAME
 from billiard.pool import CLOSE, RUN
 from billiard.pool import Pool as BlockingPool
+from kombu.asynchronous import get_event_loop
 
 from celery import platforms, signals
 from celery._state import _set_task_join_will_block, set_default_app
@@ -27374,7 +40574,48 @@ class TaskPool(BasePool):
         """Gracefully stop the pool."""
         if self._pool is not None and self._pool._state in (RUN, CLOSE):
             self._pool.close()
-            self._pool.join()
+
+            # Keep firing timers (for heartbeats on async transports) while
+            # the pool drains. If not using an async transport, no hub exists
+            # and the timer thread is not created.
+            hub = get_event_loop()
+            if hub is not None:
+                shutdown_event = threading.Event()
+
+                def fire_timers_loop():
+                    while not shutdown_event.is_set():
+                        try:
+                            hub.fire_timers()
+                        except Exception:
+                            logger.warning(
+                                "Exception in timer thread during prefork on_stop()",
+                                exc_info=True,
+                            )
+                        # 0.5 seconds was chosen as a balance between joining quickly
+                        # after the pool join is complete and sleeping long enough to
+                        # avoid excessive CPU usage.
+                        time.sleep(0.5)
+
+                timer_thread = threading.Thread(
+                    target=fire_timers_loop,
+                    daemon=True,
+                    name="prefork-timer-shutdown",
+                )
+                timer_thread.start()
+
+                try:
+                    self._pool.join()
+                finally:
+                    shutdown_event.set()
+                    timer_thread.join(timeout=1.0)
+
+                    if timer_thread.is_alive():
+                        logger.warning(
+                            "Timer thread in prefork on_stop() did not terminate cleanly"
+                        )
+            else:
+                self._pool.join()
+
             self._pool = None
 
     def on_terminate(self):
@@ -27405,10 +40646,55 @@ class TaskPool(BasePool):
     def num_processes(self):
         return self._pool._processes
 
-```
+`````
 
-### 代码文件: celery\concurrency\solo.py
-```python
+--- **end of file: celery/concurrency/prefork.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/solo.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/solo.py`
+
+#### 📝 Module Docstring
+
+`````
+Single-threaded execution pool.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `from celery import signals`
+- `from base import BasePool`
+- `from base import apply_target`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class TaskPool(BasePool)`
+*Line: 11*
+
+**Docstring:**
+`````
+Solo task pool (blocking, inline, fast).
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Class Variables (1):**
+- `body_can_be_buffer = True`
+
+
+---
+
+`````python
 """Single-threaded execution pool."""
 import os
 
@@ -27441,10 +40727,79 @@ class TaskPool(BasePool):
         })
         return info
 
-```
+`````
 
-### 代码文件: celery\concurrency\thread.py
-```python
+--- **end of file: celery/concurrency/solo.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/thread.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/thread.py`
+
+#### 📝 Module Docstring
+
+`````
+Thread execution pool.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from concurrent.futures import Future`
+- `from concurrent.futures import ThreadPoolExecutor`
+- `from concurrent.futures import wait`
+- `from typing import TYPE_CHECKING`
+- `from typing import Any`
+- `from typing import Callable`
+- `from base import BasePool`
+- `from base import apply_target`
+- `from typing import TypedDict`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class ApplyResult`
+*Line: 21*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, future: Future)`
+  - **Parameters:**
+    - `self`
+    - `future: Future`
+
+**Public Methods (1):**
+- `def wait(self, timeout: float | None = None) -> None`
+
+##### 📌 `class TaskPool(BasePool)`
+*Line: 30*
+
+**Docstring:**
+`````
+Thread Task Pool.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args: Any, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `*args: Any`
+    - `**kwargs: Any`
+
+**Public Methods (2):**
+- `def on_stop(self) -> None`
+- `def on_apply(self, target: TargetFunction, args: tuple[Any, ...] | None = None, kwargs: dict[str, Any] | None = None, callback: Callable[..., Any] | None = None, accept_callback: Callable[..., Any] | None = None, **_: Any) -> ApplyResult`
+
+**Class Variables (3):**
+- `limit: int`
+- `body_can_be_buffer = True`
+- `signal_safe = False`
+
+
+---
+
+`````python
 """Thread execution pool."""
 from __future__ import annotations
 
@@ -27510,10 +40865,44 @@ class TaskPool(BasePool):
         })
         return info
 
-```
+`````
 
-### 代码文件: celery\concurrency\__init__.py
-```python
+--- **end of file: celery/concurrency/thread.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/concurrency/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/concurrency/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Pool implementation abstract factory, and alias definitions.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `from kombu.utils.imports import symbol_by_name`
+- `import concurrent.futures`
+
+#### 🔧 Public Functions (2)
+
+- `def get_implementation(cls)`
+  - *Line: 41*
+  - *Return pool implementation by name.*
+
+- `def get_available_pool_names()`
+  - *Line: 46*
+  - *Return all available pool type names.*
+
+
+---
+
+`````python
 """Pool implementation abstract factory, and alias definitions."""
 import os
 
@@ -27563,10 +40952,178 @@ def get_available_pool_names():
     """Return all available pool type names."""
     return tuple(ALIASES.keys())
 
-```
+`````
 
-### 代码文件: celery\contrib\abortable.py
-```python
+--- **end of file: celery/concurrency/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/abortable.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/abortable.py`
+
+#### 📝 Module Docstring
+
+`````
+Abortable Tasks.
+
+Abortable tasks overview
+=========================
+
+For long-running :class:`Task`'s, it can be desirable to support
+aborting during execution.  Of course, these tasks should be built to
+support abortion specifically.
+
+The :class:`AbortableTask` serves as a base class for all :class:`Task`
+objects that should support abortion by producers.
+
+* Producers may invoke the :meth:`abort` method on
+  :class:`AbortableAsyncResult` instances, to request abortion.
+
+* Consumers (workers) should periodically check (and honor!) the
+  :meth:`is_aborted` method at controlled points in their task's
+  :meth:`run` method.  The more often, the better.
+
+The necessary intermediate communication is dealt with by the
+:class:`AbortableTask` implementation.
+
+Usage example
+-------------
+
+In the consumer:
+
+.. code-block:: python
+
+    from celery.contrib.abortable import AbortableTask
+    from celery.utils.log import get_task_logger
+
+    from proj.celery import app
+
+    logger = get_logger(__name__)
+
+    @app.task(bind=True, base=AbortableTask)
+    def long_running_task(self):
+        results = []
+        for i in range(100):
+            # check after every 5 iterations...
+            # (or alternatively, check when some timer is due)
+            if not i % 5:
+                if self.is_aborted():
+                    # respect aborted state, and terminate gracefully.
+                    logger.warning('Task aborted')
+                    return
+                value = do_something_expensive(i)
+                results.append(y)
+        logger.info('Task complete')
+        return results
+
+In the producer:
+
+.. code-block:: python
+
+    import time
+
+    from proj.tasks import MyLongRunningTask
+
+    def myview(request):
+        # result is of type AbortableAsyncResult
+        result = long_running_task.delay()
+
+        # abort the task after 10 seconds
+        time.sleep(10)
+        result.abort()
+
+After the `result.abort()` call, the task execution isn't
+aborted immediately.  In fact, it's not guaranteed to abort at all.
+Keep checking `result.state` status, or call `result.get(timeout=)` to
+have it block until the task is finished.
+
+.. note::
+
+   In order to abort tasks, there needs to be communication between the
+   producer and the consumer.  This is currently implemented through the
+   database backend.  Therefore, this class will only work with the
+   database backends.
+`````
+
+#### 📦 Imports
+
+- `from celery import Task`
+- `from celery.result import AsyncResult`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class AbortableAsyncResult(AsyncResult)`
+*Line: 103*
+
+**Docstring:**
+`````
+Represents an abortable result.
+
+Specifically, this gives the `AsyncResult` a :meth:`abort()` method,
+that sets the state of the underlying Task to `'ABORTED'`.
+`````
+
+**Public Methods (2):**
+- `def is_aborted(self)`
+  - *Return :const:`True` if the task is (being) aborted.*
+- `def abort(self)`
+  - **Docstring:**
+  `````
+  Set the state of the task to :const:`ABORTED`.
+  
+  Abortable tasks monitor their state at regular intervals and
+  terminate execution if so.
+  
+  Warning:
+      Be aware that invoking this method does not guarantee when the
+      task will be aborted (or even if the task will be aborted at all).
+  `````
+
+##### 📌 `class AbortableTask(Task)`
+*Line: 130*
+
+**Docstring:**
+`````
+Task that can be aborted.
+
+This serves as a base class for all :class:`Task`'s
+that support aborting during execution.
+
+All subclasses of :class:`AbortableTask` must call the
+:meth:`is_aborted` method periodically and act accordingly when
+the call evaluates to :const:`True`.
+`````
+
+**Public Methods (2):**
+- `def AsyncResult(self, task_id)`
+  - *Return the accompanying AbortableAsyncResult instance.*
+- `def is_aborted(self, **kwargs)`
+  - **Docstring:**
+  `````
+  Return true if task is aborted.
+  
+  Checks against the backend whether this
+  :class:`AbortableAsyncResult` is :const:`ABORTED`.
+  
+  Always return :const:`False` in case the `task_id` parameter
+  refers to a regular (non-abortable) :class:`Task`.
+  
+  Be aware that invoking this method will cause a hit in the
+  backend (for example a database query), so find a good balance
+  between calling it regularly (for responsiveness), but not too
+  often (for performance).
+  `````
+
+**Class Variables (1):**
+- `abstract = True`
+
+
+---
+
+`````python
 """Abortable Tasks.
 
 Abortable tasks overview
@@ -27733,10 +41290,262 @@ class AbortableTask(Task):
             return False
         return result.is_aborted()
 
-```
+`````
 
-### 代码文件: celery\contrib\migrate.py
-```python
+--- **end of file: celery/contrib/abortable.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/migrate.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/migrate.py`
+
+#### 📝 Module Docstring
+
+`````
+Message migration tools (Broker <-> Broker).
+`````
+
+#### 📦 Imports
+
+- `import socket`
+- `from functools import partial`
+- `from itertools import cycle`
+- `from itertools import islice`
+- `from kombu import Queue`
+- `from kombu import eventloop`
+- `from kombu.common import maybe_declare`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from celery.app import app_or_default`
+- `from celery.utils.nodenames import worker_direct`
+- `from celery.utils.text import str_to_list`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class StopFiltering(Exception)`
+*Line: 27*
+
+**Docstring:**
+`````
+Semi-predicate used to signal filter stop.
+`````
+
+##### 📌 `class State`
+*Line: 31*
+
+**Docstring:**
+`````
+Migration progress state.
+`````
+
+**Properties (1):**
+- `@property strtotal`
+
+**Class Variables (3):**
+- `count = 0`
+- `filtered = 0`
+- `total_apx = 0`
+
+##### 📌 `class Filterer`
+*Line: 247*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, conn, filter, limit = None, timeout = 1.0, ack_messages = False, tasks = None, queues = None, callback = None, forever = False, on_declare_queue = None, consume_from = None, state = None, accept = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `conn`
+    - `filter`
+    - `limit = None`
+    - `timeout = 1.0`
+    - `ack_messages = False`
+    - `tasks = None`
+    - `queues = None`
+    - `callback = None`
+    - `forever = False`
+    - `on_declare_queue = None`
+    - `consume_from = None`
+    - `state = None`
+    - `accept = None`
+    - `**kwargs`
+
+**Public Methods (6):**
+- `def start(self)`
+- `def update_state(self, body, message)`
+- `def ack_message(self, body, message)`
+- `def create_consumer(self)`
+- `def prepare_consumer(self, consumer)`
+- `def declare_queues(self, consumer)`
+
+#### 🔧 Public Functions (19)
+
+- `def republish(producer, message, exchange = None, routing_key = None, remove_props = None)`
+  - *Line: 50*
+  - *Republish message.*
+
+- `def migrate_task(producer, body_, message, queues = None)`
+  - *Line: 80*
+  - *Migrate single task message.*
+
+- `def filter_callback(callback, tasks)`
+  - *Line: 89*
+
+- `def migrate_tasks(source, dest, migrate = migrate_task, app = None, queues = None, **kwargs)`
+  - *Line: 99*
+  - *Migrate tasks from one broker to another.*
+
+- `def move(predicate, connection = None, exchange = None, routing_key = None, source = None, app = None, callback = None, limit = None, transform = None, **kwargs)`
+  - *Line: 127*
+  - **Docstring:**
+  `````
+  Find tasks by filtering them and move the tasks to a new queue.
+  
+  Arguments:
+      predicate (Callable): Filter function used to decide the messages
+          to move.  Must accept the standard signature of ``(body, message)``
+          used by Kombu consumer callbacks.  If the predicate wants the
+          message to be moved it must return either:
+  
+              1) a tuple of ``(exchange, routing_key)``, or
+  
+              2) a :class:`~kombu.entity.Queue` instance, or
+  
+              3) any other true value means the specified
+                  ``exchange`` and ``routing_key`` arguments will be used.
+      connection (kombu.Connection): Custom connection to use.
+      source: List[Union[str, kombu.Queue]]: Optional list of source
+          queues to use instead of the default (queues
+          in :setting:`task_queues`).  This list can also contain
+          :class:`~kombu.entity.Queue` instances.
+      exchange (str, kombu.Exchange): Default destination exchange.
+      routing_key (str): Default destination routing key.
+      limit (int): Limit number of messages to filter.
+      callback (Callable): Callback called after message moved,
+          with signature ``(state, body, message)``.
+      transform (Callable): Optional function to transform the return
+          value (destination) of the filter function.
+  
+  Also supports the same keyword arguments as :func:`start_filter`.
+  
+  To demonstrate, the :func:`move_task_by_id` operation can be implemented
+  like this:
+  
+  .. code-block:: python
+  
+      def is_wanted_task(body, message):
+          if body['id'] == wanted_id:
+              return Queue('foo', exchange=Exchange('foo'),
+                           routing_key='foo')
+  
+      move(is_wanted_task)
+  
+  or with a transform:
+  
+  .. code-block:: python
+  
+      def transform(value):
+          if isinstance(value, str):
+              return Queue(value, Exchange(value), value)
+          return value
+  
+      move(is_wanted_task, transform=transform)
+  
+  Note:
+      The predicate may also return a tuple of ``(exchange, routing_key)``
+      to specify the destination to where the task should be moved,
+      or a :class:`~kombu.entity.Queue` instance.
+      Any other true value means that the task will be moved to the
+      default exchange/routing_key.
+  `````
+
+- `def expand_dest(ret, exchange, routing_key)`
+  - *Line: 218*
+
+- `def task_id_eq(task_id, body, message)`
+  - *Line: 226*
+  - *Return true if task id equals task_id'.*
+
+- `def task_id_in(ids, body, message)`
+  - *Line: 231*
+  - *Return true if task id is member of set ids'.*
+
+- `def prepare_queues(queues)`
+  - *Line: 236*
+
+- `def start_filter(app, conn, filter, limit = None, timeout = 1.0, ack_messages = False, tasks = None, queues = None, callback = None, forever = False, on_declare_queue = None, consume_from = None, state = None, accept = None, **kwargs)`
+  - *Line: 337*
+  - *Filter tasks.*
+
+- `def move_task_by_id(task_id, dest, **kwargs)`
+  - *Line: 358*
+  - **Docstring:**
+  `````
+  Find a task by id and move it to another queue.
+  
+  Arguments:
+      task_id (str): Id of task to find and move.
+      dest: (str, kombu.Queue): Destination queue.
+      transform (Callable): Optional function to transform the return
+          value (destination) of the filter function.
+      **kwargs (Any): Also supports the same keyword
+          arguments as :func:`move`.
+  `````
+
+- `def move_by_idmap(map, **kwargs)`
+  - *Line: 372*
+  - **Docstring:**
+  `````
+  Move tasks by matching from a ``task_id: queue`` mapping.
+  
+  Where ``queue`` is a queue to move the task to.
+  
+  Example:
+      >>> move_by_idmap({
+      ...     '5bee6e82-f4ac-468e-bd3d-13e8600250bc': Queue('name'),
+      ...     'ada8652d-aef3-466b-abd2-becdaf1b82b3': Queue('name'),
+      ...     '3a2b140d-7db1-41ba-ac90-c36a0ef4ab1f': Queue('name')},
+      ...   queues=['hipri'])
+  `````
+
+- `def move_by_taskmap(map, **kwargs)`
+  - *Line: 392*
+  - **Docstring:**
+  `````
+  Move tasks by matching from a ``task_name: queue`` mapping.
+  
+  ``queue`` is the queue to move the task to.
+  
+  Example:
+      >>> move_by_taskmap({
+      ...     'tasks.add': Queue('name'),
+      ...     'tasks.mul': Queue('name'),
+      ... })
+  `````
+
+- `def filter_status(state, body, message, **kwargs)`
+  - *Line: 409*
+
+- `def filtered(body, message)`
+  - *Line: 91*
+
+- `def on_declare_queue(queue)`
+  - *Line: 107*
+
+- `def task_id_in_map(body, message)`
+  - *Line: 384*
+
+- `def task_name_in_map(body, message)`
+  - *Line: 403*
+
+- `def on_task(body, message)`
+  - *Line: 195*
+
+
+---
+
+`````python
 """Message migration tools (Broker <-> Broker)."""
 import socket
 from functools import partial
@@ -28154,10 +41963,141 @@ move_direct_by_id = partial(move_task_by_id, transform=worker_direct)
 move_direct_by_idmap = partial(move_by_idmap, transform=worker_direct)
 move_direct_by_taskmap = partial(move_by_taskmap, transform=worker_direct)
 
-```
+`````
 
-### 代码文件: celery\contrib\pytest.py
-```python
+--- **end of file: celery/contrib/migrate.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/pytest.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/pytest.py`
+
+#### 📝 Module Docstring
+
+`````
+Fixtures and testing utilities for :pypi:`pytest <pytest>`.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `from contextlib import contextmanager`
+- `from typing import TYPE_CHECKING`
+- `from typing import Any`
+- `from typing import Mapping`
+- `from typing import Sequence`
+- `from typing import Union`
+- `import pytest`
+- `from celery import Celery`
+- `from worker import WorkController`
+- `from testing.app import TestApp`
+- `from testing.app import setup_default_app`
+- `from testing import worker`
+- `from testing import worker`
+
+#### 🔧 Public Functions (14)
+
+- `def pytest_configure(config)`
+  - *Line: 22*
+  - *Register additional pytest configuration.*
+
+- `def use_celery_app_trap()` `pytest.fixture(scope='session')`
+  - *Line: 54*
+  - **Docstring:**
+  `````
+  You can override this fixture to enable the app trap.
+  
+  The app trap raises an exception whenever something attempts
+  to use the current or default apps.
+  `````
+
+- `def celery_session_app(request, celery_config, celery_parameters, celery_enable_logging, use_celery_app_trap)` `pytest.fixture(scope='session')`
+  - *Line: 65*
+  - *Session Fixture: Return app for session fixtures.*
+
+- `def celery_session_worker(request, celery_session_app, celery_includes, celery_class_tasks, celery_worker_pool, celery_worker_parameters)` `pytest.fixture(scope='session')`
+  - *Line: 85*
+  - *Session Fixture: Start worker that lives throughout test suite.*
+
+- `def celery_enable_logging()` `pytest.fixture(scope='session')`
+  - *Line: 109*
+  - *You can override this fixture to enable logging.*
+
+- `def celery_includes()` `pytest.fixture(scope='session')`
+  - *Line: 116*
+  - **Docstring:**
+  `````
+  You can override this include modules when a worker start.
+  
+  You can have this return a list of module names to import,
+  these can be task modules, modules registering signals, and so on.
+  `````
+
+- `def celery_worker_pool()` `pytest.fixture(scope='session')`
+  - *Line: 127*
+  - **Docstring:**
+  `````
+  You can override this fixture to set the worker pool.
+  
+  The "solo" pool is used by default, but you can set this to
+  return e.g. "prefork".
+  `````
+
+- `def celery_config()` `pytest.fixture(scope='session')`
+  - *Line: 138*
+  - **Docstring:**
+  `````
+  Redefine this fixture to configure the test Celery app.
+  
+  The config returned by your fixture will then be used
+  to configure the :func:`celery_app` fixture.
+  `````
+
+- `def celery_parameters()` `pytest.fixture(scope='session')`
+  - *Line: 149*
+  - **Docstring:**
+  `````
+  Redefine this fixture to change the init parameters of test Celery app.
+  
+  The dict returned by your fixture will then be used
+  as parameters when instantiating :class:`~celery.Celery`.
+  `````
+
+- `def celery_worker_parameters()` `pytest.fixture(scope='session')`
+  - *Line: 160*
+  - **Docstring:**
+  `````
+  Redefine this fixture to change the init parameters of Celery workers.
+  
+  This can be used e. g. to define queues the worker will consume tasks from.
+  
+  The dict returned by your fixture will then be used
+  as parameters when instantiating :class:`~celery.worker.WorkController`.
+  `````
+
+- `def celery_app(request, celery_config, celery_parameters, celery_enable_logging, use_celery_app_trap)` `pytest.fixture()`
+  - *Line: 173*
+  - *Fixture creating a Celery application instance.*
+
+- `def celery_class_tasks()` `pytest.fixture(scope='session')`
+  - *Line: 189*
+  - *Redefine this fixture to register tasks with the test Celery app.*
+
+- `def celery_worker(request, celery_app, celery_includes, celery_worker_pool, celery_worker_parameters)` `pytest.fixture()`
+  - *Line: 195*
+  - *Fixture: Start worker in a thread, stop it when the test returns.*
+
+- `def depends_on_current_app(celery_app)` `pytest.fixture()`
+  - *Line: 214*
+  - *Fixture that sets app as current.*
+
+
+---
+
+`````python
 """Fixtures and testing utilities for :pypi:`pytest <pytest>`."""
 import os
 from contextlib import contextmanager
@@ -28375,10 +42315,123 @@ def depends_on_current_app(celery_app):
     """Fixture that sets app as current."""
     celery_app.set_current()
 
-```
+`````
 
-### 代码文件: celery\contrib\rdb.py
-```python
+--- **end of file: celery/contrib/pytest.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/rdb.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/rdb.py`
+
+#### 📝 Module Docstring
+
+`````
+Remote Debugger.
+
+Introduction
+============
+
+This is a remote debugger for Celery tasks running in multiprocessing
+pool workers.  Inspired by a lost post on dzone.com.
+
+Usage
+-----
+
+.. code-block:: python
+
+    from celery.contrib import rdb
+    from celery import task
+
+    @task()
+    def add(x, y):
+        result = x + y
+        rdb.set_trace()
+        return result
+
+Environment Variables
+=====================
+
+.. envvar:: CELERY_RDB_HOST
+
+``CELERY_RDB_HOST``
+-------------------
+
+    Hostname to bind to.  Default is '127.0.0.1' (only accessible from
+    localhost).
+
+.. envvar:: CELERY_RDB_PORT
+
+``CELERY_RDB_PORT``
+-------------------
+
+    Base port to bind to.  Default is 6899.
+    The debugger will try to find an available port starting from the
+    base port.  The selected port will be logged by the worker.
+`````
+
+#### 📦 Imports
+
+- `import errno`
+- `import os`
+- `import socket`
+- `import sys`
+- `from pdb import Pdb`
+- `from billiard.process import current_process`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Rdb(Pdb)`
+*Line: 84*
+
+**Docstring:**
+`````
+Remote debugger.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, host = CELERY_RDB_HOST, port = CELERY_RDB_PORT, port_search_limit = 100, port_skew = +0, out = sys.stdout)`
+  - **Parameters:**
+    - `self`
+    - `host = CELERY_RDB_HOST`
+    - `port = CELERY_RDB_PORT`
+    - `port_search_limit = 100`
+    - `port_skew = +0`
+    - `out = sys.stdout`
+
+**Public Methods (5):**
+- `def get_avail_port(self, host, port, search_limit = 100, skew = +0)`
+- `def say(self, m)`
+- `def do_continue(self, arg)`
+- `def do_quit(self, arg)`
+- `def set_quit(self)`
+
+**Class Variables (7):**
+- `me = 'Remote Debugger'`
+- `_prev_outs = None`
+- `_sock = None`
+- `do_c = do_continue`
+- `do_cont = do_continue`
+- `do_q = do_quit`
+- `do_exit = do_quit`
+
+#### 🔧 Public Functions (2)
+
+- `def debugger()`
+  - *Line: 175*
+  - *Return the current debugger instance, or create if none.*
+
+- `def set_trace(frame = None)`
+  - *Line: 183*
+  - *Set break-point at current location, or a specified frame.*
+
+
+---
+
+`````python
 """Remote Debugger.
 
 Introduction
@@ -28567,10 +42620,125 @@ def set_trace(frame=None):
         frame = _frame().f_back
     return debugger().set_trace(frame)
 
-```
+`````
 
-### 代码文件: celery\contrib\sphinx.py
-```python
+--- **end of file: celery/contrib/rdb.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/sphinx.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/sphinx.py`
+
+#### 📝 Module Docstring
+
+`````
+Sphinx documentation plugin used to document tasks.
+
+Introduction
+============
+
+Usage
+-----
+
+The Celery extension for Sphinx requires Sphinx 2.0 or later.
+
+Add the extension to your :file:`docs/conf.py` configuration module:
+
+.. code-block:: python
+
+    extensions = (...,
+                  'celery.contrib.sphinx')
+
+If you'd like to change the prefix for tasks in reference documentation
+then you can change the ``celery_task_prefix`` configuration value:
+
+.. code-block:: python
+
+    celery_task_prefix = '(task)'  # < default
+
+With the extension installed `autodoc` will automatically find
+task decorated objects (e.g. when using the automodule directive)
+and generate the correct (as well as add a ``(task)`` prefix),
+and you can also refer to the tasks using `:task:proj.tasks.add`
+syntax.
+
+Use ``.. autotask::`` to alternatively manually document a task.
+
+Sphinx 9.0+ Compatibility
+-------------------------
+
+Sphinx 9.0 introduced a rewritten autodoc implementation. The Celery
+extension requires the legacy class-based autodoc mode to function
+correctly. When using Sphinx 9.0 or later, add the following to your
+:file:`conf.py`:
+
+.. code-block:: python
+
+    autodoc_use_legacy_class_based = True
+
+The extension will automatically enable this setting if not configured,
+but it is recommended to set it explicitly to avoid warnings.
+`````
+
+#### 📦 Imports
+
+- `import warnings`
+- `from inspect import signature`
+- `from docutils import nodes`
+- `from sphinx.domains.python import PyFunction`
+- `from sphinx.domains.python import PyXRefRole`
+- `from sphinx.ext.autodoc import FunctionDocumenter`
+- `from celery.app.task import BaseTask`
+- `import sphinx`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class TaskDocumenter(FunctionDocumenter)`
+*Line: 58*
+
+**Docstring:**
+`````
+Document task definitions.
+`````
+
+**Public Methods (4):**
+- `def can_document_member(cls, member, membername, isattr, parent)` `classmethod`
+- `def format_args(self)`
+- `def document_members(self, all_members = False)`
+- `def check_module(self)`
+
+**Class Variables (2):**
+- `objtype = 'task'`
+- `member_order = 11`
+
+##### 📌 `class TaskDirective(PyFunction)`
+*Line: 91*
+
+**Docstring:**
+`````
+Sphinx task directive.
+`````
+
+**Public Methods (1):**
+- `def get_signature_prefix(self, sig)`
+
+#### 🔧 Public Functions (2)
+
+- `def autodoc_skip_member_handler(app, what, name, obj, skip, options)`
+  - *Line: 98*
+  - *Handler for autodoc-skip-member event.*
+
+- `def setup(app)`
+  - *Line: 111*
+  - *Setup Sphinx extension.*
+
+
+---
+
+`````python
 """Sphinx documentation plugin used to document tasks.
 
 Introduction
@@ -28602,11 +42770,27 @@ and you can also refer to the tasks using `:task:proj.tasks.add`
 syntax.
 
 Use ``.. autotask::`` to alternatively manually document a task.
+
+Sphinx 9.0+ Compatibility
+-------------------------
+
+Sphinx 9.0 introduced a rewritten autodoc implementation. The Celery
+extension requires the legacy class-based autodoc mode to function
+correctly. When using Sphinx 9.0 or later, add the following to your
+:file:`conf.py`:
+
+.. code-block:: python
+
+    autodoc_use_legacy_class_based = True
+
+The extension will automatically enable this setting if not configured,
+but it is recommended to set it explicitly to avoid warnings.
 """
+import warnings
 from inspect import signature
 
 from docutils import nodes
-from sphinx.domains.python import PyFunction
+from sphinx.domains.python import PyFunction, PyXRefRole
 from sphinx.ext.autodoc import FunctionDocumenter
 
 from celery.app.task import BaseTask
@@ -28667,9 +42851,27 @@ def autodoc_skip_member_handler(app, what, name, obj, skip, options):
 
 def setup(app):
     """Setup Sphinx extension."""
+    import sphinx
+
     app.setup_extension('sphinx.ext.autodoc')
+
+    # Sphinx 9.0+ rewrote autodoc; TaskDocumenter requires legacy mode.
+    # See: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
+    sphinx_version = tuple(int(x) for x in sphinx.__version__.split('.')[:2])
+    if sphinx_version >= (9, 0):
+        if not getattr(app.config, 'autodoc_use_legacy_class_based', False):
+            warnings.warn(
+                "Sphinx 9.0+ detected. celery.contrib.sphinx requires "
+                "'autodoc_use_legacy_class_based = True' in conf.py. "
+                "Enabling it automatically.",
+                UserWarning,
+                stacklevel=2
+            )
+            app.config.autodoc_use_legacy_class_based = True
+
     app.add_autodocumenter(TaskDocumenter)
     app.add_directive_to_domain('py', 'task', TaskDirective)
+    app.add_role_to_domain('py', 'task', PyXRefRole(fix_parens=True))
     app.add_config_value('celery_task_prefix', '(task)', True)
     app.connect('autodoc-skip-member', autodoc_skip_member_handler)
 
@@ -28677,15 +42879,63 @@ def setup(app):
         'parallel_read_safe': True
     }
 
-```
+`````
 
-### 代码文件: celery\contrib\__init__.py
-```python
+--- **end of file: celery/contrib/sphinx.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: celery\contrib\django\task.py
-```python
+
+--- **start of file: celery/contrib/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/__init__.py`
+
+
+---
+
+`````python
+
+`````
+
+--- **end of file: celery/contrib/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/django/task.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/django/task.py`
+
+#### 📦 Imports
+
+- `import functools`
+- `from django.db import transaction`
+- `from celery.app.task import Task`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class DjangoTask(Task)`
+*Line: 8*
+
+**Docstring:**
+`````
+Extend the base :class:`~celery.app.task.Task` for Django.
+
+Provide a nicer API to trigger tasks at the end of the DB transaction.
+`````
+
+**Public Methods (2):**
+- `def delay_on_commit(self, *args, **kwargs) -> None`
+  - *Call :meth:`~celery.app.task.Task.delay` with Django's ``on_commit()``.*
+- `def apply_async_on_commit(self, *args, **kwargs) -> None`
+  - *Call :meth:`~celery.app.task.Task.apply_async` with Django's ``on_commit()``.*
+
+
+---
+
+`````python
 import functools
 
 from django.db import transaction
@@ -28708,15 +42958,114 @@ class DjangoTask(Task):
         """Call :meth:`~celery.app.task.Task.apply_async` with Django's ``on_commit()``."""
         transaction.on_commit(functools.partial(self.apply_async, *args, **kwargs))
 
-```
+`````
 
-### 代码文件: celery\contrib\django\__init__.py
-```python
+--- **end of file: celery/contrib/django/task.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: celery\contrib\testing\app.py
-```python
+
+--- **start of file: celery/contrib/django/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/django/__init__.py`
+
+
+---
+
+`````python
+
+`````
+
+--- **end of file: celery/contrib/django/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/testing/app.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/app.py`
+
+#### 📝 Module Docstring
+
+`````
+Create Celery app instances used for testing.
+`````
+
+#### 📦 Imports
+
+- `import weakref`
+- `from contextlib import contextmanager`
+- `from copy import deepcopy`
+- `from kombu.utils.imports import symbol_by_name`
+- `from celery import Celery`
+- `from celery import _state`
+- `from  import tasks`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Trap`
+*Line: 23*
+
+**Docstring:**
+`````
+Trap that pretends to be an app but raises an exception instead.
+
+This to protect from code that does not properly pass app instances,
+then falls back to the current_app.
+`````
+
+##### 📌 `class UnitLogging(symbol_by_name(Celery.log_cls))`
+*Line: 39*
+
+**Docstring:**
+`````
+Sets up logging for the test application.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class NonTLS`
+*Line: 79*
+
+**Class Variables (1):**
+- `current_app = trap`
+
+#### 🔧 Public Functions (3)
+
+- `def TestApp(name = None, config = None, enable_logging = False, set_as_current = False, log = UnitLogging, backend = None, broker = None, **kwargs)`
+  - *Line: 47*
+  - *App used for testing.*
+
+- `def set_trap(app)` `contextmanager`
+  - *Line: 69*
+  - **Docstring:**
+  `````
+  Contextmanager that installs the trap app.
+  
+  The trap means that anything trying to use the current or default app
+  will raise an exception.
+  `````
+
+- `def setup_default_app(app, use_trap = False)` `contextmanager`
+  - *Line: 90*
+  - **Docstring:**
+  `````
+  Setup default app for testing.
+  
+  Ensures state is clean after the test returns.
+  `````
+
+
+---
+
+`````python
 """Create Celery app instances used for testing."""
 import weakref
 from contextlib import contextmanager
@@ -28830,10 +43179,112 @@ def setup_default_app(app, use_trap=False):
         _state._on_app_finalizers = prev_finalizers
         _state._apps = prev_apps
 
-```
+`````
 
-### 代码文件: celery\contrib\testing\manager.py
-```python
+--- **end of file: celery/contrib/testing/app.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/testing/manager.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/manager.py`
+
+#### 📝 Module Docstring
+
+`````
+Integration testing utilities.
+`````
+
+#### 📦 Imports
+
+- `import socket`
+- `import sys`
+- `from collections import defaultdict`
+- `from functools import partial`
+- `from itertools import count`
+- `from typing import Any`
+- `from typing import Callable`
+- `from typing import Dict`
+- `from typing import Sequence`
+- `from typing import TextIO`
+- `from typing import Tuple`
+- `from kombu.exceptions import ContentDisallowed`
+- `from kombu.utils.functional import retry_over_time`
+- `from celery import states`
+- `from celery.exceptions import TimeoutError`
+- `from celery.result import AsyncResult`
+- `from celery.result import ResultSet`
+- `from celery.utils.text import truncate`
+- `from celery.utils.time import humanize_seconds as _humanize_seconds`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Sentinel(Exception)`
+*Line: 23*
+
+**Docstring:**
+`````
+Signifies the end of something.
+`````
+
+##### 📌 `class ManagerMixin`
+*Line: 27*
+
+**Docstring:**
+`````
+Mixin that adds :class:`Manager` capabilities.
+`````
+
+**Public Methods (19):**
+- `def remark(self, s, sep = '-')`
+- `def missing_results(self, r)`
+- `def wait_for(self, fun, catch, desc = 'thing', args = (), kwargs = None, errback = None, max_retries = 10, interval_start = 0.1, interval_step = 0.5, interval_max = 5.0, emit_warning = False, **options)`
+  - **Docstring:**
+  `````
+  Wait for event to happen.
+  
+  The `catch` argument specifies the exception that means the event
+  has not happened yet.
+  `````
+- `def ensure_not_for_a_while(self, fun, catch, desc = 'thing', max_retries = 20, interval_start = 0.1, interval_step = 0.02, interval_max = 1.0, emit_warning = False, **options)`
+  - *Make sure something does not happen (at least for a while).*
+- `def retry_over_time(self, *args, **kwargs)`
+- `def join(self, r, propagate = False, max_retries = 10, **kwargs)`
+- `def inspect(self, timeout = 3.0)`
+- `def query_tasks(self, ids, timeout = 0.5)`
+- `def query_task_states(self, ids, timeout = 0.5)`
+- `def assert_accepted(self, ids, interval = 0.5, desc = 'waiting for tasks to be accepted', **policy)`
+- `def assert_received(self, ids, interval = 0.5, desc = 'waiting for tasks to be received', **policy)`
+- `def assert_result_tasks_in_progress_or_completed(self, async_results, interval = 0.5, desc = 'waiting for tasks to be started or completed', **policy)`
+- `def assert_task_state_from_result(self, fun, results, interval = 0.5, **policy)`
+- `def is_result_task_in_progress(results, **kwargs)` `staticmethod`
+- `def assert_task_worker_state(self, fun, ids, interval = 0.5, **policy)`
+- `def is_received(self, ids, **kwargs)`
+- `def is_accepted(self, ids, **kwargs)`
+- `def true_or_raise(self, fun, *args, **kwargs)`
+- `def wait_until_idle(self)`
+
+##### 📌 `class Manager(ManagerMixin)`
+*Line: 234*
+
+**Docstring:**
+`````
+Test helpers for task integration tests.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `**kwargs`
+
+
+---
+
+`````python
 """Integration testing utilities."""
 import socket
 import sys
@@ -29074,10 +43525,82 @@ class Manager(ManagerMixin):
         self.app = app
         self._init_manager(**kwargs)
 
-```
+`````
 
-### 代码文件: celery\contrib\testing\mocks.py
-```python
+--- **end of file: celery/contrib/testing/manager.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/testing/mocks.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/mocks.py`
+
+#### 📝 Module Docstring
+
+`````
+Useful mocks for unit testing.
+`````
+
+#### 📦 Imports
+
+- `import numbers`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from typing import Any`
+- `from typing import Mapping`
+- `from typing import Sequence`
+- `from unittest.mock import Mock`
+- `from celery import Celery`
+- `from celery.canvas import Signature`
+- `from kombu.serialization import dumps`
+- `from celery import uuid`
+- `from kombu.serialization import dumps`
+- `from celery import uuid`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class _ContextMock(Mock)`
+*Line: 114*
+
+**Docstring:**
+`````
+Dummy class implementing __enter__ and __exit__.
+
+The :keyword:`with` statement requires these to be implemented
+in the class, not just the instance.
+`````
+
+#### 🔧 Public Functions (4)
+
+- `def TaskMessage(name, id = None, args = (), kwargs = None, callbacks = None, errbacks = None, chain = None, shadow = None, utc = None, **options)`
+  - *Line: 11*
+  - *Create task message in protocol 2 format.*
+
+- `def TaskMessage1(name, id = None, args = (), kwargs = None, callbacks = None, errbacks = None, chain = None, **options)`
+  - *Line: 45*
+  - *Create task message in protocol 1 format.*
+
+- `def task_message_from_sig(app, sig, utc = True, TaskMessage = TaskMessage)`
+  - *Line: 79*
+  - **Docstring:**
+  `````
+  Create task message from :class:`celery.Signature`.
+  
+  Example:
+      >>> m = task_message_from_sig(app, add.s(2, 2))
+      >>> amqp_client.basic_publish(m, exchange='ex', routing_key='rkey')
+  `````
+
+- `def ContextMock(*args, **kwargs)`
+  - *Line: 128*
+  - *Mock that mocks :keyword:`with` statement contexts.*
+
+
+---
+
+`````python
 """Useful mocks for unit testing."""
 import numbers
 from datetime import datetime, timedelta
@@ -29216,10 +43739,38 @@ def ContextMock(*args, **kwargs):
     obj.__exit__.return_value = None
     return obj
 
-```
+`````
 
-### 代码文件: celery\contrib\testing\tasks.py
-```python
+--- **end of file: celery/contrib/testing/mocks.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/testing/tasks.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/tasks.py`
+
+#### 📝 Module Docstring
+
+`````
+Helper tasks for integration tests.
+`````
+
+#### 📦 Imports
+
+- `from celery import shared_task`
+
+#### 🔧 Public Functions (1)
+
+- `def ping()` `shared_task(name='celery.ping')`
+  - *Line: 6*
+  - *Simple task that just returns 'pong'.*
+
+
+---
+
+`````python
 """Helper tasks for integration tests."""
 from celery import shared_task
 
@@ -29230,10 +43781,103 @@ def ping():
     """Simple task that just returns 'pong'."""
     return 'pong'
 
-```
+`````
 
-### 代码文件: celery\contrib\testing\worker.py
-```python
+--- **end of file: celery/contrib/testing/tasks.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/contrib/testing/worker.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/worker.py`
+
+#### 📝 Module Docstring
+
+`````
+Embedded workers for integration tests.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import os`
+- `import threading`
+- `from contextlib import contextmanager`
+- `from typing import Any`
+- `from typing import Iterable`
+- `from typing import Optional`
+- `from typing import Union`
+- `import celery.worker.consumer`
+- `from celery import Celery`
+- `from celery import worker`
+- `from celery.result import _set_task_join_will_block`
+- `from celery.result import allow_join_result`
+- `from celery.utils.dispatch import Signal`
+- `from celery.utils.nodenames import anon_nodename`
+- `from celery.apps.multi import Cluster`
+- `from celery.apps.multi import Node`
+- `from celery.worker import state`
+- `from billiard import Queue`
+- `from tblib import pickling_support`
+- `from tasks import ping`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class TestWorkController(worker.WorkController)`
+*Line: 30*
+
+**Docstring:**
+`````
+Worker that can synchronize on being fully started.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def start(self)`
+- `def on_consumer_ready(self, consumer)`
+  - *Callback called when the Consumer blueprint is fully started.*
+- `def ensure_started(self)`
+  - **Docstring:**
+  `````
+  Wait for worker to be fully up and running.
+  
+  Warning:
+      Worker must be started within a thread for this to work,
+      or it will block forever.
+  `````
+
+**Class Variables (2):**
+- `__test__ = False`
+- `logger_queue = None`
+
+#### 🔧 Public Functions (2)
+
+- `def start_worker(app, concurrency = 1, pool = 'solo', loglevel = WORKER_LOGLEVEL, logfile = None, perform_ping_check = True, ping_task_timeout = 10.0, shutdown_timeout = 10.0, **kwargs)` `contextmanager`
+  - *Line: 100*
+  - **Docstring:**
+  `````
+  Start embedded worker.
+  
+  Yields:
+      celery.app.worker.Worker: worker instance.
+  `````
+
+- `def setup_app_for_worker(app: Celery, loglevel: Union[str, int], logfile: str) -> None`
+  - *Line: 219*
+  - *Setup the app to be used for starting an embedded worker.*
+
+
+---
+
+`````python
 """Embedded workers for integration tests."""
 import logging
 import os
@@ -29278,7 +43922,9 @@ class TestWorkController(worker.WorkController):
 
         super().__init__(*args, **kwargs)
 
-        if self.pool_cls.__module__.split('.')[-1] == 'prefork':
+        # Defensive check: pool_cls may be a string (e.g., 'prefork') or a class
+        pool_module = self.pool_cls if isinstance(self.pool_cls, str) else self.pool_cls.__module__
+        if pool_module.split('.')[-1] == 'prefork':
             from billiard import Queue
             self.logger_queue = Queue()
             self.pid = os.getpid()
@@ -29458,15 +44104,150 @@ def setup_app_for_worker(app: Celery, loglevel: Union[str, int], logfile: str) -
     type(app.log)._setup = False
     app.log.setup(loglevel=loglevel, logfile=logfile)
 
-```
+`````
 
-### 代码文件: celery\contrib\testing\__init__.py
-```python
+--- **end of file: celery/contrib/testing/worker.py** (project: celery) --- 
 
-```
+---
 
-### 代码文件: celery\events\cursesmon.py
-```python
+
+--- **start of file: celery/contrib/testing/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/contrib/testing/__init__.py`
+
+
+---
+
+`````python
+
+`````
+
+--- **end of file: celery/contrib/testing/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/cursesmon.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/cursesmon.py`
+
+#### 📝 Module Docstring
+
+`````
+Graphical monitor of Celery events using curses.
+`````
+
+#### 📦 Imports
+
+- `import curses`
+- `import sys`
+- `import threading`
+- `from datetime import datetime`
+- `from itertools import count`
+- `from math import ceil`
+- `from textwrap import wrap`
+- `from time import time`
+- `from celery import VERSION_BANNER`
+- `from celery import states`
+- `from celery.app import app_or_default`
+- `from celery.utils.text import abbr`
+- `from celery.utils.text import abbrtask`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class CursesMonitor`
+*Line: 34*
+
+**Docstring:**
+`````
+A curses based Celery task monitor.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, state, app, keymap = None)`
+  - **Parameters:**
+    - `self`
+    - `state`
+    - `app`
+    - `keymap = None`
+
+**Public Methods (20):**
+- `def format_row(self, uuid, task, worker, timestamp, state)`
+- `def find_position(self)`
+- `def move_selection_up(self)`
+- `def move_selection_down(self)`
+- `def move_selection(self, direction = 1)`
+- `def handle_keypress(self)`
+- `def alert(self, callback, title = None)`
+- `def selection_rate_limit(self)`
+- `def alert_remote_control_reply(self, reply)`
+- `def readline(self, x, y)`
+- `def revoke_selection(self)`
+- `def selection_info(self)`
+- `def selection_traceback(self)`
+- `def selection_result(self)`
+- `def display_task_row(self, lineno, task)`
+- `def draw(self)`
+- `def safe_add_str(self, y, x, string, *args, **kwargs)`
+- `def init_screen(self)`
+- `def resetscreen(self)`
+- `def nap(self)`
+
+**Properties (7):**
+- `@property screen_width`
+- `@property screen_height`
+- `@property display_width`
+- `@property display_height`
+- `@property limit`
+- `@property tasks`
+- `@property workers`
+
+**Class Variables (14):**
+- `keymap = {}`
+- `win = None`
+- `screen_delay = 10`
+- `selected_task = None`
+- `selected_position = 0`
+- `selected_str = 'Selected: '`
+- `foreground = curses.COLOR_BLACK`
+- `background = curses.COLOR_WHITE`
+- `online_str = 'Workers online: '`
+- `help_title = 'Keys: '`
+- `help = 'j:down k:up i:info t:traceback r:result c:revoke ^c: quit'`
+- `greet = f'celery events {VERSION_BANNER}'`
+- `info_str = 'Info: '`
+- `keyalias = {curses.KEY_DOWN: 'J', curses.KEY_UP: 'K', curses.KEY_ENTER: 'I'}`
+
+##### 📌 `class DisplayThread(threading.Thread)`
+*Line: 479*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, display)`
+  - **Parameters:**
+    - `self`
+    - `display`
+
+**Public Methods (1):**
+- `def run(self)`
+
+#### 🔧 Public Functions (3)
+
+- `def capture_events(app, state, display)`
+  - *Line: 492*
+
+- `def evtop(app = None)`
+  - *Line: 512*
+  - *Start curses monitor.*
+
+- `def on_connection_error(exc, interval)`
+  - *Line: 494*
+
+
+---
+
+`````python
 """Graphical monitor of Celery events using curses."""
 
 import curses
@@ -30002,10 +44783,150 @@ def evtop(app=None):  # pragma: no cover
 if __name__ == '__main__':  # pragma: no cover
     evtop()
 
-```
+`````
 
-### 代码文件: celery\events\dispatcher.py
-```python
+--- **end of file: celery/events/cursesmon.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/dispatcher.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/dispatcher.py`
+
+#### 📝 Module Docstring
+
+`````
+Event dispatcher sends events.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import threading`
+- `import time`
+- `from collections import defaultdict`
+- `from collections import deque`
+- `from kombu import Producer`
+- `from celery.app import app_or_default`
+- `from celery.utils.nodenames import anon_nodename`
+- `from celery.utils.time import utcoffset`
+- `from event import Event`
+- `from event import get_exchange`
+- `from event import group_from`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class EventDispatcher`
+*Line: 19*
+
+**Docstring:**
+`````
+Dispatches event messages.
+
+Arguments:
+    connection (kombu.Connection): Connection to the broker.
+
+    hostname (str): Hostname to identify ourselves as,
+        by default uses the hostname returned by
+        :func:`~celery.utils.anon_nodename`.
+
+    groups (Sequence[str]): List of groups to send events for.
+        :meth:`send` will ignore send requests to groups not in this list.
+        If this is :const:`None`, all events will be sent.
+        Example groups include ``"task"`` and ``"worker"``.
+
+    enabled (bool): Set to :const:`False` to not actually publish any
+        events, making :meth:`send` a no-op.
+
+    channel (kombu.Channel): Can be used instead of `connection` to specify
+        an exact channel to use when sending events.
+
+    buffer_while_offline (bool): If enabled events will be buffered
+        while the connection is down. :meth:`flush` must be called
+        as soon as the connection is re-established.
+
+Note:
+    You need to :meth:`close` this after use.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, connection = None, hostname = None, enabled = True, channel = None, buffer_while_offline = True, app = None, serializer = None, groups = None, delivery_mode = 1, buffer_group = None, buffer_limit = 24, on_send_buffered = None)`
+  - **Parameters:**
+    - `self`
+    - `connection = None`
+    - `hostname = None`
+    - `enabled = True`
+    - `channel = None`
+    - `buffer_while_offline = True`
+    - `app = None`
+    - `serializer = None`
+    - `groups = None`
+    - `delivery_mode = 1`
+    - `buffer_group = None`
+    - `buffer_limit = 24`
+    - `on_send_buffered = None`
+
+**Public Methods (7):**
+- `def enable(self)`
+- `def disable(self)`
+- `def publish(self, type, fields, producer, blind = False, Event = Event, **kwargs)`
+  - **Docstring:**
+  `````
+  Publish event using custom :class:`~kombu.Producer`.
+  
+  Arguments:
+      type (str): Event type name, with group separated by dash (`-`).
+          fields: Dictionary of event fields, must be json serializable.
+      producer (kombu.Producer): Producer instance to use:
+          only the ``publish`` method will be called.
+      retry (bool): Retry in the event of connection failure.
+      retry_policy (Mapping): Map of custom retry policy options.
+          See :meth:`~kombu.Connection.ensure`.
+      blind (bool): Don't set logical clock value (also don't forward
+          the internal logical clock).
+      Event (Callable): Event type used to create event.
+          Defaults to :func:`Event`.
+      utcoffset (Callable): Function returning the current
+          utc offset in hours.
+  `````
+- `def send(self, type, blind = False, utcoffset = utcoffset, retry = False, retry_policy = None, Event = Event, **fields)`
+  - **Docstring:**
+  `````
+  Send event.
+  
+  Arguments:
+      type (str): Event type name, with group separated by dash (`-`).
+      retry (bool): Retry in the event of connection failure.
+      retry_policy (Mapping): Map of custom retry policy options.
+          See :meth:`~kombu.Connection.ensure`.
+      blind (bool): Don't set logical clock value (also don't forward
+          the internal logical clock).
+      Event (Callable): Event type used to create event,
+          defaults to :func:`Event`.
+      utcoffset (Callable): unction returning the current utc offset
+          in hours.
+      **fields (Any): Event fields -- must be json serializable.
+  `````
+- `def flush(self, errors = True, groups = True)`
+  - *Flush the outbound buffer.*
+- `def extend_buffer(self, other)`
+  - *Copy the outbound buffer of another instance.*
+- `def close(self)`
+  - *Close the event dispatcher.*
+
+**Class Variables (5):**
+- `DISABLED_TRANSPORTS = {'sql'}`
+- `app = None`
+- `on_enabled = None`
+- `on_disabled = None`
+- `publisher = property(_get_publisher, _set_publisher)`
+
+
+---
+
+`````python
 """Event dispatcher sends events."""
 
 import os
@@ -30236,10 +45157,70 @@ class EventDispatcher:
         self.producer = producer
     publisher = property(_get_publisher, _set_publisher)  # XXX compat
 
-```
+`````
 
-### 代码文件: celery\events\dumper.py
-```python
+--- **end of file: celery/events/dispatcher.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/dumper.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/dumper.py`
+
+#### 📝 Module Docstring
+
+`````
+Utility to dump events to screen.
+
+This is a simple program that dumps events to the console
+as they happen.  Think of it like a `tcpdump` for Celery events.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from celery.app import app_or_default`
+- `from celery.utils.functional import LRUCache`
+- `from celery.utils.time import humanize_seconds`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Dumper`
+*Line: 36*
+
+**Docstring:**
+`````
+Monitor events.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, out = sys.stdout)`
+  - **Parameters:**
+    - `self`
+    - `out = sys.stdout`
+
+**Public Methods (3):**
+- `def say(self, msg)`
+- `def on_event(self, ev)`
+- `def format_task_event(self, hostname, timestamp, type, task, event)`
+
+#### 🔧 Public Functions (2)
+
+- `def humanize_type(type)`
+  - *Line: 29*
+
+- `def evdump(app = None, out = sys.stdout)`
+  - *Line: 79*
+  - *Start event dump.*
+
+
+---
+
+`````python
 """Utility to dump events to screen.
 
 This is a simple program that dumps events to the console
@@ -30344,10 +45325,76 @@ def evdump(app=None, out=sys.stdout):
 if __name__ == '__main__':  # pragma: no cover
     evdump()
 
-```
+`````
 
-### 代码文件: celery\events\event.py
-```python
+--- **end of file: celery/events/dumper.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/event.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/event.py`
+
+#### 📝 Module Docstring
+
+`````
+Creating events, and event exchange definition.
+`````
+
+#### 📦 Imports
+
+- `import time`
+- `from copy import copy`
+- `from kombu import Exchange`
+
+#### 🔧 Public Functions (3)
+
+- `def Event(type, _fields = None, __dict__ = dict, __now__ = time.time, **fields)`
+  - *Line: 18*
+  - **Docstring:**
+  `````
+  Create an event.
+  
+  Notes:
+      An event is simply a dictionary: the only required field is ``type``.
+      A ``timestamp`` field will be set to the current time if not provided.
+  `````
+
+- `def group_from(type)`
+  - *Line: 33*
+  - **Docstring:**
+  `````
+  Get the group part of an event type name.
+  
+  Example:
+      >>> group_from('task-sent')
+      'task'
+  
+      >>> group_from('custom-my-event')
+      'custom'
+  `````
+
+- `def get_exchange(conn, name = EVENT_EXCHANGE_NAME)`
+  - *Line: 46*
+  - **Docstring:**
+  `````
+  Get exchange used for sending events.
+  
+  Arguments:
+      conn (kombu.Connection): Connection used for sending/receiving events.
+      name (str): Name of the exchange. Default is ``celeryev``.
+  
+  Note:
+      The event type changes if Redis is used as the transport
+      (from topic -> fanout).
+  `````
+
+
+---
+
+`````python
 """Creating events, and event exchange definition."""
 import time
 from copy import copy
@@ -30412,10 +45459,98 @@ def get_exchange(conn, name=EVENT_EXCHANGE_NAME):
         ex.name = name
     return ex
 
-```
+`````
 
-### 代码文件: celery\events\receiver.py
-```python
+--- **end of file: celery/events/event.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/receiver.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/receiver.py`
+
+#### 📝 Module Docstring
+
+`````
+Event receiver implementation.
+`````
+
+#### 📦 Imports
+
+- `import time`
+- `from operator import itemgetter`
+- `from kombu import Queue`
+- `from kombu.connection import maybe_channel`
+- `from kombu.mixins import ConsumerMixin`
+- `from celery import uuid`
+- `from celery.app import app_or_default`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.utils.time import adjust_timestamp`
+- `from event import get_exchange`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class EventReceiver(ConsumerMixin)`
+*Line: 23*
+
+**Docstring:**
+`````
+Capture events.
+
+Arguments:
+    connection (kombu.Connection): Connection to the broker.
+    handlers (Mapping[Callable]): Event handlers.
+        This is  a map of event type names and their handlers.
+        The special handler `"*"` captures all events that don't have a
+        handler.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, channel, handlers = None, routing_key = '#', node_id = None, app = None, queue_prefix = None, accept = None, queue_ttl = None, queue_expires = None, queue_exclusive = None, queue_durable = None)`
+  - **Parameters:**
+    - `self`
+    - `channel`
+    - `handlers = None`
+    - `routing_key = '#'`
+    - `node_id = None`
+    - `app = None`
+    - `queue_prefix = None`
+    - `accept = None`
+    - `queue_ttl = None`
+    - `queue_expires = None`
+    - `queue_exclusive = None`
+    - `queue_durable = None`
+
+**Public Methods (7):**
+- `def process(self, type, event)`
+  - *Process event by dispatching to configured handler.*
+- `def get_consumers(self, Consumer, channel)`
+- `def on_consume_ready(self, connection, channel, consumers, wakeup = True, **kwargs)`
+- `def itercapture(self, limit = None, timeout = None, wakeup = True)`
+- `def capture(self, limit = None, timeout = None, wakeup = True)`
+  - **Docstring:**
+  `````
+  Open up a consumer capturing events.
+  
+  This has to run in the main process, and it will never stop
+  unless :attr:`EventDispatcher.should_stop` is set to True, or
+  forced via :exc:`KeyboardInterrupt` or :exc:`SystemExit`.
+  `````
+- `def wakeup_workers(self, channel = None)`
+- `def event_from_message(self, body, localize = True, now = time.time, tzfields = _TZGETTER, adjust_timestamp = adjust_timestamp, CLIENT_CLOCK_SKEW = CLIENT_CLOCK_SKEW)`
+
+**Properties (1):**
+- `@property connection`
+
+**Class Variables (1):**
+- `app = None`
+
+
+---
+
+`````python
 """Event receiver implementation."""
 import time
 from operator import itemgetter
@@ -30566,10 +45701,89 @@ class EventReceiver(ConsumerMixin):
     def connection(self):
         return self.channel.connection.client if self.channel else None
 
-```
+`````
 
-### 代码文件: celery\events\snapshot.py
-```python
+--- **end of file: celery/events/receiver.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/snapshot.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/snapshot.py`
+
+#### 📝 Module Docstring
+
+`````
+Periodically store events in a database.
+
+Consuming the events as a stream isn't always suitable
+so this module implements a system to take snapshots of the
+state of a cluster at regular intervals.  There's a full
+implementation of this writing the snapshots to a database
+in :mod:`djcelery.snapshots` in the `django-celery` distribution.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.limits import TokenBucket`
+- `from celery import platforms`
+- `from celery.app import app_or_default`
+- `from celery.utils.dispatch import Signal`
+- `from celery.utils.imports import instantiate`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.time import rate`
+- `from celery.utils.timer2 import Timer`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Polaroid`
+*Line: 24*
+
+**Docstring:**
+`````
+Record event snapshots.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, state, freq = 1.0, maxrate = None, cleanup_freq = 3600.0, timer = None, app = None)`
+  - **Parameters:**
+    - `self`
+    - `state`
+    - `freq = 1.0`
+    - `maxrate = None`
+    - `cleanup_freq = 3600.0`
+    - `timer = None`
+    - `app = None`
+
+**Public Methods (7):**
+- `def install(self)`
+- `def on_shutter(self, state)`
+- `def on_cleanup(self)`
+- `def cleanup(self)`
+- `def shutter(self)`
+- `def capture(self)`
+- `def cancel(self)`
+
+**Class Variables (6):**
+- `timer = None`
+- `shutter_signal = Signal(name='shutter_signal', providing_args={'state'})`
+- `cleanup_signal = Signal(name='cleanup_signal')`
+- `clear_after = False`
+- `_tref = None`
+- `_ctref = None`
+
+#### 🔧 Public Functions (1)
+
+- `def evcam(camera, freq = 1.0, maxrate = None, loglevel = 0, logfile = None, pidfile = None, timer = None, app = None, **kwargs)`
+  - *Line: 86*
+  - *Start snapshot recorder.*
+
+
+---
+
+`````python
 """Periodically store events in a database.
 
 Consuming the events as a stream isn't always suitable
@@ -30682,10 +45896,271 @@ def evcam(camera, freq=1.0, maxrate=None, loglevel=0,
         cam.cancel()
         conn.close()
 
-```
+`````
 
-### 代码文件: celery\events\state.py
-```python
+--- **end of file: celery/events/snapshot.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/state.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/state.py`
+
+#### 📝 Module Docstring
+
+`````
+In-memory representation of cluster state.
+
+This module implements a data-structure used to keep
+track of the state of a cluster of workers and the tasks
+it is working on (by consuming events).
+
+For every event consumed the state is updated,
+so the state represents the state of the cluster
+at the time of the last event.
+
+Snapshots (:mod:`celery.events.snapshot`) can be used to
+take "pictures" of this state at regular intervals
+to for example, store that in a database.
+`````
+
+#### 📦 Imports
+
+- `import bisect`
+- `import sys`
+- `import threading`
+- `from collections import defaultdict`
+- `from collections.abc import Callable`
+- `from datetime import datetime`
+- `from decimal import Decimal`
+- `from itertools import islice`
+- `from operator import itemgetter`
+- `from time import time`
+- `from typing import Mapping`
+- `from typing import Optional`
+- `from weakref import WeakSet`
+- `from weakref import ref`
+- `from kombu.clocks import timetuple`
+- `from kombu.utils.objects import cached_property`
+- `from celery import states`
+- `from celery.utils.functional import LRUCache`
+- `from celery.utils.functional import memoize`
+- `from celery.utils.functional import pass1`
+- `from celery.utils.log import get_logger`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class CallableDefaultdict(defaultdict)`
+*Line: 79*
+
+**Docstring:**
+`````
+:class:`~collections.defaultdict` with configurable __call__.
+
+We use this for backwards compatibility in State.tasks_by_type
+etc, which used to be a method but is now an index instead.
+
+So you can do::
+
+    >>> add_tasks = state.tasks_by_type['proj.tasks.add']
+
+while still supporting the method call::
+
+    >>> add_tasks = list(state.tasks_by_type(
+    ...     'proj.tasks.add', reverse=True))
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, fun, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `fun`
+    - `*args`
+    - `**kwargs`
+
+##### 📌 `class Worker`
+*Line: 149*
+
+**Docstring:**
+`````
+Worker State.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, hostname = None, pid = None, freq = 60, heartbeats = None, clock = 0, active = None, processed = None, loadavg = None, sw_ident = None, sw_ver = None, sw_sys = None)`
+  - **Parameters:**
+    - `self`
+    - `hostname = None`
+    - `pid = None`
+    - `freq = 60`
+    - `heartbeats = None`
+    - `clock = 0`
+    - `active = None`
+    - `processed = None`
+    - `loadavg = None`
+    - `sw_ident = None`
+    - `sw_ver = None`
+    - `sw_sys = None`
+
+**Public Methods (1):**
+- `def update(self, f, **kw)`
+
+**Properties (4):**
+- `@property status_string`
+- `@property heartbeat_expires`
+- `@property alive`
+- `@property id`
+
+**Class Variables (3):**
+- `heartbeat_max = 4`
+- `expire_window = HEARTBEAT_EXPIRE_WINDOW`
+- `_fields = ('hostname', 'pid', 'freq', 'heartbeats', 'clock', 'active', 'processed', 'loadavg', 'sw_ident', 'sw_ver', 'sw_sys')`
+
+##### 📌 `class Task`
+*Line: 243*
+
+**Docstring:**
+`````
+Task State.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, uuid = None, cluster_state = None, children = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `uuid = None`
+    - `cluster_state = None`
+    - `children = None`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def event(self, type_, timestamp = None, local_received = None, fields = None, precedence = states.precedence, setattr = setattr, task_event_to_state = TASK_EVENT_TO_STATE.get, RETRY = states.RETRY)`
+- `def info(self, fields = None, extra = None)`
+  - *Information about this task suitable for on-screen display.*
+- `def as_dict(self)`
+
+**Properties (5):**
+- `@property id`
+- `@property origin`
+- `@property ready`
+- `@property parent`
+- `@property root`
+
+**Class Variables (30):**
+- `name = None`
+- `received = None`
+- `sent = None`
+- `started = None`
+- `succeeded = None`
+- `failed = None`
+- `retried = None`
+- `revoked = None`
+- `rejected = None`
+- `args = None`
+- `kwargs = None`
+- `eta = None`
+- `expires = None`
+- `retries = None`
+- `worker = None`
+- `result = None`
+- `exception = None`
+- `timestamp = None`
+- `runtime = None`
+- `traceback = None`
+- `exchange = None`
+- `routing_key = None`
+- `root_id = None`
+- `parent_id = None`
+- `client = None`
+- `state = states.PENDING`
+- `clock = 0`
+- `_fields = ('uuid', 'name', 'state', 'received', 'sent', 'started', 'rejected', 'succeeded', 'failed', 'retried', 'revoked', 'args', 'kwargs', 'eta', 'expires', 'retries', 'worker', 'result', 'exception', 'timestamp', 'runtime', 'traceback', 'exchange', 'routing_key', 'clock', 'client', 'root', 'root_id', 'parent', 'parent_id', 'children')`
+- `merge_rules = {states.RECEIVED: ('name', 'args', 'kwargs', 'parent_id', 'root_id', 'retries', 'eta', 'expires')}`
+- `_info_fields = ('args', 'kwargs', 'retries', 'result', 'eta', 'runtime', 'expires', 'exception', 'exchange', 'routing_key', 'root_id', 'parent_id')`
+
+##### 📌 `class State`
+*Line: 398*
+
+**Docstring:**
+`````
+Records clusters state.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, callback = None, workers = None, tasks = None, taskheap = None, max_workers_in_memory = 5000, max_tasks_in_memory = 10000, on_node_join = None, on_node_leave = None, tasks_by_type = None, tasks_by_worker = None)`
+  - **Parameters:**
+    - `self`
+    - `callback = None`
+    - `workers = None`
+    - `tasks = None`
+    - `taskheap = None`
+    - `max_workers_in_memory = 5000`
+    - `max_tasks_in_memory = 10000`
+    - `on_node_join = None`
+    - `on_node_leave = None`
+    - `tasks_by_type = None`
+    - `tasks_by_worker = None`
+
+**Public Methods (13):**
+- `def freeze_while(self, fun, *args, **kwargs)`
+- `def clear_tasks(self, ready = True)`
+- `def clear(self, ready: bool = True)`
+- `def get_or_create_worker(self, hostname, **kwargs)`
+  - **Docstring:**
+  `````
+  Get or create worker by hostname.
+  
+  Returns:
+      Tuple: of ``(worker, was_created)`` pairs.
+  `````
+- `def get_or_create_task(self, uuid)`
+  - *Get or create task by uuid.*
+- `def event(self, event)`
+- `def task_event(self, type_, fields)`
+  - *Deprecated, use :meth:`event`.*
+- `def worker_event(self, type_, fields)`
+  - *Deprecated, use :meth:`event`.*
+- `def rebuild_taskheap(self, timetuple = timetuple)`
+- `def itertasks(self, limit: Optional[int] = None)`
+- `def tasks_by_time(self, limit = None, reverse: bool = True)`
+  - **Docstring:**
+  `````
+  Generator yielding tasks ordered by time.
+  
+  Yields:
+      Tuples of ``(uuid, Task)``.
+  `````
+- `def task_types(self)`
+  - *Return a list of all seen task types.*
+- `def alive_workers(self)`
+  - *Return a list of (seemingly) alive workers.*
+
+**Properties (1):**
+- `@property _event`
+
+**Class Variables (6):**
+- `Worker = Worker`
+- `Task = Task`
+- `event_count = 0`
+- `task_count = 0`
+- `heap_multiplier = 4`
+- `tasks_by_timestamp = tasks_by_time`
+
+#### 🔧 Public Functions (2)
+
+- `def heartbeat_expires(timestamp, freq = 60, expire_window = HEARTBEAT_EXPIRE_WINDOW, Decimal = Decimal, float = float, isinstance = isinstance)`
+  - *Line: 114*
+  - *Return time when heartbeat expires.*
+
+- `def with_unique_field(attr)`
+  - *Line: 130*
+
+
+---
+
+`````python
 """In-memory representation of cluster state.
 
 This module implements a data-structure used to keep
@@ -31417,10 +46892,41 @@ def _deserialize_Task_WeakSet_Mapping(mapping, tasks):
     return {name: WeakSet(tasks[i] for i in ids if i in tasks)
             for name, ids in mapping.items()}
 
-```
+`````
 
-### 代码文件: celery\events\__init__.py
-```python
+--- **end of file: celery/events/state.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/events/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/events/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Monitoring Event Receiver+Dispatcher.
+
+Events is a stream of messages sent for certain actions occurring
+in the worker (and clients if :setting:`task_send_sent_event`
+is enabled), used for monitoring purposes.
+`````
+
+#### 📦 Imports
+
+- `from dispatcher import EventDispatcher`
+- `from event import Event`
+- `from event import event_exchange`
+- `from event import get_exchange`
+- `from event import group_from`
+- `from receiver import EventReceiver`
+
+
+---
+
+`````python
 """Monitoring Event Receiver+Dispatcher.
 
 Events is a stream of messages sent for certain actions occurring
@@ -31437,11 +46943,127 @@ __all__ = (
     'event_exchange', 'get_exchange', 'group_from',
 )
 
-```
+`````
 
-### 代码文件: celery\fixups\django.py
-```python
+--- **end of file: celery/events/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/fixups/django.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/fixups/django.py`
+
+#### 📝 Module Docstring
+
+`````
+Django-specific customization.
+`````
+
+#### 📦 Imports
+
+- `import contextlib`
+- `import os`
+- `import sys`
+- `import warnings`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from importlib import import_module`
+- `from typing import IO`
+- `from typing import TYPE_CHECKING`
+- `from typing import Any`
+- `from typing import List`
+- `from typing import Optional`
+- `from typing import cast`
+- `from kombu.utils.imports import symbol_by_name`
+- `from kombu.utils.objects import cached_property`
+- `from celery import _state`
+- `from celery import signals`
+- `from celery.exceptions import FixupWarning`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.worker import WorkController`
+- `from types import ModuleType`
+- `from typing import Protocol`
+- `from django.db.backends.base.base import BaseDatabaseWrapper`
+- `from django.db.utils import ConnectionHandler`
+- `from celery.app.base import Celery`
+- `from celery.app.task import Task`
+- `from django.apps import apps`
+- `import django`
+- `from django.core.checks import run_checks`
+- `import django`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class DjangoFixup`
+*Line: 66*
+
+**Docstring:**
+`````
+Fixup installed when using Django.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app: 'Celery')`
+  - **Parameters:**
+    - `self`
+    - `app: 'Celery'`
+
+**Public Methods (6):**
+- `def install(self) -> 'DjangoFixup'`
+- `def worker_fixup(self, value: 'DjangoWorkerFixup') -> None` `worker_fixup.setter`
+- `def on_import_modules(self, **kwargs: Any) -> None`
+- `def on_worker_init(self, **kwargs: Any) -> None`
+- `def now(self, utc: bool = False) -> datetime`
+- `def autodiscover_tasks(self) -> List[str]`
+
+**Properties (2):**
+- `@property worker_fixup -> 'DjangoWorkerFixup'`
+- `@property _now -> datetime`
+
+##### 📌 `class DjangoWorkerFixup`
+*Line: 130*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app: 'Celery')`
+  - **Parameters:**
+    - `self`
+    - `app: 'Celery'`
+
+**Public Methods (8):**
+- `def django_setup(self) -> None`
+- `def validate_models(self) -> None`
+- `def install(self) -> 'DjangoWorkerFixup'`
+- `def on_worker_process_init(self, **kwargs: Any) -> None`
+- `def on_task_prerun(self, sender: 'Task', **kwargs: Any) -> None`
+  - *Called before every task.*
+- `def on_task_postrun(self, sender: 'Task', **kwargs: Any) -> None`
+- `def close_database(self, **kwargs: Any) -> None`
+- `def close_cache(self) -> None`
+
+**Class Variables (2):**
+- `_db_recycles = 0`
+- `worker = None`
+
+##### 📌 `class DjangoDBModule(Protocol)`
+*Line: 27*
+
+**Class Variables (1):**
+- `connections: ConnectionHandler`
+
+#### 🔧 Public Functions (1)
+
+- `def fixup(app: 'Celery', env: str = 'DJANGO_SETTINGS_MODULE') -> Optional['DjangoFixup']`
+  - *Line: 52*
+  - *Install Django fixup if settings module environment is set.*
+
+
+---
+
+`````python
 """Django-specific customization."""
+import contextlib
 import os
 import sys
 import warnings
@@ -31454,6 +47076,7 @@ from kombu.utils.objects import cached_property
 
 from celery import _state, signals
 from celery.exceptions import FixupWarning, ImproperlyConfigured
+from celery.worker import WorkController
 
 if TYPE_CHECKING:
     from types import ModuleType
@@ -31544,6 +47167,16 @@ class DjangoFixup:
         self.worker_fixup.validate_models()
 
     def on_worker_init(self, **kwargs: Any) -> None:
+        worker: Optional["WorkController"] = kwargs.get("sender")
+        if worker:
+            self.worker_fixup.worker = worker
+        else:
+            warnings.warn(
+                "DjangoFixup.on_worker_init called without a sender (worker instance). "
+                "This may indicate a misconfiguration or an internal error.",
+                FixupWarning,
+                stacklevel=2,
+            )
         self.worker_fixup.install()
 
     def now(self, utc: bool = False) -> datetime:
@@ -31560,6 +47193,7 @@ class DjangoFixup:
 
 class DjangoWorkerFixup:
     _db_recycles = 0
+    worker = None  # Set via on_worker_init callback to avoid recursive WorkController instantiation
 
     def __init__(self, app: "Celery") -> None:
         self.app = app
@@ -31640,10 +47274,28 @@ class DjangoWorkerFixup:
             self._close_database()
         self._db_recycles += 1
 
+    def _is_prefork(self) -> bool:
+        if self.worker is None:
+            return False
+        pool = self.worker.pool_cls if isinstance(self.worker.pool_cls, str) else self.worker.pool_cls.__module__
+        return "prefork" in pool
+
     def _close_database(self) -> None:
-        for conn in self._db.connections.all():
+        try:
+            connections = self._db.connections.all(initialized_only=True)
+        except TypeError:
+            # Support Django < 4.1
+            connections = self._db.connections.all()
+
+        is_prefork = self._is_prefork()
+
+        for conn in connections:
             try:
                 conn.close()
+                pool_enabled = self._settings.DATABASES.get(conn.alias, {}).get("OPTIONS", {}).get("pool")
+                if pool_enabled and is_prefork and hasattr(conn, "close_pool"):
+                    with contextlib.suppress(KeyError):
+                        conn.close_pool()
             except self.interface_errors:
                 pass
             except self.DatabaseError as exc:
@@ -31657,16 +47309,66 @@ class DjangoWorkerFixup:
         except (TypeError, AttributeError):
             pass
 
-```
+`````
 
-### 代码文件: celery\fixups\__init__.py
-```python
+--- **end of file: celery/fixups/django.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/fixups/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/fixups/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Fixups.
+`````
+
+
+---
+
+`````python
 """Fixups."""
 
-```
+`````
 
-### 代码文件: celery\loaders\app.py
-```python
+--- **end of file: celery/fixups/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/loaders/app.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/loaders/app.py`
+
+#### 📝 Module Docstring
+
+`````
+The default loader used with custom app instances.
+`````
+
+#### 📦 Imports
+
+- `from base import BaseLoader`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AppLoader(BaseLoader)`
+*Line: 7*
+
+**Docstring:**
+`````
+Default loader used when an app is specified.
+`````
+
+
+---
+
+`````python
 """The default loader used with custom app instances."""
 from .base import BaseLoader
 
@@ -31676,10 +47378,127 @@ __all__ = ('AppLoader',)
 class AppLoader(BaseLoader):
     """Default loader used when an app is specified."""
 
-```
+`````
 
-### 代码文件: celery\loaders\base.py
-```python
+--- **end of file: celery/loaders/app.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/loaders/base.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/loaders/base.py`
+
+#### 📝 Module Docstring
+
+`````
+Loader base class.
+`````
+
+#### 📦 Imports
+
+- `import importlib`
+- `import os`
+- `import re`
+- `import sys`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from kombu.utils import json`
+- `from kombu.utils.objects import cached_property`
+- `from celery import signals`
+- `from celery.exceptions import reraise`
+- `from celery.utils.collections import DictAttribute`
+- `from celery.utils.collections import force_mapping`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.imports import NotAPackage`
+- `from celery.utils.imports import find_module`
+- `from celery.utils.imports import import_from_cwd`
+- `from celery.utils.imports import symbol_by_name`
+- `from celery.app.defaults import NAMESPACES`
+- `from celery.app.defaults import Option`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class BaseLoader`
+*Line: 33*
+
+**Docstring:**
+`````
+Base class for loaders.
+
+Loaders handles,
+
+    * Reading celery client/worker configurations.
+
+    * What happens when a task starts?
+        See :meth:`on_task_init`.
+
+    * What happens when the worker starts?
+        See :meth:`on_worker_init`.
+
+    * What happens when the worker shuts down?
+        See :meth:`on_worker_shutdown`.
+
+    * What modules are imported to find tasks?
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app`
+    - `**kwargs`
+
+**Public Methods (18):**
+- `def now(self, utc = True)`
+- `def on_task_init(self, task_id, task)`
+  - *Called before a task is executed.*
+- `def on_process_cleanup(self)`
+  - *Called after a task is executed.*
+- `def on_worker_init(self)`
+  - *Called when the worker (:program:`celery worker`) starts.*
+- `def on_worker_shutdown(self)`
+  - *Called when the worker (:program:`celery worker`) shuts down.*
+- `def on_worker_process_init(self)`
+  - *Called when a child process starts.*
+- `def import_task_module(self, module)`
+- `def import_module(self, module, package = None)`
+- `def import_from_cwd(self, module, imp = None, package = None)`
+- `def import_default_modules(self)`
+- `def init_worker(self)`
+- `def shutdown_worker(self)`
+- `def init_worker_process(self)`
+- `def config_from_object(self, obj, silent = False)`
+- `def find_module(self, module)`
+- `def cmdline_config_parser(self, args, namespace = 'celery', re_type = re.compile('\\((\\w+)\\)'), extra_types = None, override_types = None)`
+- `def read_configuration(self, env = 'CELERY_CONFIG_MODULE')`
+- `def autodiscover_tasks(self, packages, related_name = 'tasks')`
+
+**Properties (2):**
+- `@property default_modules`
+- `@property conf`
+
+**Class Variables (5):**
+- `builtin_modules = frozenset()`
+- `configured = False`
+- `override_backends = {}`
+- `worker_initialized = False`
+- `_conf = unconfigured`
+
+#### 🔧 Public Functions (2)
+
+- `def autodiscover_tasks(packages, related_name = 'tasks')`
+  - *Line: 239*
+
+- `def find_related_module(package, related_name)`
+  - *Line: 251*
+  - *Find module in package.*
+
+
+---
+
+`````python
 """Loader base class."""
 import importlib
 import os
@@ -31959,10 +47778,52 @@ def find_related_module(package, related_name):
         # Otherwise, raise because error probably originated from a nested import.
         raise e
 
-```
+`````
 
-### 代码文件: celery\loaders\default.py
-```python
+--- **end of file: celery/loaders/base.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/loaders/default.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/loaders/default.py`
+
+#### 📝 Module Docstring
+
+`````
+The default loader used when no custom app has been initialized.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import warnings`
+- `from celery.exceptions import NotConfigured`
+- `from celery.utils.collections import DictAttribute`
+- `from celery.utils.serialization import strtobool`
+- `from base import BaseLoader`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Loader(BaseLoader)`
+*Line: 19*
+
+**Docstring:**
+`````
+The loader used by the default app.
+`````
+
+**Public Methods (2):**
+- `def setup_settings(self, settingsdict)`
+- `def read_configuration(self, fail_silently = True)`
+  - *Read configuration from :file:`celeryconfig.py`.*
+
+
+---
+
+`````python
 """The default loader used when no custom app has been initialized."""
 import os
 import warnings
@@ -32006,10 +47867,42 @@ class Loader(BaseLoader):
             self.configured = True
             return self.setup_settings(usercfg)
 
-```
+`````
 
-### 代码文件: celery\loaders\__init__.py
-```python
+--- **end of file: celery/loaders/default.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/loaders/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/loaders/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Get loader by name.
+
+Loaders define how configuration is read, what happens
+when workers start, when tasks are executed and so on.
+`````
+
+#### 📦 Imports
+
+- `from celery.utils.imports import import_from_cwd`
+- `from celery.utils.imports import symbol_by_name`
+
+#### 🔧 Public Functions (1)
+
+- `def get_loader_cls(loader)`
+  - *Line: 16*
+  - *Get loader class by name/alias.*
+
+
+---
+
+`````python
 """Get loader by name.
 
 Loaders define how configuration is read, what happens
@@ -32029,10 +47922,113 @@ def get_loader_cls(loader):
     """Get loader class by name/alias."""
     return symbol_by_name(loader, LOADER_ALIASES, imp=import_from_cwd)
 
-```
+`````
 
-### 代码文件: celery\security\certificate.py
-```python
+--- **end of file: celery/loaders/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/security/certificate.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/security/certificate.py`
+
+#### 📝 Module Docstring
+
+`````
+X.509 certificates.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import datetime`
+- `import glob`
+- `import os`
+- `from typing import TYPE_CHECKING`
+- `from typing import Iterator`
+- `from cryptography.hazmat.backends import default_backend`
+- `from cryptography.hazmat.primitives.asymmetric import padding`
+- `from cryptography.hazmat.primitives.asymmetric import rsa`
+- `from cryptography.x509 import load_pem_x509_certificate`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from celery.exceptions import SecurityError`
+- `from utils import reraise_errors`
+- `from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey`
+- `from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey`
+- `from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey`
+- `from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey`
+- `from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey`
+- `from cryptography.hazmat.primitives.asymmetric.utils import Prehashed`
+- `from cryptography.hazmat.primitives.hashes import HashAlgorithm`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Certificate`
+*Line: 31*
+
+**Docstring:**
+`````
+X.509 certificate.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, cert: str)`
+  - **Parameters:**
+    - `self`
+    - `cert: str`
+
+**Public Methods (6):**
+- `def has_expired(self) -> bool`
+  - *Check if the certificate has expired.*
+- `def get_pubkey(self) -> DSAPublicKey | EllipticCurvePublicKey | Ed448PublicKey | Ed25519PublicKey | RSAPublicKey`
+- `def get_serial_number(self) -> int`
+  - *Return the serial number in the certificate.*
+- `def get_issuer(self) -> str`
+  - *Return issuer (CA) as a string.*
+- `def get_id(self) -> str`
+  - *Serial number/issuer pair uniquely identifies a certificate.*
+- `def verify(self, data: bytes, signature: bytes, digest: HashAlgorithm | Prehashed) -> None`
+  - *Verify signature for string containing data.*
+
+##### 📌 `class CertStore`
+*Line: 76*
+
+**Docstring:**
+`````
+Base class for certificate stores.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (2):**
+- `def itercerts(self) -> Iterator[Certificate]`
+  - *Return certificate iterator.*
+- `def add_cert(self, cert: Certificate) -> None`
+
+##### 📌 `class FSCertStore(CertStore)`
+*Line: 100*
+
+**Docstring:**
+`````
+File system certificate store.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, path: str)`
+  - **Parameters:**
+    - `self`
+    - `path: str`
+
+
+---
+
+`````python
 """X.509 certificates."""
 from __future__ import annotations
 
@@ -32147,10 +48143,58 @@ class FSCertStore(CertStore):
                         f'Expired certificate: {cert.get_id()!r}')
                 self.add_cert(cert)
 
-```
+`````
 
-### 代码文件: celery\security\key.py
-```python
+--- **end of file: celery/security/certificate.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/security/key.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/security/key.py`
+
+#### 📝 Module Docstring
+
+`````
+Private keys for the security serializer.
+`````
+
+#### 📦 Imports
+
+- `from cryptography.hazmat.backends import default_backend`
+- `from cryptography.hazmat.primitives import serialization`
+- `from cryptography.hazmat.primitives.asymmetric import padding`
+- `from cryptography.hazmat.primitives.asymmetric import rsa`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from utils import reraise_errors`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class PrivateKey`
+*Line: 12*
+
+**Docstring:**
+`````
+Represents a private key.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, key, password = None)`
+  - **Parameters:**
+    - `self`
+    - `key`
+    - `password = None`
+
+**Public Methods (1):**
+- `def sign(self, data, digest)`
+  - *Sign string containing data.*
+
+
+---
+
+`````python
 """Private keys for the security serializer."""
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -32187,10 +48231,77 @@ class PrivateKey:
 
             return self._key.sign(ensure_bytes(data), pad, digest)
 
-```
+`````
 
-### 代码文件: celery\security\serialization.py
-```python
+--- **end of file: celery/security/key.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/security/serialization.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/security/serialization.py`
+
+#### 📝 Module Docstring
+
+`````
+Secure serializer.
+`````
+
+#### 📦 Imports
+
+- `from kombu.serialization import dumps`
+- `from kombu.serialization import loads`
+- `from kombu.serialization import registry`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import ensure_bytes`
+- `from kombu.utils.encoding import str_to_bytes`
+- `from celery.app.defaults import DEFAULT_SECURITY_DIGEST`
+- `from celery.utils.serialization import b64decode`
+- `from celery.utils.serialization import b64encode`
+- `from certificate import Certificate`
+- `from certificate import FSCertStore`
+- `from key import PrivateKey`
+- `from utils import get_digest_algorithm`
+- `from utils import reraise_errors`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class SecureSerializer`
+*Line: 20*
+
+**Docstring:**
+`````
+Signed serializer.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, key = None, cert = None, cert_store = None, digest = DEFAULT_SECURITY_DIGEST, serializer = 'json')`
+  - **Parameters:**
+    - `self`
+    - `key = None`
+    - `cert = None`
+    - `cert_store = None`
+    - `digest = DEFAULT_SECURITY_DIGEST`
+    - `serializer = 'json'`
+
+**Public Methods (2):**
+- `def serialize(self, data)`
+  - *Serialize data structure into string.*
+- `def deserialize(self, data)`
+  - *Deserialize data structure from string.*
+
+#### 🔧 Public Functions (1)
+
+- `def register_auth(key = None, key_password = None, cert = None, store = None, digest = DEFAULT_SECURITY_DIGEST, serializer = 'json')`
+  - *Line: 80*
+  - *Register security serializer.*
+
+
+---
+
+`````python
 """Secure serializer."""
 from kombu.serialization import dumps, loads, registry
 from kombu.utils.encoding import bytes_to_str, ensure_bytes, str_to_bytes
@@ -32282,10 +48393,47 @@ def register_auth(key=None, key_password=None, cert=None, store=None,
                       content_type='application/data',
                       content_encoding='utf-8')
 
-```
+`````
 
-### 代码文件: celery\security\utils.py
-```python
+--- **end of file: celery/security/serialization.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/security/utils.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/security/utils.py`
+
+#### 📝 Module Docstring
+
+`````
+Utilities used by the message signing serializer.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from contextlib import contextmanager`
+- `import cryptography.exceptions`
+- `from cryptography.hazmat.primitives import hashes`
+- `from celery.exceptions import SecurityError`
+- `from celery.exceptions import reraise`
+
+#### 🔧 Public Functions (2)
+
+- `def get_digest_algorithm(digest = 'sha256')`
+  - *Line: 13*
+  - *Convert string to hash object of cryptography library.*
+
+- `def reraise_errors(msg = '{0!r}', errors = None)` `contextmanager`
+  - *Line: 20*
+  - *Context reraising crypto errors as :exc:`SecurityError`.*
+
+
+---
+
+`````python
 """Utilities used by the message signing serializer."""
 import sys
 from contextlib import contextmanager
@@ -32315,10 +48463,46 @@ def reraise_errors(msg='{0!r}', errors=None):
                 SecurityError(msg.format(exc)),
                 sys.exc_info()[2])
 
-```
+`````
 
-### 代码文件: celery\security\__init__.py
-```python
+--- **end of file: celery/security/utils.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/security/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/security/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Message Signing Serializer.
+`````
+
+#### 📦 Imports
+
+- `from kombu.serialization import disable_insecure_serializers as _disable_insecure_serializers`
+- `from kombu.serialization import registry`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from serialization import register_auth`
+- `import cryptography`
+- `from celery import current_app`
+
+#### 🔧 Public Functions (2)
+
+- `def setup_security(allowed_serializers = None, key = None, key_password = None, cert = None, store = None, digest = None, serializer = 'json', app = None)`
+  - *Line: 44*
+  - *See :meth:`@Celery.setup_security`.*
+
+- `def disable_untrusted_serializers(whitelist = None)`
+  - *Line: 73*
+
+
+---
+
+`````python
 """Message Signing Serializer."""
 from kombu.serialization import disable_insecure_serializers as _disable_insecure_serializers
 from kombu.serialization import registry
@@ -32394,10 +48578,92 @@ def setup_security(allowed_serializers=None, key=None, key_password=None, cert=N
 def disable_untrusted_serializers(whitelist=None):
     _disable_insecure_serializers(allowed=whitelist)
 
-```
+`````
 
-### 代码文件: celery\utils\abstract.py
-```python
+--- **end of file: celery/security/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/abstract.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/abstract.py`
+
+#### 📝 Module Docstring
+
+`````
+Abstract classes.
+`````
+
+#### 📦 Imports
+
+- `from abc import ABCMeta`
+- `from abc import abstractmethod`
+- `from collections.abc import Callable`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class _AbstractClass`
+*Line: 12*
+
+**Public Methods (1):**
+- `def register(cls, other)` `classmethod`
+
+**Class Variables (1):**
+- `__required_attributes__ = frozenset()`
+
+##### 📌 `class CallableTask(_AbstractClass, Callable)`
+*Line: 29*
+
+**Docstring:**
+`````
+Task interface.
+`````
+
+**Public Methods (3):**
+- `def delay(self, *args, **kwargs)` `abstractmethod`
+- `def apply_async(self, *args, **kwargs)` `abstractmethod`
+- `def apply(self, *args, **kwargs)` `abstractmethod`
+
+**Class Variables (1):**
+- `__required_attributes__ = frozenset({'delay', 'apply_async', 'apply'})`
+
+##### 📌 `class CallableSignature(CallableTask)`
+*Line: 53*
+
+**Docstring:**
+`````
+Celery Signature interface.
+`````
+
+**Public Methods (5):**
+- `def clone(self, args = None, kwargs = None)` `abstractmethod`
+- `def freeze(self, id = None, group_id = None, chord = None, root_id = None, group_index = None)` `abstractmethod`
+- `def set(self, immutable = None, **options)` `abstractmethod`
+- `def link(self, callback)` `abstractmethod`
+- `def link_error(self, errback)` `abstractmethod`
+
+**Properties (11):**
+- `@property name`
+- `@property type`
+- `@property app`
+- `@property id`
+- `@property task`
+- `@property args`
+- `@property kwargs`
+- `@property options`
+- `@property subtask_type`
+- `@property chord_size`
+- `@property immutable`
+
+**Class Variables (1):**
+- `__required_attributes__ = frozenset({'clone', 'freeze', 'set', 'link', 'link_error', '__or__'})`
+
+
+---
+
+`````python
 """Abstract classes."""
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable
@@ -32545,10 +48811,53 @@ class CallableSignature(CallableTask):  # pragma: no cover
     def __subclasshook__(cls, C):
         return cls._subclasshook_using(CallableSignature, C)
 
-```
+`````
 
-### 代码文件: celery\utils\annotations.py
-```python
+--- **end of file: celery/utils/abstract.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/annotations.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/annotations.py`
+
+#### 📝 Module Docstring
+
+`````
+Code related to handling annotations.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `import types`
+- `import typing`
+- `from inspect import isclass`
+
+#### 🔧 Public Functions (4)
+
+- `def is_none_type(value: typing.Any) -> bool`
+  - *Line: 9*
+  - *Check if the given value is a NoneType.*
+
+- `def get_optional_arg(annotation: typing.Any) -> typing.Any`
+  - *Line: 17*
+  - *Get the argument from an Optional[...] annotation, or None if it is no such annotation.*
+
+- `def annotation_is_class(annotation: typing.Any) -> bool`
+  - *Line: 37*
+  - *Test if a given annotation is a class that can be used in isinstance()/issubclass().*
+
+- `def annotation_issubclass(annotation: typing.Any, cls: type) -> bool`
+  - *Line: 47*
+  - *Test if a given annotation is of the given subclass.*
+
+
+---
+
+`````python
 """Code related to handling annotations."""
 
 import sys
@@ -32599,10 +48908,390 @@ def annotation_issubclass(annotation: typing.Any, cls: type) -> bool:
     """Test if a given annotation is of the given subclass."""
     return annotation_is_class(annotation) and issubclass(annotation, cls)
 
-```
+`````
 
-### 代码文件: celery\utils\collections.py
-```python
+--- **end of file: celery/utils/annotations.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/collections.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/collections.py`
+
+#### 📝 Module Docstring
+
+`````
+Custom maps, sets, sequences, and other data structures.
+`````
+
+#### 📦 Imports
+
+- `import time`
+- `from collections import OrderedDict as _OrderedDict`
+- `from collections import deque`
+- `from collections.abc import Callable`
+- `from collections.abc import Mapping`
+- `from collections.abc import MutableMapping`
+- `from collections.abc import MutableSet`
+- `from collections.abc import Sequence`
+- `from heapq import heapify`
+- `from heapq import heappop`
+- `from heapq import heappush`
+- `from itertools import chain`
+- `from itertools import count`
+- `from queue import Empty`
+- `from typing import Any`
+- `from typing import Dict`
+- `from typing import Iterable`
+- `from typing import List`
+- `from functional import first`
+- `from functional import uniq`
+- `from text import match_case`
+- `from __pypy__ import reversed_dict as _dict_is_ordered`
+- `from django.utils.functional import LazyObject`
+- `from django.utils.functional import LazySettings`
+
+#### 🏛️ Classes (11)
+
+##### 📌 `class OrderedDict(_OrderedDict)`
+*Line: 58*
+
+**Docstring:**
+`````
+Dict where insertion order matters.
+`````
+
+##### 📌 `class AttributeDictMixin`
+*Line: 101*
+
+**Docstring:**
+`````
+Mixin for Mapping interface that adds attribute access.
+
+I.e., `d.key -> d[key]`).
+`````
+
+##### 📌 `class AttributeDict(dict, AttributeDictMixin)`
+*Line: 121*
+
+**Docstring:**
+`````
+Dict subclass with attribute access.
+`````
+
+##### 📌 `class DictAttribute`
+*Line: 125*
+
+**Docstring:**
+`````
+Dict interface to attributes.
+
+`obj[k] -> obj.k`
+`obj[k] = val -> obj.k = val`
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, obj)`
+  - **Parameters:**
+    - `self`
+    - `obj`
+
+**Public Methods (2):**
+- `def get(self, key, default = None)`
+- `def setdefault(self, key, default = None)`
+
+**Class Variables (7):**
+- `obj = None`
+- `iterkeys = _iterate_keys`
+- `iteritems = _iterate_items`
+- `itervalues = _iterate_values`
+- `items = _iterate_items`
+- `keys = _iterate_keys`
+- `values = _iterate_values`
+
+##### 📌 `class ChainMap(MutableMapping)`
+*Line: 202*
+
+**Docstring:**
+`````
+Key lookup on a sequence of maps.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *maps, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*maps`
+    - `**kwargs`
+
+**Public Methods (9):**
+- `def add_defaults(self, d)`
+- `def pop(self, key, *default)`
+- `def clear(self)`
+- `def get(self, key, default = None)`
+- `def setdefault(self, key, default = None)`
+- `def update(self, *args, **kwargs)`
+- `def fromkeys(cls, iterable, *args)` `classmethod`
+  - *Create a ChainMap with a single dict created from the iterable.*
+- `def copy(self)`
+- `def bind_to(self, callback)`
+
+**Class Variables (13):**
+- `key_t = None`
+- `changes = None`
+- `defaults = None`
+- `maps = None`
+- `_observers = ()`
+- `__nonzero__ = __bool__`
+- `__copy__ = copy`
+- `iterkeys = _iterate_keys`
+- `iteritems = _iterate_items`
+- `itervalues = _iterate_values`
+- `keys = _iterate_keys`
+- `items = _iterate_items`
+- `values = _iterate_values`
+
+##### 📌 `class ConfigurationView(ChainMap, AttributeDictMixin)`
+*Line: 353*
+
+**Docstring:**
+`````
+A view over an applications configuration dictionaries.
+
+Custom (but older) version of :class:`collections.ChainMap`.
+
+If the key does not exist in ``changes``, the ``defaults``
+dictionaries are consulted.
+
+Arguments:
+    changes (Mapping): Map of configuration changes.
+    defaults (List[Mapping]): List of dictionaries containing
+        the default configuration.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, changes, defaults = None, keys = None, prefix = None)`
+  - **Parameters:**
+    - `self`
+    - `changes`
+    - `defaults = None`
+    - `keys = None`
+    - `prefix = None`
+
+**Public Methods (4):**
+- `def first(self, *keys)`
+- `def get(self, key, default = None)`
+- `def clear(self)`
+  - *Remove all changes, but keep defaults.*
+- `def swap_with(self, other)`
+
+##### 📌 `class LimitedSet`
+*Line: 441*
+
+**Docstring:**
+`````
+Kind-of Set (or priority queue) with limitations.
+
+Good for when you need to test for membership (`a in set`),
+but the set should not grow unbounded.
+
+``maxlen`` is enforced at all times, so if the limit is reached
+we'll also remove non-expired items.
+
+You can also configure ``minlen``: this is the minimal residual size
+of the set.
+
+All arguments are optional, and no limits are enabled by default.
+
+Arguments:
+    maxlen (int): Optional max number of items.
+        Adding more items than ``maxlen`` will result in immediate
+        removal of items sorted by oldest insertion time.
+
+    expires (float): TTL for all items.
+        Expired items are purged as keys are inserted.
+
+    minlen (int): Minimal residual size of this set.
+        .. versionadded:: 4.0
+
+        Value must be less than ``maxlen`` if both are configured.
+
+        Older expired items will be deleted, only after the set
+        exceeds ``minlen`` number of items.
+
+    data (Sequence): Initial data to initialize set with.
+        Can be an iterable of ``(key, value)`` pairs,
+        a dict (``{key: insertion_time}``), or another instance
+        of :class:`LimitedSet`.
+
+Example:
+    >>> s = LimitedSet(maxlen=50000, expires=3600, minlen=4000)
+    >>> for i in range(60000):
+    ...     s.add(i)
+    ...     s.add(str(i))
+    ...
+    >>> 57000 in s  # last 50k inserted values are kept
+    True
+    >>> '10' in s  # '10' did expire and was purged from set.
+    False
+    >>> len(s)  # maxlen is reached
+    50000
+    >>> s.purge(now=time.monotonic() + 7200)  # clock + 2 hours
+    >>> len(s)  # now only minlen items are cached
+    4000
+    >>>> 57000 in s  # even this item is gone now
+    False
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, maxlen = 0, expires = 0, data = None, minlen = 0)`
+  - **Parameters:**
+    - `self`
+    - `maxlen = 0`
+    - `expires = 0`
+    - `data = None`
+    - `minlen = 0`
+
+**Public Methods (7):**
+- `def clear(self)`
+  - *Clear all data, start from scratch again.*
+- `def add(self, item, now = None)`
+  - *Add a new item, or reset the expiry time of an existing item.*
+- `def update(self, other)`
+  - *Update this set from other LimitedSet, dict or iterable.*
+- `def discard(self, item)`
+- `def purge(self, now = None)`
+  - **Docstring:**
+  `````
+  Check oldest items and remove them if needed.
+  
+  Arguments:
+      now (float): Time of purging -- by default right now.
+          This can be useful for unit testing.
+  `````
+- `def pop(self, default: Any = None) -> Any`
+  - *Remove and return the oldest item, or :const:`None` when empty.*
+- `def as_dict(self)`
+  - **Docstring:**
+  `````
+  Whole set as serializable dictionary.
+  
+  Example:
+      >>> s = LimitedSet(maxlen=200)
+      >>> r = LimitedSet(maxlen=200)
+      >>> for i in range(500):
+      ...     s.add(i)
+      ...
+      >>> r.update(s.as_dict())
+      >>> r == s
+      True
+  `````
+
+**Properties (1):**
+- `@property _heap_overload`
+
+**Class Variables (3):**
+- `max_heap_percent_overload = 15`
+- `pop_value = discard`
+- `__nonzero__ = __bool__`
+
+##### 📌 `class Evictable`
+*Line: 668*
+
+**Docstring:**
+`````
+Mixin for classes supporting the ``evict`` method.
+`````
+
+**Public Methods (1):**
+- `def evict(self) -> None`
+  - *Force evict until maxsize is enforced.*
+
+**Class Variables (1):**
+- `Empty = Empty`
+
+##### 📌 `class Messagebuffer(Evictable)`
+*Line: 692*
+
+**Docstring:**
+`````
+A buffer of pending messages.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, maxsize, iterable = None, deque = deque)`
+  - **Parameters:**
+    - `self`
+    - `maxsize`
+    - `iterable = None`
+    - `deque = deque`
+
+**Public Methods (3):**
+- `def put(self, item)`
+- `def extend(self, it)`
+- `def take(self, *default)`
+
+**Properties (1):**
+- `@property _evictcount`
+
+**Class Variables (1):**
+- `Empty = Empty`
+
+##### 📌 `class BufferMap(OrderedDict, Evictable)`
+*Line: 765*
+
+**Docstring:**
+`````
+Map of buffers.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, maxsize, iterable = None, bufmaxsize = 1000)`
+  - **Parameters:**
+    - `self`
+    - `maxsize`
+    - `iterable = None`
+    - `bufmaxsize = 1000`
+
+**Public Methods (3):**
+- `def put(self, key, item)`
+- `def extend(self, key, it)`
+- `def take(self, key, *default)`
+
+**Properties (1):**
+- `@property _evictcount`
+
+**Class Variables (5):**
+- `Buffer = Messagebuffer`
+- `Empty = Empty`
+- `maxsize = None`
+- `total = 0`
+- `bufmaxsize = None`
+
+##### 📌 `class LazyObject`
+*Line: 23*
+
+#### 🔧 Public Functions (2)
+
+- `def force_mapping(m)`
+  - *Line: 39*
+  - *Wrap object into supporting the mapping interface if necessary.*
+
+- `def lpmerge(L, R)`
+  - *Line: 47*
+  - **Docstring:**
+  `````
+  In place left precedent dictionary merge.
+  
+  Keeps values from `L`, if the value in `R` is :const:`None`.
+  `````
+
+
+---
+
+`````python
 """Custom maps, sets, sequences, and other data structures."""
 import time
 from collections import OrderedDict as _OrderedDict
@@ -33467,10 +50156,125 @@ class BufferMap(OrderedDict, Evictable):
         # type: () -> int
         return self.total
 
-```
+`````
 
-### 代码文件: celery\utils\debug.py
-```python
+--- **end of file: celery/utils/collections.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/debug.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/debug.py`
+
+#### 📝 Module Docstring
+
+`````
+Utilities for debugging memory usage, blocking calls, etc.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `import traceback`
+- `from contextlib import contextmanager`
+- `from functools import partial`
+- `from pprint import pprint`
+- `from celery.platforms import signals`
+- `from celery.utils.text import WhateverIO`
+- `from psutil import Process`
+- `import inspect`
+- `import gc`
+- `import threading`
+
+#### 🔧 Public Functions (9)
+
+- `def blockdetection(timeout)` `contextmanager`
+  - *Line: 42*
+  - **Docstring:**
+  `````
+  Context that raises an exception if process is blocking.
+  
+  Uses ``SIGALRM`` to detect blocking functions.
+  `````
+
+- `def sample_mem()`
+  - *Line: 63*
+  - **Docstring:**
+  `````
+  Sample RSS memory usage.
+  
+  Statistics can then be output by calling :func:`memdump`.
+  `````
+
+- `def memdump(samples = 10, file = None)`
+  - *Line: 83*
+  - **Docstring:**
+  `````
+  Dump memory statistics.
+  
+  Will print a sample of all RSS memory samples added by
+  calling :func:`sample_mem`, and in addition print
+  used RSS memory after :func:`gc.collect`.
+  `````
+
+- `def sample(x, n, k = 0)`
+  - *Line: 102*
+  - **Docstring:**
+  `````
+  Given a list `x` a sample of length ``n`` of that list is returned.
+  
+  For example, if `n` is 10, and `x` has 100 items, a list of every tenth.
+  item is returned.
+  
+  ``k`` can be used as offset.
+  `````
+
+- `def hfloat(f, p = 5)`
+  - *Line: 119*
+  - **Docstring:**
+  `````
+  Convert float to value suitable for humans.
+  
+  Arguments:
+      f (float): The floating point number.
+      p (int): Floating point precision (default is 5).
+  `````
+
+- `def humanbytes(s)`
+  - *Line: 130*
+  - *Convert bytes to human-readable form (e.g., KB, MB).*
+
+- `def mem_rss()`
+  - *Line: 138*
+  - *Return RSS memory usage as a humanized string.*
+
+- `def ps()`
+  - *Line: 145*
+  - **Docstring:**
+  `````
+  Return the global :class:`psutil.Process` instance.
+  
+  Note:
+      Returns :const:`None` if :pypi:`psutil` is not installed.
+  `````
+
+- `def cry(out = None, sepchr = '=', seplen = 49)`
+  - *Line: 164*
+  - **Docstring:**
+  `````
+  Return stack-trace of all active threads.
+  
+  See Also:
+      Taken from https://gist.github.com/737056.
+  `````
+
+
+---
+
+`````python
 """Utilities for debugging memory usage, blocking calls, etc."""
 import os
 import sys
@@ -33665,10 +50469,82 @@ def cry(out=None, sepchr='=', seplen=49):  # pragma: no cover
         P('\n')
     return out.getvalue()
 
-```
+`````
 
-### 代码文件: celery\utils\deprecated.py
-```python
+--- **end of file: celery/utils/debug.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/deprecated.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/deprecated.py`
+
+#### 📝 Module Docstring
+
+`````
+Deprecation utilities.
+`````
+
+#### 📦 Imports
+
+- `import warnings`
+- `from vine.utils import wraps`
+- `from celery.exceptions import CDeprecationWarning`
+- `from celery.exceptions import CPendingDeprecationWarning`
+- `from imports import qualname`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class _deprecated_property`
+*Line: 75*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, fget = None, fset = None, fdel = None, doc = None, **depreinfo)`
+  - **Parameters:**
+    - `self`
+    - `fget = None`
+    - `fset = None`
+    - `fdel = None`
+    - `doc = None`
+    - `**depreinfo`
+
+**Public Methods (2):**
+- `def setter(self, fset)`
+- `def deleter(self, fdel)`
+
+#### 🔧 Public Functions (3)
+
+- `def warn(description = None, deprecation = None, removal = None, alternative = None, stacklevel = 2)`
+  - *Line: 23*
+  - *Warn of (pending) deprecation.*
+
+- `def Callable(deprecation = None, removal = None, alternative = None, description = None)`
+  - *Line: 36*
+  - **Docstring:**
+  `````
+  Decorator for deprecated functions.
+  
+  A deprecation warning will be emitted when the function is called.
+  
+  Arguments:
+      deprecation (str): Version that marks first deprecation, if this
+          argument isn't set a ``PendingDeprecationWarning`` will be
+          emitted instead.
+      removal (str): Future version when this feature will be removed.
+      alternative (str): Instructions for an alternative solution (if any).
+      description (str): Description of what's being deprecated.
+  `````
+
+- `def Property(deprecation = None, removal = None, alternative = None, description = None)`
+  - *Line: 65*
+  - *Decorator for deprecated properties.*
+
+
+---
+
+`````python
 """Deprecation utilities."""
 import warnings
 
@@ -33783,12 +50659,255 @@ class _deprecated_property:
     def deleter(self, fdel):
         return self.__class__(self.__get, self.__set, fdel, **self.depreinfo)
 
-```
+`````
 
-### 代码文件: celery\utils\functional.py
-```python
+--- **end of file: celery/utils/deprecated.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/functional.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/functional.py`
+
+#### 📝 Module Docstring
+
+`````
+Functional-style utilities.
+`````
+
+#### 📦 Imports
+
+- `import inspect`
+- `import sys`
+- `from collections import UserList`
+- `from functools import partial`
+- `from itertools import islice`
+- `from itertools import tee`
+- `from itertools import zip_longest`
+- `from typing import Any`
+- `from typing import Callable`
+- `from kombu.utils.functional import LRUCache`
+- `from kombu.utils.functional import dictfilter`
+- `from kombu.utils.functional import is_list`
+- `from kombu.utils.functional import lazy`
+- `from kombu.utils.functional import maybe_evaluate`
+- `from kombu.utils.functional import maybe_list`
+- `from kombu.utils.functional import memoize`
+- `from vine import promise`
+- `from celery.utils.log import get_logger`
+- `import annotationlib as _annotationlib`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class DummyContext`
+*Line: 29*
+
+##### 📌 `class mlazy(lazy)`
+*Line: 38*
+
+**Docstring:**
+`````
+Memoized lazy evaluation.
+
+The function is only evaluated once, every subsequent access
+will return the same value.
+`````
+
+**Public Methods (1):**
+- `def evaluate(self)`
+
+**Class Variables (2):**
+- `evaluated = False`
+- `_value = None`
+
+##### 📌 `class _regen(UserList, list)`
+*Line: 194*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, it)`
+  - **Parameters:**
+    - `self`
+    - `it`
+
+**Public Methods (1):**
+- `def map(self, func)`
+
+**Properties (1):**
+- `@property data`
+
+#### 🔧 Public Functions (19)
+
+- `def noop(*args, **kwargs)`
+  - *Line: 56*
+  - **Docstring:**
+  `````
+  No operation.
+  
+  Takes any arguments/keyword arguments and does nothing.
+  `````
+
+- `def pass1(arg, *args, **kwargs)`
+  - *Line: 63*
+  - *Return the first positional argument.*
+
+- `def evaluate_promises(it)`
+  - *Line: 68*
+
+- `def first(predicate, it)`
+  - *Line: 75*
+  - **Docstring:**
+  `````
+  Return the first element in ``it`` that ``predicate`` accepts.
+  
+  If ``predicate`` is None it will return the first item that's not
+  :const:`None`.
+  `````
+
+- `def firstmethod(method, on_call = None)`
+  - *Line: 88*
+  - **Docstring:**
+  `````
+  Multiple dispatch.
+  
+  Return a function that with a list of instances,
+  finds the first instance that gives a value for the given method.
+  
+  The list can also contain lazy instances
+  (:class:`~kombu.utils.functional.lazy`.)
+  `````
+
+- `def chunks(it, n)`
+  - *Line: 113*
+  - **Docstring:**
+  `````
+  Split an iterator into chunks with `n` elements each.
+  
+  Warning:
+      ``it`` must be an actual iterator, if you pass this a
+      concrete sequence will get you repeating elements.
+  
+      So ``chunks(iter(range(1000)), 10)`` is fine, but
+      ``chunks(range(1000), 10)`` is not.
+  
+  Example:
+      # n == 2
+      >>> x = chunks(iter([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), 2)
+      >>> list(x)
+      [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10]]
+  
+      # n == 3
+      >>> x = chunks(iter([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), 3)
+      >>> list(x)
+      [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10]]
+  `````
+
+- `def padlist(container, size, default = None)`
+  - *Line: 138*
+  - **Docstring:**
+  `````
+  Pad list with default elements.
+  
+  Example:
+      >>> first, last, city = padlist(['George', 'Costanza', 'NYC'], 3)
+      ('George', 'Costanza', 'NYC')
+      >>> first, last, city = padlist(['George', 'Costanza'], 3)
+      ('George', 'Costanza', None)
+      >>> first, last, city, planet = padlist(
+      ...     ['George', 'Costanza', 'NYC'], 4, default='Earth',
+      ... )
+      ('George', 'Costanza', 'NYC', 'Earth')
+  `````
+
+- `def mattrgetter(*attrs)`
+  - *Line: 154*
+  - **Docstring:**
+  `````
+  Get attributes, ignoring attribute errors.
+  
+  Like :func:`operator.itemgetter` but return :const:`None` on missing
+  attributes instead of raising :exc:`AttributeError`.
+  `````
+
+- `def uniq(it)`
+  - *Line: 163*
+  - *Return all unique elements in ``it``, preserving order.*
+
+- `def lookahead(it)`
+  - *Line: 169*
+  - **Docstring:**
+  `````
+  Yield pairs of (current, next) items in `it`.
+  
+  `next` is None if `current` is the last item.
+  Example:
+      >>> list(lookahead(x for x in range(6)))
+      [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
+  `````
+
+- `def regen(it)`
+  - *Line: 182*
+  - **Docstring:**
+  `````
+  Convert iterator to an object that can be consumed multiple times.
+  
+  ``Regen`` takes any iterable, and if the object is an
+  generator it will cache the evaluated list on first access,
+  so that the generator can be "consumed" multiple times.
+  `````
+
+- `def head_from_fun(fun: Callable[..., Any], bound: bool = False) -> str`
+  - *Line: 354*
+  - *Generate signature function from actual function.*
+
+- `def arity_greater(fun, n)`
+  - *Line: 387*
+
+- `def fun_takes_argument(name, fun, position = None)`
+  - *Line: 392*
+
+- `def fun_accepts_kwargs(fun)`
+  - *Line: 400*
+  - *Return true if function accepts arbitrary keyword arguments.*
+
+- `def maybe(typ, val)`
+  - *Line: 414*
+  - *Call typ on value if val is defined.*
+
+- `def seq_concat_item(seq, item)`
+  - *Line: 419*
+  - **Docstring:**
+  `````
+  Return copy of sequence seq with item added.
+  
+  Returns:
+      Sequence: if seq is a tuple, the result will be a tuple,
+         otherwise it depends on the implementation of ``__add__``.
+  `````
+
+- `def seq_concat_seq(a, b)`
+  - *Line: 429*
+  - **Docstring:**
+  `````
+  Concatenate two sequences: ``a + b``.
+  
+  Returns:
+      Sequence: The return value will depend on the largest sequence
+          - if b is larger and is a tuple, the return value will be a tuple.
+          - if a is larger and is a list, the return value will be a list,
+  `````
+
+- `def is_numeric_value(value)`
+  - *Line: 447*
+
+
+---
+
+`````python
 """Functional-style utilities."""
 import inspect
+import sys
 from collections import UserList
 from functools import partial
 from itertools import islice, tee, zip_longest
@@ -34100,6 +51219,45 @@ def _argsfromspec(spec, replace_defaults=True):
     ]))
 
 
+if sys.version_info >= (3, 14):
+    import annotationlib as _annotationlib
+
+    def _getfullargspec(fun):
+        # In Python 3.14+, inspect.getfullargspec evaluates annotations by default
+        # (PEP 649), raising NameError for TYPE_CHECKING-only types. We don't need
+        # annotations here, so use Format.STRING to avoid evaluation.
+        # For bound methods, use __func__ so that 'self' is included in args,
+        # matching the behaviour of getfullargspec on older Python versions.
+        target = getattr(fun, '__func__', fun)
+        sig = inspect.signature(target, annotation_format=_annotationlib.Format.STRING)
+        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults = [], None, None, [], [], {}
+        for name, param in sig.parameters.items():
+            kind = param.kind
+            if kind in (param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD):
+                args.append(name)
+                if param.default is not param.empty:
+                    defaults.append(param.default)
+            elif kind == param.VAR_POSITIONAL:
+                varargs = name
+            elif kind == param.KEYWORD_ONLY:
+                kwonlyargs.append(name)
+                if param.default is not param.empty:
+                    kwonlydefaults[name] = param.default
+            elif kind == param.VAR_KEYWORD:
+                varkw = name
+        return inspect.FullArgSpec(
+            args=args,
+            varargs=varargs,
+            varkw=varkw,
+            defaults=tuple(defaults) or None,
+            kwonlyargs=kwonlyargs,
+            kwonlydefaults=kwonlydefaults or None,
+            annotations={},
+        )
+else:
+    _getfullargspec = inspect.getfullargspec
+
+
 def head_from_fun(fun: Callable[..., Any], bound: bool = False) -> str:
     """Generate signature function from actual function."""
     # we could use inspect.Signature here, but that implementation
@@ -34118,7 +51276,7 @@ def head_from_fun(fun: Callable[..., Any], bound: bool = False) -> str:
         name = fun.__name__
     definition = FUNHEAD_TEMPLATE.format(
         fun_name=name,
-        fun_args=_argsfromspec(inspect.getfullargspec(fun)),
+        fun_args=_argsfromspec(_getfullargspec(fun)),
         fun_value=1,
     )
     logger.debug(definition)
@@ -34148,6 +51306,12 @@ def fun_takes_argument(name, fun, position=None):
 
 def fun_accepts_kwargs(fun):
     """Return true if function accepts arbitrary keyword arguments."""
+    # inspect.signature evaluates annotations in Python 3.14+ (PEP 649),
+    # which raises NameError for types only imported under TYPE_CHECKING.
+    # Check co_flags directly to avoid touching annotations entirely.
+    code = getattr(fun, '__code__', None)
+    if code is not None:
+        return bool(code.co_flags & inspect.CO_VARKEYWORDS)
     return any(
         p for p in inspect.signature(fun).parameters.values()
         if p.kind == p.VAR_KEYWORD
@@ -34190,10 +51354,175 @@ def seq_concat_seq(a, b):
 def is_numeric_value(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
-```
+`````
 
-### 代码文件: celery\utils\graph.py
-```python
+--- **end of file: celery/utils/functional.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/graph.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/graph.py`
+
+#### 📝 Module Docstring
+
+`````
+Dependency graph implementation.
+`````
+
+#### 📦 Imports
+
+- `from collections import Counter`
+- `from textwrap import dedent`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import safe_str`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class DOT`
+*Line: 10*
+
+**Docstring:**
+`````
+Constants related to the dot format.
+`````
+
+**Class Variables (7):**
+- `HEAD = dedent('\n        {IN}{type} {id} {{\n        {INp}graph [{attrs}]\n    ')`
+- `ATTR = '{name}={value}'`
+- `NODE = '{INp}"{0}" [{attrs}]'`
+- `EDGE = '{INp}"{0}" {dir} "{1}" [{attrs}]'`
+- `ATTRSEP = ', '`
+- `DIRS = {'graph': '--', 'digraph': '->'}`
+- `TAIL = '{IN}}}'`
+
+##### 📌 `class CycleError(Exception)`
+*Line: 25*
+
+**Docstring:**
+`````
+A cycle was detected in an acyclic graph.
+`````
+
+##### 📌 `class DependencyGraph`
+*Line: 29*
+
+**Docstring:**
+`````
+A directed acyclic graph of objects and their dependencies.
+
+Supports a robust topological sort
+to detect the order in which they must be handled.
+
+Takes an optional iterator of ``(obj, dependencies)``
+tuples to build the graph from.
+
+Warning:
+    Does not support cycle detection.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, it = None, formatter = None)`
+  - **Parameters:**
+    - `self`
+    - `it = None`
+    - `formatter = None`
+
+**Public Methods (10):**
+- `def add_arc(self, obj)`
+  - *Add an object to the graph.*
+- `def add_edge(self, A, B)`
+  - **Docstring:**
+  `````
+  Add an edge from object ``A`` to object ``B``.
+  
+  I.e. ``A`` depends on ``B``.
+  `````
+- `def connect(self, graph)`
+  - *Add nodes from another graph.*
+- `def topsort(self)`
+  - **Docstring:**
+  `````
+  Sort the graph topologically.
+  
+  Returns:
+      List: of objects in the order in which they must be handled.
+  `````
+- `def valency_of(self, obj)`
+  - *Return the valency (degree) of a vertex in the graph.*
+- `def update(self, it)`
+  - *Update graph with data from a list of ``(obj, deps)`` tuples.*
+- `def edges(self)`
+  - *Return generator that yields for all edges in the graph.*
+- `def to_dot(self, fh, formatter = None)`
+  - **Docstring:**
+  `````
+  Convert the graph to DOT format.
+  
+  Arguments:
+      fh (IO): A file, or a file-like object to write the graph to.
+      formatter (celery.utils.graph.GraphFormatter): Custom graph
+          formatter to use.
+  `````
+- `def format(self, obj)`
+- `def repr_node(self, obj, level = 1, fmt = '{0}({1})')`
+
+**Class Variables (2):**
+- `items = _iterate_items`
+- `iteritems = _iterate_items`
+
+##### 📌 `class GraphFormatter`
+*Line: 224*
+
+**Docstring:**
+`````
+Format dependency graphs.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, root = None, type = None, id = None, indent = 0, inw = ' ' * 4, **scheme)`
+  - **Parameters:**
+    - `self`
+    - `root = None`
+    - `type = None`
+    - `id = None`
+    - `indent = 0`
+    - `inw = ' ' * 4`
+    - `**scheme`
+
+**Public Methods (11):**
+- `def attr(self, name, value)`
+- `def attrs(self, d, scheme = None)`
+- `def head(self, **attrs)`
+- `def tail(self)`
+- `def label(self, obj)`
+- `def node(self, obj, **attrs)`
+- `def terminal_node(self, obj, **attrs)`
+- `def edge(self, a, b, **attrs)`
+- `def FMT(self, fmt, *args, **kwargs)`
+- `def draw_edge(self, a, b, scheme = None, attrs = None)`
+- `def draw_node(self, obj, scheme = None, attrs = None)`
+
+**Class Variables (12):**
+- `_attr = DOT.ATTR.strip()`
+- `_node = DOT.NODE.strip()`
+- `_edge = DOT.EDGE.strip()`
+- `_head = DOT.HEAD.strip()`
+- `_tail = DOT.TAIL.strip()`
+- `_attrsep = DOT.ATTRSEP`
+- `_dirs = dict(DOT.DIRS)`
+- `scheme = {'shape': 'box', 'arrowhead': 'vee', 'style': 'filled', 'fontname': 'HelveticaNeue'}`
+- `edge_scheme = {'color': 'darkseagreen4', 'arrowcolor': 'black', 'arrowsize': 0.7}`
+- `node_scheme = {'fillcolor': 'palegreen3', 'color': 'palegreen4'}`
+- `term_scheme = {'fillcolor': 'palegreen1', 'color': 'palegreen2'}`
+- `graph_scheme = {'bgcolor': 'mintcream'}`
+
+
+---
+
+`````python
 """Dependency graph implementation."""
 from collections import Counter
 from textwrap import dedent
@@ -34504,10 +51833,101 @@ class GraphFormatter:
             self._node, self.label(obj), attrs=self.attrs(attrs, scheme),
         )
 
-```
+`````
 
-### 代码文件: celery\utils\imports.py
-```python
+--- **end of file: celery/utils/graph.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/imports.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/imports.py`
+
+#### 📝 Module Docstring
+
+`````
+Utilities related to importing modules and symbols by name.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `import warnings`
+- `from contextlib import contextmanager`
+- `from importlib import import_module`
+- `from importlib import reload`
+- `from importlib.metadata import entry_points`
+- `from kombu.utils.imports import symbol_by_name`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NotAPackage(Exception)`
+*Line: 24*
+
+**Docstring:**
+`````
+Raised when importing a package, but it's not a package.
+`````
+
+#### 🔧 Public Functions (10)
+
+- `def qualname(obj)`
+  - *Line: 28*
+  - *Return object name.*
+
+- `def instantiate(name, *args, **kwargs)`
+  - *Line: 38*
+  - **Docstring:**
+  `````
+  Instantiate class by name.
+  
+  See Also:
+      :func:`symbol_by_name`.
+  `````
+
+- `def cwd_in_path()` `contextmanager`
+  - *Line: 48*
+  - *Context adding the current working directory to sys.path.*
+
+- `def find_module(module, path = None, imp = None)`
+  - *Line: 69*
+  - *Version of :func:`imp.find_module` supporting dots.*
+
+- `def import_from_cwd(module, imp = None, package = None)`
+  - *Line: 96*
+  - **Docstring:**
+  `````
+  Import module, temporarily including modules in the current directory.
+  
+  Modules located in the current directory has
+  precedence over modules located in `sys.path`.
+  `````
+
+- `def reload_from_cwd(module, reloader = None)`
+  - *Line: 108*
+  - *Reload module (ensuring that CWD is in sys.path).*
+
+- `def module_file(module)`
+  - *Line: 116*
+  - *Return the correct original file name of a module.*
+
+- `def gen_task_name(app, name, module_name)`
+  - *Line: 122*
+  - *Generate task name from name/module pair.*
+
+- `def load_extension_class_names(namespace)`
+  - *Line: 144*
+
+- `def load_extension_classes(namespace)`
+  - *Line: 156*
+
+
+---
+
+`````python
 """Utilities related to importing modules and symbols by name."""
 import os
 import sys
@@ -34673,10 +52093,73 @@ def load_extension_classes(namespace):
         else:
             yield name, cls
 
-```
+`````
 
-### 代码文件: celery\utils\iso8601.py
-```python
+--- **end of file: celery/utils/imports.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/iso8601.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/iso8601.py`
+
+#### 📝 Module Docstring
+
+`````
+Parse ISO8601 dates.
+
+Originally taken from :pypi:`pyiso8601`
+(https://bitbucket.org/micktwomey/pyiso8601)
+
+Modified to match the behavior of ``dateutil.parser``:
+
+    - raise :exc:`ValueError` instead of ``ParseError``
+    - return naive :class:`~datetime.datetime` by default
+
+This is the original License:
+
+Copyright (c) 2007 Michael Twomey
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sub-license, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+`````
+
+#### 📦 Imports
+
+- `import re`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from datetime import timezone`
+- `from celery.utils.deprecated import warn`
+
+#### 🔧 Public Functions (1)
+
+- `def parse_iso8601(datestring: str) -> datetime`
+  - *Line: 53*
+  - *Parse and convert ISO-8601 string to datetime.*
+
+
+---
+
+`````python
 """Parse ISO8601 dates.
 
 Originally taken from :pypi:`pyiso8601`
@@ -34754,10 +52237,156 @@ def parse_iso8601(datestring: str) -> datetime:
         int(groups['fraction'] or 0), tz
     )
 
-```
+`````
 
-### 代码文件: celery\utils\log.py
-```python
+--- **end of file: celery/utils/iso8601.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/log.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/log.py`
+
+#### 📝 Module Docstring
+
+`````
+Logging utilities.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import numbers`
+- `import os`
+- `import sys`
+- `import threading`
+- `import traceback`
+- `from contextlib import contextmanager`
+- `from typing import AnyStr`
+- `from typing import Sequence`
+- `from kombu.log import LOG_LEVELS`
+- `from kombu.log import get_logger as _get_logger`
+- `from kombu.utils.encoding import safe_str`
+- `from term import colored`
+- `from billiard import util`
+- `from billiard import util`
+- `from billiard import process`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class ColorFormatter(logging.Formatter)`
+*Line: 123*
+
+**Docstring:**
+`````
+Logging formatter that adds colors based on severity.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, fmt = None, use_color = True)`
+  - **Parameters:**
+    - `self`
+    - `fmt = None`
+    - `use_color = True`
+
+**Public Methods (2):**
+- `def formatException(self, ei)`
+- `def format(self, record)`
+
+**Class Variables (2):**
+- `COLORS = colored().names`
+- `colors = {'DEBUG': COLORS['blue'], 'WARNING': COLORS['yellow'], 'ERROR': COLORS['red'], 'CRITICAL': COLORS['magenta']}`
+
+##### 📌 `class LoggingProxy`
+*Line: 178*
+
+**Docstring:**
+`````
+Forward file object to :class:`logging.Logger` instance.
+
+Arguments:
+    logger (~logging.Logger): Logger instance to forward to.
+    loglevel (int, str): Log level to use when logging messages.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, logger, loglevel = None)`
+  - **Parameters:**
+    - `self`
+    - `logger`
+    - `loglevel = None`
+
+**Public Methods (5):**
+- `def write(self, data)`
+  - *Write message to logging object.*
+- `def writelines(self, sequence)`
+  - **Docstring:**
+  `````
+  Write list of strings to file.
+  
+  The sequence can be any iterable object producing strings.
+  This is equivalent to calling :meth:`write` for each string.
+  `````
+- `def flush(self)`
+- `def close(self)`
+- `def isatty(self)`
+  - *Here for file support.*
+
+**Class Variables (5):**
+- `mode = 'w'`
+- `name = None`
+- `closed = False`
+- `loglevel = logging.ERROR`
+- `_thread = threading.local()`
+
+#### 🔧 Public Functions (11)
+
+- `def set_in_sighandler(value)`
+  - *Line: 39*
+  - *Set flag signifying that we're inside a signal handler.*
+
+- `def iter_open_logger_fds()`
+  - *Line: 45*
+
+- `def in_sighandler()` `contextmanager`
+  - *Line: 63*
+  - *Context that records that we are in a signal handler.*
+
+- `def logger_isa(l, p, max = 1000)`
+  - *Line: 72*
+
+- `def get_logger(name)`
+  - *Line: 97*
+  - *Get logger by name.*
+
+- `def get_task_logger(name)`
+  - *Line: 109*
+  - *Get logger for task module by name.*
+
+- `def mlevel(level)`
+  - *Line: 116*
+  - *Convert level name/int to log level.*
+
+- `def get_multiprocessing_logger()`
+  - *Line: 263*
+  - *Return the multiprocessing logger.*
+
+- `def reset_multiprocessing_logger()`
+  - *Line: 273*
+  - *Reset multiprocessing logging setup.*
+
+- `def current_process()`
+  - *Line: 284*
+
+- `def current_process_index(base = 1)`
+  - *Line: 293*
+
+
+---
+
+`````python
 """Logging utilities."""
 import logging
 import numbers
@@ -35054,10 +52683,84 @@ def current_process_index(base=1):
     index = getattr(current_process(), 'index', None)
     return index + base if index is not None else index
 
-```
+`````
 
-### 代码文件: celery\utils\nodenames.py
-```python
+--- **end of file: celery/utils/log.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/nodenames.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/nodenames.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker name utilities.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import os`
+- `import socket`
+- `from functools import partial`
+- `from kombu.entity import Exchange`
+- `from kombu.entity import Queue`
+- `from functional import memoize`
+- `from text import simple_format`
+- `from log import current_process_index`
+
+#### 🔧 Public Functions (7)
+
+- `def worker_direct(hostname: str | Queue) -> Queue`
+  - *Line: 38*
+  - **Docstring:**
+  `````
+  Return the :class:`kombu.Queue` being a direct route to a worker.
+  
+  Arguments:
+      hostname (str, ~kombu.Queue): The fully qualified node name of
+          a worker (e.g., ``w1@example.com``).  If passed a
+          :class:`kombu.Queue` instance it will simply return
+          that instead.
+  `````
+
+- `def nodename(name: str, hostname: str) -> str`
+  - *Line: 56*
+  - *Create node name from name/hostname pair.*
+
+- `def anon_nodename(hostname: str | None = None, prefix: str = 'gen') -> str`
+  - *Line: 61*
+  - **Docstring:**
+  `````
+  Return the nodename for this process (not a worker).
+  
+  This is used for e.g. the origin task message field.
+  `````
+
+- `def nodesplit(name: str) -> tuple[None, str] | list[str]`
+  - *Line: 69*
+  - *Split node name into tuple of name/hostname.*
+
+- `def default_nodename(hostname: str) -> str`
+  - *Line: 77*
+  - *Return the default nodename for this process.*
+
+- `def node_format(s: str, name: str, **extra: dict) -> str`
+  - *Line: 83*
+  - *Format worker node name (name@host.com).*
+
+- `def host_format(s: str, host: str | None = None, name: str | None = None, **extra: dict) -> str`
+  - *Line: 99*
+  - *Format host %x abbreviations.*
+
+
+---
+
+`````python
 """Worker name utilities."""
 from __future__ import annotations
 
@@ -35173,11 +52876,160 @@ def host_format(s: str, host: str | None = None, name: str | None = None, **extr
     )
     return simple_format(s, keys)
 
-```
+`````
 
-### 代码文件: celery\utils\objects.py
-```python
+--- **end of file: celery/utils/nodenames.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/objects.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/objects.py`
+
+#### 📝 Module Docstring
+
+`````
+Object related utilities, including introspection, etc.
+`````
+
+#### 📦 Imports
+
+- `import types`
+- `from functools import reduce`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class Bunch`
+*Line: 8*
+
+**Docstring:**
+`````
+Object that enables you to modify attributes.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `**kwargs`
+
+##### 📌 `class FallbackContext`
+*Line: 47*
+
+**Docstring:**
+`````
+Context workaround.
+
+The built-in ``@contextmanager`` utility does not work well
+when wrapping other contexts, as the traceback is wrong when
+the wrapped context raises.
+
+This solves this problem and can be used instead of ``@contextmanager``
+in this example::
+
+    @contextmanager
+    def connection_or_default_connection(connection=None):
+        if connection:
+            # user already has a connection, shouldn't close
+            # after use
+            yield connection
+        else:
+            # must've new connection, and also close the connection
+            # after the block returns
+            with create_new_connection() as connection:
+                yield connection
+
+This wrapper can be used instead for the above like this::
+
+    def connection_or_default_connection(connection=None):
+        return FallbackContext(connection, create_new_connection)
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, provided, fallback, *fb_args, **fb_kwargs)`
+  - **Parameters:**
+    - `self`
+    - `provided`
+    - `fallback`
+    - `*fb_args`
+    - `**fb_kwargs`
+
+**Class Variables (1):**
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+
+##### 📌 `class getitem_property`
+*Line: 97*
+
+**Docstring:**
+`````
+Attribute -> dict key descriptor.
+
+The target object must support ``__getitem__``,
+and optionally ``__setitem__``.
+
+Example:
+    >>> from collections import defaultdict
+
+    >>> class Me(dict):
+    ...     deep = defaultdict(dict)
+    ...
+    ...     foo = _getitem_property('foo')
+    ...     deep_thing = _getitem_property('deep.thing')
+
+
+    >>> me = Me()
+    >>> me.foo
+    None
+
+    >>> me.foo = 10
+    >>> me.foo
+    10
+    >>> me['foo']
+    10
+
+    >>> me.deep_thing = 42
+    >>> me.deep_thing
+    42
+    >>> me.deep
+    defaultdict(<type 'dict'>, {'thing': 42})
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, keypath, doc = None)`
+  - **Parameters:**
+    - `self`
+    - `keypath`
+    - `doc = None`
+
+#### 🔧 Public Functions (1)
+
+- `def mro_lookup(cls, attr, stop = None, monkey_patched = None)`
+  - *Line: 15*
+  - **Docstring:**
+  `````
+  Return the first node by MRO order that defines an attribute.
+  
+  Arguments:
+      cls (Any): Child class to traverse.
+      attr (str): Name of attribute to find.
+      stop (Set[Any]): A set of types that if reached will stop
+          the search.
+      monkey_patched (Sequence): Use one of the stop classes
+          if the attributes module origin isn't in this list.
+          Used to detect monkey patched attributes.
+  
+  Returns:
+      Any: The attribute value, or :const:`None` if not found.
+  `````
+
+
+---
+
+`````python
 """Object related utilities, including introspection, etc."""
+import types
 from functools import reduce
 
 __all__ = ('Bunch', 'FallbackContext', 'getitem_property', 'mro_lookup')
@@ -35269,6 +53121,8 @@ class FallbackContext:
         if self._context is not None:
             return self._context.__exit__(*exc_info)
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
 
 class getitem_property:
     """Attribute -> dict key descriptor.
@@ -35320,10 +53174,39 @@ class getitem_property:
     def __set__(self, obj, value):
         self._path(obj)[self.key] = value
 
-```
+`````
 
-### 代码文件: celery\utils\quorum_queues.py
-```python
+--- **end of file: celery/utils/objects.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/quorum_queues.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/quorum_queues.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+
+#### 🔧 Public Functions (1)
+
+- `def detect_quorum_queues(app, driver_type: str) -> tuple[bool, str]`
+  - *Line: 4*
+  - **Docstring:**
+  `````
+  Detect if any of the queues are quorum queues.
+  
+  Returns:
+      tuple[bool, str]: A tuple containing a boolean indicating if any of the queues are quorum queues
+      and the name of the first quorum queue found or an empty string if no quorum queues were found.
+  `````
+
+
+---
+
+`````python
 from __future__ import annotations
 
 
@@ -35345,10 +53228,76 @@ def detect_quorum_queues(app, driver_type: str) -> tuple[bool, str]:
 
     return False, ""
 
-```
+`````
 
-### 代码文件: celery\utils\saferepr.py
-```python
+--- **end of file: celery/utils/quorum_queues.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/saferepr.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/saferepr.py`
+
+#### 📝 Module Docstring
+
+`````
+Streaming, truncating, non-recursive version of :func:`repr`.
+
+Differences from regular :func:`repr`:
+
+- Sets are represented the Python 3 way: ``{1, 2}`` vs ``set([1, 2])``.
+- Unicode strings does not have the ``u'`` prefix, even on Python 2.
+- Empty set formatted as ``set()`` (Python 3), not ``set([])`` (Python 2).
+- Longs don't have the ``L`` suffix.
+
+Very slow with no limits, super quick with limits.
+`````
+
+#### 📦 Imports
+
+- `import traceback`
+- `from collections import deque`
+- `from collections import namedtuple`
+- `from decimal import Decimal`
+- `from itertools import chain`
+- `from numbers import Number`
+- `from pprint import _recursion`
+- `from typing import Any`
+- `from typing import AnyStr`
+- `from typing import Callable`
+- `from typing import Dict`
+- `from typing import Iterator`
+- `from typing import List`
+- `from typing import Optional`
+- `from typing import Sequence`
+- `from typing import Set`
+- `from typing import Tuple`
+- `from text import truncate`
+
+#### 🔧 Public Functions (2)
+
+- `def saferepr(o, maxlen = None, maxlevels = 3, seen = None)`
+  - *Line: 66*
+  - **Docstring:**
+  `````
+  Safe version of :func:`repr`.
+  
+  Warning:
+      Make sure you set the maxlen argument, or it will be very slow
+      for recursive objects.  With the maxlen set, it's often faster
+      than built-in repr.
+  `````
+
+- `def reprstream(stack: deque, seen: Optional[Set] = None, maxlevels: int = 3, level: int = 0, isinstance: Callable = isinstance) -> Iterator[Any]`
+  - *Line: 197*
+  - *Streaming repr, yielding tokens.*
+
+
+---
+
+`````python
 """Streaming, truncating, non-recursive version of :func:`repr`.
 
 Differences from regular :func:`repr`:
@@ -35619,10 +53568,174 @@ def reprstream(stack: deque,
                 append(chain([lit_start], val, [_dirty(objid), lit_end], it))
                 break
 
-```
+`````
 
-### 代码文件: celery\utils\serialization.py
-```python
+--- **end of file: celery/utils/saferepr.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/serialization.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/serialization.py`
+
+#### 📝 Module Docstring
+
+`````
+Utilities for safely pickling exceptions.
+`````
+
+#### 📦 Imports
+
+- `import datetime`
+- `import numbers`
+- `import sys`
+- `from base64 import b64decode as base64decode`
+- `from base64 import b64encode as base64encode`
+- `from functools import partial`
+- `from inspect import getmro`
+- `from itertools import takewhile`
+- `from kombu.utils.encoding import bytes_to_str`
+- `from kombu.utils.encoding import safe_repr`
+- `from kombu.utils.encoding import str_to_bytes`
+- `import cPickle as pickle`
+- `from kombu.abstract import Object as KombuDictType`
+- `import pickle`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class UnpickleableExceptionWrapper(Exception)`
+*Line: 100*
+
+**Docstring:**
+`````
+Wraps unpickleable exceptions.
+
+Arguments:
+    exc_module (str): See :attr:`exc_module`.
+    exc_cls_name (str): See :attr:`exc_cls_name`.
+    exc_args (Tuple[Any, ...]): See :attr:`exc_args`.
+
+Example:
+    >>> def pickle_it(raising_function):
+    ...     try:
+    ...         raising_function()
+    ...     except Exception as e:
+    ...         exc = UnpickleableExceptionWrapper(
+    ...             e.__class__.__module__,
+    ...             e.__class__.__name__,
+    ...             e.args,
+    ...         )
+    ...         pickle.dumps(exc)  # Works fine.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, exc_module, exc_cls_name, exc_args, text = None)`
+  - **Parameters:**
+    - `self`
+    - `exc_module`
+    - `exc_cls_name`
+    - `exc_args`
+    - `text = None`
+
+**Public Methods (2):**
+- `def restore(self)`
+- `def from_exception(cls, exc)` `classmethod`
+
+**Class Variables (3):**
+- `exc_module = None`
+- `exc_cls_name = None`
+- `exc_args = None`
+
+#### 🔧 Public Functions (13)
+
+- `def subclass_exception(name, parent, module)`
+  - *Line: 33*
+  - *Create new exception class.*
+
+- `def find_pickleable_exception(exc, loads = pickle.loads, dumps = pickle.dumps)`
+  - *Line: 38*
+  - **Docstring:**
+  `````
+  Find first pickleable exception base class.
+  
+  With an exception instance, iterate over its super classes (by MRO)
+  and find the first super exception that's pickleable.  It does
+  not go below :exc:`Exception` (i.e., it skips :exc:`Exception`,
+  :class:`BaseException` and :class:`object`).  If that happens
+  you should use :exc:`UnpickleableException` instead.
+  
+  Arguments:
+      exc (BaseException): An exception instance.
+      loads: decoder to use.
+      dumps: encoder to use
+  
+  Returns:
+      Exception: Nearest pickleable parent exception class
+          (except :exc:`Exception` and parents), or if the exception is
+          pickleable it will return :const:`None`.
+  `````
+
+- `def itermro(cls, stop)`
+  - *Line: 69*
+
+- `def create_exception_cls(name, module, parent = None)`
+  - *Line: 73*
+  - *Dynamically create an exception class.*
+
+- `def ensure_serializable(items, encoder)`
+  - *Line: 80*
+  - **Docstring:**
+  `````
+  Ensure items will serialize.
+  
+  For a given list of arbitrary objects, return the object
+  or a string representation, safe for serialization.
+  
+  Arguments:
+      items (Iterable[Any]): Objects to serialize.
+      encoder (Callable): Callable function to serialize with.
+  `````
+
+- `def get_pickleable_exception(exc)`
+  - *Line: 161*
+  - *Make sure exception is pickleable.*
+
+- `def get_pickleable_etype(cls, loads = pickle.loads, dumps = pickle.dumps)`
+  - *Line: 175*
+  - *Get pickleable exception type.*
+
+- `def get_pickled_exception(exc)`
+  - *Line: 185*
+  - *Reverse of :meth:`get_pickleable_exception`.*
+
+- `def b64encode(s)`
+  - *Line: 192*
+
+- `def b64decode(s)`
+  - *Line: 196*
+
+- `def strtobool(term, table = None)`
+  - *Line: 200*
+  - **Docstring:**
+  `````
+  Convert common terms for true/false to bool.
+  
+  Examples (true/false/yes/no/on/off/1/0).
+  `````
+
+- `def jsonify(obj, builtin_types = (numbers.Real, str), key = None, keyfilter = None, unknown_type_filter = None)`
+  - *Line: 233*
+  - *Transform object making it suitable for json serialization.*
+
+- `def raise_with_context(exc)`
+  - *Line: 267*
+
+
+---
+
+`````python
 """Utilities for safely pickling exceptions."""
 import datetime
 import numbers
@@ -35897,10 +54010,63 @@ def raise_with_context(exc):
         raise
     raise exc from exc_info[1]
 
-```
+`````
 
-### 代码文件: celery\utils\sysinfo.py
-```python
+--- **end of file: celery/utils/serialization.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/sysinfo.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/sysinfo.py`
+
+#### 📝 Module Docstring
+
+`````
+System information utilities.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import os`
+- `from math import ceil`
+- `from kombu.utils.objects import cached_property`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class df`
+*Line: 28*
+
+**Docstring:**
+`````
+Disk information.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, path: str | bytes | os.PathLike)`
+  - **Parameters:**
+    - `self`
+    - `path: str | bytes | os.PathLike`
+
+**Properties (4):**
+- `@property total_blocks -> float`
+- `@property available -> float`
+- `@property capacity -> int`
+- `@property stat -> os.statvfs_result`
+
+#### 🔧 Public Functions (1)
+
+- `def load_average() -> tuple[float, ...]`
+  - *Line: 23*
+  - *Return system load average as a triple.*
+
+
+---
+
+`````python
 """System information utilities."""
 from __future__ import annotations
 
@@ -35952,10 +54118,99 @@ class df:
     def stat(self) -> os.statvfs_result:
         return os.statvfs(os.path.abspath(self.path))
 
-```
+`````
 
-### 代码文件: celery\utils\term.py
-```python
+--- **end of file: celery/utils/sysinfo.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/term.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/term.py`
+
+#### 📝 Module Docstring
+
+`````
+Terminals and colors.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import base64`
+- `import os`
+- `import platform`
+- `import sys`
+- `from functools import reduce`
+- `from typing import Any`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class colored`
+*Line: 36*
+
+**Docstring:**
+`````
+Terminal colored text.
+
+Example:
+    >>> c = colored(enabled=True)
+    >>> print(str(c.red('the quick '), c.blue('brown ', c.bold('fox ')),
+    ...       c.magenta(c.underline('jumps over')),
+    ...       c.yellow(' the lazy '),
+    ...       c.green('dog ')))
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *s: object, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `*s: object`
+    - `**kwargs: Any`
+
+**Public Methods (24):**
+- `def no_color(self) -> str`
+- `def embed(self) -> str`
+- `def node(self, s: tuple[object, ...], op: str) -> colored`
+- `def black(self, *s: object) -> colored`
+- `def red(self, *s: object) -> colored`
+- `def green(self, *s: object) -> colored`
+- `def yellow(self, *s: object) -> colored`
+- `def blue(self, *s: object) -> colored`
+- `def magenta(self, *s: object) -> colored`
+- `def cyan(self, *s: object) -> colored`
+- `def white(self, *s: object) -> colored`
+- `def bold(self, *s: object) -> colored`
+- `def underline(self, *s: object) -> colored`
+- `def blink(self, *s: object) -> colored`
+- `def reverse(self, *s: object) -> colored`
+- `def bright(self, *s: object) -> colored`
+- `def ired(self, *s: object) -> colored`
+- `def igreen(self, *s: object) -> colored`
+- `def iyellow(self, *s: object) -> colored`
+- `def iblue(self, *s: colored) -> colored`
+- `def imagenta(self, *s: object) -> colored`
+- `def icyan(self, *s: object) -> colored`
+- `def iwhite(self, *s: object) -> colored`
+- `def reset(self, *s: object) -> colored`
+
+#### 🔧 Public Functions (3)
+
+- `def fg(s: int) -> str`
+  - *Line: 32*
+
+- `def supports_images() -> bool`
+  - *Line: 167*
+
+- `def imgcat(path: str, inline: int = 1, preserve_aspect_ratio: int = 0, **kwargs: Any) -> str`
+  - *Line: 181*
+
+
+---
+
+`````python
 """Terminals and colors."""
 from __future__ import annotations
 
@@ -36141,10 +54396,155 @@ def imgcat(path: str, inline: int = 1, preserve_aspect_ratio: int = 0, **kwargs:
         _IMG_PRE, inline, preserve_aspect_ratio,
         _read_as_base64(path), _IMG_POST)
 
-```
+`````
 
-### 代码文件: celery\utils\text.py
-```python
+--- **end of file: celery/utils/term.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/text.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/text.py`
+
+#### 📝 Module Docstring
+
+`````
+Text formatting utilities.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import io`
+- `import re`
+- `from functools import partial`
+- `from pprint import pformat`
+- `from re import Match`
+- `from textwrap import fill`
+- `from typing import Any`
+- `from typing import Callable`
+- `from typing import Pattern`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class WhateverIO(StringIO)`
+*Line: 189*
+
+**Docstring:**
+`````
+StringIO that takes bytes or str.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, v: bytes | str | None = None, *a: Any, **kw: Any)`
+  - **Parameters:**
+    - `self`
+    - `v: bytes | str | None = None`
+    - `*a: Any`
+    - `**kw: Any`
+
+**Public Methods (1):**
+- `def write(self, data: bytes | str) -> int`
+
+#### 🔧 Public Functions (17)
+
+- `def str_to_list(s: str) -> list[str]`
+  - *Line: 28*
+  - *Convert string to list.*
+
+- `def dedent_initial(s: str, n: int = 4) -> str`
+  - *Line: 35*
+  - *Remove indentation from first line of text.*
+
+- `def dedent(s: str, sep: str = '\n') -> str`
+  - *Line: 40*
+  - *Remove indentation.*
+
+- `def fill_paragraphs(s: str, width: int, sep: str = '\n') -> str`
+  - *Line: 45*
+  - *Fill paragraphs with newlines (or custom separator).*
+
+- `def join(l: list[str], sep: str = '\n') -> str`
+  - *Line: 50*
+  - *Concatenate list of strings.*
+
+- `def ensure_sep(sep: str, s: str, n: int = 2) -> str`
+  - *Line: 55*
+  - *Ensure text s ends in separator sep'.*
+
+- `def abbr(S: str, max: int, ellipsis: str | bool = '...') -> str`
+  - *Line: 63*
+  - *Abbreviate word.*
+
+- `def abbrtask(S: str, max: int) -> str`
+  - *Line: 73*
+  - *Abbreviate task name.*
+
+- `def indent(t: str, indent: int = 0, sep: str = '\n') -> str`
+  - *Line: 84*
+  - *Indent text.*
+
+- `def truncate(s: str, maxlen: int = 128, suffix: str = '...') -> str`
+  - *Line: 89*
+  - *Truncate text to a maximum number of characters.*
+
+- `def pluralize(n: float, text: str, suffix: str = 's') -> str`
+  - *Line: 96*
+  - *Pluralize term when n is greater than one.*
+
+- `def pretty(value: str, width: int = 80, nl_width: int = 80, sep: str = '\n', **kw: Any) -> str`
+  - *Line: 103*
+  - *Format value for printing to console.*
+
+- `def match_case(s: str, other: str) -> str`
+  - *Line: 116*
+
+- `def simple_format(s: str, keys: dict[str, str | Callable], pattern: Pattern[str] = RE_FORMAT, expand: str = '\\1') -> str`
+  - *Line: 120*
+  - *Format string, expanding abbreviations in keys'.*
+
+- `def remove_repeating_from_task(task_name: str, s: str) -> str`
+  - *Line: 141*
+  - **Docstring:**
+  `````
+  Given task name, remove repeating module names.
+  
+  Example:
+      >>> remove_repeating_from_task(
+      ...     'tasks.add',
+      ...     'tasks.add(2, 2), tasks.mul(3), tasks.div(4)')
+      'tasks.add(2, 2), mul(3), div(4)'
+  `````
+
+- `def remove_repeating(substr: str, s: str) -> str`
+  - *Line: 156*
+  - **Docstring:**
+  `````
+  Remove repeating module names from string.
+  
+  Arguments:
+      task_name (str): Task name (full path including module),
+          to use as the basis for removing module names.
+      s (str): The string we want to work on.
+  
+  Example:
+  
+      >>> _shorten_names(
+      ...    'x.tasks.add',
+      ...    'x.tasks.add(2, 2) | x.tasks.add(4) | x.tasks.mul(8)',
+      ... )
+      'x.tasks.add(2, 2) | add(4) | mul(8)'
+  `````
+
+- `def resolve(match: Match) -> str | Any`
+  - *Line: 127*
+
+
+---
+
+`````python
 """Text formatting utilities."""
 from __future__ import annotations
 
@@ -36344,16 +54744,233 @@ class WhateverIO(StringIO):
         return _SIO_write(self, data.decode()
                           if isinstance(data, bytes) else data)
 
-```
+`````
 
-### 代码文件: celery\utils\threads.py
-```python
+--- **end of file: celery/utils/text.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/threads.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/threads.py`
+
+#### 📝 Module Docstring
+
+`````
+Threading primitives and utilities.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import socket`
+- `import sys`
+- `import threading`
+- `import traceback`
+- `import types`
+- `from contextlib import contextmanager`
+- `from threading import TIMEOUT_MAX as THREAD_TIMEOUT_MAX`
+- `from celery.local import Proxy`
+- `from greenlet import getcurrent as get_ident`
+- `from _thread import get_ident`
+- `from thread import get_ident`
+- `from _dummy_thread import get_ident`
+- `from dummy_thread import get_ident`
+
+#### 🏛️ Classes (5)
+
+##### 📌 `class bgThread(threading.Thread)`
+*Line: 45*
+
+**Docstring:**
+`````
+Background service thread.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, name = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `name = None`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def body(self)`
+- `def on_crash(self, msg, *fmt, **kwargs)`
+- `def run(self)`
+- `def stop(self)`
+  - *Graceful shutdown.*
+
+##### 📌 `class Local`
+*Line: 116*
+
+**Docstring:**
+`````
+Local object.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Class Variables (1):**
+- `__slots__ = ('__storage__', '__ident_func__')`
+
+##### 📌 `class _LocalStack`
+*Line: 156*
+
+**Docstring:**
+`````
+Local stack.
+
+This class works similar to a :class:`Local` but keeps a stack
+of objects instead.  This is best explained with an example::
+
+    >>> ls = LocalStack()
+    >>> ls.push(42)
+    >>> ls.top
+    42
+    >>> ls.push(23)
+    >>> ls.top
+    23
+    >>> ls.pop()
+    23
+    >>> ls.top
+    42
+
+They can be force released by using a :class:`LocalManager` or with
+the :func:`release_local` function but the correct way is to pop the
+item from the stack after using.  When the stack is empty it will
+no longer be bound to the current context (and as such released).
+
+By calling the stack without arguments it will return a proxy that
+resolves to the topmost item on the stack.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (2):**
+- `def push(self, obj)`
+  - *Push a new item to the stack.*
+- `def pop(self)`
+  - **Docstring:**
+  `````
+  Remove the topmost item from the stack.
+  
+  Note:
+      Will return the old value or `None` if the stack was already empty.
+  `````
+
+**Properties (2):**
+- `@property stack`
+- `@property top`
+
+**Class Variables (2):**
+- `__ident_func__ = property(_get__ident_func__, _set__ident_func__)`
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+
+##### 📌 `class LocalManager`
+*Line: 258*
+
+**Docstring:**
+`````
+Local objects cannot manage themselves.
+
+For that you need a local manager.
+You can pass a local manager multiple locals or add them
+later by appending them to ``manager.locals``.  Every time the manager
+cleans up, it will clean up all the data left in the locals for this
+context.
+
+The ``ident_func`` parameter can be added to override the default ident
+function for the wrapped locals.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, locals = None, ident_func = None)`
+  - **Parameters:**
+    - `self`
+    - `locals = None`
+    - `ident_func = None`
+
+**Public Methods (2):**
+- `def get_ident(self)`
+  - **Docstring:**
+  `````
+  Return context identifier.
+  
+  This is the identifier the local objects use internally
+  for this context.  You cannot override this method to change the
+  behavior but use it to link other context local objects (such as
+  SQLAlchemy's scoped sessions) to the Werkzeug locals.
+  `````
+- `def cleanup(self)`
+  - **Docstring:**
+  `````
+  Manually clean up the data in the locals for this context.
+  
+  Call this at the end of the request or use ``make_middleware()``.
+  `````
+
+##### 📌 `class _FastLocalStack(threading.local)`
+*Line: 308*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Properties (1):**
+- `@property top`
+
+**Class Variables (1):**
+- `__class_getitem__ = classmethod(types.GenericAlias)`
+
+#### 🔧 Public Functions (2)
+
+- `def default_socket_timeout(timeout)` `contextmanager`
+  - *Line: 37*
+  - *Context temporarily setting the default socket timeout.*
+
+- `def release_local(local)`
+  - *Line: 95*
+  - **Docstring:**
+  `````
+  Release the contents of the local for the current context.
+  
+  This makes it possible to use locals without a manager.
+  
+  With this function one can release :class:`Local` objects as well as
+  :class:`StackLocal` objects.  However it's not possible to
+  release data held by proxies that way, one always has to retain
+  a reference to the underlying local object in order to be able
+  to release it.
+  
+  Example:
+      >>> loc = Local()
+      >>> loc.foo = 42
+      >>> release_local(loc)
+      >>> hasattr(loc, 'foo')
+      False
+  `````
+
+
+---
+
+`````python
 """Threading primitives and utilities."""
 import os
 import socket
 import sys
 import threading
 import traceback
+import types
 from contextlib import contextmanager
 from threading import TIMEOUT_MAX as THREAD_TIMEOUT_MAX
 
@@ -36576,6 +55193,8 @@ class _LocalStack:
         else:
             return stack.pop()
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
     def __len__(self):
         stack = getattr(self._local, 'stack', None)
         return len(stack) if stack else 0
@@ -36667,6 +55286,8 @@ class _FastLocalStack(threading.local):
         except (AttributeError, IndexError):
             return None
 
+    __class_getitem__ = classmethod(types.GenericAlias)
+
     def __len__(self):
         return len(self.stack)
 
@@ -36680,13 +55301,262 @@ else:  # pragma: no cover
     # fall back to the  current thread ident.
     LocalStack = _LocalStack
 
-```
+`````
 
-### 代码文件: celery\utils\time.py
-```python
+--- **end of file: celery/utils/threads.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/time.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/time.py`
+
+#### 📝 Module Docstring
+
+`````
+Utilities related to dates, times, intervals, and timezones.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import logging`
+- `import numbers`
+- `import os`
+- `import random`
+- `import sys`
+- `import time as _time`
+- `from calendar import monthrange`
+- `from datetime import date`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from datetime import timezone as datetime_timezone`
+- `from datetime import tzinfo`
+- `from types import ModuleType`
+- `from typing import Any`
+- `from typing import Callable`
+- `from dateutil import tz as dateutil_tz`
+- `from dateutil.parser import isoparse`
+- `from kombu.utils.functional import reprcall`
+- `from kombu.utils.objects import cached_property`
+- `from tzlocal import get_localzone`
+- `from functional import dictfilter`
+- `from text import pluralize`
+- `from zoneinfo import ZoneInfo`
+- `from backports.zoneinfo import ZoneInfo`
+
+#### 🏛️ Classes (3)
+
+##### 📌 `class LocalTimezone(tzinfo)`
+*Line: 68*
+
+**Docstring:**
+`````
+Local time implementation. Provided in _Zone to the app when `enable_utc` is disabled.
+Otherwise, _Zone provides a UTC ZoneInfo instance as the timezone implementation for the application.
+
+Note:
+    Used only when the :setting:`enable_utc` setting is disabled.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (4):**
+- `def utcoffset(self, dt: datetime) -> timedelta`
+- `def dst(self, dt: datetime) -> timedelta`
+- `def tzname(self, dt: datetime) -> str`
+- `def fromutc(self, dt: datetime) -> datetime`
+
+**Class Variables (1):**
+- `_offset_cache: dict[int, tzinfo] = {}`
+
+##### 📌 `class _Zone`
+*Line: 121*
+
+**Docstring:**
+`````
+Timezone class that provides the timezone for the application.
+If `enable_utc` is disabled, local system timezone is provided as the timezone provider through local().
+Otherwise, this class provides a UTC ZoneInfo instance as the timezone provider for the application.
+
+Additionally this class provides a few utility methods for converting datetimes.
+`````
+
+**Public Methods (5):**
+- `def tz_or_local(self, tzinfo: tzinfo | None = None) -> tzinfo`
+  - *Return either our local timezone or the provided timezone.*
+- `def to_local(self, dt: datetime, local = None, orig = None)`
+  - *Converts a datetime to the local timezone.*
+- `def to_system(self, dt: datetime) -> datetime`
+  - *Converts a datetime to the system timezone.*
+- `def to_local_fallback(self, dt: datetime) -> datetime`
+  - *Converts a datetime to the local timezone, or the system timezone.*
+- `def get_timezone(self, zone: str | tzinfo) -> tzinfo`
+  - *Returns ZoneInfo timezone if the provided zone is a string, otherwise return the zone.*
+
+**Properties (2):**
+- `@property local -> tzinfo`
+- `@property utc -> tzinfo`
+
+##### 📌 `class ffwd`
+*Line: 389*
+
+**Docstring:**
+`````
+Version of ``dateutil.relativedelta`` that only supports addition.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, year = None, month = None, weeks = 0, weekday = None, day = None, hour = None, minute = None, second = None, microsecond = None, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `year = None`
+    - `month = None`
+    - `weeks = 0`
+    - `weekday = None`
+    - `day = None`
+    - `hour = None`
+    - `minute = None`
+    - `second = None`
+    - `microsecond = None`
+    - `**kwargs: Any`
+
+#### 🔧 Public Functions (16)
+
+- `def maybe_timedelta(delta: int) -> timedelta`
+  - *Line: 184*
+  - *Convert integer to timedelta, if argument is an integer.*
+
+- `def delta_resolution(dt: datetime, delta: timedelta) -> datetime`
+  - *Line: 191*
+  - **Docstring:**
+  `````
+  Round a :class:`~datetime.datetime` to the resolution of timedelta.
+  
+  If the :class:`~datetime.timedelta` is in days, the
+  :class:`~datetime.datetime` will be rounded to the nearest days,
+  if the :class:`~datetime.timedelta` is in hours the
+  :class:`~datetime.datetime` will be rounded to the nearest hour,
+  and so on until seconds, which will just return the original
+  :class:`~datetime.datetime`.
+  `````
+
+- `def remaining(start: datetime, ends_in: timedelta, now: datetime | None = None, relative: bool = False) -> timedelta`
+  - *Line: 214*
+  - **Docstring:**
+  `````
+  Calculate the real remaining time for a start date and a timedelta.
+  
+  For example, "how many seconds left for 30 seconds after start?"
+  
+  Arguments:
+      start (~datetime.datetime): Starting date.
+      ends_in (~datetime.timedelta): The end delta.
+      relative (bool): If enabled the end time will be calculated
+          using :func:`delta_resolution` (i.e., rounded to the
+          resolution of `ends_in`).
+      now (~datetime.datetime): Current time and date.
+          Defaults to :func:`datetime.now(timezone.utc)`.
+  
+  Returns:
+      ~datetime.timedelta: Remaining time.
+  `````
+
+- `def rate(r: str) -> float`
+  - *Line: 253*
+  - *Convert rate string (`"100/m"`, `"2/h"` or `"0.5/s"`) to seconds.*
+
+- `def weekday(name: str) -> int`
+  - *Line: 263*
+  - **Docstring:**
+  `````
+  Return the position of a weekday: 0 - 7, where 0 is Sunday.
+  
+  Example:
+      >>> weekday('sunday'), weekday('sun'), weekday('mon')
+      (0, 0, 1)
+  `````
+
+- `def yearmonth(name: str) -> int`
+  - *Line: 278*
+  - **Docstring:**
+  `````
+  Return the position of a month: 1 - 12, where 1 is January.
+  
+  Example:
+      >>> yearmonth('january'), yearmonth('jan'), yearmonth('may')
+      (1, 1, 5)
+  `````
+
+- `def humanize_seconds(secs: int, prefix: str = '', sep: str = '', now: str = 'now', microseconds: bool = False) -> str`
+  - *Line: 293*
+  - **Docstring:**
+  `````
+  Show seconds in human form.
+  
+  For example, 60 becomes "1 minute", and 7200 becomes "2 hours".
+  
+  Arguments:
+      prefix (str): can be used to add a preposition to the output
+          (e.g., 'in' will give 'in 1 second', but add nothing to 'now').
+      now (str): Literal 'now'.
+      microseconds (bool): Include microseconds.
+  `````
+
+- `def maybe_iso8601(dt: datetime | str | None) -> None | datetime`
+  - *Line: 318*
+  - *Either ``datetime | str -> datetime`` or ``None -> None``.*
+
+- `def is_naive(dt: datetime) -> bool`
+  - *Line: 327*
+  - *Return True if :class:`~datetime.datetime` is naive, meaning it doesn't have timezone info set.*
+
+- `def make_aware(dt: datetime, tz: tzinfo) -> datetime`
+  - *Line: 351*
+  - *Set timezone for a :class:`~datetime.datetime` object.*
+
+- `def localize(dt: datetime, tz: tzinfo) -> datetime`
+  - *Line: 360*
+  - **Docstring:**
+  `````
+  Convert aware :class:`~datetime.datetime` to another timezone.
+  
+  Using a ZoneInfo timezone will give the most flexibility in terms of ambiguous DST handling.
+  `````
+
+- `def to_utc(dt: datetime) -> datetime`
+  - *Line: 372*
+  - *Convert naive :class:`~datetime.datetime` to UTC.*
+
+- `def maybe_make_aware(dt: datetime, tz: tzinfo | None = None, naive_as_utc: bool = True) -> datetime`
+  - *Line: 377*
+  - *Convert dt to aware datetime, do nothing if dt is already aware.*
+
+- `def utcoffset(time: ModuleType = _time, localtime: Callable[..., _time.struct_time] = _time.localtime) -> float`
+  - *Line: 433*
+  - *Return the current offset to UTC in hours.*
+
+- `def adjust_timestamp(ts: float, offset: int, here: Callable[..., float] = utcoffset) -> float`
+  - *Line: 442*
+  - *Adjust timestamp based on provided utcoffset.*
+
+- `def get_exponential_backoff_interval(factor: int, retries: int, maximum: int, full_jitter: bool = False) -> int`
+  - *Line: 448*
+  - *Calculate the exponential backoff wait time.*
+
+
+---
+
+`````python
 """Utilities related to dates, times, intervals, and timezones."""
 from __future__ import annotations
 
+import logging
 import numbers
 import os
 import random
@@ -36703,6 +55573,7 @@ from dateutil import tz as dateutil_tz
 from dateutil.parser import isoparse
 from kombu.utils.functional import reprcall
 from kombu.utils.objects import cached_property
+from tzlocal import get_localzone
 
 from .functional import dictfilter
 from .text import pluralize
@@ -36712,6 +55583,7 @@ if sys.version_info >= (3, 9):
 else:
     from backports.zoneinfo import ZoneInfo
 
+logger = logging.getLogger(__name__)
 
 __all__ = (
     'LocalTimezone', 'timezone', 'maybe_timedelta',
@@ -36803,7 +55675,7 @@ class LocalTimezone(tzinfo):
 
 class _Zone:
     """Timezone class that provides the timezone for the application.
-    If `enable_utc` is disabled, LocalTimezone is provided as the timezone provider through local().
+    If `enable_utc` is disabled, local system timezone is provided as the timezone provider through local().
     Otherwise, this class provides a UTC ZoneInfo instance as the timezone provider for the application.
 
     Additionally this class provides a few utility methods for converting datetimes.
@@ -36844,9 +55716,16 @@ class _Zone:
         return zone
 
     @cached_property
-    def local(self) -> LocalTimezone:
-        """Return LocalTimezone instance for the application."""
-        return LocalTimezone()
+    def local(self) -> tzinfo:
+        """Return the local system timezone for the application."""
+        try:
+            timezone = get_localzone()
+        except Exception as ex:
+            timezone = None
+            logger.warning("Failed to retrieve local timezone (%s): %s", type(ex).__name__, ex)
+        if timezone is None:
+            return LocalTimezone()
+        return timezone
 
     @cached_property
     def utc(self) -> tzinfo:
@@ -36888,7 +55767,7 @@ def delta_resolution(dt: datetime, delta: timedelta) -> datetime:
 
 
 def remaining(
-        start: datetime, ends_in: timedelta, now: Callable | None = None,
+        start: datetime, ends_in: timedelta, now: datetime | None = None,
         relative: bool = False) -> timedelta:
     """Calculate the real remaining time for a start date and a timedelta.
 
@@ -36900,7 +55779,7 @@ def remaining(
         relative (bool): If enabled the end time will be calculated
             using :func:`delta_resolution` (i.e., rounded to the
             resolution of `ends_in`).
-        now (Callable): Function returning the current time and date.
+        now (~datetime.datetime): Current time and date.
             Defaults to :func:`datetime.now(timezone.utc)`.
 
     Returns:
@@ -37137,10 +56016,102 @@ def get_exponential_backoff_interval(
     # Adjust according to maximum wait time and account for negative values.
     return max(0, countdown)
 
-```
+`````
 
-### 代码文件: celery\utils\timer2.py
-```python
+--- **end of file: celery/utils/time.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/timer2.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/timer2.py`
+
+#### 📝 Module Docstring
+
+`````
+Scheduler for Python functions.
+
+.. note::
+    This is used for the thread-based worker only,
+    not for amqp/redis/sqs/qpid where :mod:`kombu.asynchronous.timer` is used.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `import threading`
+- `from itertools import count`
+- `from threading import TIMEOUT_MAX as THREAD_TIMEOUT_MAX`
+- `from time import sleep`
+- `from typing import Any`
+- `from typing import Callable`
+- `from typing import Iterator`
+- `from typing import Optional`
+- `from typing import Tuple`
+- `from kombu.asynchronous.timer import Entry`
+- `from kombu.asynchronous.timer import Timer as Schedule`
+- `from kombu.asynchronous.timer import logger`
+- `from kombu.asynchronous.timer import to_timestamp`
+- `import traceback`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Timer(threading.Thread)`
+*Line: 24*
+
+**Docstring:**
+`````
+Timer thread.
+
+Note:
+    This is only used for transports not supporting AsyncIO.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, schedule: Optional[Schedule] = None, on_error: Optional[Callable[[Exception], None]] = None, on_tick: Optional[Callable[[float], None]] = None, on_start: Optional[Callable[['Timer'], None]] = None, max_interval: Optional[float] = None, **kwargs: Any)`
+  - **Parameters:**
+    - `self`
+    - `schedule: Optional[Schedule] = None`
+    - `on_error: Optional[Callable[[Exception], None]] = None`
+    - `on_tick: Optional[Callable[[float], None]] = None`
+    - `on_start: Optional[Callable[['Timer'], None]] = None`
+    - `max_interval: Optional[float] = None`
+    - `**kwargs: Any`
+
+**Public Methods (12):**
+- `def run(self) -> None`
+- `def stop(self) -> None`
+- `def ensure_started(self) -> None`
+- `def enter(self, entry: Entry, eta: float, priority: Optional[int] = None) -> Entry`
+- `def call_at(self, *args: Any, **kwargs: Any) -> Entry`
+- `def enter_after(self, *args: Any, **kwargs: Any) -> Entry`
+- `def call_after(self, *args: Any, **kwargs: Any) -> Entry`
+- `def call_repeatedly(self, *args: Any, **kwargs: Any) -> Entry`
+- `def exit_after(self, secs: float, priority: int = 10) -> None`
+- `def cancel(self, tref: Entry) -> None`
+- `def clear(self) -> None`
+- `def empty(self) -> bool`
+
+**Properties (1):**
+- `@property queue -> list`
+
+**Class Variables (8):**
+- `Entry = Entry`
+- `Schedule = Schedule`
+- `running: bool = False`
+- `on_tick: Optional[Callable[[float], None]] = None`
+- `_timer_count: count = count(1)`
+- `__next__ = _next_entry`
+- `next = _next_entry`
+- `__nonzero__ = __bool__`
+
+
+---
+
+`````python
 """Scheduler for Python functions.
 
 .. note::
@@ -37302,10 +56273,48 @@ class Timer(threading.Thread):
     def queue(self) -> list:
         return self.schedule.queue
 
-```
+`````
 
-### 代码文件: celery\utils\__init__.py
-```python
+--- **end of file: celery/utils/timer2.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Utility functions.
+
+Don't import from here directly anymore, as these are only
+here for backwards compatibility.
+`````
+
+#### 📦 Imports
+
+- `from kombu.utils.objects import cached_property`
+- `from kombu.utils.uuid import uuid`
+- `from functional import chunks`
+- `from functional import memoize`
+- `from functional import noop`
+- `from imports import gen_task_name`
+- `from imports import import_from_cwd`
+- `from imports import instantiate`
+- `from imports import qualname as get_full_cls_name`
+- `from imports import symbol_by_name as get_cls_by_name`
+- `from log import LOG_LEVELS`
+- `from nodenames import nodename`
+- `from nodenames import nodesplit`
+- `from nodenames import worker_direct`
+
+
+---
+
+`````python
 """Utility functions.
 
 Don't import from here directly anymore, as these are only
@@ -37330,7 +56339,6 @@ __all__ = (
     'cached_property',
     'chunks',
     'gen_task_name',
-    'gen_task_name',
     'gen_unique_id',
     'get_cls_by_name',
     'get_full_cls_name',
@@ -37344,310 +56352,146 @@ __all__ = (
     'worker_direct'
 )
 
-```
+`````
 
-### 代码文件: celery\utils\dispatch\LICENSE.python
-```python
-A. HISTORY OF THE SOFTWARE
-==========================
+--- **end of file: celery/utils/__init__.py** (project: celery) --- 
 
-Python was created in the early 1990s by Guido van Rossum at Stichting
-Mathematisch Centrum (CWI, see http://www.cwi.nl) in the Netherlands
-as a successor of a language called ABC.  Guido remains Python's
-principal author, although it includes many contributions from others.
-
-In 1995, Guido continued his work on Python at the Corporation for
-National Research Initiatives (CNRI, see http://www.cnri.reston.va.us)
-in Reston, Virginia where he released several versions of the
-software.
-
-In May 2000, Guido and the Python core development team moved to
-BeOpen.com to form the BeOpen PythonLabs team.  In October of the same
-year, the PythonLabs team moved to Digital Creations (now Zope
-Corporation, see http://www.zope.com).  In 2001, the Python Software
-Foundation (PSF, see http://www.python.org/psf/) was formed, a
-non-profit organization created specifically to own Python-related
-Intellectual Property.  Zope Corporation is a sponsoring member of
-the PSF.
-
-All Python releases are Open Source (see http://www.opensource.org for
-the Open Source Definition).  Historically, most, but not all, Python
-releases have also been GPL-compatible; the table below summarizes
-the various releases.
-
-    Release         Derived     Year        Owner       GPL-
-                    from                                compatible? (1)
-
-    0.9.0 thru 1.2              1991-1995   CWI         yes
-    1.3 thru 1.5.2  1.2         1995-1999   CNRI        yes
-    1.6             1.5.2       2000        CNRI        no
-    2.0             1.6         2000        BeOpen.com  no
-    1.6.1           1.6         2001        CNRI        yes (2)
-    2.1             2.0+1.6.1   2001        PSF         no
-    2.0.1           2.0+1.6.1   2001        PSF         yes
-    2.1.1           2.1+2.0.1   2001        PSF         yes
-    2.1.2           2.1.1       2002        PSF         yes
-    2.1.3           2.1.2       2002        PSF         yes
-    2.2 and above   2.1.1       2001-now    PSF         yes
-
-Footnotes:
-
-(1) GPL-compatible doesn't mean that we're distributing Python under
-    the GPL.  All Python licenses, unlike the GPL, let you distribute
-    a modified version without making your changes open source.  The
-    GPL-compatible licenses make it possible to combine Python with
-    other software that is released under the GPL; the others don't.
-
-(2) According to Richard Stallman, 1.6.1 is not GPL-compatible,
-    because its license has a choice of law clause.  According to
-    CNRI, however, Stallman's lawyer has told CNRI's lawyer that 1.6.1
-    is "not incompatible" with the GPL.
-
-Thanks to the many outside volunteers who have worked under Guido's
-direction to make these releases possible.
+---
 
 
-B. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING PYTHON
-===============================================================
-
-PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
---------------------------------------------
-
-1. This LICENSE AGREEMENT is between the Python Software Foundation
-("PSF"), and the Individual or Organization ("Licensee") accessing and
-otherwise using this software ("Python") in source or binary form and
-its associated documentation.
-
-2. Subject to the terms and conditions of this License Agreement, PSF hereby
-grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
-analyze, test, perform and/or display publicly, prepare derivative works,
-distribute, and otherwise use Python alone or in any derivative version,
-provided, however, that PSF's License Agreement and PSF's notice of copyright,
-i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
-2011, 2012, 2013, 2014, 2015, 2016 Python Software Foundation; All Rights
-Reserved" are retained in Python alone or in any derivative version prepared by
-Licensee.
-
-3. In the event Licensee prepares a derivative work that is based on
-or incorporates Python or any part thereof, and wants to make
-the derivative work available to others as provided herein, then
-Licensee hereby agrees to include in any such work a brief summary of
-the changes made to Python.
-
-4. PSF is making Python available to Licensee on an "AS IS"
-basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
-
-5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON,
-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-6. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
-
-7. Nothing in this License Agreement shall be deemed to create any
-relationship of agency, partnership, or joint venture between PSF and
-Licensee.  This License Agreement does not grant permission to use PSF
-trademarks or trade name in a trademark sense to endorse or promote
-products or services of Licensee, or any third party.
-
-8. By copying, installing or otherwise using Python, Licensee
-agrees to be bound by the terms and conditions of this License
-Agreement.
+--- **start of file: celery/utils/dispatch/signal.py** (project: celery) --- 
 
 
-BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0
--------------------------------------------
+### 📄 Python File Metadata: `celery/utils/dispatch/signal.py`
 
-BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
+#### 📝 Module Docstring
 
-1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
-office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
-Individual or Organization ("Licensee") accessing and otherwise using
-this software in source or binary form and its associated
-documentation ("the Software").
+`````
+Implementation of the Observer pattern.
+`````
 
-2. Subject to the terms and conditions of this BeOpen Python License
-Agreement, BeOpen hereby grants Licensee a non-exclusive,
-royalty-free, world-wide license to reproduce, analyze, test, perform
-and/or display publicly, prepare derivative works, distribute, and
-otherwise use the Software alone or in any derivative version,
-provided, however, that the BeOpen Python License is retained in the
-Software, alone or in any derivative version prepared by Licensee.
+#### 📦 Imports
 
-3. BeOpen is making the Software available to Licensee on an "AS IS"
-basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
+- `import sys`
+- `import threading`
+- `import warnings`
+- `import weakref`
+- `from weakref import WeakMethod`
+- `from kombu.utils.functional import retry_over_time`
+- `from celery.exceptions import CDeprecationWarning`
+- `from celery.local import PromiseProxy`
+- `from celery.local import Proxy`
+- `from celery.utils.functional import fun_accepts_kwargs`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.time import humanize_seconds`
 
-4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
-SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
-AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY
-DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+#### 🏛️ Classes (1)
 
-5. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
+##### 📌 `class Signal`
+*Line: 73*
 
-6. This License Agreement shall be governed by and interpreted in all
-respects by the law of the State of California, excluding conflict of
-law provisions.  Nothing in this License Agreement shall be deemed to
-create any relationship of agency, partnership, or joint venture
-between BeOpen and Licensee.  This License Agreement does not grant
-permission to use BeOpen trademarks or trade names in a trademark
-sense to endorse or promote products or services of Licensee, or any
-third party.  As an exception, the "BeOpen Python" logos available at
-http://www.pythonlabs.com/logos.html may be used according to the
-permissions granted on that web page.
+**Docstring:**
+`````
+Create new signal.
 
-7. By copying, installing or otherwise using the software, Licensee
-agrees to be bound by the terms and conditions of this License
-Agreement.
+Keyword Arguments:
+    providing_args (List): A list of the arguments this signal can pass
+        along in a :meth:`send` call.
+    use_caching (bool): Enable receiver cache.
+    name (str): Name of signal, used for debugging purposes.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, providing_args = None, use_caching = False, name = None)`
+  - **Parameters:**
+    - `self`
+    - `providing_args = None`
+    - `use_caching = False`
+    - `name = None`
+
+**Public Methods (4):**
+- `def connect(self, *args, **kwargs)`
+  - **Docstring:**
+  `````
+  Connect receiver to sender for signal.
+  
+  Arguments:
+      receiver (Callable): A function or an instance method which is to
+          receive signals.  Receivers must be hashable objects.
+  
+          if weak is :const:`True`, then receiver must be
+          weak-referenceable.
+  
+          Receivers must be able to accept keyword arguments.
+  
+          If receivers have a `dispatch_uid` attribute, the receiver will
+          not be added if another receiver already exists with that
+          `dispatch_uid`.
+  
+      sender (Any): The sender to which the receiver should respond.
+          Must either be a Python object, or :const:`None` to
+          receive events from any sender.
+  
+      weak (bool): Whether to use weak references to the receiver.
+          By default, the module will attempt to use weak references to
+          the receiver objects.  If this parameter is false, then strong
+          references will be used.
+  
+      dispatch_uid (Hashable): An identifier used to uniquely identify a
+          particular instance of a receiver.  This will usually be a
+          string, though it may be anything hashable.
+  
+      retry (bool): If the signal receiver raises an exception
+          (e.g. ConnectionError), the receiver will be retried until it
+          runs successfully. A strong ref to the receiver will be stored
+          and the `weak` option will be ignored.
+  `````
+- `def disconnect(self, receiver = None, sender = None, weak = None, dispatch_uid = None)`
+  - **Docstring:**
+  `````
+  Disconnect receiver from sender for signal.
+  
+  If weak references are used, disconnect needn't be called.
+  The receiver will be removed from dispatch automatically.
+  
+  Arguments:
+      receiver (Callable): The registered receiver to disconnect.
+          May be none if `dispatch_uid` is specified.
+  
+      sender (Any): The registered sender to disconnect.
+  
+      weak (bool): The weakref state to disconnect.
+  
+      dispatch_uid (Hashable): The unique identifier of the receiver
+          to disconnect.
+  `````
+- `def has_listeners(self, sender = None)`
+- `def send(self, sender, **named)`
+  - **Docstring:**
+  `````
+  Send signal from sender to all connected receivers.
+  
+  If any receiver raises an error, the exception is returned as the
+  corresponding response. (This is different from the "send" in
+  Django signals. In Celery "send" and "send_robust" do the same thing.)
+  
+  Arguments:
+      sender (Any): The sender of the signal.
+          Either a specific object or :const:`None`.
+      **named (Any): Named arguments which will be passed to receivers.
+  
+  Returns:
+      List: of tuple pairs: `[(receiver, response), … ]`.
+  `````
+
+**Class Variables (2):**
+- `receivers = None`
+- `send_robust = send`
 
 
-CNRI LICENSE AGREEMENT FOR PYTHON 1.6.1
----------------------------------------
+---
 
-1. This LICENSE AGREEMENT is between the Corporation for National
-Research Initiatives, having an office at 1895 Preston White Drive,
-Reston, VA 20191 ("CNRI"), and the Individual or Organization
-("Licensee") accessing and otherwise using Python 1.6.1 software in
-source or binary form and its associated documentation.
-
-2. Subject to the terms and conditions of this License Agreement, CNRI
-hereby grants Licensee a nonexclusive, royalty-free, world-wide
-license to reproduce, analyze, test, perform and/or display publicly,
-prepare derivative works, distribute, and otherwise use Python 1.6.1
-alone or in any derivative version, provided, however, that CNRI's
-License Agreement and CNRI's notice of copyright, i.e., "Copyright (c)
-1995-2001 Corporation for National Research Initiatives; All Rights
-Reserved" are retained in Python 1.6.1 alone or in any derivative
-version prepared by Licensee.  Alternately, in lieu of CNRI's License
-Agreement, Licensee may substitute the following text (omitting the
-quotes): "Python 1.6.1 is made available subject to the terms and
-conditions in CNRI's License Agreement.  This Agreement together with
-Python 1.6.1 may be located on the Internet using the following
-unique, persistent identifier (known as a handle): 1895.22/1013.  This
-Agreement may also be obtained from a proxy server on the Internet
-using the following URL: http://hdl.handle.net/1895.22/1013".
-
-3. In the event Licensee prepares a derivative work that is based on
-or incorporates Python 1.6.1 or any part thereof, and wants to make
-the derivative work available to others as provided herein, then
-Licensee hereby agrees to include in any such work a brief summary of
-the changes made to Python 1.6.1.
-
-4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
-basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1 WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
-
-5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 1.6.1,
-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-6. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
-
-7. This License Agreement shall be governed by the federal
-intellectual property law of the United States, including without
-limitation the federal copyright law, and, to the extent such
-U.S. federal law does not apply, by the law of the Commonwealth of
-Virginia, excluding Virginia's conflict of law provisions.
-Notwithstanding the foregoing, with regard to derivative works based
-on Python 1.6.1 that incorporate non-separable material that was
-previously distributed under the GNU General Public License (GPL), the
-law of the Commonwealth of Virginia shall govern this License
-Agreement only as to issues arising under or with respect to
-Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in this
-License Agreement shall be deemed to create any relationship of
-agency, partnership, or joint venture between CNRI and Licensee.  This
-License Agreement does not grant permission to use CNRI trademarks or
-trade name in a trademark sense to endorse or promote products or
-services of Licensee, or any third party.
-
-8. By clicking on the "ACCEPT" button where indicated, or by copying,
-installing or otherwise using Python 1.6.1, Licensee agrees to be
-bound by the terms and conditions of this License Agreement.
-
-        ACCEPT
-
-
-CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2
---------------------------------------------------
-
-Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
-The Netherlands.  All rights reserved.
-
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the name of Stichting Mathematisch
-Centrum or CWI not be used in advertising or publicity pertaining to
-distribution of the software without specific, written prior
-permission.
-
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
-THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
-FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-```
-
-### 代码文件: celery\utils\dispatch\license.txt
-```txt
-django.dispatch was originally forked from PyDispatcher.
-
-PyDispatcher License:
-
-    Copyright (c) 2001-2003, Patrick K. O'Brien and Contributors
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-        Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-        Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-        The name of Patrick K. O'Brien, or the name of any Contributor,
-        may not be used to endorse or promote products derived from this
-        software without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-    ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-    STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-    OF THE POSSIBILITY OF SUCH DAMAGE.
-
-```
-
-### 代码文件: celery\utils\dispatch\signal.py
-```python
+`````python
 """Implementation of the Observer pattern."""
 import sys
 import threading
@@ -38007,19 +56851,73 @@ class Signal:  # pragma: no cover
         """``str(signal)``."""
         return repr(self)
 
-```
+`````
 
-### 代码文件: celery\utils\dispatch\__init__.py
-```python
+--- **end of file: celery/utils/dispatch/signal.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/dispatch/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/dispatch/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Observer pattern.
+`````
+
+#### 📦 Imports
+
+- `from signal import Signal`
+
+
+---
+
+`````python
 """Observer pattern."""
 from .signal import Signal
 
 __all__ = ('Signal',)
 
-```
+`````
 
-### 代码文件: celery\utils\static\__init__.py
-```python
+--- **end of file: celery/utils/dispatch/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/utils/static/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/utils/static/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Static files.
+`````
+
+#### 📦 Imports
+
+- `import os`
+
+#### 🔧 Public Functions (2)
+
+- `def get_file(*args)`
+  - *Line: 5*
+  - *Get filename for static file.*
+
+- `def logo()`
+  - *Line: 11*
+  - *Celery logo image.*
+
+
+---
+
+`````python
 """Static files."""
 import os
 
@@ -38035,10 +56933,107 @@ def logo():
     """Celery logo image."""
     return get_file('celery_128.png')
 
-```
+`````
 
-### 代码文件: celery\worker\autoscale.py
-```python
+--- **end of file: celery/utils/static/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/autoscale.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/autoscale.py`
+
+#### 📝 Module Docstring
+
+`````
+Pool Autoscaling.
+
+This module implements the internal thread responsible
+for growing and shrinking the pool according to the
+current autoscale settings.
+
+The autoscale thread is only enabled if
+the :option:`celery worker --autoscale` option is used.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import threading`
+- `from time import monotonic`
+- `from time import sleep`
+- `from kombu.asynchronous.semaphore import DummyLock`
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.threads import bgThread`
+- `from  import state`
+- `from components import Pool`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class WorkerComponent(bootsteps.StartStopStep)`
+*Line: 31*
+
+**Docstring:**
+`````
+Bootstep that starts the autoscaler thread/timer in the worker.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, w, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `w`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def create(self, w)`
+- `def register_with_event_loop(self, w, hub)`
+- `def info(self, w)`
+  - *Return `Autoscaler` info.*
+
+**Class Variables (3):**
+- `label = 'Autoscaler'`
+- `conditional = True`
+- `requires = (Pool,)`
+
+##### 📌 `class Autoscaler(bgThread)`
+*Line: 61*
+
+**Docstring:**
+`````
+Background thread to autoscale pool workers.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, pool, max_concurrency, min_concurrency = 0, worker = None, keepalive = AUTOSCALE_KEEPALIVE, mutex = None)`
+  - **Parameters:**
+    - `self`
+    - `pool`
+    - `max_concurrency`
+    - `min_concurrency = 0`
+    - `worker = None`
+    - `keepalive = AUTOSCALE_KEEPALIVE`
+    - `mutex = None`
+
+**Public Methods (6):**
+- `def body(self)`
+- `def maybe_scale(self, req = None)`
+- `def update(self, max = None, min = None)`
+- `def scale_up(self, n)`
+- `def scale_down(self, n)`
+- `def info(self)`
+
+**Properties (2):**
+- `@property qty`
+- `@property processes`
+
+
+---
+
+`````python
 """Pool Autoscaling.
 
 This module implements the internal thread responsible
@@ -38194,10 +57189,179 @@ class Autoscaler(bgThread):
     def processes(self):
         return self.pool.num_processes
 
-```
+`````
 
-### 代码文件: celery\worker\components.py
-```python
+--- **end of file: celery/worker/autoscale.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/components.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/components.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker-level Bootsteps.
+`````
+
+#### 📦 Imports
+
+- `import atexit`
+- `import warnings`
+- `from kombu.asynchronous import Hub as _Hub`
+- `from kombu.asynchronous import get_event_loop`
+- `from kombu.asynchronous import set_event_loop`
+- `from kombu.asynchronous.semaphore import DummyLock`
+- `from kombu.asynchronous.semaphore import LaxBoundedSemaphore`
+- `from kombu.asynchronous.timer import Timer as _Timer`
+- `from celery import bootsteps`
+- `from celery._state import _set_task_join_will_block`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.platforms import IS_WINDOWS`
+- `from celery.utils.log import worker_logger as logger`
+- `from celery.beat import EmbeddedService`
+- `from billiard import pool`
+
+#### 🏛️ Classes (6)
+
+##### 📌 `class Timer(bootsteps.Step)`
+*Line: 32*
+
+**Docstring:**
+`````
+Timer bootstep.
+`````
+
+**Public Methods (3):**
+- `def create(self, w)`
+- `def on_timer_error(self, exc)`
+- `def on_timer_tick(self, delay)`
+
+##### 📌 `class Hub(bootsteps.StartStopStep)`
+*Line: 56*
+
+**Docstring:**
+`````
+Worker starts the event loop.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, w, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `w`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def include_if(self, w)`
+- `def create(self, w)`
+- `def start(self, w)`
+- `def stop(self, w)`
+- `def terminate(self, w)`
+
+**Class Variables (1):**
+- `requires = (Timer,)`
+
+##### 📌 `class Pool(bootsteps.StartStopStep)`
+*Line: 101*
+
+**Docstring:**
+`````
+Bootstep managing the worker pool.
+
+Describes how to initialize the worker pool, and starts and stops
+the pool during worker start-up/shutdown.
+
+Adds attributes:
+
+    * autoscale
+    * pool
+    * max_concurrency
+    * min_concurrency
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, w, autoscale = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `w`
+    - `autoscale = None`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def close(self, w)`
+- `def terminate(self, w)`
+- `def create(self, w)`
+- `def info(self, w)`
+- `def register_with_event_loop(self, w, hub)`
+
+**Class Variables (1):**
+- `requires = (Hub,)`
+
+##### 📌 `class Beat(bootsteps.StartStopStep)`
+*Line: 181*
+
+**Docstring:**
+`````
+Step used to embed a beat process.
+
+Enabled when the ``beat`` argument is set.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, w, beat = False, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `w`
+    - `beat = False`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def create(self, w)`
+
+**Class Variables (2):**
+- `label = 'Beat'`
+- `conditional = True`
+
+##### 📌 `class StateDB(bootsteps.Step)`
+*Line: 208*
+
+**Docstring:**
+`````
+Bootstep that sets up between-restart state database file.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, w, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `w`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def create(self, w)`
+
+##### 📌 `class Consumer(bootsteps.StartStopStep)`
+*Line: 221*
+
+**Docstring:**
+`````
+Bootstep starting the Consumer blueprint.
+`````
+
+**Public Methods (1):**
+- `def create(self, w)`
+
+**Class Variables (1):**
+- `last = True`
+
+
+---
+
+`````python
 """Worker-level Bootsteps."""
 import atexit
 import warnings
@@ -38275,7 +57439,10 @@ class Hub(bootsteps.StartStopStep):
         return self
 
     def start(self, w):
-        pass
+        # Ensure the kombu hub's poller is initialized before the event loop starts.
+        # Since asynloop() no longer resets the hub on exit (to preserve timers
+        # during shutdown), we must initialize the poller upfront.
+        _ = w.hub.poller
 
     def stop(self, w):
         w.hub.close()
@@ -38391,7 +57558,10 @@ class Beat(bootsteps.StartStopStep):
 
     def create(self, w):
         from celery.beat import EmbeddedService
-        if w.pool_cls.__module__.endswith(('gevent', 'eventlet')):
+
+        # Defensive check: pool_cls may be a string (e.g., 'gevent') or a class
+        pool_module = w.pool_cls if isinstance(w.pool_cls, str) else w.pool_cls.__module__
+        if pool_module.endswith(('gevent', 'eventlet')):
             raise ImproperlyConfigured(ERR_B_GREEN)
         b = w.beat = EmbeddedService(w.app,
                                      schedule_filename=w.schedule_filename,
@@ -38439,10 +57609,270 @@ class Consumer(bootsteps.StartStopStep):
         )
         return c
 
-```
+`````
 
-### 代码文件: celery\worker\control.py
-```python
+--- **end of file: celery/worker/components.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/control.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/control.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker remote control command implementations.
+`````
+
+#### 📦 Imports
+
+- `import io`
+- `import tempfile`
+- `from collections import UserDict`
+- `from collections import defaultdict`
+- `from collections import namedtuple`
+- `from billiard.common import TERM_SIGNAME`
+- `from kombu.utils.encoding import safe_repr`
+- `from celery.exceptions import WorkerShutdown`
+- `from celery.platforms import EX_OK`
+- `from celery.platforms import signals as _signals`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.serialization import jsonify`
+- `from celery.utils.serialization import strtobool`
+- `from celery.utils.time import rate`
+- `from  import state as worker_state`
+- `from request import Request`
+- `from celery.utils.debug import sample_mem`
+- `from celery.utils import debug`
+- `import objgraph as _objgraph`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Panel(UserDict)`
+*Line: 39*
+
+**Docstring:**
+`````
+Global registry of remote control commands.
+`````
+
+**Public Methods (1):**
+- `def register(cls, *args, **kwargs)` `classmethod`
+
+**Class Variables (2):**
+- `data = {}`
+- `meta = {}`
+
+#### 🔧 Public Functions (36)
+
+- `def ok(value)`
+  - *Line: 31*
+
+- `def nok(value)`
+  - *Line: 35*
+
+- `def control_command(**kwargs)`
+  - *Line: 69*
+
+- `def inspect_command(**kwargs)`
+  - *Line: 73*
+
+- `def report(state)` `inspect_command()`
+  - *Line: 80*
+  - *Information about Celery installation for bug reports.*
+
+- `def conf(state, with_defaults = False, **kwargs)` `inspect_command(alias='dump_conf', signature='[include_defaults=False]', args=[('with_defaults', strtobool)])`
+  - *Line: 90*
+  - *List configuration.*
+
+- `def query_task(state, ids, **kwargs)` `inspect_command(variadic='ids', signature='[id1 [id2 [... [idN]]]]')`
+  - *Line: 107*
+  - *Query for task information by id.*
+
+- `def revoke(state, task_id, terminate = False, signal = None, **kwargs)` `control_command(variadic='task_id', signature='[id1 [id2 [... [idN]]]]')`
+  - *Line: 138*
+  - **Docstring:**
+  `````
+  Revoke task by task id (or list of ids).
+  
+  Keyword Arguments:
+      terminate (bool): Also terminate the process if the task is active.
+      signal (str): Name of signal to use for terminate (e.g., ``KILL``).
+  `````
+
+- `def revoke_by_stamped_headers(state, headers, terminate = False, signal = None, **kwargs)` `control_command(variadic='headers', signature='[key1=value1 [key2=value2 [... [keyN=valueN]]]]')`
+  - *Line: 160*
+  - **Docstring:**
+  `````
+  Revoke task by header (or list of headers).
+  
+  Keyword Arguments:
+      headers(dictionary): Dictionary that contains stamping scheme name as keys and stamps as values.
+                           If headers is a list, it will be converted to a dictionary.
+      terminate (bool): Also terminate the process if the task is active.
+      signal (str): Name of signal to use for terminate (e.g., ``KILL``).
+  Sample headers input:
+      {'mtask_id': [id1, id2, id3]}
+  `````
+
+- `def terminate(state, signal, task_id, **kwargs)` `control_command(variadic='task_id', args=[('signal', str)], signature='<signal> [id1 [id2 [... [idN]]]]')`
+  - *Line: 250*
+  - *Terminate task by task id (or list of ids).*
+
+- `def rate_limit(state, task_name, rate_limit, **kwargs)` `control_command(args=[('task_name', str), ('rate_limit', str)], signature='<task_name> <rate_limit (e.g., 5/s | 5/m | 5/h)>')`
+  - *Line: 259*
+  - **Docstring:**
+  `````
+  Tell worker(s) to modify the rate limit for a task by type.
+  
+  See Also:
+      :attr:`celery.app.task.Task.rate_limit`.
+  
+  Arguments:
+      task_name (str): Type of task to set rate limit for.
+      rate_limit (int, str): New rate limit.
+  `````
+
+- `def time_limit(state, task_name = None, hard = None, soft = None, **kwargs)` `control_command(args=[('task_name', str), ('soft', float), ('hard', float)], signature='<task_name> <soft_secs> [hard_secs]')`
+  - *Line: 299*
+  - **Docstring:**
+  `````
+  Tell worker(s) to modify the time limit for task by type.
+  
+  Arguments:
+      task_name (str): Name of task to change.
+      hard (float): Hard time limit.
+      soft (float): Soft time limit.
+  `````
+
+- `def clock(state, **kwargs)` `inspect_command()`
+  - *Line: 326*
+  - *Get current logical clock value.*
+
+- `def election(state, id, topic, action = None, **kwargs)` `control_command()`
+  - *Line: 332*
+  - **Docstring:**
+  `````
+  Hold election.
+  
+  Arguments:
+      id (str): Unique election id.
+      topic (str): Election topic.
+      action (str): Action to take for elected actor.
+  `````
+
+- `def enable_events(state)` `control_command()`
+  - *Line: 345*
+  - *Tell worker(s) to send task-related events.*
+
+- `def disable_events(state)` `control_command()`
+  - *Line: 356*
+  - *Tell worker(s) to stop sending task-related events.*
+
+- `def heartbeat(state)` `control_command()`
+  - *Line: 367*
+  - *Tell worker(s) to send event heartbeat immediately.*
+
+- `def hello(state, from_node, revoked = None, **kwargs)` `inspect_command(visible=False)`
+  - *Line: 377*
+  - *Request mingle sync-data.*
+
+- `def ping(state, **kwargs)` `inspect_command(default_timeout=0.2)`
+  - *Line: 395*
+  - *Ping worker(s).*
+
+- `def stats(state, **kwargs)` `inspect_command()`
+  - *Line: 401*
+  - *Request worker statistics/information.*
+
+- `def scheduled(state, **kwargs)` `inspect_command(alias='dump_schedule')`
+  - *Line: 407*
+  - *List of currently scheduled ETA/countdown tasks.*
+
+- `def reserved(state, **kwargs)` `inspect_command(alias='dump_reserved')`
+  - *Line: 428*
+  - *List of currently reserved tasks, not including scheduled/active.*
+
+- `def active(state, safe = False, **kwargs)` `inspect_command(alias='dump_active')`
+  - *Line: 440*
+  - *List of tasks currently being executed.*
+
+- `def revoked(state, **kwargs)` `inspect_command(alias='dump_revoked')`
+  - *Line: 447*
+  - *List of revoked task-ids.*
+
+- `def registered(state, taskinfoitems = None, builtins = False, **kwargs)` `inspect_command(alias='dump_tasks', variadic='taskinfoitems', signature='[attr1 [attr2 [... [attrN]]]]')`
+  - *Line: 457*
+  - **Docstring:**
+  `````
+  List of registered tasks.
+  
+  Arguments:
+      taskinfoitems (Sequence[str]): List of task attributes to include.
+          Defaults to ``exchange,routing_key,rate_limit``.
+      builtins (bool): Also include built-in tasks.
+  `````
+
+- `def objgraph(state, num = 200, max_depth = 10, type = 'Request')` `inspect_command(default_timeout=60.0, args=[('type', str), ('num', int), ('max_depth', int)], signature='[object_type=Request] [num=200 [max_depth=10]]')`
+  - *Line: 491*
+  - **Docstring:**
+  `````
+  Create graph of uncollected objects (memory-leak debugging).
+  
+  Arguments:
+      num (int): Max number of objects to graph.
+      max_depth (int): Traverse at most n levels deep.
+      type (str): Name of object to graph.  Default is ``"Request"``.
+  `````
+
+- `def memsample(state, **kwargs)` `inspect_command()`
+  - *Line: 516*
+  - *Sample current RSS memory usage.*
+
+- `def memdump(state, samples = 10, **kwargs)` `inspect_command(args=[('samples', int)], signature='[n_samples=10]')`
+  - *Line: 526*
+  - *Dump statistics of previous memsample requests.*
+
+- `def pool_grow(state, n = 1, **kwargs)` `control_command(args=[('n', int)], signature='[N=1]')`
+  - *Line: 540*
+  - *Grow pool by n processes/threads.*
+
+- `def pool_shrink(state, n = 1, **kwargs)` `control_command(args=[('n', int)], signature='[N=1]')`
+  - *Line: 554*
+  - *Shrink pool by n processes/threads.*
+
+- `def pool_restart(state, modules = None, reload = False, reloader = None, **kwargs)` `control_command()`
+  - *Line: 565*
+  - *Restart execution pool.*
+
+- `def autoscale(state, max = None, min = None)` `control_command(args=[('max', int), ('min', int)], signature='[max [min]]')`
+  - *Line: 578*
+  - *Modify autoscale settings.*
+
+- `def shutdown(state, msg = 'Got shutdown from remote', **kwargs)` `control_command()`
+  - *Line: 588*
+  - *Shutdown worker(s).*
+
+- `def add_consumer(state, queue, exchange = None, exchange_type = None, routing_key = None, **options)` `control_command(args=[('queue', str), ('exchange', str), ('exchange_type', str), ('routing_key', str)], signature='<queue> [exchange [type [routing_key]]]')`
+  - *Line: 605*
+  - *Tell worker(s) to consume from task queue by name.*
+
+- `def cancel_consumer(state, queue, **_)` `control_command(args=[('queue', str)], signature='<queue>')`
+  - *Line: 618*
+  - *Tell worker(s) to stop consuming from task queue by name.*
+
+- `def active_queues(state)` `inspect_command()`
+  - *Line: 627*
+  - *List the task queues a worker is currently consuming from.*
+
+
+---
+
+`````python
 """Worker remote control command implementations."""
 import io
 import tempfile
@@ -38661,6 +58091,13 @@ def _revoke(state, task_ids, terminate=False, signal=None, **kwargs):
     terminated = set()
 
     worker_state.revoked.update(task_ids)
+
+    for task_id in task_ids:
+        try:
+            state.app.backend.mark_as_revoked(task_id, reason='revoked', store_result=True)
+        except Exception as exc:
+            logger.warning('Failed to mark task %s as revoked in backend: %s', task_id, exc)
+
     if terminate:
         signum = _signals.signum(signal or TERM_SIGNAME)
         for request in _find_requests_by_id(task_ids):
@@ -39069,10 +58506,68 @@ def active_queues(state):
                 for queue in state.consumer.task_consumer.queues]
     return []
 
-```
+`````
 
-### 代码文件: celery\worker\heartbeat.py
-```python
+--- **end of file: celery/worker/control.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/heartbeat.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/heartbeat.py`
+
+#### 📝 Module Docstring
+
+`````
+Heartbeat service.
+
+This is the internal thread responsible for sending heartbeat events
+at regular intervals (may not be an actual thread).
+`````
+
+#### 📦 Imports
+
+- `from celery.signals import heartbeat_sent`
+- `from celery.utils.sysinfo import load_average`
+- `from state import SOFTWARE_INFO`
+- `from state import active_requests`
+- `from state import all_total_count`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Heart`
+*Line: 14*
+
+**Docstring:**
+`````
+Timer sending heartbeats at regular intervals.
+
+Arguments:
+    timer (kombu.asynchronous.timer.Timer): Timer to use.
+    eventer (celery.events.EventDispatcher): Event dispatcher
+        to use.
+    interval (float): Time in seconds between sending
+        heartbeats.  Default is 2 seconds.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, timer, eventer, interval = None)`
+  - **Parameters:**
+    - `self`
+    - `timer`
+    - `eventer`
+    - `interval = None`
+
+**Public Methods (2):**
+- `def start(self)`
+- `def stop(self)`
+
+
+---
+
+`````python
 """Heartbeat service.
 
 This is the internal thread responsible for sending heartbeat events
@@ -39135,10 +58630,50 @@ class Heart:
         if self.eventer.enabled:
             self._send('worker-offline', retry=False)
 
-```
+`````
 
-### 代码文件: celery\worker\loops.py
-```python
+--- **end of file: celery/worker/heartbeat.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/loops.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/loops.py`
+
+#### 📝 Module Docstring
+
+`````
+The consumers highly-optimized inner loop.
+`````
+
+#### 📦 Imports
+
+- `import errno`
+- `import socket`
+- `from celery import bootsteps`
+- `from celery.exceptions import WorkerLostError`
+- `from celery.utils.log import get_logger`
+- `from  import state`
+
+#### 🔧 Public Functions (3)
+
+- `def asynloop(obj, connection, consumer, blueprint, hub, qos, heartbeat, clock, hbrate = 2.0)`
+  - *Line: 50*
+  - *Non-blocking event loop.*
+
+- `def synloop(obj, connection, consumer, blueprint, hub, qos, heartbeat, clock, hbrate = 2.0, **kwargs)`
+  - *Line: 115*
+  - *Fallback blocking event loop for transports that doesn't support AIO.*
+
+- `def tick(rate)`
+  - *Line: 38*
+
+
+---
+
+`````python
 """The consumers highly-optimized inner loop."""
 import errno
 import socket
@@ -39238,12 +58773,19 @@ def asynloop(obj, connection, consumer, blueprint, hub, qos,
                 next(loop)
             except StopIteration:
                 loop = hub.create_loop()
-    finally:
+    except Exception:
+        # Reset the hub on error (e.g. connection loss) to clean up
+        # stale file descriptors and callbacks from the old connection.
+        # We intentionally do NOT reset on normal exit (graceful shutdown)
+        # so that timers (e.g. heartbeat) keep firing while the pool drains.
+        # WorkerShutdown/WorkerTerminate extend SystemExit (not Exception)
+        # so they won't be caught here.
         try:
             hub.reset()
         except Exception as exc:  # pylint: disable=broad-except
             logger.exception(
                 'Error cleaning up after event loop: %r', exc)
+        raise
 
 
 def synloop(obj, connection, consumer, blueprint, hub, qos,
@@ -39283,10 +58825,85 @@ def synloop(obj, connection, consumer, blueprint, hub, qos,
         finally:
             _loop_cycle()
 
-```
+`````
 
-### 代码文件: celery\worker\pidbox.py
-```python
+--- **end of file: celery/worker/loops.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/pidbox.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/pidbox.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Pidbox (remote control).
+`````
+
+#### 📦 Imports
+
+- `import socket`
+- `import threading`
+- `from kombu.common import ignore_errors`
+- `from kombu.utils.encoding import safe_str`
+- `from celery.utils.collections import AttributeDict`
+- `from celery.utils.functional import pass1`
+- `from celery.utils.log import get_logger`
+- `from  import control`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Pidbox`
+*Line: 20*
+
+**Docstring:**
+`````
+Worker mailbox.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c)`
+  - **Parameters:**
+    - `self`
+    - `c`
+
+**Public Methods (6):**
+- `def on_message(self, body, message)`
+- `def start(self, c)`
+- `def on_stop(self)`
+- `def stop(self, c)`
+- `def reset(self)`
+- `def shutdown(self, c)`
+
+**Class Variables (1):**
+- `consumer = None`
+
+##### 📌 `class gPidbox(Pidbox)`
+*Line: 79*
+
+**Docstring:**
+`````
+Worker pidbox (greenlet).
+`````
+
+**Public Methods (4):**
+- `def start(self, c)`
+- `def on_stop(self)`
+- `def reset(self)`
+- `def loop(self, c)`
+
+**Class Variables (3):**
+- `_node_shutdown = None`
+- `_node_stopped = None`
+- `_resets = 0`
+
+
+---
+
+`````python
 """Worker Pidbox (remote control)."""
 import socket
 import threading
@@ -39410,10 +59027,217 @@ class gPidbox(Pidbox):
         finally:
             stopped.set()
 
-```
+`````
 
-### 代码文件: celery\worker\request.py
-```python
+--- **end of file: celery/worker/pidbox.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/request.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/request.py`
+
+#### 📝 Module Docstring
+
+`````
+Task request.
+
+This module defines the :class:`Request` class, that specifies
+how tasks are executed.
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import sys`
+- `from datetime import datetime`
+- `from time import monotonic`
+- `from time import time`
+- `from weakref import ref`
+- `from billiard.common import TERM_SIGNAME`
+- `from billiard.einfo import ExceptionWithTraceback`
+- `from kombu.utils.encoding import safe_repr`
+- `from kombu.utils.encoding import safe_str`
+- `from kombu.utils.objects import cached_property`
+- `from celery import current_app`
+- `from celery import signals`
+- `from celery.app.task import Context`
+- `from celery.app.trace import fast_trace_task`
+- `from celery.app.trace import trace_task`
+- `from celery.app.trace import trace_task_ret`
+- `from celery.concurrency.base import BasePool`
+- `from celery.exceptions import Ignore`
+- `from celery.exceptions import InvalidTaskError`
+- `from celery.exceptions import Reject`
+- `from celery.exceptions import Retry`
+- `from celery.exceptions import TaskRevokedError`
+- `from celery.exceptions import Terminated`
+- `from celery.exceptions import TimeLimitExceeded`
+- `from celery.exceptions import WorkerLostError`
+- `from celery.platforms import signals as _signals`
+- `from celery.utils.functional import maybe`
+- `from celery.utils.functional import maybe_list`
+- `from celery.utils.functional import noop`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.nodenames import gethostname`
+- `from celery.utils.serialization import get_pickled_exception`
+- `from celery.utils.time import maybe_iso8601`
+- `from celery.utils.time import maybe_make_aware`
+- `from celery.utils.time import timezone`
+- `from  import state`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Request`
+*Line: 67*
+
+**Docstring:**
+`````
+A request for task execution.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, message, on_ack = noop, hostname = None, eventer = None, app = None, connection_errors = None, request_dict = None, task = None, on_reject = noop, body = None, headers = None, decoded = False, utc = True, maybe_make_aware = maybe_make_aware, maybe_iso8601 = maybe_iso8601, **opts)`
+  - **Parameters:**
+    - `self`
+    - `message`
+    - `on_ack = noop`
+    - `hostname = None`
+    - `eventer = None`
+    - `app = None`
+    - `connection_errors = None`
+    - `request_dict = None`
+    - `task = None`
+    - `on_reject = noop`
+    - `body = None`
+    - `headers = None`
+    - `decoded = False`
+    - `utc = True`
+    - `maybe_make_aware = maybe_make_aware`
+    - `maybe_iso8601 = maybe_iso8601`
+    - `**opts`
+
+**Public Methods (21):**
+- `def on_reject(self, value)` `on_reject.setter`
+- `def eventer(self, eventer)` `eventer.setter`
+- `def expires(self, value)` `expires.setter`
+- `def task_id(self, value)` `task_id.setter`
+- `def task_name(self, value)` `task_name.setter`
+- `def execute_using_pool(self, pool: BasePool, **kwargs)`
+  - **Docstring:**
+  `````
+  Used by the worker to send this task to the pool.
+  
+  Arguments:
+      pool (~celery.concurrency.base.TaskPool): The execution pool
+          used to execute this request.
+  
+  Raises:
+      celery.exceptions.TaskRevokedError: if the task was revoked.
+  `````
+- `def execute(self, loglevel = None, logfile = None)`
+  - **Docstring:**
+  `````
+  Execute the task in a :func:`~celery.app.trace.trace_task`.
+  
+  Arguments:
+      loglevel (int): The loglevel used by the task.
+      logfile (str): The logfile used by the task.
+  `````
+- `def maybe_expire(self)`
+  - *If expired, mark the task as revoked.*
+- `def terminate(self, pool, signal = None)`
+- `def cancel(self, pool, signal = None, emit_retry = True)`
+- `def revoked(self)`
+  - *If revoked, skip task and mark state.*
+- `def send_event(self, type, **fields)`
+- `def on_accepted(self, pid, time_accepted)`
+  - *Handler called when task is accepted by worker pool.*
+- `def on_timeout(self, soft, timeout)`
+  - *Handler called if the task times out.*
+- `def on_success(self, failed__retval__runtime, **kwargs)`
+  - *Handler called if the task was successfully processed.*
+- `def on_retry(self, exc_info)`
+  - *Handler called if the task should be retried.*
+- `def on_failure(self, exc_info, send_failed_event = True, return_ok = False)`
+  - *Handler called if the task raised an exception.*
+- `def acknowledge(self)`
+  - *Acknowledge task.*
+- `def reject(self, requeue = False)`
+- `def info(self, safe = False)`
+- `def humaninfo(self)`
+
+**Properties (40):**
+- `@property delivery_info`
+- `@property message`
+- `@property request_dict`
+- `@property body`
+- `@property app`
+- `@property utc`
+- `@property content_type`
+- `@property content_encoding`
+- `@property type`
+- `@property root_id`
+- `@property parent_id`
+- `@property argsrepr`
+- `@property args`
+- `@property kwargs`
+- `@property kwargsrepr`
+- `@property on_ack`
+- `@property on_reject`
+- `@property hostname`
+- `@property ignore_result`
+- `@property eventer`
+- `@property connection_errors`
+- `@property task`
+- `@property eta`
+- `@property expires`
+- `@property tzlocal`
+- `@property store_errors`
+- `@property task_id`
+- `@property task_name`
+- `@property reply_to`
+- `@property replaced_task_nesting`
+- `@property groups`
+- `@property stamped_headers -> list`
+- `@property stamps -> dict`
+- `@property correlation_id`
+- `@property _payload`
+- `@property chord`
+- `@property errbacks`
+- `@property group`
+- `@property _context`
+- `@property group_index`
+
+**Class Variables (9):**
+- `acknowledged = False`
+- `time_start = None`
+- `worker_pid = None`
+- `time_limits = (None, None)`
+- `_already_revoked = False`
+- `_already_cancelled = False`
+- `_terminate_on_ack = None`
+- `_apply_result = None`
+- `_tzlocal = None`
+
+##### 📌 `class Request(base)`
+*Line: 766*
+
+**Public Methods (2):**
+- `def execute_using_pool(self, pool, **kwargs)`
+- `def on_success(self, failed__retval__runtime, **kwargs)`
+
+#### 🔧 Public Functions (1)
+
+- `def create_request_cls(base, task, pool, hostname, eventer, ref = ref, revoked_tasks = revoked_tasks, task_ready = task_ready, trace = None, app = current_app)`
+  - *Line: 754*
+
+
+---
+
+`````python
 """Task request.
 
 This module defines the :class:`Request` class, that specifies
@@ -39541,7 +59365,10 @@ class Request:
         self._eventer = eventer
         self._connection_errors = connection_errors or ()
         self._task = task or self._app.tasks[self._type]
-        self._ignore_result = self._request_dict.get('ignore_result', False)
+        ignore_result = self._request_dict.get('ignore_result', None)
+        if ignore_result is None:
+            ignore_result = self._task.ignore_result
+        self._ignore_result = ignore_result
 
         # timezone means the message is timezone-aware, and the only timezone
         # supported at this point is UTC.
@@ -39703,7 +59530,7 @@ class Request:
 
     @property
     def store_errors(self):
-        return (not self.task.ignore_result or
+        return (not self._ignore_result or
                 self.task.store_errors_even_if_ignored)
 
     @property
@@ -39838,29 +59665,34 @@ class Request:
             if obj is not None:
                 obj.terminate(signal)
 
-    def cancel(self, pool, signal=None):
+    def cancel(self, pool, signal=None, emit_retry=True):
         signal = _signals.signum(signal or TERM_SIGNAME)
         if self.time_start:
             pool.terminate_job(self.worker_pid, signal)
-            self._announce_cancelled()
+            self._announce_cancelled(emit_retry=emit_retry)
 
         if self._apply_result is not None:
             obj = self._apply_result()  # is a weakref
             if obj is not None:
                 obj.terminate(signal)
 
-    def _announce_cancelled(self):
+    def _announce_cancelled(self, emit_retry=True):
         task_ready(self)
         self.send_event('task-cancelled')
-        reason = 'cancelled by Celery'
-        exc = Retry(message=reason)
-        self.task.backend.mark_as_retry(self.id,
-                                        exc,
-                                        request=self._context)
 
-        self.task.on_retry(exc, self.id, self.args, self.kwargs, None)
+        if emit_retry:
+            reason = 'cancelled by Celery'
+            exc = Retry(message=reason)
+            self.task.backend.mark_as_retry(self.id,
+                                            exc,
+                                            request=self._context)
+
+            self.task.on_retry(exc, self.id, self.args, self.kwargs, None)
+
         self._already_cancelled = True
-        send_retry(self.task, request=self._context, einfo=None)
+
+        if emit_retry:
+            send_retry(self.task, request=self._context, einfo=None)
 
     def _announce_revoked(self, reason, terminated, signum, expired):
         task_ready(self)
@@ -39941,17 +59773,22 @@ class Request:
                  timeout, self.name, self.id)
         else:
             task_ready(self)
-            error('Hard time limit (%ss) exceeded for %s[%s]',
-                  timeout, self.name, self.id)
-            exc = TimeLimitExceeded(timeout)
+            # This is a special case where the task timeout handling is done during
+            # the cold shutdown process.
+            if not state.should_terminate:
+                error('Hard time limit (%ss) exceeded for %s[%s]', timeout, self.name, self.id)
+                exc = TimeLimitExceeded(timeout)
 
-            self.task.backend.mark_as_failure(
-                self.id, exc, request=self._context,
-                store_result=self.store_errors,
-            )
+                self.task.backend.mark_as_failure(
+                    self.id, exc, request=self._context,
+                    store_result=self.store_errors,
+                )
 
-            if self.task.acks_late and self.task.acks_on_failure_or_timeout:
-                self.acknowledge()
+            if self.task.acks_late:
+                if self.task.acks_on_timeout:
+                    self.acknowledge()
+                else:
+                    self.reject(requeue=True)
 
     def on_success(self, failed__retval__runtime, **kwargs):
         """Handler called if the task was successfully processed."""
@@ -40017,21 +59854,28 @@ class Request:
         requeue = False
         is_worker_lost = isinstance(exc, WorkerLostError)
         if self.task.acks_late:
+            is_timeout = isinstance(exc, TimeLimitExceeded)
+            ack_flag = self.task.acks_on_timeout if is_timeout else self.task.acks_on_failure
             reject = (
                 (self.task.reject_on_worker_lost and is_worker_lost)
-                or (isinstance(exc, TimeLimitExceeded) and not self.task.acks_on_failure_or_timeout)
+                or (is_timeout and not ack_flag)
             )
-            ack = self.task.acks_on_failure_or_timeout
             if reject:
                 requeue = True
                 self.reject(requeue=requeue)
                 send_failed_event = False
-            elif ack:
+            elif ack_flag:
                 self.acknowledge()
             else:
                 # supporting the behaviour where a task failed and
                 # need to be removed from prefetched local queue
                 self.reject(requeue=False)
+
+        # This is a special case where the task failure handling is done during
+        # the cold shutdown process.
+        if state.should_terminate:
+            return_ok = True
+            send_failed_event = False
 
         # This is a special case where the process would not have had time
         # to write the result.
@@ -40205,10 +60049,126 @@ def create_request_cls(base, task, pool, hostname, eventer,
 
     return Request
 
-```
+`````
 
-### 代码文件: celery\worker\state.py
-```python
+--- **end of file: celery/worker/request.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/state.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/state.py`
+
+#### 📝 Module Docstring
+
+`````
+Internal worker state (global).
+
+This includes the currently active and reserved tasks,
+statistics, and revoked tasks.
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import platform`
+- `import shelve`
+- `import sys`
+- `import weakref`
+- `import zlib`
+- `from collections import Counter`
+- `from kombu.serialization import pickle`
+- `from kombu.serialization import pickle_protocol`
+- `from kombu.utils.objects import cached_property`
+- `from celery import __version__`
+- `from celery.exceptions import WorkerShutdown`
+- `from celery.exceptions import WorkerTerminate`
+- `from celery.utils.collections import LimitedSet`
+- `import atexit`
+- `from time import monotonic`
+- `from billiard.process import current_process`
+- `from celery.utils.debug import memdump`
+- `from celery.utils.debug import sample_mem`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Persistent`
+*Line: 192*
+
+**Docstring:**
+`````
+Stores worker state between restarts.
+
+This is the persistent data stored by the worker when
+:option:`celery worker --statedb` is enabled.
+
+Currently only stores revoked task id's.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, state, filename, clock = None)`
+  - **Parameters:**
+    - `self`
+    - `state`
+    - `filename`
+    - `clock = None`
+
+**Public Methods (5):**
+- `def open(self)`
+- `def merge(self)`
+- `def sync(self)`
+- `def close(self)`
+- `def save(self)`
+
+**Properties (2):**
+- `@property _revoked_tasks`
+- `@property db`
+
+**Class Variables (5):**
+- `storage = shelve`
+- `protocol = pickle_protocol`
+- `compress = zlib.compress`
+- `decompress = zlib.decompress`
+- `_is_open = False`
+
+#### 🔧 Public Functions (8)
+
+- `def reset_state()`
+  - *Line: 77*
+
+- `def maybe_shutdown()`
+  - *Line: 88*
+  - *Shutdown if flags have been set.*
+
+- `def task_reserved(request, add_request = requests.__setitem__, add_reserved_request = reserved_requests.add)`
+  - *Line: 96*
+  - *Update global state when a task has been reserved.*
+
+- `def task_accepted(request, _all_total_count = None, add_request = requests.__setitem__, add_active_request = active_requests.add, add_to_total_count = total_count.update)`
+  - *Line: 104*
+  - *Update global state when a task has been accepted.*
+
+- `def task_ready(request, successful = False, remove_request = requests.pop, discard_active_request = active_requests.discard, discard_reserved_request = reserved_requests.discard)`
+  - *Line: 118*
+  - *Update global state when a task is ready.*
+
+- `def task_reserved(request)`
+  - *Line: 162*
+  - *Called when a task is reserved by the worker.*
+
+- `def task_ready(request)`
+  - *Line: 174*
+  - *Called when a task is completed.*
+
+- `def on_shutdown()` `atexit.register`
+  - *Line: 154*
+
+
+---
+
+`````python
 """Internal worker state (global).
 
 This includes the currently active and reserved tasks,
@@ -40498,10 +60458,72 @@ class Persistent:
         self._is_open = True
         return self.open()
 
-```
+`````
 
-### 代码文件: celery\worker\strategy.py
-```python
+--- **end of file: celery/worker/state.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/strategy.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/strategy.py`
+
+#### 📝 Module Docstring
+
+`````
+Task execution strategy (optimization).
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `from kombu.asynchronous.timer import to_timestamp`
+- `from celery import signals`
+- `from celery.app import trace as _app_trace`
+- `from celery.exceptions import InvalidTaskError`
+- `from celery.utils.imports import symbol_by_name`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.saferepr import saferepr`
+- `from celery.utils.time import timezone`
+- `from request import create_request_cls`
+- `from state import task_reserved`
+
+#### 🔧 Public Functions (4)
+
+- `def hybrid_to_proto2(message, body)`
+  - *Line: 25*
+  - *Create a fresh protocol 2 message from a hybrid protocol 1/2 message.*
+
+- `def proto1_to_proto2(message, body)`
+  - *Line: 66*
+  - **Docstring:**
+  `````
+  Convert Task message protocol 1 arguments to protocol 2.
+  
+  Returns:
+      Tuple: of ``(body, headers, already_decoded_status, utc)``
+  `````
+
+- `def default(task, app, consumer, info = logger.info, error = logger.error, task_reserved = task_reserved, to_system_tz = timezone.to_system, bytes = bytes, proto1_to_proto2 = proto1_to_proto2)`
+  - *Line: 99*
+  - **Docstring:**
+  `````
+  Default task execution strategy.
+  
+  Note:
+      Strategies are here as an optimization, so sadly
+      it's not very easy to override.
+  `````
+
+- `def task_message_handler(message, body, ack, reject, callbacks, to_timestamp = to_timestamp)`
+  - *Line: 132*
+
+
+---
+
+`````python
 """Task execution strategy (optimization)."""
 import logging
 
@@ -40712,10 +60734,139 @@ def default(task, app, consumer,
         handle(req)
     return task_message_handler
 
-```
+`````
 
-### 代码文件: celery\worker\worker.py
-```python
+--- **end of file: celery/worker/strategy.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/worker.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/worker.py`
+
+#### 📝 Module Docstring
+
+`````
+WorkController can be used to instantiate in-process workers.
+
+The command-line interface for the worker is in :mod:`celery.bin.worker`,
+while the worker program is in :mod:`celery.apps.worker`.
+
+The worker program is responsible for adding signal handlers,
+setting up logging, etc.  This is a bare-bones worker without
+global side-effects (i.e., except for the global state stored in
+:mod:`celery.worker.state`).
+
+The worker consists of several components, all managed by bootsteps
+(mod:`celery.bootsteps`).
+`````
+
+#### 📦 Imports
+
+- `import os`
+- `import sys`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from time import sleep`
+- `from billiard import cpu_count`
+- `from kombu.utils.compat import detect_environment`
+- `from celery import bootsteps`
+- `from celery import concurrency as _concurrency`
+- `from celery import signals`
+- `from celery.bootsteps import RUN`
+- `from celery.bootsteps import TERMINATE`
+- `from celery.exceptions import ImproperlyConfigured`
+- `from celery.exceptions import TaskRevokedError`
+- `from celery.exceptions import WorkerTerminate`
+- `from celery.platforms import EX_FAILURE`
+- `from celery.platforms import create_pidlock`
+- `from celery.utils.imports import reload_from_cwd`
+- `from celery.utils.log import mlevel`
+- `from celery.utils.log import worker_logger as logger`
+- `from celery.utils.nodenames import default_nodename`
+- `from celery.utils.nodenames import worker_direct`
+- `from celery.utils.text import str_to_list`
+- `from celery.utils.threads import default_socket_timeout`
+- `from  import state`
+- `import resource`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class WorkController`
+*Line: 63*
+
+**Docstring:**
+`````
+Unmanaged worker instance.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, app = None, hostname = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `app = None`
+    - `hostname = None`
+    - `**kwargs`
+
+**Public Methods (23):**
+- `def setup_instance(self, queues = None, ready_callback = None, pidfile = None, include = None, use_eventloop = None, exclude_queues = None, **kwargs)`
+- `def on_init_blueprint(self)`
+- `def on_before_init(self, **kwargs)`
+- `def on_after_init(self, **kwargs)`
+- `def on_start(self)`
+- `def on_consumer_ready(self, consumer)`
+- `def on_close(self)`
+- `def on_stopped(self)`
+- `def setup_queues(self, include, exclude = None)`
+- `def setup_includes(self, includes)`
+- `def prepare_args(self, **kwargs)`
+- `def start(self)`
+- `def register_with_event_loop(self, hub)`
+- `def signal_consumer_close(self)`
+- `def should_use_eventloop(self)`
+- `def stop(self, in_sighandler = False, exitcode = None)`
+  - *Graceful shutdown of the worker server (Warm shutdown).*
+- `def terminate(self, in_sighandler = False)`
+  - *Not so graceful shutdown of the worker server (Cold shutdown).*
+- `def reload(self, modules = None, reload = False, reloader = None)`
+- `def info(self)`
+- `def rusage(self)`
+- `def stats(self)`
+- `def setup_defaults(self, concurrency = None, loglevel = 'WARN', logfile = None, task_events = None, pool = None, consumer_cls = None, timer_cls = None, timer_precision = None, autoscaler_cls = None, pool_putlocks = None, pool_restarts = None, optimization = None, O = None, statedb = None, time_limit = None, soft_time_limit = None, scheduler = None, pool_cls = None, state_db = None, task_time_limit = None, task_soft_time_limit = None, scheduler_cls = None, schedule_filename = None, max_tasks_per_child = None, prefetch_multiplier = None, disable_rate_limits = None, worker_lost_wait = None, max_memory_per_child = None, **_kw)`
+- `def wait_for_soft_shutdown(self)`
+  - **Docstring:**
+  `````
+  Wait :setting:`worker_soft_shutdown_timeout` if soft shutdown is enabled.
+  
+  To enable soft shutdown, set the :setting:`worker_soft_shutdown_timeout` in the
+  configuration. Soft shutdown can be used to allow the worker to finish processing
+  few more tasks before initiating a cold shutdown. This mechanism allows the worker
+  to finish short tasks that are already in progress and requeue long-running tasks
+  to be picked up by another worker.
+  
+  .. warning::
+      If there are no tasks in the worker, the worker will not wait for the
+      soft shutdown timeout even if it is set as it makes no sense to wait for
+      the timeout when there are no tasks to process.
+  `````
+
+**Properties (1):**
+- `@property state`
+
+**Class Variables (6):**
+- `app = None`
+- `pidlock = None`
+- `blueprint = None`
+- `pool = None`
+- `semaphore = None`
+- `exitcode = None`
+
+
+---
+
+`````python
 """WorkController can be used to instantiate in-process workers.
 
 The command-line interface for the worker is in :mod:`celery.bin.worker`,
@@ -41152,19 +61303,88 @@ class WorkController:
             logger.warning(log)
             sleep(app.conf.worker_soft_shutdown_timeout)
 
-```
+`````
 
-### 代码文件: celery\worker\__init__.py
-```python
+--- **end of file: celery/worker/worker.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker implementation.
+`````
+
+#### 📦 Imports
+
+- `from worker import WorkController`
+
+
+---
+
+`````python
 """Worker implementation."""
 from .worker import WorkController
 
 __all__ = ('WorkController',)
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\agent.py
-```python
+--- **end of file: celery/worker/__init__.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/agent.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/agent.py`
+
+#### 📝 Module Docstring
+
+`````
+Celery + :pypi:`cell` integration.
+`````
+
+#### 📦 Imports
+
+- `from celery import bootsteps`
+- `from connection import Connection`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Agent(bootsteps.StartStopStep)`
+*Line: 9*
+
+**Docstring:**
+`````
+Agent starts :pypi:`cell` actors.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def create(self, c)`
+
+**Class Variables (2):**
+- `conditional = True`
+- `requires = (Connection,)`
+
+
+---
+
+`````python
 """Celery + :pypi:`cell` integration."""
 from celery import bootsteps
 
@@ -41187,10 +61407,56 @@ class Agent(bootsteps.StartStopStep):
         agent = c.agent = self.instantiate(self.agent_cls, c.connection)
         return agent
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\connection.py
-```python
+--- **end of file: celery/worker/consumer/agent.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/connection.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/connection.py`
+
+#### 📝 Module Docstring
+
+`````
+Consumer Broker Connection Bootstep.
+`````
+
+#### 📦 Imports
+
+- `from kombu.common import ignore_errors`
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Connection(bootsteps.StartStopStep)`
+*Line: 13*
+
+**Docstring:**
+`````
+Service managing the consumer broker connection.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def start(self, c)`
+- `def shutdown(self, c)`
+- `def info(self, c)`
+
+
+---
+
+`````python
 """Consumer Broker Connection Bootstep."""
 from kombu.common import ignore_errors
 
@@ -41228,10 +61494,198 @@ class Connection(bootsteps.StartStopStep):
             params.pop('password', None)  # don't send password.
         return {'broker': params}
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\consumer.py
-```python
+--- **end of file: celery/worker/consumer/connection.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/consumer.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/consumer.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Consumer Blueprint.
+
+This module contains the components responsible for consuming messages
+from the broker, processing the messages and keeping the broker connections
+up and running.
+`````
+
+#### 📦 Imports
+
+- `import errno`
+- `import logging`
+- `import os`
+- `import warnings`
+- `from collections import defaultdict`
+- `from time import sleep`
+- `from billiard.common import restart_state`
+- `from billiard.exceptions import RestartFreqExceeded`
+- `from kombu.asynchronous.semaphore import DummyLock`
+- `from kombu.exceptions import ContentDisallowed`
+- `from kombu.exceptions import DecodeError`
+- `from kombu.utils.compat import _detect_environment`
+- `from kombu.utils.encoding import safe_repr`
+- `from kombu.utils.limits import TokenBucket`
+- `from vine import ppartial`
+- `from vine import promise`
+- `from celery import bootsteps`
+- `from celery import signals`
+- `from celery.app.trace import build_tracer`
+- `from celery.exceptions import CPendingDeprecationWarning`
+- `from celery.exceptions import InvalidTaskError`
+- `from celery.exceptions import NotRegistered`
+- `from celery.exceptions import WorkerShutdown`
+- `from celery.exceptions import WorkerTerminate`
+- `from celery.utils.functional import noop`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.nodenames import gethostname`
+- `from celery.utils.objects import Bunch`
+- `from celery.utils.text import truncate`
+- `from celery.utils.time import humanize_seconds`
+- `from celery.utils.time import rate`
+- `from celery.worker import loops`
+- `from celery.worker.state import active_requests`
+- `from celery.worker.state import maybe_shutdown`
+- `from celery.worker.state import requests`
+- `from celery.worker.state import reserved_requests`
+- `from celery.worker.state import successful_requests`
+- `from celery.worker.state import task_reserved`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class Consumer`
+*Line: 139*
+
+**Docstring:**
+`````
+Consumer blueprint.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, on_task_request, init_callback = noop, hostname = None, pool = None, app = None, timer = None, controller = None, hub = None, amqheartbeat = None, worker_options = None, disable_rate_limits = False, initial_prefetch_count = 2, prefetch_multiplier = 1, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `on_task_request`
+    - `init_callback = noop`
+    - `hostname = None`
+    - `pool = None`
+    - `app = None`
+    - `timer = None`
+    - `controller = None`
+    - `hub = None`
+    - `amqheartbeat = None`
+    - `worker_options = None`
+    - `disable_rate_limits = False`
+    - `initial_prefetch_count = 2`
+    - `prefetch_multiplier = 1`
+    - `**kwargs`
+
+**Public Methods (28):**
+- `def call_soon(self, p, *args, **kwargs)`
+- `def perform_pending_operations(self)`
+- `def bucket_for_task(self, type)`
+- `def reset_rate_limits(self)`
+- `def start(self)`
+- `def on_connection_error_before_connected(self, exc)`
+- `def on_connection_error_after_connected(self, exc)`
+- `def register_with_event_loop(self, hub)`
+- `def shutdown(self)`
+- `def stop(self)`
+- `def on_ready(self)`
+- `def loop_args(self)`
+- `def on_decode_error(self, message, exc)`
+  - **Docstring:**
+  `````
+  Callback called if an error occurs while decoding a message.
+  
+  Simply logs the error and acknowledges the message so it
+  doesn't enter a loop.
+  
+  Arguments:
+      message (kombu.Message): The message received.
+      exc (Exception): The exception being handled.
+  `````
+- `def on_close(self)`
+- `def connect(self)`
+  - **Docstring:**
+  `````
+  Establish the broker connection used for consuming tasks.
+  
+  Retries establishing the connection if the
+  :setting:`broker_connection_retry` setting is enabled
+  `````
+- `def connection_for_read(self, heartbeat = None)`
+- `def connection_for_write(self, url = None, heartbeat = None)`
+- `def ensure_connected(self, conn)`
+- `def on_send_event_buffered(self)`
+- `def add_task_queue(self, queue, exchange = None, exchange_type = None, routing_key = None, **options)`
+- `def cancel_task_queue(self, queue)`
+- `def apply_eta_task(self, task)`
+  - *Method called by the timer to apply a task with an ETA/countdown.*
+- `def on_unknown_message(self, body, message)`
+- `def on_unknown_task(self, body, message, exc)`
+- `def on_invalid_task(self, body, message, exc)`
+- `def update_strategies(self)`
+- `def create_task_handler(self, promise = promise)`
+- `def cancel_active_requests(self)`
+  - **Docstring:**
+  `````
+  Cancel active requests during shutdown.
+  
+  Cancels all active requests that either do not require late acknowledgments or,
+  if they do, have not been acknowledged yet.
+  
+  Does not cancel successful tasks, even if they have not been acknowledged yet.
+  `````
+
+**Properties (2):**
+- `@property max_prefetch_count`
+- `@property _new_prefetch_count`
+
+**Class Variables (7):**
+- `Strategies = dict`
+- `init_callback = None`
+- `pool = None`
+- `timer = None`
+- `restart_count = -1`
+- `first_connection_attempt = True`
+- `broker_connection_retry_attempt = 0`
+
+##### 📌 `class Evloop(bootsteps.StartStopStep)`
+*Line: 776*
+
+**Docstring:**
+`````
+Event loop service.
+
+Note:
+    This is always started last.
+`````
+
+**Public Methods (2):**
+- `def start(self, c)`
+- `def patch_all(self, c)`
+
+**Class Variables (2):**
+- `label = 'event loop'`
+- `last = True`
+
+#### 🔧 Public Functions (1)
+
+- `def dump_body(m, body)`
+  - *Line: 131*
+  - *Format message body for debugging purposes.*
+
+
+---
+
+`````python
 """Worker Consumer Blueprint.
 
 This module contains the components responsible for consuming messages
@@ -41265,7 +61719,8 @@ from celery.utils.objects import Bunch
 from celery.utils.text import truncate
 from celery.utils.time import humanize_seconds, rate
 from celery.worker import loops
-from celery.worker.state import active_requests, maybe_shutdown, requests, reserved_requests, task_reserved
+from celery.worker.state import (active_requests, maybe_shutdown, requests, reserved_requests, successful_requests,
+                                 task_reserved)
 
 __all__ = ('Consumer', 'Evloop', 'dump_body')
 
@@ -41390,6 +61845,10 @@ class Consumer:
     #: This flag will be turned off after the first failed
     #: connection attempt.
     first_connection_attempt = True
+
+    #: Counter to track number of conn retry attempts
+    #: to broker. Will be reset to 0 once successful
+    broker_connection_retry_attempt = 0
 
     class Blueprint(bootsteps.Blueprint):
         """Consumer blueprint."""
@@ -41685,8 +62144,6 @@ class Consumer:
         # to the current channel.
         if self.controller and self.controller.semaphore:
             self.controller.semaphore.clear()
-        if self.timer:
-            self.timer.clear()
         for bucket in self.task_buckets.values():
             if bucket:
                 bucket.clear_pending()
@@ -41722,9 +62179,11 @@ class Consumer:
         def _error_handler(exc, interval, next_step=CONNECTION_RETRY_STEP):
             if getattr(conn, 'alt', None) and interval == 0:
                 next_step = CONNECTION_FAILOVER
+            elif interval > 0:
+                self.broker_connection_retry_attempt += 1
             next_step = next_step.format(
                 when=humanize_seconds(interval, 'in', ' '),
-                retries=int(interval / 2),
+                retries=self.broker_connection_retry_attempt,
                 max_retries=self.app.conf.broker_connection_max_retries)
             error(CONNECTION_ERROR, conn.as_uri(), exc, next_step)
 
@@ -41766,6 +62225,7 @@ class Consumer:
             callback=maybe_shutdown,
         )
         self.first_connection_attempt = False
+        self.broker_connection_retry_attempt = 0
         return conn
 
     def _flush_events(self):
@@ -41967,9 +62427,13 @@ class Consumer:
             self=self, state=self.blueprint.human_state(),
         )
 
-    def cancel_all_unacked_requests(self):
-        """Cancel all active requests that either do not require late acknowledgments or,
+    def cancel_active_requests(self):
+        """Cancel active requests during shutdown.
+
+        Cancels all active requests that either do not require late acknowledgments or,
         if they do, have not been acknowledged yet.
+
+        Does not cancel successful tasks, even if they have not been acknowledged yet.
         """
 
         def should_cancel(request):
@@ -41979,6 +62443,9 @@ class Consumer:
 
             if not request.acknowledged:
                 # Task is late acknowledged, but it has not been acknowledged yet, cancel it.
+                if request.id in successful_requests:
+                    # Unless it was successful, in which case we don't want to cancel it.
+                    return False
                 return True
 
             # Task is late acknowledged, but it has already been acknowledged.
@@ -41988,7 +62455,10 @@ class Consumer:
 
         if requests_to_cancel:
             for request in requests_to_cancel:
-                request.cancel(self.pool)
+                # For acks_late tasks, don't emit RETRY signal since broker will handle redelivery
+                # For non-acks_late tasks, emit RETRY signal as usual
+                emit_retry = not request.task.acks_late
+                request.cancel(self.pool, emit_retry=emit_retry)
 
 
 class Evloop(bootsteps.StartStopStep):
@@ -42008,10 +62478,62 @@ class Evloop(bootsteps.StartStopStep):
     def patch_all(self, c):
         c.qos._mutex = DummyLock()
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\control.py
-```python
+--- **end of file: celery/worker/consumer/consumer.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/control.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/control.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Remote Control Bootstep.
+
+``Control`` -> :mod:`celery.worker.pidbox` -> :mod:`kombu.pidbox`.
+
+The actual commands are implemented in :mod:`celery.worker.control`.
+`````
+
+#### 📦 Imports
+
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from celery.worker import pidbox`
+- `from tasks import Tasks`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Control(bootsteps.StartStopStep)`
+*Line: 18*
+
+**Docstring:**
+`````
+Remote control command service.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `**kwargs`
+
+**Public Methods (1):**
+- `def include_if(self, c)`
+
+**Class Variables (1):**
+- `requires = (Tasks,)`
+
+
+---
+
+`````python
 """Worker Remote Control Bootstep.
 
 ``Control`` -> :mod:`celery.worker.pidbox` -> :mod:`kombu.pidbox`.
@@ -42046,21 +62568,121 @@ class Control(bootsteps.StartStopStep):
         return (c.app.conf.worker_enable_remote_control and
                 c.conninfo.supports_exchange_type('fanout'))
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\delayed_delivery.py
-```python
+--- **end of file: celery/worker/consumer/control.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/delayed_delivery.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/delayed_delivery.py`
+
+#### 📝 Module Docstring
+
+`````
+Native delayed delivery functionality for Celery workers.
+
+This module provides the DelayedDelivery bootstep which handles setup and configuration
+of native delayed delivery functionality when using quorum queues.
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `from typing import Iterator`
+- `from typing import List`
+- `from typing import Optional`
+- `from typing import Set`
+- `from typing import Union`
+- `from typing import ValuesView`
+- `from kombu import Connection`
+- `from kombu import Queue`
+- `from kombu.transport.native_delayed_delivery import bind_queue_to_native_delayed_delivery_exchange`
+- `from kombu.transport.native_delayed_delivery import declare_native_delayed_delivery_exchanges_and_queues`
+- `from kombu.utils.functional import retry_over_time`
+- `from kombu.utils.url import maybe_sanitize_url`
+- `from celery import Celery`
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.quorum_queues import detect_quorum_queues`
+- `from celery.worker.consumer import Consumer`
+- `from celery.worker.consumer import Tasks`
+- `from exceptiongroup import ExceptionGroup`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class DelayedDelivery(bootsteps.StartStopStep)`
+*Line: 38*
+
+**Docstring:**
+`````
+Bootstep that sets up native delayed delivery functionality.
+
+This component handles the setup and configuration of native delayed delivery
+for Celery workers. It is automatically included when quorum queues are
+detected in the application configuration.
+
+Responsibilities:
+    - Declaring native delayed delivery exchanges and queues
+    - Binding all application queues to the delayed delivery exchanges
+    - Handling connection failures gracefully with retries
+    - Validating configuration settings
+`````
+
+**Public Methods (2):**
+- `def include_if(self, c: Consumer) -> bool`
+  - **Docstring:**
+  `````
+  Determine if this bootstep should be included.
+  
+  Args:
+      c: The Celery consumer instance
+  
+  Returns:
+      bool: True if quorum queues are detected, False otherwise
+  `````
+- `def start(self, c: Consumer) -> None`
+  - **Docstring:**
+  `````
+  Initialize delayed delivery for all broker URLs.
+  
+  Attempts to set up delayed delivery for each broker URL in the configuration.
+  Failures are logged but don't prevent attempting remaining URLs.
+  
+  Args:
+      c: The Celery consumer instance
+  
+  Raises:
+      ValueError: If configuration validation fails
+  `````
+
+**Class Variables (1):**
+- `requires = (Tasks,)`
+
+
+---
+
+`````python
 """Native delayed delivery functionality for Celery workers.
 
 This module provides the DelayedDelivery bootstep which handles setup and configuration
 of native delayed delivery functionality when using quorum queues.
 """
+import sys
 from typing import Iterator, List, Optional, Set, Union, ValuesView
+
+if sys.version_info < (3, 11):  # pragma: no cover
+    # Backport of PEP 654 for Python versions < 3.11
+    from exceptiongroup import ExceptionGroup
 
 from kombu import Connection, Queue
 from kombu.transport.native_delayed_delivery import (bind_queue_to_native_delayed_delivery_exchange,
                                                      declare_native_delayed_delivery_exchanges_and_queues)
 from kombu.utils.functional import retry_over_time
+from kombu.utils.url import maybe_sanitize_url
 
 from celery import Celery, bootsteps
 from celery.utils.log import get_logger
@@ -42075,7 +62697,7 @@ logger = get_logger(__name__)
 # Default retry settings
 RETRY_INTERVAL = 1.0  # seconds between retries
 MAX_RETRIES = 3      # maximum number of retries
-
+RETRIED_EXCEPTIONS = (ConnectionRefusedError, OSError)
 
 # Valid queue types for delayed delivery
 VALID_QUEUE_TYPES = {'classic', 'quorum'}
@@ -42136,7 +62758,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
                 retry_over_time(
                     self._setup_delayed_delivery,
                     args=(c, broker_url),
-                    catch=(ConnectionRefusedError, OSError),
+                    catch=RETRIED_EXCEPTIONS,
                     errback=self._on_retry,
                     interval_start=RETRY_INTERVAL,
                     max_retries=MAX_RETRIES,
@@ -42144,7 +62766,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
             except Exception as e:
                 logger.warning(
                     "Failed to setup delayed delivery for %r: %s",
-                    broker_url, str(e)
+                    maybe_sanitize_url(broker_url), str(e)
                 )
                 setup_errors.append((broker_url, e))
 
@@ -42170,7 +62792,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
             queue_type = c.app.conf.broker_native_delayed_delivery_queue_type
             logger.debug(
                 "Setting up delayed delivery for broker %r with queue type %r",
-                broker_url, queue_type
+                maybe_sanitize_url(broker_url), queue_type
             )
 
             try:
@@ -42181,7 +62803,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
             except Exception as e:
                 logger.warning(
                     "Failed to declare exchanges and queues for %r: %s",
-                    broker_url, str(e)
+                    maybe_sanitize_url(broker_url), str(e)
                 )
                 raise
 
@@ -42190,7 +62812,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
             except Exception as e:
                 logger.warning(
                     "Failed to bind queues for %r: %s",
-                    broker_url, str(e)
+                    maybe_sanitize_url(broker_url), str(e)
                 )
                 raise
 
@@ -42209,6 +62831,7 @@ class DelayedDelivery(bootsteps.StartStopStep):
             logger.warning("No queues found to bind for delayed delivery")
             return
 
+        exceptions: list[Exception] = []
         for queue in queues:
             try:
                 logger.debug("Binding queue %r to delayed delivery exchange", queue.name)
@@ -42218,7 +62841,27 @@ class DelayedDelivery(bootsteps.StartStopStep):
                     "Failed to bind queue %r: %s",
                     queue.name, str(e)
                 )
-                raise
+
+                # We must re-raise on retried exceptions to ensure they are
+                # caught with the outer retry_over_time mechanism.
+                #
+                # This could be removed if one of:
+                # * The minimum python version for Celery and Kombu is
+                #   increased to 3.11. Kombu updated to use the `except*`
+                #   clause to catch specific exceptions from an ExceptionGroup.
+                # * Kombu's retry_over_time utility is updated to use the
+                #   catch utility from agronholm's exceptiongroup backport.
+                if isinstance(e, RETRIED_EXCEPTIONS):
+                    raise
+
+                exceptions.append(e)
+
+        if exceptions:
+            raise ExceptionGroup(
+                ("One or more failures occurred while binding queues to "
+                 "delayed delivery exchanges"),
+                exceptions,
+            )
 
     def _on_retry(self, exc: Exception, interval_range: Iterator[float], intervals_count: int) -> float:
         """Callback for retry attempts.
@@ -42300,10 +62943,64 @@ class DelayedDelivery(bootsteps.StartStopStep):
                 f"Invalid queue type {queue_type!r}. Must be one of: {', '.join(sorted_types)}"
             )
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\events.py
-```python
+--- **end of file: celery/worker/consumer/delayed_delivery.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/events.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/events.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Event Dispatcher Bootstep.
+
+``Events`` -> :class:`celery.events.EventDispatcher`.
+`````
+
+#### 📦 Imports
+
+- `from kombu.common import ignore_errors`
+- `from celery import bootsteps`
+- `from connection import Connection`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Events(bootsteps.StartStopStep)`
+*Line: 14*
+
+**Docstring:**
+`````
+Service used for sending monitoring events.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, task_events = True, without_heartbeat = False, without_gossip = False, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `task_events = True`
+    - `without_heartbeat = False`
+    - `without_gossip = False`
+    - `**kwargs`
+
+**Public Methods (3):**
+- `def start(self, c)`
+- `def stop(self, c)`
+- `def shutdown(self, c)`
+
+**Class Variables (1):**
+- `requires = (Connection,)`
+
+
+---
+
+`````python
 """Worker Event Dispatcher Bootstep.
 
 ``Events`` -> :class:`celery.events.EventDispatcher`.
@@ -42373,10 +63070,86 @@ class Events(bootsteps.StartStopStep):
     def shutdown(self, c):
         self._close(c)
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\gossip.py
-```python
+--- **end of file: celery/worker/consumer/events.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/gossip.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/gossip.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker <-> Worker communication Bootstep.
+`````
+
+#### 📦 Imports
+
+- `from collections import defaultdict`
+- `from functools import partial`
+- `from heapq import heappush`
+- `from operator import itemgetter`
+- `from kombu import Consumer`
+- `from kombu.asynchronous.semaphore import DummyLock`
+- `from kombu.exceptions import ContentDisallowed`
+- `from kombu.exceptions import DecodeError`
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.objects import Bunch`
+- `from mingle import Mingle`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Gossip(bootsteps.ConsumerStep)`
+*Line: 23*
+
+**Docstring:**
+`````
+Bootstep consuming events from other workers.
+
+This keeps the logical clock value up to date.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, without_gossip = False, interval = 5.0, heartbeat_interval = 2.0, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `without_gossip = False`
+    - `interval = 5.0`
+    - `heartbeat_interval = 2.0`
+    - `**kwargs`
+
+**Public Methods (13):**
+- `def compatible_transport(self, app)`
+- `def election(self, id, topic, action = None)`
+- `def call_task(self, task)`
+- `def on_elect(self, event)`
+- `def start(self, c)`
+- `def on_elect_ack(self, event)`
+- `def on_node_join(self, worker)`
+- `def on_node_leave(self, worker)`
+- `def on_node_lost(self, worker)`
+- `def register_timer(self)`
+- `def periodic(self)`
+- `def get_consumers(self, channel)`
+- `def on_message(self, prepare, message)`
+
+**Class Variables (4):**
+- `label = 'Gossip'`
+- `requires = (Mingle,)`
+- `_cons_stamp_fields = itemgetter('id', 'clock', 'hostname', 'pid', 'topic', 'action', 'cver')`
+- `compatible_transports = {'amqp', 'redis'}`
+
+
+---
+
+`````python
 """Worker <-> Worker communication Bootstep."""
 from collections import defaultdict
 from functools import partial
@@ -42584,10 +63357,66 @@ class Gossip(bootsteps.ConsumerStep):
         else:
             self.clock.forward()
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\heart.py
-```python
+--- **end of file: celery/worker/consumer/gossip.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/heart.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/heart.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Event Heartbeat Bootstep.
+`````
+
+#### 📦 Imports
+
+- `from celery import bootsteps`
+- `from celery.worker import heartbeat`
+- `from events import Events`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Heart(bootsteps.StartStopStep)`
+*Line: 10*
+
+**Docstring:**
+`````
+Bootstep sending event heartbeats.
+
+This service sends a ``worker-heartbeat`` message every n seconds.
+
+Note:
+    Not to be confused with AMQP protocol level heartbeats.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, without_heartbeat = False, heartbeat_interval = None, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `without_heartbeat = False`
+    - `heartbeat_interval = None`
+    - `**kwargs`
+
+**Public Methods (2):**
+- `def start(self, c)`
+- `def stop(self, c)`
+
+**Class Variables (2):**
+- `requires = (Events,)`
+- `shutdown = stop`
+
+
+---
+
+`````python
 """Worker Event Heartbeat Bootstep."""
 from celery import bootsteps
 from celery.worker import heartbeat
@@ -42625,10 +63454,72 @@ class Heart(bootsteps.StartStopStep):
         c.heart = c.heart and c.heart.stop()
     shutdown = stop
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\mingle.py
-```python
+--- **end of file: celery/worker/consumer/heart.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/mingle.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/mingle.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker <-> Worker Sync at startup (Bootstep).
+`````
+
+#### 📦 Imports
+
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from events import Events`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Mingle(bootsteps.StartStopStep)`
+*Line: 13*
+
+**Docstring:**
+`````
+Bootstep syncing state with neighbor workers.
+
+At startup, or upon consumer restart, this will:
+
+- Sync logical clocks.
+- Sync revoked tasks.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, without_mingle = False, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `without_mingle = False`
+    - `**kwargs`
+
+**Public Methods (8):**
+- `def compatible_transport(self, app)`
+- `def start(self, c)`
+- `def sync(self, c)`
+- `def send_hello(self, c)`
+- `def on_node_reply(self, c, nodename, reply)`
+- `def sync_with_node(self, c, clock = None, revoked = None, **kwargs)`
+- `def on_clock_event(self, c, clock)`
+- `def on_revoked_received(self, c, revoked)`
+
+**Class Variables (3):**
+- `label = 'Mingle'`
+- `requires = (Events,)`
+- `compatible_transports = {'amqp', 'redis', 'gcpubsub'}`
+
+
+---
+
+`````python
 """Worker <-> Worker Sync at startup (Bootstep)."""
 from celery import bootsteps
 from celery.utils.log import get_logger
@@ -42706,10 +63597,79 @@ class Mingle(bootsteps.StartStopStep):
         if revoked:
             c.controller.state.revoked.update(revoked)
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\tasks.py
-```python
+--- **end of file: celery/worker/consumer/mingle.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/tasks.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/tasks.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker Task Consumer Bootstep.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from kombu.common import QoS`
+- `from kombu.common import ignore_errors`
+- `from celery import bootsteps`
+- `from celery.utils.log import get_logger`
+- `from celery.utils.quorum_queues import detect_quorum_queues`
+- `from mingle import Mingle`
+- `from types import MethodType`
+- `from celery.worker import state`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class Tasks(bootsteps.StartStopStep)`
+*Line: 20*
+
+**Docstring:**
+`````
+Bootstep starting the task message consumer.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, c, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `c`
+    - `**kwargs`
+
+**Public Methods (5):**
+- `def start(self, c)`
+  - *Start task consumer.*
+- `def stop(self, c)`
+  - *Stop task consumer.*
+- `def shutdown(self, c)`
+  - *Shutdown task consumer.*
+- `def info(self, c)`
+  - *Return task consumer info.*
+- `def qos_global(self, c) -> bool`
+  - **Docstring:**
+  `````
+  Determine if global QoS should be applied.
+  
+  Additional information:
+      https://www.rabbitmq.com/docs/consumer-prefetch
+      https://www.rabbitmq.com/docs/quorum-queues#global-qos
+  `````
+
+**Class Variables (1):**
+- `requires = (Mingle,)`
+
+
+---
+
+`````python
 """Worker Task Consumer Bootstep."""
 
 from __future__ import annotations
@@ -42764,6 +63724,16 @@ class Tasks(bootsteps.StartStopStep):
         )
 
         if c.app.conf.worker_disable_prefetch:
+            # Only apply disable-prefetch for Redis brokers
+            is_redis_broker = c.connection.transport.driver_type == 'redis'
+            if not is_redis_broker:
+                logger.warning(
+                    f"worker_disable_prefetch is only supported for Redis brokers. "
+                    f"Current broker transport: {c.connection.transport.driver_type}. "
+                    f"Ignoring disable_prefetch setting."
+                )
+                return
+
             from types import MethodType
 
             from celery.worker import state
@@ -42820,10 +63790,40 @@ class Tasks(bootsteps.StartStopStep):
 
         return qos_global
 
-```
+`````
 
-### 代码文件: celery\worker\consumer\__init__.py
-```python
+--- **end of file: celery/worker/consumer/tasks.py** (project: celery) --- 
+
+---
+
+
+--- **start of file: celery/worker/consumer/__init__.py** (project: celery) --- 
+
+
+### 📄 Python File Metadata: `celery/worker/consumer/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+Worker consumer.
+`````
+
+#### 📦 Imports
+
+- `from agent import Agent`
+- `from connection import Connection`
+- `from consumer import Consumer`
+- `from control import Control`
+- `from events import Events`
+- `from gossip import Gossip`
+- `from heart import Heart`
+- `from mingle import Mingle`
+- `from tasks import Tasks`
+
+
+---
+
+`````python
 """Worker consumer."""
 from .agent import Agent
 from .connection import Connection
@@ -42840,4 +63840,9 @@ __all__ = (
     'Events', 'Gossip', 'Heart', 'Mingle', 'Tasks',
 )
 
-```
+`````
+
+--- **end of file: celery/worker/consumer/__init__.py** (project: celery) --- 
+
+---
+

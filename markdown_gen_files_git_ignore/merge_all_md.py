@@ -41,7 +41,7 @@ def merge_all_md():
         if md_file.resolve() == output_file.resolve():
             print(f"  - 跳过输出文件自身: {md_file.name}")
             continue
-        if md_file.name in ['funboost_all_docs_and_codes.md','funboost_all_codes.md','boost_spider_all_docs_and_codes_no_md.md']:
+        if md_file.name in ['funboost_all_docs_and_codes.md','funboost_all_codes.md','funboost_all_docs.md','boost_spider_all_docs_and_codes_no_md.md']:
             continue
 
         print(f"  - 正在读取: {md_file.name}")
