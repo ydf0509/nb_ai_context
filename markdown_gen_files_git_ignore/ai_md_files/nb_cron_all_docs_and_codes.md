@@ -325,35 +325,87 @@ cron = NbCron("my_project")                                      # 内存存储
 
 # ── 装饰器方式（@cron_register 在下，@cron.job 在上） ──
 
+# 无参数任务
 @cron.job("0 */5 * * * *")
 @cron_register('report')
 def report_task():
     print("生成报告")
 
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 30 9 * * * *", args=("admin@example.com",), kwargs={"report_type": "daily"})
+@cron_register('send_report_email')
+def send_report_email(to_address: str, report_type: str = "daily"):
+    print(f"发送{report_type}报表到 {to_address}")
+
+# 有参数任务（装饰器中直接传参）
+@cron.job("0 0 2 * * *", args=("backup_db",), kwargs={"compress": True})
+@cron_register('backup')
+def backup_database(db_name: str, compress: bool = False):
+    print(f"备份数据库 {db_name}, 压缩={compress}")
+
+# 异步任务也支持
 @cron.job("30 0 9 * * 1-5", trigger="cron")
 @cron_register('async_work')
 async def async_task():
     print("异步任务也支持！")
 
+# 间隔任务
 @cron.job("@every 30s", trigger="interval")
 @cron_register('heartbeat')
 def heartbeat():
     print("心跳")
 
+# 日期任务（一次性）
 @cron.job("2026-10-01 09:00:00", trigger="date")
 @cron_register('national_day')
 def national_day_task():
     print("国庆节任务")
 
-# ── add_job 方式（传函数、注册名字符串、.cron_func_name 都行） ──
+# ── 非装饰器写法（适合第三方函数或动态注册） ──
 
-def backup():
-    print("备份数据库")
-add_cron_register('backup', backup)
+# 方式 1：add_cron_register + add_job
+def send_sms(phone: str, message: str):
+    """发送短信（第三方函数）"""
+    print(f"发送短信到 {phone}: {message}")
 
-cron.add_job(backup, "0 0 2 * * *", trigger="cron", job_id="daily_backup")
-cron.add_job('backup', "0 0 2 * * *", trigger="cron")         # 传注册名
-cron.add_job(backup.cron_func_name, "0 0 2 * * *")            # .cron_func_name
+add_cron_register('send_sms', send_sms)
+cron.add_job(
+    'send_sms',
+    "0 0 8 * * *",
+    trigger="cron",
+    job_id="morning_sms",
+    name="早安短信",
+    args=("13800138000", "早上好！"),
+)
+
+# 方式 2：直接 add_job（自动注册）
+from nb_cron import cron_register
+
+def cleanup_logs(days: int = 7):
+    """清理日志"""
+    print(f"清理{days}天前的日志")
+
+cron_register('cleanup_logs', cleanup_logs)
+cron.add_job(
+    cleanup_logs,  # 传函数对象
+    "0 0 3 * * 0",
+    trigger="cron",
+    job_id="weekly_cleanup",
+    name="每周清理",
+    kwargs={"days": 30},  # 覆盖默认参数
+)
+
+# 方式 3：批量注册任务
+def process_order(order_id: int):
+    """处理订单"""
+    print(f"处理订单 {order_id}")
+
+add_cron_register('process_order', process_order)
+
+# 动态添加多个不同参数的任务
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch1", args=(1001,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch2", args=(1002,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch3", args=(1003,))
 
 # ── 启动 ──
 cron.start()
@@ -366,7 +418,7 @@ cron.remove_job("daily_backup")
 jobs = cron.get_jobs()
 
 # ── Cron 翻译 ──
-print(explain_cron("0 30 9 * * *", "zh"))    # "每天09:30:00执行"
+print(explain_cron("0 30 9 * * *", "zh"))    # "每天 09:30:00 执行"
 print(explain_cron("0 30 9 * * *", "en"))    # "At 09:30:00, every day"
 ```
 
@@ -501,6 +553,37 @@ cron.add_job('daily_backup', "0 0 2 * * *", trigger="cron")
 
 # 3. 传 .cron_func_name（IDE 安全，等价于方式 2）
 cron.add_job(backup_db.cron_func_name, "0 0 2 * * *", trigger="cron")
+
+# 4. 带参数的任务（args 和 kwargs）
+def send_email(to: str, subject: str, body: str = ""):
+    print(f"发送邮件到 {to}: {subject}")
+
+cron_register('send_email', send_email)
+
+# 在装饰器中传参
+@cron.job("0 9 * * * *", args=("admin@example.com", "日报"), kwargs={"body": "这是日报内容"})
+@cron_register('daily_report_email')
+def daily_report_email(to: str, subject: str, body: str = ""):
+    print(f"发送日报到 {to}")
+
+# 或在 add_job 中传参
+cron.add_job(
+    'send_email',
+    "0 9 * * * *",
+    trigger="cron",
+    job_id="morning_email",
+    args=("user@example.com", "晨报"),
+    kwargs={"body": "这是晨报内容"},
+)
+
+# 5. 批量添加同函数不同参数的任务
+def process_batch(batch_id: int):
+    print(f"处理批次 {batch_id}")
+
+cron_register('process_batch', process_batch)
+cron.add_job('process_batch', "@every 10m", job_id="batch_1", args=(1,))
+cron.add_job('process_batch', "@every 10m", job_id="batch_2", args=(2,))
+cron.add_job('process_batch', "@every 10m", job_id="batch_3", args=(3,))
 ```
 
 ### 未注册直接报错
@@ -552,20 +635,48 @@ from nb_cron.web import get_fastapi_app
 
 cron = NbCron("my_project", "redis://localhost:6379/0")
 
+# 无参数任务
 @cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
 @cron_register('heartbeat')
 def heartbeat():
     print("heartbeat OK")
 
-@cron.job("0 */5 * * * *", trigger="cron", name="数据同步")
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="数据同步", args=(), kwargs={"source": "mysql", "target": "redis"})
 @cron_register('sync_data')
-def sync_data():
-    print("data synced")
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
 
-@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+# 有参数任务（装饰器中传参）
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份", args=("prod_db",), kwargs={"compress": True})
 @cron_register('daily_backup')
-def daily_backup():
-    print("backup done")
+def daily_backup(db_name: str, compress: bool = False):
+    print(f"backup {db_name}, compress={compress}")
+
+# 非装饰器写法：第三方函数
+def send_email(to: str, subject: str, body: str):
+    """发送邮件（第三方库函数）"""
+    print(f"邮件已发送到 {to}: {subject}")
+
+cron_register('send_email', send_email)
+cron.add_job(
+    'send_email',
+    "0 0 9 * * 1-5",
+    trigger="cron",
+    job_id="morning_report_email",
+    name="晨报邮件",
+    args=("admin@example.com", "每日晨报", "这是晨报内容"),
+)
+
+# 批量添加同函数不同参数的任务
+def process_queue(queue_name: str):
+    """处理队列"""
+    print(f"processing queue: {queue_name}")
+
+cron_register('process_queue', process_queue)
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_1", args=("queue_1",))
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_2", args=("queue_2",))
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_3", args=("queue_3",))
 
 app = get_fastapi_app(cron)
 
@@ -611,15 +722,32 @@ from nb_cron.web import get_flask_app
 
 cron = NbCron("my_project", "redis://localhost:6379/0")
 
+# 无参数任务
 @cron.job("*/10 * * * * *", trigger="cron", name="心跳")
 @cron_register('heartbeat')
 def heartbeat():
     print("heartbeat OK")
 
-@cron.job("0 */5 * * * *", trigger="cron", name="同步")
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="同步", kwargs={"source": "mysql", "target": "redis"})
 @cron_register('sync_data')
-def sync_data():
-    print("data synced")
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
+
+# 非装饰器写法
+def cleanup(days: int = 7):
+    """清理日志"""
+    print(f"cleanup logs older than {days} days")
+
+cron_register('cleanup', cleanup)
+cron.add_job(
+    'cleanup',
+    "0 0 3 * * 0",
+    trigger="cron",
+    job_id="weekly_cleanup",
+    name="每周清理",
+    kwargs={"days": 30},
+)
 
 app = get_flask_app(cron)
 
@@ -655,15 +783,27 @@ from nb_cron import NbCron, cron_register
 
 cron = NbCron("my_project", "redis://localhost:6379/0")
 
+# 无参数任务
 @cron.job("*/10 * * * * *", trigger="cron", name="心跳")
 @cron_register('heartbeat')
 def heartbeat():
     print("heartbeat OK")
 
-@cron.job("0 */5 * * * *", trigger="cron", name="同步")
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="同步", kwargs={"source": "mysql", "target": "redis"})
 @cron_register('sync_data')
-def sync_data():
-    print("data synced")
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
+
+# 非装饰器写法：批量添加任务
+def process_order(order_id: int):
+    """处理订单"""
+    print(f"processing order {order_id}")
+
+cron_register('process_order', process_order)
+cron.add_job('process_order', "@every 5m", job_id="process_order_1", args=(1001,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_2", args=(1002,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_3", args=(1003,))
 ```
 
 **Step 2** — 在 `urls.py` 中挂载路由：
@@ -886,20 +1026,84 @@ cron = NbCron("my_project", "redis://localhost:6379/0")
     "trigger": "cron",
     "job_id": "my_job",
     "name": "我的任务",
-    "args": [],
-    "kwargs": {},
+    "args": ["backup_db"],
+    "kwargs": {"compress": true},
     "max_instances": 1
 }
 ```
 
 - `func_ref`: 函数的 `cron_func_name`（通过 `@cron_register` 注册的稳定名称）
 - `trigger`: 可选 `"cron"` / `"interval"` / `"date"`，不传则自动推断
+- `args`: 位置参数列表，会按顺序传给函数
+- `kwargs`: 关键字参数字典，会作为命名参数传给函数
+
+### 创建带参数的任务示例
+
+```json
+// 发送邮件任务
+POST /nb_cron/api/jobs
+{
+    "func_ref": "send_email",
+    "expression": "0 9 * * * *",
+    "trigger": "cron",
+    "job_id": "morning_email",
+    "name": "晨报邮件",
+    "args": ["admin@example.com", "每日晨报"],
+    "kwargs": {"body": "这是晨报内容"}
+}
+
+// 批量处理任务（同函数不同参数）
+POST /nb_cron/api/jobs
+{
+    "func_ref": "process_queue",
+    "expression": "@every 1m",
+    "trigger": "interval",
+    "job_id": "process_queue_1",
+    "name": "处理队列 1",
+    "args": ["queue_1"]
+}
+
+POST /nb_cron/api/jobs
+{
+    "func_ref": "process_queue",
+    "expression": "@every 1m",
+    "trigger": "interval",
+    "job_id": "process_queue_2",
+    "name": "处理队列 2",
+    "args": ["queue_2"]
+}
+```
 
 ### 获取已注册函数
 
 `GET /nb_cron/api/functions`
 
-返回所有通过 `@cron_register` 注册的函数名称列表。
+从存储后端（Redis/MongoDB/SQLAlchemy）读取所有已注册的函数名称列表，支持跨 Git 项目共享。
+
+**跨项目工作原理：**
+- 项目 A 中用 `@cron_register` 标记的函数，会在 `cron.start()` 时自动同步到 Redis
+- 项目 B 的 Web UI 通过此 API 读取 Redis 中的函数列表
+- 即使项目 A 没有运行，函数列表依然可用（持久化在 Redis 中）
+
+**示例：**
+```bash
+# 项目 A：只标记函数，不添加定时任务
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+@cron_register('generate_report')
+def generate_report(type):
+    ...
+
+cron.start()  # 函数名自动同步到 Redis
+
+# 项目 B：Web UI 调用 API
+GET /nb_cron/api/functions
+# 返回：{"functions": ["send_email", "generate_report"]}
+
+# Web UI 下拉框显示这些函数，用户可以选择并创建定时任务
+```
 
 ---
 
@@ -1025,8 +1229,54 @@ from nb_cron.web import get_fastapi_app, get_flask_app, get_django_urls
 | `example_flask_redis.py` | Flask + Redis 完整示例 |
 | `example_django_redis.py` | Django + Redis 集成指南（分步说明） |
 | `example_memory_simple.py` | 最简示例，内存存储，无需 Redis |
+| `demo_cross_git_project_manage_corn_tasks/proj1.py` | **跨项目示例 - 项目 1**：函数定义与定时任务 |
+| `demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py` | **跨项目示例 - 项目 2**：Web UI 管理后台 |
 
-运行示例：
+---
+
+## 跨 Git 项目示例（重点）
+
+nb_cron 的核心特性：函数定义与任务调度分离，支持跨 Git 项目管理。
+
+- **项目 1**（`proj1.py`）：业务项目，用 `@cron_register` 标记函数，函数名自动同步到 Redis
+- **项目 2**（`proj2_fastapi_cron.py`）：FastAPI 管理后台，通过 Web UI 为项目 1 的函数添加定时任务
+
+### 快速开始
+
+```bash
+# 终端 1：启动项目 1
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+
+# 终端 2：启动项目 2
+uvicorn proj2_fastapi_cron:app --reload
+
+# 访问 Web UI：http://localhost:8000/nb_cron/ui/
+```
+
+### 工作原理
+
+```
+项目 1 (业务项目)          Redis              项目 2 (管理后台)
+@cron_register('func')   →  函数名列表  →   GET /api/functions
+cron.start() 同步        →  job 配置    ←   POST /api/jobs 创建
+执行函数 (本地进程)       ←  调度任务    ←   Web UI 操作
+```
+
+### 优势
+
+- **职责分离**：项目 1 专注业务，项目 2 专注调度
+- **安全**：只有 `@cron_register` 标记的函数才暴露
+- **灵活**：项目 2 动态创建任务，无需修改项目 1 的代码
+- **可维护**：项目 1 重构不影响项目 2 的调度
+
+### 应用场景
+
+微服务架构、多租户 SaaS、DevOps 自动化、数据平台等。
+
+---
+
+## 运行示例
 
 ```bash
 # FastAPI + Redis（推荐）
@@ -1041,6 +1291,14 @@ python example_flask_redis.py
 # 最简示例（无需 Redis）
 pip install nb_cron[fastapi]
 uvicorn example_memory_simple:app --reload
+
+# 跨 Git 项目示例（重点推荐）
+# 终端 1：启动项目 1（业务项目）
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+
+# 终端 2：启动项目 2（FastAPI 管理后台）
+uvicorn proj2_fastapi_cron:app --reload
 ```
 
 ---
@@ -1121,6 +1379,1813 @@ include = ["nb_cron*"]
 `````
 
 --- **end of file: pyproject.toml** (project: nb_cron) --- 
+
+---
+
+# markdown content namespace: nb_cron examples 
+
+
+## nb_cron File Tree (relative dir: `examples`)
+
+
+`````
+
+└── examples
+    ├── demo1.py
+    ├── demo_cross_git_project_manage_corn_tasks
+    │   ├── proj1.py
+    │   ├── proj2_fastapi_cron.py
+    │   └── 跨项目定时任务管理说明文档.md
+    ├── example_django_redis.py
+    ├── example_fastapi_redis.py
+    ├── example_flask_redis.py
+    └── example_memory_simple.py
+
+`````
+
+---
+
+
+## nb_cron (relative dir: `examples`)  Included Files (total: 8 files)
+
+
+- `examples/demo1.py`
+
+- `examples/example_django_redis.py`
+
+- `examples/example_fastapi_redis.py`
+
+- `examples/example_flask_redis.py`
+
+- `examples/example_memory_simple.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/proj1.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md`
+
+
+---
+
+
+--- **start of file: examples/demo1.py** (project: nb_cron) --- 
+
+`````python
+"""
+demo1 — 最小调度示例
+
+cron.start() 不阻塞，后面的代码继续执行。
+主线程跑完后进程不会退出，定时任务继续运行。
+Ctrl+C 优雅退出。
+"""
+from nb_cron import NbCron, cron_register, add_cron_register, explain_cron
+
+cron = NbCron("demo")  # name 必传，隔离不同项目
+
+@cron.job("0 */5 * * * *")
+@cron_register('report')
+def report_task():
+    print("生成报告")
+
+@cron.job("30 0 9 * * 1-5", trigger="cron")
+@cron_register('async_work')
+async def async_task():
+    print("异步任务也支持！")
+
+@cron.job("@every 1s", trigger="interval")
+@cron_register('heartbeat')
+def heartbeat():
+    print("心跳", flush=True)
+
+@cron.job("2026-12-31 23:59:59", trigger="date")
+@cron_register('new_year')
+def new_year_countdown():
+    print("新年倒计时任务！")
+
+def backup():
+    print("备份数据库")
+add_cron_register('backup', backup)
+
+@cron.job("*/10 * * * * *")
+@cron_register('report2')
+def report_task2():
+    print("生成报告2", flush=True)
+
+cron.add_job('backup', "0 0 2 * * *", trigger="cron", job_id="daily_backup", name="每日备份")
+cron.add_job(report_task.cron_func_name, "0 30 8 * * *", trigger="cron", job_id="morning_report", name="晨报")
+
+print(explain_cron("0 30 9 * * *", "zh"))
+print(explain_cron("0 30 9 * * *", "en"))
+
+cron.start()
+
+print("start() 后面的代码正常执行！")
+print("定时任务在后台运行，进程不会退出")
+print("按 Ctrl+C 退出")
+
+`````
+
+--- **end of file: examples/demo1.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_django_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + Django + Redis 集成指南
+
+安装依赖:
+    pip install nb_cron[redis,django]
+
+使用方式: 把以下代码集成到你的 Django 项目中
+
+步骤:
+    1. 在 your_project/cron_config.py 中配置调度器
+    2. 在 your_project/urls.py 中挂载路由
+    3. 在 your_project/apps.py 的 AppConfig.ready() 中启动调度器
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+"""
+
+# ═══════════════════════════════════════════
+# Step 1: cron_config.py - 配置调度器和任务
+# ═══════════════════════════════════════════
+"""
+# your_project/cron_config.py
+
+import logging
+from nb_cron import NbCron, cron_register
+
+logging.basicConfig(level=logging.INFO)
+
+# name 必传，隔离不同项目
+cron = NbCron("my_django_app", "redis://localhost:6379/0")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    logging.info("heartbeat OK")
+
+@cron.job("0 */5 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    logging.info("data synced")
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    logging.info("backup completed")
+"""
+
+# ═══════════════════════════════════════════
+# Step 2: urls.py - 挂载 nb_cron 路由
+# ═══════════════════════════════════════════
+"""
+# your_project/urls.py
+
+from django.contrib import admin
+from django.urls import path
+from your_project.cron_config import cron
+from nb_cron.web.app import get_django_urls
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # ... 你的其他路由 ...
+] + get_django_urls(cron)
+
+# 访问:
+#   UI:  http://localhost:8000/nb_cron/ui/
+#   API: http://localhost:8000/nb_cron/api/jobs
+"""
+
+# ═══════════════════════════════════════════
+# Step 3: apps.py - 在 Django 启动时启动调度器
+# ═══════════════════════════════════════════
+"""
+# your_app/apps.py
+
+from django.apps import AppConfig
+
+class YourAppConfig(AppConfig):
+    name = 'your_app'
+
+    def ready(self):
+        from your_project.cron_config import cron
+        # 防止 Django reload 时重复启动
+        import os
+        if os.environ.get('RUN_MAIN') == 'true':
+            cron.start()
+"""
+
+# ═══════════════════════════════════════════
+# 启动 Django 开发服务器
+# ═══════════════════════════════════════════
+"""
+python manage.py runserver 0.0.0.0:8000
+"""
+
+`````
+
+--- **end of file: examples/example_django_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_fastapi_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron[redis,fastapi]
+
+启动方式:
+    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+cron = NbCron("example_fastapi很长很长很长", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨2:30执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上9点生成日报"""
+    logging.info("daily report generated")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    cron.start()
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    cron.stop()
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("example_fastapi_redis:app", host="0.0.0.0", port=8000, reload=True)
+
+`````
+
+--- **end of file: examples/example_fastapi_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_flask_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + Flask + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron[redis,flask]
+
+启动方式（开发）:
+    python example_flask_redis.py
+
+启动方式（生产）:
+    gunicorn example_flask_redis:app -w 1 -b 0.0.0.0:5000
+
+访问地址:
+    管理后台 UI:  http://localhost:5000/nb_cron/ui/
+    REST API:     http://localhost:5000/nb_cron/api/jobs
+    健康检查:     http://localhost:5000/nb_cron/api/health
+"""
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.web.app import get_flask_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储） ───
+cron = NbCron("example_flask", "redis://localhost:6379/0")
+
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat222():
+    logging.info("heartbeat OK")
+
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    logging.info("backup completed")
+
+
+# ─── 创建 Flask app ───
+app = get_flask_app(cron)
+
+# ─── 启动 ───
+if __name__ == "__main__":
+    cron.start()
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:5000/nb_cron/ui/")
+    logging.info("API: http://localhost:5000/nb_cron/api/jobs")
+    app.run(host="0.0.0.0", port=5000, debug=False)
+
+`````
+
+--- **end of file: examples/example_flask_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_memory_simple.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron 最简示例（内存存储，无需 Redis）
+
+安装:
+    pip install nb_cron[fastapi]
+
+启动:
+    uvicorn example_memory_simple:app --reload
+
+访问:
+    http://localhost:8000/nb_cron/ui/
+"""
+import logging
+from nb_cron import NbCron, cron_register, explain_cron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO)
+
+cron = NbCron("simple_demo")
+
+@cron.job("*/5 * * * * *", trigger="cron", name="每5秒打印")
+@cron_register('hello')
+def print_hello():
+    logging.info("Hello from nb_cron!")
+
+@cron.job("0 */1 * * * *", trigger="cron", name="每分钟任务")
+@cron_register('async_task')
+async def async_task():
+    logging.info("Async task running!")
+
+app = get_fastapi_app(cron)
+
+@app.on_event("startup")
+def startup():
+    cron.start()
+
+    print("\n" + "=" * 50)
+    print("nb_cron started!")
+    print(f"  UI:  http://localhost:8000/nb_cron/ui/")
+    print(f"  API: http://localhost:8000/nb_cron/api/jobs")
+    print("=" * 50)
+
+    print(f'\n  "*/5 * * * * *" => {explain_cron("*/5 * * * * *", "zh")}')
+    print(f'  "0 */1 * * * *" => {explain_cron("0 */1 * * * *", "zh")}')
+    print()
+
+`````
+
+--- **end of file: examples/example_memory_simple.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/proj1.py** (project: nb_cron) --- 
+
+`````python
+
+"""
+模拟跨git项目管理定时任务的项目
+假设proj1.py 是一个单独的git项目1，
+假设 proj2_fastapi_cron.py 是一个单独的git项目2，
+
+只要 NbCron 的name 和 store_url 一样，项目2的 proj2_fastapi_cron.py 就能可视化管项目1的定时任务管理
+"""
+
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨2:30执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上9点生成日报"""
+    logging.info("daily report generated")
+
+"""
+只加一个cron_register标记，但没添加定时任务，那么这个函数就能从网页上被选择，从而夸项目能在网页添加定时任务
+
+你大脑想想，如果不要 cron_register标记
+如果a项目不同文件件重有100个函数， b项目的 nb_cron_ui前端网页中咋知道怎么选择哪个函数能加定时任务？难道手动在网页输入函数路径吗？
+"""
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+cron.start()
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/proj1.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py** (project: nb_cron) --- 
+
+`````python
+"""
+模拟跨git项目管理定时任务的项目
+假设proj1.py 是一个单独的git项目1，
+假设 proj2_fastapi_cron.py 是一个单独的git项目2，
+
+只要 NbCron 的name 和 store_url 一样，项目2的 proj2_fastapi_cron.py 就能可视化管项目1的定时任务管理
+"""
+
+
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron[redis,fastapi]
+
+启动方式:
+    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+
+import logging
+
+from nb_cron import NbCron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───，只要 name 和 store_url 一样，就能可视化管项目1的定时任务管理
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(proj2_fast_api_cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() #不需要start ，只作为管跨项目的可视化管理
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() #不需要stop ，只作为管跨项目的可视化管理
+
+# from nb_cron.api.handlers import handle_get_jobs
+# print(handle_get_jobs(proj2_fast_api_cron))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("proj2_fastapi_cron:app", host="0.0.0.0", port=8000, reload=True)
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md** (project: nb_cron) --- 
+
+`````markdown
+# 跨 Git 项目定时任务管理说明文档
+
+## 目录
+
+1. [概述](#概述)
+2. [核心概念](#核心概念)
+3. [架构图](#架构图)
+4. [环境准备](#环境准备)
+5. [项目 1：业务项目详解](#项目 1 业务项目详解)
+6. [项目 2：管理后台详解](#项目 2 管理后台详解)
+7. [运行步骤](#运行步骤)
+8. [Web UI 操作指南](#web-ui-操作指南)
+9. [技术原理深度解析](#技术原理深度解析)
+10. [最佳实践](#最佳实践)
+11. [常见问题](#常见问题)
+
+---
+
+## 概述
+
+### 什么是跨 Git 项目定时任务管理？
+
+传统的定时任务框架（如 APScheduler）要求**函数定义**和**任务调度**必须在同一个进程中。这导致：
+
+- ❌ 业务代码和调度代码耦合在一起
+- ❌ 修改定时任务需要重启业务进程
+- ❌ 无法通过 Web UI 统一管理多个项目的定时任务
+- ❌ 函数路径依赖严重，代码重构后调度失效
+
+nb_cron 创新性地提出了**跨 Git 项目定时任务管理**方案：
+
+- ✅ **函数定义**（项目 1）和**任务调度**（项目 2）完全分离
+- ✅ 项目 1 专注业务逻辑，项目 2 专注调度管理
+- ✅ 通过 Web UI 统一管理所有项目的定时任务
+- ✅ 使用 `@cron_register` 标记函数，与文件路径解耦
+
+### 适用场景
+
+| 场景 | 说明 | 价值 |
+|------|------|------|
+| **微服务架构** | 多个业务服务共享一个定时任务管理后台 | 统一管理，降低运维成本 |
+| **多租户 SaaS** | 不同租户的业务函数独立，平台方统一调度 | 租户隔离，平台可控 |
+| **DevOps 自动化** | 运维脚本仓库 + 运维管理后台 | 脚本与调度分离，安全可控 |
+| **数据平台** | 数据处理函数 + 数据任务调度平台 | 函数复用，灵活调度 |
+| **低代码平台** | 业务函数库 + 可视化任务编排 | 降低使用门槛 |
+
+---
+
+## 核心概念
+
+### 1. `@cron_register`：函数注册装饰器
+
+```python
+from nb_cron import cron_register
+
+@cron_register('send_email')
+def send_email(to: str, subject: str):
+    """发送邮件"""
+    print(f"发送邮件到 {to}: {subject}")
+```
+
+**作用**：
+- 给函数绑定一个**稳定名称**（`cron_func_name`）
+- 函数名不依赖文件路径，支持代码重构
+- 标记该函数"可以被外部调度"
+
+**两种用法**：
+
+```python
+# 用法 1：装饰器（推荐）
+@cron_register('func_name')
+def my_func():
+    ...
+
+# 用法 2：函数调用
+def my_func():
+    ...
+cron_register('func_name', my_func)
+```
+
+### 2. 函数注册表（FunctionRegistry）
+
+nb_cron 在内存中维护一个全局函数注册表：
+
+```python
+# 内部实现（简化版）
+FunctionRegistry._registry = {
+    'heartbeat': <function heartbeat at 0x...>,
+    'send_email': <function send_email at 0x...>,
+    'sync_data': <function sync_data at 0x...>,
+}
+```
+
+**特性**：
+- 键：`cron_func_name`（稳定名称）
+- 值：函数对象
+- 支持跨模块、跨文件查找
+
+### 3. 函数名持久化（Redis）
+
+`cron.start()` 时，自动将函数名同步到 Redis：
+
+```python
+# Redis 数据结构
+nb_cron:example_proj1b:functions = {
+    "heartbeat",
+    "heartbeat2",
+    "sync_data",
+    "cleanup_cache",
+    "daily_backup",
+    "workday_report",
+    "weekly_summary",
+    "to_be_add_timing_job_from_webui",
+}
+```
+
+**意义**：
+- 项目 2 可以通过 Redis 读取项目 1 的函数列表
+- 即使项目 1 没有运行，函数列表依然在 Redis 中
+- 支持跨 Git 项目、跨进程、跨机器
+
+### 4. 任务配置持久化（Redis）
+
+用户在 Web UI 创建的任务存储在 Redis：
+
+```python
+# Redis Hash 结构
+nb_cron:example_proj1b:jobs:daily_backup = {
+    "job_id": "daily_backup",
+    "func_ref": "daily_backup",        # ← 函数稳定名称
+    "expression": "0 30 2 * * *",      # ← Cron 表达式
+    "trigger": "cron",
+    "name": "每日备份",
+    "args": "[]",
+    "kwargs": "{}",
+    "max_instances": "1",
+    "status": "active",
+}
+```
+
+**调度流程**：
+1. 项目 1 的调度器从 Redis 读取任务配置
+2. 根据 `func_ref` 在 FunctionRegistry 中查找函数
+3. 调用函数，执行任务
+
+---
+
+## 架构图
+
+### 整体架构
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Git 项目 1：业务项目（proj1.py）                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  业务函数定义：                                                           │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  @cron_register('heartbeat')                                     │   │
+│  │  def heartbeat(): ...  # 心跳检测                                │   │
+│  │                                                                  │   │
+│  │  @cron_register('send_email')                                    │   │
+│  │  def send_email(to, subject): ...  # 发送邮件                    │   │
+│  │                                                                  │   │
+│  │  @cron_register('sync_data')                                     │   │
+│  │  def sync_data(): ...  # 数据同步                                │   │
+│  │                                                                  │   │
+│  │  @cron_register('to_be_add_timing_job_from_webui')               │   │
+│  │  async def to_be_add_timing_job_from_webui(): ...                │   │
+│  │  # ↑ 只标记，不添加任务，留给 Web UI 动态调度                      │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│  调度器启动：                                                             │
+│  cron.start() ──→ 函数名同步到 Redis                                      │
+│                ──→ 从 Redis 读取任务配置                                  │
+│                ──→ 后台运行定时任务                                      │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Redis（共享存储）
+                              │ nb_cron:example_proj1b:*
+                              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Git 项目 2：管理后台（proj2_fastapi_cron.py）                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  FastAPI + Web UI：                                                       │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  GET /nb_cron/api/functions                                      │   │
+│  │  → 从 Redis 读取函数列表：                                        │   │
+│  │    ["heartbeat", "send_email", "sync_data", ...]                 │   │
+│  │                                                                  │   │
+│  │  POST /nb_cron/api/jobs                                          │   │
+│  │  ← 创建任务：                                                     │   │
+│  │    { func_ref: "send_email", expression: "0 9 * * * *" }         │   │
+│  │                                                                  │   │
+│  │  Web UI 界面：                                                    │   │
+│  │  ┌──────────────────────────────────────────────────────────┐   │   │
+│  │  │ 定时任务管理后台                                          │   │   │
+│  │  │ ───────────────────────────────────────────────────────  │   │   │
+│  │  │ 任务列表 | 新建任务 | 仪表盘 | Cron 工具                   │   │   │
+│  │  │                                                          │   │   │
+│  │  │ 新建任务：                                                │   │   │
+│  │  │ 函数：[send_email ▼]                                     │   │   │
+│  │  │ Cron: 0 9 * * * *                                        │   │   │
+│  │  │ 参数：to="admin@example.com", subject="日报"              │   │   │
+│  │  │ [创建]                                                    │   │   │
+│  │  └──────────────────────────────────────────────────────────┘   │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 数据流
+
+```
+┌──────────────┐         ┌──────────────┐         ┌──────────────┐
+│   项目 1      │         │    Redis     │         │   项目 2      │
+│  (业务项目)   │         │  (共享存储)   │         │  (管理后台)   │
+└──────────────┘         └──────────────┘         └──────────────┘
+       │                        │                        │
+       │ @cron_register('func') │                        │
+       │ ──────────────────────>│                        │
+       │   函数名持久化          │                        │
+       │                        │                        │
+       │ cron.start()           │                        │
+       │ ──────────────────────>│                        │
+       │   同步函数名            │                        │
+       │                        │                        │
+       │                        │ GET /api/functions     │
+       │                        │ <───────────────────── │
+       │                        │ 返回函数列表           │
+       │                        │ ──────────────────────>│
+       │                        │                        │
+       │                        │ POST /api/jobs         │
+       │                        │ <───────────────────── │
+       │                        │ 创建任务配置           │
+       │                        │ ──────────────────────>│
+       │                        │                        │
+       │ 从 Redis 读取任务配置   │                        │
+       │ <───────────────────── │                        │
+       │                        │                        │
+       │ 执行函数 (本地进程)     │                        │
+       │                        │                        │
+```
+
+---
+
+## 环境准备
+
+### 1. 安装 Python 依赖
+
+```bash
+# 基础依赖（项目 1）
+pip install nb_cron[redis]
+
+# 完整依赖（项目 2）
+pip install nb_cron[redis,fastapi]
+```
+
+### 2. 安装并启动 Redis
+
+**Windows**：
+```bash
+# 下载 Redis for Windows
+# https://github.com/microsoftarchive/redis/releases
+
+# 启动 Redis
+redis-server.exe
+```
+
+**Linux / macOS**：
+```bash
+# 使用 Docker
+docker run -d -p 6379:6379 redis:latest
+
+# 或使用包管理器
+# Ubuntu/Debian
+sudo apt-get install redis-server
+sudo systemctl start redis
+
+# macOS
+brew install redis
+brew services start redis
+```
+
+**验证 Redis 连接**：
+```bash
+redis-cli ping
+# 输出：PONG
+```
+
+### 3. 目录结构
+
+```
+demo_cross_git_project_manage_corn_tasks/
+├── proj1.py                          # 项目 1：业务项目
+├── proj2_fastapi_cron.py             # 项目 2：管理后台
+└── 跨项目定时任务管理说明文档.md       # 本文档
+```
+
+---
+
+## 项目 1：业务项目详解
+
+### 完整代码
+
+```python
+"""
+模拟跨 git 项目管理定时任务的项目
+假设 proj1.py 是一个单独的 git 项目 1，
+假设 proj2_fastapi_cron.py 是一个单独的 git 项目 2，
+
+只要 NbCron 的 name 和 store_url 一样，项目 2 的 proj2_fastapi_cron.py 就能可视化管项目 1 的定时任务管理
+"""
+
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───，只要 name 和 store_url 一样，就能可视化管项目1的定时任务管理
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测 2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨 2:30 执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上 9 点生成日报"""
+    logging.info("daily report generated")
+
+"""
+只加一个 cron_register 标记，但没添加定时任务，那么这个函数就能从网页上被选择，从而跨项目能在网页添加定时任务
+
+你大脑想想，如果不要 cron_register 标记
+如果 a 项目不同文件件重有 100 个函数，b 项目的 nb_cron_ui 前端网页中咋知道怎么选择哪个函数能加定时任务？难道手动在网页输入函数路径吗？
+"""
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+cron.start()
+```
+
+### 代码解析
+
+#### 1. 创建调度器
+
+```python
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+```
+
+**参数说明**：
+- `"example_proj1b"`：**必传**，调度器名称
+  - 用于隔离不同项目的 Redis keys
+  - 格式：`nb_cron:{name}:*`
+  - 项目 1 和项目 2 必须使用相同的 `name` 才能共享数据
+- `"redis://localhost:6379/0"`：Redis 连接 URL
+  - 支持 Redis、MongoDB、SQLAlchemy 等多种存储后端
+  - 不传则使用内存存储（开发环境）
+
+#### 2. 装饰器方式注册任务
+
+```python
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat OK")
+```
+
+**装饰器顺序**：
+1. `@cron_register('heartbeat')`：**先注册函数**，绑定稳定名称
+2. `@cron.job("*/10 * * * * *", ...)`：**再注册调度**，读取 `.cron_func_name`
+
+**Cron 表达式**（6 字段，秒级精度）：
+```
+*/10 * * * * *
+│    │ │ │ │ │
+│    │ │ │ │ └─ 星期几 (0-6, 0=周日)
+│    │ │ │ └─── 月份 (1-12)
+│    │ │ └───── 日期 (1-31)
+│    │ └─────── 小时 (0-23)
+│    └───────── 分钟 (0-59)
+└────────────── 秒 (0-59)
+```
+
+#### 3. 带参数的任务
+
+```python
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测 2", kwargs={"x": 100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+```
+
+**参数传递**：
+- `args`：位置参数元组
+- `kwargs`：关键字参数字典
+
+#### 4. 只标记，不添加任务
+
+```python
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+```
+
+**关键点**：
+- 只用 `@cron_register` 标记，**不用** `@cron.job` 添加任务
+- 函数名会同步到 Redis
+- 项目 2 的 Web UI 可以看到这个函数
+- 用户可以在 Web UI 上为这个函数创建定时任务
+
+**为什么需要这样？**
+
+想象一个场景：
+- 项目 A 有 100 个函数，分布在 10 个文件中
+- 只有 30 个函数需要被外部调度
+- 项目 B 的 Web UI 怎么知道哪些函数可以被调度？
+
+答案：`@cron_register` 标记！
+
+```python
+# 项目 A：tasks/email.py
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 项目 A：tasks/report.py
+@cron_register('generate_report')
+def generate_report(type):
+    ...
+
+# 项目 B：Web UI 下拉框
+<select>
+  <option>send_email</option>
+  <option>generate_report</option>
+  <!-- 只有被 @cron_register 标记的函数才会出现在这里 -->
+</select>
+```
+
+#### 5. 非装饰器方式
+
+```python
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(
+    send_weekly_summary.cron_func_name,
+    "0 0 10 * * 0",
+    trigger="cron",
+    job_id="weekly_summary",
+    name="周报推送",
+)
+```
+
+**适用场景**：
+- 第三方库函数（无法修改源码）
+- 动态注册（运行时决定参数）
+- 批量添加同函数不同参数的任务
+
+#### 6. 启动调度器
+
+```python
+cron.start()
+```
+
+**特性**：
+- **不阻塞**，立即返回
+- 后台运行定时任务
+- 进程不会退出
+- 不需要 `sleep` / `join` / `input` 等阻塞操作
+
+### 运行项目 1
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+```
+
+**预期输出**：
+```
+[Job(job_id='heartbeat', ...), Job(job_id='heartbeat2', ...), ...]
+
+2026-04-13 10:00:00,123 [__main__] INFO: heartbeat OK
+2026-04-13 10:00:00,124 [__main__] INFO: heartbeat2 OK
+2026-04-13 10:01:00,456 [__main__] INFO: synced 42 records
+...
+```
+
+**验证 Redis 数据**：
+```bash
+redis-cli
+127.0.0.1:6379> SMEMBERS nb_cron:example_proj1b:functions
+1) "heartbeat"
+2) "heartbeat2"
+3) "sync_data"
+4) "cleanup_cache"
+5) "daily_backup"
+6) "workday_report"
+7) "weekly_summary"
+8) "to_be_add_timing_job_from_webui"
+
+127.0.0.1:6379> HGETALL nb_cron:example_proj1b:jobs:heartbeat
+1) "job_id"
+2) "heartbeat"
+3) "func_ref"
+4) "heartbeat"
+5) "expression"
+6) "*/10 * * * * *"
+...
+```
+
+---
+
+## 项目 2：管理后台详解
+
+### 完整代码
+
+```python
+"""
+模拟跨 git 项目管理定时任务的项目
+假设 proj1.py 是一个单独的 git 项目 1，
+假设 proj2_fastapi_cron.py 是一个单独的 git 项目 2，
+
+只要 NbCron 的 name 和 store_url 一样，项目 2 的 proj2_fastapi_cron.py 就能可视化管项目 1 的定时任务管理
+"""
+
+
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron[redis,fastapi]
+
+启动方式:
+    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+
+import logging
+
+from nb_cron import NbCron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(proj2_fast_api_cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() #不需要 start，只作为管跨项目的可视化管理
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() #不需要 stop，只作为管跨项目的可视化管理
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("proj2_fastapi_cron:app", host="0.0.0.0", port=8000, reload=True)
+```
+
+### 代码解析
+
+#### 1. 创建调度器
+
+```python
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+```
+
+**关键点**：
+- `name="example_proj1b"`：**必须与项目 1 相同**
+  - 共享 Redis 中的函数列表和任务配置
+  - 如果不同，项目 2 看不到项目 1 的函数
+- `store_url="redis://localhost:6379/0"`：**必须与项目 1 相同**
+  - 共享同一个 Redis 数据库
+
+#### 2. 创建 FastAPI 应用
+
+```python
+app = get_fastapi_app(proj2_fast_api_cron)
+```
+
+**一行代码创建**：
+- 自动注册所有 API 路由
+- 自动挂载 Web UI 静态文件
+- 自动生成 OpenAPI 文档
+
+**API 路由**：
+```
+GET  /nb_cron/api/jobs              # 获取所有任务
+GET  /nb_cron/api/jobs/{job_id}     # 获取单个任务
+POST /nb_cron/api/jobs              # 创建任务
+DELETE /nb_cron/api/jobs/{job_id}   # 删除任务
+POST /nb_cron/api/jobs/{job_id}/pause    # 暂停任务
+POST /nb_cron/api/jobs/{job_id}/resume   # 恢复任务
+POST /nb_cron/api/jobs/{job_id}/trigger  # 立即触发
+GET  /nb_cron/api/functions         # 获取已注册函数列表
+GET  /nb_cron/api/health            # 健康检查
+GET  /nb_cron/api/cron/explain      # Cron 表达式翻译
+```
+
+**Web UI 路由**：
+```
+/nb_cron/ui/          # 管理后台首页
+/nb_cron/ui/dashboard # 仪表盘
+/nb_cron/ui/jobs      # 任务列表
+/nb_cron/ui/cron      # Cron 工具
+```
+
+#### 3. 启动事件
+
+```python
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() # 不需要 start
+    logging.info("nb_cron scheduler started!")
+```
+
+**关键点**：
+- 项目 2 **不需要**调用 `cron.start()`
+  - 项目 2 只负责管理任务配置
+  - 任务执行在项目 1 的进程中进行
+  - 项目 2 是"管理后台"，不是"执行器"
+
+#### 4. 关闭事件
+
+```python
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() # 不需要 stop
+```
+
+**关键点**：
+- 项目 2 **不需要**调用 `cron.stop()`
+  - 没有启动调度器，自然不需要停止
+
+### 运行项目 2
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**预期输出**：
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [12345]
+INFO:     nb_cron scheduler started!
+INFO:     UI:  http://localhost:8000/nb_cron/ui/
+INFO:     API: http://localhost:8000/nb_cron/api/jobs
+```
+
+**访问地址**：
+- Web UI：http://localhost:8000/nb_cron/ui/
+- API 文档：http://localhost:8000/docs
+- 健康检查：http://localhost:8000/nb_cron/api/health
+
+**测试 API**：
+```bash
+# 获取已注册函数列表
+curl http://localhost:8000/nb_cron/api/functions
+# 返回：{"success": true, "data": {"functions": ["heartbeat", "heartbeat2", ...]}}
+
+# 获取所有任务
+curl http://localhost:8000/nb_cron/api/jobs
+# 返回：{"success": true, "data": {"jobs": [...]}}
+```
+
+---
+
+## 运行步骤
+
+### 完整流程
+
+#### Step 1：启动 Redis
+
+```bash
+# Windows
+redis-server.exe
+
+# Linux / macOS (Docker)
+docker run -d -p 6379:6379 redis:latest
+```
+
+#### Step 2：启动项目 1（业务项目）
+
+打开终端 1：
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+pip install nb_cron[redis]
+python proj1.py
+```
+
+**预期输出**：
+```
+[Job(job_id='heartbeat', ...), ...]
+
+2026-04-13 10:00:00,123 [__main__] INFO: heartbeat OK
+2026-04-13 10:00:10,456 [__main__] INFO: heartbeat OK
+2026-04-13 10:01:00,789 [__main__] INFO: synced 42 records
+...
+```
+
+**观察**：
+- 每 10 秒执行一次心跳
+- 每分钟同步一次数据
+- 函数名已同步到 Redis
+
+#### Step 3：启动项目 2（管理后台）
+
+打开终端 2：
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+pip install nb_cron[redis,fastapi]
+uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**预期输出**：
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     nb_cron scheduler started!
+INFO:     UI:  http://localhost:8000/nb_cron/ui/
+INFO:     API: http://localhost:8000/nb_cron/api/jobs
+```
+
+#### Step 4：访问 Web UI
+
+打开浏览器，访问：http://localhost:8000/nb_cron/ui/
+
+**可以看到**：
+- 仪表盘：任务总数、运行状态、执行趋势
+- 任务列表：7 个任务（项目 1 中定义的）
+- 新建任务：可以选择 `to_be_add_timing_job_from_webui` 函数
+
+---
+
+## Web UI 操作指南
+
+### 1. 仪表盘
+
+**路径**：http://localhost:8000/nb_cron/ui/dashboard
+
+**内容**：
+- **统计卡片**：任务总数、运行中、已暂停、异常
+- **执行趋势图**：24 小时执行次数
+- **成功率饼图**：成功/失败比例
+
+### 2. 任务列表
+
+**路径**：http://localhost:8000/nb_cron/ui/jobs
+
+**功能**：
+- **搜索/筛选**：按任务名、状态筛选
+- **操作按钮**：
+  - ▶️ 立即执行：立即触发一次
+  - ⏸️ 暂停：暂停任务
+  - ▶️ 恢复：恢复任务
+  - 🗑️ 删除：删除任务
+- **状态标签**：
+  - 🟢 运行中：正常调度
+  - 🟡 已暂停：用户手动暂停
+  - 🔴 异常：函数未找到
+
+### 3. 新建任务
+
+**步骤**：
+
+1. 点击"新建任务"按钮
+2. 填写表单：
+
+```
+┌─────────────────────────────────────────┐
+│ 新建任务                                │
+├─────────────────────────────────────────┤
+│ 函数：[to_be_add_timing_job_from_webui ▼]│
+│                                         │
+│ 任务 ID：my_custom_task                 │
+│ 任务名称：我的自定义任务                │
+│                                         │
+│ Cron 表达式：0 0 12 * * *               │
+│ （每天中午 12 点）                        │
+│                                         │
+│ 位置参数：[]                            │
+│ 关键字参数：{}                          │
+│                                         │
+│ 最大并发数：1                           │
+│                                         │
+│          [取消] [创建]                  │
+└─────────────────────────────────────────┘
+```
+
+3. 点击"创建"
+
+**结果**：
+- 任务创建成功
+- 任务列表中出现新任务
+- 项目 1 的日志中，每天中午 12 点会执行一次
+
+### 4. Cron 工具
+
+**路径**：http://localhost:8000/nb_cron/ui/cron
+
+**功能**：
+- Cron 表达式翻译
+- 支持中文和英文
+
+**示例**：
+```
+输入：0 30 9 * * *
+输出（中文）：每天 09:30:00 执行
+输出（英文）：At 09:30:00, every day
+```
+
+---
+
+## 技术原理简述
+
+### 核心机制
+
+nb_cron 的跨项目管理依赖三个核心机制：
+
+**1. 函数注册表（内存）**
+- `@cron_register` 将函数注册到全局注册表
+- 键是稳定名称（`cron_func_name`），值是函数对象
+- 支持跨模块、跨文件查找
+
+**2. 函数名持久化（Redis）**
+- `cron.start()` 时自动将函数名同步到 Redis
+- 使用 Set 数据结构存储：`nb_cron:{name}:functions`
+- 支持跨进程、跨机器读取
+
+**3. 任务配置持久化（Redis）**
+- Web UI 创建的任务存储在 Redis Hash：`nb_cron:{name}:jobs:{job_id}`
+- 包含 `func_ref`（函数名）、Cron 表达式、参数等
+- 调度器从 Redis 读取配置，在本地进程执行函数
+
+### 调度流程
+
+```
+1. 调度器启动 → 从 Redis 读取任务配置
+2. 每分钟检查 → 哪些任务到期
+3. 获取分布式锁 → 防止多副本重复执行
+4. 解析函数 → 从 FunctionRegistry 查找
+5. 执行函数 → 同步或异步
+6. 记录指标 → 成功/失败、耗时
+7. 计算下次执行时间 → 更新 Redis
+```
+
+### 项目 1 vs 项目 2
+
+| 操作 | 项目 1（业务项目） | 项目 2（管理后台） |
+|------|-------------------|-------------------|
+| 读取函数列表 | 从 FunctionRegistry | 从 Redis |
+| 读取任务配置 | 从 Redis | 从 Redis |
+| 创建任务 | 代码中 `@cron.job` | Web UI `POST /api/jobs` |
+| 执行任务 | ✅ 在本地进程 | ❌ 不执行 |
+| 启动调度器 | ✅ `cron.start()` | ❌ 不需要 |
+
+---
+
+## 最佳实践
+
+### 1. 函数命名规范
+
+```python
+# ✅ 好的命名
+@cron_register('send_email')
+@cron_register('generate_daily_report')
+@cron_register('sync_mysql_to_redis')
+
+# ❌ 避免的命名
+@cron_register('func1')           # 语义不明
+@cron_register('temp')            # 临时命名
+@cron_register('test')            # 测试命名
+```
+
+### 2. 函数分类标记
+
+```python
+# 按业务模块分类
+# tasks/email.py
+@cron_register('send_email')
+@cron_register('send_sms')
+
+# tasks/report.py
+@cron_register('generate_daily_report')
+@cron_register('generate_weekly_report')
+
+# tasks/data_sync.py
+@cron_register('sync_mysql_to_redis')
+@cron_register('sync_order_status')
+```
+
+### 3. 内部函数不标记
+
+```python
+# ✅ 只有需要被外部调度的函数才标记
+@cron_register('send_email')
+def send_email(to, subject):
+    _validate_email(to)  # 内部函数，不标记
+    _format_content(subject)  # 内部函数，不标记
+
+# ❌ 避免所有函数都标记
+@cron_register('_validate_email')  # 不需要
+def _validate_email(email):
+    ...
+```
+
+### 4. 项目隔离
+
+```python
+# ✅ 不同项目使用不同的 name
+# 项目 A
+cron_a = NbCron("billing_service", "redis://localhost:6379/0")
+
+# 项目 B
+cron_b = NbCron("user_service", "redis://localhost:6379/0")
+
+# ❌ 避免不同项目使用相同的 name
+cron_a = NbCron("my_project", ...)  # 会冲突
+cron_b = NbCron("my_project", ...)
+```
+
+### 5. 错误处理
+
+```python
+# ✅ 函数内部处理异常
+@cron_register('send_email')
+def send_email(to, subject):
+    try:
+        # 发送邮件逻辑
+        smtp.send(to, subject)
+    except Exception as e:
+        logger.error(f"Failed to send email: {e}")
+        raise  # 重新抛出，让调度器记录失败指标
+
+# ❌ 避免吞掉所有异常
+@cron_register('send_email')
+def send_email(to, subject):
+    try:
+        smtp.send(to, subject)
+    except:
+        pass  # 调度器不知道失败了
+```
+
+### 6. 日志记录
+
+```python
+# ✅ 关键节点记录日志
+@cron_register('daily_backup')
+def daily_backup():
+    logger.info("Starting daily backup...")
+    try:
+        backup_database()
+        logger.info("Daily backup completed successfully")
+    except Exception as e:
+        logger.error(f"Daily backup failed: {e}", exc_info=True)
+        raise
+
+# ❌ 避免没有日志
+@cron_register('daily_backup')
+def daily_backup():
+    backup_database()  # 失败了也不知道
+```
+
+---
+
+## 常见问题
+
+### Q1: 项目 2 看不到项目 1 的函数？
+
+**检查**：
+1. 项目 1 和项目 2 的 `name` 是否相同？
+2. 项目 1 是否调用了 `cron.start()`？
+3. Redis 是否正常运行？
+
+**验证**：
+```bash
+# 检查 Redis 中的函数列表
+redis-cli
+127.0.0.1:6379> SMEMBERS nb_cron:example_proj1b:functions
+```
+
+### Q2: 函数移动到其他文件后失效？
+
+**不会失效**！`@cron_register` 的核心价值就是与文件路径解耦。
+
+```python
+# 原来在 tasks/email.py
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 移动到 utils/mailer.py
+@cron_register('send_email')  # ← 名称不变
+def send_email(to, subject):
+    ...
+
+# Redis 中依然是 "send_email"
+# Web UI 中依然可以选择
+# 调度器依然可以找到函数
+```
+
+### Q3: 如何为函数添加多个不同参数的任务？
+
+**方法 1：代码中添加**
+```python
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 添加多个不同参数的任务
+cron.add_job('send_email', "0 9 * * * *", job_id="morning_email", args=("admin@example.com", "晨报"))
+cron.add_job('send_email', "0 18 * * * *", job_id="evening_email", args=("admin@example.com", "晚报"))
+```
+
+**方法 2：Web UI 中添加**
+1. 在 Web UI 点击"新建任务"
+2. 选择函数 `send_email`
+3. 输入 Cron 表达式和参数
+4. 创建
+5. 重复步骤 1-4，创建多个任务
+
+### Q4: 如何暂停/恢复任务？
+
+**方法 1：代码中**
+```python
+cron.pause_job("daily_backup")
+cron.resume_job("daily_backup")
+```
+
+**方法 2：Web UI**
+1. 任务列表中找到任务
+2. 点击"暂停"或"恢复"按钮
+
+### Q5: 如何查看任务执行日志？
+
+**方法 1：查看项目 1 的日志输出**
+
+**方法 2：Web UI 查看指标**
+1. 点击任务名称
+2. 查看"执行指标"图表
+3. 查看"最近执行记录"
+
+### Q6: 支持哪些存储后端？
+
+| 存储 | URL 格式 | 适用场景 |
+|------|---------|---------|
+| Memory | `None`（默认） | 开发/单实例 |
+| Redis | `redis://host:port/db` | 生产/分布式（推荐） |
+| MongoDB | `mongodb://host:port/db` | 生产/分布式 |
+| SQLAlchemy | `sqlite:///path` / `mysql+pymysql://...` | 生产/分布式 |
+
+### Q7: 如何部署到生产环境？
+
+**推荐架构**：
+```
+┌─────────────────┐         ┌─────────────────┐
+│   项目 1 (多副本)  │         │   项目 2 (多副本)  │
+│  业务项目 × N    │         │  管理后台 × N     │
+└─────────────────┘         └─────────────────┘
+         │                           │
+         │                           │
+         ▼                           ▼
+┌─────────────────────────────────────────────────┐
+│              Redis Cluster                       │
+│  nb_cron:example_proj1b:*                       │
+└─────────────────────────────────────────────────┘
+```
+
+**部署步骤**：
+1. 部署 Redis Cluster
+2. 部署项目 1（多副本，`cron.start()`）
+3. 部署项目 2（多副本，不需要 `cron.start()`）
+4. 配置负载均衡（Nginx / Kubernetes Ingress）
+
+**注意事项**：
+- 项目 1 多副本会自动通过 Redis 分布式锁避免重复执行
+- 项目 2 多副本会共享同一个 Redis，数据一致
+
+---
+
+## 总结
+
+nb_cron 的跨 Git 项目定时任务管理方案，通过 `@cron_register` 装饰器和 Redis 持久化，实现了：
+
+1. **函数定义与任务调度分离**：项目 1 专注业务，项目 2 专注管理
+2. **跨项目函数发现**：通过 Redis 共享函数列表
+3. **Web UI 可视化管理**：无需修改代码，动态创建任务
+4. **代码重构友好**：函数名与文件路径解耦
+5. **分布式支持**：Redis 分布式锁，多副本不重复执行
+
+这是 nb_cron 相比传统定时任务框架（如 APScheduler）的**核心创新**！
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md** (project: nb_cron) --- 
 
 ---
 
@@ -1451,7 +3516,7 @@ def create_router(cron):
 
     @router.get("/functions")
     def get_functions(request):
-        return handlers.handle_get_functions()
+        return handlers.handle_get_functions(cron)
 
     @router.get("/health")
     def health(request):
@@ -1532,7 +3597,7 @@ def create_router(cron):
 
     @router.get("/functions")
     def get_functions():
-        return JSONResponse(handlers.handle_get_functions())
+        return JSONResponse(handlers.handle_get_functions(cron))
 
     @router.get("/health")
     def health():
@@ -1612,7 +3677,7 @@ def create_blueprint(cron):
 
     @bp.route("/functions", methods=["GET"])
     def get_functions():
-        return jsonify(handlers.handle_get_functions())
+        return jsonify(handlers.handle_get_functions(cron))
 
     @bp.route("/health", methods=["GET"])
     def health():
@@ -1633,10 +3698,11 @@ def create_blueprint(cron):
 """
 Framework-agnostic request handlers.
 Each function takes an NbCron instance and request data, returns a dict.
+All data is read from the store — never from in-memory FunctionRegistry —
+so a standalone web project can manage jobs across Git repositories.
 """
 from typing import Any, Dict, List, Optional
 
-from nb_cron.core.registry import FunctionRegistry
 from nb_cron.core.scheduler import NbCron, _parse_expression
 from nb_cron.cron_utils.translator import explain_cron
 
@@ -1688,13 +3754,8 @@ def handle_create_job(cron: NbCron, data: dict) -> Dict[str, Any]:
     max_instances = data.get("max_instances", 1)
 
     try:
-        func = FunctionRegistry.resolve(func_ref)
-    except ValueError as e:
-        return {"success": False, "message": str(e), "data": None}
-
-    try:
         job = cron.add_job(
-            func, expression,
+            func_ref, expression,
             trigger=trigger, job_id=job_id, name=name,
             args=args, kwargs=kwargs,
             max_instances=max_instances,
@@ -1760,9 +3821,9 @@ def handle_cron_explain(expression: str) -> Dict[str, Any]:
         return {"success": False, "message": str(e), "data": None}
 
 
-def handle_get_functions() -> Dict[str, Any]:
-    """返回所有已注册的函数名称列表。"""
-    names = FunctionRegistry.get_named_functions()
+def handle_get_functions(cron: NbCron) -> Dict[str, Any]:
+    """返回所有已注册的函数名称列表（从 store 读取，支持跨项目）。"""
+    names = cron.store.get_function_names()
     return {
         "success": True,
         "data": {
@@ -2326,7 +4387,13 @@ class NbCron:
     ) -> Job:
         if isinstance(func, str):
             ref = func
-            FunctionRegistry.resolve(ref)
+            if FunctionRegistry.is_registered(ref):
+                pass
+            elif not self.store.function_exists(ref):
+                raise ValueError(
+                    f"Function '{ref}' not found in registry or store. "
+                    f"Did you forget to use @cron_register('{ref}')?"
+                )
             func_name = name or ref
         else:
             ref = FunctionRegistry.register(func)
@@ -2355,6 +4422,7 @@ class NbCron:
         else:
             self.store.add_job(job)
 
+        self.store.register_function(ref)
         logger.info("Job added: %s -> next run: %s", jid, next_run)
         return job
 
@@ -2372,6 +4440,7 @@ class NbCron:
             logger.warning("Scheduler already running")
             return
         self._flush_pending()
+        self._sync_registry_to_store()
         self._running = True
         self._thread = threading.Thread(
             target=self._run_loop,
@@ -2434,11 +4503,17 @@ class NbCron:
         job = self.store.get_job(job_id)
         if not job:
             raise ValueError(f"Job '{job_id}' not found")
-        func = FunctionRegistry.resolve(job.func_ref)
-        self.executor.submit(
-            func, args=job.args, kwargs=job.kwargs,
-            callback=lambda r: self._on_job_done(job_id, r),
-        )
+        if FunctionRegistry.is_registered(job.func_ref):
+            func = FunctionRegistry.resolve(job.func_ref)
+            self.executor.submit(
+                func, args=job.args, kwargs=job.kwargs,
+                callback=lambda r: self._on_job_done(job_id, r),
+            )
+        else:
+            job.next_run_time = self._now()
+            job.status = "active"
+            job.updated_at = self._now()
+            self.store.update_job(job)
 
     def get_jobs(self) -> List[Job]:
         return self.store.get_all_jobs()
@@ -2470,10 +4545,20 @@ class NbCron:
                     self.store.update_job(job)
                 else:
                     self.store.add_job(job)
+                self.store.register_function(p["func_ref"])
                 logger.info("Registered job: %s -> next run: %s", job.job_id, next_run)
             except Exception:
                 logger.exception("Failed to register pending job: %s", p.get("job_id"))
         self._pending.clear()
+
+    def _sync_registry_to_store(self) -> None:
+        """将 FunctionRegistry 中所有已注册函数名同步到 store，
+        确保只用 @cron_register 标记但未添加任务的函数也能在跨项目 Web UI 中被选择。"""
+        for name in FunctionRegistry.get_named_functions():
+            try:
+                self.store.register_function(name)
+            except Exception:
+                logger.exception("Failed to sync function to store: %s", name)
 
     def _run_loop(self) -> None:
         while self._running:
@@ -3609,6 +5694,19 @@ class BaseStore(ABC):
     def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
         """Load metrics for all jobs.  {job_id: metrics_dict}"""
 
+    # ── Function registry (cross-project support) ──
+
+    @abstractmethod
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        """Persist a registered function name so it's visible across projects."""
+
+    @abstractmethod
+    def get_function_names(self) -> List[str]:
+        """Return all registered function names."""
+
+    def function_exists(self, func_name: str) -> bool:
+        return func_name in self.get_function_names()
+
     def close(self) -> None:
         """Release resources (optional override)."""
 
@@ -3628,7 +5726,7 @@ class BaseStore(ABC):
 import copy
 import threading
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from nb_cron.core.job import Job
 from nb_cron.stores.base import BaseStore
@@ -3639,6 +5737,7 @@ class MemoryStore(BaseStore):
     def __init__(self):
         self._jobs: Dict[str, Job] = {}
         self._metrics: Dict[str, Dict[str, Any]] = {}
+        self._functions: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.Lock()
 
     def add_job(self, job: Job) -> None:
@@ -3698,6 +5797,14 @@ class MemoryStore(BaseStore):
         with self._lock:
             return {k: copy.deepcopy(v) for k, v in self._metrics.items()}
 
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        with self._lock:
+            self._functions[func_name] = metadata or {}
+
+    def get_function_names(self) -> List[str]:
+        with self._lock:
+            return list(self._functions.keys())
+
 `````
 
 --- **end of file: nb_cron/stores/memory.py** (project: nb_cron) --- 
@@ -3729,8 +5836,10 @@ class MongoStore(BaseStore):
         self._db = self._client[db_name]
         self._jobs = self._db[f"nb_cron_{name}_jobs"]
         self._metrics_col = self._db[f"nb_cron_{name}_metrics"]
+        self._functions_col = self._db[f"nb_cron_{name}_functions"]
         self._jobs.create_index("job_id", unique=True)
         self._jobs.create_index("next_run_time")
+        self._functions_col.create_index("func_name", unique=True)
 
     def add_job(self, job: Job) -> None:
         doc = job.to_dict()
@@ -3804,6 +5913,13 @@ class MongoStore(BaseStore):
                 result[jid] = doc
         return result
 
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        doc = {"func_name": func_name, **(metadata or {})}
+        self._functions_col.replace_one({"func_name": func_name}, doc, upsert=True)
+
+    def get_function_names(self) -> List[str]:
+        return [doc["func_name"] for doc in self._functions_col.find({}, {"func_name": 1})]
+
     def close(self) -> None:
         self._client.close()
 
@@ -3839,6 +5955,7 @@ class RedisStore(BaseStore):
         self._jobs_key = f"nb_cron:{name}:jobs"
         self._metrics_key = f"nb_cron:{name}:metrics"
         self._due_key = f"nb_cron:{name}:due"
+        self._functions_key = f"nb_cron:{name}:functions"
 
     def add_job(self, job: Job) -> None:
         if self._client.hexists(self._jobs_key, job.job_id):
@@ -3916,6 +6033,12 @@ class RedisStore(BaseStore):
         raw_map = self._client.hgetall(self._metrics_key)
         return {k: json.loads(v) for k, v in raw_map.items()}
 
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        self._client.hset(self._functions_key, func_name, json.dumps(metadata or {}))
+
+    def get_function_names(self) -> List[str]:
+        return list(self._client.hkeys(self._functions_key))
+
     def close(self) -> None:
         self._client.close()
 
@@ -3967,6 +6090,12 @@ class SQLAlchemyStore(BaseStore):
         self._metrics_table = Table(
             f"nb_cron_{name}_metrics", self._metadata,
             Column("job_id", String(255), primary_key=True),
+            Column("data", Text, nullable=False),
+        )
+
+        self._functions_table = Table(
+            f"nb_cron_{name}_functions", self._metadata,
+            Column("func_name", String(255), primary_key=True),
             Column("data", Text, nullable=False),
         )
 
@@ -4138,6 +6267,37 @@ class SQLAlchemyStore(BaseStore):
                 data = row.data if hasattr(row, "data") else row[1]
                 result[jid] = json.loads(data)
             return result
+        finally:
+            session.close()
+
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        session = self._Session()
+        try:
+            existing = session.execute(
+                self._functions_table.select().where(
+                    self._functions_table.c.func_name == func_name
+                )
+            ).fetchone()
+            payload = json.dumps(metadata or {})
+            if existing:
+                session.execute(
+                    self._functions_table.update()
+                    .where(self._functions_table.c.func_name == func_name)
+                    .values(data=payload)
+                )
+            else:
+                session.execute(
+                    self._functions_table.insert().values(func_name=func_name, data=payload)
+                )
+            session.commit()
+        finally:
+            session.close()
+
+    def get_function_names(self) -> List[str]:
+        session = self._Session()
+        try:
+            rows = session.execute(self._functions_table.select()).fetchall()
+            return [row.func_name if hasattr(row, "func_name") else row[0] for row in rows]
         finally:
             session.close()
 

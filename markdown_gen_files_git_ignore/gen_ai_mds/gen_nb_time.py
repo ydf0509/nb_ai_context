@@ -26,16 +26,7 @@ ai_md = AiMdGenerator(
         ],
     )
     .auto_merge_from_python_project_some_files()
-    .merge_from_dir(
-        relative_dir_name='examples',
-        use_gitignore=True,
-        as_title=f"{project_name} examples",
-        # 只包含 .py 和 .md 文件
-        should_include_suffixes=[".py", ".md"],
-        # 排除 __pycache__ 目录和特定的测试文件
-        excluded_dir_name_list=[],
-        include_ast_metadata=False,
-    )
+    
     .show_textfile_info()
     .merge_from_dir(
         relative_dir_name=project_name,
