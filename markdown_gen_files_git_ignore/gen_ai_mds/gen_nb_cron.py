@@ -2,12 +2,12 @@ from markdown_gen_files_git_ignore.copy_md_to_txt import copy_md_to_txt
 from nb_ai_context import AiMdGenerator
 
 
-project_name="nb_time"
+project_name="nb_cron"
 project_root=fr"D:\codes\{project_name}"
 
 project_summary = f"""
-- `{project_name}` is a powerful time library for Python. 
-- `NbTime(...)` is the main class to create a time object.
+- `{project_name}` is a powerful cron library for Python.
+- `NbCron(...)` is the main class to create a cron object. 
 """
 
 ai_md = AiMdGenerator(
@@ -23,19 +23,10 @@ ai_md = AiMdGenerator(
         project_summary=project_summary,
         most_core_source_code_file_list=[
             f"{project_name}/__init__.py",
+            f'nb_cron/core/scheduler.py',
         ],
     )
     .auto_merge_from_python_project_some_files()
-    .merge_from_dir(
-        relative_dir_name='examples',
-        use_gitignore=True,
-        as_title=f"{project_name} examples",
-        # 只包含 .py 和 .md 文件
-        should_include_suffixes=[".py", ".md"],
-        # 排除 __pycache__ 目录和特定的测试文件
-        excluded_dir_name_list=[],
-        include_ast_metadata=False,
-    )
     .show_textfile_info()
     .merge_from_dir(
         relative_dir_name=project_name,
@@ -44,7 +35,9 @@ ai_md = AiMdGenerator(
         # 只包含 .py 和 .md 文件
         should_include_suffixes=[".py", ".md"],
         # 排除 __pycache__ 目录和特定的测试文件
-        excluded_dir_name_list=[],
+        excluded_dir_name_list=[
+            'nb_cron/web/static'
+            ],
         include_ast_metadata=False,
     )
     .show_textfile_info()

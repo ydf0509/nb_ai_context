@@ -102,10 +102,10 @@ funboost_most_core_source_code_file_list=[
             
             r"funboost\funboost_web_manager\static",
             r"funboost/concurrent_pool/backup",
-            
-            
-            
+            r'funboost/funweb/flask_bps',
+        
         ],
+        excluded_file_name_list=[],
         include_ast_metadata=False,
     )
     .merge_from_dir(
