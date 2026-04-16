@@ -1,3 +1,9 @@
+---
+noteId: "20971bb039af11f18a601b7d8783091f"
+tags: []
+
+---
+
 ﻿
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
@@ -184,6 +190,8 @@
 - `from funboost.core.current_task import funboost_current_task`
 - `from funboost.core.current_task import fct`
 - `from funboost.core.current_task import get_current_taskid`
+- `from funboost.core.funboost_pool import MemoryFunboostPool`
+- `from funboost.core.funboost_pool import FunboostPool`
 
 
 ---
@@ -5040,7 +5048,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
     │   ├── custom_evenlet_pool_executor.py
     │   ├── custom_gevent_pool_executor.py
     │   ├── custom_threadpool_executor.py
-    │   ├── custom_threadpool_executor000.py
     │   ├── fixed_thread_pool.py
     │   ├── flexible_thread_pool.py
     │   ├── pool_commons.py
@@ -5296,7 +5303,11 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 ---
 
 
+<<<<<<< HEAD
 ## funboost (relative dir: `funboost`)  Included Files (total: 261 files)
+=======
+## funboost (relative dir: `funboost`)  Included Files (total: 260 files)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 
 - `funboost/constant.py`
@@ -5366,8 +5377,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 - `funboost/concurrent_pool/custom_gevent_pool_executor.py`
 
 - `funboost/concurrent_pool/custom_threadpool_executor.py`
-
-- `funboost/concurrent_pool/custom_threadpool_executor000.py`
 
 - `funboost/concurrent_pool/fixed_thread_pool.py`
 
@@ -6571,7 +6580,7 @@ from funboost.concurrent_pool.custom_threadpool_executor import show_current_thr
 
 from funboost.core.current_task import funboost_current_task,fct,get_current_taskid
 
-
+from funboost.core.funboost_pool import MemoryFunboostPool,FunboostPool
 
 
 
@@ -8066,6 +8075,9 @@ import sys
 
 import atexit
 import asyncio
+import concurrent.futures
+from concurrent.futures import Executor
+import functools
 import threading
 import time
 import traceback
@@ -8113,9 +8125,17 @@ if sys.platform == "darwin":  # mac 上会出错
       import selectors
       selectors.DefaultSelector = selectors.PollSelector
 
+
+
 class AsyncPoolExecutor(FunboostFileLoggerMixin,FunboostBaseConcurrentPool):
     """
     使api和线程池一样，最好的性能做法是submit也弄成 async def，生产和消费在同一个线程同一个loop一起运行，但会对调用链路的兼容性产生破坏，从而调用方式不兼容线程池。
+    
+    AsyncPoolExecutor 是真asyncio并发池，是在一个loop跑多个协程任务，而非是 伪线程池里面每个线程都单独用一个新的临时的loop.run_until_complete去运行一个协程任务。
+
+    AsyncPoolExecutor 支持异步函数运行，也支持同步函数运行。
+    AsyncPoolExecutor 支持submit 和 map方法，并能返回 concurrent.futures.Future 对象。
+    AsyncPoolExecutor 支持aio_submit方法，并能返回 asyncio.Future 对象。
     """
 
     def __init__(self, size, specify_async_loop=None,
@@ -8123,7 +8143,7 @@ class AsyncPoolExecutor(FunboostFileLoggerMixin,FunboostBaseConcurrentPool):
         """
 
         :param size: 同时并发运行的协程任务数量。
-        :param specify_loop: 可以指定loop,异步三方包的连接池发请求不能使用不同的loop去使用连接池.
+        :param specify_loop: 可以指定loop,很多异步三方包的连接池发请求和类实例化，不能处在不同的loop中。也就是臭名昭著的 `attached to a different loop`
         """
         self._size = size
         self._specify_async_loop = specify_async_loop
@@ -8135,6 +8155,8 @@ class AsyncPoolExecutor(FunboostFileLoggerMixin,FunboostBaseConcurrentPool):
         t = Thread(target=self._start_loop_in_new_thread, daemon=False)
         # t.setDaemon(True)  # 设置守护线程是为了有机会触发atexit，使程序自动结束，不用手动调用shutdown
         t.start()
+        from funboost.concurrent_pool.custom_threadpool_executor import ThreadPoolExecutorShrinkAble
+        self._thread_pool = ThreadPoolExecutorShrinkAble(self._size) # 留个线程池，方便执行同步函数
      
 
     # def submit000(self, func, *args, **kwargs):
@@ -8157,23 +8179,49 @@ class AsyncPoolExecutor(FunboostFileLoggerMixin,FunboostBaseConcurrentPool):
 
 
     def submit(self, func, *args, **kwargs):
-        future = asyncio.run_coroutine_threadsafe(self._produce(func, *args, **kwargs), self.loop)  # 这个 run_coroutine_threadsafe 方法也有缺点，消耗的性能巨大。
-        future.result()  # 阻止过快放入，放入超过队列大小后，使submit阻塞。 背压是为了防止 迅速掏空消息队列几千万消息到内存.
+        """
+        从非事件循环线程提交任务，返回 concurrent.futures.Future，可通过 .result() 获取执行结果。
+        队列满时会阻塞（背压），防止迅速掏空消息队列几千万消息到内存。
+        """
+        result_future = concurrent.futures.Future()
+        produce_future = asyncio.run_coroutine_threadsafe(self._produce(func, args, kwargs, result_future), self.loop)
+        produce_future.result()  # 阻止过快放入，放入超过队列大小后，使submit阻塞。
+        return result_future
+    
+    map = Executor.map # 神级别方式，直接使用 concurrent.futures.Executor.map 方法。
 
-    async def _produce(self, func, *args, **kwargs):
-        await self._queue.put((func, args, kwargs))
+    async def aio_submit(self, func, *args, **kwargs):
+        """
+        从事件循环内部提交任务，返回 asyncio.Future，可 await 获取执行结果。
+        队列满时 await 会挂起当前协程（背压）。
+        """
+        result_future = self.loop.create_future()
+        await self._produce(func, args, kwargs, result_future)
+        return result_future
+
+    async def _produce(self, func, args, kwargs, result_future=None):
+        await self._queue.put((func, args, kwargs, result_future))
 
     async def _consume(self):
         while True:
-            func, args, kwargs = await self._queue.get()
+            func, args, kwargs, result_future = await self._queue.get()
             if isinstance(func, str) and func.startswith('stop'):
                 # self.logger.debug(func)
                 break
             # noinspection PyBroadException,PyUnusedLocal
             try:
-                await func(*args, **kwargs)
+                if asyncio.iscoroutinefunction(func):
+                    result = await func(*args, **kwargs)
+                else:
+                    result = await self.loop.run_in_executor(
+                        self._thread_pool, functools.partial(func, *args, **kwargs)
+                    )
+                if result_future is not None:
+                    result_future.set_result(result)
             except BaseException as e:
                 self.logger.exception(f'func:{func}, args:{args}, kwargs:{kwargs} exc_type:{type(e)}  traceback_exc:{traceback.format_exc()}')
+                if result_future is not None:
+                    result_future.set_exception(e)
             # self._queue.task_done()
 
     async def __run(self):
@@ -8218,6 +8266,7 @@ class AsyncPoolExecutor(FunboostFileLoggerMixin,FunboostBaseConcurrentPool):
 
 
 if __name__ == '__main__':
+    
     def test_async_pool_executor():
         from funboost.concurrent_pool import CustomThreadPoolExecutor as ThreadPoolExecutor
         # from concurrent.futures.thread import ThreadPoolExecutor
@@ -8226,33 +8275,52 @@ if __name__ == '__main__':
             await asyncio.sleep(1)
             pass
             print('打印', x)
+
             # await asyncio.sleep(1)
             # raise Exception('aaa')
+            return x * 2
 
         def f2(x):
             pass
             # time.sleep(0.001)
             print('打印', x)
+            return x * 20
 
         print(1111)
 
         t1 = time.time()
+
         pool = AsyncPoolExecutor(20)
         # pool = ThreadPoolExecutor(200)  # 协程不能用线程池运行，否则压根不会执行print打印，对于一部函数 f(x)得到的是一个协程，必须进一步把协程编排成任务放在loop循环里面运行。
-        for i in range(1, 501):
-            print('放入', i)
-            pool.submit(f, i)
+        
+        # 测试submit方法
+        # for i in range(1, 501):
+        #     print('放入', i)
+        #     fut = pool.submit(f, i)
+        #     print(fut.result())
+
         # time.sleep(5)
         # pool.submit(f, 'hi')
         # pool.submit(f, 'hi2')
         # pool.submit(f, 'hi3')
         # print(2222)
-        pool.shutdown()
+
+         # 测试map方法
+        results = pool.map(f2, [1, 2, 3, 4], timeout=5)
+        try:
+            for res in results:
+                print(res)
+        except TimeoutError:
+            print("有任务执行超时！")
+     
         print(time.time() - t1)
 
 
     test_async_pool_executor()
     # test_async_producer_consumer()
+
+   
+
 
     print(sys.version_info)
 
@@ -8954,7 +9022,8 @@ if __name__ == '__main__':
 
 4、此线程池运行函数出错时候，直接显示线程错误，官方的线程池则不会显示错误，例如函数中写1/0,任然不现实错误。
 
-此实现了submit，还实现future相关的内容，真正的和内置的ThreadpoolExecutor 完全替代。
+ThreadPoolExecutorShrinkAble 实现了submit，还实现future相关的内容，真正的和内置的ThreadpoolExecutor 完全替代。
+ThreadPoolExecutorShrinkAble 支持 map方法，因为继承了 concurrent.futures.Executor 类，
 
 可以在各种地方加入 time.sleep 来验证 第1条和第2条的自动智能缩放功能。
 """
@@ -9074,6 +9143,8 @@ class ThreadPoolExecutorShrinkAble(Executor, FunboostFileLoggerMixin, LoggerLeve
             self.work_queue.put(w)
             self._adjust_thread_count()
             return f
+    
+
 
     def _adjust_thread_count(self):
         # print(self.threads_free_count, self.MIN_WORKERS, len(self._threads), self._max_workers)
@@ -9222,242 +9293,6 @@ if __name__ == '__main__':
 ---
 
 
---- **start of file: funboost/concurrent_pool/custom_threadpool_executor000.py** (project: funboost) --- 
-
-`````python
-"""
-可自动实时调节线程数量的线程池。
-比官方ThreadpoolExecutor的改进是
-1.有界队列
-2.实时调节线程数量，指的是当任务很少时候会去关闭很多线程。官方ThreadpoolExecurot只能做到忙时候开启很多线程，但不忙时候线程没有关闭线程，
-此线程池实现了java ThreadpoolExecutor线程池的keppaliveTime参数的功能，linux系统能承受的线程总数有限，一般不到2万。
-3.能非常智能节制的开启多线程。比如设置线程池大小为500，线程池的运行函数消耗时间是只需要0.1秒，如果每隔2秒钟来一个任务。1个线程足够了，官方线程池是一直增长到500，然后不增长，官方的太不智能了。
-
-这个线程池是框架的默认线程方式的线程池，如果不设置并发方式就用的这里。
-
-此实现了submit，但没实现future相关的内容。
-"""
-
-import atexit
-import queue
-import sys
-import threading
-import time
-import weakref
-
-from nb_log import LoggerMixin, nb_print, LoggerLevelSetterMixin, LogManager
-from funboost.concurrent_pool.custom_evenlet_pool_executor import check_evenlet_monkey_patch
-from funboost.concurrent_pool.custom_gevent_pool_executor import check_gevent_monkey_patch
-
-_shutdown = False
-_threads_queues = weakref.WeakKeyDictionary()
-
-
-def _python_exit():
-    global _shutdown
-    _shutdown = True
-    items = list(_threads_queues.items())
-    for t, q in items:
-        q.put(None)
-    for t, q in items:
-        t.join()
-
-
-atexit.register(_python_exit)
-
-
-class _WorkItem(LoggerMixin):
-    def __init__(self, fn, args, kwargs):
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-
-    def run(self):
-        # noinspection PyBroadException
-        try:
-            self.fn(*self.args, **self.kwargs)
-        except BaseException as exc:
-            self.logger.exception(f'函数 {self.fn.__name__} 中发生错误，错误原因是 {type(exc)} {exc} ')
-
-    def __str__(self):
-        return f'{(self.fn.__name__, self.args, self.kwargs)}'
-
-
-def check_not_monkey():
-    if check_gevent_monkey_patch(raise_exc=False):
-        raise Exception('请不要打gevent包的补丁')
-    if check_evenlet_monkey_patch(raise_exc=False):
-        raise Exception('请不要打evenlet包的补丁')
-
-
-class CustomThreadPoolExecutor(LoggerMixin, LoggerLevelSetterMixin):
-    def __init__(self, max_workers=None, thread_name_prefix=''):
-        """
-        最好需要兼容官方concurren.futures.ThreadPoolExecutor 和改版的BoundedThreadPoolExecutor，入参名字和个数保持了一致。
-        :param max_workers:
-        :param thread_name_prefix:
-        """
-        self._max_workers = max_workers or 4
-        self._min_workers = 5  # 这是对应的 java Threadpoolexecutor的corePoolSize，为了保持线程池公有方法和与py官方内置的concurren.futures.ThreadPoolExecutor一致，不增加更多的实例化时候入参，这里写死为5.
-        self._thread_name_prefix = thread_name_prefix
-        self.work_queue = queue.Queue(max_workers)
-        # self._threads = set()
-        self._threads = weakref.WeakSet()
-        self._lock_compute_threads_free_count = threading.Lock()
-        self.threads_free_count = 0
-        self._shutdown = False
-        self._shutdown_lock = threading.Lock()
-        # self.logger.setLevel(20)
-
-    def set_min_workers(self, min_workers=10):
-        self._min_workers = min_workers
-        return self
-
-    def change_threads_free_count(self, change_num):
-        with self._lock_compute_threads_free_count:
-            self.threads_free_count += change_num
-
-    def submit(self, func, *args, **kwargs):
-        with self._shutdown_lock:
-            if self._shutdown:
-                raise RuntimeError('不能添加新的任务到线程池')
-        self.work_queue.put(_WorkItem(func, args, kwargs))
-        self._adjust_thread_count()
-
-    def _adjust_thread_count(self):
-        # if len(self._threads) < self._threads_num:
-        # self.logger.debug((self.threads_free_count, len(self._threads), len(_threads_queues), get_current_threads_num()))
-        if self.threads_free_count < self._min_workers and len(self._threads) < self._max_workers:
-            # t = threading.Thread(target=_work,
-            #                      args=(self._work_queue,self))
-            t = _CustomThread(self).set_log_level(self.logger.level)
-            t.setDaemon(True)
-            t.start()
-            self._threads.add(t)
-            _threads_queues[t] = self.work_queue
-
-    def shutdown(self, wait=True):
-        with self._shutdown_lock:
-            self._shutdown = True
-            self.work_queue.put(None)
-        if wait:
-            for t in self._threads:
-                t.join()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.shutdown(wait=True)
-        return False
-
-
-class _CustomThread(threading.Thread, LoggerMixin, LoggerLevelSetterMixin):
-    _lock_for_judge_threads_free_count = threading.Lock()
-
-    def __init__(self, executorx: CustomThreadPoolExecutor):
-        super().__init__()
-        self._executorx = executorx
-        self._run_times = 0
-
-    # noinspection PyProtectedMember
-    def _remove_thread(self, stop_resson=''):
-        # noinspection PyUnresolvedReferences
-        self.logger.debug(f'停止线程 {self._ident}, 触发条件是 {stop_resson} ')
-        self._executorx.change_threads_free_count(-1)
-        self._executorx._threads.remove(self)
-        _threads_queues.pop(self)
-
-    # noinspection PyProtectedMember
-    def run(self):
-        # noinspection PyUnresolvedReferences
-        self.logger.debug(f'新启动线程 {self._ident} ')
-        self._executorx.change_threads_free_count(1)
-        while True:
-            try:
-                work_item = self._executorx.work_queue.get(block=True, timeout=60)
-            except queue.Empty:
-                with self._lock_for_judge_threads_free_count:
-                    if self._executorx.threads_free_count > self._executorx._min_workers:
-                        self._remove_thread(f'当前线程超过60秒没有任务，线程池中不在工作状态中的线程数量是 {self._executorx.threads_free_count}，超过了指定的数量 {self._executorx._min_workers}')
-                        break  # 退出while 1，即是结束。这里才是决定线程结束销毁，_remove_thread只是个名字而已，不是由那个来销毁线程。
-                    else:
-                        continue
-
-            # nb_print(work_item)
-            if work_item is not None:
-                self._executorx.change_threads_free_count(-1)
-                work_item.run()
-                del work_item
-                self._executorx.change_threads_free_count(1)
-                continue
-            if _shutdown or self._executorx._shutdown:
-                self._executorx.work_queue.put(None)
-                break
-
-
-process_name_set = set()
-logger_show_current_threads_num = LogManager('show_current_threads_num').get_logger_and_add_handlers(
-    formatter_template=5, log_filename='show_current_threads_num.log', do_not_use_color_handler=True)
-
-
-def show_current_threads_num(sleep_time=60, process_name='', block=False):
-    process_name = sys.argv[0] if process_name == '' else process_name
-
-    def _show_current_threads_num():
-        while True:
-            # logger_show_current_threads_num.info(f'{process_name} 进程 的 并发数量是 -->  {threading.active_count()}')
-            nb_print(f'{process_name} 进程 的 线程数量是 -->  {threading.active_count()}')
-            time.sleep(sleep_time)
-
-    if process_name not in process_name_set:
-        if block:
-            _show_current_threads_num()
-        else:
-            t = threading.Thread(target=_show_current_threads_num, daemon=True)
-            t.start()
-        process_name_set.add(process_name)
-
-
-def get_current_threads_num():
-    return threading.active_count()
-
-
-if __name__ == '__main__':
-    from funboost.utils import decorators
-    from funboost.concurrent_pool.bounded_threadpoolexcutor import BoundedThreadPoolExecutor
-
-
-    # @decorators.keep_circulating(1)
-    def f1(a):
-        time.sleep(0.2)
-        nb_print(f'{a} 。。。。。。。')
-        # raise Exception('抛个错误测试')
-
-
-    # show_current_threads_num()
-    pool = CustomThreadPoolExecutor(200).set_log_level(10).set_min_workers()
-    # pool = BoundedThreadPoolExecutor(200)   # 测试对比原来写的BoundedThreadPoolExecutor
-    show_current_threads_num(sleep_time=5)
-    for i in range(300):
-        time.sleep(0.3)  # 这里的间隔时间模拟，当任务来临不密集，只需要少量线程就能搞定f1了，因为f1的消耗时间短，不需要开那么多线程，CustomThreadPoolExecutor比BoundedThreadPoolExecutor 优势之一。
-        pool.submit(f1, str(i))
-
-    nb_print(6666)
-    # pool.shutdown(wait=True)
-    pool.submit(f1, 'yyyy')
-
-    # 下面测试阻塞主线程退出的情况。注释掉可以测主线程退出的情况。
-    while True:
-        time.sleep(10)
-
-`````
-
---- **end of file: funboost/concurrent_pool/custom_threadpool_executor000.py** (project: funboost) --- 
-
----
-
-
 --- **start of file: funboost/concurrent_pool/fixed_thread_pool.py** (project: funboost) --- 
 
 `````python
@@ -9522,19 +9357,21 @@ if __name__ == '__main__':
 """
 比 ThreadPoolExecutorShrinkAble 更简单的的弹性线程池。完全彻底从头手工开发
 
-这个线程池 submit没有返回值，不返回future对象，不支持map方法。
+FlexibleThreadPool submit 返回标准的 concurrent.futures.Future 对象。
+FlexibleThreadPool 的map 方法，虽然没继承concurrent.futures.Executor ，但能直接万能复用使用 concurrent.futures.Executor.map 方法。
 
 此线程池性能比concurrent.futures.ThreadPoolExecutor高200%
 
-顺便兼容asyns def的函数并发运行
-"""
 
+"""
+import typing
 import asyncio
 import inspect
 import os
 import queue
 import threading
 from functools import wraps
+from concurrent.futures import Future, Executor
 
 from funboost.concurrent_pool import FunboostBaseConcurrentPool
 from funboost.core.loggers import FunboostFileLoggerMixin, LoggerLevelSetterMixin, FunboostMetaTypeFileLogger,flogger
@@ -9544,9 +9381,15 @@ class FlexibleThreadPool(FunboostFileLoggerMixin, LoggerLevelSetterMixin, Funboo
     KEEP_ALIVE_TIME = 10
     MIN_WORKERS = 1
 
+<<<<<<< HEAD
     def __init__(self, max_workers: int = None,work_queue_maxsize=10,
                  specify_async_loop=None,
                 is_auto_start_specify_async_loop_in_child_thread=True
+=======
+    def __init__(self, max_workers: typing.Optional[int] = None,work_queue_maxsize=10,
+                 specify_async_loop=None,
+                 is_auto_start_specify_async_loop_in_child_thread=True
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
                  ):
         self.work_queue = queue.Queue(work_queue_maxsize)
         self.max_workers = max_workers
@@ -9569,13 +9412,20 @@ class FlexibleThreadPool(FunboostFileLoggerMixin, LoggerLevelSetterMixin, Funboo
         with self._lock_compute_start_thread:
             self._threads_num += change_num
 
-    def submit(self, func, *args, **kwargs):
-        self.work_queue.put([func, args, kwargs])
+    def submit(self, func, *args, **kwargs) -> Future:
+        fut = Future()
+        self.work_queue.put([func, args, kwargs,fut])
         with self._lock_for_adjust_thread:
             if self.threads_free_count <= self.MIN_WORKERS and self._threads_num < self.max_workers:
                 _KeepAliveTimeThread(self).start()
                 self._change_threads_free_count(1) 
                 self._change_threads_start_count(1)
+<<<<<<< HEAD
+=======
+        return fut
+    
+    map = Executor.map # 神级别方式，直接使用 concurrent.futures.Executor.map 方法。
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 
 class FlexibleThreadPoolMinWorkers0(FlexibleThreadPool):
@@ -9665,7 +9515,7 @@ class _KeepAliveTimeThread(threading.Thread, metaclass=FunboostMetaTypeFileLogge
         self.logger.debug(f'新启动线程 {self.ident} ')
         while 1:
             try:
-                func, args, kwargs = self.pool.work_queue.get(block=True, timeout=self.pool.KEEP_ALIVE_TIME)
+                func, args, kwargs,fut = self.pool.work_queue.get(block=True, timeout=self.pool.KEEP_ALIVE_TIME)
             except queue.Empty:
                 with self.pool._lock_for_judge_threads_free_count:
                     # print(self.pool.threads_free_count)
@@ -9682,8 +9532,14 @@ class _KeepAliveTimeThread(threading.Thread, metaclass=FunboostMetaTypeFileLogge
             try:
                 # fun = sync_or_async_fun_deco(func)
                 # fun(*args, **kwargs)
+<<<<<<< HEAD
                 _new_anyio_fun(func,args,kwargs,self.pool._specify_async_loop,self.pool._is_auto_start_specify_async_loop_in_child_thread)
+=======
+                res = _new_anyio_fun(func,args,kwargs,self.pool._specify_async_loop,self.pool._is_auto_start_specify_async_loop_in_child_thread)
+                fut.set_result(res)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
             except BaseException as exc:
+                fut.set_exception(exc)
                 self.logger.exception(f'函数 {func} 中发生错误，错误原因是 {type(exc)} {exc} ')
             self.pool._change_threads_free_count(1)
 
@@ -9713,10 +9569,22 @@ if __name__ == '__main__':
     pool = FlexibleThreadPool(100)
     # pool = ThreadPoolExecutor(100)
     # pool = ThreadPoolExecutorShrinkAble(100)
+    
+    # 测试submit和 输出 future.result() 的结果
+    # for i in range(20000):
+    #     # time.sleep(2)
+    #     futx:Future = pool.submit(aiotestf, i)
+    #     print(futx.result())
 
-    for i in range(20000):
-        # time.sleep(2)
-        pool.submit(aiotestf, i)
+    # 测试map用法
+    results = pool.map(aiotestf, [1, 2, 3, 4], timeout=5)
+    try:
+        for res in results:
+            print(res)
+    except TimeoutError:
+        print("有任务执行超时！")
+
+
 
     # for i in range(100000):
     #     pool.submit(testf, i)
@@ -9724,6 +9592,8 @@ if __name__ == '__main__':
     # while 1:
     #     time.sleep(1000)
     # loop.run_forever()
+
+
 
 `````
 
@@ -11239,7 +11109,7 @@ class ConcurrentModeDispatcher(FunboostFileLoggerMixin):
         # pool_type = BoundedProcessPoolExecutor
         # from concurrent.futures import ProcessPoolExecutor
         # pool_type = ProcessPoolExecutor
-        if self._concurrent_mode == ConcurrentModeEnum.ASYNC:
+        if self._concurrent_mode in [ConcurrentModeEnum.ASYNC, ConcurrentModeEnum.THREADING]:
             self.consumer._concurrent_pool = self.consumer.consumer_params.specify_concurrent_pool or pool_type(
                 self.consumer.consumer_params.concurrent_num,
                 specify_async_loop=self.consumer.consumer_params.specify_async_loop,
@@ -14764,7 +14634,10 @@ class RedisFilter(RedisMixin, FunboostFileLoggerMixin):
         for k in sorted(value):
             ordered_dict[k] = value[k]
         # print(ordered_dict,filter_str)
-        return json.dumps(ordered_dict)
+        try:
+            return Serialization.to_json_str(ordered_dict)
+        except Exception as e:
+            return Serialization.to_json_str_non_strict_use_pickle_str(ordered_dict)
 
 
     def add_a_value(self, value: typing.Union[str, dict], filter_str: typing.Optional[str] = None):
@@ -23024,17 +22897,26 @@ def _try_get_user_funboost_common_config(funboost_common_conf_field:str):
 """
 写一个 Funboost 通用任务池，支持 submit 任意函数，并返回 Future。
 除了实例化入参，最常用的submit方法和 concurrent.futures.ThreadPoolExecutor 一样。例如submit和返回future。
+<<<<<<< HEAD
 所以用户可以使用 FunboostPool 或者 NbFunboostPool 的实例化对象替代之前的 ThreadPoolExecutor的对象。一般用户只用到pool.submit，基本完美平替，只需要修改一行代码。
+=======
+所以用户可以使用 MemoryFunboostPool 或者 FunboostPool 的实例化对象替代之前的 ThreadPoolExecutor的对象。一般用户只用到pool.submit，基本完美平替，只需要修改一行代码。
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 funboostpool 比 ThreadPoolExecutor更强的在于，可以内存存储任务，也可以分布式消息队列存任务。
 funboostpool 有几十种任务控制功能，例如重试策略，超时策略，任务优先级。
 funboostpool 能支持asyncio任务和同步任务，ThreadPoolExecutor 没这个能力
 funboostpool 的池子可以自动扩大和自动缩小，ThreadPoolExecutor 不能自动缩小。
+<<<<<<< HEAD
 NbFunboostPool 拥有funboost的所有能力
+=======
+FunboostPool 拥有funboost的所有能力
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 """
 
 import typing
 import concurrent.futures
+<<<<<<< HEAD
 from funboost import BoosterParams, BrokerEnum, Booster, FunctionResultStatus, AsyncResult
 from funboost.concurrent_pool.flexible_thread_pool import _new_anyio_fun,FlexibleThreadPoolMinWorkers0
 
@@ -23044,10 +22926,32 @@ class FunboostPool:
     """
     一个功能完整的 Funboost 通用任务池。
     支持 submit 任意函数，并返回 Future。
+=======
+from funboost import (
+    BoosterParams,
+    BrokerEnum,
+    Booster,
+    FunctionResultStatus,
+    AsyncResult,
+)
+from funboost.concurrent_pool.flexible_thread_pool import (
+    _new_anyio_fun,
+    FlexibleThreadPoolMinWorkers0,
+)
+import importlib
+
+
+class MemoryFunboostPool:
+    """
+    一个基于内存队列的 Funboost 任务池。
+    支持 submit 任意函数，并返回 Future。
+    固定使用内存队列，固定不重试，以复刻原始线程池行为。
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     """
 
     def __init__(
         self,
+<<<<<<< HEAD
         max_workers: int = 4,
         qps: int = 100,
         is_need_result : bool = False,
@@ -23058,11 +22962,25 @@ class FunboostPool:
         :param max_workers: 最大线程数
         :param qps: 每秒处理消息数
         :param is_need_result: 是否需要返回执行结果,如果不关心结果只执行，可以减少性能损耗
+=======
+        concurrent_num: int = 4,
+        *,
+        qps: float = None,
+        is_future_direct_ret_result: bool = True,
+        is_auto_start_consuming_message: bool = True,
+    ):
+        """
+        创建一个通用任务池。 固定使用内存队列，固定不重试，以复刻原始线程池行为。
+        :param concurrent_num: 最大线程数
+        :param qps: 每秒处理消息数
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         :param is_future_direct_ret_result: future中是的数据是最终result结果，还是 FunctionResultStatus 对象。
                如果返回FunctionResultStatus对象，那么信息更为丰富，包括重试了几次，耗时等等。
                如果返回result结果，那么只有结果，没有其他信息，但是更贴合原生的 concurrent.futures.Future.result() 方法的返回值。
         :return:
         """
+<<<<<<< HEAD
         self.max_workers = max_workers
         self.qps = qps
         self.booster: Booster = None
@@ -23086,13 +23004,51 @@ class FunboostPool:
             kwargs = task_data.get("kwargs", {})
             return _new_anyio_fun(func,args,kwargs,self.booster_params.specify_async_loop,self.booster_params.is_auto_start_specify_async_loop_in_child_thread)
 
+=======
+        self.concurrent_num = concurrent_num
+        self.qps = qps
+        self.booster: Booster = None
+        # self._pool_queue_name = f"universal_pool_{id(self)}"
+
+        self.booster_params = BoosterParams(
+            queue_name=f"universal_pool_{id(self)}",
+            concurrent_num=self.concurrent_num,
+            qps=self.qps,
+            max_retry_times=0,
+            broker_kind=BrokerEnum.MEMORY_QUEUE,
+        )
+
+        self.is_future_direct_ret_result = is_future_direct_ret_result
+        self.is_auto_start_consuming_message = is_auto_start_consuming_message
+        self._create_booster()
+        self._start_consume()
+
+    def _start_consume(self):
+        if self.is_auto_start_consuming_message:
+            self.booster.consume()
+
+    def _create_booster(self):
+        # 核心：定义一个通用的消费函数，它不关心业务逻辑，只负责执行消息中携带的 "函数和参数"
+        def universal_consumer(func, args, kwargs):
+
+            return _new_anyio_fun(
+                func,
+                args,
+                kwargs,
+                self.booster_params.specify_async_loop,
+                self.booster_params.is_auto_start_specify_async_loop_in_child_thread,
+            )
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
         # 使用这个通用消费者创建 Booster，只创建一次！
         self.booster = Booster(self.booster_params)(universal_consumer)
 
+<<<<<<< HEAD
         # 启动后台消费线程
         self.booster.consume()
 
+=======
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     def submit(self, fn: typing.Callable, *args, **kwargs) -> concurrent.futures.Future:
         """
         提交任意函数 fn 到线程池执行。
@@ -23103,6 +23059,7 @@ class FunboostPool:
         """
         # 将函数和参数打包成一个字典，直接放进消息队列
         # 因为用的是 MEMORY_QUEUE，函数对象不会被序列化，而是直接传递引用！
+<<<<<<< HEAD
         task_data = {"func": fn, "args": args, "kwargs": kwargs}
         if self.is_need_result is False:
             self.booster.push(task_data)
@@ -23110,6 +23067,11 @@ class FunboostPool:
 
         # 使用 publisher 的 get_future 方法，直接返回 Future 对象
         raw_future = self.booster.publisher.get_future(task_data)
+=======
+
+        # 使用 publisher 的 get_future 方法，直接返回 Future 对象
+        raw_future = self.booster.publisher.get_future(fn, args, kwargs)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         if self.is_future_direct_ret_result is False:
             return raw_future
         else:
@@ -23133,6 +23095,11 @@ class FunboostPool:
             raw_future.add_done_callback(on_raw_future_done)
             return final_future
 
+<<<<<<< HEAD
+=======
+    map = concurrent.futures.Executor.map
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     def shutdown(self, wait: bool = True):
         """关闭线程池（内存队列无需特殊清理）"""
         pass
@@ -23144,6 +23111,7 @@ class FunboostPool:
         self.shutdown()
 
 
+<<<<<<< HEAD
 class NbFunboostPool(FunboostPool):
     """
     NbFunboostPool 比 FunboostPool 能设置更多的控制参数，支持精细化设置 BoosterParams 所有控制入参，例如重试等。
@@ -23158,6 +23126,20 @@ class NbFunboostPool(FunboostPool):
         """
         创建一个通用任务池。
         :param booster_params: BoosterParams 对象. NbFunboostPool相比FunboostPool有更多的控制入参。
+=======
+class FunboostPoolPickleFunc(MemoryFunboostPool):
+    def __init__(
+        self,
+        booster_params,
+        *,
+        is_need_result=False,
+        is_future_direct_ret_result: bool = True,
+        is_auto_start_consuming_message: bool = True,
+    ):
+        """
+        创建一个通用任务池。
+        :param booster_params: BoosterParams 对象. FunboostPool相比MemoryFunboostPool有更多的控制入参。
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         :param is_need_result: 是否需要返回执行结果,如果不关心结果只执行，可以不使用rpc模式，不依赖redis做rpc，节约redis空间和性能。
         :param is_future_direct_ret_result: future中是的数据是最终result结果，还是 FunctionResultStatus 对象。
                如果返回FunctionResultStatus的信息更为丰富，包括重试了几次，耗时等等。
@@ -23165,6 +23147,7 @@ class NbFunboostPool(FunboostPool):
         :return:
         """
         self.booster_params = booster_params
+<<<<<<< HEAD
         if self.booster_params.broker_kind != BrokerEnum.MEMORY_QUEUE and is_need_result is True :
             self.booster_params.is_using_rpc_mode = True
             self._callback_run_executor = FlexibleThreadPoolMinWorkers0(self.booster_params.concurrent_num,)
@@ -23173,10 +23156,34 @@ class NbFunboostPool(FunboostPool):
         self.booster: Booster = None
         self._create_booster()
         
+=======
+        if (
+            self.booster_params.broker_kind != BrokerEnum.MEMORY_QUEUE
+            and is_need_result is True
+        ):
+            self.booster_params.is_using_rpc_mode = True
+            self._callback_run_executor = FlexibleThreadPoolMinWorkers0(
+                self.booster_params.concurrent_num,
+            )
+        self.is_need_result = is_need_result
+        self.is_future_direct_ret_result = is_future_direct_ret_result
+        self.is_auto_start_consuming_message = is_auto_start_consuming_message
+        self.booster: Booster = None
+        self._create_booster()
+        self._start_consume()
+
+    def _get_fn_new(self, fn: typing.Callable):
+        """
+        FunboostPoolPickleFunc 模式，fn会被自动pickle序列化，再发到消息队列。
+        """
+        return fn
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     def submit(self, fn: typing.Callable, *args, **kwargs) -> concurrent.futures.Future:
         # 1. 如果是内存队列，直接复用父类的高效实现（底层用 get_future）
         if self.booster_params.broker_kind == BrokerEnum.MEMORY_QUEUE:
             return super().submit(fn, *args, **kwargs)
+<<<<<<< HEAD
         task_data = {"func": fn, "args": args, "kwargs": kwargs}
         if self.is_need_result is False:
             self.booster.push(task_data)
@@ -23187,16 +23194,40 @@ class NbFunboostPool(FunboostPool):
         async_result: AsyncResult = self.booster.push(task_data)
         async_result.callback_run_executor = self._callback_run_executor
 
+=======
+
+        # 2. 如果是分布式队列，走标准 RPC 回调封装
+
+        fn_new = self._get_fn_new(fn)
+
+        async_result: AsyncResult = self.booster.push(fn_new, args, kwargs)
+        if self.is_need_result is False:
+            return None
+
+        async_result.callback_run_executor = self._callback_run_executor
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         final_future = concurrent.futures.Future()
 
         def rpc_callback(status_and_result: dict):
             try:
+<<<<<<< HEAD
                 status = FunctionResultStatus.parse_status_and_result_to_obj(status_and_result)
+=======
+                status = FunctionResultStatus.parse_status_and_result_to_obj(
+                    status_and_result
+                )
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
                 if self.is_future_direct_ret_result:
                     if status.success:
                         final_future.set_result(status.result)
                     else:
+<<<<<<< HEAD
                         final_future.set_exception(Exception(f"Task failed: {status.exception}"))
+=======
+                        final_future.set_exception(
+                            Exception(f"Task failed: {status.exception}")
+                        )
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
                 else:
                     final_future.set_result(status)
             except Exception as e:
@@ -23206,6 +23237,56 @@ class NbFunboostPool(FunboostPool):
         return final_future
 
 
+<<<<<<< HEAD
+=======
+class FunboostPool(FunboostPoolPickleFunc):
+
+    def _get_fn_new(self, fn: typing.Callable):
+        """
+        FunboostPool 模式
+        使用函数路径，它不再依赖 pickle 序列化函发到消息队列，而是把路径字符串发送到消息队列。
+        消息更清晰，用户能通过查看消息，知道要运行的是什么函数
+        """
+        return f"{fn.__module__}.{fn.__qualname__}"
+
+    def _create_booster(self):
+        # 核心：定义一个通用的消费函数，它不再依赖 pickle 序列化函数对象
+        def universal_consumer(func_path: str, args: tuple, kwargs: dict):
+            """
+            动态导入并执行函数
+            :param func_path: 例如 "my_module.my_submodule.my_func"
+            :param args: 位置参数元组
+            :param kwargs: 关键字参数字典
+            """
+            try:
+                # 1. 分割模块路径和函数名
+                module_name, func_name = func_path.rsplit(".", 1)
+
+                # 2. 动态导入模块
+                module = importlib.import_module(module_name)
+
+                # 3. 获取函数对象
+                func = getattr(module, func_name)
+
+            except (ImportError, AttributeError) as e:
+                # 处理导入失败的情况
+                raise ImportError(f"无法加载任务函数 '{func_path}': {e}")
+
+            # 4. 执行真正的业务逻辑
+            # 这里利用了 _new_anyio_fun 支持同步/异步函数的特性
+            return _new_anyio_fun(
+                func,
+                args,
+                kwargs,
+                self.booster_params.specify_async_loop,
+                self.booster_params.is_auto_start_specify_async_loop_in_child_thread,
+            )
+
+        # 使用这个通用消费者创建 Booster，只创建一次！
+        self.booster = Booster(self.booster_params)(universal_consumer)
+
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 if __name__ == "__main__":
     import asyncio
 
@@ -23222,19 +23303,29 @@ if __name__ == "__main__":
 
     def greet(name):
         return f"Hello, {name}"
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     # 能执行asyncio函数，而且能支持指定asyncio loop，能自动启动指定的asyncio loop，例如某些aio的连接池的包，需要实例化和发请求在同一个loop。
     async def aio_fun(x):
         await asyncio.sleep(1)
         return x * 10
 
+<<<<<<< HEAD
 
     # pool = FunboostPool(
     #     max_workers=10,
+=======
+    # pool = MemoryFunboostPool(
+    #     10,
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     #     qps=100,
     #     is_future_direct_ret_result=True,
     # )
 
+<<<<<<< HEAD
     # 像原生线程池一样随意切换函数， 
     pool = NbFunboostPool(
         BoosterParams(
@@ -23263,6 +23354,35 @@ if __name__ == "__main__":
     print(f2.result())  # 28
     print(f3.result())  # Hello, Funboost
     print(f4.result())  # 50
+=======
+    # 像原生线程池一样随意切换函数，
+    pool = FunboostPool(
+        BoosterParams(
+            queue_name="universal_queue",
+            broker_kind=BrokerEnum.REDIS,  # 不仅支持内存队列，也支持其他队列。
+            concurrent_num=10,
+            max_retry_times=5,
+        ),
+        is_need_result=False,
+        is_future_direct_ret_result=True,
+    )
+
+    # 提交加法
+    fut1 = pool.submit(add, 5, 3)
+    # 提交乘法
+    fut2 = pool.submit(multiply, 4, 7)
+    # 提交带关键字参数的函数
+    fut3 = pool.submit(greet, name="Funboost")
+
+    fut4 = pool.submit(aio_fun, 5)
+
+    # res1 = fut1.result()  # 8
+    # print(type(res1), res1)
+
+    # print(fut2.result())  # 28
+    # print(fut3.result())  # Hello, Funboost
+    # print(fut4.result())  # 50
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 `````
 
@@ -25855,12 +25975,17 @@ class Serialization:
 
     @staticmethod
     def to_json_str_non_strict(dic:typing.Union[dict,str]):
-        # can_not_json_serializable_keys = Serialization.find_can_not_json_serializable_keys(dic)
-        # new_msg = copy.deepcopy(Serialization.to_dict(dic))
-        # for key in can_not_json_serializable_keys:
-        #     new_msg[key] = PickleHelper.to_str(new_msg[key])
-        # return Serialization.to_json_str(new_msg)
+
         return json_helper.dict_to_un_strict_json_deep(dic)
+    
+    @staticmethod
+    def to_json_str_non_strict_use_pickle_str(dic:typing.Union[dict,str]):
+        can_not_json_serializable_keys = Serialization.find_can_not_json_serializable_keys(dic)
+        new_msg = copy.deepcopy(Serialization.to_dict(dic))
+        for key in can_not_json_serializable_keys:
+            new_msg[key] = PickleHelper.to_str(new_msg[key])
+        return Serialization.to_json_str(new_msg)
+      
 
     @staticmethod
     def to_dict(strx:typing.Union[str,dict]):
@@ -33743,7 +33868,7 @@ The first argument of the push method must be the instance of the class.
                     msg_function_kw=msg_function_kw, extra_params=extra_params, task_id=task_id)
             except Exception as e:
                 can_not_json_serializable_keys = Serialization.find_can_not_json_serializable_keys(msg_dict)
-                self.logger.warning(f'msg 中包含不能序列化的键: {can_not_json_serializable_keys}')
+                self.logger.debug(f'msg 中包含不能json序列化的键: {can_not_json_serializable_keys} ,自动使用pickle序列化')
                 # raise ValueError(f'msg 中包含不能序列化的键: {can_not_json_serializable_keys}')
                 new_msg = copy.deepcopy(Serialization.to_dict(msg_dict))
                 for key in can_not_json_serializable_keys:

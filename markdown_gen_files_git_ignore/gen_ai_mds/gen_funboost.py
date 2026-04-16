@@ -238,7 +238,9 @@ funboost_most_core_source_code_file_list=[
         use_gitignore=True,
         as_title=f"{project_name} examples",
         # 只包含 .py 和 .md 文件
-        should_include_suffixes=[".py", ".md", ".html"],
+        should_include_suffixes=[".py", ".md", 
+        # ".html"    # html文件太大了，不要被合并,会突破100万上下文
+        ],
         # 排除 __pycache__ 目录和特定的测试文件
         excluded_dir_name_list=[],
         include_ast_metadata=False,

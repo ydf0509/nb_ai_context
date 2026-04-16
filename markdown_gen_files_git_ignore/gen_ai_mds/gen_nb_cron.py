@@ -43,7 +43,7 @@ ai_md = AiMdGenerator(
         use_gitignore=True,
         as_title=f"{project_name} codes",
         # 只包含 .py 和 .md 文件
-        should_include_suffixes=[".py", ".md"],
+        should_include_suffixes=[".py", ".md",],
         # 排除 __pycache__ 目录和特定的测试文件
         excluded_dir_name_list=[
             'nb_cron/web/static'

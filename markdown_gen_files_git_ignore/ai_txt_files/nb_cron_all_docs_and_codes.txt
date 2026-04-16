@@ -269,50 +269,63 @@ Core Files (imported by other files, sorted by import count):
 --- **start of file: README.md** (project: nb_cron) --- 
 
 `````markdown
-# nb_cron
 
-**吊打 APScheduler 的 Python 定时任务框架**
+# 🚀 nb_cron
 
-nb_cron 是一个强大但极简的定时任务调度库，解决了 APScheduler 的所有痛点：
+**下一代 Python 分布式定时任务框架（全面超越 APScheduler）**
 
-| APScheduler 的问题 | nb_cron 的解决方案 |
-|---|---|
-| 多进程/多副本重复执行 | 内置分布式锁，exactly-once 语义 |
-| 序列化 lambda/嵌套函数报错 | 函数注册表 + 稳定名称，不用 pickle |
-| 没有自带 UI | 自带 Vue3 + Element Plus 管理后台 |
-| cron 不支持秒级精度 | 强制 6 字段 cron，秒级精度 |
-| 多种 Scheduler 类容易选错 | 只有一个 `NbCron` 类 |
-| misfire 行为混乱 | 策略清晰可配置 |
-| 配置复杂 | 一个 URL 字符串搞定 |
-| 时区处理混乱 | 默认本地时区，可传 `tz` 参数 |
-| 多项目共享 Redis 互相干扰 | `name` 必传，按项目隔离 key |
+nb_cron 是一个强大、极简且**专为云原生架构设计**的定时任务调度库。它不仅彻底解决了 APScheduler 常年存在的序列化崩溃、多实例重复执行等痛点，更在架构理念上实现了**“业务逻辑与调度配置的物理隔离”**，让 Python 定时任务的管理进入真正的现代化阶段。
+
+### 🥊 核心痛点对决：APScheduler vs nb_cron
+
+| 痛点场景 | 😭 APScheduler 的历史包袱 | 🤩 nb_cron 的现代解决方案 |
+| :--- | :--- | :--- |
+| **云原生多副本部署**<br>*(K8s/多容器)* | 致命弱点：多实例会**重复执行任务**，需手动硬编码第三方 Redis 锁，极易死锁。 | **天生云原生**：内置极其可靠的分布式锁（Redis/Mongo/SQL），天然支持 K8s 多副本平滑扩容，保证 **exactly-once**（绝不重复执行）。 |
+| **微服务跨项目调度** | 强耦合：任务代码和调度器必须在同一个项目中，无法集中化管理。 | **跨 Git 项目可视化编排**：首创业务与调度解耦机制。A 项目只写函数，B 项目（调度中心）通过 Web UI 动态下发定时配置。 |
+| **代码重构与序列化** | Pickle 地狱：存入 DB 的是函数内存地址，一旦代码重构（改名/移动文件路径），反序列化直接崩溃，任务全线瘫痪。 | **彻底抛弃 Pickle**：首创 `@cron_register` 稳定名称注册表，存入 DB 的仅是纯字符串。代码随便重构，只要名字在，任务照样跑。 |
+| **可视化管理后台** | 官方**没有 UI**，想要启停任务、看日志只能自己从头手搓前后端。 | **原生自带 Web UI**：内置开箱即用的 Vue3 + Element Plus 现代化后台。**前端已预编译到 `nb_cron/web`，Python 开发者无需安装 Node.js 即可一键启动。** |
+| **精度与时区** | Cron 不支持秒级精度；时区配置与 Misfire 策略行为混乱。 | **强制 6 字段 Cron**（支持秒级）；默认本地时区（可传 `tz`），Misfire 容忍策略极简可控。 |
+| **多项目共享存储** | 多项目共用一个 Redis 时极易发生 Key 冲突，互相踩踏任务。 | **强制物理隔离**：初始化必须传 `name` 参数，按项目名称进行 Redis Key 的绝对隔离。 |
+| **选择困难症** | 提供 7 种 Scheduler 类（Blocking, Background, AsyncIO...），新手永远选错。 | **大道至简**：全局只有一个 `NbCron` 类，永远在后台非阻塞运行，同时兼容同步与 `async` 异步函数。 |
+| **集群分布式消费** | 只能在本地调度并执行，面对海量重计算任务力不从心。 | **一键变身分布式 MQ**：支持无缝切换至 `FunboostExecutor`，瞬间获得**失败重试、指数退避、超时杀死**等工业级分布式消息队列消费能力。 |
+
+### ✨ 为什么 nb_cron 是“下一代”框架？
+
+传统的定时任务框架，往往把**“业务代码”**和**“定时规则（如每天凌晨两点）”**死死绑在一起。
+nb_cron 带来了全新的架构理念：
+
+1. **配置即数据，无需重启服务**：通过 Web UI 随时修改任务的 Cron 表达式或启停任务，配置实时写入 Redis 并生效，你的业务进程**全程无需重启**。
+2. **函数定义与任务调度的物理分离**：让后端开发人员只管专心写业务函数并打上 `@cron_register` 标记；让运维或运营人员在独立的 Web 页面上，通过下拉菜单选择已注册的函数，在nb_cron_ui 的前端去创建定时任务。
+
 
 ## 安装
 
+> **⚠️ 重要提示**：PyPI 上的包名是 `nb_cron_nb`（不是 `nb_cron`），因为 `nb_cron` 已被他人占用。**代码中的 import 仍然是 `from nb_cron import ...`**，只是安装时用 `pip install nb_cron_nb`。
+
 ```bash
 # 基础安装（内存存储）
-pip install nb_cron
+pip install nb_cron_nb
 
 # Redis 存储 + FastAPI Web（推荐，生产环境一行搞定）
-pip install nb_cron[redis,fastapi]
+pip install nb_cron_nb[redis,fastapi]
 
 # Redis + Flask
-pip install nb_cron[redis,flask]
+pip install nb_cron_nb[redis,flask]
 
 # 全部功能
-pip install nb_cron[all]
+pip install nb_cron_nb[all]
 ```
 
 各可选组件：
 
 | 组件 | 安装命令 | 说明 |
 |---|---|---|
-| redis | `pip install nb_cron[redis]` | Redis 存储 + 分布式锁 |
-| mongo | `pip install nb_cron[mongo]` | MongoDB 存储 + 分布式锁 |
-| sqlalchemy | `pip install nb_cron[sqlalchemy]` | SQLite/MySQL/PostgreSQL 存储 |
-| fastapi | `pip install nb_cron[fastapi]` | FastAPI Web 框架集成 |
-| flask | `pip install nb_cron[flask]` | Flask Web 框架集成 |
-| django | `pip install nb_cron[django]` | Django + Ninja 框架集成 |
+| redis | `pip install nb_cron_nb[redis]` | Redis 存储 + 分布式锁 |
+| mongo | `pip install nb_cron_nb[mongo]` | MongoDB 存储 + 分布式锁 |
+| sqlalchemy | `pip install nb_cron_nb[sqlalchemy]` | SQLite/MySQL/PostgreSQL 存储 |
+| fastapi | `pip install nb_cron_nb[fastapi]` | FastAPI Web 框架集成 |
+| flask | `pip install nb_cron_nb[flask]` | Flask Web 框架集成 |
+| django | `pip install nb_cron_nb[django]` | Django + Ninja 框架集成 |
 
 ## 快速开始
 
@@ -644,7 +657,7 @@ nb_cron 自带漂亮的管理后台，包含：
 ### 方式一：FastAPI 启动（推荐）
 
 ```bash
-pip install nb_cron[redis,fastapi]
+pip install nb_cron_nb[redis,fastapi]
 ```
 
 创建 `app.py`：
@@ -731,7 +744,7 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ### 方式二：Flask 启动
 
 ```bash
-pip install nb_cron[redis,flask]
+pip install nb_cron_nb[redis,flask]
 ```
 
 创建 `app.py`：
@@ -793,7 +806,7 @@ gunicorn app:app -w 1 -b 0.0.0.0:5000
 ### 方式三：Django 启动
 
 ```bash
-pip install nb_cron[redis,django]
+pip install nb_cron_nb[redis,django]
 ```
 
 **Step 1** — 创建调度器配置文件 `your_project/cron_config.py`：
@@ -1296,20 +1309,197 @@ cron.start() 同步        →  job 配置    ←   POST /api/jobs 创建
 
 ---
 
+## Funboost 执行器（核弹级能力）
+
+关于funboost的教程请参考：[https://funboost.readthedocs.io/zh-cn/latest/index.html](https://funboost.readthedocs.io/zh-cn/latest/index.html)
+
+
+nb_cron 默认的执行器是在本地线程池中直接调用函数。但如果你将 `executor` 指定为 `FunboostExecutor`，nb_cron 的任务触发时**不在本地执行**，而是通过 funboost 的 `.push()` 把任务推送到消息队列（Redis / RabbitMQ / Kafka / MEMORY_QUEUE 等），由 funboost worker 进程消费执行。
+
+这意味着你**瞬间获得了 funboost 的全部能力**：
+
+### 为什么 FunboostExecutor 这么强？
+
+因为 funboost 的 `BoosterParams` 提供了**工业级**的任务消费能力，一个参数类就覆盖了 99% 的调度和函数运行控制需求：
+
+| 能力 | BoosterParams 参数 | 说明 |
+|---|---|---|
+| **30+ 种消息队列** | `broker_kind` | Redis / RabbitMQ / Kafka / RocketMQ / Celery / SQS ... 30+ 种中间件随意切换 |
+| **精准控频** | `qps` | 指定每秒执行次数，支持小数（如 `0.01` = 每100秒1次），无需关心并发数 |
+| **分布式控频** | `is_using_distributed_frequency_control` | 多个消费者实例共享同一 qps 限额，总频率不超 |
+| **智能并发池** | `concurrent_num` + `concurrent_mode` | 线程/协程/协程+多进程/单线程，自适应扩缩容，任务少时自动缩减线程 |
+| **自动重试** | `max_retry_times` | 函数出错自动重试，支持指数退避（`is_using_advanced_retry`） |
+| **指数退避重试** | `advanced_retry_config` | `1s → 2s → 4s → 8s → 16s → 32s → 60s...`，支持 sleep 模式和 requeue 模式 |
+| **死信队列** | `is_push_to_dlx_queue_when_retry_max_times` | 重试耗尽后自动进入死信队列，不丢消息 |
+| **函数超时** | `function_timeout` | 运行超时自动杀死，防止任务卡死 |
+| **消息过期** | `msg_expire_seconds` | 消息超过指定时间自动丢弃，不执行过期任务 |
+| **任务去重** | `do_task_filtering` + `task_filtering_expire_seconds` | 相同参数的任务自动去重，防止重复执行 |
+| **运行时间限制** | `allow_run_time_cron` | 只在指定 cron 时间段内消费执行，如 `* 9-17 * * 1-5` 仅工作日上班时间 |
+| **执行结果持久化** | `function_result_status_persistance_conf` | 保存函数入参、运行结果、运行状态到 MongoDB，可追溯 |
+| **RPC 模式** | `is_using_rpc_mode` | 发布端可同步获取消费端的执行结果 |
+| **多进程消费** | `mp_consume(process_num=N)` | 协程/线程 + 多进程叠加，性能炸裂 |
+| **消费者分组** | `booster_group` | 按业务分组启动消费者，灵活管理 |
+| **自定义并发池** | `specify_concurrent_pool` | 多个消费者共享一个线程池，节约资源 |
+| **async 支持** | `specify_async_loop` | 指定 event loop，支持 aiohttp 等要求同 loop 的异步库 |
+
+### 安装
+
+```bash
+pip install nb_cron_nb[redis] funboost
+```
+
+### 基本用法
+
+```python
+from funboost import BoosterParams, BrokerEnum
+from nb_cron import NbCron, cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+
+# 创建 funboost 执行器，BoosterParams 的所有参数都支持 IDE 自动补全
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",       # 消息队列名
+        broker_kind=BrokerEnum.REDIS,         # 中间件类型，30+ 种可选
+        concurrent_num=50,                    # 并发数
+        qps=20,                               # 精准控频：每秒最多执行 20 次
+        max_retry_times=3,                    # 失败自动重试 3 次
+        is_using_distributed_frequency_control=True,  # 分布式控频
+    )
+)
+
+# NbCron 构造时自动调用 executor.bind_cron(self)
+# worker 执行完后直接用 cron.metrics.record() 写指标，无需重建 store
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+@cron.job("0 */5 * * * *", kwargs={"user_id": 42})
+@cron_register('my_task')
+def my_task(user_id: int):
+    print(f"processing user {user_id}")
+
+# 启动 funboost 消费者 + nb_cron 调度器
+funboost_executor.consume()   # 单进程消费（非阻塞）
+# funboost_executor.mp_consume(process_num=4)  # 多进程消费，性能炸裂
+cron.start()
+```
+
+### 工作原理
+
+```
+nb_cron 调度器               funboost 消息队列              funboost worker
+cron tick 触发任务  ─push()→  Redis/RabbitMQ/Kafka  ─consume()→  解析 cron_func_name
+计算 next_run_time           持久化存储，不丢消息            FunctionRegistry.resolve()
+分布式锁防重复                                               执行函数 + 上报 metrics
+```
+
+**关键区别**：默认执行器是「调度 + 执行在同一进程」，FunboostExecutor 是「调度端 push，消费端执行」，天然解耦。
+
+### 高级用法
+
+`BoosterParams` 的 入参非常丰富，各种函数控制功能都有，所以`nb_cron`的执行器可以充分借助`funboost`的威力，所以作者没有给`nb_cron`默认的本地线程池executor加太多功能，例如重试功能/超时杀死功能等。因为你即使没有安装任何消息队列，也可以 `BoosterParams(...,broker_kind=BrokerEnum.MEMORY_QUEUE)` 来使用funboost的内存队列。
+
+#### 1. 指数退避重试
+
+```python
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",
+        broker_kind=BrokerEnum.REDIS,
+        max_retry_times=5,
+        is_using_advanced_retry=True,
+        advanced_retry_config={
+            'retry_mode': 'requeue',          # requeue 模式：消息发回队列延迟重试，不占线程
+            'retry_base_interval': 1.0,        # 基础间隔 1s
+            'retry_multiplier': 2.0,           # 指数退避倍数
+            'retry_max_interval': 60.0,        # 最大间隔 60s
+            'retry_jitter': True,              # 随机抖动，防止惊群
+        },
+    )
+)
+# 重试间隔：1s → 2s → 4s → 8s → 16s → 32s → 60s → 60s...
+```
+#### 2. Worker 独立进程部署（横向扩展）
+
+调度端和消费端可以完全分离部署，消费端可以独立横向扩展：
+
+```python
+# scheduler.py — 调度端（只 push，不消费）
+from nb_cron import NbCron, cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS)
+)
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+@cron.job("0 */5 * * * *")
+@cron_register('my_task')
+def my_task():
+    print("执行任务")
+
+cron.start()  # 只调度，不消费
+
+# worker.py — 消费端（独立进程，可部署多台机器）
+from nb_cron import NbCron
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+import my_tasks  # 触发 @cron_register，让注册表生效
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS)
+)
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+funboost_executor.mp_consume(process_num=4)  # 4 进程消费
+```
+
+#### 3. 自定义指标回调
+
+```python
+def my_recorder(job_id, success, duration_ms, error):
+    # 同时上报 Prometheus / 自定义监控系统
+    prometheus_metrics.labels(job_id=job_id).observe(duration_ms)
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS),
+    metrics_recorder=my_recorder,
+)
+```
+
+### FunboostExecutor vs 默认执行器
+
+| 特性 | 默认 Executor | FunboostExecutor |
+|---|---|---|
+| 执行方式 | 本地线程池直接调用 | push 到消息队列，worker 消费执行 |
+| 消息持久化 | ❌ 进程崩溃任务丢失 | ✅ 消息队列持久化，不丢任务 |
+| 横向扩展 | ❌ 只能单进程 | ✅ worker 独立部署，无限扩展 |
+| 精准控频 | ❌ | ✅ qps 参数，支持分布式控频 |
+| 自动重试 | ❌ | ✅ max_retry_times + 指数退避 |
+| 任务去重 | ❌ | ✅ do_task_filtering |
+| 消息过期 | ❌ | ✅ msg_expire_seconds |
+| 死信队列 | ❌ | ✅ 重试耗尽自动进入死信队列 |
+| 函数超时 | ❌ | ✅ function_timeout |
+| 运行时间限制 | ❌ | ✅ allow_run_time_cron |
+| 30+ 种消息队列 | ❌ | ✅ broker_kind 一键切换 |
+| 多进程消费 | ❌ | ✅ mp_consume(process_num=N) |
+| 执行结果持久化 | ✅ (store) | ✅ (store + funboost MongoDB) |
+
+---
+
 ## 运行示例
 
 ```bash
 # FastAPI + Redis（推荐）
 cd examples
-pip install nb_cron[redis,fastapi]
+pip install nb_cron_nb[redis,fastapi]
 uvicorn example_fastapi_redis:app --reload
 
 # Flask + Redis
-pip install nb_cron[redis,flask]
+pip install nb_cron_nb[redis,flask]
 python example_flask_redis.py
 
 # 最简示例（无需 Redis）
-pip install nb_cron[fastapi]
+pip install nb_cron_nb[fastapi]
 uvicorn example_memory_simple:app --reload
 
 # 跨 Git 项目示例（重点推荐）
@@ -1349,8 +1539,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nb_cron"
-version = "0.1.0"
+name = "nb_cron_nb"
+version = "0.1.1"
 description = "A powerful and simple cron job scheduler that dominates APScheduler"
 readme = "README.md"
 license = {text = "MIT"}
@@ -1385,7 +1575,7 @@ fastapi = ["fastapi>=0.100.0", "uvicorn>=0.20.0"]
 flask = ["flask>=2.0.0"]
 django = ["django>=3.2.0", "django-ninja>=0.22.0"]
 all = [
-    "nb_cron[redis,mongo,sqlalchemy,fastapi,flask,django]",
+    "nb_cron_nb[redis,mongo,sqlalchemy,fastapi,flask,django]",
 ]
 dev = [
     "pytest>=7.0.0",
@@ -1438,7 +1628,11 @@ include = ["nb_cron*"]
 ---
 
 
+<<<<<<< HEAD
 ## nb_cron (relative dir: `examples`)  Included Files (total: 12 files)
+=======
+## nb_cron (relative dir: `examples`)  Included Files (total: 11 files)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 
 - `examples/demo1.py`
@@ -1689,7 +1883,7 @@ print("调度器已启动，按 Ctrl+C 退出")
 nb_cron + Django + Redis 集成指南
 
 安装依赖:
-    pip install nb_cron[redis,django]
+    pip install nb_cron_nb[redis,django]
 
 使用方式: 把以下代码集成到你的 Django 项目中
 
@@ -1794,7 +1988,7 @@ python manage.py runserver 0.0.0.0:8000
 nb_cron + FastAPI + Redis 完整示例
 
 安装依赖:
-    pip install nb_cron[redis,fastapi]
+    pip install nb_cron_nb[redis,fastapi]
 
 启动方式:
     uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
@@ -1908,7 +2102,7 @@ if __name__ == "__main__":
 nb_cron + Flask + Redis 完整示例
 
 安装依赖:
-    pip install nb_cron[redis,flask]
+    pip install nb_cron_nb[redis,flask]
 
 启动方式（开发）:
     python example_flask_redis.py
@@ -1983,7 +2177,7 @@ if __name__ == "__main__":
 nb_cron 最简示例（内存存储，无需 Redis）
 
 安装:
-    pip install nb_cron[fastapi]
+    pip install nb_cron_nb[fastapi]
 
 启动:
     uvicorn example_memory_simple:app --reload
@@ -2147,10 +2341,10 @@ cron.start()
 nb_cron + FastAPI + Redis 完整示例
 
 安装依赖:
-    pip install nb_cron[redis,fastapi]
+    pip install nb_cron_nb[redis,fastapi]
 
 启动方式:
-    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
 
 访问地址:
     管理后台 UI:  http://localhost:8000/nb_cron/ui/
@@ -2171,7 +2365,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelna
 # proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
 
 
+<<<<<<< HEAD
 proj2_fast_api_cron = NbCron("my_project", "redis://localhost:6379/0")
+=======
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 # ─── 创建 FastAPI app（自带 UI + API） ───
 app = get_fastapi_app(proj2_fast_api_cron)
@@ -2460,10 +2658,10 @@ nb_cron:example_proj1b:jobs:daily_backup = {
 
 ```bash
 # 基础依赖（项目 1）
-pip install nb_cron[redis]
+pip install nb_cron_nb[redis]
 
 # 完整依赖（项目 2）
-pip install nb_cron[redis,fastapi]
+pip install nb_cron_nb[redis,fastapi]
 ```
 
 ### 2. 安装并启动 Redis
@@ -2796,7 +2994,7 @@ redis-cli
 nb_cron + FastAPI + Redis 完整示例
 
 安装依赖:
-    pip install nb_cron[redis,fastapi]
+    pip install nb_cron_nb[redis,fastapi]
 
 启动方式:
     uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
@@ -2971,7 +3169,7 @@ docker run -d -p 6379:6379 redis:latest
 
 ```bash
 cd examples/demo_cross_git_project_manage_corn_tasks
-pip install nb_cron[redis]
+pip install nb_cron_nb[redis]
 python proj1.py
 ```
 
@@ -2996,7 +3194,7 @@ python proj1.py
 
 ```bash
 cd examples/demo_cross_git_project_manage_corn_tasks
-pip install nb_cron[redis,fastapi]
+pip install nb_cron_nb[redis,fastapi]
 uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -3393,6 +3591,7 @@ nb_cron + funboost 集成示例（同进程模式）
 
 安装依赖::
 
+<<<<<<< HEAD
     pip install nb_cron[redis] funboost
 
 运行::
@@ -3404,6 +3603,22 @@ from funboost import BoosterParams, BrokerEnum
 
 from nb_cron import NbCron, cron_register, add_cron_register
 from nb_cron.executors.funboost_executor import FunboostExecutor
+=======
+    pip install nb_cron_nb[redis] funboost
+
+运行::
+
+    python example_auto_execute_by_funboost.py
+"""
+import logging
+import time
+import asyncio
+import uvicorn
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+from nb_cron.web.app import get_fastapi_app
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 logging.basicConfig(
     level=logging.INFO,
@@ -3430,6 +3645,7 @@ def cleanup():
 # ─── 创建 funboost 执行器 ──────────────────────────────────────────
 # 使用 BoosterParams，IDE 可自动补全所有参数
 
+<<<<<<< HEAD
 executor = FunboostExecutor(
     BoosterParams(
         queue_name="nb_cron_dispatch",
@@ -3448,6 +3664,26 @@ cron = NbCron(
     "my_project",
     "redis://localhost:6379/0",
     executor=executor,
+=======
+"""
+# 实际上NbCron的executor 永远无脑用 FunboostExecutor 就好了,默认自带的 ThreadExecutor 是简单实现，没有FunboostExecutor的丰富功能，
+# 因为你即使不想安装消息队列，也可以用 broker_kind=BrokerEnum.MEMORY_QUEUE 内存队列作为broker，所以没必要用默认的ThreadExecutor 。
+"""
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",
+        broker_kind=BrokerEnum.REDIS,
+        concurrent_num=10, # FunboostExecutor是从BoosterParams 指定线程数量，不依赖NbCron的max_workers参数
+        qps=20,
+        max_retry_times=3, #重试三次，默认的thread_executor不能设置重试等功能。
+    )
+)
+
+cron = NbCron(
+    "my_project",
+    "redis://localhost:6379/0",
+    executor=funboost_executor,
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 )
 
 # ─── 注册定时任务 ─────────────────────────────────────────────────────
@@ -3455,8 +3691,20 @@ cron = NbCron(
 @cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务")
 @cron_register('heartbeat')
 def heartbeat():
+<<<<<<< HEAD
     print("[heartbeat] via funboost!")
 
+=======
+    time.sleep(1)
+    print("[heartbeat] via funboost!")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务aio")
+@cron_register('aio_heartbeat')
+async def aio_heartbeat():
+    await asyncio.sleep(1)
+    print("[aio_heartbeat] via funboost!")
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 cron.add_job(
     send_report, "0 0 8 * * *", trigger="cron", name="每日报告",
@@ -3467,19 +3715,35 @@ cron.add_job(sync_users, "0 0 * * * *", trigger="cron", name="每小时同步",
 cron.add_job(cleanup, "0 30 2 * * *", trigger="cron", name="每晚清理")
 
 
+<<<<<<< HEAD
+=======
+app = get_fastapi_app(cron=cron)
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 # ─── 启动 ────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     # 启动 funboost consume（consume() 本身非阻塞）
+<<<<<<< HEAD
     executor.mp_consume(process_num=2)
+=======
+    funboost_executor.mp_consume(process_num=2)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
     # 启动 nb_cron 调度器（非阻塞，Ctrl+C 退出）
     cron.start()
 
+<<<<<<< HEAD
     print("\nnb_cron + funboost 已启动（同进程模式）")
     print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
     print("Ctrl+C 退出")
 
+=======
+    print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
+  
+    # 使用fastapi来启动web界面，可以放在同一个项目启动，也可以在跨不同的git项目从页面管理定时任务。，参考examples\demo_cross_git_project_manage_corn_tasks
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 `````
 
 --- **end of file: examples/use_funboost/example_auto_execute_by_funboost.py** (project: nb_cron) --- 
@@ -3497,7 +3761,11 @@ from funboost import boost, BoosterParams, BrokerEnum, ctrl_c_recv
 # 1. 定义任务函数
 @boost(BoosterParams(
     queue_name='hello_queue66',
+<<<<<<< HEAD
     broker_kind=BrokerEnum.REDIS,  # 使用本地 SQLite 文件作为队列，零依赖
+=======
+    broker_kind=BrokerEnum.REDIS,  # 使用 Redis 作为消息队列
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     qps=2,                                # 精准控频：每秒执行 2 次
     concurrent_num=5,                     # 最多 5 个线程并发
 ))
@@ -3725,7 +3993,7 @@ def execute_by_funboost(job_id: str,cron_func_name: str, args: tuple = (), kwarg
 `````python
 import asyncio
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Callable, Optional
 
 logger = logging.getLogger("nb_cron")
@@ -3853,7 +4121,7 @@ def create_router(cron):
         from ninja import Router
     except ImportError:
         raise ImportError(
-            "django-ninja is required. Install with: pip install nb_cron[django]"
+            "django-ninja is required. Install with: pip install nb_cron_nb[django]"
         )
 
     router = Router()
@@ -3934,7 +4202,7 @@ def create_router(cron):
         from fastapi.responses import JSONResponse
     except ImportError:
         raise ImportError(
-            "fastapi is required. Install with: pip install nb_cron[fastapi]"
+            "fastapi is required. Install with: pip install nb_cron_nb[fastapi]"
         )
 
     router = APIRouter(prefix="/nb_cron/api", tags=["nb_cron"])
@@ -4012,7 +4280,7 @@ def create_blueprint(cron):
         from flask import Blueprint, jsonify, request
     except ImportError:
         raise ImportError(
-            "flask is required. Install with: pip install nb_cron[flask]"
+            "flask is required. Install with: pip install nb_cron_nb[flask]"
         )
 
     bp = Blueprint("nb_cron_api", __name__, url_prefix="/nb_cron/api")
@@ -4087,7 +4355,7 @@ so a standalone web project can manage jobs across Git repositories.
 """
 from typing import Any, Dict, List, Optional
 
-from nb_cron.core.scheduler import NbCron, _parse_expression
+from nb_cron.core.scheduler import NbCron
 from nb_cron.cron_utils.translator import explain_cron
 
 
@@ -4100,7 +4368,6 @@ def handle_get_jobs(cron: NbCron) -> Dict[str, Any]:
         m = all_metrics.get(job.job_id)
         d["metrics"] = m
         try:
-            from nb_cron.triggers.cron_trigger import CronTrigger
             trigger = cron._rebuild_trigger(job)
             d["trigger_description_zh"] = trigger.get_description("zh")
             d["trigger_description_en"] = trigger.get_description("en")
@@ -4239,7 +4506,6 @@ def handle_health(cron: NbCron) -> Dict[str, Any]:
 --- **start of file: nb_cron/api/schemas.py** (project: nb_cron) --- 
 
 `````python
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
@@ -4260,7 +4526,7 @@ class JobResponse(BaseModel):
     job_id: str
     func_ref: str
     trigger_type: str
-    trigger_args: Dict[str, Any] = {}
+    trigger_args: Dict[str, Any] = Field(default_factory=dict)
     name: str
     status: str
     max_instances: int = 1
@@ -5630,13 +5896,21 @@ Funboost 执行器。
     # NbCron 构造时会自动把自身注入给 executor，worker 端直接复用 metrics
     cron = NbCron("my_project", "redis://localhost:6379/0", executor=executor)
 
+<<<<<<< HEAD
     @cron.job("0 */5 * * * *")
+=======
+    @cron.job("0 */5 * * * *", kwargs={"user_id": 42})
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     @cron_register('my_task')
     def my_task(user_id: int):
         print(f"processing user {user_id}")
 
     # 启动 funboost consume（consume() 本身非阻塞）+ scheduler
+<<<<<<< HEAD
     executor.consume()  # 或 executor.mp_consume(process_num=4)
+=======
+    executor.consume()
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     cron.start()
 
 Worker 端单独进程（可横向扩展）::
@@ -5668,12 +5942,35 @@ import logging
 import time as _time
 import traceback
 from typing import Any, Callable, Dict, Optional, Tuple
+<<<<<<< HEAD
 
 from nb_cron.executors.base_executor import BaseExecutor
 from funboost import boost, BoosterParams
 
 logger = logging.getLogger("nb_cron.funboost_executor")
 
+=======
+import inspect
+
+import asyncio
+import threading
+
+
+
+from nb_cron.executors.base_executor import BaseExecutor
+from funboost import boost, BoosterParams, ConcurrentModeEnum
+
+logger = logging.getLogger("nb_cron.funboost_executor")
+
+tl = threading.local()
+
+
+def _get_thread_local_loop() -> asyncio.AbstractEventLoop:
+    if not hasattr(tl, 'asyncio_loop'):
+        loop = asyncio.new_event_loop()
+        tl.asyncio_loop = loop
+    return tl.asyncio_loop
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 class FunboostExecutor(BaseExecutor):
     """
@@ -5695,6 +5992,7 @@ class FunboostExecutor(BaseExecutor):
         booster_params: "BoosterParams",
         metrics_recorder: Optional[Callable[[str, bool, float, Optional[str]], None]] = None,
     ):
+<<<<<<< HEAD
         self._booster_params = booster_params
         self._metrics_recorder = metrics_recorder
         # NbCron 构造时会自动赋值（见 NbCron.__init__）
@@ -5703,6 +6001,16 @@ class FunboostExecutor(BaseExecutor):
         self.consume = self.booster.consume
         self.mp_consume = self.booster.mp_consume
     
+=======
+        self.booster_params = booster_params
+        self.booster_params.concurrent_mode = ConcurrentModeEnum.THREADING # 用户无需指定并发模式，_nb_cron_dispatch函数内部自动处理asyncio和同步函数
+        self._metrics_recorder = metrics_recorder
+        # NbCron 构造时会自动赋值（见 NbCron.__init__）
+        self._cron: Optional[Any] = None
+        self.booster = self._build_booster()
+        self.consume = self.booster.consume
+        self.mp_consume = self.booster.mp_consume
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
     # ── NbCron 注入 ──────────────────────────────────────────────────
 
@@ -5726,9 +6034,15 @@ class FunboostExecutor(BaseExecutor):
             return self._cron.metrics.record
         return None
 
+<<<<<<< HEAD
     def _build_dispatch_func(self):
         """构建 @boost 装饰的统一 dispatch 函数。"""
         booster_params = self._booster_params
+=======
+    def _build_booster(self):
+        """构建 @boost 装饰的统一 dispatch 函数。"""
+        booster_params = self.booster_params
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         executor_ref = self
 
         @boost(booster_params)
@@ -5747,10 +6061,36 @@ class FunboostExecutor(BaseExecutor):
             start = _time.monotonic()
             success = False
             error_msg: Optional[str] = None
+<<<<<<< HEAD
 
             try:
                 func = FunctionRegistry.resolve(cron_func_name)
                 result = func(*args, **(kwargs or {}))
+=======
+            kwargs = kwargs or {}
+
+            try:
+                func = FunctionRegistry.resolve(cron_func_name)
+                if inspect.iscoroutinefunction(func):
+                    has_specify_async_loop = None
+                    loop = booster_params.specify_async_loop
+                    if loop is not None:
+                        has_specify_async_loop = True
+                    else:
+                        has_specify_async_loop = False
+                        loop = _get_thread_local_loop()
+                    if has_specify_async_loop:
+                        """
+                        # 有些aio三方包，例如aiohttp的cleint需要确保实例化和发请求，必须在同一个loop运行，此时必须指定loop。 
+                        # 如果指定了loop，用户记得还要去亲自去启动looploop.run_forever()，否则async def的函数不会被执行。
+                        """
+                        future = asyncio.run_coroutine_threadsafe(func(*args, **kwargs ), loop)
+                        result = future.result()
+                    else:
+                        result = loop.run_until_complete(func(*args, **kwargs))
+                else:
+                    result = func(*args, **kwargs)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
                 success = True
                 return result
             except Exception as exc:
@@ -5795,7 +6135,11 @@ class FunboostExecutor(BaseExecutor):
         """推入 funboost 队列。callback 被忽略（执行在 worker 进程）。"""
         logger.debug(
             "push to funboost: job_id=%s func=%s queue=%s",
+<<<<<<< HEAD
             job_id, func_ref, self._booster_params.queue_name,
+=======
+            job_id, func_ref, self.booster_params.queue_name,
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         )
         self.booster.push(
             cron_func_name=func_ref,
@@ -5803,6 +6147,7 @@ class FunboostExecutor(BaseExecutor):
             kwargs=kwargs or {},
             job_id=job_id,
         )
+<<<<<<< HEAD
         
     
 
@@ -5823,6 +6168,10 @@ class FunboostExecutor(BaseExecutor):
     #     )
     #     self._dispatch_func.mp_consume(process_num=process_num)
 
+=======
+
+    
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     def shutdown(self, wait: bool = True) -> None:
         pass
 
@@ -6111,7 +6460,7 @@ class MongoLock(BaseLock):
         except ImportError:
             raise ImportError(
                 "pymongo package is required for MongoLock. "
-                "Install with: pip install nb_cron[mongo]"
+                "Install with: pip install nb_cron_nb[mongo]"
             )
         self._client = MongoClient(url)
         self._collection = self._client[db_name][f"nb_cron_{name}_locks"]
@@ -6174,7 +6523,7 @@ class RedisLock(BaseLock):
         except ImportError:
             raise ImportError(
                 "redis package is required for RedisLock. "
-                "Install with: pip install nb_cron[redis]"
+                "Install with: pip install nb_cron_nb[redis]"
             )
         self._client = redis.Redis.from_url(url, decode_responses=True)
         self._token = str(uuid.uuid4())
@@ -6227,7 +6576,7 @@ class SQLAlchemyLock(BaseLock):
         except ImportError:
             raise ImportError(
                 "sqlalchemy package is required for SQLAlchemyLock. "
-                "Install with: pip install nb_cron[sqlalchemy]"
+                "Install with: pip install nb_cron_nb[sqlalchemy]"
             )
         self._engine = create_engine(url, pool_pre_ping=True)
         self._Session = sessionmaker(bind=self._engine)
@@ -6314,10 +6663,8 @@ __all__ = ["BaseLock"]
 
 `````python
 import threading
-import time
-from collections import deque
 from datetime import datetime, timezone
-from typing import Any, Deque, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from nb_cron.stores.base import BaseStore
 from nb_cron.utils import truncate_string
@@ -6408,7 +6755,7 @@ class MetricsCollector:
             else:
                 hourly[hour_idx]["fail"] += 1
 
-        self._store.save_metrics(job_id, m)
+            self._store.save_metrics(job_id, m)
 
     def get_metrics(self, job_id: str) -> Dict[str, Any]:
         with self._lock:
@@ -6558,7 +6905,11 @@ class BaseStore(ABC):
 `````python
 import copy
 import threading
+<<<<<<< HEAD
 from datetime import datetime, timedelta, timezone
+=======
+from datetime import datetime
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 from typing import Any, Dict, List, Optional
 
 from nb_cron.core.job import Job
@@ -6682,7 +7033,7 @@ class MongoStore(BaseStore):
         except ImportError:
             raise ImportError(
                 "pymongo package is required for MongoStore. "
-                "Install with: pip install nb_cron[mongo]"
+                "Install with: pip install nb_cron_nb[mongo]"
             )
         self._client = MongoClient(url)
         self._db = self._client[db_name]
@@ -6815,7 +7166,7 @@ class RedisStore(BaseStore):
         except ImportError:
             raise ImportError(
                 "redis package is required for RedisStore. "
-                "Install with: pip install nb_cron[redis]"
+                "Install with: pip install nb_cron_nb[redis]"
             )
         self._client = redis.Redis.from_url(url, decode_responses=True)
         self._jobs_key = f"nb_cron:{name}:jobs"
@@ -6959,7 +7310,7 @@ class SQLAlchemyStore(BaseStore):
         except ImportError:
             raise ImportError(
                 "sqlalchemy package is required for SQLAlchemyStore. "
-                "Install with: pip install nb_cron[sqlalchemy]"
+                "Install with: pip install nb_cron_nb[sqlalchemy]"
             )
 
         self._engine = create_engine(url, pool_pre_ping=True)
@@ -7591,7 +7942,7 @@ def get_fastapi_app(cron, title: str = "nb_cron", **kwargs):
         from fastapi.middleware.cors import CORSMiddleware
         from fastapi.responses import FileResponse, HTMLResponse
     except ImportError:
-        raise ImportError("Install with: pip install nb_cron[fastapi]")
+        raise ImportError("Install with: pip install nb_cron_nb[fastapi]")
 
     from nb_cron.api.fastapi_app import create_router
 
@@ -7603,6 +7954,11 @@ def get_fastapi_app(cron, title: str = "nb_cron", **kwargs):
         allow_headers=["*"],
     )
     app.include_router(create_router(cron))
+
+    @app.get("/")
+    async def redirect_to_ui():
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(url="/nb_cron/ui/")
 
     if STATIC_DIR.exists():
         assets_root = (STATIC_DIR / "assets").resolve()
@@ -7656,7 +8012,7 @@ def get_flask_app(cron, **kwargs):
         try:
             from flask import Flask, send_from_directory, send_file
         except ImportError:
-            raise ImportError("Install with: pip install nb_cron[flask]")
+            raise ImportError("Install with: pip install nb_cron_nb[flask]")
 
     from nb_cron.api.flask_app import create_blueprint
 
@@ -7668,6 +8024,11 @@ def get_flask_app(cron, **kwargs):
         pass
 
     app.register_blueprint(create_blueprint(cron))
+
+    @app.route("/")
+    def redirect_to_ui():
+        from flask import redirect
+        return redirect("/nb_cron/ui/")
 
     if STATIC_DIR.exists():
         @app.route("/nb_cron/ui/favicon.svg")
@@ -7699,14 +8060,14 @@ def get_django_urls(cron):
         from django.urls import path
         from django.http import FileResponse as DjFileResponse, HttpResponse
     except ImportError:
-        raise ImportError("Install with: pip install nb_cron[django]")
+        raise ImportError("Install with: pip install nb_cron_nb[django]")
 
     from nb_cron.api.django_app import create_router
 
     try:
         from ninja import NinjaAPI
     except ImportError:
-        raise ImportError("Install with: pip install nb_cron[django]")
+        raise ImportError("Install with: pip install nb_cron_nb[django]")
 
     api = NinjaAPI(urls_namespace="nb_cron")
     api.add_router("/nb_cron/api", create_router(cron))
@@ -7736,7 +8097,12 @@ def get_django_urls(cron):
             "<h1>nb_cron UI not built</h1><p>Run: cd nb_cron_ui && npm run build</p>"
         )
 
+    def redirect_to_ui(request):
+        from django.http import HttpResponseRedirect
+        return HttpResponseRedirect("/nb_cron/ui/")
+
     urls = [
+        path("", redirect_to_ui),
         path("nb_cron/api/", api.urls),
         path("nb_cron/ui/assets/<path:path>", serve_ui_asset),
         path("nb_cron/ui/", serve_spa),

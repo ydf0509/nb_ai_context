@@ -184,6 +184,8 @@
 - `from funboost.core.current_task import funboost_current_task`
 - `from funboost.core.current_task import fct`
 - `from funboost.core.current_task import get_current_taskid`
+- `from funboost.core.funboost_pool import MemoryFunboostPool`
+- `from funboost.core.funboost_pool import FunboostPool`
 
 
 ---
@@ -2514,13 +2516,14 @@ Entry Points (not imported by other project files):
   行439: ### 1.3.2 🔥 进阶实战：RPC、定时任务与丝滑连招
   行519: ### 1.3.3 ✂️ 极简写法：省略 `@boost`
   行530: ### 1.3.4 ❌ 过时写法： 直接在 @boost传各种配置入参，不推荐
-  行540: ## 🖥️ funweb (Funboost Web Manager) 界面预览
-  行564: ## 1.4 💡 为什么 Python 极其需要分布式函数计算？
-  行568: ### 1️⃣ 痛点一：GIL 锁的限制 (多核利用率低)
-  行576: ### 2️⃣ 痛点二：原生性能瓶颈 (动态语言特性)
-  行588: ## 1.5 🎓 最佳学习路径
-  行607: ## 1.6 🥋 funboost 练就吸星大法神功，一招吸走 Celery 毕生内力
-  行617: ### ⚔️ 降维打击：化繁为简的绝世武功
+  行539: ### 1.3.5 FunboostPool 完美平替 concurrent.futures.ThreadPoolExecutor
+  行552: ## 🖥️ funweb (Funboost Web Manager) 界面预览
+  行576: ## 1.4 💡 为什么 Python 极其需要分布式函数计算？
+  行580: ### 1️⃣ 痛点一：GIL 锁的限制 (多核利用率低)
+  行588: ### 2️⃣ 痛点二：原生性能瓶颈 (动态语言特性)
+  行600: ## 1.5 🎓 最佳学习路径
+  行619: ## 1.6 🥋 funboost 练就吸星大法神功，一招吸走 Celery 毕生内力
+  行629: ### ⚔️ 降维打击：化繁为简的绝世武功
 
 ============================================================
 文件: c10.md
@@ -2961,9 +2964,13 @@ Entry Points (not imported by other project files):
   行3577: ### 4.37.6. 命令行启动 (CLI)
   行3586: ### 4.37.7. 远程自动部署启动 (Fabric)
   行3596: ### 4.37.8. Celery 模式启动 (特殊)
-  行3609: ## 4.100 使用funboost时候对框架的疑问和猜测，使用控制变量法
-  行3671: ### 4.100.b 举个例子，验证测试框架的超时杀死 function_timeout参数的作用
-  行3718: ## 4.200 [分布式函数调度框架qq群]
+  行3602: ## 4.38 MemoryFunboostPool 和 FunboostPool 的使用
+  行3606: ### 4.38.1 MemoryFunboostPool：内存增强型任务池
+  行3638: ### 4.38.2 FunboostPool：全能与分布式任务池
+  行3705: ### 4.38.3 选择指南
+  行3722: ## 4.100 使用funboost时候对框架的疑问和猜测，使用控制变量法
+  行3784: ### 4.100.b 举个例子，验证测试框架的超时杀死 function_timeout参数的作用
+  行3831: ## 4.200 [分布式函数调度框架qq群]
 
 ============================================================
 文件: c4b.md
@@ -4849,6 +4856,18 @@ def task_fun(a, b):
     return a + b
 ```
 
+### 1.3.5 FunboostPool 完美平替 concurrent.futures.ThreadPoolExecutor
+
+`FunboostPool` 完美平替 `concurrent.futures.ThreadPoolExecutor`，只需要替换一行实例化代码，无任何负担，兼容用户老项目到极致了。
+
+详见教程 4.38章节 `## 4.38 MemoryFunboostPool 和 FunboostPool 的使用`
+
+```python
+from funboost import MemoryFunboostPool
+pool = MemoryFunboostPool(10,) # 完美支持submit 和map，入参和返回类型一致。
+future = pool.submit(task_fun, 1, 2) # future类型是 concurrent.futures.Future 。
+print(future.result()) # 一样能通过future获取结果
+```
 
 ## 🖥️ funweb (Funboost Web Manager) 界面预览
 
@@ -14145,7 +14164,120 @@ task_fun.fabric_deploy('192.168.1.100', 22, 'root', 'pwd', ...,process_num=2)
 *   **特点**: 启动的是 Celery 的 Worker，完全复用 Celery 的生态。
 
 
+## 4.38 MemoryFunboostPool 和 FunboostPool 的使用
 
+`funboost` 提供了 `MemoryFunboostPool` 和 `FunboostPool` 两个任务池类，它们的 `submit` 和 `map` 方法 API 完全兼容 `concurrent.futures.ThreadPoolExecutor`。您可以轻松地将项目中的线程池替换为它们，从而获得智能线程伸缩、支持异步函数、QPS 控频、分布式部署等高级能力。
+
+### 4.38.1 MemoryFunboostPool：内存增强型任务池
+
+`MemoryFunboostPool` 固定使用内存队列 (`MEMORY_QUEUE`) 驱动，且固定 `max_retry_times=0`，行为与 `ThreadPoolExecutor` 最为接近。它是一个开箱即用的增强型线程池，可直接替代原生线程池。
+
+**4.38.1.1 基础用法**
+
+```python
+from funboost.core.funboost_pool import MemoryFunboostPool
+
+def add(a, b):
+    return a + b
+
+# 实例化任务池
+pool = MemoryFunboostPool(10, qps=20,)
+
+# 提交单个任务
+future = pool.submit(add, 5, 3)
+print(future.result())  # 输出: 8
+
+# 使用 map 批量提交
+results = pool.map(add, [1, 2, 3], [4, 5, 6])
+print(list(results))  # 输出: [5, 7, 9]
+```
+
+**4.38.1.2 参数说明**
+
+| 参数名 | 类型 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `concurrent_num` | `int` | `4` | 最大并发线程数。 |
+| `qps` | `int` | `100` | 每秒任务处理速率限制。 |
+| `is_future_direct_ret_result` | `bool` | `True` | `future.result()` 直接返回业务结果还是返回 `FunctionResultStatus` 对象。 |
+
+### 4.38.2 FunboostPool：全能与分布式任务池
+
+`FunboostPool` 继承自 `MemoryFunboostPool`，通过 `BoosterParams` 进行配置，既可以使用内存队列作为增强型本地任务池，也可以使用外部消息队列（如 Redis）实现分布式任务调度，并可使用 `funboost` 的全部控制功能（如重试、去重、持久化等）。
+
+**4.38.2.1 基础用法：本地内存队列**
+
+此用法明确指定 `broker_kind=BrokerEnum.MEMORY_QUEUE`，使 `FunboostPool` 工作在本地内存模式，但可以配置更多控制参数（如重试次数）。
+
+```python
+from funboost.core.funboost_pool import FunboostPool
+from funboost import BoosterParams, BrokerEnum
+
+def double_value(x):
+    return x * 2
+
+# 配置本地内存队列任务池
+params = BoosterParams(
+    queue_name="local_pool",
+    broker_kind=BrokerEnum.MEMORY_QUEUE,  # 明确指定为内存队列
+    concurrent_num=10,
+    qps=30,
+    max_retry_times=2                     # 可配置重试次数
+)
+
+pool = FunboostPool(params, )
+
+# 提交任务
+future = pool.submit(double_value, 10)
+print(future.result())  # 输出: 20
+```
+
+**4.38.2.2 进阶用法：Redis 分布式队列**
+
+```python
+from funboost.core.funboost_pool import FunboostPool
+from funboost import BoosterParams, BrokerEnum
+
+def process_data(data_id):
+    return f"处理结果: {data_id}"
+
+# 配置 Redis 分布式任务池
+params = BoosterParams(
+    queue_name="distributed_pool",
+    broker_kind=BrokerEnum.REDIS_ACK_ABLE,  # 使用 Redis 作为消息队列
+    concurrent_num=20,
+    qps=50,
+    max_retry_times=3,
+    # do_task_filtering=True # 过滤功能不能和rpc功能一起使用。要使用nb_cache替代funboost自身的do_task_filtering
+)
+
+pool = FunboostPool(params, is_need_result=True)
+
+for i in range(10):
+    future = pool.submit(process_data, i)
+    print(future.result()) # 即使用分布式中间件，结果也能通过 future.result()来获取。
+
+# 此时任务已发布到 Redis，可由任意数量的消费者进程共同处理
+```
+
+**4.38.2.3 参数说明**
+
+| 参数名 | 类型 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `booster_params` | `BoosterParams` | - | **核心参数**。配置任务队列、中间件类型及所有控制功能。 |
+| `is_need_result` | `bool` | `False` | 是否需要关心返回任务结果。 |
+| `is_future_direct_ret_result` | `bool` | `True` | 控制 `future.result()` 的返回类型。 |
+
+### 4.38.3 选择指南
+
+| 特性 | MemoryFunboostPool | FunboostPool |
+| :--- | :--- | :--- |
+| **底层驱动** | 固定内存队列 (`MEMORY_QUEUE`) | 可配置，支持内存队列或 Redis/RabbitMQ 等 |
+| **适用场景** | 单进程内高性能并发，直接替代原生线程池 | 单机增强型或分布式复杂任务调度 |
+| **配置灵活度** | 低（仅并发数、QPS） | 高（支持所有 `BoosterParams` 参数） |
+| **API 兼容** | 完全兼容 `ThreadPoolExecutor` | 完全兼容 `ThreadPoolExecutor` |
+
+*   **`MemoryFunboostPool`**：快速替代原生线程池，获得更智能的并发控制，行为最贴近 `ThreadPoolExecutor`。
+*   **`FunboostPool`**：构建具备持久化、高可用、分布式和精细化控制能力的任务系统。
 
 
 
@@ -16236,6 +16368,13 @@ def my_task_fb(x):
 funboost 提供了多种灵活的失败告警方式，满足从业务级即时通知到运维级聚合监控的不同需求。以下介绍5种常用方案。
 ```
 
+好的，我已根据最新的类名 `MemoryFunboostPool` 和 `FunboostPool` 重写了 **4b.16** 章节。内容严格锚定在您提供的源码上，并修正了类名、继承关系和参数说明。
+
+---
+
+
+
+
 <div>  </div>
 `````
 
@@ -18040,7 +18179,7 @@ async_aiomysql_f1 使用主线程的连接池,.
 不精通asyncio编程生态的人应该老老实实使用同步多线程编程生态,简单多了.  
 因为funboost的线程池 FlexibleThreadPool能自动扩缩,  
 能自动缩容是吊打内置线程池 concurrent.futures.threadpoolexecutor的神级别操作,  
-FlexibleThreadPool 去掉了实现futures特性,精简了代码, 性能比官方内置线程池提高了250%  
+FlexibleThreadPool 性能比官方内置线程池提高了250%  
 
 -----------------------------------------------------------------------
 方式2:  
@@ -19720,6 +19859,34 @@ funboost发布性能是celery的22倍，消费性能是celery的46倍。
 | 📜 **脚本部署管理** | 一键管理任何语言的脚本（进程守护 + 自动发布 + 日志聚合） | [13.4 章节](#13.4-funboost-web-manager-脚本部署管理爽功能) |
 | 💻 **服务器资源监控** | 实时监控 CPU、内存、磁盘使用率，支持历史走势 | [13.5 章节](#13.5-funweb-系统功能-资源监控) |
 
+## 7.77 2026-05 增加 funboost_pool 两个类, 完美复刻 concurrent.futures.Executor API
+
+在 `funboost/core/funboost_pool.py` 中新增了两个类：
+- **MemoryFunboostPool** ：内存队列实现的并发池
+- **FunboostPool** ：可选所有broker，能灵活配置所有BoosterParams入参。
+
+用法见 教程 `4.38` 章节
+
+这两个类完美复刻了 `concurrent.futures.Executor` 的 API 入参和返回值，提供了以下功能：
+
+- **任务提交**：支持 `MemoryFunboostPool.submit()` 和 `FunboostPool.submit()` 方法，均返回 `concurrent.futures.Future` 对象
+- **批量任务**：支持 `MemoryFunboostPool.map()` 和 `FunboostPool.map()` 方法进行批量任务提交
+
+**兼容性**：可直接替换老项目中的 `concurrent.futures.ThreadPoolExecutor`，无需修改调用代码。
+
+## 7.78 2026-05 优化增强 FlexibleThreadPool 和 AsyncPoolExecutor
+
+**增强内容：提升并发池的通用适用性**
+
+
+**FlexibleThreadPool 优化**
+- 新增支持 `map()` 方法
+- `submit()` 方法增加返回 `concurrent.futures.Future` 对象
+
+**AsyncPoolExecutor 优化**
+- 新增支持 `map()` 方法
+- `submit()` 方法增加返回 `concurrent.futures.Future` 对象
+- 新增 `aio_submit()` 方法，返回 `asyncio.Future` 对象
 `````
 
 --- **end of file: source/articles/c7.md** (project: funboost_docs) --- 
