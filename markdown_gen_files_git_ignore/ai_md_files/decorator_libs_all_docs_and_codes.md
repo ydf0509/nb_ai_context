@@ -1,19 +1,19 @@
-# markdown content namespace: decorator_libs readme 
+﻿# markdown content namespace: decorator_libs readme 
 
 
-## File Tree
+## decorator_libs File Tree (relative dir: `.`)
 
 
-```
+`````
 
 └── README.md
 
-```
+`````
 
 ---
 
 
-## Included Files
+## decorator_libs (relative dir: `.`)  Included Files (total: 1 files)
 
 
 - `README.md`
@@ -22,8 +22,9 @@
 ---
 
 
-### code file start: README.md 
+--- **start of file: README.md** (project: decorator_libs) --- 
 
+`````markdown
 ## 1. pip install decorator_libs
 
 ```
@@ -42,18 +43,19 @@ redis分布式锁上下文
 ```
 
 
+`````
 
-**code file end: README.md**
+--- **end of file: README.md** (project: decorator_libs) --- 
 
 ---
 
 # markdown content namespace: decorator_libs codes 
 
 
-## File Tree
+## decorator_libs File Tree (relative dir: `decorator_libs`)
 
 
-```
+`````
 
 └── decorator_libs
     ├── __init__.py
@@ -61,12 +63,12 @@ redis分布式锁上下文
     ├── common_decorators.py
     └── function_timeout_decorators.py
 
-```
+`````
 
 ---
 
 
-## Included Files
+## decorator_libs (relative dir: `decorator_libs`)  Included Files (total: 4 files)
 
 
 - `decorator_libs/black_technology_decorators.py`
@@ -81,9 +83,124 @@ redis分布式锁上下文
 ---
 
 
-### code file start: decorator_libs/black_technology_decorators.py 
+--- **start of file: decorator_libs/black_technology_decorators.py** (project: decorator_libs) --- 
 
-```python
+
+### 📄 Python File Metadata: `decorator_libs/black_technology_decorators.py`
+
+#### 📝 Module Docstring
+
+`````
+这里是黑科技装饰器，有想法的装饰器
+`````
+
+#### 📦 Imports
+
+- `import json`
+- `import sys`
+- `import time`
+- `import traceback`
+- `import unittest`
+- `from functools import wraps`
+- `from typing import TypeVar`
+- `from typing import Any`
+- `from typing import Type`
+- `from typing import Generic`
+- `from nb_log import LogManager`
+
+#### 🏛️ Classes (4)
+
+##### 📌 `class TimerContextManager(object)`
+*Line: 61*
+
+**Docstring:**
+`````
+用上下文管理器计时，可对代码片段计时
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, is_print_log = True)`
+  - **Parameters:**
+    - `self`
+    - `is_print_log = True`
+
+**Class Variables (1):**
+- `log = LogManager('TimerContext').get_logger_and_add_handlers()`
+
+##### 📌 `class ExceptionContextManager`
+*Line: 97*
+
+**Docstring:**
+`````
+用上下文管理器捕获异常，可对代码片段进行错误捕捉，比装饰器更细腻
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, logger_name = 'ExceptionContextManager', verbose = 100, donot_raise__exception = True)`
+  - **Docstring:**
+  `````
+  :param verbose: 打印错误的深度,对应traceback对象的limit，为正整数
+  :param donot_raise__exception:是否不重新抛出错误，为Fasle则抛出，为True则不抛出
+  `````
+  - **Parameters:**
+    - `self`
+    - `logger_name = 'ExceptionContextManager'`
+    - `verbose = 100`
+    - `donot_raise__exception = True`
+
+##### 📌 `class classproperty(Generic[T])`
+*Line: 127*
+
+**Docstring:**
+`````
+用法
+class  MyDatabase:
+    a = 10
+
+    @classproperty
+    def default_port(cls) -> int:  # 明确标注返回 int
+        return cls.a + 1
+
+    @classproperty
+    def str2(cls):
+        return 'hello'
+    # 在类级别通过类型注解覆盖 IDE 的认知
+    if TYPE_CHECKING:
+        str2: str
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, fget)`
+  - **Parameters:**
+    - `self`
+    - `fget`
+
+##### 📌 `class _Test(unittest.TestCase)`
+*Line: 153*
+
+**Public Methods (4):**
+- `def test_timer_context(self)`
+  - *测试上下文，对代码片段进行计时*
+- `def test_where_is_it_called(self)` `unittest.skip`
+  - *测试函数被调用的装饰器，被调用2次将会记录2次被调用的日志*
+- `def test_exception_context_manager(self)` `unittest.skip`
+- `def test_timeout(self)` `unittest.skip`
+  - **Docstring:**
+  `````
+  测试超时装饰器
+  :return:
+  `````
+
+#### 🔧 Public Functions (1)
+
+- `def where_is_it_called(func)`
+  - *Line: 17*
+  - *一个装饰器，被装饰的函数，如果被调用，将记录一条日志,记录函数被什么文件的哪一行代码所调用，非常犀利黑科技的装饰器*
+
+
+---
+
+`````python
 """
 这里是黑科技装饰器，有想法的装饰器
 """
@@ -93,8 +210,11 @@ import time
 import traceback
 import unittest
 from functools import wraps
+from typing import TypeVar, Any, Type, Generic
 
 from nb_log import LogManager
+
+T = TypeVar("T")
 
 
 def where_is_it_called(func):
@@ -205,6 +325,33 @@ class ExceptionContextManager:
         return self._donot_raise__exception  # __exit__方法必须retuen True才会不重新抛出错误
 
 
+
+# 类方法自动变类属性
+class classproperty(Generic[T]):
+    """
+    用法
+    class  MyDatabase:
+        a = 10
+    
+        @classproperty
+        def default_port(cls) -> int:  # 明确标注返回 int
+            return cls.a + 1
+    
+        @classproperty
+        def str2(cls):
+            return 'hello'
+        # 在类级别通过类型注解覆盖 IDE 的认知
+        if TYPE_CHECKING:
+            str2: str
+    """
+    def __init__(self, fget):
+        self.fget = fget
+
+    def __get__(self, instance: Any, owner: Type[Any]) -> T:
+        return self.fget(owner)
+
+
+
 # noinspection PyMethodMayBeStatic
 class _Test(unittest.TestCase):
     # @unittest.skip
@@ -266,16 +413,332 @@ class _Test(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-```
+`````
 
-**code file end: decorator_libs/black_technology_decorators.py**
+--- **end of file: decorator_libs/black_technology_decorators.py** (project: decorator_libs) --- 
 
 ---
 
 
-### code file start: decorator_libs/common_decorators.py 
+--- **start of file: decorator_libs/common_decorators.py** (project: decorator_libs) --- 
 
-```python
+
+### 📄 Python File Metadata: `decorator_libs/common_decorators.py`
+
+#### 📝 Module Docstring
+
+`````
+这里面是常规的装饰器，实现简单
+`````
+
+#### 📦 Imports
+
+- `import abc`
+- `import copy`
+- `import warnings`
+- `from multiprocessing import Process`
+- `import uuid`
+- `import functools`
+- `import os`
+- `import sys`
+- `import threading`
+- `import time`
+- `import traceback`
+- `import unittest`
+- `from functools import wraps`
+- `from typing import TypeVar`
+- `import random`
+- `from flask import request as flask_request`
+- `from nb_log import LogManager`
+- `from nb_log import nb_print`
+- `from nb_log import LoggerMixin`
+- `import requests`
+- `import json`
+
+#### 🏛️ Classes (11)
+
+##### 📌 `class CustomException(Exception)`
+*Line: 30*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, err = '')`
+  - **Parameters:**
+    - `self`
+    - `err = ''`
+
+##### 📌 `class SingletonMeta(type)`
+*Line: 167*
+
+**Class Variables (1):**
+- `_instances = {}`
+
+##### 📌 `class SingletonBaseCall`
+*Line: 175*
+
+**Docstring:**
+`````
+单例基类。任何继承自这个基类的子类都会自动成为单例。
+
+示例：
+class MyClass(SingletonBase):
+    pass
+
+instance1 = MyClass()
+instance2 = MyClass()
+
+assert instance1 is instance2  # 实例1和实例2实际上是同一个对象
+`````
+
+##### 📌 `class SingletonBaseNew`
+*Line: 194*
+
+**Class Variables (1):**
+- `_instance = None`
+
+##### 📌 `class SingletonBaseCustomInit`
+*Line: 206*
+
+**Class Variables (1):**
+- `_instance = None`
+
+##### 📌 `class cached_class_property(object)`
+*Line: 261*
+
+**Docstring:**
+`````
+类属性缓存装饰器
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, func)`
+  - **Parameters:**
+    - `self`
+    - `func`
+
+##### 📌 `class cached_property(object)`
+*Line: 276*
+
+**Docstring:**
+`````
+实例属性缓存装饰器
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, func)`
+  - **Parameters:**
+    - `self`
+    - `func`
+
+##### 📌 `class FunctionResultCacher`
+*Line: 326*
+
+**Public Methods (1):**
+- `def cached_function_result_for_a_time(cls, cache_time: float)` `classmethod`
+  - **Docstring:**
+  `````
+  函数的结果缓存一段时间装饰器,不要装饰在返回结果是超大字符串或者其他占用大内存的数据结构上的函数上面。
+  :param cache_time :缓存的时间
+  :type cache_time : float
+  `````
+
+**Class Variables (2):**
+- `logger = LogManager('FunctionResultChche').get_logger_and_add_handlers()`
+- `func_result_dict = {}`
+
+##### 📌 `class RedisDistributedLockContextManager(LoggerMixin)`
+*Line: 391*
+
+**Docstring:**
+`````
+分布式redis锁上下文管理.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, redis_client, redis_lock_key, expire_seconds = 30)`
+  - **Parameters:**
+    - `self`
+    - `redis_client`
+    - `redis_lock_key`
+    - `expire_seconds = 30`
+
+##### 📌 `class NotGetData(Exception)`
+*Line: 472*
+
+**Docstring:**
+`````
+轮询时数据未准备好的异常，抛出此异常会触发下一次轮询
+`````
+
+##### 📌 `class _Test(unittest.TestCase)`
+*Line: 587*
+
+**Public Methods (8):**
+- `def test_superposition(self)` `unittest.skip`
+  - *测试多次运行和异常重试,测试装饰器叠加*
+- `def test_handle_exception(self)` `unittest.skip`
+  - *测试异常重试装饰器*
+- `def test_run_many_times(self)` `unittest.skip`
+  - *测试运行5次*
+- `def test_singleton(self)` `unittest.skip`
+  - *测试单例模式的装饰器*
+- `def test_flyweight(self)` `unittest.skip`
+- `def test_keep_circulating(self)`
+  - *测试间隔时间，循环运行*
+- `def test_timer(self)` `unittest.skip`
+  - *测试计时器装饰器*
+- `def test_cached_function_result(self)` `unittest.skip`
+
+#### 🔧 Public Functions (22)
+
+- `def run_many_times(times = 1)`
+  - *Line: 36*
+  - **Docstring:**
+  `````
+  把函数运行times次的装饰器
+  :param times:运行次数
+  没有捕获错误，出错误就中断运行，可以配合handle_exception装饰器不管是否错误都运行n次。
+  `````
+
+- `def handle_exception(retry_times = 0, error_detail_level = 0, is_throw_error = False, time_sleep = 0)`
+  - *Line: 55*
+  - **Docstring:**
+  `````
+  捕获函数错误的装饰器,重试并打印日志
+  :param retry_times : 重试次数
+  :param error_detail_level :为0打印exception提示，为1打印3层深度的错误堆栈，为2打印所有深度层次的错误堆栈
+  :param is_throw_error : 在达到最大次数时候是否重新抛出错误
+  :type error_detail_level: int
+  `````
+
+- `def keep_circulating(time_sleep = 0.001, exit_if_function_run_sucsess = False, is_display_detail_exception = True, block = True, daemon = False)`
+  - *Line: 97*
+  - **Docstring:**
+  `````
+  间隔一段时间，一直循环运行某个方法的装饰器
+  :param time_sleep :循环的间隔时间
+  :param exit_if_function_run_sucsess :如果成功了就退出循环
+  :param is_display_detail_exception
+  :param block :是否阻塞主主线程，False时候开启一个新的线程运行while 1。
+  :param daemon: 如果使用线程，那么是否使用守护线程，使这个while 1有机会自动结束。
+  `````
+
+- `def synchronized(func)`
+  - *Line: 137*
+  - *线程锁装饰器，可以加在单例模式上*
+
+- `def singleton(cls: ClSX) -> ClSX`
+  - *Line: 150*
+  - *单例模式装饰器,新加入线程锁，更牢固的单例模式，主要解决多线程如100线程同时实例化情况下可能会出现三例四例的情况,实测。*
+
+- `def flyweight(cls)`
+  - *Line: 219*
+
+- `def timer(func)`
+  - *Line: 242*
+  - *计时器装饰器，只能用来计算函数运行时间*
+
+- `def cached_method_result(fun)`
+  - *Line: 290*
+  - **Docstring:**
+  `````
+  方法的结果装饰器,不接受self以外的多余参数，主要用于那些属性的property方法属性上，这是同时缓存给类和实例。
+  配合property装饰器，主要是在pycahrm自动补全上比上面的cached_property装饰器好
+  `````
+
+- `def cached_method_result_for_instance(fun)`
+  - *Line: 309*
+  - *方法的结果装饰器,不接受self以外的多余参数，主要用于那些属性的property方法属性上,只缓存给实例不缓存到类属性*
+
+- `def deprecated(fn)`
+  - *Line: 379*
+  - *Mark a function as deprecated and warn the user on use.*
+
+- `def run_in_new_thread(f)`
+  - *Line: 427*
+
+- `def run_in_new_process_only_for_linux(f)`
+  - *Line: 435*
+  - **Docstring:**
+  `````
+  这个只能在linux上使用。linux使用fork，winwows会报错。请使用下一个非装饰器版本。
+  :param f:
+  :return:
+  `````
+
+- `def run_with_specify_process(proccess_num, f, *args, **kwargs)`
+  - *Line: 449*
+
+- `def add_cors_according_is_mtfy_app_gw(response)`
+  - *Line: 453*
+  - **Docstring:**
+  `````
+  response['Access-Control-Allow-Origin'] = '*'        #允许的跨域名
+                          response['Access-Control-Allow-Headers'] = 'h1'
+  `````
+
+- `def retry_with_exponential_backoff(max_retries = 10, base_delay = 1, max_delay = 60, exponential_base = 2, jitter = True, retriable_exceptions = (Exception,), on_retry = None)`
+  - *Line: 477*
+  - **Docstring:**
+  `````
+  指数退避重试装饰器，遇到可重试异常时自动重试。
+  
+  :param max_retries: 最大重试次数
+  :param base_delay: 初始延迟时间（秒）
+  :param max_delay: 最大延迟时间（秒）
+  :param exponential_base: 指数基数，默认2
+  :param jitter: 是否添加随机抖动，避免惊群效应
+  :param retriable_exceptions: 可重试的异常类型元组
+  :param on_retry: 重试时的回调函数，签名为 (attempt, delay, exception)
+  
+  示例：
+      @retry_with_exponential_backoff(max_retries=5, retriable_exceptions=(ConnectionError, TimeoutError))
+      def fetch_data():
+          return requests.get('http://example.com/api')
+  `````
+
+- `def poll_with_exponential_backoff(max_retries = 10, base_delay = 1, max_delay = 60, exponential_base = 2, jitter = True)`
+  - *Line: 537*
+  - **Docstring:**
+  `````
+  指数退避轮询装饰器，当函数抛出 NotGetData 异常时继续轮询，直到成功或达到最大次数。
+  
+  使用方式：
+      @poll_with_exponential_backoff(max_retries=20)
+      def get_result():
+          data = redis.get('task_result')
+          if data is None:
+              raise NotGetData('数据尚未准备好')
+          return data
+  
+  :param max_retries: 最大轮询次数
+  :param base_delay: 初始延迟时间（秒）
+  :param max_delay: 最大延迟时间（秒）
+  :param exponential_base: 指数基数，默认2
+  :param jitter: 是否添加随机抖动，避免惊群效应
+  `````
+
+- `def lock_func(*args, **kwargs)` `wraps(func)`
+  - *Line: 142*
+
+- `def inner(self)` `wraps(fun)`
+  - *Line: 295*
+
+- `def inner(self)` `wraps(fun)`
+  - *Line: 313*
+
+- `def wrapper(*args, **kwargs)` `functools.wraps(fn)`
+  - *Line: 383*
+
+- `def wrapper(*args, **kwargs)` `functools.wraps(f)`
+  - *Line: 429*
+
+- `def wrapper(*args, **kwargs)` `functools.wraps(f)`
+  - *Line: 443*
+
+
+---
+
+`````python
 # coding=utf-8
 """
 这里面是常规的装饰器，实现简单
@@ -294,6 +757,7 @@ import traceback
 import unittest
 from functools import wraps
 from typing import TypeVar
+import random
 
 from flask import request as flask_request
 
@@ -746,6 +1210,120 @@ def add_cors_according_is_mtfy_app_gw(response):
     return response
 
 
+class NotGetData(Exception):
+    """轮询时数据未准备好的异常，抛出此异常会触发下一次轮询"""
+    pass
+
+
+def retry_with_exponential_backoff(
+        max_retries=10,
+        base_delay=1,
+        max_delay=60,
+        exponential_base=2,
+        jitter=True,
+        retriable_exceptions=(Exception,),
+        on_retry=None):
+    """
+    指数退避重试装饰器，遇到可重试异常时自动重试。
+
+    :param max_retries: 最大重试次数
+    :param base_delay: 初始延迟时间（秒）
+    :param max_delay: 最大延迟时间（秒）
+    :param exponential_base: 指数基数，默认2
+    :param jitter: 是否添加随机抖动，避免惊群效应
+    :param retriable_exceptions: 可重试的异常类型元组
+    :param on_retry: 重试时的回调函数，签名为 (attempt, delay, exception)
+
+    示例：
+        @retry_with_exponential_backoff(max_retries=5, retriable_exceptions=(ConnectionError, TimeoutError))
+        def fetch_data():
+            return requests.get('http://example.com/api')
+    """
+    def _retry_with_exponential_backoff(func):
+        @wraps(func)
+        def __retry_with_exponential_backoff(*args, **kwargs):
+            last_exception = None
+            delay = base_delay
+
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except retriable_exceptions as e:
+                    last_exception = e
+                    if on_retry is not None:
+                        if on_retry(attempt, delay, e):
+                            raise
+                    if attempt == max_retries:
+                        raise last_exception
+                except Exception:
+                    raise
+
+                if attempt < max_retries:
+                    actual_delay = min(delay, max_delay)
+                    if jitter:
+                        
+                        actual_delay *= (0.5 + random.random())
+                    time.sleep(actual_delay)
+                    delay *= exponential_base
+
+            if last_exception:
+                raise last_exception
+            raise RuntimeError("retry_with_exponential_backoff exhausted all retries")
+
+        return __retry_with_exponential_backoff
+
+    return _retry_with_exponential_backoff
+
+
+def poll_with_exponential_backoff(
+        max_retries=10,
+        base_delay=1,
+        max_delay=60,
+        exponential_base=2,
+        jitter=True):
+    """
+    指数退避轮询装饰器，当函数抛出 NotGetData 异常时继续轮询，直到成功或达到最大次数。
+
+    使用方式：
+        @poll_with_exponential_backoff(max_retries=20)
+        def get_result():
+            data = redis.get('task_result')
+            if data is None:
+                raise NotGetData('数据尚未准备好')
+            return data
+
+    :param max_retries: 最大轮询次数
+    :param base_delay: 初始延迟时间（秒）
+    :param max_delay: 最大延迟时间（秒）
+    :param exponential_base: 指数基数，默认2
+    :param jitter: 是否添加随机抖动，避免惊群效应
+    """
+    def _poll_with_exponential_backoff(func):
+        @wraps(func)
+        def __poll_with_exponential_backoff(*args, **kwargs):
+            delay = base_delay
+
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except NotGetData:
+                    if attempt == max_retries:
+                        raise TimeoutError(f"轮询达到最大次数 {max_retries}，数据仍未准备好")
+                except Exception:
+                    raise
+
+                if attempt < max_retries:
+                    actual_delay = min(delay, max_delay)
+                    if jitter:
+                        actual_delay *= (0.5 + random.random())
+                    time.sleep(actual_delay)
+                    delay *= exponential_base
+
+        return __poll_with_exponential_backoff
+
+    return _poll_with_exponential_backoff
+
+
 # noinspection PyMethodMayBeStatic
 class _Test(unittest.TestCase):
     @unittest.skip
@@ -860,16 +1438,89 @@ class _Test(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-```
+`````
 
-**code file end: decorator_libs/common_decorators.py**
+--- **end of file: decorator_libs/common_decorators.py** (project: decorator_libs) --- 
 
 ---
 
 
-### code file start: decorator_libs/function_timeout_decorators.py 
+--- **start of file: decorator_libs/function_timeout_decorators.py** (project: decorator_libs) --- 
 
-```python
+
+### 📄 Python File Metadata: `decorator_libs/function_timeout_decorators.py`
+
+#### 📝 Module Docstring
+
+`````
+超时装饰器
+`````
+
+#### 📦 Imports
+
+- `import sys`
+- `import threading`
+- `import time`
+- `import typing`
+- `import functools`
+- `import time`
+- `import signal`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class __KThread(threading.Thread)`
+*Line: 14*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, *args, **kwargs)`
+  - **Parameters:**
+    - `self`
+    - `*args`
+    - `**kwargs`
+
+**Public Methods (4):**
+- `def start(self)`
+  - *Start the thread.*
+- `def globaltrace(self, frame, why, arg)`
+- `def localtrace(self, frame, why, arg)`
+- `def kill(self)`
+
+##### 📌 `class TIMEOUT_EXCEPTION(Exception)`
+*Line: 49*
+
+**Docstring:**
+`````
+function run timeout
+`````
+
+#### 🔧 Public Functions (5)
+
+- `def timeout(seconds: int)`
+  - *Line: 54*
+  - **Docstring:**
+  `````
+  超时装饰器，指定超时时间
+  
+  若被装饰的方法在指定的时间内未返回，则抛出Timeout异常
+  `````
+
+- `def timeout_linux(timeout: int)`
+  - *Line: 96*
+  - *这个不需要单独开一个线程来实现超时,但是只适合linux系统,windwos没有 signal.SIGALRM*
+
+- `def timeout_decorator(func)`
+  - *Line: 59*
+
+- `def f(time_to_be_sleep)` `timeout(3)`
+  - *Line: 127*
+
+- `def wrapper(*args, **kwargs)` `functools.wraps(func)`
+  - *Line: 104*
+
+
+---
+
+`````python
 """
 超时装饰器
 """
@@ -1002,16 +1653,37 @@ if __name__ == '__main__':
 
     f(5)
 
-```
+`````
 
-**code file end: decorator_libs/function_timeout_decorators.py**
+--- **end of file: decorator_libs/function_timeout_decorators.py** (project: decorator_libs) --- 
 
 ---
 
 
-### code file start: decorator_libs/__init__.py 
+--- **start of file: decorator_libs/__init__.py** (project: decorator_libs) --- 
 
-```python
+
+### 📄 Python File Metadata: `decorator_libs/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+常用装饰器大全
+`````
+
+#### 📦 Imports
+
+- `from functools import lru_cache`
+- `import pysnooper`
+- `import pysnooper_click_able`
+- `from tomorrow3 import threads as tomorrow_threads`
+- `from common_decorators import *`
+- `from black_technology_decorators import *`
+
+
+---
+
+`````python
 # coding=utf-8
 """
 常用装饰器大全
@@ -1023,9 +1695,9 @@ from tomorrow3 import threads as tomorrow_threads
 from .common_decorators import *
 from .black_technology_decorators import *
 
-```
+`````
 
-**code file end: decorator_libs/__init__.py**
+--- **end of file: decorator_libs/__init__.py** (project: decorator_libs) --- 
 
 ---
 

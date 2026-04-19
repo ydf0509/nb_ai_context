@@ -1,12 +1,14 @@
 
 from requests import get
-from nb_path import AiMdGenerator,NbPath
+from markdown_gen_files_git_ignore.copy_md_to_txt import copy_md_to_txt
+from nb_ai_context import AiMdGenerator
 from nb_log import get_logger
 
 get_logger('nb_path')
-
-ai_md = AiMdGenerator(r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\decorator_libs_all_docs_and_codes.md")
-    
+project_name = 'decorator_libs'
+project_root=r"D:\codes\decorator_libs"
+ai_md = AiMdGenerator(r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\decorator_libs_all_docs_and_codes.md"
+                      ).set_project_propery(project_name=project_name, project_root=project_root)
 
 (
         ai_md
@@ -28,3 +30,5 @@ ai_md = AiMdGenerator(r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_
         )
         .get_textfile_info(is_show_info=True)
     )
+
+copy_md_to_txt(ai_md)
