@@ -1,0 +1,5258 @@
+﻿
+# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
+
+> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
+> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+
+## 🧠 AI 认知与解析准则
+
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+
+### 1. 信息的层级与互补
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
+*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
+*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+
+### 2. 文件边界与架构感知
+*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
+    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
+*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
+*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+
+### 3. 代码生成与交互
+*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
+*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
+*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
+    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
+    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+
+---
+# markdown content namespace: nb_llm project summary 
+
+
+
+- `nb_llm` is a powerful LLM library for Python.
+
+
+
+## 📋 nb_llm most core source files metadata (Entry Points)
+
+
+以下是项目 nb_llm 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_llm most core source code files as follows: 
+- `nb_llm/__init__.py`
+
+
+### 📄 Python File Metadata: `nb_llm/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+nb_llm — 大开大合的 LLM 框架
+`````
+
+#### 📦 Imports
+
+- `from nb_llm.core.chat import Chat`
+- `from nb_llm.core.chat import ChatSession`
+- `from nb_llm.core.chat import Pipeline`
+- `from nb_llm.core.config import ChatConfig`
+- `from nb_llm.core.config import SendOptions`
+- `from nb_llm.core.response import ChatResponse`
+- `from nb_llm.core.response import StreamResponse`
+- `from nb_llm.core.data_types import UsageInfo`
+- `from nb_llm.core.data_types import ToolCallRecord`
+- `from nb_llm.core.data_types import PendingToolCall`
+- `from nb_llm.core.data_types import SourceInfo`
+- `from nb_llm.core.data_types import TeamMessage`
+- `from nb_llm.core.data_types import TeamResult`
+- `from nb_llm.core.data_types import CostTracker`
+- `from nb_llm.core.data_types import DataMixin`
+- `from nb_llm.core.history_backends import HistoryBackend`
+- `from nb_llm.core.history_backends import MemoryBackend`
+- `from nb_llm.core.history_backends import FileBackend`
+- `from nb_llm.core.history_backends import SqliteBackend`
+- `from nb_llm.core.history_backends import RedisBackend`
+- `from nb_llm.middleware.cache import ResponseCache`
+- `from nb_llm.exceptions import NbLLMError`
+- `from nb_llm.exceptions import ProviderError`
+- `from nb_llm.exceptions import RateLimitError`
+- `from nb_llm.exceptions import TokenLimitError`
+- `from nb_llm.exceptions import AuthenticationError`
+- `from nb_llm.exceptions import TimeoutError`
+- `from nb_llm.exceptions import ToolExecutionError`
+- `from nb_llm.exceptions import SchemaGenerationError`
+- `from nb_llm.exceptions import JsonParseError`
+- `from nb_llm.exceptions import SchemaValidationError`
+- `from nb_llm.providers.registry import register_provider`
+- `from nb_llm.embedding.embedding import Embedding`
+- `from nb_llm.rag.rag import RAG`
+- `from nb_llm.agents.router import Router`
+- `from nb_llm.agents.team import Team`
+- `from nb_llm.workflow.step import step`
+
+
+---
+
+
+
+## 🔗 nb_llm Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Entry Points (not imported by other project files):
+  ★ nb_llm/__init__.py
+
+`````
+
+### 📋 Detailed Dependencies
+
+
+---
+# markdown content namespace: nb_llm Project Root Dir Some Files 
+
+
+## nb_llm File Tree (relative dir: `.`)
+
+
+`````
+
+├── README.md
+└── setup.py
+
+`````
+
+---
+
+
+## nb_llm (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `README.md`
+
+- `setup.py`
+
+
+---
+
+
+--- **start of file: README.md** (project: nb_llm) --- 
+
+`````markdown
+# nb_llm
+
+**牛逼的大模型框架** — 3 行代码完成 LangChain 30 行才能做到的事。
+
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## 为什么选择 nb_llm？
+
+| 对比项 | nb_llm | LangChain + LangGraph |
+|--------|--------|-----------------------|
+| 核心抽象 | **1 个**（Chat） | 10+ 个（LLM, Chain, Agent, Tool, Prompt, Parser, Memory...） |
+| 学习成本 | 1 小时 | 1 周+ |
+| 安装 | `pip install nb_llm` | langchain + langchain-core + langchain-openai + langgraph + ... |
+| 工作流 | **原生 Python** if/for/while | StateGraph DSL + 条件边 + 状态机 |
+| 工具调用 | `@chat.tool` 一行搞定 | @tool + Prompt + Agent + AgentExecutor |
+
+---
+
+## 安装
+
+```bash
+pip install nb_llm
+```
+
+## 30 秒上手
+
+```python
+from nb_llm import Chat, ChatConfig
+
+chat = Chat(ChatConfig("deepseek"))
+print(chat.ask("用一句话介绍 Python"))
+```
+
+就这么简单。自动识别模型供应商、自动发现 API Key。
+
+---
+
+## 核心功能一览
+
+### 多轮对话
+
+```python
+chat = Chat(ChatConfig("deepseek"))
+chat.send("我叫张三")
+chat.send("我今年 25 岁")
+print(chat.send("我叫什么？今年多大？"))
+# "你叫张三，今年25岁"
+```
+
+`send()` 自动记忆，`ask()` 独立无记忆，两者互不干扰。
+
+### 流式输出
+
+```python
+for chunk in chat.stream("写一首关于春天的诗"):
+    print(chunk, end="", flush=True)
+```
+
+### 工具调用（Agent）
+
+```python
+chat = Chat(ChatConfig("deepseek"))
+
+@chat.tool
+def get_weather(city: str) -> str:
+    """获取城市天气"""
+    return f"{city}：晴，25°C"
+
+answer = chat.send("北京天气怎么样？")
+# 自动调用 get_weather("北京")，基于结果生成回答
+```
+
+对比 LangChain 需要 @tool + AgentExecutor + Prompt 模板，nb_llm 只需 `@chat.tool`。
+
+### 结构化输出（Pydantic）
+
+```python
+from pydantic import BaseModel, Field
+
+class Movie(BaseModel):
+    title: str = Field(description="电影名称")
+    year: int = Field(description="上映年份")
+    rating: float = Field(description="评分，1-10")
+
+result = chat.ask("推荐一部科幻电影", SendOptions(response_type=Movie))
+movie = result.parsed  # Movie 对象，IDE 完美补全
+print(movie.title, movie.year, movie.rating)
+```
+
+### 管道组合
+
+```python
+translator = Chat(ChatConfig("deepseek", system="翻译成英文"))
+summarizer = Chat(ChatConfig("deepseek", system="一句话总结"))
+
+pipeline = translator >> summarizer
+result = pipeline("人工智能正在改变世界")
+```
+
+### 批量并发
+
+```python
+answers = chat.batch(
+    ["Python是什么？", "Java是什么？", "Go是什么？"],
+    concurrency=5,
+)
+```
+
+### 多智能体协作
+
+```python
+from nb_llm import Team
+
+pm = Chat(ChatConfig("deepseek", system="你是产品经理", name="PM"))
+dev = Chat(ChatConfig("deepseek", system="你是开发", name="Dev"))
+qa = Chat(ChatConfig("deepseek", system="你是测试", name="QA"))
+
+result = Team(pm, dev, qa).discuss("设计登录功能", rounds=3)
+print(result.conclusion)
+```
+
+### RAG（检索增强生成）
+
+```python
+from nb_llm import RAG
+
+rag = RAG(sources=["./docs/", "manual.pdf"])
+answer = rag.chat("这个产品怎么安装？")
+for src in answer.sources:
+    print(f"{src.file}: {src.chunk[:50]}...")
+```
+
+---
+
+## 高级功能
+
+### ChatConfig — 一套配置复用
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class ProductionConfig(ChatConfig):
+    model: str = "deepseek"
+    retry: int = 3
+    cache: bool = True
+    temperature: float = 0.3
+
+chat = Chat(ProductionConfig())
+```
+
+### SendOptions — 单次调用选项
+
+```python
+from nb_llm import SendOptions
+
+# IDE 输入 SendOptions( 后自动提示所有字段
+result = chat.ask("精确回答", SendOptions(
+    temperature=0,
+    json=True,
+    max_tokens=100,
+))
+```
+
+### 异步支持
+
+```python
+import asyncio
+
+async def main():
+    answer = await chat.asend("你好")
+    async for chunk in chat.astream("写一首诗"):
+        print(chunk, end="")
+    answers = await chat.abatch(["问题1", "问题2"], concurrency=5)
+
+asyncio.run(main())
+```
+
+### 对话持久化
+
+```python
+# 文件 / SQLite / Redis 多种后端
+chat = Chat(ChatConfig("deepseek",
+    history_backend="sqlite",
+    history_url="./history.db",
+))
+```
+
+### 容错与降级
+
+```python
+chat = Chat(ChatConfig("deepseek",
+    retry=3,
+    fallback="qwen",
+    cache=True,
+    cache_ttl=3600,
+))
+```
+
+### 多模型策略
+
+```python
+# 竞速模式：谁快用谁
+chat = Chat(ChatConfig(
+    model=["gpt-4o", "deepseek", "qwen"],
+    strategy="fastest",
+))
+```
+
+### Session 管理
+
+```python
+session_a = chat.session("user_001")
+session_b = chat.session("user_002")
+session_a.send("我叫张三")
+session_b.send("我叫李四")
+```
+
+### 成本追踪
+
+```python
+with chat.track_cost() as tracker:
+    chat.send("问题1")
+    chat.send("问题2")
+print(f"总 Token: {tracker.total_tokens}")
+```
+
+### 钩子系统
+
+```python
+@chat.on_before
+def log_request(messages, options):
+    print(f"[发送] {messages[-1]['content'][:50]}...")
+
+@chat.on_after
+def log_response(response, usage):
+    print(f"[收到] tokens: {usage.total_tokens}")
+
+@chat.on_tool_call
+def log_tool(name, args):
+    print(f"[工具] {name}({args})")
+```
+
+---
+
+## CLI 工具
+
+```bash
+# 版本
+python -m nb_llm version
+
+# 模型列表
+python -m nb_llm models
+
+# 单次提问
+python -m nb_llm ask "你好" --model deepseek
+
+# 交互式对话
+python -m nb_llm chat --model deepseek --stream
+```
+
+---
+
+## 内置模型支持
+
+| 别名 | 实际模型 | 供应商 |
+|------|----------|--------|
+| `deepseek` | deepseek-chat | DeepSeek |
+| `gpt-4o` | gpt-4o | OpenAI |
+| `claude` | claude-sonnet-4 | Anthropic |
+| `qwen` | qwen-plus | 通义千问 |
+| `glm` | glm-4 | 智谱 |
+| `siliconflow` | DeepSeek-V3 | SiliconFlow |
+| `ollama` | llama3 | Ollama（本地） |
+
+也支持任意 OpenAI 兼容接口：
+
+```python
+chat = Chat(ChatConfig(
+    model="任意模型名",
+    base_url="https://your-api.com/v1",
+    api_key="sk-xxx",
+))
+```
+
+---
+
+## 返回值对象
+
+所有返回值支持 `.属性` 访问（IDE 补全）+ `.to_dict()` 转字典。
+
+```python
+result = chat.send("你好")
+print(result)                    # 当字符串用
+print(result.text)               # 显式获取文本
+print(result.usage.total_tokens) # Token 用量
+print(result.model)              # 使用的模型
+print(result.to_dict())          # 转字典
+```
+
+| 对象 | 用途 | 关键属性 |
+|------|------|----------|
+| `ChatResponse(str)` | 返回值 | `.text` `.usage` `.tool_calls_made` `.parsed` `.model` |
+| `UsageInfo` | Token 用量 | `.prompt_tokens` `.completion_tokens` `.total_tokens` |
+| `ToolCallRecord` | 工具调用记录 | `.name` `.args` `.result` `.elapsed` |
+| `StreamResponse` | 流式返回值 | `.text` `.usage` `.finish_reason` |
+| `TeamResult` | 多智能体结果 | `.conclusion` `.transcript` `.rounds` |
+
+---
+
+## 项目结构
+
+```
+nb_llm/
+├── core/           # Chat 核心、配置、响应、历史后端
+├── providers/      # OpenAI / Anthropic 适配器、模型注册表
+├── tools/          # 工具 Schema 生成、执行引擎
+├── agents/         # Router 路由、Team 多智能体
+├── rag/            # RAG 检索增强生成
+├── embedding/      # Embedding 向量化
+├── middleware/      # 缓存中间件
+├── workflow/       # @step 可观测性
+└── __main__.py     # CLI 入口
+```
+
+---
+
+## 文档
+
+- [用户 API 文档](tests/ai_docs/nb_llm_api_doc.md) — 完整 API 用法 + 与 LangChain 对比
+- [概要设计文档](tests/ai_docs/nb_llm_design_doc.md) — 架构设计 + 模块详解
+- [更新日志](tests/ai_docs/ai_update.md) — 所有重大变更记录
+
+---
+
+## 兼容性
+
+- Python 3.7+
+- 核心依赖：`openai`
+- 可选依赖：`httpx`、`python-dotenv`、`tiktoken`、`pydantic`、`anthropic`、`redis`
+
+## License
+
+MIT
+
+`````
+
+--- **end of file: README.md** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: setup.py** (project: nb_llm) --- 
+
+`````python
+from setuptools import setup, find_packages
+
+setup(
+    name="nb_llm",
+    version="0.1.0",
+    description="大开大合的 LLM 框架 — 比 LangChain 更简单，比 LangGraph 更直觉",
+    author="nb_llm",
+    python_requires=">=3.7",
+    packages=find_packages(exclude=["tests*"]),
+    install_requires=[
+        "openai>=1.0.0",
+    ],
+    extras_require={
+        "all": [
+            "httpx>=0.24.0",
+            "python-dotenv>=0.19.0",
+            "tiktoken>=0.5.0",
+            "pydantic>=2.0.0",
+        ],
+        "dev": [
+            "pytest>=7.0.0",
+        ],
+    },
+    entry_points={
+        'console_scripts': [
+            'nb_llm=nb_llm.__main__:main',
+        ],
+    },
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+    ],
+)
+
+`````
+
+--- **end of file: setup.py** (project: nb_llm) --- 
+
+---
+
+# markdown content namespace: nb_llm examples 
+
+
+## nb_llm File Tree (relative dir: `examples`)
+
+
+`````
+
+└── examples
+    ├── 01_hello.py
+    ├── 02_multi_turn.py
+    ├── 03_system_prompt.py
+    ├── 04_streaming.py
+    ├── 05_json_output.py
+    ├── 06_tool_calling.py
+    ├── 07_batch.py
+    ├── 08_pipeline.py
+    ├── 09_session.py
+    ├── 10_hooks.py
+    ├── 11_clone_and_config.py
+    ├── 12_cost_tracking.py
+    ├── 13_step_decorator.py
+    ├── 14_context_manager.py
+    ├── 15_pydantic_output.py
+    └── 16_async.py
+
+`````
+
+---
+
+
+## nb_llm (relative dir: `examples`)  Included Files (total: 16 files)
+
+
+- `examples/01_hello.py`
+
+- `examples/02_multi_turn.py`
+
+- `examples/03_system_prompt.py`
+
+- `examples/04_streaming.py`
+
+- `examples/05_json_output.py`
+
+- `examples/06_tool_calling.py`
+
+- `examples/07_batch.py`
+
+- `examples/08_pipeline.py`
+
+- `examples/09_session.py`
+
+- `examples/10_hooks.py`
+
+- `examples/11_clone_and_config.py`
+
+- `examples/12_cost_tracking.py`
+
+- `examples/13_step_decorator.py`
+
+- `examples/14_context_manager.py`
+
+- `examples/15_pydantic_output.py`
+
+- `examples/16_async.py`
+
+
+---
+
+
+--- **start of file: examples/01_hello.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 01：最简单的一问一答
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+answer = chat.ask("用一句话介绍 Python")
+print(answer)
+print(f"tokens: {answer.usage.total_tokens}")
+
+`````
+
+--- **end of file: examples/01_hello.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/02_multi_turn.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 02：多轮对话（自动记忆）
+send() 自动记住上下文，ask() 无记忆。
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个友好的中文助手",
+))
+
+r1 = chat.send("我叫张三")
+print(f"回复1: {r1}")
+
+r2 = chat.send("我叫什么名字？")
+print(f"回复2: {r2}")
+
+print(f"\n对话历史({len(chat.history)}条):")
+for msg in chat.history:
+    print(f"  [{msg['role']}] {msg['content'][:50]}")
+
+`````
+
+--- **end of file: examples/02_multi_turn.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/03_system_prompt.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 03：系统提示词 + 参数控制
+"""
+from nb_llm import Chat, ChatConfig, SendOptions
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个专业的英文翻译，只返回翻译结果，不要解释。",
+    temperature=0.3,
+    max_tokens=200,
+))
+
+answer = chat.ask("今天天气真好，我想去公园散步。")
+print(f"翻译: {answer}")
+print(f"model: {answer.model}")
+print(f"usage: {answer.usage.to_dict()}")
+
+# 用 SendOptions 临时覆盖参数
+answer2 = chat.ask(
+    "人工智能正在改变世界",
+    SendOptions(temperature=0.9, max_tokens=100),
+)
+print(f"\n高温翻译: {answer2}")
+
+`````
+
+--- **end of file: examples/03_system_prompt.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/04_streaming.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 04：流式输出
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+print("流式输出：", end="", flush=True)
+stream = chat.stream("写一首关于春天的五言绝句")
+for chunk in stream:
+    print(chunk, end="", flush=True)
+print()
+
+print(f"\n完整文本: {stream.text}")
+print(f"finish_reason: {stream.finish_reason}")
+print(f"usage: {stream.usage.to_dict()}")
+
+`````
+
+--- **end of file: examples/04_streaming.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/05_json_output.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 05：JSON 结构化输出
+"""
+from nb_llm import Chat, ChatConfig, SendOptions
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个数据助手，请严格返回 JSON 格式。",
+))
+
+result = chat.ask(
+    "列出3种编程语言，包含 name 和 year 字段",
+    SendOptions(json=True),
+)
+print(f"原始字符串: {result}")
+print(f"解析后的数据: {result.parsed}")
+print(f"类型: {type(result.parsed)}")
+
+`````
+
+--- **end of file: examples/05_json_output.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/06_tool_calling.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 06：工具调用 (Function Calling)
+用 @chat.tool 装饰器注册工具，模型自动调用。
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+
+@chat.tool
+def get_weather(city: str) -> str:
+    """获取指定城市的天气信息
+
+    Args:
+        city: 城市名称，如"北京"
+    """
+    weather_data = {
+        "北京": "晴，25°C",
+        "上海": "多云，22°C",
+        "深圳": "小雨，28°C",
+    }
+    return weather_data.get(city, f"{city}：天气数据暂不可用")
+
+
+@chat.tool
+def calculator(expression: str) -> str:
+    """计算数学表达式
+
+    Args:
+        expression: 数学表达式，如 "2+3*4"
+    """
+    try:
+        return str(eval(expression))
+    except Exception as e:
+        return f"计算错误: {e}"
+
+
+print(f"已注册工具: {[t['function']['name'] for t in chat.tools]}")
+
+result = chat.ask("北京今天天气怎么样？")
+print(f"\n回答: {result}")
+print(f"调用了的工具: {[(tc.name, tc.args) for tc in result.tool_calls_made]}")
+
+`````
+
+--- **end of file: examples/06_tool_calling.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/07_batch.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 07：批量并发调用
+"""
+import time
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="用一句话回答问题。",
+))
+
+prompts = [
+    "Python 的创始人是谁？",
+    "地球到月球的距离是多少？",
+    "水的化学式是什么？",
+    "光速是多少？",
+    "最大的哺乳动物是什么？",
+]
+
+start = time.time()
+results = chat.batch(prompts, concurrency=3)
+elapsed = time.time() - start
+
+for prompt, result in zip(prompts, results):
+    print(f"Q: {prompt}")
+    print(f"A: {result}\n")
+
+print(f"总耗时: {elapsed:.2f}s（{len(prompts)} 个问题并发处理）")
+
+`````
+
+--- **end of file: examples/07_batch.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/08_pipeline.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 08：管道（Pipeline）—— >> 运算符链式处理
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+config_base = ChatConfig(
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+)
+
+translator = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url=config_base.base_url,
+    api_key=config_base.api_key,
+    system="你是一个中译英翻译，只返回英文翻译结果。",
+    name="翻译",
+))
+
+summarizer = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url=config_base.base_url,
+    api_key=config_base.api_key,
+    system="请用一句话总结以下英文内容的要点，用英文回答。",
+    name="总结",
+))
+
+pipe = translator >> summarizer
+print(f"管道: {pipe}")
+
+result = pipe("人工智能正在改变教育行业。在线学习平台越来越智能，能够根据学生的学习进度自动调整课程难度。")
+print(f"\n最终结果: {result}")
+print(f"model: {result.model}")
+
+`````
+
+--- **end of file: examples/08_pipeline.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/09_session.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 09：会话管理 (Session)
+一个 Chat 实例管理多个独立会话，适合多用户场景。
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个友好的助手",
+))
+
+# 用户 A 的会话
+user_a = chat.session("user_a")
+r1 = user_a.send("我叫Alice")
+print(f"[A] {r1}")
+
+# 用户 B 的会话（完全独立）
+user_b = chat.session("user_b")
+r2 = user_b.send("我叫Bob")
+print(f"[B] {r2}")
+
+# 验证 A 的记忆不受 B 影响
+r3 = user_a.send("我叫什么？")
+print(f"[A] {r3}")
+
+r4 = user_b.send("我叫什么？")
+print(f"[B] {r4}")
+
+print(f"\nA 的历史: {len(user_a.history)} 条")
+print(f"B 的历史: {len(user_b.history)} 条")
+
+`````
+
+--- **end of file: examples/09_session.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/10_hooks.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 10：钩子 (Hooks) —— 请求前/后拦截
+"""
+import time
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+request_time = {}
+
+
+@chat.on_before
+def before(messages, options):
+    request_time['start'] = time.time()
+    print(f"[BEFORE] 发送 {len(messages)} 条消息")
+
+
+@chat.on_after
+def after(response, usage):
+    elapsed = time.time() - request_time['start']
+    print(f"[AFTER] 耗时 {elapsed:.2f}s, tokens={usage.total_tokens}")
+
+
+@chat.on_error
+def on_error(error):
+    print(f"[ERROR] {error}")
+
+
+result = chat.ask("1+1等于几？只回答数字")
+print(f"结果: {result}")
+
+`````
+
+--- **end of file: examples/10_hooks.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/11_clone_and_config.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 11：ChatConfig 继承 + clone
+展示 dataclass 继承和 Chat 实例克隆。
+"""
+from dataclasses import dataclass
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+
+@dataclass
+class SiliconFlowConfig(ChatConfig):
+    """硅基流动统一基础配置"""
+    base_url: str = "https://api.siliconflow.cn/v1"
+    api_key: str = SILICONFLOW_API_KEY
+
+
+# 用继承后的配置创建 Chat
+chat = Chat(SiliconFlowConfig(
+    model="THUDM/GLM-4-9B-0414",
+    system="你是一个诗人",
+    temperature=0.8,
+))
+
+# clone 出一个独立的实例
+chat2 = chat.clone()
+chat2.system = "你是一个程序员"  # 修改 clone 的 system，不影响原始
+
+r1 = chat.ask("写一句话")
+r2 = chat2.ask("写一句话")
+
+print(f"诗人: {r1}")
+print(f"程序员: {r2}")
+print(f"\n原始 system: {chat.system}")
+print(f"克隆 system: {chat2.system}")
+
+`````
+
+--- **end of file: examples/11_clone_and_config.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/12_cost_tracking.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 12：费用追踪 (CostTracker)
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+with chat.track_cost() as tracker:
+    r1 = chat.ask("Python 是什么？用一句话回答。")
+    r2 = chat.ask("Java 是什么？用一句话回答。")
+    r3 = chat.ask("Go 是什么？用一句话回答。")
+
+print(f"调用次数: {tracker.call_count}")
+print(f"总 tokens: {tracker.total_tokens}")
+print(f"  prompt:     {tracker.prompt_tokens}")
+print(f"  completion: {tracker.completion_tokens}")
+print(f"\n每次调用详情:")
+for i, detail in enumerate(tracker.details):
+    print(f"  [{i+1}] {detail.to_dict()}")
+
+`````
+
+--- **end of file: examples/12_cost_tracking.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/13_step_decorator.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 13：@step 装饰器 —— 工作流可观测性
+"""
+from nb_llm import Chat, ChatConfig, step
+from nb_llm.workflow.step import on_step_event
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+
+
+@on_step_event
+def log_event(event_type, data):
+    if event_type == 'step_start':
+        print(f"  ▶ 开始: {data['name']}")
+    elif event_type == 'step_end':
+        print(f"  ✓ 完成: {data['name']} ({data['elapsed']:.2f}s)")
+
+
+@step("翻译")
+def translate(text):
+    return chat.ask(f"翻译成英文，只返回结果: {text}")
+
+
+@step("总结")
+def summarize(text):
+    return chat.ask(f"用一句话总结: {text}")
+
+
+print("=== 工作流开始 ===")
+eng = translate("人工智能正在改变世界")
+summary = summarize(str(eng))
+print(f"\n翻译: {eng}")
+print(f"总结: {summary}")
+print("=== 工作流结束 ===")
+
+`````
+
+--- **end of file: examples/13_step_decorator.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/14_context_manager.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 14：Context Manager + 历史保存/加载
+"""
+import os
+import tempfile
+from nb_llm import Chat, ChatConfig
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+save_path = os.path.join(tempfile.gettempdir(), 'nb_llm_demo_history.json')
+
+# 使用 with 语句，退出时自动清理
+with Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个简洁的助手",
+)) as chat:
+    chat.send("Python 是什么？")
+    chat.send("它有什么优点？")
+    print(f"对话中历史: {len(chat.history)} 条")
+
+    # 保存
+    chat.save(save_path)
+    print(f"已保存到: {save_path}")
+
+print(f"with 退出后历史: {len(chat.history)} 条")
+
+# 在新的 Chat 中加载历史
+chat2 = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+))
+chat2.load(save_path)
+print(f"加载后历史: {len(chat2.history)} 条")
+
+# 继续对话
+r = chat2.send("前面我们聊了什么？")
+print(f"回答: {r}")
+
+os.remove(save_path)
+
+`````
+
+--- **end of file: examples/14_context_manager.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/15_pydantic_output.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 15：Pydantic 结构化输出
+用 Pydantic BaseModel 精确控制 AI 的输出格式。
+"""
+from pydantic import BaseModel, Field
+from typing import List
+
+from my_configs.secret_config import SILICONFLOW_API_KEY
+from nb_llm import Chat, ChatConfig, SendOptions
+
+
+class Movie(BaseModel):
+    """电影信息"""
+    title: str = Field(description="电影名称")
+    year: int = Field(description="上映年份")
+    genre: str = Field(description="电影类型，如'科幻'、'喜剧'")
+    rating: float = Field(description="评分，1-10")
+
+
+chat = Chat(ChatConfig(
+    model="THUDM/GLM-4-9B-0414",
+    base_url="https://api.siliconflow.cn/v1",
+    api_key=SILICONFLOW_API_KEY,
+    system="你是一个电影数据库助手。请严格按照 JSON 格式返回数据。",
+))
+
+result = chat.ask(
+    "推荐一部经典科幻电影",
+    SendOptions(response_type=Movie),
+)
+
+print(f"原始文本: {result.text}")
+print(f"解析结果: {result.parsed}")
+print(f"类型: {type(result.parsed)}")
+if result.parsed:
+    print(f"  电影: {result.parsed.title}")
+    print(f"  年份: {result.parsed.year}")
+    print(f"  类型: {result.parsed.genre}")
+    print(f"  评分: {result.parsed.rating}")
+    print(f"  转字典: {result.parsed.model_dump()}")
+print(f"tokens: {result.usage.total_tokens}")
+
+`````
+
+--- **end of file: examples/15_pydantic_output.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/16_async.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 16：异步调用
+"""
+import asyncio
+
+from my_configs.secret_config import SILICONFLOW_API_KEY
+from nb_llm import Chat, ChatConfig
+
+
+async def main():
+    chat = Chat(ChatConfig(
+        model="THUDM/GLM-4-9B-0414",
+        base_url="https://api.siliconflow.cn/v1",
+        api_key=SILICONFLOW_API_KEY,
+    ))
+
+    # 异步单次调用
+    result = await chat.aask("Python 用一句话介绍")
+    print(f"aask: {result}")
+
+    # 异步多轮对话
+    r1 = await chat.asend("我叫Alice")
+    print(f"asend1: {r1}")
+
+    r2 = await chat.asend("我叫什么？")
+    print(f"asend2: {r2}")
+
+    # 异步批量
+    prompts = ["1+1=?", "2+2=?", "3+3=?"]
+    results = await chat.abatch(prompts, concurrency=3)
+    for p, r in zip(prompts, results):
+        print(f"  {p} → {r.text.strip()}")
+
+
+asyncio.run(main())
+
+`````
+
+--- **end of file: examples/16_async.py** (project: nb_llm) --- 
+
+---
+
+# markdown content namespace: nb_llm codes 
+
+
+## nb_llm File Tree (relative dir: `nb_llm`)
+
+
+`````
+
+└── nb_llm
+    ├── __init__.py
+    ├── __main__.py
+    ├── agents
+    │   ├── __init__.py
+    │   ├── router.py
+    │   └── team.py
+    ├── core
+    │   ├── __init__.py
+    │   ├── chat.py
+    │   ├── config.py
+    │   ├── data_types.py
+    │   ├── history_backends.py
+    │   └── response.py
+    ├── embedding
+    │   ├── __init__.py
+    │   └── embedding.py
+    ├── exceptions.py
+    ├── middleware
+    │   ├── __init__.py
+    │   └── cache.py
+    ├── providers
+    │   ├── __init__.py
+    │   ├── anthropic_provider.py
+    │   ├── base.py
+    │   ├── openai_provider.py
+    │   └── registry.py
+    ├── rag
+    │   ├── __init__.py
+    │   ├── loaders.py
+    │   ├── rag.py
+    │   ├── splitter.py
+    │   └── vectorstore.py
+    ├── tools
+    │   ├── __init__.py
+    │   ├── executor.py
+    │   └── schema.py
+    ├── utils
+    │   └── __init__.py
+    └── workflow
+        ├── __init__.py
+        └── step.py
+
+`````
+
+---
+
+
+## nb_llm (relative dir: `nb_llm`)  Included Files (total: 32 files)
+
+
+- `nb_llm/exceptions.py`
+
+- `nb_llm/__init__.py`
+
+- `nb_llm/__main__.py`
+
+- `nb_llm/agents/router.py`
+
+- `nb_llm/agents/team.py`
+
+- `nb_llm/agents/__init__.py`
+
+- `nb_llm/core/chat.py`
+
+- `nb_llm/core/config.py`
+
+- `nb_llm/core/data_types.py`
+
+- `nb_llm/core/history_backends.py`
+
+- `nb_llm/core/response.py`
+
+- `nb_llm/core/__init__.py`
+
+- `nb_llm/embedding/embedding.py`
+
+- `nb_llm/embedding/__init__.py`
+
+- `nb_llm/middleware/cache.py`
+
+- `nb_llm/middleware/__init__.py`
+
+- `nb_llm/providers/anthropic_provider.py`
+
+- `nb_llm/providers/base.py`
+
+- `nb_llm/providers/openai_provider.py`
+
+- `nb_llm/providers/registry.py`
+
+- `nb_llm/providers/__init__.py`
+
+- `nb_llm/rag/loaders.py`
+
+- `nb_llm/rag/rag.py`
+
+- `nb_llm/rag/splitter.py`
+
+- `nb_llm/rag/vectorstore.py`
+
+- `nb_llm/rag/__init__.py`
+
+- `nb_llm/tools/executor.py`
+
+- `nb_llm/tools/schema.py`
+
+- `nb_llm/tools/__init__.py`
+
+- `nb_llm/utils/__init__.py`
+
+- `nb_llm/workflow/step.py`
+
+- `nb_llm/workflow/__init__.py`
+
+
+---
+
+
+--- **start of file: nb_llm/exceptions.py** (project: nb_llm) --- 
+
+`````python
+"""nb_llm 异常体系"""
+from __future__ import annotations
+
+
+class NbLLMError(Exception):
+    """nb_llm 基础异常"""
+    pass
+
+
+class ProviderError(NbLLMError):
+    """供应商 API 错误"""
+    pass
+
+
+class RateLimitError(ProviderError):
+    """频率限制"""
+    pass
+
+
+class TokenLimitError(ProviderError):
+    """Token 超限"""
+
+    def __init__(self, message, limit=None, used=None):
+        self.limit = limit
+        self.used = used
+        super().__init__(message)
+
+
+class AuthenticationError(ProviderError):
+    """认证失败（API Key 无效）"""
+    pass
+
+
+class TimeoutError(ProviderError):
+    """请求超时"""
+    pass
+
+
+class ToolExecutionError(NbLLMError):
+    """工具执行失败"""
+
+    def __init__(self, tool_name, args, original_error):
+        self.tool_name = tool_name
+        self.args = args
+        self.original_error = original_error
+        super().__init__(f"Tool '{tool_name}' failed: {original_error}")
+
+
+class SchemaGenerationError(NbLLMError):
+    """从函数签名生成 Schema 失败"""
+    pass
+
+
+class JsonParseError(NbLLMError):
+    """JSON 解析失败（json=True 时，重试后仍无法解析）"""
+
+    def __init__(self, message, raw_text=None, parse_error=None):
+        self.raw_text = raw_text
+        self.parse_error = parse_error
+        super().__init__(message)
+
+
+class SchemaValidationError(NbLLMError):
+    """结构化输出验证失败（response_type 时，重试后仍不符合 Schema）"""
+
+    def __init__(self, message, raw_text=None, validation_error=None, response_type=None):
+        self.raw_text = raw_text
+        self.validation_error = validation_error
+        self.response_type = response_type
+        super().__init__(message)
+
+`````
+
+--- **end of file: nb_llm/exceptions.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/__init__.py** (project: nb_llm) --- 
+
+`````python
+"""
+nb_llm — 大开大合的 LLM 框架
+"""
+from nb_llm.core.chat import Chat, ChatSession, Pipeline
+from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.core.response import ChatResponse, StreamResponse
+from nb_llm.core.data_types import (
+    UsageInfo, ToolCallRecord, PendingToolCall,
+    SourceInfo, TeamMessage, TeamResult, CostTracker,
+    DataMixin,
+)
+from nb_llm.core.history_backends import (
+    HistoryBackend, MemoryBackend, FileBackend, SqliteBackend, RedisBackend,
+)
+from nb_llm.middleware.cache import ResponseCache
+from nb_llm.exceptions import (
+    NbLLMError, ProviderError, RateLimitError, TokenLimitError,
+    AuthenticationError, TimeoutError, ToolExecutionError,
+    SchemaGenerationError, JsonParseError, SchemaValidationError,
+)
+from nb_llm.providers.registry import register_provider
+from nb_llm.embedding.embedding import Embedding
+from nb_llm.rag.rag import RAG
+from nb_llm.agents.router import Router
+from nb_llm.agents.team import Team
+from nb_llm.workflow.step import step
+
+__version__ = "0.1.0"
+
+__all__ = [
+    # 核心
+    "Chat", "ChatConfig", "SendOptions",
+    # 返回值
+    "ChatResponse", "StreamResponse",
+    "UsageInfo", "ToolCallRecord", "PendingToolCall",
+    "SourceInfo", "TeamMessage", "TeamResult", "CostTracker",
+    # 会话 & 管道
+    "ChatSession", "Pipeline",
+    # Agent 能力
+    "RAG", "Router", "Team", "Embedding", "step",
+    # 历史后端
+    "HistoryBackend", "MemoryBackend", "FileBackend", "SqliteBackend", "RedisBackend",
+    # 中间件
+    "ResponseCache",
+    # 基础
+    "DataMixin",
+    # 异常
+    "NbLLMError", "ProviderError", "RateLimitError", "TokenLimitError",
+    "AuthenticationError", "TimeoutError", "ToolExecutionError",
+    "SchemaGenerationError", "JsonParseError", "SchemaValidationError",
+    # 工具函数
+    "register_provider",
+]
+
+`````
+
+--- **end of file: nb_llm/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/__main__.py** (project: nb_llm) --- 
+
+`````python
+"""
+nb_llm CLI 入口
+用法: python -m nb_llm [命令]
+
+命令:
+  chat    - 交互式对话
+  ask     - 单次提问
+  models  - 列出支持的模型
+  version - 显示版本号
+"""
+from __future__ import annotations
+
+import argparse
+import sys
+
+
+def cmd_chat(args):
+    """交互式对话"""
+    from nb_llm import Chat, ChatConfig
+
+    config_kwargs = {'model': args.model}
+    if args.system:
+        config_kwargs['system'] = args.system
+    if args.api_key:
+        config_kwargs['api_key'] = args.api_key
+    if args.base_url:
+        config_kwargs['base_url'] = args.base_url
+    if args.temperature is not None:
+        config_kwargs['temperature'] = args.temperature
+
+    chat = Chat(ChatConfig(**config_kwargs))
+    print(f"nb_llm 交互模式 (模型: {args.model})")
+    print("输入 /quit 退出, /clear 清除历史\n")
+
+    while True:
+        try:
+            user_input = input("你: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n再见!")
+            break
+
+        if not user_input:
+            continue
+        if user_input == '/quit':
+            print("再见!")
+            break
+        if user_input == '/clear':
+            chat.clear()
+            print("[历史已清除]")
+            continue
+
+        if args.stream:
+            print("AI: ", end="", flush=True)
+            for chunk in chat.stream(user_input):
+                print(chunk, end="", flush=True)
+            print()
+        else:
+            response = chat.send(user_input)
+            print(f"AI: {response}")
+
+        if args.show_usage:
+            print(f"  [tokens: {chat.last_usage.total_tokens}]")
+        print()
+
+
+def cmd_ask(args):
+    """单次提问"""
+    from nb_llm import Chat, ChatConfig
+
+    config_kwargs = {'model': args.model}
+    if args.system:
+        config_kwargs['system'] = args.system
+    if args.api_key:
+        config_kwargs['api_key'] = args.api_key
+    if args.base_url:
+        config_kwargs['base_url'] = args.base_url
+
+    chat = Chat(ChatConfig(**config_kwargs))
+    response = chat.ask(args.prompt)
+    print(response)
+
+    if args.show_usage:
+        print(f"\n[tokens: {response.usage.total_tokens}]")
+
+
+def cmd_models(args):
+    """列出支持的模型"""
+    from nb_llm.providers.registry import MODEL_REGISTRY
+
+    print("nb_llm 内置模型别名：\n")
+    seen = set()
+    for alias, (provider_type, model, url) in sorted(MODEL_REGISTRY.items()):
+        if model not in seen:
+            seen.add(model)
+            base = url or '(原生API)'
+            print(f"  {alias:<25} → {model:<35} [{provider_type}]")
+
+
+def cmd_version(args):
+    """显示版本"""
+    from nb_llm import __version__
+    print(f"nb_llm v{__version__}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog='nb_llm',
+        description='nb_llm — 牛逼的大模型框架 CLI',
+    )
+    subparsers = parser.add_subparsers(dest='command')
+
+    # chat 命令
+    p_chat = subparsers.add_parser('chat', help='交互式对话')
+    p_chat.add_argument('--model', '-m', default='gpt-4o', help='模型名称')
+    p_chat.add_argument('--system', '-s', help='系统提示')
+    p_chat.add_argument('--api-key', help='API Key')
+    p_chat.add_argument('--base-url', help='API Base URL')
+    p_chat.add_argument('--temperature', '-t', type=float, help='温度')
+    p_chat.add_argument('--stream', action='store_true', help='流式输出')
+    p_chat.add_argument('--show-usage', '-u', action='store_true', help='显示 token 用量')
+
+    # ask 命令
+    p_ask = subparsers.add_parser('ask', help='单次提问')
+    p_ask.add_argument('prompt', help='提问内容')
+    p_ask.add_argument('--model', '-m', default='gpt-4o', help='模型名称')
+    p_ask.add_argument('--system', '-s', help='系统提示')
+    p_ask.add_argument('--api-key', help='API Key')
+    p_ask.add_argument('--base-url', help='API Base URL')
+    p_ask.add_argument('--show-usage', '-u', action='store_true', help='显示 token 用量')
+
+    # models 命令
+    subparsers.add_parser('models', help='列出支持的模型')
+
+    # version 命令
+    subparsers.add_parser('version', help='显示版本号')
+
+    args = parser.parse_args()
+
+    if args.command == 'chat':
+        cmd_chat(args)
+    elif args.command == 'ask':
+        cmd_ask(args)
+    elif args.command == 'models':
+        cmd_models(args)
+    elif args.command == 'version':
+        cmd_version(args)
+    else:
+        parser.print_help()
+
+
+if __name__ == '__main__':
+    main()
+
+`````
+
+--- **end of file: nb_llm/__main__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/agents/router.py** (project: nb_llm) --- 
+
+`````python
+"""Router 智能路由器"""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, Optional
+
+if TYPE_CHECKING:
+    from nb_llm.core.chat import Chat
+    from nb_llm.core.config import SendOptions
+    from nb_llm.core.response import ChatResponse
+
+
+class Router:
+    """
+    智能路由器。
+    根据用户输入自动路由到对应的专家 Chat。
+    """
+
+    def __init__(self, experts: Dict[str, Chat],
+                 classifier: Chat) -> None:
+        if not experts:
+            raise ValueError("Router 至少需要一个 expert")
+        self.experts = experts
+        self.classifier = classifier
+
+    def send(self, prompt: str,
+             options: Optional[SendOptions] = None) -> ChatResponse:
+        expert_names = list(self.experts.keys())
+        classify_prompt = (
+            f"请判断以下用户输入属于哪个分类，只需回复分类名称，不要解释。\n"
+            f"可选分类：{', '.join(expert_names)}\n"
+            f"用户输入：{prompt}"
+        )
+        category = str(self.classifier.ask(classify_prompt)).strip().lower()
+
+        expert = self.experts.get(category)
+        if expert is None:
+            for name, chat in self.experts.items():
+                if name.lower() in category or category in name.lower():
+                    expert = chat
+                    break
+
+        if expert is None:
+            expert = list(self.experts.values())[0]
+
+        return expert.send(prompt, options)
+
+    def __call__(self, prompt: str,
+                 options: Optional[SendOptions] = None) -> ChatResponse:
+        return self.send(prompt, options)
+
+    def __repr__(self):
+        names = list(self.experts.keys())
+        return f"Router(experts={names})"
+
+`````
+
+--- **end of file: nb_llm/agents/router.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/agents/team.py** (project: nb_llm) --- 
+
+`````python
+"""Team 多智能体协作"""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List, Optional
+
+from nb_llm.core.data_types import TeamMessage, TeamResult
+
+if TYPE_CHECKING:
+    from nb_llm.core.chat import Chat
+
+
+class Team:
+    """
+    多智能体协作团队。
+    支持轮流讨论，每个 agent 能看到之前所有发言。
+    """
+
+    def __init__(self, *agents: Chat,
+                 moderator: Optional[Chat] = None) -> None:
+        if not agents:
+            raise ValueError("Team 至少需要一个 agent")
+        self.agents = list(agents)
+        self.moderator = moderator
+
+    def discuss(self, topic: str, rounds: int = 3) -> TeamResult:
+        transcript: List[TeamMessage] = []
+        shared_context = f"讨论主题：{topic}\n\n"
+
+        for round_num in range(rounds):
+            for agent in self.agents:
+                agent_name = agent.name or f"Agent-{id(agent) % 1000}"
+                prompt = f"{shared_context}请以{agent_name}的身份发表你的观点："
+                response = agent.ask(prompt)
+
+                msg = TeamMessage(
+                    agent_name=agent_name,
+                    round=round_num + 1,
+                    content=str(response),
+                )
+                transcript.append(msg)
+                shared_context += f"[{msg.agent_name}] (第{msg.round}轮): {msg.content}\n\n"
+
+        summarizer = self.moderator or self.agents[0]
+        conclusion = summarizer.ask(f"请总结以下讨论的结论：\n{shared_context}")
+
+        return TeamResult(
+            conclusion=str(conclusion),
+            transcript=transcript,
+            rounds=rounds,
+        )
+
+    def __repr__(self):
+        names = [a.name or '?' for a in self.agents]
+        return f"Team({', '.join(names)})"
+
+`````
+
+--- **end of file: nb_llm/agents/team.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/agents/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/agents/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/chat.py** (project: nb_llm) --- 
+
+`````python
+"""Chat 核心类 — nb_llm 框架的心脏"""
+from __future__ import annotations
+
+import copy
+import json as json_mod
+from typing import Any, Callable, Dict, List, Optional, Union
+
+from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.core.data_types import (
+    CostTracker, PendingToolCall, SourceInfo, UsageInfo,
+)
+from nb_llm.core.history_backends import HistoryBackend, create_backend
+from nb_llm.core.response import ChatResponse, StreamResponse
+from nb_llm.exceptions import (
+    JsonParseError, ProviderError, SchemaValidationError,
+)
+from nb_llm.middleware.cache import ResponseCache
+from nb_llm.providers.openai_provider import OpenAICompatibleProvider
+from nb_llm.providers.registry import resolve_model
+from nb_llm.tools.executor import ToolExecutor
+from nb_llm.tools.schema import func_to_schema
+
+
+def _schema_type_placeholder(ftype: str):
+    """根据 JSON Schema 类型生成占位值"""
+    placeholders = {
+        'string': '...', 'integer': 0, 'number': 0.0,
+        'boolean': True, 'array': [], 'object': {},
+    }
+    return placeholders.get(ftype, '...')
+
+
+class Chat:
+    """
+    nb_llm 的核心类。
+    既是 LLM 客户端，又是对话管理器，又是 Agent。
+    """
+
+    def __init__(self, config: Union[ChatConfig, str, None] = None) -> None:
+        if config is None:
+            config = ChatConfig()
+        elif isinstance(config, str):
+            config = ChatConfig(model=config)
+
+        self.config = config
+        self._history: List[dict] = []
+        self._tool_executor = ToolExecutor()
+        self._cost_tracker: Optional[CostTracker] = None
+        self._last_usage = UsageInfo()
+
+        self._hooks_before: List[Callable] = []
+        self._hooks_after: List[Callable] = []
+        self._hooks_error: List[Callable] = []
+        self._hooks_tool_call: List[Callable] = []
+
+        self._sessions: Dict[str, ChatSession] = {}
+
+        self._cache: Optional[ResponseCache] = None
+        if config.cache:
+            self._cache = ResponseCache(ttl=config.cache_ttl)
+
+        self._history_backend: HistoryBackend = create_backend(
+            config.history_backend, config.history_url,
+        )
+        stored = self._history_backend.load()
+        if stored:
+            self._history = stored
+
+        self._provider = self._create_provider()
+
+    def _create_provider(self):
+        from nb_llm.providers.base import BaseProvider
+        from nb_llm.providers.registry import MODEL_REGISTRY
+
+        model_name = self.config.model
+        if isinstance(model_name, list):
+            model_name = model_name[0]
+        if not model_name:
+            model_name = 'gpt-4o'
+
+        entry = MODEL_REGISTRY.get(model_name.lower())
+        provider_type = entry[0] if entry else 'openai_compatible'
+
+        actual_model, base_url, api_key = resolve_model(model_name, self.config)
+
+        if provider_type == 'anthropic':
+            from nb_llm.providers.anthropic_provider import AnthropicProvider
+            return AnthropicProvider(
+                model=actual_model,
+                api_key=api_key,
+                timeout=self.config.timeout,
+            )
+
+        return OpenAICompatibleProvider(
+            model=actual_model,
+            base_url=base_url,
+            api_key=api_key,
+            timeout=self.config.timeout,
+        )
+
+    # ==================== 核心调用 ====================
+
+    def send(self, prompt: str, options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options)
+        response = self._call_with_hooks(messages, options)
+
+        text = self._extract_text(response)
+        chat_resp = self._build_chat_response(response, text, options)
+
+        self._history.append({'role': 'user', 'content': prompt})
+        self._history.append({'role': 'assistant', 'content': str(chat_resp)})
+        self._trim_history()
+        self._persist_history()
+
+        return chat_resp
+
+    def ask(self, prompt: str, options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options, include_history=False)
+        response = self._call_with_hooks(messages, options)
+
+        text = self._extract_text(response)
+        return self._build_chat_response(response, text, options)
+
+    def __call__(self, prompt: str, options: Optional[SendOptions] = None) -> ChatResponse:
+        return self.send(prompt, options)
+
+    # ==================== 流式 ====================
+
+    def stream(self, prompt: str, options: Optional[SendOptions] = None,
+               on_chunk: Optional[Callable] = None) -> StreamResponse:
+        messages = self._build_messages(prompt, options)
+
+        self._fire_before_hooks(messages, options)
+        try:
+            stream_iter = self._provider.stream_completion(messages, self.config, options)
+        except Exception as e:
+            self._fire_error_hooks(e)
+            raise
+
+        def _wrapped_iter():
+            for chunk in stream_iter:
+                if on_chunk:
+                    on_chunk(chunk)
+                yield chunk
+
+        def _on_stream_done(full_text: str):
+            self._history.append({'role': 'assistant', 'content': full_text})
+            self._trim_history()
+            self._persist_history()
+
+        sr = StreamResponse(
+            _wrapped_iter(), model_name=self._provider.model,
+            on_done=_on_stream_done,
+        )
+
+        self._history.append({'role': 'user', 'content': prompt})
+        return sr
+
+    # ==================== 批量 ====================
+
+    def batch(self, prompts: List[str], options: Optional[SendOptions] = None,
+              concurrency: int = 5) -> List[ChatResponse]:
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        results: List[Optional[ChatResponse]] = [None] * len(prompts)
+
+        def _ask_one(idx: int, prompt: str):
+            return idx, self.ask(prompt, options)
+
+        with ThreadPoolExecutor(max_workers=concurrency) as pool:
+            futures = {pool.submit(_ask_one, i, p): i for i, p in enumerate(prompts)}
+            for future in as_completed(futures):
+                idx, resp = future.result()
+                results[idx] = resp
+
+        return results
+
+    # ==================== 异步接口 ====================
+
+    async def asend(self, prompt: str,
+                    options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options)
+        response = await self._async_call(messages, options)
+        text = self._extract_text(response)
+        chat_resp = self._build_chat_response(response, text, options)
+        self._history.append({'role': 'user', 'content': prompt})
+        self._history.append({'role': 'assistant', 'content': str(chat_resp)})
+        self._trim_history()
+        self._persist_history()
+        return chat_resp
+
+    async def aask(self, prompt: str,
+                   options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options, include_history=False)
+        response = await self._async_call(messages, options)
+        text = self._extract_text(response)
+        return self._build_chat_response(response, text, options)
+
+    async def astream(self, prompt: str,
+                      options: Optional[SendOptions] = None) -> StreamResponse:
+        messages = self._build_messages(prompt, options)
+        self._fire_before_hooks(messages, options)
+        try:
+            aiter = self._provider.astream_completion(messages, self.config, options)
+        except Exception as e:
+            self._fire_error_hooks(e)
+            raise
+
+        async def _collect():
+            async for chunk_data in aiter:
+                yield chunk_data
+
+        def _on_astream_done(full_text: str):
+            self._history.append({'role': 'assistant', 'content': full_text})
+            self._trim_history()
+            self._persist_history()
+
+        sr = StreamResponse(
+            _SyncWrap(_collect()), model_name=self._provider.model,
+            on_done=_on_astream_done,
+        )
+        self._history.append({'role': 'user', 'content': prompt})
+        return sr
+
+    async def abatch(self, prompts: List[str],
+                     options: Optional[SendOptions] = None,
+                     concurrency: int = 5) -> List[ChatResponse]:
+        import asyncio
+        sem = asyncio.Semaphore(concurrency)
+
+        async def _ask_one(idx: int, prompt: str):
+            async with sem:
+                resp = await self.aask(prompt, options)
+                return idx, resp
+
+        tasks = [_ask_one(i, p) for i, p in enumerate(prompts)]
+        results: List[Optional[ChatResponse]] = [None] * len(prompts)
+        for coro in asyncio.as_completed(tasks):
+            idx, resp = await coro
+            results[idx] = resp
+        return results
+
+    async def _async_call(self, messages: list,
+                          options: Optional[SendOptions] = None) -> dict:
+        self._fire_before_hooks(messages, options)
+        try:
+            tools_schema = self._tool_executor.schemas if self._tool_executor.schemas else None
+            response = await self._provider.achat_completion(
+                messages, config=self.config, options=options, tools=tools_schema,
+            )
+            if tools_schema and self._tool_executor.schemas:
+                max_rounds = options.max_tool_rounds if options else 10
+                response, records, pending = await self._tool_executor.async_execute_loop(
+                    self._provider, messages, response,
+                    config=self.config, options=options, max_rounds=max_rounds,
+                )
+                response['_tool_calls_made'] = records
+                response['_tool_calls_pending'] = pending
+            return response
+        except Exception as e:
+            self._fire_error_hooks(e)
+            raise
+
+    # ==================== 工具系统 ====================
+
+    def tool(self, func: Optional[Callable] = None, *, auto_execute: bool = True):
+        """装饰器：注册函数为 Chat 的工具"""
+        def decorator(f):
+            schema = func_to_schema(f)
+            self._tool_executor.register(f, schema, auto_execute=auto_execute)
+            return f
+        if func is not None:
+            return decorator(func)
+        return decorator
+
+    def add_tool(self, func: Callable) -> None:
+        schema = func_to_schema(func)
+        self._tool_executor.register(func, schema, auto_execute=True)
+
+    def add_tools(self, funcs: List[Callable]) -> None:
+        for f in funcs:
+            self.add_tool(f)
+
+    def remove_tool(self, func_or_name: Any) -> bool:
+        return self._tool_executor.unregister(func_or_name)
+
+    def clear_tools(self) -> None:
+        self._tool_executor.clear()
+
+    @property
+    def tools(self) -> List[dict]:
+        return self._tool_executor.schemas
+
+    # ==================== 对话管理 ====================
+
+    @property
+    def history(self) -> List[dict]:
+        return list(self._history)
+
+    def clear(self) -> None:
+        self._history.clear()
+        self._history_backend.clear()
+
+    def clear_cache(self) -> None:
+        if self._cache:
+            self._cache.clear()
+
+    def save(self, path: str) -> None:
+        with open(path, 'w', encoding='utf-8') as f:
+            json_mod.dump(self._history, f, ensure_ascii=False, indent=2)
+
+    def load(self, path: str) -> None:
+        with open(path, 'r', encoding='utf-8') as f:
+            self._history = json_mod.load(f)
+
+    # ==================== 中间件/钩子 ====================
+
+    def on_before(self, func: Callable) -> Callable:
+        self._hooks_before.append(func)
+        return func
+
+    def on_after(self, func: Callable) -> Callable:
+        self._hooks_after.append(func)
+        return func
+
+    def on_error(self, func: Callable) -> Callable:
+        self._hooks_error.append(func)
+        return func
+
+    def on_tool_call(self, func: Callable) -> Callable:
+        self._hooks_tool_call.append(func)
+        return func
+
+    # ==================== Session 管理 ====================
+
+    def session(self, session_id: str) -> ChatSession:
+        if session_id not in self._sessions:
+            self._sessions[session_id] = ChatSession(self, session_id)
+        return self._sessions[session_id]
+
+    def clone(self) -> Chat:
+        new_config = copy.deepcopy(self.config)
+        new_chat = Chat(new_config)
+        for tool_info in self._tool_executor._tools.values():
+            new_chat._tool_executor.register(
+                tool_info['func'], tool_info['schema'], tool_info['auto_execute'],
+            )
+        return new_chat
+
+    # ==================== 属性访问 ====================
+
+    @property
+    def name(self) -> Optional[str]:
+        return self.config.name
+
+    @property
+    def system(self) -> Optional[str]:
+        return self.config.system
+
+    @system.setter
+    def system(self, value: str) -> None:
+        self.config.system = value
+
+    def append_system(self, text: str) -> None:
+        if self.config.system:
+            self.config.system = self.config.system + '\n' + text
+        else:
+            self.config.system = text
+
+    # ==================== 辅助 ====================
+
+    @property
+    def last_usage(self) -> UsageInfo:
+        return self._last_usage
+
+    def track_cost(self) -> CostTracker:
+        tracker = CostTracker()
+        tracker._chat = self
+        self._cost_tracker = tracker
+        return tracker
+
+    def count_tokens(self, text: str) -> int:
+        try:
+            import tiktoken
+            enc = tiktoken.encoding_for_model(self._provider.model)
+            return len(enc.encode(text))
+        except ImportError:
+            return len(text) // 4
+
+    def check_tokens(self, text: str, max_tokens: int) -> bool:
+        return self.count_tokens(text) <= max_tokens
+
+    # ==================== 管道 ====================
+
+    def __rshift__(self, other: Chat) -> Pipeline:
+        return Pipeline([self, other])
+
+    # ==================== Context Manager ====================
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self._history.clear()
+
+    def __repr__(self):
+        model = self.config.model or 'default'
+        name = self.config.name or ''
+        return f"Chat(model={model!r}, name={name!r})"
+
+    # ==================== 内部方法 ====================
+
+    def _build_messages(self, prompt: str, options: Optional[SendOptions] = None,
+                        include_history: bool = True) -> list:
+        messages = []
+
+        if self.config.system:
+            messages.append({'role': 'system', 'content': self.config.system})
+
+        if include_history:
+            messages.extend(self._history)
+
+        final_prompt = prompt
+        if options and (options.response_type or options.json):
+            schema_hint = self._build_schema_hint(options)
+            if schema_hint:
+                final_prompt = f"{prompt}\n\n{schema_hint}"
+
+        if options and (options.image or options.images):
+            content_parts = [{'type': 'text', 'text': final_prompt}]
+            image_urls = []
+            if options.image:
+                image_urls.append(options.image)
+            if options.images:
+                image_urls.extend(options.images)
+            for url in image_urls:
+                actual_url = self._resolve_image_url(url)
+                content_parts.append({
+                    'type': 'image_url',
+                    'image_url': {'url': actual_url},
+                })
+            messages.append({'role': 'user', 'content': content_parts})
+        else:
+            messages.append({'role': 'user', 'content': final_prompt})
+
+        return messages
+
+    @staticmethod
+    def _resolve_image_url(path_or_url: str) -> str:
+        """将本地文件路径转换为 base64 data URL，URL 直接返回"""
+        if path_or_url.startswith(('http://', 'https://', 'data:')):
+            return path_or_url
+        import base64
+        import mimetypes
+        mime, _ = mimetypes.guess_type(path_or_url)
+        if not mime:
+            mime = 'image/png'
+        with open(path_or_url, 'rb') as f:
+            data = base64.b64encode(f.read()).decode('utf-8')
+        return f"data:{mime};base64,{data}"
+
+    @staticmethod
+    def _build_schema_hint(options: SendOptions) -> str:
+        """从 response_type 生成直观的 JSON 格式提示注入 prompt"""
+        if options.response_type:
+            rt = options.response_type
+            fields_desc = []
+            example_obj = {}
+
+            if hasattr(rt, 'model_json_schema'):
+                schema = rt.model_json_schema()
+                props = schema.get('properties', {})
+                required = schema.get('required', [])
+                for fname, finfo in props.items():
+                    ftype = finfo.get('type', 'string')
+                    fdesc = finfo.get('description', '')
+                    req_mark = '（必填）' if fname in required else '（可选）'
+                    fields_desc.append(f"- {fname} ({ftype}): {fdesc} {req_mark}")
+                    example_obj[fname] = _schema_type_placeholder(ftype)
+
+            elif hasattr(rt, '__dataclass_fields__'):
+                import dataclasses
+                type_map = {
+                    int: 'integer', float: 'number', str: 'string',
+                    bool: 'boolean', list: 'array', dict: 'object',
+                }
+                for name, field in rt.__dataclass_fields__.items():
+                    ft = field.type if isinstance(field.type, type) else str
+                    ftype = type_map.get(ft, 'string')
+                    is_required = (field.default is dataclasses.MISSING
+                                   and field.default_factory is dataclasses.MISSING)
+                    req_mark = '（必填）' if is_required else '（可选）'
+                    fields_desc.append(f"- {name} ({ftype}): {req_mark}")
+                    example_obj[name] = _schema_type_placeholder(ftype)
+
+            if fields_desc:
+                fields_text = '\n'.join(fields_desc)
+                example_text = json_mod.dumps(example_obj, ensure_ascii=False)
+                return (
+                    f"请返回一个 JSON 对象，包含以下字段：\n"
+                    f"{fields_text}\n\n"
+                    f"输出格式示例：\n{example_text}\n\n"
+                    f"注意：只返回纯 JSON，不要包裹在 markdown 代码块中，不要返回 JSON Schema 本身。"
+                )
+
+        if options.json:
+            return "请返回纯 JSON 格式（不要包裹在 markdown 代码块中）。"
+        return ""
+
+    def _call_with_hooks(self, messages: list,
+                         options: Optional[SendOptions] = None) -> dict:
+        if self._cache:
+            cached = self._cache.get(messages, self.config, options)
+            if cached is not None:
+                return cached
+
+        self._fire_before_hooks(messages, options)
+
+        try:
+            if (isinstance(self.config.model, list) and len(self.config.model) > 1
+                    and self.config.strategy in ('fastest', 'vote')):
+                response = self._multi_model_call(messages, options)
+            else:
+                tools_schema = self._tool_executor.schemas if self._tool_executor.schemas else None
+                response = self._do_call(messages, options, tools_schema)
+        except Exception as e:
+            self._fire_error_hooks(e)
+            raise
+
+        if self._cache:
+            self._cache.set(messages, response, self.config, options)
+
+        return response
+
+    def _multi_model_call(self, messages: list,
+                          options: Optional[SendOptions] = None) -> dict:
+        """多模型策略：fastest（竞速）或 vote（投票）"""
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        models = self.config.model if isinstance(self.config.model, list) else [self.config.model]
+
+        def _call_model(model_name: str) -> dict:
+            from nb_llm.providers.registry import MODEL_REGISTRY
+            entry = MODEL_REGISTRY.get(model_name.lower())
+            provider_type = entry[0] if entry else 'openai_compatible'
+            actual_model, base_url, api_key = resolve_model(model_name, self.config)
+            if provider_type == 'anthropic':
+                from nb_llm.providers.anthropic_provider import AnthropicProvider
+                provider = AnthropicProvider(
+                    model=actual_model, api_key=api_key,
+                    timeout=self.config.timeout,
+                )
+            else:
+                provider = OpenAICompatibleProvider(
+                    model=actual_model, base_url=base_url,
+                    api_key=api_key, timeout=self.config.timeout,
+                )
+            return provider.chat_completion(messages, config=self.config, options=options)
+
+        if self.config.strategy == 'fastest':
+            with ThreadPoolExecutor(max_workers=len(models)) as pool:
+                futures = {pool.submit(_call_model, m): m for m in models}
+                for future in as_completed(futures):
+                    try:
+                        return future.result()
+                    except Exception:
+                        continue
+            raise ProviderError("所有模型均调用失败")
+
+        elif self.config.strategy == 'vote':
+            results = []
+            with ThreadPoolExecutor(max_workers=len(models)) as pool:
+                futures = {pool.submit(_call_model, m): m for m in models}
+                for future in as_completed(futures):
+                    try:
+                        results.append(future.result())
+                    except Exception:
+                        continue
+            if not results:
+                raise ProviderError("所有模型均调用失败")
+
+            texts = []
+            for r in results:
+                choices = r.get('choices', [{}])
+                t = choices[0].get('message', {}).get('content', '') if choices else ''
+                texts.append(t)
+
+            from collections import Counter
+            counts = Counter(texts)
+            most_common_text = counts.most_common(1)[0][0]
+            for r in results:
+                choices = r.get('choices', [{}])
+                t = choices[0].get('message', {}).get('content', '') if choices else ''
+                if t == most_common_text:
+                    return r
+
+            return results[0]
+
+        return self._do_call(messages, options, None)
+
+    def _do_call(self, messages: list, options: Optional[SendOptions],
+                 tools_schema: Optional[list]) -> dict:
+        max_retries = self.config.retry
+        last_error = None
+
+        for attempt in range(max_retries + 1):
+            try:
+                response = self._provider.chat_completion(
+                    messages, config=self.config, options=options, tools=tools_schema,
+                )
+
+                if tools_schema and self._tool_executor.schemas:
+                    max_rounds = options.max_tool_rounds if options else 10
+                    response, records, pending = self._tool_executor.execute_loop(
+                        self._provider, messages, response,
+                        config=self.config, options=options, max_rounds=max_rounds,
+                    )
+                    response['_tool_calls_made'] = records
+                    response['_tool_calls_pending'] = pending
+
+                return response
+
+            except ProviderError as e:
+                last_error = e
+                if attempt < max_retries:
+                    import time
+                    time.sleep(self.config.retry_delay * (2 ** attempt))
+                    continue
+
+                if self.config.fallback:
+                    return self._call_fallback(messages, options)
+                raise
+
+        raise last_error
+
+    def _call_fallback(self, messages: list,
+                       options: Optional[SendOptions]) -> dict:
+        fallback_model = self.config.fallback
+        actual_model, base_url, api_key = resolve_model(fallback_model, self.config)
+        fallback_provider = OpenAICompatibleProvider(
+            model=actual_model, base_url=base_url, api_key=api_key,
+            timeout=self.config.timeout,
+        )
+        return fallback_provider.chat_completion(messages, config=self.config, options=options)
+
+    def _extract_text(self, response: dict) -> str:
+        choices = response.get('choices', [{}])
+        if choices:
+            message = choices[0].get('message', {})
+            return message.get('content', '') or ''
+        return ''
+
+    def _build_chat_response(self, response: dict, text: str,
+                             options: Optional[SendOptions] = None) -> ChatResponse:
+        usage = UsageInfo.from_dict(response.get('usage', {}))
+        self._last_usage = usage
+
+        if self._cost_tracker:
+            self._cost_tracker._record(usage)
+
+        choices = response.get('choices', [{}])
+        first_choice = choices[0] if choices else {}
+
+        tool_calls_made = response.pop('_tool_calls_made', [])
+        tool_calls_pending = response.pop('_tool_calls_pending', [])
+
+        resp = ChatResponse(
+            text,
+            id=response.get('id', ''),
+            usage=usage,
+            finish_reason=first_choice.get('finish_reason', 'stop'),
+            tool_calls=tool_calls_pending,
+            tool_calls_made=tool_calls_made,
+            raw=response,
+            model=response.get('model', self._provider.model),
+            logprobs=first_choice.get('logprobs'),
+        )
+
+        if options and options.n > 1 and len(choices) > 1:
+            resp.choices = []
+            for c in choices:
+                c_text = c.get('message', {}).get('content', '') or ''
+                c_resp = ChatResponse(
+                    c_text,
+                    finish_reason=c.get('finish_reason', 'stop'),
+                    logprobs=c.get('logprobs'),
+                )
+                resp.choices.append(c_resp)
+
+        if options and options.response_type:
+            resp.parsed = self._parse_structured(text, options.response_type, options)
+        elif options and options.json:
+            resp.parsed = self._parse_json(text)
+
+        for record in tool_calls_made:
+            self._fire_tool_call_hooks(record)
+
+        self._fire_after_hooks(resp, usage)
+
+        return resp
+
+    @staticmethod
+    def _strip_markdown_json(text: str) -> str:
+        """从 LLM 返回文本中提取纯 JSON：处理 markdown 代码块、前后多余文字等"""
+        import re
+        stripped = text.strip()
+
+        match = re.search(r'```(?:json)?\s*\n(.*?)\n\s*```', stripped, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+
+        match = re.search(r'(\{[\s\S]*\})', stripped)
+        if match:
+            candidate = match.group(1)
+            depth = 0
+            end_pos = 0
+            for i, ch in enumerate(candidate):
+                if ch == '{':
+                    depth += 1
+                elif ch == '}':
+                    depth -= 1
+                    if depth == 0:
+                        end_pos = i + 1
+                        break
+            if end_pos > 0:
+                return candidate[:end_pos]
+
+        match = re.search(r'(\[[\s\S]*\])', stripped)
+        if match:
+            return match.group(1)
+
+        return stripped
+
+    def _parse_structured(self, text: str, response_type: Any,
+                          options: SendOptions,
+                          original_prompt: Optional[str] = None) -> Any:
+        max_retries = 2
+        last_error = None
+        clean_text = self._strip_markdown_json(text)
+
+        for attempt in range(max_retries + 1):
+            try:
+                if hasattr(response_type, 'model_validate_json'):
+                    return response_type.model_validate_json(clean_text)
+                elif hasattr(response_type, 'model_validate'):
+                    data = json_mod.loads(clean_text)
+                    return response_type.model_validate(data)
+                else:
+                    data = json_mod.loads(clean_text)
+                    return response_type(**data)
+            except (json_mod.JSONDecodeError, Exception) as e:
+                last_error = e
+                if attempt < max_retries:
+                    retry_prompt = (
+                        f"你之前的回答格式有误，错误信息：{e}\n"
+                        f"请严格按照要求的 JSON 格式重新回答，只返回纯 JSON。"
+                    )
+                    schema_hint = self._build_schema_hint(options)
+                    if schema_hint:
+                        retry_prompt += f"\n{schema_hint}"
+                    try:
+                        retry_resp = self._provider.chat_completion(
+                            [{'role': 'user', 'content': retry_prompt}],
+                            config=self.config, options=options,
+                        )
+                        retry_text = self._extract_text(retry_resp)
+                        clean_text = self._strip_markdown_json(retry_text)
+                    except Exception:
+                        pass
+                    continue
+
+                if isinstance(e, json_mod.JSONDecodeError):
+                    raise JsonParseError(
+                        f"JSON 解析失败（重试 {max_retries} 次后）",
+                        raw_text=text, parse_error=e,
+                    )
+                raise SchemaValidationError(
+                    f"结构化输出验证失败（重试 {max_retries} 次后）: {e}",
+                    raw_text=text, validation_error=e, response_type=response_type,
+                )
+
+    def _parse_json(self, text: str) -> Any:
+        clean_text = self._strip_markdown_json(text)
+        try:
+            return json_mod.loads(clean_text)
+        except json_mod.JSONDecodeError as e:
+            raise JsonParseError(
+                f"JSON 解析失败: {e}", raw_text=text, parse_error=e,
+            )
+
+    def _trim_history(self) -> None:
+        max_turns = self.config.history_max_turns
+        if max_turns and len(self._history) > max_turns * 2:
+            self._history = self._history[-(max_turns * 2):]
+
+        max_tokens = self.config.history_max_tokens
+        if max_tokens:
+            def _content_text(msg):
+                c = msg.get('content', '')
+                if isinstance(c, list):
+                    return ' '.join(p.get('text', '') for p in c if isinstance(p, dict) and p.get('type') == 'text')
+                return c or ''
+            total = sum(self.count_tokens(_content_text(m)) for m in self._history)
+            while total > max_tokens and len(self._history) >= 2:
+                removed = self._history[:2]
+                self._history = self._history[2:]
+                total -= sum(self.count_tokens(_content_text(m)) for m in removed)
+
+        if self.config.history_strategy == 'summary' and len(self._history) > 20:
+            old_part = self._history[:-6]
+            recent_part = self._history[-6:]
+            old_text = '\n'.join(
+                f"[{m.get('role')}] {m.get('content', '')}" for m in old_part
+            )
+            try:
+                summary = self._provider.chat_completion(
+                    [{'role': 'user',
+                      'content': f'请用2-3句话简要总结以下对话要点：\n{old_text}'}],
+                    config=self.config,
+                )
+                summary_text = self._extract_text(summary)
+                self._history = [
+                    {'role': 'system', 'content': f'[对话摘要] {summary_text}'},
+                ] + recent_part
+            except Exception:
+                pass
+
+    def _persist_history(self, session_id: str = 'default',
+                         history: Optional[List[dict]] = None) -> None:
+        if self.config.history_backend != 'memory':
+            data = history if history is not None else self._history
+            self._history_backend.save(data, session_id)
+
+    def _fire_before_hooks(self, messages: list,
+                           options: Optional[SendOptions]) -> None:
+        for hook in self._hooks_before:
+            hook(messages, options)
+
+    def _fire_after_hooks(self, response: ChatResponse,
+                          usage: UsageInfo) -> None:
+        for hook in self._hooks_after:
+            hook(response, usage)
+
+    def _fire_error_hooks(self, error: Exception) -> None:
+        for hook in self._hooks_error:
+            hook(error)
+
+    def _fire_tool_call_hooks(self, record) -> None:
+        for hook in self._hooks_tool_call:
+            hook(record.name, record.args)
+
+
+class ChatSession:
+    """Chat 的子会话。拥有独立对话历史，共享 Chat 配置和工具。"""
+
+    def __init__(self, chat: Chat, session_id: str) -> None:
+        self._chat = chat
+        self.session_id = session_id
+        self._history: List[dict] = chat._history_backend.load(session_id)
+
+    def send(self, prompt: str,
+             options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options)
+        response = self._chat._call_with_hooks(messages, options)
+        text = self._chat._extract_text(response)
+        chat_resp = self._chat._build_chat_response(response, text, options)
+        self._history.append({'role': 'user', 'content': prompt})
+        self._history.append({'role': 'assistant', 'content': str(chat_resp)})
+        self._chat._persist_history(self.session_id, self._history)
+        return chat_resp
+
+    def ask(self, prompt: str,
+            options: Optional[SendOptions] = None) -> ChatResponse:
+        messages = self._build_messages(prompt, options, include_history=False)
+        response = self._chat._call_with_hooks(messages, options)
+        text = self._chat._extract_text(response)
+        return self._chat._build_chat_response(response, text, options)
+
+    @property
+    def history(self) -> List[dict]:
+        return list(self._history)
+
+    def clear(self) -> None:
+        self._history.clear()
+        self._chat._history_backend.clear(self.session_id)
+
+    def _build_messages(self, prompt: str, options: Optional[SendOptions] = None,
+                        include_history: bool = True) -> list:
+        messages = []
+        if self._chat.config.system:
+            messages.append({'role': 'system', 'content': self._chat.config.system})
+        if include_history:
+            messages.extend(self._history)
+
+        final_prompt = prompt
+        if options and (options.response_type or options.json):
+            schema_hint = Chat._build_schema_hint(options)
+            if schema_hint:
+                final_prompt = f"{prompt}\n\n{schema_hint}"
+
+        if options and (options.image or options.images):
+            content_parts = [{'type': 'text', 'text': final_prompt}]
+            image_urls = []
+            if options.image:
+                image_urls.append(options.image)
+            if options.images:
+                image_urls.extend(options.images)
+            for url in image_urls:
+                actual_url = Chat._resolve_image_url(url)
+                content_parts.append({
+                    'type': 'image_url',
+                    'image_url': {'url': actual_url},
+                })
+            messages.append({'role': 'user', 'content': content_parts})
+        else:
+            messages.append({'role': 'user', 'content': final_prompt})
+        return messages
+
+    def __repr__(self):
+        return f"ChatSession(id={self.session_id!r})"
+
+
+class Pipeline:
+    """Chat >> Chat 链式管道"""
+
+    def __init__(self, chats: Optional[List[Chat]] = None) -> None:
+        self._chats = chats or []
+
+    def __rshift__(self, other: Chat) -> Pipeline:
+        return Pipeline(self._chats + [other])
+
+    def run(self, prompt: str,
+            options: Optional[SendOptions] = None) -> ChatResponse:
+        if not self._chats:
+            return ChatResponse(prompt)
+        current = prompt
+        last_resp = None
+        for chat in self._chats:
+            last_resp = chat.ask(str(current), options)
+            current = last_resp
+        return last_resp
+
+    def __call__(self, prompt: str,
+                 options: Optional[SendOptions] = None) -> ChatResponse:
+        return self.run(prompt, options)
+
+    def __repr__(self):
+        names = [c.config.name or c.config.model or '?' for c in self._chats]
+        return f"Pipeline({' >> '.join(names)})"
+
+
+class _SyncWrap:
+    """将异步迭代器包装为同步迭代器（供 StreamResponse 使用）"""
+
+    def __init__(self, aiter):
+        self._aiter = aiter
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        import asyncio
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                raise StopIteration
+            return loop.run_until_complete(self._aiter.__anext__())
+        except StopAsyncIteration:
+            raise StopIteration
+
+`````
+
+--- **end of file: nb_llm/core/chat.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/config.py** (project: nb_llm) --- 
+
+`````python
+"""ChatConfig 和 SendOptions dataclass 定义"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import List, Optional, Union
+
+
+@dataclass
+class ChatConfig:
+    """
+    Chat 的唯一配置类。
+    dataclass 设计：用户可继承重写，IDE 完美补全所有字段。
+    """
+    model: Union[str, List[str], None] = None
+    system: Optional[str] = None
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    name: Optional[str] = None
+
+    # 生成参数
+    temperature: Optional[float] = None
+    max_tokens: Optional[int] = None
+    top_p: Optional[float] = None
+    stop: Optional[List[str]] = None
+    frequency_penalty: Optional[float] = None
+    presence_penalty: Optional[float] = None
+    seed: Optional[int] = None
+    logprobs: Optional[bool] = None
+    top_logprobs: Optional[int] = None
+
+    # 容错
+    retry: int = 0
+    retry_delay: float = 1.0
+    fallback: Optional[str] = None
+    timeout: Optional[float] = None
+    strategy: str = "fallback"  # "fallback" | "fastest" | "vote"
+
+    # 对话历史管理
+    history_max_turns: Optional[int] = None
+    history_max_tokens: Optional[int] = None
+    history_strategy: str = "truncate"  # "truncate" | "summary"
+
+    # 对话历史持久化
+    history_backend: str = "memory"  # "memory" | "file" | "sqlite" | "redis"
+    history_url: Optional[str] = None
+
+    # 缓存
+    cache: bool = False
+    cache_ttl: int = 3600
+
+    # 可观测
+    trace: bool = False
+
+    # RAG
+    rag: object = None
+
+
+@dataclass
+class SendOptions:
+    """
+    send/ask 的单次调用选项。
+    dataclass 设计：IDE 输入 SendOptions( 后自动提示所有可用字段。
+    """
+    json: bool = False
+    response_type: object = None
+
+    # 多模态
+    image: Optional[str] = None
+    images: Optional[List[str]] = None
+
+    # 参数覆盖
+    temperature: Optional[float] = None
+    max_tokens: Optional[int] = None
+    top_p: Optional[float] = None
+    stop: Optional[List[str]] = None
+    frequency_penalty: Optional[float] = None
+    presence_penalty: Optional[float] = None
+    seed: Optional[int] = None
+    logprobs: Optional[bool] = None
+    top_logprobs: Optional[int] = None
+
+    # 多候选
+    n: int = 1
+
+    # 工具控制
+    tool_choice: str = "auto"  # "auto" | "none" | "required" | tool_name
+    max_tool_rounds: int = 10
+
+    # 追踪
+    tags: Optional[List[str]] = None
+    metadata: Optional[dict] = None
+
+`````
+
+--- **end of file: nb_llm/core/config.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/data_types.py** (project: nb_llm) --- 
+
+`````python
+"""nb_llm 核心数据类型：DataMixin、UsageInfo、ToolCallRecord 等返回值对象"""
+from __future__ import annotations
+
+from typing import Any, List, Optional
+
+
+class DataMixin:
+    """
+    返回值对象的混入基类。
+    同时支持：.属性（IDE 补全）、.to_dict()、dict(obj)、obj["key"]
+    """
+
+    def to_dict(self) -> dict:
+        result = {}
+        for k, v in self.__dict__.items():
+            if k.startswith('_'):
+                continue
+            if isinstance(v, DataMixin):
+                result[k] = v.to_dict()
+            elif isinstance(v, list):
+                result[k] = [
+                    item.to_dict() if isinstance(item, DataMixin) else item
+                    for item in v
+                ]
+            else:
+                result[k] = v
+        return result
+
+    def keys(self):
+        return [k for k in self.__dict__ if not k.startswith('_')]
+
+    def __iter__(self):
+        return iter(self.to_dict().items())
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __contains__(self, key):
+        return hasattr(self, key)
+
+    def __repr__(self):
+        items = ', '.join(f"{k}={v!r}" for k, v in self.__dict__.items() if not k.startswith('_'))
+        return f"{self.__class__.__name__}({items})"
+
+
+class UsageInfo(DataMixin):
+    """Token 用量信息"""
+
+    def __init__(self, prompt_tokens: int = 0, completion_tokens: int = 0,
+                 total_tokens: int = 0, cost: float = 0.0) -> None:
+        self.prompt_tokens = prompt_tokens
+        self.completion_tokens = completion_tokens
+        self.total_tokens = total_tokens
+        self.cost = cost
+
+    @classmethod
+    def from_dict(cls, d: Optional[dict]) -> UsageInfo:
+        if not d:
+            return cls()
+        return cls(
+            prompt_tokens=d.get('prompt_tokens', 0),
+            completion_tokens=d.get('completion_tokens', 0),
+            total_tokens=d.get('total_tokens', 0),
+            cost=d.get('cost', 0.0),
+        )
+
+
+class ToolCallRecord(DataMixin):
+    """已完成的工具调用记录"""
+
+    def __init__(self, name: str = '', args: Optional[dict] = None,
+                 result: Any = None, elapsed: float = 0.0,
+                 error: Optional[str] = None) -> None:
+        self.name = name
+        self.args = args or {}
+        self.result = result
+        self.elapsed = elapsed
+        self.error = error
+
+
+class PendingToolCall:
+    """待执行的工具调用（auto_execute=False 时使用）"""
+
+    def __init__(self, name: str, args: dict, tool_func: Any = None,
+                 tool_call_id: Optional[str] = None) -> None:
+        self.name = name
+        self.args = args
+        self._tool_func = tool_func
+        self._tool_call_id = tool_call_id
+        self._executed = False
+        self._result = None
+
+    def execute(self) -> Any:
+        if self._executed:
+            return self._result
+        if self._tool_func is None:
+            raise RuntimeError(f"No function registered for tool '{self.name}'")
+        self._result = self._tool_func(**self.args)
+        self._executed = True
+        return self._result
+
+    def reject(self) -> None:
+        self._executed = True
+        self._result = None
+
+    def to_dict(self) -> dict:
+        return {'name': self.name, 'args': self.args}
+
+    def __repr__(self):
+        return f"PendingToolCall(name={self.name!r}, args={self.args!r})"
+
+
+class SourceInfo(DataMixin):
+    """RAG 检索到的来源信息"""
+
+    def __init__(self, file: str = '', page: Optional[int] = None,
+                 line: Optional[int] = None, chunk: str = '',
+                 score: float = 0.0) -> None:
+        self.file = file
+        self.page = page
+        self.line = line
+        self.chunk = chunk
+        self.score = score
+
+
+class TeamMessage(DataMixin):
+    """讨论记录中的一条消息"""
+
+    def __init__(self, agent_name: str = '', round: int = 0,
+                 content: str = '') -> None:
+        self.agent_name = agent_name
+        self.round = round
+        self.content = content
+
+
+class TeamResult(DataMixin):
+    """Team.discuss() 的返回值"""
+
+    def __init__(self, conclusion: str = '',
+                 transcript: Optional[List[TeamMessage]] = None,
+                 rounds: int = 0) -> None:
+        self.conclusion = conclusion
+        self.transcript = transcript or []
+        self.rounds = rounds
+
+
+class CostTracker(DataMixin):
+    """track_cost() 的返回值，Context Manager"""
+
+    def __init__(self) -> None:
+        self.total_tokens = 0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
+        self.total_cost = 0.0
+        self.call_count = 0
+        self.details: List[UsageInfo] = []
+        self._chat = None
+
+    def _record(self, usage: UsageInfo) -> None:
+        self.total_tokens += usage.total_tokens
+        self.prompt_tokens += usage.prompt_tokens
+        self.completion_tokens += usage.completion_tokens
+        self.total_cost += usage.cost
+        self.call_count += 1
+        self.details.append(usage)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        if self._chat is not None:
+            self._chat._cost_tracker = None
+
+`````
+
+--- **end of file: nb_llm/core/data_types.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/history_backends.py** (project: nb_llm) --- 
+
+`````python
+"""对话历史持久化后端"""
+from __future__ import annotations
+
+import json
+import os
+from typing import Dict, List, Optional
+
+
+class HistoryBackend:
+    """历史后端基类"""
+
+    def load(self, session_id: str = 'default') -> List[dict]:
+        return []
+
+    def save(self, history: List[dict], session_id: str = 'default') -> None:
+        pass
+
+    def clear(self, session_id: str = 'default') -> None:
+        pass
+
+
+class MemoryBackend(HistoryBackend):
+    """内存后端（默认）"""
+
+    def __init__(self) -> None:
+        self._store: Dict[str, List[dict]] = {}
+
+    def load(self, session_id: str = 'default') -> List[dict]:
+        return list(self._store.get(session_id, []))
+
+    def save(self, history: List[dict], session_id: str = 'default') -> None:
+        self._store[session_id] = list(history)
+
+    def clear(self, session_id: str = 'default') -> None:
+        self._store.pop(session_id, None)
+
+
+class FileBackend(HistoryBackend):
+    """文件后端：每个 session 一个 JSON 文件"""
+
+    def __init__(self, directory: str = '.nb_llm_history') -> None:
+        self.directory = directory
+        os.makedirs(directory, exist_ok=True)
+
+    def _path(self, session_id: str) -> str:
+        safe_id = session_id.replace('/', '_').replace('\\', '_')
+        return os.path.join(self.directory, f"{safe_id}.json")
+
+    def load(self, session_id: str = 'default') -> List[dict]:
+        path = self._path(session_id)
+        if os.path.exists(path):
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return []
+
+    def save(self, history: List[dict], session_id: str = 'default') -> None:
+        path = self._path(session_id)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+
+    def clear(self, session_id: str = 'default') -> None:
+        path = self._path(session_id)
+        if os.path.exists(path):
+            os.remove(path)
+
+
+class SqliteBackend(HistoryBackend):
+    """SQLite 后端"""
+
+    def __init__(self, db_path: str = '.nb_llm_history.db') -> None:
+        import sqlite3
+        self.db_path = db_path
+        self._conn = sqlite3.connect(db_path, check_same_thread=False)
+        self._conn.execute(
+            'CREATE TABLE IF NOT EXISTS history '
+            '(session_id TEXT, messages TEXT, updated_at REAL)'
+        )
+        self._conn.commit()
+
+    def load(self, session_id: str = 'default') -> List[dict]:
+        cursor = self._conn.execute(
+            'SELECT messages FROM history WHERE session_id = ?',
+            (session_id,),
+        )
+        row = cursor.fetchone()
+        if row:
+            return json.loads(row[0])
+        return []
+
+    def save(self, history: List[dict], session_id: str = 'default') -> None:
+        import time
+        messages_json = json.dumps(history, ensure_ascii=False)
+        cursor = self._conn.execute(
+            'SELECT 1 FROM history WHERE session_id = ?',
+            (session_id,),
+        )
+        if cursor.fetchone():
+            self._conn.execute(
+                'UPDATE history SET messages = ?, updated_at = ? WHERE session_id = ?',
+                (messages_json, time.time(), session_id),
+            )
+        else:
+            self._conn.execute(
+                'INSERT INTO history (session_id, messages, updated_at) VALUES (?, ?, ?)',
+                (session_id, messages_json, time.time()),
+            )
+        self._conn.commit()
+
+    def clear(self, session_id: str = 'default') -> None:
+        self._conn.execute('DELETE FROM history WHERE session_id = ?', (session_id,))
+        self._conn.commit()
+
+    def close(self) -> None:
+        self._conn.close()
+
+
+class RedisBackend(HistoryBackend):
+    """Redis 后端（需要 pip install redis）"""
+
+    def __init__(self, url: str = 'redis://localhost:6379/0',
+                 prefix: str = 'nb_llm:history:') -> None:
+        self._url = url
+        self._prefix = prefix
+        self._client = None
+
+    def _get_client(self):
+        if self._client is None:
+            try:
+                import redis
+            except ImportError:
+                raise ImportError(
+                    "Redis 后端需要安装 redis 包：pip install redis"
+                )
+            self._client = redis.from_url(self._url, decode_responses=True)
+        return self._client
+
+    def _key(self, session_id: str) -> str:
+        return f"{self._prefix}{session_id}"
+
+    def load(self, session_id: str = 'default') -> List[dict]:
+        client = self._get_client()
+        data = client.get(self._key(session_id))
+        if data:
+            return json.loads(data)
+        return []
+
+    def save(self, history: List[dict], session_id: str = 'default') -> None:
+        client = self._get_client()
+        client.set(
+            self._key(session_id),
+            json.dumps(history, ensure_ascii=False),
+        )
+
+    def clear(self, session_id: str = 'default') -> None:
+        client = self._get_client()
+        client.delete(self._key(session_id))
+
+
+def create_backend(backend_type: str = 'memory',
+                   url: Optional[str] = None) -> HistoryBackend:
+    """工厂函数：根据类型创建后端"""
+    if backend_type == 'memory':
+        return MemoryBackend()
+    elif backend_type == 'file':
+        return FileBackend(url or '.nb_llm_history')
+    elif backend_type == 'sqlite':
+        return SqliteBackend(url or '.nb_llm_history.db')
+    elif backend_type == 'redis':
+        return RedisBackend(url or 'redis://localhost:6379/0')
+    else:
+        return MemoryBackend()
+
+`````
+
+--- **end of file: nb_llm/core/history_backends.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/response.py** (project: nb_llm) --- 
+
+`````python
+"""ChatResponse 和 StreamResponse 定义"""
+from __future__ import annotations
+
+from typing import Any, List, Optional, Iterator
+
+from nb_llm.core.data_types import (
+    UsageInfo, ToolCallRecord, PendingToolCall, SourceInfo,
+)
+
+
+class ChatResponse(str):
+    """
+    LLM 返回值。继承 str，95% 场景当字符串用。
+    需要时通过属性访问完整元信息，IDE 完美补全。
+    """
+
+    id: str
+    usage: UsageInfo
+    finish_reason: str
+    tool_calls: List[PendingToolCall]
+    tool_calls_made: List[ToolCallRecord]
+    sources: List[SourceInfo]
+    parsed: Any
+    choices: Optional[List[ChatResponse]]
+    logprobs: Any
+    raw: dict
+    model: str
+
+    def __new__(cls, text: str = '', **kwargs) -> ChatResponse:
+        instance = super().__new__(cls, text)
+        instance.id = kwargs.get('id', '')
+        instance.usage = kwargs.get('usage', UsageInfo())
+        instance.finish_reason = kwargs.get('finish_reason', 'stop')
+        instance.tool_calls = kwargs.get('tool_calls', [])
+        instance.tool_calls_made = kwargs.get('tool_calls_made', [])
+        instance.sources = kwargs.get('sources', [])
+        instance.parsed = kwargs.get('parsed', None)
+        instance.choices = kwargs.get('choices', None)
+        instance.logprobs = kwargs.get('logprobs', None)
+        instance.raw = kwargs.get('raw', {})
+        instance.model = kwargs.get('model', '')
+        return instance
+
+    @property
+    def text(self) -> str:
+        """获取文本内容（等价于 str(self)，但更明确）"""
+        return str(self)
+
+    def to_dict(self) -> dict:
+        d = {
+            'id': self.id,
+            'text': self.text,
+            'usage': self.usage.to_dict() if self.usage else {},
+            'finish_reason': self.finish_reason,
+            'tool_calls': [tc.to_dict() for tc in (self.tool_calls or [])],
+            'tool_calls_made': [tc.to_dict() for tc in (self.tool_calls_made or [])],
+            'sources': [s.to_dict() for s in (self.sources or [])],
+            'model': self.model,
+        }
+        if self.parsed is not None:
+            if hasattr(self.parsed, 'model_dump'):
+                d['parsed'] = self.parsed.model_dump()
+            elif hasattr(self.parsed, 'to_dict'):
+                d['parsed'] = self.parsed.to_dict()
+            else:
+                d['parsed'] = self.parsed
+        if self.choices is not None:
+            d['choices'] = [c.to_dict() for c in self.choices]
+        if self.logprobs is not None:
+            d['logprobs'] = self.logprobs
+        return d
+
+    @classmethod
+    def _from_api_response(cls, raw_response: dict,
+                            model_name: str = '') -> ChatResponse:
+        """从 API 原始响应构建 ChatResponse"""
+        choices = raw_response.get('choices', [{}])
+        first_choice = choices[0] if choices else {}
+        message = first_choice.get('message', {})
+        text = message.get('content', '') or ''
+
+        usage_data = raw_response.get('usage', {})
+        usage = UsageInfo.from_dict(usage_data)
+
+        resp = cls(
+            text,
+            id=raw_response.get('id', ''),
+            usage=usage,
+            finish_reason=first_choice.get('finish_reason', 'stop'),
+            raw=raw_response,
+            model=raw_response.get('model', model_name),
+            logprobs=first_choice.get('logprobs'),
+        )
+        return resp
+
+
+class StreamResponse:
+    """
+    stream() 的返回值。可迭代，迭代结束后可获取元信息。
+    """
+
+    def __init__(self, stream_iter: Iterator, model_name: str = '',
+                 on_done: Any = None) -> None:
+        self._stream_iter = stream_iter
+        self._model_name = model_name
+        self._chunks: List[str] = []
+        self._done = False
+        self._on_done = on_done
+        self.usage: UsageInfo = UsageInfo()
+        self.finish_reason: str = 'stop'
+        self.text: str = ''
+        self.tool_calls_made: List[ToolCallRecord] = []
+
+    def __iter__(self):
+        return self
+
+    def __next__(self) -> str:
+        try:
+            chunk_data = next(self._stream_iter)
+            if isinstance(chunk_data, dict):
+                choices = chunk_data.get('choices', [{}])
+                delta = choices[0].get('delta', {}) if choices else {}
+                text = delta.get('content', '') or ''
+                finish = choices[0].get('finish_reason') if choices else None
+                if finish:
+                    self.finish_reason = finish
+                usage_data = chunk_data.get('usage')
+                if usage_data:
+                    self.usage = UsageInfo.from_dict(usage_data)
+            else:
+                text = str(chunk_data)
+
+            self._chunks.append(text)
+            return text
+        except StopIteration:
+            self._done = True
+            self.text = ''.join(self._chunks)
+            if self._on_done:
+                self._on_done(self.text)
+            raise
+
+    def to_dict(self) -> dict:
+        return {
+            'text': self.text,
+            'usage': self.usage.to_dict(),
+            'finish_reason': self.finish_reason,
+            'tool_calls_made': [tc.to_dict() for tc in self.tool_calls_made],
+        }
+
+`````
+
+--- **end of file: nb_llm/core/response.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/core/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/core/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/embedding/embedding.py** (project: nb_llm) --- 
+
+`````python
+"""Embedding 向量化类"""
+from __future__ import annotations
+
+import os
+from typing import List, Optional, Union
+
+try:
+    import openai as openai_sdk
+except ImportError:
+    openai_sdk = None
+
+
+_EMBEDDING_REGISTRY = {
+    "text-embedding-3-small": ("https://api.openai.com/v1", "OPENAI_API_KEY"),
+    "text-embedding-3-large": ("https://api.openai.com/v1", "OPENAI_API_KEY"),
+    "text-embedding-ada-002": ("https://api.openai.com/v1", "OPENAI_API_KEY"),
+    "bge-m3": ("https://dashscope.aliyuncs.com/compatible-mode/v1", "DASHSCOPE_API_KEY"),
+    "bge-large-zh": ("https://dashscope.aliyuncs.com/compatible-mode/v1", "DASHSCOPE_API_KEY"),
+    "text-embedding-v1": ("https://dashscope.aliyuncs.com/compatible-mode/v1", "DASHSCOPE_API_KEY"),
+}
+
+
+class Embedding:
+    """
+    Embedding 向量化。
+    支持字符串和字符串列表输入，返回向量或向量列表。
+    """
+
+    def __init__(self, model: str = "text-embedding-3-small",
+                 api_key: Optional[str] = None,
+                 base_url: Optional[str] = None) -> None:
+        self.model = model
+
+        registry_entry = _EMBEDDING_REGISTRY.get(model)
+        if registry_entry:
+            default_base_url, key_env = registry_entry
+        else:
+            default_base_url, key_env = "https://api.openai.com/v1", "OPENAI_API_KEY"
+
+        self.base_url = base_url or default_base_url
+        self.api_key = api_key or os.environ.get(key_env, '') or os.environ.get('NB_LLM_API_KEY', '')
+        self._client = None
+
+    def _get_client(self):
+        if self._client is None:
+            if openai_sdk is None:
+                raise ImportError("需要安装 openai: pip install openai")
+            self._client = openai_sdk.OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+            )
+        return self._client
+
+    def embed(self, text: Union[str, List[str]]) -> Union[List[float], List[List[float]]]:
+        is_single = isinstance(text, str)
+        texts = [text] if is_single else text
+
+        client = self._get_client()
+        resp = client.embeddings.create(model=self.model, input=texts)
+        vectors = [item.embedding for item in resp.data]
+
+        return vectors[0] if is_single else vectors
+
+    def __call__(self, text: Union[str, List[str]]) -> Union[List[float], List[List[float]]]:
+        return self.embed(text)
+
+    def __repr__(self):
+        return f"Embedding(model={self.model!r})"
+
+`````
+
+--- **end of file: nb_llm/embedding/embedding.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/embedding/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/embedding/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/middleware/cache.py** (project: nb_llm) --- 
+
+`````python
+"""缓存中间件"""
+from __future__ import annotations
+
+import hashlib
+import json
+import time
+from typing import Any, Dict, Optional, Tuple
+
+
+class ResponseCache:
+    """简单的内存缓存，基于消息内容+参数的哈希"""
+
+    def __init__(self, ttl: int = 3600, max_size: int = 1000) -> None:
+        self.ttl = ttl
+        self.max_size = max_size
+        self._cache: Dict[str, Tuple[float, dict]] = {}
+
+    def _make_key(self, messages: list, config: Any = None,
+                  options: Any = None) -> str:
+        key_data = json.dumps(messages, ensure_ascii=False, sort_keys=True)
+        if config:
+            key_data += str(getattr(config, 'model', ''))
+            key_data += str(getattr(config, 'temperature', ''))
+        if options:
+            key_data += str(getattr(options, 'temperature', ''))
+            key_data += str(getattr(options, 'max_tokens', ''))
+        return hashlib.md5(key_data.encode('utf-8')).hexdigest()
+
+    def get(self, messages: list, config: Any = None,
+            options: Any = None) -> Optional[dict]:
+        key = self._make_key(messages, config, options)
+        if key in self._cache:
+            ts, response = self._cache[key]
+            if time.time() - ts < self.ttl:
+                return response
+            else:
+                del self._cache[key]
+        return None
+
+    def set(self, messages: list, response: dict,
+            config: Any = None, options: Any = None) -> None:
+        if len(self._cache) >= self.max_size:
+            oldest_key = min(self._cache, key=lambda k: self._cache[k][0])
+            del self._cache[oldest_key]
+        key = self._make_key(messages, config, options)
+        self._cache[key] = (time.time(), response)
+
+    def clear(self) -> None:
+        self._cache.clear()
+
+    def __len__(self) -> int:
+        return len(self._cache)
+
+`````
+
+--- **end of file: nb_llm/middleware/cache.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/middleware/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/middleware/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/providers/anthropic_provider.py** (project: nb_llm) --- 
+
+`````python
+"""Anthropic (Claude) Provider 适配器"""
+from __future__ import annotations
+
+from typing import Any, Dict, Iterator, List, Optional
+
+from nb_llm.providers.base import BaseProvider
+
+
+class AnthropicProvider(BaseProvider):
+    """
+    Anthropic Claude API 适配器。
+    将 Anthropic 的消息格式统一为 OpenAI 兼容格式。
+    需要 pip install anthropic
+    """
+
+    def __init__(self, model: str = 'claude-sonnet-4-20250514',
+                 api_key: Optional[str] = None,
+                 timeout: Optional[float] = None) -> None:
+        self.model = model
+        self._api_key = api_key
+        self._timeout = timeout
+        self._client = None
+
+    def _get_client(self):
+        if self._client is None:
+            try:
+                import anthropic
+            except ImportError:
+                raise ImportError(
+                    "Anthropic Provider 需要安装 anthropic 包：pip install anthropic"
+                )
+            kwargs = {}
+            if self._api_key:
+                kwargs['api_key'] = self._api_key
+            if self._timeout:
+                kwargs['timeout'] = self._timeout
+            self._client = anthropic.Anthropic(**kwargs)
+        return self._client
+
+    def chat_completion(self, messages: List[dict],
+                        config: Any = None, options: Any = None,
+                        tools: Optional[List[dict]] = None) -> dict:
+        client = self._get_client()
+
+        system_msg = None
+        chat_messages = []
+        for msg in messages:
+            if msg['role'] == 'system':
+                system_msg = msg['content']
+            else:
+                chat_messages.append({
+                    'role': msg['role'],
+                    'content': msg['content'],
+                })
+
+        kwargs: Dict[str, Any] = {
+            'model': self.model,
+            'messages': chat_messages,
+            'max_tokens': 4096,
+        }
+
+        if system_msg:
+            kwargs['system'] = system_msg
+
+        temp = getattr(config, 'temperature', None) if config else None
+        if options and getattr(options, 'temperature', None) is not None:
+            temp = options.temperature
+        if temp is not None:
+            kwargs['temperature'] = temp
+
+        max_tokens = getattr(config, 'max_tokens', None) if config else None
+        if options and getattr(options, 'max_tokens', None) is not None:
+            max_tokens = options.max_tokens
+        if max_tokens is not None:
+            kwargs['max_tokens'] = max_tokens
+
+        response = client.messages.create(**kwargs)
+
+        text = ''
+        if response.content:
+            for block in response.content:
+                if hasattr(block, 'text'):
+                    text += block.text
+
+        return {
+            'id': response.id,
+            'model': response.model,
+            'choices': [{
+                'message': {'role': 'assistant', 'content': text},
+                'finish_reason': response.stop_reason or 'stop',
+            }],
+            'usage': {
+                'prompt_tokens': response.usage.input_tokens,
+                'completion_tokens': response.usage.output_tokens,
+                'total_tokens': (
+                    response.usage.input_tokens + response.usage.output_tokens
+                ),
+            },
+        }
+
+    def stream_completion(self, messages: List[dict],
+                          config: Any = None,
+                          options: Any = None) -> Iterator[dict]:
+        client = self._get_client()
+
+        system_msg = None
+        chat_messages = []
+        for msg in messages:
+            if msg['role'] == 'system':
+                system_msg = msg['content']
+            else:
+                chat_messages.append({
+                    'role': msg['role'],
+                    'content': msg['content'],
+                })
+
+        kwargs: Dict[str, Any] = {
+            'model': self.model,
+            'messages': chat_messages,
+            'max_tokens': 4096,
+        }
+        if system_msg:
+            kwargs['system'] = system_msg
+
+        with client.messages.stream(**kwargs) as stream:
+            for text in stream.text_stream:
+                yield {
+                    'choices': [{
+                        'delta': {'content': text},
+                        'finish_reason': None,
+                    }],
+                }
+
+            final_message = stream.get_final_message()
+            yield {
+                'choices': [{
+                    'delta': {'content': ''},
+                    'finish_reason': final_message.stop_reason or 'stop',
+                }],
+                'usage': {
+                    'prompt_tokens': final_message.usage.input_tokens,
+                    'completion_tokens': final_message.usage.output_tokens,
+                    'total_tokens': (
+                        final_message.usage.input_tokens
+                        + final_message.usage.output_tokens
+                    ),
+                },
+            }
+
+`````
+
+--- **end of file: nb_llm/providers/anthropic_provider.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/providers/base.py** (project: nb_llm) --- 
+
+`````python
+"""Provider 基类"""
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, AsyncIterator, Iterator, List, Optional
+
+if TYPE_CHECKING:
+    from nb_llm.core.config import ChatConfig, SendOptions
+
+
+class BaseProvider(ABC):
+    """所有供应商适配器的基类"""
+
+    @abstractmethod
+    def chat_completion(self, messages: list,
+                        config: Optional[ChatConfig] = None,
+                        options: Optional[SendOptions] = None,
+                        tools: Optional[list] = None) -> dict:
+        ...
+
+    @abstractmethod
+    def stream_completion(self, messages: list,
+                          config: Optional[ChatConfig] = None,
+                          options: Optional[SendOptions] = None) -> Iterator[dict]:
+        ...
+
+    async def achat_completion(self, messages: list,
+                               config: Optional[ChatConfig] = None,
+                               options: Optional[SendOptions] = None,
+                               tools: Optional[list] = None) -> dict:
+        return self.chat_completion(messages, config, options, tools)
+
+    async def astream_completion(self, messages: list,
+                                 config: Optional[ChatConfig] = None,
+                                 options: Optional[SendOptions] = None) -> AsyncIterator[dict]:
+        for chunk in self.stream_completion(messages, config, options):
+            yield chunk
+
+`````
+
+--- **end of file: nb_llm/providers/base.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/providers/openai_provider.py** (project: nb_llm) --- 
+
+`````python
+"""OpenAI 兼容 API 的通用适配器"""
+from __future__ import annotations
+
+import json
+import time
+from typing import TYPE_CHECKING, AsyncIterator, Iterator, Optional
+
+from nb_llm.exceptions import (
+    AuthenticationError, ProviderError, RateLimitError,
+    TokenLimitError, TimeoutError as NbTimeoutError,
+)
+from nb_llm.providers.base import BaseProvider
+
+if TYPE_CHECKING:
+    from nb_llm.core.config import ChatConfig, SendOptions
+
+try:
+    import httpx
+except ImportError:
+    httpx = None
+
+try:
+    import openai as openai_sdk
+except ImportError:
+    openai_sdk = None
+
+
+def _merge_params(config: Optional[ChatConfig],
+                  options: Optional[SendOptions]) -> dict:
+    """将 ChatConfig + SendOptions 合并为 API 请求参数"""
+    params: dict = {}
+    if config:
+        for attr in ('temperature', 'max_tokens', 'top_p', 'stop',
+                      'frequency_penalty', 'presence_penalty', 'seed',
+                      'logprobs', 'top_logprobs'):
+            val = getattr(config, attr, None)
+            if val is not None:
+                params[attr] = val
+    if options:
+        for attr in ('temperature', 'max_tokens', 'top_p', 'stop',
+                      'frequency_penalty', 'presence_penalty', 'seed',
+                      'logprobs', 'top_logprobs'):
+            val = getattr(options, attr, None)
+            if val is not None:
+                params[attr] = val
+        if options.n and options.n > 1:
+            params['n'] = options.n
+    return params
+
+
+def _handle_api_error(status_code: int, body_text: str) -> None:
+    if status_code == 401:
+        raise AuthenticationError(f"API Key 无效 (401): {body_text}")
+    elif status_code == 429:
+        raise RateLimitError(f"请求频率限制 (429): {body_text}")
+    elif status_code >= 400:
+        raise ProviderError(f"API 错误 ({status_code}): {body_text}")
+
+
+class OpenAICompatibleProvider(BaseProvider):
+    """
+    OpenAI 兼容 API 的通用适配器。
+    覆盖: OpenAI, DeepSeek, Qwen(DashScope), GLM, SiliconFlow, Ollama, 任何 v1/chat/completions 兼容接口。
+    优先使用 openai SDK，无则退回 httpx 裸请求。
+    """
+
+    def __init__(self, model: str, base_url: str, api_key: str,
+                 timeout: Optional[float] = None) -> None:
+        self.model = model
+        self.base_url = base_url.rstrip('/')
+        self.api_key = api_key or ''
+        self.timeout = timeout or 120.0
+        self._client = None
+        self._async_client = None
+        self._use_sdk = openai_sdk is not None
+
+    def _get_sdk_client(self):
+        if self._client is None:
+            self._client = openai_sdk.OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+                timeout=self.timeout,
+            )
+        return self._client
+
+    def _build_request_body(self, messages: list,
+                            config: Optional[ChatConfig],
+                            options: Optional[SendOptions],
+                            tools: Optional[list],
+                            stream: bool = False) -> dict:
+        body = {
+            'model': self.model,
+            'messages': messages,
+        }
+        if stream:
+            body['stream'] = True
+            body['stream_options'] = {'include_usage': True}
+
+        params = _merge_params(config, options)
+        body.update(params)
+
+        if tools:
+            body['tools'] = tools
+            if options and options.tool_choice != 'auto':
+                tc = options.tool_choice
+                if tc in ('none', 'required'):
+                    body['tool_choice'] = tc
+                else:
+                    body['tool_choice'] = {'type': 'function', 'function': {'name': tc}}
+
+        if options and options.json and not options.response_type:
+            body['response_format'] = {'type': 'json_object'}
+
+        return body
+
+    def chat_completion(self, messages: list,
+                        config: Optional[ChatConfig] = None,
+                        options: Optional[SendOptions] = None,
+                        tools: Optional[list] = None) -> dict:
+        if self._use_sdk:
+            return self._sdk_chat(messages, config, options, tools)
+        return self._http_chat(messages, config, options, tools)
+
+    def _sdk_chat(self, messages: list, config: Optional[ChatConfig],
+                  options: Optional[SendOptions],
+                  tools: Optional[list]) -> dict:
+        client = self._get_sdk_client()
+        body = self._build_request_body(messages, config, options, tools)
+        body.pop('model', None)
+        model = self.model
+
+        try:
+            resp = client.chat.completions.create(model=model, **body)
+            return resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+        except openai_sdk.AuthenticationError as e:
+            raise AuthenticationError(str(e))
+        except openai_sdk.RateLimitError as e:
+            raise RateLimitError(str(e))
+        except openai_sdk.APITimeoutError as e:
+            raise NbTimeoutError(str(e))
+        except openai_sdk.BadRequestError as e:
+            if 'maximum context length' in str(e).lower() or 'token' in str(e).lower():
+                raise TokenLimitError(str(e))
+            raise ProviderError(str(e))
+        except openai_sdk.APIError as e:
+            raise ProviderError(str(e))
+
+    def _http_chat(self, messages: list, config: Optional[ChatConfig],
+                   options: Optional[SendOptions],
+                   tools: Optional[list]) -> dict:
+        if httpx is None:
+            raise ImportError("需要安装 openai 或 httpx: pip install openai")
+
+        body = self._build_request_body(messages, config, options, tools)
+        url = f"{self.base_url}/chat/completions"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.api_key}',
+        }
+
+        try:
+            with httpx.Client(timeout=self.timeout) as client:
+                resp = client.post(url, json=body, headers=headers)
+        except httpx.TimeoutException as e:
+            raise NbTimeoutError(str(e))
+
+        _handle_api_error(resp.status_code, resp.text)
+        return resp.json()
+
+    def stream_completion(self, messages: list,
+                          config: Optional[ChatConfig] = None,
+                          options: Optional[SendOptions] = None) -> Iterator[dict]:
+        if self._use_sdk:
+            yield from self._sdk_stream(messages, config, options)
+        else:
+            yield from self._http_stream(messages, config, options)
+
+    def _sdk_stream(self, messages: list, config: Optional[ChatConfig],
+                    options: Optional[SendOptions]) -> Iterator[dict]:
+        client = self._get_sdk_client()
+        body = self._build_request_body(messages, config, options, tools=None, stream=True)
+        body.pop('model', None)
+        body.pop('stream', None)
+        body.pop('stream_options', None)
+        model = self.model
+
+        try:
+            stream = client.chat.completions.create(
+                model=model, stream=True,
+                stream_options={'include_usage': True},
+                **body,
+            )
+            for chunk in stream:
+                chunk_dict = chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk.to_dict()
+                yield chunk_dict
+        except openai_sdk.AuthenticationError as e:
+            raise AuthenticationError(str(e))
+        except openai_sdk.RateLimitError as e:
+            raise RateLimitError(str(e))
+        except openai_sdk.APITimeoutError as e:
+            raise NbTimeoutError(str(e))
+        except openai_sdk.APIError as e:
+            raise ProviderError(str(e))
+
+    def _http_stream(self, messages: list, config: Optional[ChatConfig],
+                     options: Optional[SendOptions]) -> Iterator[dict]:
+        if httpx is None:
+            raise ImportError("需要安装 openai 或 httpx: pip install openai")
+
+        body = self._build_request_body(messages, config, options, tools=None, stream=True)
+        url = f"{self.base_url}/chat/completions"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.api_key}',
+        }
+
+        try:
+            with httpx.Client(timeout=self.timeout) as client:
+                with client.stream('POST', url, json=body, headers=headers) as resp:
+                    _handle_api_error(resp.status_code, '')
+                    for line in resp.iter_lines():
+                        if not line or not line.startswith('data: '):
+                            continue
+                        data = line[6:]
+                        if data.strip() == '[DONE]':
+                            break
+                        yield json.loads(data)
+        except httpx.TimeoutException as e:
+            raise NbTimeoutError(str(e))
+
+    # ==================== 异步方法 ====================
+
+    def _get_async_sdk_client(self):
+        if self._async_client is None:
+            self._async_client = openai_sdk.AsyncOpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+                timeout=self.timeout,
+            )
+        return self._async_client
+
+    async def achat_completion(self, messages: list,
+                               config: Optional[ChatConfig] = None,
+                               options: Optional[SendOptions] = None,
+                               tools: Optional[list] = None) -> dict:
+        if self._use_sdk:
+            return await self._async_sdk_chat(messages, config, options, tools)
+        return self.chat_completion(messages, config, options, tools)
+
+    async def _async_sdk_chat(self, messages: list, config: Optional[ChatConfig],
+                               options: Optional[SendOptions],
+                               tools: Optional[list]) -> dict:
+        client = self._get_async_sdk_client()
+        body = self._build_request_body(messages, config, options, tools)
+        body.pop('model', None)
+
+        try:
+            resp = await client.chat.completions.create(model=self.model, **body)
+            return resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+        except openai_sdk.AuthenticationError as e:
+            raise AuthenticationError(str(e))
+        except openai_sdk.RateLimitError as e:
+            raise RateLimitError(str(e))
+        except openai_sdk.APITimeoutError as e:
+            raise NbTimeoutError(str(e))
+        except openai_sdk.BadRequestError as e:
+            if 'maximum context length' in str(e).lower() or 'token' in str(e).lower():
+                raise TokenLimitError(str(e))
+            raise ProviderError(str(e))
+        except openai_sdk.APIError as e:
+            raise ProviderError(str(e))
+
+    async def astream_completion(self, messages: list,
+                                 config: Optional[ChatConfig] = None,
+                                 options: Optional[SendOptions] = None) -> AsyncIterator[dict]:
+        if self._use_sdk:
+            async for chunk in self._async_sdk_stream(messages, config, options):
+                yield chunk
+        else:
+            for chunk in self.stream_completion(messages, config, options):
+                yield chunk
+
+    async def _async_sdk_stream(self, messages: list, config: Optional[ChatConfig],
+                                 options: Optional[SendOptions]) -> AsyncIterator[dict]:
+        client = self._get_async_sdk_client()
+        body = self._build_request_body(messages, config, options, tools=None, stream=True)
+        body.pop('model', None)
+        body.pop('stream', None)
+        body.pop('stream_options', None)
+
+        try:
+            stream = await client.chat.completions.create(
+                model=self.model, stream=True,
+                stream_options={'include_usage': True},
+                **body,
+            )
+            async for chunk in stream:
+                chunk_dict = chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk.to_dict()
+                yield chunk_dict
+        except openai_sdk.AuthenticationError as e:
+            raise AuthenticationError(str(e))
+        except openai_sdk.RateLimitError as e:
+            raise RateLimitError(str(e))
+        except openai_sdk.APITimeoutError as e:
+            raise NbTimeoutError(str(e))
+        except openai_sdk.APIError as e:
+            raise ProviderError(str(e))
+
+`````
+
+--- **end of file: nb_llm/providers/openai_provider.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/providers/registry.py** (project: nb_llm) --- 
+
+`````python
+"""模型注册表 & API Key 自动发现"""
+from __future__ import annotations
+
+import os
+from typing import Dict, List, Optional, Tuple
+
+_ModelEntry = Tuple[str, str, Optional[str]]
+
+MODEL_REGISTRY: Dict[str, _ModelEntry] = {
+    # OpenAI
+    "gpt-4o": ("openai_compatible", "gpt-4o", "https://api.openai.com/v1"),
+    "gpt-4o-mini": ("openai_compatible", "gpt-4o-mini", "https://api.openai.com/v1"),
+    "gpt4": ("openai_compatible", "gpt-4o", "https://api.openai.com/v1"),
+    "gpt-4": ("openai_compatible", "gpt-4o", "https://api.openai.com/v1"),
+    "gpt-3.5": ("openai_compatible", "gpt-3.5-turbo", "https://api.openai.com/v1"),
+    "gpt-3.5-turbo": ("openai_compatible", "gpt-3.5-turbo", "https://api.openai.com/v1"),
+    "o1": ("openai_compatible", "o1", "https://api.openai.com/v1"),
+    "o1-mini": ("openai_compatible", "o1-mini", "https://api.openai.com/v1"),
+
+    # DeepSeek
+    "deepseek": ("openai_compatible", "deepseek-chat", "https://api.deepseek.com/v1"),
+    "deepseek-chat": ("openai_compatible", "deepseek-chat", "https://api.deepseek.com/v1"),
+    "deepseek-coder": ("openai_compatible", "deepseek-coder", "https://api.deepseek.com/v1"),
+    "deepseek-reasoner": ("openai_compatible", "deepseek-reasoner", "https://api.deepseek.com/v1"),
+
+    # 通义千问
+    "qwen": ("openai_compatible", "qwen-plus", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+    "qwen-plus": ("openai_compatible", "qwen-plus", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+    "qwen-turbo": ("openai_compatible", "qwen-turbo", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+    "qwen-max": ("openai_compatible", "qwen-max", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+    "qwen-long": ("openai_compatible", "qwen-long", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+
+    # 智谱 GLM
+    "glm": ("openai_compatible", "glm-4", "https://open.bigmodel.cn/api/paas/v4"),
+    "glm-4": ("openai_compatible", "glm-4", "https://open.bigmodel.cn/api/paas/v4"),
+    "glm-4-flash": ("openai_compatible", "glm-4-flash", "https://open.bigmodel.cn/api/paas/v4"),
+
+    # SiliconFlow
+    "siliconflow": ("openai_compatible", "deepseek-ai/DeepSeek-V3", "https://api.siliconflow.cn/v1"),
+
+    # Anthropic Claude
+    "claude": ("anthropic", "claude-sonnet-4-20250514", None),
+    "claude-sonnet": ("anthropic", "claude-sonnet-4-20250514", None),
+    "claude-opus": ("anthropic", "claude-opus-4-20250514", None),
+    "claude-haiku": ("anthropic", "claude-3-5-haiku-20241022", None),
+
+    # Ollama（本地部署）
+    "ollama": ("openai_compatible", "llama3", "http://localhost:11434/v1"),
+}
+
+API_KEY_ENV_MAP: Dict[str, List[str]] = {
+    "openai": ["OPENAI_API_KEY"],
+    "deepseek": ["DEEPSEEK_API_KEY"],
+    "qwen": ["DASHSCOPE_API_KEY", "QWEN_API_KEY"],
+    "glm": ["ZHIPUAI_API_KEY", "GLM_API_KEY"],
+    "anthropic": ["ANTHROPIC_API_KEY"],
+    "siliconflow": ["SILICONFLOW_API_KEY"],
+    "ollama": [],
+}
+
+_PREFIX_TO_KEY_GROUP = {
+    "gpt": "openai",
+    "o1": "openai",
+    "deepseek": "deepseek",
+    "qwen": "qwen",
+    "glm": "glm",
+    "claude": "anthropic",
+    "anthropic": "anthropic",
+    "siliconflow": "siliconflow",
+    "ollama": "ollama",
+}
+
+
+def _load_dotenv_if_needed() -> None:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
+
+
+def discover_api_key(model_alias: str) -> Optional[str]:
+    """根据模型名自动发现 API Key"""
+    _load_dotenv_if_needed()
+
+    key_group = None
+    for prefix, group in _PREFIX_TO_KEY_GROUP.items():
+        if model_alias.lower().startswith(prefix):
+            key_group = group
+            break
+
+    if key_group:
+        env_names = API_KEY_ENV_MAP.get(key_group, [])
+        for name in env_names:
+            val = os.environ.get(name)
+            if val:
+                return val
+
+    return os.environ.get('NB_LLM_API_KEY')
+
+
+def resolve_model(model_alias: str,
+                  config: object = None) -> Tuple[str, str, str]:
+    """
+    解析模型别名 → (实际模型名, base_url, api_key)
+    优先级：config 显式值 > 注册表 > 自动发现
+    """
+    from nb_llm.core.config import ChatConfig
+
+    if config is None:
+        config = ChatConfig()
+
+    entry = MODEL_REGISTRY.get(model_alias.lower())
+    if entry:
+        _, actual_model, default_base_url = entry
+    else:
+        actual_model = model_alias
+        default_base_url = None
+
+    base_url = getattr(config, 'base_url', None) or default_base_url
+    if not base_url:
+        base_url = "https://api.openai.com/v1"
+
+    api_key = getattr(config, 'api_key', None) or discover_api_key(model_alias)
+
+    return actual_model, base_url, api_key or ''
+
+
+def register_provider(name: str, model: str, base_url: str,
+                      api_key_env: Optional[str] = None) -> None:
+    """注册自定义供应商"""
+    MODEL_REGISTRY[name.lower()] = ("openai_compatible", model, base_url)
+    if api_key_env:
+        API_KEY_ENV_MAP[name.lower()] = [api_key_env]
+        _PREFIX_TO_KEY_GROUP[name.lower()] = name.lower()
+
+`````
+
+--- **end of file: nb_llm/providers/registry.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/providers/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/providers/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/loaders.py** (project: nb_llm) --- 
+
+`````python
+"""文档加载器：按文件类型加载文本"""
+from __future__ import annotations
+
+import csv
+import json
+import os
+from typing import List, Optional
+
+
+class TextLoader:
+    @staticmethod
+    def load(path: str, encoding: str = 'utf-8') -> str:
+        with open(path, 'r', encoding=encoding, errors='ignore') as f:
+            return f.read()
+
+
+class MarkdownLoader(TextLoader):
+    pass
+
+
+class CSVLoader:
+    @staticmethod
+    def load(path: str, encoding: str = 'utf-8') -> str:
+        with open(path, 'r', encoding=encoding, errors='ignore') as f:
+            reader = csv.reader(f)
+            rows = [', '.join(row) for row in reader]
+            return '\n'.join(rows)
+
+
+class JSONLoader:
+    @staticmethod
+    def load(path: str, encoding: str = 'utf-8') -> str:
+        with open(path, 'r', encoding=encoding, errors='ignore') as f:
+            data = json.load(f)
+            return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+class PDFLoader:
+    @staticmethod
+    def load(path: str, encoding: Optional[str] = None) -> str:
+        try:
+            import fitz  # pymupdf
+        except ImportError:
+            raise ImportError("加载 PDF 需要安装 pymupdf: pip install pymupdf")
+        doc = fitz.open(path)
+        text_parts = []
+        for page in doc:
+            text_parts.append(page.get_text())
+        doc.close()
+        return '\n'.join(text_parts)
+
+
+class DocxLoader:
+    @staticmethod
+    def load(path: str, encoding: Optional[str] = None) -> str:
+        try:
+            import docx
+        except ImportError:
+            raise ImportError("加载 docx 需要安装 python-docx: pip install python-docx")
+        doc = docx.Document(path)
+        return '\n'.join([p.text for p in doc.paragraphs])
+
+
+class HTMLLoader:
+    @staticmethod
+    def load(path: str, encoding: str = 'utf-8') -> str:
+        try:
+            from bs4 import BeautifulSoup
+        except ImportError:
+            raise ImportError("加载 HTML 需要安装 beautifulsoup4: pip install beautifulsoup4")
+        with open(path, 'r', encoding=encoding, errors='ignore') as f:
+            soup = BeautifulSoup(f.read(), 'html.parser')
+            return soup.get_text(separator='\n', strip=True)
+
+
+_LOADER_MAP = {
+    '.txt': TextLoader,
+    '.md': MarkdownLoader,
+    '.csv': CSVLoader,
+    '.json': JSONLoader,
+    '.jsonl': JSONLoader,
+    '.pdf': PDFLoader,
+    '.docx': DocxLoader,
+    '.html': HTMLLoader,
+    '.htm': HTMLLoader,
+}
+
+
+def get_loader(path: str):
+    ext = os.path.splitext(path)[1].lower()
+    loader_cls = _LOADER_MAP.get(ext, TextLoader)
+    return loader_cls()
+
+
+def walk_files(directory: str) -> List[str]:
+    files = []
+    for root, dirs, filenames in os.walk(directory):
+        for fname in filenames:
+            ext = os.path.splitext(fname)[1].lower()
+            if ext in _LOADER_MAP:
+                files.append(os.path.join(root, fname))
+    return sorted(files)
+
+`````
+
+--- **end of file: nb_llm/rag/loaders.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/rag.py** (project: nb_llm) --- 
+
+`````python
+"""RAG 类：检索增强生成"""
+from __future__ import annotations
+
+import os
+from typing import TYPE_CHECKING, List, Optional
+
+from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.core.data_types import SourceInfo
+from nb_llm.embedding.embedding import Embedding
+from nb_llm.rag.loaders import get_loader, walk_files
+from nb_llm.rag.splitter import SmartSplitter
+from nb_llm.rag.vectorstore import MemoryVectorStore, create_vectorstore
+
+if TYPE_CHECKING:
+    from nb_llm.core.response import ChatResponse
+
+
+class RAG:
+    """
+    RAG（检索增强生成）一站式封装。
+    一行代码构建知识库，自动检索+注入上下文。
+    """
+
+    def __init__(
+        self,
+        sources: Optional[List[str]] = None,
+        *,
+        model: str = "deepseek",
+        embedding_model: str = "text-embedding-3-small",
+        chunk_size: int = 500,
+        chunk_overlap: int = 50,
+        top_k: int = 5,
+        vectorstore: str = "memory",
+    ) -> None:
+        from nb_llm.core.chat import Chat
+
+        self._chat = Chat(ChatConfig(model))
+        self.embedding = Embedding(embedding_model)
+        self.vectorstore = create_vectorstore(vectorstore)
+        self.splitter = SmartSplitter(chunk_size, chunk_overlap)
+        self.top_k = top_k
+        self._file_map: dict = {}
+
+        if sources:
+            self._load_sources(sources)
+
+    def _load_sources(self, sources: List[str]) -> None:
+        for source in sources:
+            if os.path.isdir(source):
+                for file_path in walk_files(source):
+                    self._load_file(file_path)
+            elif os.path.isfile(source):
+                self._load_file(source)
+
+    def _load_file(self, path: str) -> None:
+        loader = get_loader(path)
+        text = loader.load(path)
+        chunks = self.splitter.split(text)
+        if not chunks:
+            return
+
+        vectors = self.embedding.embed(chunks)
+        if isinstance(vectors[0], float):
+            vectors = [vectors]
+
+        start_idx = len(self.vectorstore)
+        metadata = [{'file': path, 'chunk_index': start_idx + i} for i in range(len(chunks))]
+        self.vectorstore.add(chunks, vectors, metadata)
+
+    def retrieve(self, query: str,
+                 top_k: Optional[int] = None) -> List[SourceInfo]:
+        k = top_k or self.top_k
+        query_vec = self.embedding.embed(query)
+        results = self.vectorstore.search(query_vec, k)
+
+        sources = []
+        for chunk_text, score, meta in results:
+            sources.append(SourceInfo(
+                file=meta.get('file', ''),
+                chunk=chunk_text,
+                score=score,
+            ))
+        return sources
+
+    def chat(self, prompt: str,
+             options: Optional[SendOptions] = None) -> ChatResponse:
+        sources = self.retrieve(prompt)
+        context_parts = []
+        for i, src in enumerate(sources):
+            context_parts.append(f"[{i+1}] {src.chunk}")
+        context = '\n\n'.join(context_parts)
+
+        augmented_prompt = f"参考资料：\n{context}\n\n用户问题：{prompt}"
+        resp = self._chat.ask(augmented_prompt, options)
+        resp.sources = sources
+        return resp
+
+    def add(self, source: str) -> None:
+        if os.path.isfile(source):
+            self._load_file(source)
+        elif os.path.isdir(source):
+            self._load_sources([source])
+
+    def add_text(self, text: str) -> None:
+        chunks = self.splitter.split(text)
+        if not chunks:
+            return
+        vectors = self.embedding.embed(chunks)
+        if isinstance(vectors[0], float):
+            vectors = [vectors]
+        self.vectorstore.add(chunks, vectors)
+
+    def __repr__(self):
+        return f"RAG(docs={len(self.vectorstore)}, top_k={self.top_k})"
+
+`````
+
+--- **end of file: nb_llm/rag/rag.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/splitter.py** (project: nb_llm) --- 
+
+`````python
+"""文本切分器"""
+from __future__ import annotations
+
+from typing import List
+
+
+class SmartSplitter:
+    """按段落优先切分，保持语义完整性"""
+
+    def __init__(self, chunk_size: int = 500, chunk_overlap: int = 50) -> None:
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+
+    def split(self, text: str) -> List[str]:
+        if not text:
+            return []
+
+        paragraphs = text.split('\n\n')
+        chunks = []
+        current_chunk = ''
+
+        for para in paragraphs:
+            para = para.strip()
+            if not para:
+                continue
+
+            if len(current_chunk) + len(para) + 2 <= self.chunk_size:
+                current_chunk = (current_chunk + '\n\n' + para).strip()
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk)
+                if len(para) <= self.chunk_size:
+                    current_chunk = para
+                else:
+                    sub_chunks = self._split_long_text(para)
+                    chunks.extend(sub_chunks[:-1])
+                    current_chunk = sub_chunks[-1] if sub_chunks else ''
+
+        if current_chunk:
+            chunks.append(current_chunk)
+
+        if self.chunk_overlap > 0 and len(chunks) > 1:
+            chunks = self._add_overlap(chunks)
+
+        return chunks
+
+    def _split_long_text(self, text: str) -> List[str]:
+        """切分超长文本（按句子边界）"""
+        sentences = []
+        for sep in ['。', '！', '？', '. ', '! ', '? ', '\n']:
+            if sep in text:
+                parts = text.split(sep)
+                sentences = [p.strip() + (sep if sep.strip() else '') for p in parts if p.strip()]
+                break
+        if not sentences:
+            sentences = [text[i:i+self.chunk_size] for i in range(0, len(text), self.chunk_size)]
+
+        chunks = []
+        current = ''
+        for sent in sentences:
+            if len(current) + len(sent) <= self.chunk_size:
+                current += sent
+            else:
+                if current:
+                    chunks.append(current.strip())
+                current = sent
+        if current:
+            chunks.append(current.strip())
+        return chunks
+
+    def _add_overlap(self, chunks: List[str]) -> List[str]:
+        result = [chunks[0]]
+        for i in range(1, len(chunks)):
+            prev_tail = chunks[i-1][-self.chunk_overlap:]
+            result.append(prev_tail + chunks[i])
+        return result
+
+`````
+
+--- **end of file: nb_llm/rag/splitter.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/vectorstore.py** (project: nb_llm) --- 
+
+`````python
+"""向量存储"""
+from __future__ import annotations
+
+import math
+from typing import List, Optional, Tuple
+
+
+class MemoryVectorStore:
+    """内存向量库（默认，适合原型验证）"""
+
+    def __init__(self) -> None:
+        self._chunks: List[str] = []
+        self._vectors: List[List[float]] = []
+        self._metadata: List[dict] = []
+
+    def add(self, chunks: List[str], vectors: List[List[float]],
+            metadata: Optional[List[dict]] = None) -> None:
+        self._chunks.extend(chunks)
+        self._vectors.extend(vectors)
+        if metadata:
+            self._metadata.extend(metadata)
+        else:
+            self._metadata.extend([{}] * len(chunks))
+
+    def search(self, query_vector: List[float],
+               top_k: int = 5) -> List[Tuple[str, float, dict]]:
+        if not self._vectors:
+            return []
+
+        scores = []
+        for i, vec in enumerate(self._vectors):
+            score = _cosine_similarity(query_vector, vec)
+            scores.append((i, score))
+
+        scores.sort(key=lambda x: x[1], reverse=True)
+        results = []
+        for idx, score in scores[:top_k]:
+            results.append((self._chunks[idx], score, self._metadata[idx]))
+        return results
+
+    def clear(self) -> None:
+        self._chunks.clear()
+        self._vectors.clear()
+        self._metadata.clear()
+
+    def __len__(self) -> int:
+        return len(self._chunks)
+
+
+def _cosine_similarity(a: List[float], b: List[float]) -> float:
+    if len(a) != len(b):
+        return 0.0
+    dot = sum(x * y for x, y in zip(a, b))
+    norm_a = math.sqrt(sum(x * x for x in a))
+    norm_b = math.sqrt(sum(x * x for x in b))
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return dot / (norm_a * norm_b)
+
+
+def create_vectorstore(store_type: str = "memory") -> MemoryVectorStore:
+    if store_type == "memory":
+        return MemoryVectorStore()
+    else:
+        return MemoryVectorStore()
+
+`````
+
+--- **end of file: nb_llm/rag/vectorstore.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/rag/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/tools/executor.py** (project: nb_llm) --- 
+
+`````python
+"""工具执行引擎"""
+from __future__ import annotations
+
+import json
+import time
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from nb_llm.core.data_types import ToolCallRecord, PendingToolCall
+from nb_llm.exceptions import ToolExecutionError
+
+
+class ToolExecutor:
+    """工具执行引擎：接收 tool_calls → 执行 → 返回结果"""
+
+    def __init__(self) -> None:
+        self._tools: Dict[str, dict] = {}
+
+    def register(self, func: Callable, schema: dict,
+                 auto_execute: bool = True) -> None:
+        name = schema['function']['name']
+        self._tools[name] = {
+            'func': func,
+            'schema': schema,
+            'auto_execute': auto_execute,
+        }
+
+    def unregister(self, func_or_name: Any) -> bool:
+        if isinstance(func_or_name, str):
+            name = func_or_name
+        else:
+            name = getattr(func_or_name, '__name__', str(func_or_name))
+        return self._tools.pop(name, None) is not None
+
+    def clear(self) -> None:
+        self._tools.clear()
+
+    @property
+    def schemas(self) -> List[dict]:
+        return [t['schema'] for t in self._tools.values()]
+
+    @property
+    def tool_names(self) -> List[str]:
+        return list(self._tools.keys())
+
+    def _parse_tool_calls(self, response: dict) -> List[dict]:
+        """从 API 响应中解析 tool_calls"""
+        choices = response.get('choices', [{}])
+        message = choices[0].get('message', {}) if choices else {}
+        return message.get('tool_calls', []) or []
+
+    def execute_single(self, name: str, args: dict) -> Tuple[Any, float, None]:
+        tool_info = self._tools.get(name)
+        if not tool_info:
+            raise ToolExecutionError(name, args, KeyError(f"工具 '{name}' 未注册"))
+        start = time.time()
+        try:
+            result = tool_info['func'](**args)
+            elapsed = time.time() - start
+            return result, elapsed, None
+        except Exception as e:
+            raise ToolExecutionError(name, args, e)
+
+    def execute_loop(self, provider: Any, messages: list, response: dict,
+                     config: Any = None, options: Any = None,
+                     max_rounds: int = 10) -> Tuple[dict, List[ToolCallRecord], List[PendingToolCall]]:
+        """
+        Function Calling 循环：
+        1. 模型返回 tool_calls → 执行 → 结果追加到 messages → 再次调用模型
+        2. 重复直到没有 tool_calls 或超过 max_rounds
+        """
+        all_records: List[ToolCallRecord] = []
+        all_pending: List[PendingToolCall] = []
+        round_count = 0
+
+        while round_count < max_rounds:
+            tool_calls = self._parse_tool_calls(response)
+            if not tool_calls:
+                break
+
+            choices = response.get('choices', [])
+            if not choices:
+                break
+            assistant_msg = choices[0].get('message', {})
+            messages.append(assistant_msg)
+
+            has_auto = False
+            for tc in tool_calls:
+                fn_name = tc['function']['name']
+                try:
+                    fn_args = json.loads(tc['function']['arguments'])
+                except (json.JSONDecodeError, TypeError):
+                    fn_args = {}
+
+                tool_info = self._tools.get(fn_name)
+                if not tool_info:
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': f"Error: 工具 '{fn_name}' 未注册",
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args, result=None,
+                        error=f"工具 '{fn_name}' 未注册",
+                    ))
+                    has_auto = True
+                    continue
+
+                if not tool_info['auto_execute']:
+                    pending = PendingToolCall(
+                        name=fn_name,
+                        args=fn_args,
+                        tool_func=tool_info['func'],
+                        tool_call_id=tc['id'],
+                    )
+                    all_pending.append(pending)
+                    continue
+
+                try:
+                    result, elapsed, _ = self.execute_single(fn_name, fn_args)
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': str(result),
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args, result=result, elapsed=elapsed,
+                    ))
+                    has_auto = True
+                except ToolExecutionError as e:
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': f"Error: {e.original_error}",
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args,
+                        error=str(e.original_error),
+                    ))
+                    has_auto = True
+
+            if all_pending and not has_auto:
+                break
+
+            if has_auto:
+                response = provider.chat_completion(
+                    messages, config=config, options=options, tools=self.schemas,
+                )
+                round_count += 1
+            else:
+                break
+
+        return response, all_records, all_pending
+
+    async def async_execute_loop(
+            self, provider: Any, messages: list, response: dict,
+            config: Any = None, options: Any = None,
+            max_rounds: int = 10) -> Tuple[dict, List[ToolCallRecord], List[PendingToolCall]]:
+        """异步版工具循环"""
+        all_records: List[ToolCallRecord] = []
+        all_pending: List[PendingToolCall] = []
+        round_count = 0
+
+        while round_count < max_rounds:
+            tool_calls = self._parse_tool_calls(response)
+            if not tool_calls:
+                break
+
+            choices = response.get('choices', [])
+            if not choices:
+                break
+            assistant_msg = choices[0].get('message', {})
+            messages.append(assistant_msg)
+
+            has_auto = False
+            for tc in tool_calls:
+                fn_name = tc['function']['name']
+                try:
+                    fn_args = json.loads(tc['function']['arguments'])
+                except (json.JSONDecodeError, TypeError):
+                    fn_args = {}
+
+                tool_info = self._tools.get(fn_name)
+                if not tool_info:
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': f"Error: 工具 '{fn_name}' 未注册",
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args, result=None,
+                        error=f"工具 '{fn_name}' 未注册",
+                    ))
+                    has_auto = True
+                    continue
+
+                if not tool_info['auto_execute']:
+                    pending = PendingToolCall(
+                        name=fn_name, args=fn_args,
+                        tool_func=tool_info['func'],
+                        tool_call_id=tc['id'],
+                    )
+                    all_pending.append(pending)
+                    continue
+
+                try:
+                    result, elapsed, _ = self.execute_single(fn_name, fn_args)
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': str(result),
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args, result=result, elapsed=elapsed,
+                    ))
+                    has_auto = True
+                except ToolExecutionError as e:
+                    messages.append({
+                        'role': 'tool',
+                        'tool_call_id': tc['id'],
+                        'content': f"Error: {e.original_error}",
+                    })
+                    all_records.append(ToolCallRecord(
+                        name=fn_name, args=fn_args,
+                        error=str(e.original_error),
+                    ))
+                    has_auto = True
+
+            if all_pending and not has_auto:
+                break
+
+            if has_auto:
+                response = await provider.achat_completion(
+                    messages, config=config, options=options, tools=self.schemas,
+                )
+                round_count += 1
+            else:
+                break
+
+        return response, all_records, all_pending
+
+`````
+
+--- **end of file: nb_llm/tools/executor.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/tools/schema.py** (project: nb_llm) --- 
+
+`````python
+"""从 Python 函数签名自动生成 OpenAI Function Calling JSON Schema"""
+from __future__ import annotations
+
+import inspect
+import re
+from typing import Any, Dict, List, Optional, get_type_hints
+
+from nb_llm.exceptions import SchemaGenerationError
+
+
+_PYTHON_TYPE_TO_JSON = {
+    str: "string",
+    int: "integer",
+    float: "number",
+    bool: "boolean",
+    list: "array",
+    dict: "object",
+    type(None): "null",
+}
+
+
+def _type_to_json_schema(annotation: Any) -> dict:
+    if annotation is inspect.Parameter.empty or annotation is None:
+        return {"type": "string"}
+
+    origin = getattr(annotation, '__origin__', None)
+
+    if origin is list or origin is List:
+        args = getattr(annotation, '__args__', None)
+        if args:
+            return {"type": "array", "items": _type_to_json_schema(args[0])}
+        return {"type": "array"}
+
+    if origin is dict or origin is Dict:
+        return {"type": "object"}
+
+    json_type = _PYTHON_TYPE_TO_JSON.get(annotation)
+    if json_type:
+        return {"type": json_type}
+
+    return {"type": "string"}
+
+
+def _parse_docstring_args(docstring: Optional[str]) -> dict:
+    """从 docstring 的 Args 段落解析参数描述"""
+    if not docstring:
+        return {}
+
+    result = {}
+    in_args = False
+    current_param = None
+    current_desc_lines = []
+
+    for line in docstring.split('\n'):
+        stripped = line.strip()
+
+        if stripped.lower() in ('args:', 'arguments:', 'parameters:', 'params:'):
+            in_args = True
+            continue
+        if in_args and stripped.lower() in ('returns:', 'return:', 'raises:', 'example:', 'examples:', 'note:', 'notes:'):
+            if current_param:
+                result[current_param] = ' '.join(current_desc_lines).strip()
+            break
+
+        if in_args:
+            match = re.match(r'(\w+)\s*(?:\(.+?\))?\s*:\s*(.*)', stripped)
+            if match:
+                if current_param:
+                    result[current_param] = ' '.join(current_desc_lines).strip()
+                current_param = match.group(1)
+                current_desc_lines = [match.group(2)] if match.group(2) else []
+            elif current_param and stripped:
+                current_desc_lines.append(stripped)
+
+    if current_param:
+        result[current_param] = ' '.join(current_desc_lines).strip()
+
+    return result
+
+
+def func_to_schema(func: Any) -> dict:
+    """将函数转换为 OpenAI Function Calling JSON Schema"""
+    try:
+        sig = inspect.signature(func)
+    except (ValueError, TypeError) as e:
+        raise SchemaGenerationError(f"无法解析函数 '{func.__name__}' 的签名: {e}")
+
+    docstring = inspect.getdoc(func) or ''
+    description = docstring.split('\n')[0].strip() if docstring else func.__name__
+
+    try:
+        type_hints = get_type_hints(func)
+    except Exception:
+        type_hints = {}
+
+    arg_descriptions = _parse_docstring_args(docstring)
+
+    properties = {}
+    required = []
+
+    for name, param in sig.parameters.items():
+        if name == 'self':
+            continue
+
+        annotation = type_hints.get(name, param.annotation)
+        prop = _type_to_json_schema(annotation)
+
+        if name in arg_descriptions:
+            prop['description'] = arg_descriptions[name]
+
+        if param.default is not inspect.Parameter.empty:
+            prop['default'] = param.default
+        else:
+            required.append(name)
+
+        properties[name] = prop
+
+    schema = {
+        "type": "function",
+        "function": {
+            "name": func.__name__,
+            "description": description,
+            "parameters": {
+                "type": "object",
+                "properties": properties,
+            },
+        },
+    }
+    if required:
+        schema["function"]["parameters"]["required"] = required
+
+    return schema
+
+`````
+
+--- **end of file: nb_llm/tools/schema.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/tools/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/tools/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/utils/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/utils/__init__.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/workflow/step.py** (project: nb_llm) --- 
+
+`````python
+"""@step 可观测性装饰器"""
+from __future__ import annotations
+
+import functools
+import time
+import uuid
+from typing import Any, Callable, List, Optional
+
+_event_listeners: List[Callable] = []
+
+
+def on_step_event(listener: Callable) -> Callable:
+    """注册步骤事件监听器"""
+    _event_listeners.append(listener)
+    return listener
+
+
+def _emit_event(event_type: str, data: dict) -> None:
+    for listener in _event_listeners:
+        try:
+            listener(event_type, data)
+        except Exception:
+            pass
+
+
+class step:
+    """
+    @step 装饰器。
+    纯增强装饰器，不改变函数行为，只增加可观测性。
+    """
+
+    def __init__(self, name_or_func: Any = None) -> None:
+        if callable(name_or_func):
+            self._name = name_or_func.__name__
+            self._func = name_or_func
+            functools.update_wrapper(self, name_or_func)
+        else:
+            self._name = name_or_func
+            self._func = None
+
+    def __call__(self, *args, **kwargs):
+        if self._func is None:
+            func = args[0]
+            name = self._name or func.__name__
+
+            @functools.wraps(func)
+            def wrapper(*a, **kw):
+                return self._execute(func, name, *a, **kw)
+            return wrapper
+        else:
+            return self._execute(self._func, self._name, *args, **kwargs)
+
+    @staticmethod
+    def _execute(func: Callable, name: str, *args, **kwargs) -> Any:
+        step_id = str(uuid.uuid4())[:8]
+        start = time.time()
+
+        _emit_event("step_start", {
+            "step_id": step_id,
+            "name": name,
+        })
+
+        try:
+            result = func(*args, **kwargs)
+            elapsed = time.time() - start
+
+            _emit_event("step_end", {
+                "step_id": step_id,
+                "name": name,
+                "elapsed": elapsed,
+            })
+            return result
+
+        except Exception as e:
+            elapsed = time.time() - start
+            _emit_event("step_error", {
+                "step_id": step_id,
+                "name": name,
+                "error": str(e),
+                "elapsed": elapsed,
+            })
+            raise
+
+`````
+
+--- **end of file: nb_llm/workflow/step.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/workflow/__init__.py** (project: nb_llm) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_llm/workflow/__init__.py** (project: nb_llm) --- 
+
+---
+
