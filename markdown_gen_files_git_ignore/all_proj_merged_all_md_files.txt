@@ -31656,6 +31656,9744 @@ python -m pytest tests/ai_codes/test_core.py -v -p no:logfire
 
 ---
 
+# Merged from: nb_cmd_all_docs_and_codes.md
+
+﻿
+# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
+
+> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
+> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+
+## 🧠 AI 认知与解析准则
+
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+
+### 1. 信息的层级与互补
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
+*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
+*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+
+### 2. 文件边界与架构感知
+*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
+    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
+*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
+*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+
+### 3. 代码生成与交互
+*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
+*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
+*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
+    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
+    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+
+---
+# markdown content namespace: nb_cmd project summary 
+
+
+
+- `nb_cmd` is a powerful cron library for Python.
+- `NbCron(...)` is the main class to create a cron object. 
+
+
+## 📋 nb_cmd most core source files metadata (Entry Points)
+
+
+以下是项目 nb_cmd 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_cmd most core source code files as follows: 
+- `nb_cmd/__init__.py`
+- `nb_cmd/core/base.py`
+- `nb_cmd/core/meta.py`
+- `nb_cmd/ui/helper.py`
+
+
+### 📄 Python File Metadata: `nb_cmd/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+nb_cmd — 万能接口生成器
+你写一个 Python class，自动获得 CLI + REST API + Web UI + Python 直接调用 四种接口。
+
+用法::
+
+    from nb_cmd import NbCmd
+
+    class MyTool(NbCmd):
+        def greet(self, name: str, times: int = 1):
+            for _ in range(times):
+                print('你好, {}!'.format(name))
+
+    if __name__ == '__main__':
+        MyTool().run()
+`````
+
+#### 📦 Imports
+
+- `from core.base import NbCmd`
+- `from core.meta import NbCmdMeta`
+- `from core.arg import Annotated`
+- `from core.arg import Param`
+- `from ui.helper import UIHelper`
+- `from ui.helper import cmdui`
+- `from utils.validators import validate`
+- `from core.gen_cmd import CmdGen`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_cmd/core/base.py`
+
+#### 📝 Module Docstring
+
+`````
+NbCmd 基类 —— 所有命令行工具的父类。
+`````
+
+#### 📦 Imports
+
+- `import logging`
+- `import sys`
+- `from meta import NbCmdMeta`
+- `import subprocess`
+- `from modes.cli_mode import run_cli`
+- `from modes.web_mode import start_web_server`
+- `from parser import print_full_help`
+- `from parser import print_easy_help`
+- `from parser import print_full_help`
+- `import nb_log`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NbCmd(object)`
+*Line: 11*
+
+**Docstring:**
+`````
+NbCmd 基类 —— 所有命令行工具的父类。
+
+用法:
+    1. 继承 NbCmd
+    2. 定义公有方法（自动成为子命令）
+    3. 调用 .run() 启动
+
+功能:
+    - 公有方法 → 子命令
+    - 方法签名 → 参数自动推导
+    - 支持 CLI / REST API / Web UI / Python 直接调用 四种模式
+    - 支持 OOP 继承覆写
+    - 支持多层级子命令（sub_commands）
+    - 支持 nbctx 跨层级上下文传递
+
+工具方法通过 cmdui 模块级单例访问（from nb_cmd import cmdui）:
+    cmdui.table()  cmdui.kv()  cmdui.tree()  cmdui.json_print()
+    cmdui.success() cmdui.warning() cmdui.error() cmdui.info()
+    cmdui.progress() cmdui.confirm() cmdui.prompt() cmdui.select()
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self)`
+  - **Parameters:**
+    - `self`
+
+**Public Methods (7):**
+- `def make_nbctx(self)`
+  - **Docstring:**
+  `````
+  模板方法：创建跨层级共享的上下文对象。
+  
+  覆写此方法以返回一个 dataclass 实例，框架会自动将其传递给
+  所有子命令组的 self.nbctx。
+  
+  用法::
+  
+      @dataclass
+      class AppCtx:
+          region: str = 'beijing'
+          env: str = 'prod'
+  
+      class MyApp(NbCmd):
+          def __init__(self, region='beijing', env='prod'):
+              self.region = region
+              self.env = env
+  
+          def make_nbctx(self):
+              return AppCtx(region=self.region, env=self.env)
+  
+  Returns
+  -------
+  object or None
+      上下文对象，返回 None 表示不启用 nbctx。
+  `````
+- `def before_run(self)`
+  - *所有子命令执行前的钩子，子类可覆写*
+- `def after_run(self)`
+  - *所有子命令执行后的钩子，子类可覆写*
+- `def on_error(self, command, error)`
+  - *子命令执行出错时的钩子，子类可覆写*
+- `def shell(self, cmd, capture = False, check = False)`
+  - **Docstring:**
+  `````
+  执行系统命令。
+  
+  Parameters
+  ----------
+  cmd : str  要执行的命令
+  capture : bool  是否捕获输出（True 返回 stdout 字符串，False 通过 print 输出）
+  check : bool  命令失败时是否抛出异常
+  
+  Returns
+  -------
+  str (capture=True 时返回 stdout) 或 None
+  `````
+- `def exec(self, cmd: str)`
+  - *执行任意系统命令*
+- `def run(self, args = None)`
+  - **Docstring:**
+  `````
+  主入口方法。根据参数决定运行模式。
+  
+  Parameters
+  ----------
+  args : list, optional
+      命令行参数列表，默认使用 sys.argv[1:]
+  `````
+
+**Properties (1):**
+- `@property logger`
+
+**Class Variables (4):**
+- `sub_commands = {}`
+- `Meta = NbCmdMeta`
+- `nbctx = None`
+- `_HELP_HANDLED = object()`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_cmd/core/meta.py`
+
+#### 📝 Module Docstring
+
+`````
+NbCmd Meta 配置基类。
+
+用法::
+
+    from nb_cmd import NbCmd, NbCmdMeta
+
+    class MyTool(NbCmd):
+        class Meta(NbCmdMeta):
+            name = "my-tool"
+            version = "1.0.0"
+            use_nb_log = True
+`````
+
+#### 📦 Imports
+
+- `from typing import Dict`
+- `from typing import List`
+- `from typing import Optional`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NbCmdMeta(object)`
+*Line: 19*
+
+**Docstring:**
+`````
+NbCmd 的 Meta 配置基类。
+
+子类继承后可覆盖任意字段，IDE 可自动补全所有可用选项。
+`````
+
+**Class Variables (20):**
+- `name: Optional[str] = None`
+- `version: str = '0.0.1'`
+- `description: Optional[str] = None`
+- `use_nb_log: bool = False`
+- `log_level: str = 'INFO'`
+- `log_file: Optional[str] = None`
+- `auto_save_last_args: bool = False`
+- `config_file: Optional[str] = None`
+- `serve_host: str = '0.0.0.0'`
+- `serve_port: int = 8080`
+- `serve_workers: int = 1`
+- `web_title: Optional[str] = None`
+- `web_theme: str = 'light'`
+- `enable_exec: bool = True`
+- `help_mode: str = 'full'`
+- `aliases: Dict[str, List[str]] = {}`
+- `allow_method_list: Optional[List[str]] = None`
+- `hide_method_list: Optional[List[str]] = None`
+- `auth_token: Optional[str] = None`
+- `timeout: int = 0`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_cmd/ui/helper.py`
+
+#### 📝 Module Docstring
+
+`````
+UI 工具方法集合 —— cmdui 单例的实现。
+
+通过 ``from nb_cmd import cmdui`` 导入使用。
+`````
+
+#### 📦 Imports
+
+- `import json`
+- `import sys`
+- `from colors import print_success`
+- `from colors import print_warning`
+- `from colors import print_error`
+- `from colors import print_info`
+- `from table import print_table`
+- `from table import print_kv`
+- `from progress import progress as _progress_iter`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class UIHelper(object)`
+*Line: 15*
+
+**Docstring:**
+`````
+NbCmd 的 UI 工具方法集合。
+
+通过 ``from nb_cmd import cmdui`` 导入使用，避免与用户自定义的子命令方法名冲突。
+包含: 输出(table/kv/tree/json_print)、彩色(success/warning/error/info)、
+      交互(confirm/prompt/select)、进度(progress) 等工具。
+`````
+
+**Public Methods (12):**
+- `def table(self, data, headers = None)`
+  - *表格输出*
+- `def kv(self, data)`
+  - *键值对输出*
+- `def tree(self, data, prefix = '', is_last = True)`
+  - *树形输出*
+- `def json_print(self, data)`
+  - *JSON美化输出*
+- `def progress(self, iterable, desc = None, total = None)`
+  - *进度条迭代器*
+- `def confirm(self, message)`
+  - *确认提示，返回 True/False*
+- `def prompt(self, message, default = None)`
+  - *输入提示*
+- `def select(self, message, choices)`
+  - *选择提示*
+- `def success(self, msg)`
+  - *绿色成功信息*
+- `def warning(self, msg)`
+  - *黄色警告信息*
+- `def error(self, msg)`
+  - *红色错误信息*
+- `def info(self, msg)`
+  - *蓝色信息*
+
+
+---
+
+
+
+## 🔗 nb_cmd Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Core Files (imported by other files, sorted by import count):
+  ◆ nb_cmd/__init__.py (imported by 2 files)
+  ◆ nb_cmd/core/meta.py (imported by 2 files)
+  ◆ nb_cmd/core/base.py (imported by 1 files)
+  ◆ nb_cmd/ui/helper.py (imported by 1 files)
+
+`````
+
+### 📋 Detailed Dependencies
+
+#### `nb_cmd/__init__.py`
+
+**Imports from project:**
+- `nb_cmd/core/base.py`
+- `nb_cmd/core/meta.py`
+- `nb_cmd/ui/helper.py`
+
+**Imported by:**
+- `nb_cmd/core/base.py`
+- `nb_cmd/ui/helper.py`
+
+#### `nb_cmd/core/base.py`
+
+**Imports from project:**
+- `nb_cmd/__init__.py`
+- `nb_cmd/core/meta.py`
+
+**Imported by:**
+- `nb_cmd/__init__.py`
+
+#### `nb_cmd/core/meta.py`
+
+**Imported by:**
+- `nb_cmd/__init__.py`
+- `nb_cmd/core/base.py`
+
+#### `nb_cmd/ui/helper.py`
+
+**Imports from project:**
+- `nb_cmd/__init__.py`
+
+**Imported by:**
+- `nb_cmd/__init__.py`
+
+### 📦 Third-party Dependencies
+
+项目使用的第三方库：
+
+- `nb_log`
+- ......以及更多的第三方库......
+
+
+---
+# markdown content namespace: nb_cmd Project Root Dir Some Files 
+
+
+## nb_cmd File Tree (relative dir: `.`)
+
+
+`````
+
+├── README.md
+└── pyproject.toml
+
+`````
+
+---
+
+
+## nb_cmd (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `README.md`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: README.md** (project: nb_cmd) --- 
+
+`````markdown
+# nb_cmd
+
+**Python 码农的低代码平台** —— 写一个 class，自动获得 CLI + REST API + Web UI + Python 直接调用 四种接口。不写路由、不写前端、不写文档，全自动。
+
+[![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+## why nb_cmd?
+
+为什么要用nb_cmd?nb_cmd是不是装逼？是不是重复造轮子？抛开nb_cmd自带低代码平台的气质，只看命令行最本质的功能本身，比较下nb_cmd对其他顶流命令行框架的碾压优势。
+
+> 详细的多维度对比（含多层级子命令 + 全局参数的完整代码对比）请看：[nb_cmd vs click vs typer vs fire](https://github.com/ydf0509/nb_cmd/blob/main/nb_cmd_vs_click_vs_typer.md)
+
+> **GitHub CLI 实战对比：** 以真实 `gh` CLI 语义为基准（5 全局参数 + 3 子命令组 + 9 子命令），三框架完整实现对比。Click 需 49 个装饰器，Typer 需模块全局变量，nb_cmd 零装饰器 + 强类型上下文 + CmdGen 一行生成 Markdown 文档。[查看对比](examples/github_cli_demos/gh_comparison.md) | [nb_cmd 实现](examples/github_cli_demos/gh_nb_cmd.py) | [自动生成文档](examples/github_cli_demos/gh_nb_cmd_gen_doc.md)
+
+## 目录
+
+- [为什么用 nb_cmd？](#为什么用-nb_cmd)
+- [核心价值与典型场景](#核心价值与典型场景)
+- [安装](#安装)
+- [5 分钟快速上手](#5-分钟快速上手)
+- [核心特性](#核心特性)
+- [完整 API 速查](#完整-api-速查)
+- [和竞品对比](#和竞品对比)
+- [项目结构](#项目结构)
+
+---
+
+## 为什么用 nb_cmd？
+
+现有 CLI 框架（argparse / click / typer / fire）只解决了一件事：**怎么方便地定义 CLI 参数**。
+
+但实际开发中，你一定遇到过：
+
+- 你写了一个 CLI 工具 → 产品说"加个 Web 页面"
+- 你写了一个 CLI 工具 → 运维说"要通过 API 远程调用"
+- 你写了一个 CLI 工具 → 老板说"能让不懂命令行的人也能用吗"
+
+**每次都是重写。**
+
+nb_cmd 换了一种思路：**Class 是中心，接口是投影。**
+
+```
+             ┌── CLI 模式（默认）
+             │
+业务逻辑(class) ─┼── REST API 模式（自动 Swagger）
+             │
+             └── Web UI 模式（自动生成页面）
+```
+
+写一次业务逻辑，四种接口自动生成，不改一行代码。
+
+**你写什么 → 你得到什么：**
+
+| 你写的 | 自动获得 |
+|--------|----------|
+| 方法签名 `def deploy(self, host: str, port: int = 22)` | CLI 参数 + API 端点 + Web 表单（输入框/数字框/复选框） |
+| 方法的 docstring `"""部署到远程服务器"""` | CLI --help + Swagger 文档 + Web UI 描述 |
+| 类型注解 `env: Environment`（Enum） | CLI choices + API 校验 + Web 下拉选择 |
+| `print()` / `cmdui.table()` | CLI 终端输出 + Web 实时流式推送（WebSocket + ANSI 彩色渲染） |
+| `sub_commands = {'git': GitTool}` | CLI 多级子命令 + API 嵌套路由 + Web UI 折叠分组 |
+| `CmdGen(MyApp).doc(file='cli.md')` | **自动生成带 TOC + 参数表格 + 可复制命令行的 Markdown 文档** |
+| `self.nbctx = AppCtx(region=self.region)` | **跨层级强类型上下文，自动穿透到所有子命令组，IDE 补全 + 零手动传递** |
+| `MyTool().greet('张三', 3)` | **方法就是普通 Python 方法，随时直接调用、单元测试、import 复用** |
+
+**不需要写的：** 路由定义、Pydantic 模型、HTML 表单、CSS 样式、JavaScript 交互、WebSocket 端点、Swagger 注解、前后端联调、**CLI 使用文档**。
+
+> **零装饰器，方法可直接调用：** click/typer 的装饰器把函数变成了 `click.Command` 对象，无法直接 `greet('张三', 3)` 调用——必须用 `CliRunner().invoke()` 模拟 CLI 或自己拆两层。nb_cmd 的方法始终是普通的 Python 类方法，`MyTool().greet('张三', 3)` 直接就能跑，IDE 补全、断点调试、单元测试全部正常。
+
+> **文档生成吊打 `--help`：** 传统框架的文档止步于 `--help` 纯文本，click 需要第三方 `sphinx-click`，typer 只是搬运 `--help` 输出。nb_cmd 的 `CmdGen` 一行代码生成完整的 Markdown 文档——自动目录、参数表格、默认值/必填标注、可复制的 bash 命令行模板，测试人员拿到直接能用。[查看示例](https://github.com/ydf0509/nb_cmd/blob/main/examples/nbctx_demo/nbctx_demo_gen_doc.md)
+
+> **nbctx 跨层级上下文：** click 用 `ctx.obj` 字典（无类型、需手动 `@pass_context`），typer 用模块全局变量（无封装），nb_cmd 用 `self.nbctx`（强类型 dataclass + IDE 补全 + 框架自动注入到任意深度子命令组）。[nbctx 完整示例，实现github cli](examples/nbctx_demo/nbctx_demo.py)
+
+| 功能 | argparse | click | typer | fire | **nb_cmd** |
+|------|:--------:|:-----:|:-----:|:----:|:----------:|
+| 零配置 | ✗ | ✗ | 部分 | ✓ | **✓** |
+| 类型驱动 | 手动 | 手动 | ✓ | ✗ | **✓** |
+| OOP 继承/覆写 | ✗ | ✗ | ✗ | 有限 | **✓** |
+| 自动生成 REST API | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 自动生成 Web UI | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 多层级子命令 | 手动 | ✓ | ✓ | 有限 | **✓** |
+| Swagger 文档 | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 进度条/表格/彩色 | ✗ | ✓ | ✓(rich) | ✗ | **✓** |
+| 自动生成 CLI 文档 | ✗ | 第三方 | 基础 | ✗ | **✓（Markdown+表格+TOC+可复制命令行）** |
+| 方法可直接调用 | ✓ | ✗ | ✗ | ✓ | **✓（零装饰器，普通类方法）** |
+| 跨层级强类型上下文 | ✗ | ctx.obj(字典) | 全局变量 | ✗ | **✓（dataclass + IDE 补全 + 自动注入）** |
+| async 方法支持 | ✗ | ✗ | ✓ | ✗ | **✓（自动检测，透明执行）** |
+
+---
+
+## 核心价值与典型场景
+
+### 打破企业内部工具开发的"死循环"
+
+在企业开发中，经常遇到这样的困境：
+
+```
+产品经理："这个工具不是公司核心业务，不立项"
+    ↓
+前端码农："没立项就没有需求排期，我不开发"
+    ↓
+Python 码农："我会写逻辑，但不会写前端"
+    ↓
+结果：工具永远停留在 CLI，只有技术人员能用
+    ↓
+测试/运营/产品："能不能给我们也用用？"
+    ↓
+Python 码农："等我学学 Vue/React..."（然后就没有然后了）
+   ↓
+最终：工具被遗忘，需求依然存在，问题继续存在
+```
+
+**nb_cmd 打破了这个死循环：**
+
+```
+Python 码农：写一个 class（30分钟）
+    ↓
+nb_cmd：自动生成 cli  + API +  Web UI
+    ↓
+测试/运营/产品：直接用网页操作
+    ↓
+前端人员：完全不需要介入！
+```
+
+### 效率对比
+
+**传统方式的成本：**
+```
+需求沟通：2小时
+前端开发：2-3天
+前后端联调：1天
+测试：0.5天
+总计：约 4-5 天
+```
+
+**用 nb_cmd 的成本：**
+```
+写 Python class：1小时
+启动 Web 模式：1分钟
+总计：约 1 小时
+```
+
+**效率提升：40-50 倍！**
+
+### 零成本优势
+
+#### 1. 零前端成本
+- 不需要懂 HTML/CSS/JavaScript
+- 不需要学 Vue/React/Angular
+- 不需要配置 webpack/vite
+- 不需要处理前后端联调
+
+#### 2. 零立项成本
+- 产品经理不需要评估 ROI
+- 不需要排期会议
+- 不需要跨部门协调
+- Python 码农自己就能搞定
+
+#### 3. 零学习成本（对使用者）
+- 测试人员：打开网页，填表单，点按钮
+- 产品经理：看到的是专业的 UI，不是黑乎乎的命令行
+- 运维人员：可以用 API 集成到自动化流程
+
+### 典型应用场景
+
+- **数据处理** — 导入 Excel、导出报表，测试和产品经理自己就能跑
+- **测试辅助** — 创建测试用户、清理测试数据，测试人员自助操作
+- **运维管理** — 重启服务、检查状态，运维用 API 集成到监控告警
+- **配置管理** — 更新配置、查看配置，运营人员不用找开发
+
+每个场景只需写一个 NbCmd 子类，`--web` 启动后发给团队即可使用。
+
+---
+
+## 安装
+
+```bash
+# 核心（CLI 模式，零外部依赖）
+pip install nb-cmd
+
+# 带 Web UI + REST API 模式（推荐）
+pip install nb-cmd[web]
+
+# 全部功能
+pip install nb-cmd[all]
+```
+
+---
+
+## nb_cmd 网页截图
+
+> `nb_cmd` 只要你写了一个继承 `NbCmd` 的类，就自动生成 FastAPI 接口和接口文档，自动生成前端输入框和按钮。让你只写普通的类，无需接触 Web 后端接口开发，更无需接触前端界面开发，更无需接触 WebSocket 实时输出——你的方法中的任何普通的日志和 `print` 都会自动实时推送到 Web 前端页面上。
+
+![nb_cmd 网页截图](https://github.com/ydf0509/nb_cmd/blob/main/docs/images/nb_cmd_web.png)
+
+## 5 分钟快速上手
+
+### 第一步：写一个 class
+
+```python
+# my_tool.py
+from nb_cmd import NbCmd, cmdui
+
+class MyTool(NbCmd):
+    """我的超级工具"""
+
+    def greet(self, name: str, times: int = 1):
+        """向某人问好"""
+        for _ in range(times):
+            print('你好, {}!'.format(name))
+
+    def deploy(self, host: str, port: int = 22, verbose: bool = False):
+        """部署到远程服务器"""
+        if verbose:
+            cmdui.info('正在部署到 {}:{} ...'.format(host, port))
+        print('部署到 {}:{} 完成'.format(host, port))
+        cmdui.success('部署成功!')
+
+if __name__ == '__main__':
+    MyTool().run()
+```
+
+> **注意：** nb_cmd 强制要求所有公有方法的参数必须声明类型注解（如 `name: str`），启动时自动校验，缺少注解直接报错。
+
+### 第二步：当 CLI 用
+
+```bash
+$ python my_tool.py --help
+我的超级工具
+
+system params:
+  -h, --help           显示帮助信息
+  --cmd-version        show program's version number and exit
+  --full-help, -fh     显示所有命令的完整参数详情
+  --web                以Web UI + REST API模式启动
+  --web-port WEB_PORT  Web UI 服务端口（用于 --web）
+
+commands:
+  {deploy,exec,greet}  可用命令
+    deploy             部署到远程服务器 (HOST, --port=22, --verbose)
+    exec               执行任意系统命令 (CMD)
+    greet              向某人问好 (NAME, --times=1)
+
+# 执行子命令
+$ python my_tool.py greet 张三 --times 3
+你好, 张三!
+你好, 张三!
+你好, 张三!
+
+# 查看子命令的详细帮助
+$ python my_tool.py deploy --help
+
+# 执行带参数的命令
+$ python my_tool.py deploy web-01 --port 2222 --verbose
+[INFO] 正在部署到 web-01:2222 ...
+部署到 web-01:2222 完成
+[OK] 部署成功!
+```
+
+### 第三步：切换为 Web UI + REST API
+
+```bash
+$ python my_tool.py --web --web-port 8080
+Web UI启动在 http://0.0.0.0:8080
+API文档: http://0.0.0.0:8080/docs
+```
+
+打开浏览器：
+
+- `http://localhost:8080` → **Web UI**：左侧是命令输入 + 收藏/历史搜索 + 参数表单，右侧是实时控制台输出，中间分割条可自由拖动
+- `http://localhost:8080/docs` → **Swagger 文档**：所有命令自动生成 REST API
+
+**Web UI 主要功能：**
+
+- 命令行直接输入任意命令（非 NbCmd 命令自动通过 `exec` 执行）
+- 参数表单自动生成（根据方法签名推导控件类型）
+- WebSocket 实时流式输出（支持 ANSI 彩色渲染）
+- 长时间命令可随时取消（停止按钮，类似 Ctrl+C）
+- 命令收藏 + 执行历史（SQLite 持久化，Select2 风格弹框搜索）
+
+用 curl 或 requests 调用（和 Web UI 共用同一套接口）：
+
+```bash
+$ curl -X POST http://localhost:8080/greet \
+    -H "Content-Type: application/json" \
+    -d '{"name": "张三", "times": 3}'
+```
+
+响应：
+
+```json
+{
+  "status": "success",
+  "result": null,
+  "stdout": "你好, 张三!\n你好, 张三!\n你好, 张三!\n",
+  "duration_ms": 1
+}
+```
+
+**不改一行业务代码，CLI 和 Web + API 自由切换。**
+
+---
+
+## 核心特性
+
+### 1. 自动推导规则
+
+nb_cmd 通过 Python 方法签名自动生成 CLI 参数，零配置：
+
+| Python 方法签名元素 | CLI 映射 | 示例 |
+|---|---|---|
+| 公有方法名 | 子命令名（`snake_case` → `kebab-case`） | `def show_users` → `show-users` |
+| 方法的 docstring | 子命令帮助文本 | `"""查看用户"""` → `--help` 里的描述 |
+| 无默认值的参数 | 位置参数（必填）；有短别名时为 `--flag`（必填） | `name: str` → `greet 张三`；`name: Annotated[str, '', 'n']` → `-n 张三` |
+| 有默认值的参数 | 可选参数（`--xxx`） | `port: int = 22` → `--port 2222` |
+| `bool` 类型 | 开关参数（`--flag`） | `verbose: bool = False` → `--verbose` |
+| `int` / `float` 类型 | 自动类型转换和校验 | 输入非数字会报错 |
+| `Enum` 类型 | 自动生成选择项 | `env: Environment` → `{dev,staging,prod}` |
+| `Annotated[type, desc, alias]` | 参数描述 + 短别名 | `name: Annotated[str, '用户名', 'n']` → `-n` |
+| `_` 开头的方法 | 不暴露为子命令 | `_helper()` → 内部方法 |
+
+### 2. OOP 继承覆写
+
+nb_cmd 基于类继承，天然支持模板方法模式：
+
+```python
+class BaseDeploy(NbCmd):
+    """基础部署"""
+    def deploy(self, host: str, version: str = "latest"):
+        self._pre_deploy(host)
+        self._do_deploy(host, version)
+        self._post_deploy(host)
+        cmdui.success('部署完成!')
+
+    def _pre_deploy(self, host):
+        cmdui.info('检查 {} 连接...'.format(host))
+
+    def _do_deploy(self, host, version):
+        cmdui.info('上传文件并重启服务')
+
+    def _post_deploy(self, host):
+        cmdui.info('验证服务状态')
+
+class DockerDeploy(BaseDeploy):
+    """Docker 部署——只需覆写一个方法"""
+    def _do_deploy(self, host, version):
+        cmdui.info('docker pull app:{}'.format(version))
+        cmdui.info('docker-compose up -d')
+
+class K8sDeploy(BaseDeploy):
+    """K8s 部署——覆写 + 新增命令"""
+    def _do_deploy(self, host, version):
+        cmdui.info('kubectl set image app=app:{}'.format(version))
+
+    def scale(self, replicas: int = 3):
+        """扩缩容（K8s 特有命令）"""
+        cmdui.info('kubectl scale --replicas={}'.format(replicas))
+        cmdui.success('已扩缩至 {} 个副本'.format(replicas))
+```
+
+```bash
+# 基础部署
+$ python deploy.py deploy web-01
+
+# Docker 部署——同样的命令，不同的实现
+$ python docker_deploy.py deploy web-01
+
+# K8s 多了一个 scale 命令
+$ python k8s_deploy.py scale --replicas 5
+```
+
+其他框架做不到这一点：click/typer 用装饰器绑定函数，无法继承覆写；fire 虽然也基于类，但不支持多层级子命令和 Web/API 投影。
+
+#### 方法可直接调用——零装饰器设计
+
+click/typer 的装饰器会把函数**变成 `click.Command` 对象**，你无法像普通函数一样调用它：
+
+```python
+# click —— 装饰器改变了函数本质
+@click.command()
+@click.argument('name')
+@click.option('--times', default=1)
+def greet(name, times):
+    print(f'Hello, {name}!')
+
+greet('张三', 3)  # TypeError! greet 已经不是普通函数了
+# 必须绕路：CliRunner().invoke(greet, ['张三', '--times', '3'])
+# 或者自己拆两层：_greet_impl() + @click.command() 包一层
+```
+
+nb_cmd 的方法始终是**普通的 Python 类方法**，框架只在 `run()` 时通过反射发现它们：
+
+```python
+# nb_cmd —— 就是普通方法，零装饰器
+class MyTool(NbCmd):
+    def greet(self, name: str, times: int = 1):
+        for _ in range(times):
+            print(f'Hello, {name}!')
+
+# 直接调用 —— 完全OK
+MyTool().greet('张三', 3)
+
+# 当 CLI 用 —— 也OK
+MyTool().run()  # python script.py greet --name 张三 --times 3
+
+# import 到别的模块 —— 也OK
+from my_tool import MyTool
+result = MyTool().greet('张三', 3)
+```
+
+**这意味着：** 你的业务逻辑（方法）永远可以直接调用、单元测试、import 复用，不被 CLI 框架绑架。
+
+### 3. 多层级子命令
+
+通过 `sub_commands` 定义子命令组，支持 `git remote add` 这样的多级命令：
+
+```python
+class GitRemote(NbCmd):
+    """远程仓库管理"""
+    def add(self, name: str, url: str):
+        """添加远程仓库"""
+        print('git remote add {} {}'.format(name, url))
+
+    def remove(self, name: str):
+        """删除远程仓库"""
+        print('git remote remove {}'.format(name))
+
+class GitTool(NbCmd):
+    """Git 工具"""
+    sub_commands = {'remote': GitRemote}
+
+    def status(self):
+        """查看状态"""
+        print('当前分支: main')
+
+    def commit(self, message: str, all: bool = False):
+        """提交"""
+        if all:
+            print('git add -A')
+        print("git commit -m '{}'".format(message))
+```
+
+```bash
+$ python git_tool.py status                           # 一级命令
+$ python git_tool.py remote add origin https://...    # 二级命令
+$ python git_tool.py commit "fix bug" --all           # 一级命令
+```
+
+启动 Web 模式后，用 curl 调用多层级子命令：
+
+```bash
+# 启动 Web UI + REST API
+$ python git_tool.py --web --web-port 8080
+
+# 一级命令：POST /status（无参数）
+$ curl -X POST http://localhost:8080/status
+
+# 一级命令带参数：POST /commit
+$ curl -X POST http://localhost:8080/commit \
+    -H "Content-Type: application/json" \
+    -d '{"message": "fix bug", "all": true}'
+
+# 二级命令（子命令组）：POST /remote/add
+$ curl -X POST http://localhost:8080/remote/add \
+    -H "Content-Type: application/json" \
+    -d '{"name": "origin", "url": "https://github.com/user/repo.git"}'
+
+# 二级命令：POST /remote/remove
+$ curl -X POST http://localhost:8080/remote/remove \
+    -H "Content-Type: application/json" \
+    -d '{"name": "origin"}'
+```
+
+> **路由规则：** 一级命令路由为 `/{command}`，子命令组中的命令路由为 `/{group}/{sub_command}`，与 CLI 的层级结构一一对应。所有接口在 Swagger 文档 `http://localhost:8080/docs` 中可查看。
+
+在 Web UI 中，子命令组以蓝色标题 `[组]` 展示，展开后列出每个子命令的参数表单。
+
+#### 组合多个 NbCmd 类为统一入口
+
+已有的多个 NbCmd 类可以通过 `sub_commands` 组合成一个"大一统"工具，共享同一个 Web UI / API 入口：
+
+```python
+from nb_cmd import NbCmd
+
+class MyTool(NbCmd):
+    """基础工具"""
+    def greet(self, name: str, times: int = 1):
+        """问好"""
+        for _ in range(times):
+            print('你好, {}!'.format(name))
+
+class DeployTool(NbCmd):
+    """部署工具"""
+    def deploy(self, host: str, port: int = 22):
+        """部署"""
+        print('部署到 {}:{}'.format(host, port))
+
+    def status(self):
+        """查看状态"""
+        print('当前状态: 运行中')
+
+class OneAllTool(NbCmd):
+    """综合工具，在一个网页运行所有NbCmd其他类"""
+
+    sub_commands = {
+        'mytool': MyTool,
+        'deploy-tool': DeployTool,
+    }
+
+if __name__ == '__main__':
+    OneAllTool().run()
+```
+
+```bash
+# CLI 用法
+$ python bigone.py mytool greet 张三 --times 3
+$ python bigone.py deploy-tool deploy web-01 --port 2222
+$ python bigone.py deploy-tool status
+```
+
+启动 Web 模式后，所有子类的命令统一暴露为 REST API：
+
+```bash
+$ python bigone.py --web --web-port 8025
+
+# mytool 组的 greet 命令
+$ curl -X POST http://localhost:8025/mytool/greet \
+    -H "Content-Type: application/json" \
+    -d '{"name": "张三", "times": 3}'
+
+# deploy-tool 组的 deploy 命令
+$ curl -X POST http://localhost:8025/deploy-tool/deploy \
+    -H "Content-Type: application/json" \
+    -d '{"host": "web-01", "port": 2222}'
+
+# deploy-tool 组的 status 命令（无参数）
+$ curl -X POST http://localhost:8025/deploy-tool/status
+```
+
+> 这样可以把团队中各个人写的 NbCmd 类"插拔式"地组合到一个统一入口，Web UI 中每个组独立折叠展示。
+
+#### sub_commands 支持传入实例
+
+如果子类的 `__init__` 有必填参数，直接传 class 会因为无法无参实例化而报错。此时可以传入**实例**，nb_cmd 会自动提取 init 参数用于后续重建实例：
+
+```python
+from typing import Annotated
+
+from nb_cmd import NbCmd
+
+class ServerTool(NbCmd):
+    def __init__(self, region: Annotated[str, '机房区域']):
+        super().__init__()
+        self.region = region
+
+    def stats(self):
+        print('区域: {}'.format(self.region))
+
+class OneAllTool(NbCmd):
+    sub_commands = {
+        'mytool': MyTool,                    # 传 class（无 __init__ 参数）
+        'server': ServerTool('beijing'),     # 传实例（有 __init__ 参数）
+    }
+```
+
+> `sub_commands` 的 value 可以是 **class** 或 **instance**。传 instance 时，nb_cmd 从实例上提取 init 参数值，Web/API 模式下每次请求仍会新建隔离实例。
+
+### 4. 内置输出工具（通过 cmdui 访问）
+
+所有 UI/交互方法统一通过 `from nb_cmd import cmdui` 导入使用，**独立函数和类方法中均可调用**：
+
+```python
+from nb_cmd import NbCmd, cmdui
+
+class DbTool(NbCmd):
+    def query(self, sql: str):
+        """执行 SQL 查询"""
+        result = [
+            {"id": 1, "name": "张三", "age": 25},
+            {"id": 2, "name": "李四", "age": 30},
+        ]
+        cmdui.table(result)
+
+    def stats(self):
+        """数据库统计"""
+        cmdui.kv({
+            "数据库": "SQLite",
+            "大小": "15.3 MB",
+            "表数量": "12",
+        })
+
+    def schema(self):
+        """数据库结构"""
+        cmdui.tree({
+            "数据库": {
+                "users": {"id": "INT PK", "name": "VARCHAR"},
+                "orders": {"id": "INT PK", "total": "DECIMAL"},
+            }
+        })
+
+    def migrate(self, version: str = "latest"):
+        """数据库迁移"""
+        import time
+        steps = ["检查版本", "备份数据", "执行迁移", "验证结果"]
+        for step in cmdui.progress(steps, desc="迁移进度"):
+            time.sleep(0.5)
+        cmdui.success("迁移完成!")
+```
+
+输出效果：
+
+```
+# cmdui.table()
+┌────┬──────┬─────┐
+│ id │ name │ age │
+├────┼──────┼─────┤
+│ 1  │ 张三 │ 25  │
+│ 2  │ 李四 │ 30  │
+└────┴──────┴─────┘
+
+# cmdui.kv()
+数据库:  SQLite
+大小  :  15.3 MB
+表数量:  12
+
+# cmdui.tree()
+├── 数据库
+│   ├── users
+│   │   ├── id: INT PK
+│   │   └── name: VARCHAR
+│   └── orders
+│       ├── id: INT PK
+│       └── total: DECIMAL
+
+# cmdui.progress()
+迁移进度 ████████████████████████ 100% 4/4 [00:02<00:00]
+[OK] 迁移完成!
+```
+
+### 5. Annotated 参数描述
+
+用 `typing.Annotated` 为参数添加描述和短别名，CLI `--help`、Web UI 输入框、Swagger 文档会同步显示：
+
+```python
+from typing import Annotated
+
+from nb_cmd import NbCmd
+
+class MyTool(NbCmd):
+    """部署工具"""
+
+    def deploy(self, host: Annotated[str, '服务器地址', 'H'],
+               port: Annotated[int, '端口号', 'p'] = 22,
+               verbose: Annotated[bool, '详细模式', 'v'] = False):
+        """部署到远程服务器"""
+        ...
+```
+
+```bash
+$ python my_tool.py deploy --help
+optional arguments:
+  --host HOST, -H HOST  服务器地址 (str, 必填)
+  --port PORT, -p PORT  端口号 (int, 默认: 22)
+  --verbose, -v         详细模式 (bool, 默认: False)
+
+$ python my_tool.py deploy -H 10.0.0.1 -p 2222 -v
+```
+
+`Annotated` 的元数据是渐进式的——描述与短别名可选，不影响原有的 `name: str` 写法：
+
+```python
+name: str                                    # 最简写法，完全兼容
+name: Annotated[str, '用户名']               # 加描述
+name: Annotated[str, '用户名', 'n']          # 加描述 + 短别名
+name: Annotated[str, '', 'n']                # 只加短别名
+```
+
+也可以用 `Param` 对象获得关键字参数风格（IDE 可补全字段名）：
+
+```python
+from nb_cmd import Param
+
+name: Annotated[str, Param(desc='用户名', alias='n')]
+port: Annotated[int, Param(desc='端口号')] = 22
+```
+
+> `Param(desc, alias)` 和位置字符串完全等价。Web UI 中，描述会显示在输入框旁边的灰色提示文字和 placeholder 中。
+
+### 6. 全局参数（`__init__` 参数）
+
+当多个子命令需要共享上下文（如机房区域、数据库连接、超时时间），把它们放到 `__init__` 中：
+
+```python
+from typing import Annotated
+from enum import Enum
+
+from nb_cmd import NbCmd, NbCmdMeta, cmdui
+
+class Environment(Enum):
+    DEV = "dev"
+    STAGING = "staging"
+    PROD = "prod"
+
+class ServerTool(NbCmd):
+    """服务器运维工具"""
+
+    class Meta(NbCmdMeta):
+        version = "1.0.0"
+        use_nb_log = True
+
+    def __init__(self, region: Annotated[str, '机房区域', 'r'],
+                 timeout: Annotated[int, '超时秒数'] = 30):
+        super().__init__()
+        self.region = region
+        self.timeout = timeout
+
+    def deploy(self, host: str, env: Environment = Environment.DEV):
+        """部署服务到目标主机"""
+        cmdui.info('部署到 {} (区域: {}, 环境: {})'.format(host, self.region, env.value))
+        cmdui.success('部署完成!')
+
+    def stats(self):
+        """查看系统状态"""
+        cmdui.kv({"区域": self.region, "超时": "{}s".format(self.timeout)})
+
+if __name__ == '__main__':
+    ServerTool('beijing').run()
+```
+
+> **`region` 是必填参数**（无默认值），`timeout` 是选填参数（默认 30）。`ServerTool('beijing')` 中的 `'beijing'` 作为 `region` 的预设值，CLI / Web UI 均会以此作为默认值。
+
+#### CLI 用法
+
+`__init__` 参数在 CLI 中变为全局选项，放在子命令之前：
+
+```bash
+# --help 中会显示 init params 分区
+$ python server_tool.py --help
+system params:
+  -h, --help           显示帮助信息
+  --cmd-version        show program's version number and exit
+  --full-help, -fh     显示所有命令的完整参数详情
+
+init params:
+  --region REGION, -r REGION  机房区域 (默认: beijing)
+  --timeout TIMEOUT           超时秒数 (默认: 30)
+
+commands:
+  {deploy,exec,stats}  可用命令
+
+# 使用预设值
+$ python server_tool.py deploy 10.0.0.1
+
+# 覆盖 region
+$ python server_tool.py --region shanghai deploy 10.0.0.1 --env prod
+
+# 用短别名
+$ python server_tool.py -r shanghai --timeout 60 stats
+```
+
+#### Web UI 用法
+
+```bash
+$ python server_tool.py --web --web-port 8080
+```
+
+Web UI 顶部会自动生成全局参数表单，必填参数带 `*` 标记。修改后执行任意命令，自动携带。
+
+#### curl / REST API 用法
+
+启动 Web 模式后，REST API 端点自动注册：
+
+```bash
+# 查看有哪些全局参数及当前预设值
+$ curl http://localhost:8080/api/init-params
+
+# 不传 init_params → 使用预设值 region='beijing', timeout=30
+$ curl -X POST http://localhost:8080/deploy \
+    -H "Content-Type: application/json" \
+    -d '{"host": "10.0.0.1", "env": "prod"}'
+
+# 通过 init_params 覆盖全局参数
+$ curl -X POST http://localhost:8080/deploy \
+    -H "Content-Type: application/json" \
+    -d '{
+      "host": "10.0.0.1",
+      "env": "prod",
+      "init_params": {"region": "shanghai", "timeout": 60}
+    }'
+
+# 只覆盖部分参数，其余用预设值
+$ curl -X POST http://localhost:8080/stats \
+    -H "Content-Type: application/json" \
+    -d '{"init_params": {"region": "guangzhou"}}'
+```
+
+响应示例：
+
+```json
+{
+  "status": "success",
+  "result": null,
+  "stdout": "[INFO] 部署到 10.0.0.1 (区域: shanghai, 环境: prod)\n[OK] 部署完成!\n",
+  "duration_ms": 5
+}
+```
+
+> `init_params` 是可选字段，不传时使用 `ServerTool('beijing').run()` 中的预设值。Swagger 文档（`/docs`）中每个接口也会显示该字段。
+
+> **多用户隔离：** Web 模式下，每次命令执行都会创建一个新的 `ServerTool` 实例，不同用户/请求之间互不影响。Web UI / curl 中传入的全局参数只影响当前这次执行。
+
+### 7. nbctx 跨层级上下文传递
+
+多层级子命令的核心难题：**子命令组怎么拿到顶层的全局参数？**
+
+- **click** 用 `ctx.obj`（无类型字典），需要每层 `@click.pass_context` 手动传递
+- **typer** 用模块级全局变量（无封装、无类型安全）
+- **nb_cmd** 用 `self.nbctx`（强类型 dataclass），框架自动递归注入到任意深度
+
+```python
+from dataclasses import dataclass
+from typing import Annotated
+from nb_cmd import NbCmd
+
+@dataclass
+class AppCtx:
+    region: str = 'beijing'
+    env: str = 'prod'
+    debug: bool = False
+
+class DbTool(NbCmd):
+    """数据库工具"""
+    nbctx: AppCtx  # 类型注解 → IDE 补全 self.nbctx.region
+
+    def migrate(self, dry_run: Annotated[bool, '仅模拟'] = False):
+        """执行迁移"""
+        print(f'[{self.nbctx.region}/{self.nbctx.env}] 迁移 (dry_run={dry_run})')
+
+class MyApp(NbCmd):
+    """云平台管理"""
+    nbctx: AppCtx
+
+    def __init__(self,
+                 region: Annotated[str, '部署区域'] = 'beijing',
+                 env: Annotated[str, '运行环境'] = 'prod',
+                 debug: Annotated[bool, '调试模式'] = False):
+        self.region = region
+        self.env = env
+        self.debug = debug
+        # 直接赋值 nbctx，CLI/Web/API 所有模式自动拿到正确值
+        self.nbctx = AppCtx(region=self.region, env=self.env, debug=self.debug)
+
+    sub_commands = {'db': DbTool}
+```
+
+```bash
+# CLI: 全局参数自动穿透到子命令组
+$ python app.py --region tokyo db migrate --dry-run
+[tokyo/prod] 迁移 (dry_run=True)
+
+# curl: 通过 init_params 传递全局参数
+$ curl -X POST http://localhost:8080/db/migrate \
+    -d '{"dry_run": true, "init_params": {"region": "tokyo"}}'
+```
+
+**核心设计：**
+
+- 在 `__init__` 中直接 `self.nbctx = AppCtx(...)` 赋值，所有模式（CLI / Web / API / Python 直接调用）均能拿到正确的参数值
+- 也可以用 `make_nbctx()` 模板方法替代直接赋值（两种方式等价）
+- 子命令组只需写 `nbctx: AppCtx` 类型注解，IDE 自动补全 `self.nbctx.region` 等字段
+- 框架自动 `child.nbctx = parent.nbctx` 递归传递，支持任意嵌套深度
+- 不同用户/请求之间完全隔离（Web 模式下每次请求新建实例）
+
+> 完整三层嵌套示例见 [examples/nbctx_demo/](examples/nbctx_demo/nbctx_demo.py)
+
+### 8. 参数校验
+
+```python
+from nb_cmd import NbCmd, validate
+
+class MyTool(NbCmd):
+    @validate(port=lambda x: 1 <= x <= 65535)
+    def deploy(self, host: str, port: int = 22):
+        """部署"""
+        print('部署到 {}:{}'.format(host, port))
+```
+
+```bash
+$ python my_tool.py deploy web-01 --port 99999
+# 自动报错: port 校验失败
+```
+
+### 8. 内置系统命令执行
+
+所有 NbCmd 子类自动拥有 `exec` 子命令和 `self.shell()` 工具方法：
+
+```bash
+# exec 子命令——直接在 CLI/Web UI 中执行任意系统命令
+$ python my_tool.py exec "docker ps"
+$ python my_tool.py exec "ls -la"
+```
+
+> **Web UI 智能路由：** 在 Web UI 的命令输入框中，输入非 NbCmd 命令（如 `python script.py`、`docker ps`、`ls -la`）会自动通过 `exec` 执行，无需手动加 `exec` 前缀。
+
+```python
+class MyTool(NbCmd):
+    def deploy(self, host: str):
+        """部署"""
+        self.shell('scp app.tar.gz {}:/opt/'.format(host))
+        self.shell('ssh {} "cd /opt && tar xzf app.tar.gz"'.format(host))
+        cmdui.success('部署完成!')
+
+    def version(self):
+        """查看远程版本"""
+        ver = self.shell('python --version', capture=True)
+        print('Python: {}'.format(ver))
+```
+
+### 9. Meta 配置
+
+通过内部类 `Meta` 自定义工具的行为。继承 `NbCmdMeta` 可获得 IDE 自动补全：
+
+```python
+from nb_cmd import NbCmd, NbCmdMeta
+
+class MyTool(NbCmd):
+    class Meta(NbCmdMeta):
+        name = "mytool"
+        version = "1.0.0"
+        description = "我的超级工具"
+        use_nb_log = True
+        log_level = "DEBUG"
+        web_theme = "dark"
+        serve_port = 9000
+```
+
+> 也可以写 `class Meta(NbCmd.Meta):`，效果一样。不继承也行（向后兼容），但无法 IDE 补全。
+
+**Meta 完整字段一览：**
+
+| 字段 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `name` | str | `None` | CLI/API 名称（默认用类名） |
+| `version` | str | `'0.0.1'` | 版本号（`--cmd-version` 显示） |
+| `description` | str | `None` | 描述（默认用类的 docstring） |
+| `use_nb_log` | bool | `False` | 启用 [nb_log](https://github.com/ydf0509/nb_log) 增强日志 |
+| `log_level` | str | `'INFO'` | 日志级别 |
+| `log_file` | str | `None` | 日志文件路径 |
+| `auto_save_last_args` | bool | `False` | 自动保存上次参数（规划中） |
+| `config_file` | str | `None` | 配置持久化文件路径（规划中） |
+| `serve_host` | str | `'0.0.0.0'` | Web/API 绑定地址 |
+| `serve_port` | int | `8080` | Web/API 默认端口 |
+| `serve_workers` | int | `1` | 工作进程数（规划中） |
+| `web_title` | str | `None` | Web UI 页面标题 |
+| `web_theme` | str | `'light'` | Web UI 主题（`'light'` / `'dark'`） |
+| `enable_exec` | bool | `True` | 是否暴露内置 `exec` 命令（设为 `False` 可防止恶意执行系统命令） |
+| `help_mode` | str | `'full'` | `-h` 的默认行为：`'full'` 显示完整帮助，`'easy'` 显示 argparse 原生格式 |
+| `aliases` | dict | `{}` | 参数别名（推荐用 `Annotated[..., 'desc', 'a']` 指定短别名替代） |
+| `allow_method_list` | list | `None` | 命令白名单（仅限制 CLI/API/Web 暴露；`None` 暴露全部；Python 直接调用不受影响） |
+| `hide_method_list` | list | `None` | 命令黑名单（与白名单互斥，白名单优先；仅限制 CLI/API/Web） |
+| `auth_token` | str | `None` | 简易 Bearer token 鉴权（配置后 API/Web 请求须带 `Authorization: Bearer <token>`） |
+| `timeout` | int | `0` | 命令执行超时秒数（0=不限；作用于 CLI/API/Web 模式） |
+
+### 10. 生命周期钩子
+
+```python
+class MyTool(NbCmd):
+    def before_run(self):
+        """所有子命令执行前"""
+        self.logger.info("工具启动")
+
+    def after_run(self):
+        """所有子命令执行后"""
+        self.logger.info("操作完成")
+
+    def on_error(self, command, error):
+        """出错时"""
+        self.logger.error("命令 {} 失败: {}".format(command, error))
+```
+
+### 11. 帮助系统
+
+nb_cmd 提供三级帮助：
+
+```bash
+# 一级：总览（所有命令 + 简要参数提示）
+$ python server_tool.py --help
+
+# 二级：单个子命令的详细帮助
+$ python server_tool.py deploy --help
+usage: server_tool.py deploy [-h] [--env {dev,staging,prod}] HOST
+
+部署服务到目标主机
+
+positional arguments:
+  HOST                     (str, 必填)
+
+optional arguments:
+  --env {dev,staging,prod}  (str, 默认: dev)
+
+# 三级：所有命令的完整参数详情（对应前文第 6 节的 ServerTool 示例）
+$ python server_tool.py --full-help   # 或 -fh
+========================================================
+  ServerTool v1.0.0
+  服务器运维工具
+========================================================
+
+system params:
+    --help, -h               显示简要帮助
+    --full-help, -fh         显示本完整帮助
+    --cmd-version            显示版本号
+    --web                    以Web UI + REST API模式启动
+    --web-port PORT          Web UI 服务端口
+
+init params:
+    --region, -r             机房区域  (全局, str, 默认: beijing)
+    --timeout                超时秒数  (全局, int, 默认: 30)
+
+--------------------------------------------------------
+deploy — 部署服务到目标主机
+    HOST                     (str, 必填)
+    --env                    (Environment, 默认: Environment.DEV)
+
+stats — 查看系统状态
+```
+
+通过 `Meta.help_mode` 可以控制 `-h` 的默认行为：
+
+```python
+class MyTool(NbCmd):
+    class Meta:
+        help_mode = 'full'   # -h 显示完整帮助（默认）
+        # help_mode = 'easy' # -h 显示 argparse 原生格式
+```
+
+> 无论 `help_mode` 设置如何，`-fh` 始终显示完整帮助，`-eh` 始终显示简易帮助。
+
+### 12. 自动文档生成（CmdGen）—— 吊打 `--help`
+
+传统 CLI 框架的文档能力止步于 `--help`：一段纯文本，不能复制、不能跳转、不能分享。即使 typer 有 `typer utils docs`，也只是把 `--help` 搬到 Markdown 里而已。
+
+nb_cmd 的 `CmdGen` 是真正的**面向用户的 API 文档生成器**——自动生成带 TOC 目录、参数表格、可复制命令行、占位符约定的**高质量 Markdown 文档**，测试人员和运维人员拿到就能直接用。
+
+```python
+from nb_cmd import CmdGen
+
+g = CmdGen(MyApp, script='my_tool.py')
+
+# 生成单个命令的可复制命令行
+print(g.cmd(DbTool.migrate))
+# python my_tool.py --region ${beijing} --env ${prod} --debug db migrate --dry-run
+
+# 一键生成完整 Markdown 文档到文件
+g.doc(file='docs/cli_reference.md')
+```
+
+**生成的 Markdown 包含：**
+
+| 区域 | 内容 |
+|------|------|
+| 标题 + 版本 | `# cloud-tool v1.0.0` |
+| Table of Contents | 自动递归生成，支持多层级子命令组，可点击跳转 |
+| System Params | 系统参数表格（`-h` / `-fh` / `--web` 等） |
+| Global Params | 全局参数表格（类型 + 默认值 + 描述） |
+| Quick Start | 三条最常用命令（查看帮助/版本/启动 Web） |
+| 命令行约定 | `${value}` / `$<required>` / `--flag` 含义说明 |
+| 每个命令 | 标题 + 描述 + 参数表格 + 可复制 `bash` 代码块 |
+
+**vs 其他框架的文档能力：**
+
+| 功能 | click | typer | nb_cmd `CmdGen` |
+|------|-------|-------|-----------------|
+| 终端 `--help` | 有 | 有（Rich） | 有（三级帮助系统） |
+| 自动生成 Markdown | 需第三方 `sphinx-click` | 基础版（搬运 `--help`） | **完整版（表格+TOC+代码块）** |
+| 可复制命令行模板 | ✗ | ✗ | **✓** `${default}` / `$<required>` |
+| 参数表格（类型/默认/描述） | ✗ | ✗ | **✓** 每个命令自动生成 |
+| 单命令示例生成 | ✗ | ✗ | **✓** `g.cmd(DbTool.migrate)` |
+| 一键写入文件 | ✗ | ✗ | **✓** `g.doc(file='xxx.md')` |
+| 智能格式路由 | ✗ | ✗ | **✓** `.md` 文件自动用 Markdown 格式 |
+
+> 完整示例见 [examples/nbctx_demo/nbctx_demo_gen_doc.md](https://github.com/ydf0509/nb_cmd/blob/main/examples/nbctx_demo/nbctx_demo_gen_doc.md)
+
+### 13. Web UI 交互特性
+
+以下功能在 `--web` 模式下自动可用，无需额外配置：
+
+| 功能 | 说明 |
+|------|------|
+| 实时流式输出 | WebSocket 推送，print() 实时显示在控制台，支持 ANSI 彩色渲染 |
+| 命令取消 | 长时间运行的命令可点击"停止"按钮随时取消（类似 Ctrl+C），执行中"执行"按钮自动置灰 |
+| 命令收藏 | 点击 ★ 按钮将常用命令保存到 SQLite，自动去重 |
+| 执行历史 | 每次执行自动记录到 SQLite，保留最近 1000 条 |
+| Select2 搜索 | 收藏和历史各有独立的 Select2 风格弹框，支持模糊搜索、键盘导航，点击即填入命令行 |
+| 智能路由 | 命令行输入非 NbCmd 命令时自动通过 exec 执行，可直接输入 `python xxx.py`、`docker ps` 等 |
+| 参数表单 | 根据方法签名自动推导控件（文本框、数字框、复选框、下拉选择等） |
+| 可拖拽布局 | 左右面板中间的分割条可自由拖动调整比例 |
+| 并发安全 | 每次请求新建实例，stdout/stderr 通过 `threading.local()` 隔离，多用户同时操作互不影响 |
+
+### 14. async 方法支持
+
+nb_cmd 自动检测 `async def` 方法，透明地用 `asyncio.run()` 执行，无需额外配置：
+
+```python
+import asyncio
+from nb_cmd import NbCmd
+
+class MyTool(NbCmd):
+    async def fetch(self, url: str):
+        """异步请求"""
+        import aiohttp
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                print(f'Status: {resp.status}')
+                return await resp.text()
+```
+
+```bash
+$ python my_tool.py fetch https://httpbin.org/get
+```
+
+同步和异步方法可以在同一个类中自由混用，CLI / Web / API 三种模式均自动处理。
+
+---
+
+## 完整 API 速查
+
+### 导入
+
+```python
+from typing import Annotated
+from nb_cmd import NbCmd, NbCmdMeta, Param, cmdui, validate, CmdGen
+```
+
+### CmdGen（自动文档生成）
+
+```python
+from nb_cmd import CmdGen
+
+g = CmdGen(entry_cls, script='app.py', python='python', fmt='text')
+```
+
+| 方法 | 说明 |
+|------|------|
+| `CmdGen(cls, script, python, fmt)` | 创建生成器。`fmt`: `'text'` / `'markdown'` |
+| `g.cmd(Method)` | 生成单个方法的可复制 CLI 命令行 |
+| `g.doc()` | 生成完整文档字符串 |
+| `g.doc(file='path.md')` | 生成完整文档并写入文件（`.md` 自动用 Markdown 格式） |
+
+### cmdui（UI / 交互工具）
+
+`from nb_cmd import cmdui` —— 模块级单例，类方法和独立函数中均可使用：
+
+| 方法 | 说明 |
+|------|------|
+| `cmdui.table(data, headers)` | 表格输出（list[dict]） |
+| `cmdui.kv(data)` | 键值对输出（dict） |
+| `cmdui.tree(data)` | 树形输出（嵌套 dict） |
+| `cmdui.json_print(data)` | JSON 美化输出 |
+| `cmdui.progress(iter, desc, total)` | 进度条迭代器 |
+| `cmdui.confirm(msg)` | 确认提示 `[y/N]` → bool |
+| `cmdui.prompt(msg, default)` | 输入提示 → str |
+| `cmdui.select(msg, choices)` | 选择提示 → str |
+| `cmdui.success(msg)` / `warning` / `error` / `info` | 彩色状态输出 |
+
+### self 直属方法 / 属性
+
+| 方法 / 属性 | 说明 |
+|------|------|
+| `self.shell(cmd, capture, check)` | 执行系统命令。`capture=True` 返回 stdout 字符串 |
+| `self.logger` | 日志器（`use_nb_log=True` 时为 nb_log 增强版） |
+| `self.before_run()` / `after_run()` | 钩子：子命令执行前后调用 |
+| `self.on_error(command, error)` | 钩子：子命令出错时调用 |
+| `exec <cmd>` (内置子命令) | 执行任意系统命令（CLI 和 Web UI 均可用） |
+
+### Annotated 参数描述
+
+两种等价写法：
+
+**位置字符串：** `Annotated[类型, '描述', '别名']`
+
+| 位置 | 必填 | 说明 |
+|------|------|------|
+| 第一个参数（类型） | 是 | 实际参数类型（`str`, `int`, `bool`, `Enum`, `List[str]` 等） |
+| 第二个参数（字符串） | 否 | 参数描述（`--help`、Web UI placeholder、Swagger 同步显示） |
+| 第三个参数（字符串） | 否 | 短别名（`'n'` → `-n`，`'host-name'` → `--host-name`） |
+
+**Param 对象：** `Annotated[类型, Param(desc='描述', alias='别名')]`
+
+| 参数 | 必填 | 说明 |
+|------|------|------|
+| `desc` | 否 | 参数描述 |
+| `alias` | 否 | 短别名 |
+
+---
+
+## 和竞品对比
+
+> 详细的多维度对比（含多层级子命令 + 全局参数的完整代码对比）请看：[nb_cmd vs click vs typer vs fire](https://github.com/ydf0509/nb_cmd/blob/main/nb_cmd_vs_click_vs_typer.md)
+
+> **GitHub CLI 三框架实战对比**：以真实 `gh` CLI 为基准（5 全局参数 + 3 子命令组 + 9 子命令），三框架完整可运行代码对比。[查看完整对比文档](examples/github_cli_demos/gh_comparison.md) | [Click 实现](examples/github_cli_demos/gh_click.py) | [Typer 实现](examples/github_cli_demos/gh_typer.py) | [nb_cmd 实现](examples/github_cli_demos/gh_nb_cmd.py) | [CmdGen 自动生成文档](examples/github_cli_demos/gh_nb_cmd_gen_doc.md)
+
+### 代码对比：实现同一个工具
+
+**argparse（30+ 行样板代码）：**
+
+```python
+import argparse
+
+parser = argparse.ArgumentParser(description='部署工具')
+subparsers = parser.add_subparsers(dest='command')
+
+deploy_parser = subparsers.add_parser('deploy', help='部署服务')
+deploy_parser.add_argument('host', type=str, help='目标主机')
+deploy_parser.add_argument('--port', type=int, default=22, help='端口')
+deploy_parser.add_argument('--verbose', action='store_true', help='详细输出')
+
+status_parser = subparsers.add_parser('status', help='查看状态')
+
+args = parser.parse_args()
+if args.command == 'deploy':
+    deploy(args.host, args.port, args.verbose)
+elif args.command == 'status':
+    status()
+# 还需要手动实现 API 和 Web UI...
+```
+
+**click（装饰器地狱）：**
+
+```python
+import click
+
+@click.group()
+def cli():
+    """部署工具"""
+    pass
+
+@cli.command()
+@click.argument('host')
+@click.option('--port', default=22, type=int, help='端口')
+@click.option('--verbose', is_flag=True, help='详细输出')
+def deploy(host, port, verbose):
+    """部署服务"""
+    ...
+
+@cli.command()
+def status():
+    """查看状态"""
+    ...
+# 想加 API？对不起，请重写一遍...
+```
+
+**nb_cmd（写一次，四种接口）：**
+
+```python
+from nb_cmd import NbCmd
+
+class DeployTool(NbCmd):
+    """部署工具"""
+
+    def deploy(self, host: str, port: int = 22, verbose: bool = False):
+        """部署服务"""
+        ...
+
+    def status(self):
+        """查看状态"""
+        ...
+
+if __name__ == '__main__':
+    DeployTool().run()
+```
+
+```bash
+python deploy.py deploy web-01            # CLI
+python deploy.py --web --web-port 8080     # Web UI + REST API
+```
+
+**核心差异：** argparse / click / typer 的世界观是"CLI 是终点"。nb_cmd 的世界观是"Class 是中心，接口是投影"——CLI、API、Web UI 只是同一份业务逻辑的不同表现形式。
+
+### vs 传统前后端开发
+
+传统方式：**写后端 → 写接口 → 写文档 → 写前端 → 联调**，5 步缺一不可。nb_cmd 方式：只写 class，其余自动生成。
+
+| 能力 | 传统方式 | nb_cmd |
+|------|---------|--------|
+| REST API（含 Swagger） | 手写路由 + 模型 | **方法签名自动生成** |
+| Web UI（表单 + 控件） | 手写 HTML/CSS/JS | **类型注解自动推导控件** |
+| WebSocket 实时输出 | 手写 WS 端点 + 前端接收 | **print() 自动流式推送** |
+| 命令行 CLI | 另写 argparse | **同一份代码** |
+| 文档同步 | 手动维护 | **永远一致（同一个类）** |
+| 新增 1 个参数 | 改 3 处（后端/前端/文档） | **改 1 处（方法签名）** |
+| 前端开发者 | 需要 | **不需要** |
+
+> **本质区别：** 传统开发是"手动映射"——后端定义接口，前端照着文档手写表单；nb_cmd 是"自动投影"——Python 类是唯一真相源，CLI/API/Web UI/Python 直接调用 是它的四个不同维度的影子。改真相源，影子自动跟着变。
+
+---
+
+## 项目结构
+
+```
+nb_cmd/
+├── __init__.py            # 统一导出（from nb_cmd import ...）
+├── core/
+│   ├── base.py            # NbCmd 基类
+│   ├── meta.py            # NbCmdMeta 配置基类
+│   ├── arg.py             # Annotated / Param 参数元数据解析
+│   ├── discovery.py       # 命令发现（反射 + 类型检查）
+│   ├── parser.py          # argparse 解析器构建
+│   ├── type_utils.py      # 类型工具（Enum/Optional/List 等）
+│   ├── gen_cmd.py         # CmdGen 自动文档/命令行示例生成器
+│   ├── result_handler.py  # 返回值自动处理
+│   └── _io_dispatch.py    # 线程安全的 stdout/stderr 分发器
+├── modes/
+│   ├── cli_mode.py        # CLI 执行引擎
+│   ├── api_mode.py        # REST API 路由生成（FastAPI）
+│   └── web_mode.py        # Web UI 页面生成 + WebSocket 实时输出
+├── ui/
+│   ├── helper.py          # UIHelper（cmdui 单例）
+│   ├── colors.py          # ANSI 彩色输出
+│   ├── table.py           # 表格 / 键值对输出
+│   └── progress.py        # 进度条
+└── utils/
+    ├── validators.py      # @validate 装饰器
+    └── config.py          # 配置持久化
+```
+
+---
+
+## 依赖
+
+| 模式 | 额外依赖 | 说明 |
+|------|----------|------|
+| CLI 模式 | **无** | 纯标准库，开箱即用 |
+| Web UI + REST API | fastapi + uvicorn | `pip install nb-cmd[web]` |
+| nb_log 增强日志 | nb_log | 可选，`pip install nb_log` |
+
+---
+
+## License
+
+MIT
+
+`````
+
+--- **end of file: README.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: pyproject.toml** (project: nb_cmd) --- 
+
+`````text
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb-cmd"
+version = "0.2.0"
+description = "万能接口生成器——你写一个 Python class，自动获得 CLI + REST API + Web UI + Python 直接调用 四种操作方式，堪称python界低代码平台"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+authors = [
+    {name = "ydf", email = "ydf0509@sohu.com"},
+]
+keywords = ["cli", "api", "webui", "command", "argparse", "fastapi"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "pydantic>=1.8.0"]
+web = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "websockets>=10.0"]
+all = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "pydantic>=1.8.0", "websockets>=10.0"]
+nb = ["nb_log"]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_cmd"
+
+[tool.setuptools.packages.find]
+include = ["nb_cmd*"]
+
+[tool.setuptools.package-data]
+nb_cmd = ["ui/static/**/*"]
+
+`````
+
+--- **end of file: pyproject.toml** (project: nb_cmd) --- 
+
+---
+
+# markdown content namespace: nb_cmd 和其他顶流命令行框架例如click typer fire对比 
+
+
+## nb_cmd File Tree (relative dir: `.`)
+
+
+`````
+
+└── nb_cmd_vs_click_vs_typer.md
+
+`````
+
+---
+
+
+## nb_cmd (relative dir: `.`)  Included Files (total: 1 files)
+
+
+- `nb_cmd_vs_click_vs_typer.md`
+
+
+---
+
+
+--- **start of file: nb_cmd_vs_click_vs_typer.md** (project: nb_cmd) --- 
+
+`````markdown
+# nb_cmd vs click vs typer vs fire：谁用法更简单？
+
+> 从 Python 码农的实际体验出发，逐维度对比四大 CLI 框架的**简洁性**、**功能**和**扩展能力**。
+
+---
+
+## 一、同一个需求，四种写法
+
+### 需求：部署工具
+
+- 两个子命令：`deploy`（部署）和 `status`（查看状态）
+- `deploy` 有三个参数：`host`（必填）、`port`（默认 22）、`verbose`（开关）
+- `status` 无参数
+
+---
+
+### 1. argparse（30+ 行样板代码）
+
+```python
+import argparse
+
+parser = argparse.ArgumentParser(description='部署工具')
+subparsers = parser.add_subparsers(dest='command')
+
+deploy_parser = subparsers.add_parser('deploy', help='部署服务')
+deploy_parser.add_argument('host', type=str, help='目标主机')
+deploy_parser.add_argument('--port', type=int, default=22, help='端口')
+deploy_parser.add_argument('--verbose', action='store_true', help='详细输出')
+
+status_parser = subparsers.add_parser('status', help='查看状态')
+
+args = parser.parse_args()
+if args.command == 'deploy':
+    print('部署到 {}:{}'.format(args.host, args.port))
+elif args.command == 'status':
+    print('当前状态: 运行中')
+```
+
+**痛点：** 参数定义和业务逻辑分离，每加一个参数要改两处地方（定义 + 分发）。
+
+---
+
+### 2. click（装饰器堆叠）
+
+```python
+import click
+
+@click.group()
+def cli():
+    """部署工具"""
+    pass
+
+@cli.command()
+@click.argument('host')
+@click.option('--port', default=22, type=int, help='端口')
+@click.option('--verbose', is_flag=True, help='详细输出')
+def deploy(host, port, verbose):
+    """部署服务"""
+    if verbose:
+        click.echo('正在部署...')
+    click.echo('部署到 {}:{}'.format(host, port))
+
+@cli.command()
+def status():
+    """查看状态"""
+    click.echo('当前状态: 运行中')
+
+if __name__ == '__main__':
+    cli()
+```
+
+**痛点：** 每个参数需要一个 `@click.option` / `@click.argument` 装饰器，3 个参数就 3 层装饰器。子命令间共享上下文需要用 `ctx.obj`，不直观。
+
+---
+
+### 3. typer（类型驱动，更简洁）
+
+```python
+import typer
+
+app = typer.Typer(help='部署工具')
+
+@app.command()
+def deploy(host: str, port: int = 22, verbose: bool = False):
+    """部署服务"""
+    if verbose:
+        print('正在部署...')
+    print('部署到 {}:{}'.format(host, port))
+
+@app.command()
+def status():
+    """查看状态"""
+    print('当前状态: 运行中')
+
+if __name__ == '__main__':
+    app()
+```
+
+**优点：** 利用类型注解代替了 click 的装饰器堆叠。  
+**痛点：** 仍然是函数式 + 装饰器，子命令间共享状态需要全局变量或 callback。无法继承覆写。
+
+---
+
+### 4. fire（零配置，最懒）
+
+```python
+import fire
+
+class DeployTool:
+    """部署工具"""
+    def deploy(self, host, port=22, verbose=False):
+        """部署服务"""
+        if verbose:
+            print('正在部署...')
+        print('部署到 {}:{}'.format(host, port))
+
+    def status(self):
+        """查看状态"""
+        print('当前状态: 运行中')
+
+if __name__ == '__main__':
+    fire.Fire(DeployTool)
+```
+
+**优点：** 代码最少，直接把 class 传给 `fire.Fire()`。  
+**痛点：** 不强制类型注解，参数全是字符串需要手动转换；无法生成 API 和 Web UI；`--help` 信息简陋。
+
+---
+
+### 5. nb_cmd（写一次，四种接口）
+
+```python
+from nb_cmd import NbCmd
+
+class DeployTool(NbCmd):
+    """部署工具"""
+
+    def deploy(self, host: str, port: int = 22, verbose: bool = False):
+        """部署服务"""
+        if verbose:
+            print('正在部署...')
+        print('部署到 {}:{}'.format(host, port))
+
+    def status(self):
+        """查看状态"""
+        print('当前状态: 运行中')
+
+if __name__ == '__main__':
+    DeployTool().run()
+```
+
+```bash
+python deploy.py deploy web-01 --port 2222 --verbose   # CLI
+python deploy.py --web                                   # Web UI + REST API
+```
+
+**优点：** 代码量和 fire 接近，但强制类型注解、自动类型校验、支持四种接口模式。
+
+---
+
+## 二、逐维度详细对比
+
+### 1. 代码行数（实现同一需求）
+
+| 框架 | 行数 | 装饰器数 | 分发逻辑 |
+|------|------|---------|---------|
+| argparse | 15+ | 0 | 手动 if/elif |
+| click | 18 | 5 | 自动 |
+| typer | 14 | 2 | 自动 |
+| fire | 12 | 0 | 自动 |
+| **nb_cmd** | **12** | **0** | **自动** |
+
+nb_cmd 和 fire 的行数几乎一样，但 nb_cmd 多了类型注解带来的自动校验。
+
+---
+
+### 2. 参数定义方式
+
+| 框架 | 参数定义位置 | 类型校验 | 枚举支持 |
+|------|------------|---------|---------|
+| argparse | 独立的 `add_argument()` | 手动 `type=int` | 手动 `choices=[...]` |
+| click | 装饰器 `@click.option()` | 手动 `type=int` | `type=click.Choice(...)` |
+| typer | **函数签名** | **自动** | `typer.Option(..., case_sensitive=False)` |
+| fire | 函数签名（无注解） | **无** | **无** |
+| **nb_cmd** | **方法签名** | **自动** | **自动**（`Enum` 子类） |
+
+nb_cmd 和 typer 都利用类型注解自动推导，但 nb_cmd 还自动支持 `Enum` → 选择项。
+
+---
+
+### 3. 子命令共享上下文（全局参数）
+
+场景：多个子命令需要共享 `region`（机房区域）。
+
+**click：**
+```python
+@click.group()
+@click.option('--region', default='beijing')
+@click.pass_context
+def cli(ctx, region):
+    ctx.ensure_object(dict)
+    ctx.obj['region'] = region
+
+@cli.command()
+@click.pass_context
+def deploy(ctx):
+    region = ctx.obj['region']  # 通过 ctx 传递
+```
+
+**typer：**
+```python
+app = typer.Typer()
+state = {"region": "beijing"}  # 全局变量
+
+@app.callback()
+def main(region: str = "beijing"):
+    state["region"] = region
+
+@app.command()
+def deploy():
+    region = state["region"]   # 通过全局变量
+```
+
+**nb_cmd：**
+```python
+class MyTool(NbCmd):
+    def __init__(self, region: str = 'beijing'):
+        super().__init__()
+        self.region = region
+
+    def deploy(self):
+        print(self.region)   # 直接用 self
+```
+
+**nb_cmd 最自然**——`__init__` 就是全局参数，`self` 就是上下文。OOP 开发者零学习成本。
+
+---
+
+### 4. OOP 继承与覆写
+
+| 框架 | 支持继承 | 支持覆写 | 模板方法模式 |
+|------|---------|---------|-----------|
+| argparse | ✗ | ✗ | ✗ |
+| click | ✗ | ✗ | ✗ |
+| typer | ✗ | ✗ | ✗ |
+| fire | 有限 | 有限 | ✗ |
+| **nb_cmd** | **✓** | **✓** | **✓** |
+
+click 和 typer 用装饰器绑定函数，函数无法被子类覆写。nb_cmd 基于 class 继承，天然支持模板方法模式。
+
+---
+
+### 5. 多层级子命令
+
+需求：`git remote add origin https://...`
+
+**click：**
+```python
+@click.group()
+def cli(): pass
+
+@cli.group()
+def remote(): pass
+
+@remote.command()
+@click.argument('name')
+@click.argument('url')
+def add(name, url):
+    print('git remote add {} {}'.format(name, url))
+```
+
+**typer：**
+```python
+app = typer.Typer()
+remote_app = typer.Typer()
+app.add_typer(remote_app, name="remote")
+
+@remote_app.command()
+def add(name: str, url: str):
+    print('git remote add {} {}'.format(name, url))
+```
+
+**nb_cmd：**
+```python
+class GitRemote(NbCmd):
+    def add(self, name: str, url: str):
+        print('git remote add {} {}'.format(name, url))
+
+class GitTool(NbCmd):
+    sub_commands = {'remote': GitRemote}
+```
+
+nb_cmd 用 `sub_commands` dict 声明，最简洁。click 需要嵌套 `@group()`，typer 需要 `add_typer()`。
+
+---
+
+### 6. 接口模式对比（核心差异）
+
+| 能力 | argparse | click | typer | fire | **nb_cmd** |
+|------|:--------:|:-----:|:-----:|:----:|:----------:|
+| CLI | ✓ | ✓ | ✓ | ✓ | **✓** |
+| REST API | ✗ | ✗ | ✗ | ✗ | **自动生成** |
+| Web UI | ✗ | ✗ | ✗ | ✗ | **自动生成** |
+| Swagger 文档 | ✗ | ✗ | ✗ | ✗ | **自动生成** |
+| WebSocket 实时输出 | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 命令取消（停止按钮） | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 多用户并发隔离 | ✗ | ✗ | ✗ | ✗ | **✓** |
+
+**这是 nb_cmd 的独家优势。** 其他框架的世界观是"CLI 是终点"，nb_cmd 是"Class 是中心，CLI/API/Web UI 是投影"。
+
+---
+
+### 7. 新增一个参数的改动量
+
+假设要给 `deploy` 新增一个 `timeout: int = 30` 参数：
+
+| 框架 | 需要改的地方 | 改动量 |
+|------|------------|-------|
+| argparse | `add_argument` + `if/elif` 分发 | 2 处 |
+| click | `@click.option` 装饰器 + 函数签名 | 2 处 |
+| typer | 函数签名 | **1 处** |
+| fire | 函数签名 | **1 处** |
+| **nb_cmd** | 方法签名 | **1 处** |
+
+typer、fire、nb_cmd 都只需改方法签名。但 nb_cmd 改完后，CLI + API + Web UI 三处同步更新。
+
+---
+
+### 8. 参数描述与别名
+
+**click：**
+```python
+@click.option('--host', '-H', help='服务器地址', required=True)
+```
+
+**typer：**
+```python
+def deploy(host: Annotated[str, typer.Argument(help='服务器地址')]):
+```
+
+**nb_cmd：**
+```python
+def deploy(self, host: Annotated[str, '服务器地址', 'H']):
+```
+
+nb_cmd 的 Annotated 写法最紧凑：类型、描述、别名写在一行。
+
+---
+
+## 三、纯 CLI 场景的真实对比（多层级子命令 + 全局参数）
+
+抛开 Web/API 不谈，**纯 CLI 场景下**，一旦需求稍微复杂（多层级子命令 + 全局参数），nb_cmd 的优势就非常明显。
+
+### 需求
+
+- 全局参数：`region`（机房区域，必填）、`timeout`（超时，默认 30）
+- 子命令组 `remote`：`add`（添加远程仓库）、`remove`（删除远程仓库）
+- 子命令组 `branch`：`create`（创建分支）、`delete`（删除分支）
+- 一级命令 `status`：查看状态
+- 所有子命令都需要访问 `region`
+
+用法：
+```bash
+python tool.py --region shanghai remote add origin https://...
+python tool.py --region beijing branch create feature-x
+python tool.py --region beijing status
+```
+
+---
+
+### click 实现（约 60 行）
+
+光看这一坨装饰器就头皮发麻——`@click.group()` 套 `@click.pass_context` 套 `@click.option()` 套 `@click.argument()`，一个子命令 4 层装饰器起步。你写的不是业务逻辑，你写的是装饰器俄罗斯套娃。半年后回来看自己的代码，第一反应是"这谁写的"。很多 Python 码农看到 click 的写法，转头就回去抱 argparse 了——至少 argparse 虽然笨，但看得懂。
+
+```python
+import click
+
+@click.group()
+@click.option('--region', '-r', required=True, help='机房区域')
+@click.option('--timeout', default=30, type=int, help='超时秒数')
+@click.pass_context
+def cli(ctx, region, timeout):
+    """Git 风格工具"""
+    ctx.ensure_object(dict)
+    ctx.obj['region'] = region
+    ctx.obj['timeout'] = timeout
+
+@cli.command()
+@click.pass_context
+def status(ctx):
+    """查看状态"""
+    print('区域: {}'.format(ctx.obj['region']))
+
+# ---------- remote 子命令组 ----------
+@cli.group()
+@click.pass_context
+def remote(ctx):
+    """远程仓库管理"""
+    pass
+
+@remote.command()
+@click.argument('name')
+@click.argument('url')
+@click.pass_context
+def add(ctx, name, url):
+    """添加远程仓库"""
+    print('git remote add {} {}'.format(name, url))
+
+@remote.command()
+@click.argument('name')
+@click.pass_context
+def remove(ctx, name):
+    """删除远程仓库"""
+    print('git remote remove {}'.format(name))
+
+# ---------- branch 子命令组 ----------
+@cli.group()
+@click.pass_context
+def branch(ctx):
+    """分支管理"""
+    pass
+
+@branch.command()
+@click.argument('name')
+@click.option('--from-branch', default='main', help='基于哪个分支')
+@click.pass_context
+def create(ctx, name, from_branch):
+    """创建分支"""
+    print('git branch {} from {}'.format(name, from_branch))
+
+@branch.command()
+@click.argument('name')
+@click.option('--force', '-f', is_flag=True, help='强制删除')
+@click.pass_context
+def delete(ctx, name, force):
+    """删除分支"""
+    flag = ' --force' if force else ''
+    print('git branch -d{} {}'.format(flag, name))
+
+if __name__ == '__main__':
+    cli()
+```
+
+**痛点：**
+- **`@click.pass_context` 到处传递**：每个子命令都要加 `@click.pass_context` + `ctx` 参数，才能访问全局参数
+- **装饰器累积**：`remote add` 一个命令就要 3 个装饰器（`@remote.command()` + `@click.argument('name')` + `@click.argument('url')`），还要加 `@click.pass_context`
+- **函数散落各处**：`add` 和 `remove` 是裸函数，和 `remote` 组的关系只靠装饰器维持
+- **无法继承复用**：如果要做一个类似的工具（比如换成 SVN），整个文件要复制一遍
+
+---
+
+### typer 实现（约 50 行）
+
+typer 号称"现代版 click"，确实少了一堆装饰器。但一遇到全局参数，立刻露馅——你得搞一个全局字典 `state = {}` 在模块顶部晃荡，每个子命令函数里 `state["region"]` 这么取值。这不就是 Java 码农最鄙视的"全局变量传参"吗？Python 写成这样，OOP 祖师爷看了都摇头。
+
+而且如果多层级子命令太多的时候，需要精确的使用不同的 `typer.Typer()` 实例来区分不同的子命令组，你的装饰器千万不能用错了app，必须使用 `@精准的app.command()`,这个写法简直是太反人类了。
+而NbCmd的多层级子命令，压根不需要关心自身处在哪个层级这个问题。
+
+```python
+import typer
+from typing import Annotated
+
+app = typer.Typer(help='Git 风格工具')
+state = {"region": "", "timeout": 30}
+
+@app.callback()
+def main(region: Annotated[str, typer.Option('-r', help='机房区域')],
+         timeout: int = 30):
+    state["region"] = region
+    state["timeout"] = timeout
+
+@app.command()
+def status():
+    """查看状态"""
+    print('区域: {}'.format(state["region"]))
+
+# ---------- remote 子命令组 ----------
+remote_app = typer.Typer(help='远程仓库管理')
+app.add_typer(remote_app, name="remote")
+
+@remote_app.command()
+def add(name: str, url: str):
+    """添加远程仓库"""
+    print('git remote add {} {}'.format(name, url))
+
+@remote_app.command()
+def remove(name: str):
+    """删除远程仓库"""
+    print('git remote remove {}'.format(name))
+
+# ---------- branch 子命令组 ----------
+branch_app = typer.Typer(help='分支管理')
+app.add_typer(branch_app, name="branch")
+
+@branch_app.command()
+def create(name: str, from_branch: str = "main"):
+    """创建分支"""
+    print('git branch {} from {}'.format(name, from_branch))
+
+@branch_app.command()
+def delete(name: str, force: bool = False):
+    """删除分支"""
+    flag = ' --force' if force else ''
+    print('git branch -d{} {}'.format(flag, name))
+
+if __name__ == '__main__':
+    app()
+```
+
+**比 click 好的地方：** 类型注解代替装饰器，参数定义更简洁。  
+**仍然的痛点：**
+- **全局参数用全局变量 `state` 传递**：不够优雅，不是 OOP 风格
+- **`add_typer()` 连接子命令组**：每个子组需要 `typer.Typer()` + `app.add_typer()`，两步操作
+- **函数仍然散落**：`add` 函数和 `remote_app` 的关系靠 `@remote_app.command()` 装饰器维持
+- **无法继承覆写**：同样无法做模板方法
+
+---
+
+### nb_cmd 实现（约 30 行）
+
+看完上面那两坨代码，再看 nb_cmd——你会有一种"回家了"的感觉。没有装饰器、没有全局变量、没有 `ctx.obj`。就是正常写 Python class，该怎么写怎么写，`self` 就是上下文，`__init__` 就是全局参数。任何会写 class 的 Python 码农，不用看文档就能上手。
+
+```python
+from typing import Annotated
+from nb_cmd import NbCmd
+
+class GitRemote(NbCmd):
+    """远程仓库管理"""
+    def add(self, name: str, url: str):
+        """添加远程仓库"""
+        print('git remote add {} {}'.format(name, url))
+
+    def remove(self, name: str):
+        """删除远程仓库"""
+        print('git remote remove {}'.format(name))
+
+class GitBranch(NbCmd):
+    """分支管理"""
+    def create(self, name: str, from_branch: str = "main"):
+        """创建分支"""
+        print('git branch {} from {}'.format(name, from_branch))
+
+    def delete(self, name: str, force: bool = False):
+        """删除分支"""
+        flag = ' --force' if force else ''
+        print('git branch -d{} {}'.format(flag, name))
+
+class GitTool(NbCmd):
+    """Git 风格工具"""
+    sub_commands = {'remote': GitRemote, 'branch': GitBranch}
+
+    def __init__(self, region: Annotated[str, '机房区域', 'r'],
+                 timeout: Annotated[int, '超时秒数'] = 30):
+        super().__init__()
+        self.region = region
+        self.timeout = timeout
+
+    def status(self):
+        """查看状态"""
+        print('区域: {}, 超时: {}s'.format(self.region, self.timeout))
+
+if __name__ == '__main__':
+    GitTool('beijing').run()
+```
+
+**nb_cmd 的优势（纯 CLI 角度）：**
+
+1. **全局参数就是 `__init__`**：`self.region` 是自然的实例属性，不需要 `ctx.obj` 也不需要全局变量 `state`
+2. **子命令组就是 class**：`sub_commands = {'remote': GitRemote}` 一行搞定，不需要 `app.add_typer()` 或嵌套 `@group()`
+3. **每个子命令组是独立的 class**：可以单独测试、单独复用、单独继承
+4. **零装饰器**：方法签名即定义，不需要任何 `@command()` 或 `@option()`
+5. **支持继承覆写**：做一个 `SvnTool(GitTool)` 只需要覆写几个方法，click/typer 做不到
+
+---
+
+### 代码行数对比
+
+| 框架 | 纯业务代码行数 | 框架样板代码 | 全局参数传递方式 | 子命令组定义 |
+|------|-------------|------------|---------------|------------|
+| click | ~60 行 | `@click.pass_context` × 6 | `ctx.obj['region']` | `@cli.group()` 嵌套 |
+| typer | ~50 行 | `app.add_typer()` × 2 | `state["region"]` 全局变量 | `typer.Typer()` + `add_typer()` |
+| **nb_cmd** | **~30 行** | **无** | **`self.region`** | **`sub_commands = {...}`** |
+
+**即使纯 CLI 场景，nb_cmd 的代码量也只有 click 的一半、typer 的 60%。**
+
+差距的核心原因：
+- click/typer 是**函数式**的，子命令间共享状态需要额外机制（ctx 或全局变量）
+- nb_cmd 是**OOP** 的，`self` 天然就是共享上下文
+
+---
+
+## 四、适用场景建议
+
+| 场景 | 推荐框架 | 原因 |
+|------|---------|------|
+| 简单脚本（1-2 个命令，无全局参数） | fire / typer / **nb_cmd** | 代码量几乎一样少 |
+| 多层级子命令 + 全局参数 | **nb_cmd** | `self` + `sub_commands` 比 ctx/全局变量简洁得多 |
+| 需要继承覆写（模板方法） | **nb_cmd** | 独家支持，click/typer 做不到 |
+| 多人协作的大型工具集 | **nb_cmd** | OOP 继承 + sub_commands 组合 |
+| 正式发行包（需要 shell 补全） | typer | shell 补全开箱即用 |
+| 需要额外 Web UI / API 的场景 | **nb_cmd** | 自动生成，额外的加分项 |
+
+---
+
+## 五、总结
+
+| 维度 | 最简 | 说明 |
+|------|------|------|
+| 简单场景代码量 | fire ≈ **nb_cmd** ≈ typer | 都只需 12-14 行，nb_cmd 不比任何框架多 |
+| 复杂场景代码量 | **nb_cmd** | 多层级 + 全局参数场景下，代码量只有 click 的一半 |
+| 类型安全 | typer ≈ **nb_cmd** | 都利用类型注解 |
+| 全局参数传递 | **nb_cmd** | `self.xxx` 最自然，click 用 ctx，typer 用全局变量 |
+| 子命令组定义 | **nb_cmd** | `sub_commands = {...}` 一行，click/typer 需要多步 |
+| OOP 继承/覆写 | **nb_cmd** | 独家支持，其他框架做不到 |
+| 多接口模式 | **nb_cmd** | CLI + API + Web UI 三合一（额外加分） |
+| Shell 补全 | typer | 开箱即用 |
+| 生态成熟度 | click | 社区最大、插件最多 |
+
+**一句话总结：**
+
+- 简单场景 → nb_cmd 代码量和 fire/typer 一样少，没有额外负担
+- **复杂场景（多层级子命令 + 全局参数 + 代码复用）**→ nb_cmd 的 OOP 模型比 click/typer 的函数式模型**简洁一倍**，这个优势跟 Web/API 无关
+- Web/API 是额外的加分项，不是 nb_cmd 的唯一卖点
+
+---
+
+## 六、nb_cmd 在多层级命令下的碾压优势
+
+多层级子命令是 CLI 框架的试金石——简单工具看不出差距，一旦子命令层级加深、全局参数需要穿透，各框架的设计哲学差距就彻底暴露出来。
+
+### click/typer 的致命设计缺陷
+
+**每个子命令都要"知道自己在哪"。**
+
+click 里，`add` 函数必须通过 `@remote.command()` 才知道自己属于 `remote` 组。你有 `remote`、`branch`、`tag` 三个组，就有 `remote_app`、`branch_app`、`tag_app` 三个实例在模块顶部晃荡。写多了根本分不清哪个函数挂在哪个 app 下面。
+
+typer 更离谱——你必须在文件头部创建 `remote_app = typer.Typer()`，然后 `app.add_typer(remote_app, name="remote")`，接着在下面的函数上 `@remote_app.command()`。一个子命令组就要**三步操作**：创建实例 → 注册到父级 → 装饰器绑定。搞 5 个子命令组你头都晕了。
+
+更致命的是：**装饰器用错了 app 实例，命令就跑到错误的层级去了。** 这种 bug 极其隐蔽——代码不报错，`--help` 里命令位置不对，你得挨个排查每个装饰器绑的是哪个 app。
+
+### nb_cmd 的设计：子命令不需要知道自己在哪
+
+```python
+class GitRemote(NbCmd):
+    """远程仓库管理"""
+    def add(self, name: str, url: str):
+        print('git remote add {} {}'.format(name, url))
+```
+
+`GitRemote` 写的时候完全不知道自己会被挂在哪里——它是独立的 class，可以单独运行、单独测试。直到父级声明 `sub_commands = {'remote': GitRemote}`，它才被"挂载"到命令树上。
+
+这意味着：
+- **同一个 NbCmd 子类可以复用到不同的父级下**，不需要修改一行代码
+- **层级关系是声明式的**，一眼就看出 `{'remote': GitRemote, 'branch': GitBranch}` 这棵树长什么样
+- **不可能挂错层级**，因为根本没有装饰器可以用错
+
+### 用数据说话
+
+当子命令组数量增加时，各框架的代码膨胀率：
+
+| 子命令组数量 | click 额外代码 | typer 额外代码 | nb_cmd 额外代码 |
+|:---:|:---:|:---:|:---:|
+| 1 组 | +8 行 (`@group` + `@pass_context` × N) | +3 行 (`Typer()` + `add_typer()` + 函数) | +1 行 (`sub_commands` 加一项) |
+| 3 组 | +24 行 | +9 行 | +3 行 |
+| 5 组 | +40 行 | +15 行 | +5 行 |
+| 10 组 | +80 行 | +30 行 | +10 行 |
+
+**nb_cmd 的膨胀率是 click 的 1/8、typer 的 1/3。** 子命令组越多，差距越大。
+
+### 核心结论
+
+> **nb_cmd 的多层级子命令不是"也能做到"——而是"碾压性地简洁"。**
+>
+> click 和 typer 的函数式设计在多层级场景下会产生大量样板代码（装饰器绑定、上下文传递、实例注册），而 nb_cmd 的 OOP 模型让这些统统变成了一行 dict 声明。
+>
+> 这个优势**纯粹是 CLI 层面的**，跟 Web/API 完全无关。
+
+`````
+
+--- **end of file: nb_cmd_vs_click_vs_typer.md** (project: nb_cmd) --- 
+
+---
+
+# markdown content namespace: nb_cmd examples 
+
+
+## nb_cmd File Tree (relative dir: `examples`)
+
+
+`````
+
+└── examples
+    ├── bigone_cmd.py
+    ├── demo_advanced.py
+    ├── demo_basic.py
+    ├── demo_full.py
+    ├── demo_inherit.py
+    ├── demo_nb_log.py
+    ├── demo_subcommands.py
+    ├── github_cli_demos
+    │   ├── gh_click.py
+    │   ├── gh_comparison.md
+    │   ├── gh_nb_cmd.py
+    │   ├── gh_nb_cmd_gen_doc.md
+    │   └── gh_typer.py
+    └── nbctx_demo
+        ├── nbctx_demo.py
+        └── nbctx_demo_gen_doc.md
+
+`````
+
+---
+
+
+## nb_cmd (relative dir: `examples`)  Included Files (total: 14 files)
+
+
+- `examples/bigone_cmd.py`
+
+- `examples/demo_advanced.py`
+
+- `examples/demo_basic.py`
+
+- `examples/demo_full.py`
+
+- `examples/demo_inherit.py`
+
+- `examples/demo_nb_log.py`
+
+- `examples/demo_subcommands.py`
+
+- `examples/github_cli_demos/gh_click.py`
+
+- `examples/github_cli_demos/gh_comparison.md`
+
+- `examples/github_cli_demos/gh_nb_cmd.py`
+
+- `examples/github_cli_demos/gh_nb_cmd_gen_doc.md`
+
+- `examples/github_cli_demos/gh_typer.py`
+
+- `examples/nbctx_demo/nbctx_demo.py`
+
+- `examples/nbctx_demo/nbctx_demo_gen_doc.md`
+
+
+---
+
+
+--- **start of file: examples/bigone_cmd.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 综合入口 demo —— 把多个 NbCmd 类组合到一个统一的 CLI / Web UI / REST API
+
+用法:
+    python bigone_cmd.py --help
+    python bigone_cmd.py mytool greet 张三 --times 3
+    python bigone_cmd.py deploy deploy web-01 --env prod
+    python bigone_cmd.py k8s scale --replicas 5
+    python bigone_cmd.py db query "SELECT 1"
+    python bigone_cmd.py git status
+    python bigone_cmd.py git remote add origin https://github.com/x/x.git
+    python bigone_cmd.py server deploy 10.0.0.1 --env staging
+    python bigone_cmd.py server stats
+    python bigone_cmd.py --web --web-port 8025
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from nb_cmd import NbCmd
+from demo_basic import MyTool
+from demo_advanced import DeployTool
+from demo_inherit import K8sDeploy
+from demo_full import DbTool
+from demo_subcommands import GitTool
+from demo_nb_log import ServerTool
+
+
+class OneAllTool(NbCmd):
+    """
+    综合工具，在一个网页运行所有NbCmd其他类
+    """
+
+    sub_commands = {
+        'mytool': MyTool,
+        'deploy': DeployTool,
+        'k8s': K8sDeploy,
+        'db': DbTool,
+        'git': GitTool,
+        'server': ServerTool('beijing'),
+    }
+
+
+if __name__ == '__main__':
+    OneAllTool().run()
+
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe D:/codes/nb_cmd/examples/bigone_cmd.py --web --web-port 8025
+
+    curl -X POST http://localhost:8025/mytool/greet -H "Content-Type: application/json" -d "{\"name\": \"张三\", \"times\": 3}"
+    curl -X POST http://localhost:8025/deploy/deploy -H "Content-Type: application/json" -d "{\"host\": \"web-01\", \"env\": \"prod\"}"
+    curl -X POST http://localhost:8025/deploy/status
+    curl -X POST http://localhost:8025/k8s/deploy -H "Content-Type: application/json" -d "{\"host\": \"10.0.0.1\"}"
+    curl -X POST http://localhost:8025/k8s/scale -H "Content-Type: application/json" -d "{\"replicas\": 5}"
+    curl -X POST http://localhost:8025/db/query -H "Content-Type: application/json" -d "{\"sql\": \"SELECT * FROM users\"}"
+    curl -X POST http://localhost:8025/db/stats
+    curl -X POST http://localhost:8025/git/status
+    curl -X POST http://localhost:8025/git/commit -H "Content-Type: application/json" -d "{\"message\": \"fix bug\", \"all\": true}"
+    curl -X POST http://localhost:8025/server/deploy -H "Content-Type: application/json" -d "{\"host\": \"10.0.0.1\", \"env\": \"staging\"}"
+    curl -X POST http://localhost:8025/server/stats
+    '''
+
+
+`````
+
+--- **end of file: examples/bigone_cmd.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_advanced.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 高级用法 demo —— 继承覆写 + 子命令组 + 高级类型
+"""
+import sys
+import os
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from typing import Annotated
+
+from nb_cmd import NbCmd, NbCmdMeta, cmdui
+from enum import Enum
+
+
+class Environment(Enum):
+    DEV = "dev"
+    STAGING = "staging"
+    PROD = "prod"
+
+
+class DeployTool(NbCmd):
+    """部署工具"""
+
+    class Meta(NbCmdMeta):
+        use_nb_log = True
+        log_level = "DEBUG"
+        log_file = "deploy_tool.log"
+        web_theme = "dark"
+        serve_port = 8082
+        serve_workers = 1
+        web_title = "部署工具"
+
+    def deploy(self,
+               host: Annotated[str, '目标服务器地址', 'H'],
+               port: Annotated[int, '端口号', 'p'] = 22,
+               env: Annotated[Environment, '部署环境', 'e'] = Environment.DEV,
+               dry_run: Annotated[bool, '试运行模式'] = False,
+               ):
+        """执行部署到指定服务器"""
+        print('环境: {}'.format(env.value if hasattr(env, 'value') else env))
+        print('目标: {}:{}'.format(host, port))
+        if dry_run:
+            print('** 试运行模式，不会实际执行 **')
+        else:
+            print('部署完成!')
+
+    def status(self):
+        """查看部署状态"""
+        cmdui.kv({
+            "当前环境": "dev",
+            "最后部署": "2026-04-17 10:30",
+            "服务状态": "运行中",
+        })
+
+    def show_users(self):
+        """展示用户列表"""
+        data = [
+            {"名字": "张三", "年龄": 25, "城市": "北京"},
+            {"名字": "李四", "年龄": 30, "城市": "上海"},
+            {"名字": "王五", "年龄": 28, "城市": "广州"},
+        ]
+        cmdui.table(data)
+
+    def process(self):
+        """模拟处理任务（带进度条）"""
+        
+        items = list(range(20))
+        for _ in cmdui.progress(items, desc="处理中"):
+            time.sleep(0.1)
+        cmdui.success("处理完成!")
+    
+    def many_print(self, num: int = 30):
+        """持续打印多行（用于测试 WebSocket 实时流式输出）"""
+        for i in range(num):
+            time.sleep(1)
+            print('print {}'.format(i))
+            self.logger.debug('logger debug {}'.format(i))
+            self.logger.info('logger info {}'.format(i))
+            self.logger.warning('logger warning {}'.format(i))
+            self.logger.error('logger error {}'.format(i))
+            self.logger.critical('logger critical {}'.format(i))
+
+            cmdui.info('ui info {}'.format(i))
+            cmdui.success('ui success {}'.format(i))
+            cmdui.error('ui error {}'.format(i))
+            cmdui.warning('ui warning {}'.format(i))
+
+
+
+if __name__ == '__main__':
+    DeployTool().run()
+
+
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe examples/demo_advanced.py --web --web-port 8082
+    
+    '''
+
+`````
+
+--- **end of file: examples/demo_advanced.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_basic.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 基础用法 demo —— 对应设计文档 4.1 最简示例
+
+用法:
+    python demo_basic.py --help
+    python demo_basic.py greet -n 张三 -t 3
+    python demo_basic.py deploy -H 192.168.1.1 -p 2222 -v
+    python demo_basic.py deploy --help
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from typing import Annotated
+
+from nb_cmd import NbCmd
+import asyncio
+
+
+class MyTool(NbCmd):
+    """我的超级工具（自动变成CLI的description）"""
+
+    def greet(self, name: Annotated[str, '要问候的人名', 'n'],
+              times: Annotated[int, '问候次数', 't'] = 1):
+        """向某人问好（自动变成子命令的帮助信息）"""
+        for _ in range(times):
+            print('你好, {}!'.format(name))
+
+    async def deploy(self, host: Annotated[str, '服务器地址', 'H'],
+               port: Annotated[int, '端口号', 'p'] = 22,
+               verbose: Annotated[bool, '详细模式', 'v'] = False):
+        """部署到远程服务器"""
+        # 这个函数是测试asyncio函数的运行
+        if verbose:
+            print('[详细模式] 正在部署到 {}:{} ...'.format(host, port))
+        await asyncio.sleep(1)
+        print('部署到 {}:{} 开始'.format(host, port))
+        await asyncio.sleep(1)
+        print('部署到 {}:{} 进行中'.format(host, port))
+        await asyncio.sleep(1)
+        print('部署到 {}:{} 完成'.format(host, port))
+
+    def _private_helper(self):
+        """下划线开头的方法不会暴露为子命令"""
+        pass
+
+
+if __name__ == '__main__':
+    MyTool().run()
+
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe examples/demo_basic.py --web --web-port 8081
+    
+    '''
+
+`````
+
+--- **end of file: examples/demo_basic.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_full.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 完整功能 demo —— 对应设计文档附录A (数据库管理工具)
+
+用法:
+    python demo_full.py --help
+    python demo_full.py query "SELECT * FROM users"
+    python demo_full.py query "SELECT * FROM users" --output json
+    python demo_full.py stats
+    python demo_full.py migrate --version v2.0 --dry-run
+
+    # REST API 模式
+    # Web UI 模式
+    python demo_full.py --web --web-port 9904
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from typing import Annotated
+
+from nb_cmd import NbCmd, NbCmdMeta, cmdui
+from enum import Enum
+
+
+class OutputFormat(Enum):
+    TABLE = "table"
+    JSON = "json"
+    CSV = "csv"
+
+
+class DbTool(NbCmd):
+    """数据库管理工具 - 支持多种数据库的通用管理"""
+
+    class Meta(NbCmdMeta):
+        name = "dbtool"
+        version = "1.0.0"
+
+    def query(self, sql: Annotated[str, 'SQL查询语句'],
+              output: Annotated[OutputFormat, '输出格式'] = OutputFormat.TABLE,
+              limit: Annotated[int, '返回行数上限'] = 100):
+        """执行SQL查询并展示结果"""
+        cmdui.info('执行: {}'.format(sql))
+        result = [
+            {"id": 1, "name": "张三", "age": 25},
+            {"id": 2, "name": "李四", "age": 30},
+            {"id": 3, "name": "王五", "age": 28},
+        ]
+
+        if output == OutputFormat.TABLE or output == 'table':
+            cmdui.table(result)
+        elif output == OutputFormat.JSON or output == 'json':
+            cmdui.json_print(result)
+        elif output == OutputFormat.CSV or output == 'csv':
+            print("id,name,age")
+            for row in result:
+                print(",".join(str(v) for v in row.values()))
+
+    def migrate(self, version: Annotated[str, '目标版本号'] = "latest",
+                dry_run: Annotated[bool, '试运行，不实际执行'] = False):
+        """执行数据库迁移"""
+        if dry_run:
+            cmdui.warning("试运行模式，不会实际执行")
+        cmdui.info('迁移到版本: {}'.format(version))
+        import time
+        steps = ["检查版本", "备份数据", "执行迁移", "验证结果"]
+        for step in cmdui.progress(steps, desc="迁移进度"):
+            time.sleep(0.3)
+        cmdui.success("迁移完成")
+
+    def stats(self):
+        """显示数据库统计信息"""
+        cmdui.kv({
+            "数据库类型": "SQLite",
+            "数据库大小": "15.3 MB",
+            "表数量": "12",
+            "总行数": "1,234,567",
+            "最后备份": "2026-04-17 10:30:00",
+            "连接池状态": "5/20 活跃",
+        })
+
+    def tree_demo(self):
+        """树形结构展示 demo"""
+        cmdui.tree({
+            "数据库": {
+                "users": {
+                    "id": "INT PRIMARY KEY",
+                    "name": "VARCHAR(100)",
+                    "age": "INT",
+                },
+                "orders": {
+                    "id": "INT PRIMARY KEY",
+                    "user_id": "INT FOREIGN KEY",
+                    "total": "DECIMAL(10,2)",
+                },
+            },
+            "配置": {
+                "max_connections": "20",
+                "timeout": "30s",
+            },
+        })
+
+
+if __name__ == '__main__':
+    DbTool().run()
+
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe examples/demo_full.py --web --web-port 8083
+    
+    '''
+
+`````
+
+--- **end of file: examples/demo_full.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_inherit.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 继承覆写 demo —— 对应设计文档 5.2 和附录B
+
+用法:
+    python demo_inherit.py deploy web-01 --version v2.0
+    python demo_inherit.py status
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from nb_cmd import NbCmd, cmdui
+
+
+class BaseDeploy(NbCmd):
+    """基础部署工具"""
+
+    def deploy(self, host: str, version: str = "latest"):
+        """部署服务到目标主机"""
+        self._pre_deploy(host)
+        self._do_deploy(host, version)
+        self._post_deploy(host)
+        cmdui.success('{}@{} 已部署到 {}'.format("app", version, host))
+
+    def status(self):
+        """查看部署状态"""
+        cmdui.kv({
+            "部署方式": self._deploy_type(),
+            "最后部署": "2026-04-17 15:00",
+            "状态": "运行中",
+        })
+
+    def _deploy_type(self):
+        return "基础部署"
+
+    def _pre_deploy(self, host):
+        cmdui.info('部署前检查: {}'.format(host))
+
+    def _do_deploy(self, host, version):
+        cmdui.info('上传文件到 {} ...'.format(host))
+        cmdui.info('重启服务 ...')
+
+    def _post_deploy(self, host):
+        cmdui.info('验证服务状态: OK')
+
+
+class DockerDeploy(BaseDeploy):
+    """Docker部署——只需覆写部署逻辑"""
+
+    def _deploy_type(self):
+        return "Docker"
+
+    def _do_deploy(self, host, version):
+        cmdui.info('docker pull app:{}'.format(version))
+        cmdui.info('docker-compose up -d')
+
+
+class K8sDeploy(BaseDeploy):
+    """K8s部署——覆写部署逻辑，还新增了 scale 命令"""
+
+    def _deploy_type(self):
+        return "Kubernetes"
+
+    def _do_deploy(self, host, version):
+        cmdui.info('kubectl set image deployment/app app=app:{}'.format(version))
+        cmdui.info('kubectl rollout status deployment/app')
+
+    def scale(self, replicas: int = 3):
+        """扩缩容（K8s特有命令）"""
+        cmdui.info('kubectl scale deployment/app --replicas={}'.format(replicas))
+        cmdui.success('app 已扩缩至 {} 个副本'.format(replicas))
+
+
+if __name__ == '__main__':
+    import sys as _sys
+    ops_map = {'base': BaseDeploy, 'docker': DockerDeploy, 'k8s': K8sDeploy}
+    if len(_sys.argv) > 1 and _sys.argv[1] in ops_map:
+        mode = _sys.argv.pop(1)
+        ops_map[mode]().run()
+    else:
+        BaseDeploy().run()
+
+`````
+
+--- **end of file: examples/demo_inherit.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_nb_log.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 集成 nb_log 的 demo —— 对应设计文档 7.1 Meta 配置类
+
+演示 use_nb_log = True 时的效果:
+  - self.logger 变为 nb_log 增强版 logger（彩色、文件名行号等）
+  - 日志自动写入 log_file
+
+前提: pip install nb_log
+
+用法:
+    python demo_nb_log.py --help
+    python demo_nb_log.py deploy 10.0.0.1 --env staging
+    python demo_nb_log.py stats
+    python demo_nb_log.py --web --web-port 9911
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from typing import Annotated
+
+from nb_cmd import NbCmd, NbCmdMeta, cmdui
+from enum import Enum
+
+
+class Environment(Enum):
+    DEV = "dev"
+    STAGING = "staging"
+    PROD = "prod"
+
+
+class ServerTool(NbCmd):
+    """服务器运维工具（启用 nb_log 增强日志）"""
+
+    class Meta(NbCmdMeta):
+        name = "server-tool"
+        version = "1.0.0"
+
+        use_nb_log = True
+        log_level = "DEBUG"
+        log_file = "server_tool.log"
+
+        web_theme = "dark"
+
+    def __init__(self, region: Annotated[str, '机房区域', 'r'],
+                 timeout: Annotated[int, '超时秒数'] = 30):
+        super().__init__()
+        self.region = region
+        self.timeout = timeout
+
+    def before_run(self):
+        """所有子命令执行前的钩子"""
+        self.logger.info('服务器运维工具启动 (区域: {}, 超时: {}s)'.format(
+            self.region, self.timeout))
+
+    def after_run(self):
+        """所有子命令执行后的钩子"""
+        self.logger.info('运维操作完成')
+
+    def deploy(self, host: str, env: Environment = Environment.DEV, dry_run: bool = False):
+        """部署服务到目标主机"""
+        self.logger.debug('参数: host={}, env={}, dry_run={}'.format(host, env.value, dry_run))
+
+        if dry_run:
+            cmdui.warning('试运行模式，不会实际部署')
+
+        self.logger.info('正在部署到 {} (环境: {})'.format(host, env.value))
+        cmdui.info('检查服务器连接...')
+        cmdui.info('上传代码包...')
+        cmdui.info('重启服务...')
+        cmdui.success('部署完成: {} ({})'.format(host, env.value))
+
+    def stats(self):
+        """查看系统状态"""
+        self.logger.info('查询系统状态')
+        cmdui.kv({
+            "CPU使用率": "45%",
+            "内存使用": "2.3GB / 8GB",
+            "磁盘使用": "120GB / 500GB",
+            "运行时间": "3天12小时",
+            "活跃连接": "128",
+        })
+
+    def check(self, host: str):
+        """健康检查"""
+        self.logger.info('检查 {} 健康状态'.format(host))
+        data = [
+            {"服务": "nginx", "状态": "running", "端口": 80},
+            {"服务": "mysql", "状态": "running", "端口": 3306},
+            {"服务": "redis", "状态": "running", "端口": 6379},
+        ]
+        cmdui.table(data)
+        cmdui.success('所有服务运行正常')
+
+    def logs(self, service: str = "nginx", lines: int = 10):
+        """查看服务日志"""
+        self.logger.info('查看 {} 最近 {} 行日志'.format(service, lines))
+        for i in range(lines):
+            print('[2026-04-17 15:{:02d}:00] {} - 请求处理完成'.format(30 + i, service))
+
+
+if __name__ == '__main__':
+    ServerTool('beijing').run()
+
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe examples/demo_nb_log.py --web --web-port 8087
+
+    '''
+
+`````
+
+--- **end of file: examples/demo_nb_log.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/demo_subcommands.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd 多层级子命令 demo —— 对应设计文档 5.3
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from typing import Annotated
+
+from nb_cmd import NbCmd
+
+
+class GitRemote(NbCmd):
+    """远程仓库管理"""
+
+    def add(self, name: Annotated[str, '远程仓库名'], url: Annotated[str, '仓库URL']):
+        """添加远程仓库"""
+        print('git remote add {} {}'.format(name, url))
+
+    def remove(self, name: Annotated[str, '要删除的远程名']):
+        """删除远程仓库"""
+        print('git remote remove {}'.format(name))
+
+    def show(self):
+        """列出所有远程仓库"""
+        print('origin  https://github.com/xxx/xxx.git (fetch)')
+
+
+class GitBranch(NbCmd):
+    """分支管理"""
+
+    def create(self, name: Annotated[str, '分支名'],
+               from_branch: Annotated[str, '基于哪个分支'] = "main"):
+        """创建分支"""
+        print('git checkout -b {} {}'.format(name, from_branch))
+
+    def delete(self, name: Annotated[str, '分支名'],
+               force: Annotated[bool, '强制删除', 'f'] = False):
+        """删除分支"""
+        flag = "-D" if force else "-d"
+        print('git branch {} {}'.format(flag, name))
+
+    def show(self):
+        """列出所有分支"""
+        print('* main')
+        print('  develop')
+        print('  feature/login')
+
+
+class GitTool(NbCmd):
+    """简易Git工具"""
+
+    sub_commands = {
+        'remote': GitRemote,
+        'branch': GitBranch,
+    }
+
+    def status(self):
+        """查看状态"""
+        print('当前分支: main')
+
+    def commit(self, message: Annotated[str, '提交信息', 'm'],
+               all: Annotated[bool, '自动 add 所有文件', 'a'] = False):
+        """提交"""
+        if all:
+            print('git add -A')
+        print("git commit -m '{}'".format(message))
+
+
+if __name__ == '__main__':
+    GitTool().run()
+   
+    '''
+    D:/ProgramData/Miniconda3/envs/py39b/python.exe examples/demo_subcommands.py --web --web-port 8084
+    
+    '''
+`````
+
+--- **end of file: examples/demo_subcommands.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/github_cli_demos/gh_click.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+GitHub CLI — Click 实现。
+
+演示 Click 在多层级子命令 + 全局参数场景下的典型写法：
+  - 每个子命令/组必须 @click.pass_context
+  - 取值靠 ctx.obj['key']（字符串键，无 IDE 补全）
+  - 装饰器随层级指数叠加
+
+用法:
+    python gh_click.py -R myorg/api issue list --state all
+    python gh_click.py --repo prod/web --debug pr merge --number 42 --squash
+    python gh_click.py -R team/cli --no-prompt --auth-token ghp_xxx issue create --title "Deploy failed"
+"""
+import click
+
+
+@click.group()
+@click.option('--repo', '-R', required=True, help='目标仓库 (owner/repo)')
+@click.option('--hostname', default=None, help='GitHub Enterprise 域名')
+@click.option('--auth-token', default=None, help='访问令牌 (覆盖配置)')
+@click.option('--debug', is_flag=True, help='开启调试模式')
+@click.option('--no-prompt', is_flag=True, help='禁用交互提示')
+@click.pass_context
+def cli(ctx, repo, hostname, auth_token, debug, no_prompt):
+    """gh-cli: GitHub 命令行工具 (Click 版)"""
+    ctx.ensure_object(dict)
+    ctx.obj.update(
+        repo=repo,
+        hostname=hostname,
+        auth_token=auth_token,
+        debug=debug,
+        no_prompt=no_prompt,
+    )
+
+
+# ==================== issue 子命令组 ====================
+
+@cli.group()
+@click.pass_context
+def issue(ctx):
+    """Issue 管理"""
+    pass
+
+
+@issue.command('list')
+@click.option('--state', default='open', type=click.Choice(['open', 'closed', 'all']),
+              help='Issue 状态过滤')
+@click.option('--label', default=None, help='按标签过滤')
+@click.option('--limit', default=30, type=int, help='最大返回数量')
+@click.pass_context
+def issue_list(ctx, state, label, limit):
+    """列出 Issues"""
+    c = ctx.obj
+    print(f"[issue list] repo={c['repo']}, state={state}, label={label}, limit={limit}")
+    if c['debug']:
+        print(f"  DEBUG: hostname={c['hostname']}, no_prompt={c['no_prompt']}")
+
+
+@issue.command('create')
+@click.option('--title', '-t', required=True, help='Issue 标题')
+@click.option('--body', '-b', default='', help='Issue 正文')
+@click.option('--assignee', '-a', default=None, help='指定负责人')
+@click.pass_context
+def issue_create(ctx, title, body, assignee):
+    """创建新 Issue"""
+    c = ctx.obj
+    print(f"[issue create] repo={c['repo']}, title={title}")
+    if body:
+        print(f"  body={body}")
+    if assignee:
+        print(f"  assignee={assignee}")
+
+
+@issue.command('view')
+@click.argument('number', type=int)
+@click.pass_context
+def issue_view(ctx, number):
+    """查看 Issue 详情"""
+    c = ctx.obj
+    print(f"[issue view] repo={c['repo']}, #{number}")
+
+
+# ==================== pr 子命令组 ====================
+
+@cli.group()
+@click.pass_context
+def pr(ctx):
+    """Pull Request 管理"""
+    pass
+
+
+@pr.command('list')
+@click.option('--state', default='open', type=click.Choice(['open', 'closed', 'merged', 'all']),
+              help='PR 状态过滤')
+@click.option('--author', default=None, help='按作者过滤')
+@click.pass_context
+def pr_list(ctx, state, author):
+    """列出 Pull Requests"""
+    c = ctx.obj
+    print(f"[pr list] repo={c['repo']}, state={state}, author={author}")
+
+
+@pr.command('create')
+@click.option('--title', '-t', required=True, help='PR 标题')
+@click.option('--body', '-b', default='', help='PR 描述')
+@click.option('--base', default='main', help='目标分支')
+@click.option('--draft', is_flag=True, help='创建为 Draft PR')
+@click.pass_context
+def pr_create(ctx, title, body, base, draft):
+    """创建新 Pull Request"""
+    c = ctx.obj
+    kind = 'Draft PR' if draft else 'PR'
+    print(f"[pr create] repo={c['repo']}, {kind}: {title} → {base}")
+    if c['debug']:
+        tok = '***' if c['auth_token'] else 'default'
+        print(f"  DEBUG: auth={tok}")
+
+
+@pr.command('merge')
+@click.option('--number', '-n', required=True, type=int, help='PR 编号')
+@click.option('--squash', is_flag=True, help='Squash 合并')
+@click.option('--delete-branch', is_flag=True, help='合并后删除分支')
+@click.pass_context
+def pr_merge(ctx, number, squash, delete_branch):
+    """合并 Pull Request"""
+    c = ctx.obj
+    method = 'squash' if squash else 'merge'
+    tok = '***' if c['auth_token'] else 'default'
+    print(f"[pr merge] repo={c['repo']}, #{number}, method={method}, auth={tok}")
+    if delete_branch:
+        print("  → 合并后将删除源分支")
+
+
+# ==================== repo 子命令组 ====================
+
+@cli.group()
+@click.pass_context
+def repo(ctx):
+    """仓库管理"""
+    pass
+
+
+@repo.command('clone')
+@click.argument('target_repo')
+@click.option('--depth', default=0, type=int, help='浅克隆深度 (0=完整)')
+@click.pass_context
+def repo_clone(ctx, target_repo, depth):
+    """克隆仓库"""
+    c = ctx.obj
+    depth_info = f' (depth={depth})' if depth else ''
+    print(f"[repo clone] {target_repo}{depth_info}")
+    if c['hostname']:
+        print(f"  → 从 {c['hostname']} 克隆")
+
+
+@repo.command('fork')
+@click.option('--org', default=None, help='Fork 到指定组织')
+@click.pass_context
+def repo_fork(ctx, org):
+    """Fork 仓库"""
+    c = ctx.obj
+    target = f" → {org}" if org else ''
+    print(f"[repo fork] {c['repo']}{target}")
+
+
+if __name__ == '__main__':
+    cli()
+
+`````
+
+--- **end of file: examples/github_cli_demos/gh_click.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/github_cli_demos/gh_comparison.md** (project: nb_cmd) --- 
+
+`````markdown
+---
+noteId: "e71b7b113bc511f1a9787921be2453f8"
+tags: []
+
+---
+
+# GitHub CLI 三框架实现对比：nb_cmd vs Click vs Typer
+
+> 以真实 GitHub CLI (`gh`) 的语义为基准，统一实现 **5 个全局参数 + 3 个子命令组 + 9 个子命令**，对比三个 Python CLI 框架的代码质量和开发体验。
+
+## 场景覆盖
+
+| 命令路径 | 功能 | 参数 |
+|---------|------|------|
+| `issue list` | 列出 Issues | `--state`, `--label`, `--limit` |
+| `issue create` | 创建 Issue | `--title/-t`, `--body/-b`, `--assignee/-a` |
+| `issue view` | 查看 Issue | `NUMBER` (必填) |
+| `pr list` | 列出 PRs | `--state`, `--author` |
+| `pr create` | 创建 PR | `--title/-t`, `--body/-b`, `--base`, `--draft` |
+| `pr merge` | 合并 PR | `--number/-n`, `--squash`, `--delete-branch` |
+| `repo clone` | 克隆仓库 | `TARGET_REPO` (必填), `--depth` |
+| `repo fork` | Fork 仓库 | `--org` |
+| `status` | 全局配置 | (无) |
+
+**全局参数**：`--repo/-R`, `--hostname`, `--auth-token`, `--debug`, `--no-prompt`
+
+---
+
+## 终端调用（三框架完全一致）
+
+```bash
+# 基础调用
+python gh_xxx.py --repo myorg/api issue list --state all
+
+# 覆盖全局参数 + 执行二级命令
+python gh_xxx.py --repo prod/web --debug pr merge --number 42 --squash
+
+# CI 场景（禁用交互 + 指定 Token）
+python gh_xxx.py -R team/cli --no-prompt --auth-token ghp_xxx issue create --title "Deploy failed"
+```
+
+---
+
+## 代码量化对比
+
+| 指标 | Click | Typer | nb_cmd |
+|------|-------|-------|--------|
+| **CLI 定义代码行** | 108 | 94 | 104 |
+| **装饰器数量** | **49 个** | 9 个 | **0 个** |
+| **全局参数传递方式** | `ctx.obj['repo']` 字典 | `state['repo']` 全局变量 | `self.nbctx.repo` 强类型 |
+| **IDE 补全/跳转** | ❌ 字符串键 | ❌ 字符串键 | ✅ dataclass 字段 |
+| **子命令独立性** | ❌ 绑定到 `@cli.group` | ❌ 绑定到 `app` 实例 | ✅ 纯 Class，可单独实例化 |
+| **自动文档生成** | ❌ 需 `sphinx-click` | ❌ 只搬运 `--help` | ✅ `CmdGen` 一行生成 Markdown |
+| **Web UI 支持** | ❌ 需额外重写 | ❌ 需额外重写 | ✅ `--web` 一键启动 |
+| **REST API 支持** | ❌ 需额外重写 | ❌ 需额外重写 | ✅ 内置 |
+
+---
+
+## 核心差异详解
+
+### 1. 全局参数定义与传递
+
+**Click** — 装饰器 + `ctx.obj` 字典：
+
+```python
+@click.group()
+@click.option('--repo', '-R', required=True, help='...')
+@click.option('--hostname', default=None, help='...')
+@click.option('--auth-token', default=None, help='...')
+@click.option('--debug', is_flag=True, help='...')
+@click.option('--no-prompt', is_flag=True, help='...')
+@click.pass_context
+def cli(ctx, repo, hostname, auth_token, debug, no_prompt):
+    ctx.ensure_object(dict)
+    ctx.obj.update(repo=repo, hostname=hostname, ...)
+```
+
+每个子命令/组必须加 `@click.pass_context`，取值靠 `ctx.obj['repo']`（拼错 key 运行时才爆发）。
+
+**Typer** — `@callback` + 模块全局字典：
+
+```python
+state = {}  # ⚠️ 破坏封装，非线程安全
+
+@app.callback()
+def main(repo: str = typer.Option(..., "--repo", "-R", help="..."), ...):
+    state.update(repo=repo, ...)
+```
+
+所有子命令读 `state['repo']` — 模块级全局变量，无法独立测试、并发时会串。
+
+**nb_cmd** — `__init__` + `make_nbctx()` 强类型上下文：
+
+```python
+@dataclass
+class GhCtx:
+    repo: Optional[str] = None
+    hostname: Optional[str] = None
+    auth_token: Optional[str] = None
+    debug: bool = False
+    no_prompt: bool = False
+
+class GhCli(NbCmd):
+    nbctx: GhCtx  # ← IDE 补全入口
+
+    def __init__(self,
+                 repo: Annotated[str, '目标仓库', 'R'] = None, ...):
+        self.repo = repo; ...
+
+    def make_nbctx(self):
+        return GhCtx(repo=self.repo, ...)
+
+    sub_commands = {'issue': IssueCmd, 'pr': PrCmd, 'repo': RepoCmd}
+```
+
+`self.nbctx.repo` 在 IDE 中自动补全、可跳转到 `GhCtx` 定义。拼写错误编译期就能发现。
+
+---
+
+### 2. 子命令组定义
+
+**Click** — 每新增一个子命令组需要 1 个 `@cli.group` + N 个 `@group.command` + N 个 `@click.pass_context`：
+
+```python
+@cli.group()
+@click.pass_context
+def issue(ctx): pass
+
+@issue.command('list')
+@click.option('--state', ...)
+@click.pass_context
+def issue_list(ctx, state):
+    c = ctx.obj  # 再次字典取值
+```
+
+**Typer** — 每新增一个子命令组需要 `Typer()` 实例 + `add_typer()` 注册：
+
+```python
+issue_app = typer.Typer(help="Issue 管理")
+app.add_typer(issue_app, name="issue")
+
+@issue_app.command("list")
+def issue_list(state_filter: str = typer.Option("open", "--state", ...)):
+    print(f"repo={state['repo']}")  # 全局变量取值
+```
+
+**nb_cmd** — 纯 Class 继承，一行声明层级：
+
+```python
+class IssueCmd(NbCmd):
+    """Issue 管理"""
+    nbctx: GhCtx  # IDE 补全
+
+    def list(self, state: Annotated[str, 'Issue 状态'] = 'open', ...):
+        print(f"repo={self.nbctx.repo}")  # 强类型取值
+```
+
+新增子命令组只需：写一个 Class + 在父级 `sub_commands` 加一项。全局参数自动穿透。
+
+---
+
+### 3. 子命令独立测试
+
+**Click/Typer** — 子命令强绑定到 `cli` / `app` 实例，无法脱离框架调用：
+
+```python
+# Click：无法直接调用 issue_list
+# Typer：需要 state 全局变量预先填充，且非线程安全
+```
+
+**nb_cmd** — 子命令组是独立 Class，可脱离框架运行/测试：
+
+```python
+# 直接实例化 + 注入 ctx，不需要启动整个 CLI 框架
+ctx = GhCtx(repo='myorg/api', debug=True)
+issue = IssueCmd()
+issue.nbctx = ctx
+issue.list(state='all')       # ✅ 直接调用
+issue.create(title='Bug')     # ✅ 直接调用
+```
+
+---
+
+### 4. 自动文档生成（nb_cmd 独有）
+
+一行代码生成完整 Markdown 文档，包含目录、参数表格、默认值标注、可复制 bash 命令行模板：
+
+```python
+from nb_cmd import CmdGen
+
+g = CmdGen(GhCli, script='gh_nb_cmd.py', fmt='markdown')
+g.doc(file='gh_nb_cmd_gen_doc.md')
+```
+
+生成结果包含：
+- Table of Contents（自动目录）
+- System Params / Global Params 表格
+- 每个命令的参数表格（Flag / Type / Default / Description）
+- 每个命令的可复制 bash 命令行模板
+
+Click 需要第三方 `sphinx-click`，Typer 只搬运 `--help` 纯文本输出。
+
+---
+
+### 5. 多模式支持（nb_cmd 独有）
+
+同一套代码自动获得 4 种接口：
+
+```bash
+# CLI 模式
+python gh_nb_cmd.py --repo myorg/api issue list
+
+# Web UI 模式（一键启动，含表单/实时输出/Swagger）
+python gh_nb_cmd.py --web --web-port 8090
+
+# REST API 模式（随 Web 一起启动）
+curl -X POST http://localhost:8090/issue/list \
+  -d '{"state": "all", "init_params": {"repo": "myorg/api"}}'
+
+# Python 直接调用
+issue = IssueCmd(); issue.nbctx = GhCtx(repo='myorg/api')
+issue.list(state='all')
+```
+
+Click 和 Typer 只提供 CLI，需额外用 FastAPI/Flask 重写才能支持 Web/API。
+
+---
+
+## 碾压点总结
+
+| 维度 | nb_cmd 优势 |
+|------|------------|
+| **上下文传递** | `make_nbctx()` → `self.nbctx.xxx` 强类型穿透，终结了 `ctx.obj` 字典和全局变量反模式 |
+| **装饰器数量** | 49 (Click) → 0 (nb_cmd)，代码噪音归零 |
+| **IDE 体验** | `self.nbctx.repo` 自动补全+类型校验，拼写错误静态可查 |
+| **可测试性** | 子命令组是独立 Class，可脱离框架单独实例化/注入 ctx/单元测试 |
+| **文档生成** | `CmdGen` 一行生成完整 Markdown，Click/Typer 无此能力 |
+| **多模式支持** | `--web` 一键获得 Web UI + REST API，Click/Typer 需额外重写 |
+| **新增子命令成本** | 写 Class + `sub_commands` 加一项，全局逻辑零改动 |
+| **架构映射** | `__init__` 即"连接/环境配置"，完美映射 gh/aws/kubectl 的全局参数语义 |
+
+---
+
+## 文件清单
+
+| 文件 | 说明 |
+|------|------|
+| `gh_click.py` | Click 实现（168 行，49 个装饰器） |
+| `gh_typer.py` | Typer 实现（154 行，9 个装饰器） |
+| `gh_nb_cmd.py` | nb_cmd 实现（216 行含本地演示，0 个装饰器） |
+| `gh_nb_cmd_gen_doc.md` | nb_cmd 自动生成的 Markdown 文档（CmdGen 产出） |
+| `gh_comparison.md` | 本文件 — 三框架对比总结 |
+
+`````
+
+--- **end of file: examples/github_cli_demos/gh_comparison.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/github_cli_demos/gh_nb_cmd.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+GitHub CLI — nb_cmd 实现。
+
+演示 nb_cmd 在多层级子命令 + 全局参数场景下的碾压优势：
+  - 零装饰器：所有命令通过纯 Class + 方法定义
+  - __init__ 直接赋值 self.nbctx：无需 make_nbctx()，CLI/Web/API 所有模式均正确传参
+  - self.nbctx 强类型 + IDE 补全：子命令组通过类型注解获取代码补全和跳转
+  - 子命令独立可测：每个 NbCmd 子类可脱离父级单独实例化和测试
+  - CmdGen 自动文档：一行代码生成完整 Markdown 文档
+
+用法:
+    1. CLI:  python gh_nb_cmd.py --repo myorg/api issue list --state all
+    2. CLI:  python gh_nb_cmd.py --repo prod/web --debug pr merge --number 42 --squash
+    3. CLI:  python gh_nb_cmd.py -R team/cli --no-prompt --auth-token ghp_xxx issue create --title "Deploy failed"
+    4. Web:  python gh_nb_cmd.py --web --web-port 8090
+    5. 本地: python gh_nb_cmd.py  (无参数，进入本地演示)
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+from dataclasses import dataclass
+from typing import Optional
+from typing import Annotated
+from nb_cmd import NbCmd, CmdGen
+from nb_cmd.core.meta import NbCmdMeta
+
+
+# ==================== 1. 定义全局上下文 ====================
+
+@dataclass
+class GhCtx:
+    """GitHub CLI 全局上下文，所有子命令组共享"""
+    repo: Optional[str] = None
+    hostname: Optional[str] = None
+    auth_token: Optional[str] = None
+    debug: bool = False
+    no_prompt: bool = False
+
+
+# ==================== 2. 子命令组（纯 Class，可独立测试）====================
+
+class IssueCmd(NbCmd):
+    """Issue 管理"""
+    nbctx: GhCtx
+
+    def list(self, state: Annotated[str, 'Issue 状态过滤 (open/closed/all)'] = 'open',
+             label: Annotated[str, '按标签过滤'] = None,
+             limit: Annotated[int, '最大返回数量'] = 30):
+        """列出 Issues"""
+        print(f"[issue list] repo={self.nbctx.repo}, state={state}, label={label}, limit={limit}")
+        if self.nbctx.debug:
+            print(f"  DEBUG: hostname={self.nbctx.hostname}, no_prompt={self.nbctx.no_prompt}")
+
+    def create(self, title: Annotated[str, 'Issue 标题', 't'],
+               body: Annotated[str, 'Issue 正文', 'b'] = '',
+               assignee: Annotated[str, '指定负责人', 'a'] = None):
+        """创建新 Issue"""
+        print(f"[issue create] repo={self.nbctx.repo}, title={title}")
+        if body:
+            print(f"  body={body}")
+        if assignee:
+            print(f"  assignee={assignee}")
+
+    def view(self, number: Annotated[int, 'Issue 编号']):
+        """查看 Issue 详情"""
+        print(f"[issue view] repo={self.nbctx.repo}, #{number}")
+
+
+class PrCmd(NbCmd):
+    """Pull Request 管理"""
+    nbctx: GhCtx
+
+    def list(self, state: Annotated[str, 'PR 状态过滤 (open/closed/merged/all)'] = 'open',
+             author: Annotated[str, '按作者过滤'] = None):
+        """列出 Pull Requests"""
+        print(f"[pr list] repo={self.nbctx.repo}, state={state}, author={author}")
+
+    def create(self, title: Annotated[str, 'PR 标题', 't'],
+               body: Annotated[str, 'PR 描述', 'b'] = '',
+               base: Annotated[str, '目标分支'] = 'main',
+               draft: Annotated[bool, '创建为 Draft PR'] = False):
+        """创建新 Pull Request"""
+        kind = 'Draft PR' if draft else 'PR'
+        print(f"[pr create] repo={self.nbctx.repo}, {kind}: {title} → {base}")
+        if self.nbctx.debug:
+            tok = '***' if self.nbctx.auth_token else 'default'
+            print(f"  DEBUG: auth={tok}")
+
+    def merge(self, number: Annotated[int, 'PR 编号', 'n'],
+              squash: Annotated[bool, 'Squash 合并'] = False,
+              delete_branch: Annotated[bool, '合并后删除分支'] = False):
+        """合并 Pull Request"""
+        method = 'squash' if squash else 'merge'
+        tok = '***' if self.nbctx.auth_token else 'default'
+        print(f"[pr merge] repo={self.nbctx.repo}, #{number}, method={method}, auth={tok}")
+        if delete_branch:
+            print("  → 合并后将删除源分支")
+
+
+class RepoCmd(NbCmd):
+    """仓库管理"""
+    nbctx: GhCtx
+
+    def clone(self, target_repo: Annotated[str, '要克隆的仓库'],
+              depth: Annotated[int, '浅克隆深度 (0=完整)'] = 0):
+        """克隆仓库"""
+        depth_info = f' (depth={depth})' if depth else ''
+        print(f"[repo clone] {target_repo}{depth_info}")
+        if self.nbctx.hostname:
+            print(f"  → 从 {self.nbctx.hostname} 克隆")
+
+    def fork(self, org: Annotated[str, 'Fork 到指定组织'] = None):
+        """Fork 仓库"""
+        target = f" → {org}" if org else ''
+        print(f"[repo fork] {self.nbctx.repo}{target}")
+
+
+# ==================== 3. 顶层入口 ====================
+
+class GhCli(NbCmd):
+    """
+    gh-cli: GitHub 命令行工具 (nb_cmd 版)
+
+    全局参数 repo/hostname/auth_token/debug/no_prompt 自动穿透到所有子命令组。
+    """
+    nbctx: GhCtx
+
+    class Meta(NbCmdMeta):
+        name = 'gh-cli'
+        version = '1.0.0'
+        enable_exec = False
+        # 白名单示例：仅暴露 status + issue/list + pr/merge（Python 直接调用不受影响）
+        # allow_method_list = ['status', 'issue.list', 'pr/merge']
+        # 黑名单示例：隐藏 status（与白名单互斥，白名单优先）
+        # hide_method_list = ['status']
+        # 鉴权示例：API/Web 请求须带 Authorization: Bearer <token>
+        auth_token = 'my-secret-token'
+        # 超时示例：命令执行超过 60 秒自动终止
+        # timeout = 60
+
+    def __init__(
+        self,
+        repo: Annotated[str, '目标仓库 (owner/repo)', 'R'] = None,
+        hostname: Annotated[str, 'GitHub Enterprise 域名'] = None,
+        auth_token: Annotated[str, '访问令牌 (覆盖配置)'] = None,
+        debug: Annotated[bool, '开启调试模式'] = False,
+        no_prompt: Annotated[bool, '禁用交互提示'] = False,
+    ):
+        self.repo = repo
+        self.hostname = hostname
+        self.auth_token = auth_token
+        self.debug = debug
+        self.no_prompt = no_prompt
+        # 直接赋值 nbctx，CLI/Web/API 所有模式均能拿到正确的参数值
+        self.nbctx = GhCtx(
+            repo=self.repo,
+            hostname=self.hostname,
+            auth_token=self.auth_token,
+            debug=self.debug,
+            no_prompt=self.no_prompt,
+        )
+        # 也可以用 make_nbctx() 模板方法替代上面的直接赋值（两种方式均可）：
+        # def make_nbctx(self):
+        #     return GhCtx(repo=self.repo, ...)
+
+    sub_commands = {
+        'issue': IssueCmd,
+        'pr': PrCmd,
+        'repo': RepoCmd,
+    }
+
+    def status(self):
+        """查看 CLI 全局配置状态"""
+        print("=== gh-cli 全局配置 ===")
+        print(f"repo:       {self.nbctx.repo}")
+        print(f"hostname:   {self.nbctx.hostname}")
+        print(f"auth_token: {'***' if self.nbctx.auth_token else 'None'}")
+        print(f"debug:      {self.nbctx.debug}")
+        print(f"no_prompt:  {self.nbctx.no_prompt}")
+
+
+if __name__ == '__main__':
+    import sys as _sys
+
+    if len(_sys.argv) > 1:
+        GhCli().run()
+    else:
+        print('=' * 60)
+        print('GitHub CLI (nb_cmd 版) — 本地直接调用 + CmdGen 文档演示')
+        print('=' * 60)
+
+        # 场景 1: 本地直接调用（子命令独立测试）
+        print('\n--- 场景 1: 子命令独立测试（无需启动整个 CLI）---')
+        ctx = GhCtx(repo='myorg/api', debug=True)
+        issue = IssueCmd()
+        issue.nbctx = ctx
+        issue.list(state='all', limit=10)
+        issue.create(title='Bug: login failed')
+
+        # 场景 2: 多个子命令组共享同一个 ctx
+        print('\n--- 场景 2: 多子命令组共享 ctx ---')
+        ctx = GhCtx(repo='prod/web', auth_token='ghp_xxx')
+        pr = PrCmd()
+        repo = RepoCmd()
+        pr.nbctx = ctx
+        repo.nbctx = ctx
+        pr.merge(number=42, squash=True)
+        repo.fork(org='my-team')
+
+        # 场景 3: CmdGen 自动生成命令行示例
+        print('\n--- 场景 3: CmdGen 命令行示例 ---')
+        g = CmdGen(GhCli, script='gh_nb_cmd.py')
+        print(g.cmd(IssueCmd.list))
+        print(g.cmd(IssueCmd.create))
+        print(g.cmd(PrCmd.merge))
+        print(g.cmd(RepoCmd.clone))
+        print(g.cmd(GhCli.status))
+
+        # 场景 4: CmdGen.doc() 生成完整 Markdown 文档
+        print('\n--- 场景 4: CmdGen.doc() 生成 Markdown ---')
+        g_md = CmdGen(GhCli, script='gh_nb_cmd.py', fmt='markdown')
+        doc_path = os.path.join(os.path.dirname(__file__), 'gh_nb_cmd_gen_doc.md')
+        g_md.doc(file=doc_path)
+        print(f'Markdown 文档已生成: {doc_path}')
+
+`````
+
+--- **end of file: examples/github_cli_demos/gh_nb_cmd.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/github_cli_demos/gh_nb_cmd_gen_doc.md** (project: nb_cmd) --- 
+
+`````markdown
+# gh-cli v1.0.0
+
+> gh-cli: GitHub 命令行工具 (nb_cmd 版)
+
+全局参数 repo/hostname/auth_token/debug/no_prompt 自动穿透到所有子命令组。
+
+## Table of Contents
+
+- [`status`](#status)
+- [`issue`  *(子命令组)*](#issue-子命令组)
+  - [`issue create`](#issue-create)
+  - [`issue list`](#issue-list)
+  - [`issue view`](#issue-view)
+- [`pr`  *(子命令组)*](#pr-子命令组)
+  - [`pr create`](#pr-create)
+  - [`pr list`](#pr-list)
+  - [`pr merge`](#pr-merge)
+- [`repo`  *(子命令组)*](#repo-子命令组)
+  - [`repo clone`](#repo-clone)
+  - [`repo fork`](#repo-fork)
+
+---
+
+## System Params
+
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | 显示帮助信息 |
+| `-fh`, `--full-help` | 显示完整帮助（所有参数详情） |
+| `-eh`, `--easy-help` | 显示简易帮助（argparse 原生格式） |
+| `--cmd-version` | 显示版本号 |
+| `--web` | 以 Web UI + REST API 模式启动 |
+| `--web-port PORT` | Web UI 服务端口（用于 `--web`） |
+
+## Global Params (`__init__`)
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--repo, -R` | `str` | `None` | 目标仓库 (owner/repo) |
+| `--hostname` | `str` | `None` | GitHub Enterprise 域名 |
+| `--auth-token` | `str` | `None` | 访问令牌 (覆盖配置) |
+| `--debug` | `bool` | `False` | 开启调试模式 |
+| `--no-prompt` | `bool` | `False` | 禁用交互提示 |
+
+## Quick Start
+
+```bash
+# 查看完整帮助
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py -fh
+
+# 查看版本
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --cmd-version
+
+# 启动 Web UI
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --web
+```
+
+## 命令行约定
+
+命令格式：`python script.py [全局参数] <子命令路径> [命令参数]`
+
+| 标记 | 含义 |
+|------|------|
+| `${value}` | 带默认值的参数 — 可按需替换 |
+| `$<name>` | **必填**参数 — 必须提供值 |
+| `--flag`（无值） | 布尔开关，添加即启用 |
+
+---
+
+## Commands
+
+### `status`
+
+查看 CLI 全局配置状态
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt status
+```
+
+### `issue` *(子命令组)*
+
+> Issue 管理
+
+#### `issue create`
+
+创建新 Issue
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--title, -t` | `str` | *(required)* | Issue 标题 |
+| `--body, -b` | `str` | `` | Issue 正文 |
+| `--assignee, -a` | `str` | `None` | 指定负责人 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt issue create --title $<title> --body ${} --assignee ${None}
+```
+
+#### `issue list`
+
+列出 Issues
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--state` | `str` | `open` | Issue 状态过滤 (open/closed/all) |
+| `--label` | `str` | `None` | 按标签过滤 |
+| `--limit` | `int` | `30` | 最大返回数量 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt issue list --state ${open} --label ${None} --limit ${30}
+```
+
+#### `issue view`
+
+查看 Issue 详情
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--number` | `int` | *(required)* | Issue 编号 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt issue view --number $<number>
+```
+
+### `pr` *(子命令组)*
+
+> Pull Request 管理
+
+#### `pr create`
+
+创建新 Pull Request
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--title, -t` | `str` | *(required)* | PR 标题 |
+| `--body, -b` | `str` | `` | PR 描述 |
+| `--base` | `str` | `main` | 目标分支 |
+| `--draft` | `bool` | `False` | 创建为 Draft PR |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt pr create --title $<title> --body ${} --base ${main} --draft
+```
+
+#### `pr list`
+
+列出 Pull Requests
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--state` | `str` | `open` | PR 状态过滤 (open/closed/merged/all) |
+| `--author` | `str` | `None` | 按作者过滤 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt pr list --state ${open} --author ${None}
+```
+
+#### `pr merge`
+
+合并 Pull Request
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--number, -n` | `int` | *(required)* | PR 编号 |
+| `--squash` | `bool` | `False` | Squash 合并 |
+| `--delete-branch` | `bool` | `False` | 合并后删除分支 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt pr merge --number $<number> --squash --delete-branch
+```
+
+### `repo` *(子命令组)*
+
+> 仓库管理
+
+#### `repo clone`
+
+克隆仓库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--target-repo` | `str` | *(required)* | 要克隆的仓库 |
+| `--depth` | `int` | `0` | 浅克隆深度 (0=完整) |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt repo clone --target-repo $<target_repo> --depth ${0}
+```
+
+#### `repo fork`
+
+Fork 仓库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--org` | `str` | `None` | Fork 到指定组织 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe gh_nb_cmd.py --repo ${None} --hostname ${None} --auth-token ${None} --debug --no-prompt repo fork --org ${None}
+```
+
+`````
+
+--- **end of file: examples/github_cli_demos/gh_nb_cmd_gen_doc.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/github_cli_demos/gh_typer.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+GitHub CLI — Typer 实现。
+
+演示 Typer 在多层级子命令 + 全局参数场景下的典型写法：
+  - 必须用模块级全局 state 字典穿透参数（破坏封装、非线程安全）
+  - add_typer() 手动管理多个 Typer 实例
+  - 子命令与全局状态强耦合，无法独立测试
+
+用法:
+    python gh_typer.py --repo myorg/api issue list --state all
+    python gh_typer.py --repo prod/web --debug pr merge --number 42 --squash
+    python gh_typer.py -R team/cli --no-prompt --auth-token ghp_xxx issue create --title "Deploy failed"
+"""
+import typer
+from typing import Optional
+
+app = typer.Typer(help="gh-cli: GitHub 命令行工具 (Typer 版)")
+
+# ⚠️ 模块级全局字典 — 破坏封装，非线程安全
+state = {}
+
+
+@app.callback()
+def main(
+    repo: str = typer.Option(..., "--repo", "-R", help="目标仓库 (owner/repo)"),
+    hostname: Optional[str] = typer.Option(None, help="GitHub Enterprise 域名"),
+    auth_token: Optional[str] = typer.Option(None, help="访问令牌 (覆盖配置)"),
+    debug: bool = typer.Option(False, help="开启调试模式"),
+    no_prompt: bool = typer.Option(False, help="禁用交互提示"),
+):
+    """全局参数入口"""
+    state.update(
+        repo=repo,
+        hostname=hostname,
+        auth_token=auth_token,
+        debug=debug,
+        no_prompt=no_prompt,
+    )
+
+
+# ==================== issue 子命令组 ====================
+
+issue_app = typer.Typer(help="Issue 管理")
+app.add_typer(issue_app, name="issue")
+
+
+@issue_app.command("list")
+def issue_list(
+    state_filter: str = typer.Option("open", "--state", help="Issue 状态过滤 (open/closed/all)"),
+    label: Optional[str] = typer.Option(None, help="按标签过滤"),
+    limit: int = typer.Option(30, help="最大返回数量"),
+):
+    """列出 Issues"""
+    print(f"[issue list] repo={state['repo']}, state={state_filter}, label={label}, limit={limit}")
+    if state['debug']:
+        print(f"  DEBUG: hostname={state['hostname']}, no_prompt={state['no_prompt']}")
+
+
+@issue_app.command("create")
+def issue_create(
+    title: str = typer.Option(..., "--title", "-t", help="Issue 标题"),
+    body: str = typer.Option("", "--body", "-b", help="Issue 正文"),
+    assignee: Optional[str] = typer.Option(None, "--assignee", "-a", help="指定负责人"),
+):
+    """创建新 Issue"""
+    print(f"[issue create] repo={state['repo']}, title={title}")
+    if body:
+        print(f"  body={body}")
+    if assignee:
+        print(f"  assignee={assignee}")
+
+
+@issue_app.command("view")
+def issue_view(
+    number: int = typer.Argument(..., help="Issue 编号"),
+):
+    """查看 Issue 详情"""
+    print(f"[issue view] repo={state['repo']}, #{number}")
+
+
+# ==================== pr 子命令组 ====================
+
+pr_app = typer.Typer(help="Pull Request 管理")
+app.add_typer(pr_app, name="pr")
+
+
+@pr_app.command("list")
+def pr_list(
+    state_filter: str = typer.Option("open", "--state", help="PR 状态过滤 (open/closed/merged/all)"),
+    author: Optional[str] = typer.Option(None, help="按作者过滤"),
+):
+    """列出 Pull Requests"""
+    print(f"[pr list] repo={state['repo']}, state={state_filter}, author={author}")
+
+
+@pr_app.command("create")
+def pr_create(
+    title: str = typer.Option(..., "--title", "-t", help="PR 标题"),
+    body: str = typer.Option("", "--body", "-b", help="PR 描述"),
+    base: str = typer.Option("main", help="目标分支"),
+    draft: bool = typer.Option(False, help="创建为 Draft PR"),
+):
+    """创建新 Pull Request"""
+    kind = 'Draft PR' if draft else 'PR'
+    print(f"[pr create] repo={state['repo']}, {kind}: {title} → {base}")
+    if state['debug']:
+        tok = '***' if state['auth_token'] else 'default'
+        print(f"  DEBUG: auth={tok}")
+
+
+@pr_app.command("merge")
+def pr_merge(
+    number: int = typer.Option(..., "--number", "-n", help="PR 编号"),
+    squash: bool = typer.Option(False, help="Squash 合并"),
+    delete_branch: bool = typer.Option(False, help="合并后删除分支"),
+):
+    """合并 Pull Request"""
+    method = 'squash' if squash else 'merge'
+    tok = '***' if state['auth_token'] else 'default'
+    print(f"[pr merge] repo={state['repo']}, #{number}, method={method}, auth={tok}")
+    if delete_branch:
+        print("  → 合并后将删除源分支")
+
+
+# ==================== repo 子命令组 ====================
+
+repo_app = typer.Typer(help="仓库管理")
+app.add_typer(repo_app, name="repo")
+
+
+@repo_app.command("clone")
+def repo_clone(
+    target_repo: str = typer.Argument(..., help="要克隆的仓库"),
+    depth: int = typer.Option(0, help="浅克隆深度 (0=完整)"),
+):
+    """克隆仓库"""
+    depth_info = f' (depth={depth})' if depth else ''
+    print(f"[repo clone] {target_repo}{depth_info}")
+    if state['hostname']:
+        print(f"  → 从 {state['hostname']} 克隆")
+
+
+@repo_app.command("fork")
+def repo_fork(
+    org: Optional[str] = typer.Option(None, help="Fork 到指定组织"),
+):
+    """Fork 仓库"""
+    target = f" → {org}" if org else ''
+    print(f"[repo fork] {state['repo']}{target}")
+
+
+if __name__ == "__main__":
+    app()
+
+`````
+
+--- **end of file: examples/github_cli_demos/gh_typer.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/nbctx_demo/nbctx_demo.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd nbctx 跨层级上下文传递 demo。
+
+演示：顶层全局参数（region/env/debug）如何自动穿透到任意深度的子命令组。
+
+四种使用方式：
+    1. CLI:  python nbctx_demo.py --region shanghai db migrate
+    2. Web:  python nbctx_demo.py --web --web-port 8085
+    3. API:  curl -X POST http://localhost:8085/db/migrate -d '{"init_params":{"region":"shanghai"}}'
+    4. 本地: 见本文件底部 if __name__ == '__main__' 部分
+"""
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+from dataclasses import dataclass
+from typing import Annotated
+from nb_cmd import NbCmd
+
+
+# ==================== 1. 定义全局上下文 ====================
+
+@dataclass
+class AppCtx:
+    """应用级上下文，所有子命令组共享"""
+    region: str = 'beijing'
+    env: str = 'prod'
+    debug: bool = False
+
+
+# ==================== 2. 子命令组（多层嵌套）====================
+
+class OpsTool(NbCmd):
+    """运维操作（第三级子命令组）"""
+    nbctx: AppCtx
+
+    def deploy(self, version: Annotated[str, '目标版本号', '-v'], rollback: Annotated[bool, '是否回滚'] = False):
+        """部署指定版本"""
+        action = '回滚' if rollback else '部署'
+        print(f'[{self.nbctx.region}/{self.nbctx.env}] {action} v{version}')
+        if self.nbctx.debug:
+            print(f'  DEBUG: deploy(version={version}, rollback={rollback})')
+
+    def restart(self):
+        """重启服务"""
+        print(f'[{self.nbctx.region}/{self.nbctx.env}] 重启服务')
+
+
+class DbTool(NbCmd):
+    """数据库工具（第二级子命令组）"""
+    nbctx: AppCtx
+
+    def migrate(self, dry_run: Annotated[bool, '仅模拟，不执行'] = False):
+        """执行数据库迁移"""
+        mode = 'DRY-RUN' if dry_run else 'EXECUTE'
+        print(f'[{self.nbctx.region}/{self.nbctx.env}] 数据库迁移 ({mode})')
+        if self.nbctx.debug:
+            print(f'  DEBUG: migrate(dry_run={dry_run})')
+
+    def backup(self, compress: Annotated[bool, '启用压缩'] = True):
+        """备份数据库"""
+        fmt = 'tar.gz' if compress else 'sql'
+        print(f'[{self.nbctx.region}/{self.nbctx.env}] 备份数据库 → backup.{fmt}')
+
+    def status(self):
+        """查看数据库连接状态"""
+        print(f'[{self.nbctx.region}] 数据库连接正常 (env={self.nbctx.env})')
+
+
+class ServerTool(NbCmd):
+    """服务器管理（第二级子命令组，包含第三级 ops）"""
+    nbctx: AppCtx
+
+    sub_commands = {
+        'ops': OpsTool,
+    }
+
+    def info(self):
+        """查看服务器信息"""
+        print(f'[{self.nbctx.region}] 服务器: {self.nbctx.env} 环境')
+        print(f'  Region: {self.nbctx.region}')
+        print(f'  Env:    {self.nbctx.env}')
+        print(f'  Debug:  {self.nbctx.debug}')
+
+    def ssh(self, user: Annotated[str, '登录用户名'] = 'root'):
+        """SSH 登录"""
+        host = f'{self.nbctx.region}-{self.nbctx.env}.example.com'
+        print(f'ssh {user}@{host}')
+
+
+# ==================== 3. 顶层命令 ====================
+
+class MyApp(NbCmd):
+    """
+    云平台管理工具 —— nbctx 跨层级上下文传递 demo。
+
+    全局参数 region/env/debug 会自动传递给所有子命令组。
+    """
+    nbctx: AppCtx  # 类型注解，让 IDE 补全 self.nbctx.region 等
+
+    class Meta:
+        name = 'cloud-tool'
+        version = '1.0.0'
+        enable_exec = False
+
+    def __init__(self,
+                 region: Annotated[str, '部署区域，如 beijing/shanghai/tokyo'] = 'beijing',
+                 env: Annotated[str, '运行环境，如 prod/staging/test'] = 'prod',
+                 debug: Annotated[bool, '开启调试模式'] = False):
+        self.region = region
+        self.env = env
+        self.debug = debug
+
+    def make_nbctx(self):
+        """构造上下文，框架自动传给所有子命令组"""
+        return AppCtx(region=self.region, env=self.env, debug=self.debug)
+
+    sub_commands = {
+        'db': DbTool,
+        'server': ServerTool,
+    }
+
+    def status(self):
+        """查看全局状态"""
+        print(f'=== 云平台状态 ===')
+        print(f'Region: {self.nbctx.region}')
+        print(f'Env:    {self.nbctx.env}')
+        print(f'Debug:  {self.nbctx.debug}')
+
+    def whoami(self):
+        """显示当前用户信息"""
+        return {'user': 'admin', 'region': self.nbctx.region, 'env': self.nbctx.env}
+
+
+if __name__ == '__main__':
+    import sys as _sys
+
+    if len(_sys.argv) > 1:
+        # CLI / Web / API 模式
+        MyApp().run()
+    else:
+        # 本地直接调用演示
+        print('='*50)
+        print('本地直接调用演示（不走 CLI/Web/API）')
+        print('='*50)
+
+        # 场景 1: 顶层命令使用 nbctx
+        print('\n--- 场景 1: 顶层命令 ---')
+        app = MyApp(region='shanghai', env='staging', debug=True)
+        app.nbctx = app.make_nbctx()
+        app.status()
+
+        # 场景 2: 子命令组手动注入 nbctx
+        print('\n--- 场景 2: 子命令组手动注入 nbctx ---')
+        ctx = AppCtx(region='tokyo', env='test', debug=True)
+        db = DbTool()
+        db.nbctx = ctx
+        db.migrate(dry_run=True)
+        db.backup()
+
+        # 场景 3: 用默认 ctx
+        print('\n--- 场景 3: 用默认 ctx ---')
+        db2 = DbTool()
+        db2.nbctx = AppCtx()  # 使用 dataclass 默认值
+        db2.migrate()
+
+        # 场景 4: 多个子命令组共享同一个 ctx
+        print('\n--- 场景 4: 多子命令组共享 ctx ---')
+        ctx = AppCtx(region='us-east', env='canary')
+        db = DbTool()
+        server = ServerTool()
+        ops = OpsTool()
+        db.nbctx = ctx
+        server.nbctx = ctx
+        ops.nbctx = ctx
+        db.status()
+        server.info()
+        ops.deploy('2.0.0')
+
+        # 场景 5: CmdGen 自动生成命令行示例
+        print('\n--- 场景 5: CmdGen 自动生成命令行示例 ---')
+        from nb_cmd import CmdGen
+
+        g = CmdGen(MyApp, script='nbctx_demo.py')
+        print(g.cmd(DbTool.migrate))
+        print(g.cmd(OpsTool.deploy))
+        print(g.cmd(MyApp.status))
+        print(g.cmd(ServerTool.ssh))
+        print()
+        g_md = CmdGen(MyApp, script='d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py', fmt='markdown')
+        print(g_md.cmd(DbTool.migrate))
+
+        # 场景 6: CmdGen.doc() 生成完整文档
+        print('\n--- 场景 6: CmdGen.doc() 生成完整文档 ---')
+        print(g.doc())
+        print()
+        print('--- Markdown 格式 ---')
+        print(g_md.doc(file='d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo_gen_doc.md'))
+
+`````
+
+--- **end of file: examples/nbctx_demo/nbctx_demo.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/nbctx_demo/nbctx_demo_gen_doc.md** (project: nb_cmd) --- 
+
+`````markdown
+# cloud-tool v1.0.0
+
+> 云平台管理工具 —— nbctx 跨层级上下文传递 demo。
+
+全局参数 region/env/debug 会自动传递给所有子命令组。
+
+## Table of Contents
+
+- [`status`](#status)
+- [`whoami`](#whoami)
+- [`db`  *(子命令组)*](#db-子命令组)
+  - [`db backup`](#db-backup)
+  - [`db migrate`](#db-migrate)
+  - [`db status`](#db-status)
+- [`server`  *(子命令组)*](#server-子命令组)
+  - [`server info`](#server-info)
+  - [`server ssh`](#server-ssh)
+  - [`server ops`  *(子命令组)*](#server-ops-子命令组)
+    - [`server ops deploy`](#server-ops-deploy)
+    - [`server ops restart`](#server-ops-restart)
+
+---
+
+## System Params
+
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | 显示帮助信息 |
+| `-fh`, `--full-help` | 显示完整帮助（所有参数详情） |
+| `-eh`, `--easy-help` | 显示简易帮助（argparse 原生格式） |
+| `--cmd-version` | 显示版本号 |
+| `--web` | 以 Web UI + REST API 模式启动 |
+| `--web-port PORT` | Web UI 服务端口（用于 `--web`） |
+
+## Global Params (`__init__`)
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--region` | `str` | `beijing` | 部署区域，如 beijing/shanghai/tokyo |
+| `--env` | `str` | `prod` | 运行环境，如 prod/staging/test |
+| `--debug` | `bool` | `False` | 开启调试模式 |
+
+## Quick Start
+
+```bash
+# 查看完整帮助
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py -fh
+
+# 查看版本
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --cmd-version
+
+# 启动 Web UI
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --web
+```
+
+## 命令行约定
+
+命令格式：`python script.py [全局参数] <子命令路径> [命令参数]`
+
+| 标记 | 含义 |
+|------|------|
+| `${value}` | 带默认值的参数 — 可按需替换 |
+| `$<name>` | **必填**参数 — 必须提供值 |
+| `--flag`（无值） | 布尔开关，添加即启用 |
+
+---
+
+## Commands
+
+### `status`
+
+查看全局状态
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug status
+```
+
+### `whoami`
+
+显示当前用户信息
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug whoami
+```
+
+### `db` *(子命令组)*
+
+> 数据库工具（第二级子命令组）
+
+#### `db backup`
+
+备份数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--compress` | `bool` | `True` | 启用压缩 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug db backup
+```
+
+#### `db migrate`
+
+执行数据库迁移
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--dry-run` | `bool` | `False` | 仅模拟，不执行 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug db migrate --dry-run
+```
+
+#### `db status`
+
+查看数据库连接状态
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug db status
+```
+
+### `server` *(子命令组)*
+
+> 服务器管理（第二级子命令组，包含第三级 ops）
+
+#### `server info`
+
+查看服务器信息
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug server info
+```
+
+#### `server ssh`
+
+SSH 登录
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--user` | `str` | `root` | 登录用户名 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug server ssh --user ${root}
+```
+
+#### `server ops` *(子命令组)*
+
+> 运维操作（第三级子命令组）
+
+##### `server ops deploy`
+
+部署指定版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 目标版本号 |
+| `--rollback` | `bool` | `False` | 是否回滚 |
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug server ops deploy --version $<version> --rollback
+```
+
+##### `server ops restart`
+
+重启服务
+
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe d:/codes/nb_cmd/examples/nbctx_demo/nbctx_demo.py --region ${beijing} --env ${prod} --debug server ops restart
+
+
+```
+
+`````
+
+--- **end of file: examples/nbctx_demo/nbctx_demo_gen_doc.md** (project: nb_cmd) --- 
+
+---
+
+# markdown content namespace: nb_cmd codes 
+
+
+## nb_cmd File Tree (relative dir: `nb_cmd`)
+
+
+`````
+
+└── nb_cmd
+    ├── __init__.py
+    ├── core
+    │   ├── __init__.py
+    │   ├── _io_dispatch.py
+    │   ├── arg.py
+    │   ├── base.py
+    │   ├── discovery.py
+    │   ├── gen_cmd.py
+    │   ├── meta.py
+    │   ├── parser.py
+    │   ├── result_handler.py
+    │   └── type_utils.py
+    ├── modes
+    │   ├── __init__.py
+    │   ├── api_mode.py
+    │   ├── cli_mode.py
+    │   └── web_mode.py
+    ├── ui
+    │   ├── __init__.py
+    │   ├── colors.py
+    │   ├── helper.py
+    │   ├── progress.py
+    │   └── table.py
+    └── utils
+        ├── __init__.py
+        ├── config.py
+        └── validators.py
+
+`````
+
+---
+
+
+## nb_cmd (relative dir: `nb_cmd`)  Included Files (total: 23 files)
+
+
+- `nb_cmd/__init__.py`
+
+- `nb_cmd/core/arg.py`
+
+- `nb_cmd/core/base.py`
+
+- `nb_cmd/core/discovery.py`
+
+- `nb_cmd/core/gen_cmd.py`
+
+- `nb_cmd/core/meta.py`
+
+- `nb_cmd/core/parser.py`
+
+- `nb_cmd/core/result_handler.py`
+
+- `nb_cmd/core/type_utils.py`
+
+- `nb_cmd/core/_io_dispatch.py`
+
+- `nb_cmd/core/__init__.py`
+
+- `nb_cmd/modes/api_mode.py`
+
+- `nb_cmd/modes/cli_mode.py`
+
+- `nb_cmd/modes/web_mode.py`
+
+- `nb_cmd/modes/__init__.py`
+
+- `nb_cmd/ui/colors.py`
+
+- `nb_cmd/ui/helper.py`
+
+- `nb_cmd/ui/progress.py`
+
+- `nb_cmd/ui/table.py`
+
+- `nb_cmd/ui/__init__.py`
+
+- `nb_cmd/utils/config.py`
+
+- `nb_cmd/utils/validators.py`
+
+- `nb_cmd/utils/__init__.py`
+
+
+---
+
+
+--- **start of file: nb_cmd/__init__.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nb_cmd — 万能接口生成器
+你写一个 Python class，自动获得 CLI + REST API + Web UI + Python 直接调用 四种接口。
+
+用法::
+
+    from nb_cmd import NbCmd
+
+    class MyTool(NbCmd):
+        def greet(self, name: str, times: int = 1):
+            for _ in range(times):
+                print('你好, {}!'.format(name))
+
+    if __name__ == '__main__':
+        MyTool().run()
+"""
+
+__version__ = '0.1.0'
+
+from .core.base import NbCmd  # noqa: F401
+from .core.meta import NbCmdMeta  # noqa: F401
+from .core.arg import Annotated, Param  # noqa: F401
+from .ui.helper import UIHelper, cmdui  # noqa: F401
+from .utils.validators import validate  # noqa: F401
+from .core.gen_cmd import CmdGen  # noqa: F401
+
+`````
+
+--- **end of file: nb_cmd/__init__.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/arg.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+参数描述器 —— 通过 Annotated 为方法参数附加描述和别名。
+
+用法::
+
+    from typing import Annotated  # Python 3.9+
+    from nb_cmd import NbCmd, Param
+
+    class MyTool(NbCmd):
+        # 方式一：位置参数（简洁）
+        def greet(self, name: Annotated[str, '要问候的人名', 'n'],
+                  times: Annotated[int, '问候次数'] = 1):
+            ...
+
+        # 方式二：Param 对象（关键字参数，清晰）
+        def deploy(self, host: Annotated[str, Param(desc='服务器地址', alias='H')],
+                   port: Annotated[int, Param(desc='端口号', alias='p')] = 22):
+            ...
+
+Annotated 规则:
+    Annotated[类型]                              → 纯类型，无描述无别名
+    Annotated[类型, '描述']                      → 有描述，无别名
+    Annotated[类型, '描述', '别名']              → 有描述 + 别名
+    Annotated[类型, Param(desc=..., alias=...)]  → 关键字风格
+"""
+import sys
+
+if sys.version_info >= (3, 9):
+    from typing import Annotated, get_args, get_origin
+else:
+    try:
+        from typing_extensions import Annotated, get_args, get_origin
+    except ImportError:
+        Annotated = None
+
+        def get_args(tp):
+            return getattr(tp, '__args__', ())
+
+        def get_origin(tp):
+            return getattr(tp, '__origin__', None)
+
+
+class Param(object):
+    """
+    参数元数据描述器，用于 Annotated 内部。
+
+    Parameters
+    ----------
+    desc : str, optional
+        参数描述，显示在 CLI --help 和 Web UI 输入框中
+    alias : str or list, optional
+        CLI 短参数别名，如 'n' 自动转为 '-n'，'host-name' 转为 '--host-name'
+    """
+
+    def __init__(self, desc=None, alias=None):
+        self.desc = desc
+        if alias is None:
+            self.aliases = []
+        elif isinstance(alias, (list, tuple)):
+            self.aliases = [_normalize_alias(a) for a in alias]
+        else:
+            self.aliases = [_normalize_alias(alias)]
+
+    def __repr__(self):
+        parts = []
+        if self.desc:
+            parts.append('desc={!r}'.format(self.desc))
+        if self.aliases:
+            parts.append('alias={!r}'.format(self.aliases))
+        return 'Param({})'.format(', '.join(parts))
+
+
+class _ArgMeta(object):
+    """内部元数据容器，保存从 Annotated 中提取的描述和别名"""
+
+    def __init__(self, desc=None, aliases=None):
+        self.desc = desc
+        self.aliases = aliases or []
+
+    def __repr__(self):
+        parts = []
+        if self.desc:
+            parts.append('desc={!r}'.format(self.desc))
+        if self.aliases:
+            parts.append('alias={!r}'.format(self.aliases))
+        return '_ArgMeta({})'.format(', '.join(parts))
+
+
+def _normalize_alias(alias):
+    """将用户给的 alias 标准化为 CLI flag 格式"""
+    s = str(alias)
+    if s.startswith('-'):
+        return s
+    if len(s) == 1:
+        return '-' + s
+    return '--' + s
+
+
+def unwrap_arg(hint):
+    """
+    解析类型注解，提取真实类型和元数据。
+
+    支持:
+    - Annotated[str, '描述']                     → (str, _ArgMeta(desc='描述'))
+    - Annotated[str, '描述', 'n']                → (str, _ArgMeta(desc='描述', aliases=['-n']))
+    - Annotated[str, Param(desc='描述', alias='n')]  → 同上
+    - Optional[Annotated[str, '描述']]           → (str, _ArgMeta(desc='描述'))
+    - str                                        → (str, None)
+    """
+    if Annotated is not None and get_origin(hint) is Annotated:
+        args = get_args(hint)
+        real_type = args[0]
+
+        for meta in args[1:]:
+            if isinstance(meta, Param):
+                return real_type, _ArgMeta(desc=meta.desc, aliases=list(meta.aliases))
+
+        desc = None
+        alias_val = None
+        if len(args) > 1 and isinstance(args[1], str):
+            desc = args[1]
+        if len(args) > 2 and isinstance(args[2], str):
+            alias_val = args[2]
+
+        if desc is not None or alias_val is not None:
+            aliases = [_normalize_alias(alias_val)] if alias_val else []
+            return real_type, _ArgMeta(desc=desc, aliases=aliases)
+        return real_type, None
+
+    # Optional[Annotated[...]] — get_type_hints 对 default=None 的参数自动包装 Optional
+    if _is_optional(hint):
+        inner = _unwrap_optional(hint)
+        if inner is not hint and Annotated is not None and get_origin(inner) is Annotated:
+            return unwrap_arg(inner)
+
+    return hint, None
+
+
+def _is_optional(tp):
+    """判断 tp 是否为 Optional[X]（即 Union[X, None]），兼容 Python 3.7+"""
+    import typing
+    origin = getattr(tp, '__origin__', None)
+    if origin is getattr(typing, 'Union', None):
+        args = getattr(tp, '__args__', ())
+        return type(None) in args
+    return False
+
+
+def _unwrap_optional(tp):
+    """Optional[X] → X，兼容 Python 3.7+"""
+    args = getattr(tp, '__args__', ())
+    non_none = [a for a in args if a is not type(None)]
+    if len(non_none) == 1:
+        return non_none[0]
+    return tp
+
+`````
+
+--- **end of file: nb_cmd/core/arg.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/base.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+NbCmd 基类 —— 所有命令行工具的父类。
+"""
+import logging
+import sys
+
+from .meta import NbCmdMeta
+
+
+class NbCmd(object):
+    """
+    NbCmd 基类 —— 所有命令行工具的父类。
+
+    用法:
+        1. 继承 NbCmd
+        2. 定义公有方法（自动成为子命令）
+        3. 调用 .run() 启动
+
+    功能:
+        - 公有方法 → 子命令
+        - 方法签名 → 参数自动推导
+        - 支持 CLI / REST API / Web UI / Python 直接调用 四种模式
+        - 支持 OOP 继承覆写
+        - 支持多层级子命令（sub_commands）
+        - 支持 nbctx 跨层级上下文传递
+
+    工具方法通过 cmdui 模块级单例访问（from nb_cmd import cmdui）:
+        cmdui.table()  cmdui.kv()  cmdui.tree()  cmdui.json_print()
+        cmdui.success() cmdui.warning() cmdui.error() cmdui.info()
+        cmdui.progress() cmdui.confirm() cmdui.prompt() cmdui.select()
+    """
+
+    sub_commands = {}
+
+    Meta = NbCmdMeta
+
+    nbctx = None  # 跨层级共享的上下文对象，子类通过 nbctx: AppCtx 注解获取 IDE 补全
+
+    def __init__(self):
+        self._logger = None
+        self._setup_logging()
+
+    def make_nbctx(self):
+        """
+        模板方法：创建跨层级共享的上下文对象。
+
+        覆写此方法以返回一个 dataclass 实例，框架会自动将其传递给
+        所有子命令组的 self.nbctx。
+
+        用法::
+
+            @dataclass
+            class AppCtx:
+                region: str = 'beijing'
+                env: str = 'prod'
+
+            class MyApp(NbCmd):
+                def __init__(self, region='beijing', env='prod'):
+                    self.region = region
+                    self.env = env
+
+                def make_nbctx(self):
+                    return AppCtx(region=self.region, env=self.env)
+
+        Returns
+        -------
+        object or None
+            上下文对象，返回 None 表示不启用 nbctx。
+        """
+        return None
+
+    def _setup_logging(self):
+        """设置日志"""
+        meta = self._get_meta()
+        use_nb_log = getattr(meta, 'use_nb_log', False)
+        log_level = getattr(meta, 'log_level', 'INFO')
+
+        if use_nb_log:
+            try:
+                import nb_log
+                self._logger = nb_log.get_logger(
+                    self.__class__.__name__,
+                    log_level_int=getattr(logging, log_level, logging.INFO),
+                    log_filename=getattr(meta, 'log_file', None),
+                )
+                return
+            except ImportError:
+                pass
+
+        self._logger = logging.getLogger(self.__class__.__name__)
+        self._logger.setLevel(getattr(logging, log_level, logging.INFO))
+        if not self._logger.handlers:
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter(
+                '%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+                datefmt='%Y-%m-%d %H:%M:%S'
+            ))
+            self._logger.addHandler(handler)
+
+    def _get_meta(self):
+        """获取 Meta 配置类"""
+        return getattr(self.__class__, 'Meta', NbCmd.Meta)
+
+    @property
+    def logger(self):
+        """日志器"""
+        return self._logger
+
+    # ==================== 生命周期钩子 ====================
+
+    def before_run(self):
+        """所有子命令执行前的钩子，子类可覆写"""
+        pass
+
+    def after_run(self):
+        """所有子命令执行后的钩子，子类可覆写"""
+        pass
+
+    def on_error(self, command, error):
+        """子命令执行出错时的钩子，子类可覆写"""
+        if self._logger:
+            self._logger.error('命令 {} 执行失败: {}'.format(command, error))
+
+    # ==================== 系统命令工具 ====================
+
+    def shell(self, cmd, capture=False, check=False):
+        """
+        执行系统命令。
+
+        Parameters
+        ----------
+        cmd : str  要执行的命令
+        capture : bool  是否捕获输出（True 返回 stdout 字符串，False 通过 print 输出）
+        check : bool  命令失败时是否抛出异常
+
+        Returns
+        -------
+        str (capture=True 时返回 stdout) 或 None
+        """
+        import subprocess
+        result = subprocess.run(
+            cmd, shell=True, capture_output=True, text=True,
+        )
+        if check and result.returncode != 0:
+            raise RuntimeError(
+                '命令执行失败 (exit {}): {}\n{}'.format(
+                    result.returncode, cmd, result.stderr
+                )
+            )
+        if capture:
+            return result.stdout.strip()
+        else:
+            if result.stdout:
+                print(result.stdout, end='')
+            if result.stderr:
+                print(result.stderr, end='', file=sys.stderr)
+
+    def exec(self, cmd: str):
+        """执行任意系统命令"""
+        self.shell(cmd)
+
+    # ==================== 主入口 ====================
+
+    def run(self, args=None):
+        """
+        主入口方法。根据参数决定运行模式。
+
+        Parameters
+        ----------
+        args : list, optional
+            命令行参数列表，默认使用 sys.argv[1:]
+        """
+        raw_args = args if args is not None else sys.argv[1:]
+
+        help_result = self._handle_help(raw_args)
+        if help_result is not None:
+            return help_result
+
+        if '--web' in raw_args:
+            return self._start_web_server(raw_args)
+
+        from ..modes.cli_mode import run_cli
+        return run_cli(self, NbCmd, args)
+
+    _HELP_HANDLED = object()
+
+    def _handle_help(self, raw_args):
+        """
+        处理帮助参数（在 argparse 解析之前拦截）。
+        -fh/--full-help: 始终显示完整帮助
+        -eh/--easy-help: 始终显示简易帮助
+        -h/--help: 由 Meta.help_mode 决定
+
+        返回 _HELP_HANDLED 表示已处理，应结束。返回 None 表示未处理。
+        """
+        if '--full-help' in raw_args or '-fh' in raw_args:
+            from .parser import print_full_help
+            print_full_help(self, NbCmd)
+            return self._HELP_HANDLED
+
+        if '--easy-help' in raw_args or '-eh' in raw_args:
+            from .parser import print_easy_help
+            print_easy_help(self, NbCmd)
+            return self._HELP_HANDLED
+
+        meta = self._get_meta()
+        help_mode = getattr(meta, 'help_mode', 'full')
+        if help_mode == 'full' and ('--help' in raw_args or '-h' in raw_args):
+            from .parser import print_full_help
+            print_full_help(self, NbCmd)
+            return self._HELP_HANDLED
+
+        return None
+
+    def _start_web_server(self, raw_args):
+        """启动 Web UI 服务"""
+        port = self._extract_port(raw_args)
+        meta = self._get_meta()
+        host = getattr(meta, 'serve_host', '0.0.0.0')
+        if port is None:
+            port = getattr(meta, 'serve_port', 8080)
+
+        from ..modes.web_mode import start_web_server
+        start_web_server(self, NbCmd, host=host, port=port)
+
+    @staticmethod
+    def _extract_port(raw_args):
+        """从参数列表中提取 --web-port 的值"""
+        if '--web-port' in raw_args:
+            idx = raw_args.index('--web-port')
+            if idx + 1 < len(raw_args):
+                try:
+                    return int(raw_args[idx + 1])
+                except ValueError:
+                    pass
+        return None
+
+`````
+
+--- **end of file: nb_cmd/core/base.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/discovery.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+命令发现模块 —— 通过反射发现类中的所有公有方法，自动转换为子命令。
+"""
+import sys
+import inspect
+
+if sys.version_info >= (3, 11):
+    from typing import get_type_hints
+elif sys.version_info >= (3, 9):
+    from typing import get_type_hints
+else:
+    try:
+        from typing_extensions import get_type_hints
+    except ImportError:
+        from typing import get_type_hints as _get_type_hints
+
+        def get_type_hints(func, **kwargs):
+            kwargs.pop('include_extras', None)
+            return _get_type_hints(func, **kwargs)
+
+from .arg import unwrap_arg
+
+
+def discover_commands(instance, base_cls, include_builtins=True, enable_exec=True,
+                      allow_method_list=None, hide_method_list=None, command_prefix=''):
+    """
+    发现 instance 上所有应暴露为 CLI 子命令的方法，以及 sub_commands 中的子命令组。
+
+    Parameters
+    ----------
+    include_builtins : bool
+        是否包含基类内置命令（如 exec），顶层类为 True，子命令组为 False
+    enable_exec : bool
+        是否启用内置 exec 命令，由 Meta.enable_exec 控制
+    allow_method_list : list[str] or None
+        命令白名单。为空/None 表示不过滤；有值时仅暴露白名单命令。
+        支持写法：['status', 'db.migrate', 'db/migrate', 'db migrate']。
+    hide_method_list : list[str] or None
+        命令黑名单。为空/None 表示不过滤；有值时隐藏指定命令。
+        与 allow_method_list 互斥，同时配置时 allow_method_list 优先。
+    command_prefix : str
+        当前 discover 所在的命令路径前缀（内部递归使用）。
+
+    返回: OrderedDict  { cmd_name: cmd_info_dict }
+    """
+    from collections import OrderedDict
+    commands = OrderedDict()
+    allow_set = _normalize_allow_method_set(allow_method_list)
+    hide_set = _normalize_allow_method_set(hide_method_list) if not allow_set else set()
+    current_prefix = _normalize_command_path(command_prefix)
+
+    _BUILTIN_COMMANDS = {'exec'} if (include_builtins and enable_exec) else set()
+    base_methods = set(dir(base_cls)) - _BUILTIN_COMMANDS
+
+    for name in sorted(dir(instance)):
+        if name.startswith('_'):
+            continue
+        if name in base_methods:
+            continue
+        if name in ('sub_commands',):
+            continue
+
+        attr = getattr(instance, name, None)
+        if attr is None:
+            continue
+        if not callable(attr):
+            continue
+        if not (inspect.ismethod(attr) or inspect.isfunction(attr)):
+            continue
+
+        sig = inspect.signature(attr)
+        doc = inspect.getdoc(attr) or ""
+
+        try:
+            hints = get_type_hints(attr, include_extras=True)
+        except Exception:
+            hints = {}
+
+        real_hints = {}
+        arg_meta = {}
+        missing_types = []
+
+        for param_name, param in sig.parameters.items():
+            if param_name == 'self':
+                continue
+            raw_hint = hints.get(param_name)
+            if raw_hint is None:
+                anno = param.annotation
+                if anno is not inspect.Parameter.empty:
+                    raw_hint = anno
+            if raw_hint is None:
+                missing_types.append(param_name)
+                continue
+            real_type, arg_inst = unwrap_arg(raw_hint)
+            real_hints[param_name] = real_type
+            if arg_inst is not None:
+                arg_meta[param_name] = arg_inst
+
+        if missing_types:
+            cls_name = instance.__class__.__name__
+            raise TypeError(
+                '{cls}.{method}() 的参数 {params} 缺少类型注解。'
+                'nb_cmd 要求所有公有方法的参数必须声明类型，例如: '
+                'def {method}(self, {example}: str)'.format(
+                    cls=cls_name,
+                    method=name,
+                    params=', '.join("'{}'".format(p) for p in missing_types),
+                    example=missing_types[0],
+                )
+            )
+
+        full_path = _join_command_path(current_prefix, name)
+        if not _is_method_allowed(full_path, allow_set):
+            continue
+        if _is_method_hidden(full_path, hide_set):
+            continue
+
+        commands[name] = {
+            'method': attr,
+            'signature': sig,
+            'type_hints': real_hints,
+            'arg_meta': arg_meta,
+            'doc': doc.split('\n')[0],
+            'full_doc': doc,
+            'is_group': False,
+        }
+
+    sub_cmds = getattr(instance.__class__, 'sub_commands', {})
+    for group_name, group_val in sub_cmds.items():
+        group_path = _join_command_path(current_prefix, group_name)
+        if not _is_group_allowed(group_path, allow_set):
+            continue
+        if _is_group_hidden(group_path, hide_set):
+            continue
+
+        if inspect.isclass(group_val) and issubclass(group_val, base_cls):
+            commands[group_name] = {
+                'cls': group_val,
+                'doc': (inspect.getdoc(group_val) or "").split('\n')[0],
+                'is_group': True,
+                'init_kwargs': {},
+            }
+        elif isinstance(group_val, base_cls):
+            group_cls = group_val.__class__
+            commands[group_name] = {
+                'cls': group_cls,
+                'doc': (inspect.getdoc(group_cls) or "").split('\n')[0],
+                'is_group': True,
+                'init_kwargs': _extract_init_kwargs(group_val),
+            }
+
+    return commands
+
+
+def _normalize_allow_method_set(allow_method_list):
+    """
+    归一化 allow_method_list，返回 set。
+
+    - None / [] / () / '' -> 空 set（表示不过滤）
+    - str -> 视为单条规则
+    - 路径分隔支持 '.', '/', 空格
+    - CLI 风格 '-' 自动转为 '_'（与 Python 方法名对齐）
+    """
+    if allow_method_list is None:
+        return set()
+
+    if isinstance(allow_method_list, str):
+        raw_items = [allow_method_list]
+    elif isinstance(allow_method_list, (list, tuple, set)):
+        raw_items = list(allow_method_list)
+    else:
+        raw_items = [str(allow_method_list)]
+
+    normalized = set()
+    for item in raw_items:
+        p = _normalize_command_path(item)
+        if p:
+            normalized.add(p)
+    return normalized
+
+
+def _normalize_command_path(path):
+    """将命令路径统一为 'group/sub/cmd' 形式（内部用 '_' 命名）。"""
+    if path is None:
+        return ''
+    s = str(path).strip()
+    if not s:
+        return ''
+
+    # 支持 db.migrate / db/migrate / db migrate
+    s = s.replace('\\', '/').replace('.', '/').replace(' ', '/')
+    while '//' in s:
+        s = s.replace('//', '/')
+    s = s.strip('/')
+    if not s:
+        return ''
+
+    parts = []
+    for part in s.split('/'):
+        p = part.strip()
+        if not p:
+            continue
+        parts.append(p.replace('-', '_'))
+    return '/'.join(parts)
+
+
+def _join_command_path(prefix, name):
+    """拼接完整命令路径。"""
+    p = _normalize_command_path(prefix)
+    n = _normalize_command_path(name)
+    if not p:
+        return n
+    if not n:
+        return p
+    return p + '/' + n
+
+
+def _iter_ancestor_paths(path):
+    """迭代 path 的祖先路径（不含自身），用于白名单祖先命中判断。"""
+    p = _normalize_command_path(path)
+    if not p:
+        return []
+    parts = p.split('/')
+    ancestors = []
+    # issue/list -> ['issue']
+    for i in range(1, len(parts)):
+        ancestors.append('/'.join(parts[:i]))
+    return ancestors
+
+
+def _is_method_allowed(method_path, allow_set):
+    """方法是否在白名单内（支持父组命中）。"""
+    if not allow_set:
+        return True
+
+    p = _normalize_command_path(method_path)
+    if p in allow_set:
+        return True
+
+    # allow=['issue'] 时，issue 下所有方法可见
+    for anc in _iter_ancestor_paths(p):
+        if anc in allow_set:
+            return True
+    return False
+
+
+def _is_group_allowed(group_path, allow_set):
+    """命令组是否需要暴露（自身命中、祖先命中、或有子命令命中）。"""
+    if not allow_set:
+        return True
+
+    p = _normalize_command_path(group_path)
+    if p in allow_set:
+        return True
+
+    # allow=['admin']，admin/ops 也应可见
+    for anc in _iter_ancestor_paths(p):
+        if anc in allow_set:
+            return True
+
+    # allow=['issue/list']，issue 组需保留用于路由到子命令
+    prefix = p + '/'
+    for item in allow_set:
+        if item.startswith(prefix):
+            return True
+    return False
+
+
+def _is_method_hidden(method_path, hide_set):
+    """方法是否在黑名单内（精确命中或祖先组被隐藏）。"""
+    if not hide_set:
+        return False
+    p = _normalize_command_path(method_path)
+    if p in hide_set:
+        return True
+    for anc in _iter_ancestor_paths(p):
+        if anc in hide_set:
+            return True
+    return False
+
+
+def _is_group_hidden(group_path, hide_set):
+    """命令组是否整体被隐藏（自身命中或祖先命中）。"""
+    if not hide_set:
+        return False
+    p = _normalize_command_path(group_path)
+    if p in hide_set:
+        return True
+    for anc in _iter_ancestor_paths(p):
+        if anc in hide_set:
+            return True
+    return False
+
+
+def _extract_init_kwargs(instance):
+    """从实例上提取 __init__ 参数的当前值，用于子命令组的重新实例化"""
+    cls = instance.__class__
+    init_method = cls.__init__
+    if init_method is object.__init__:
+        return {}
+    sig = inspect.signature(init_method)
+    kwargs = {}
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        if hasattr(instance, pname):
+            kwargs[pname] = getattr(instance, pname)
+    return kwargs
+
+`````
+
+--- **end of file: nb_cmd/core/discovery.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/gen_cmd.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+命令行示例生成器 —— 自动生成 CLI 用法示例和完整文档。
+
+用法::
+
+    from nb_cmd import CmdGen
+
+    g = CmdGen(MyApp, script='app.py')
+    print(g.cmd(DbTool.migrate))
+    print(g.doc())
+"""
+import sys
+import inspect
+
+from .discovery import discover_commands
+
+
+class CmdGen(object):
+    """
+    命令行示例生成器。
+
+    Parameters
+    ----------
+    entry_cls : class
+        顶层入口类，如 MyApp
+    script : str, optional
+        脚本名。默认用 sys.argv[0]。
+    python : str, optional
+        Python 解释器路径。默认用 sys.executable（当前解释器完整路径）。
+    fmt : str
+        输出格式: 'text' (纯文本) | 'markdown' (markdown 代码块)
+    """
+
+    def __init__(self, entry_cls, script=None, python=None, fmt='text'):
+        self.entry_cls = entry_cls
+        self.script = script or _get_script_name()
+        self.python = python or sys.executable
+        self.fmt = fmt
+        self._base_cls = _find_base_cls(entry_cls)
+        self._allow_methods = _get_allow_method_list(entry_cls)
+        self._hide_methods = _get_hide_method_list(entry_cls)
+
+    def cmd(self, method):
+        """
+        生成单个方法的 CLI 命令行示例。
+
+        Parameters
+        ----------
+        method : unbound method
+            目标方法，如 DbTool.migrate
+
+        Returns
+        -------
+        str
+            生成的命令行示例字符串
+        """
+        method_name = method.__name__
+        method_cls = _get_method_class(method)
+
+        global_args = _format_init_args(self.entry_cls)
+        path = _find_command_path(self.entry_cls, method_cls, self._base_cls)
+
+        method_args = _format_method_args(method)
+        cmd_name = method_name.replace('_', '-')
+
+        parts = [self.python, self.script]
+        if global_args:
+            parts.append(global_args)
+        if path:
+            parts.append(path)
+        parts.append(cmd_name)
+        if method_args:
+            parts.append(method_args)
+
+        cmd_line = ' '.join(parts)
+        return _apply_fmt(cmd_line, self.fmt)
+
+    def doc(self, file=None):
+        """
+        生成入口类的完整命令行文档。
+
+        包含完整帮助信息和每个命令的可复制命令行示例。
+        当 fmt='markdown' 或 file 以 .md 结尾时，输出高质量 Markdown 文档。
+
+        Parameters
+        ----------
+        file : str, optional
+            输出文件路径。传入后自动写入文件并返回文件路径。
+
+        Returns
+        -------
+        str
+            生成的完整文档字符串（传了 file 时同时写入文件）
+        """
+        use_md = self.fmt == 'markdown'
+        if not use_md and file and file.endswith('.md'):
+            use_md = True
+
+        if use_md:
+            text = self._build_md_doc()
+        else:
+            text = self._build_text_doc()
+
+        if file is not None:
+            import os
+            dir_name = os.path.dirname(file)
+            if dir_name:
+                os.makedirs(dir_name, exist_ok=True)
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(text)
+
+        return text
+
+    def _build_text_doc(self):
+        """构建纯文本格式的完整文档"""
+        from .parser import get_full_help_text
+
+        meta = getattr(self.entry_cls, 'Meta', None)
+        app_name = getattr(meta, 'name', self.entry_cls.__name__) if meta else self.entry_cls.__name__
+
+        instance = _safe_instantiate(self.entry_cls)
+        full_help = get_full_help_text(instance, self._base_cls)
+
+        lines = [full_help.rstrip(), '']
+        lines.append('{} 命令行示例'.format(app_name))
+        lines.append('=' * (len(app_name) + 14))
+
+        global_args = _format_init_args(self.entry_cls)
+        commands = discover_commands(instance, self._base_cls,
+                                     include_builtins=False, enable_exec=False,
+                                     allow_method_list=self._allow_methods,
+                                     hide_method_list=self._hide_methods)
+        _collect_text_doc(commands, self._base_cls, self.script, self.python,
+                          global_args, '', lines, depth=0,
+                          allow_method_list=self._allow_methods,
+                          hide_method_list=self._hide_methods,
+                          command_prefix='')
+
+        return '\n'.join(lines)
+
+    def _build_md_doc(self):
+        """构建高质量 Markdown 格式的完整文档"""
+        meta = getattr(self.entry_cls, 'Meta', type('Meta', (), {}))
+        app_name = getattr(meta, 'name', self.entry_cls.__name__) if meta else self.entry_cls.__name__
+        version = getattr(meta, 'version', '0.0.1') if meta else '0.0.1'
+        instance = _safe_instantiate(self.entry_cls)
+        description = inspect.getdoc(instance) or self.entry_cls.__name__
+
+        commands = discover_commands(instance, self._base_cls,
+                                     include_builtins=False, enable_exec=False,
+                                     allow_method_list=self._allow_methods,
+                                     hide_method_list=self._hide_methods)
+        global_args = _format_init_args(self.entry_cls)
+
+        lines = []
+
+        lines.append('# {} v{}'.format(app_name, version))
+        lines.append('')
+        lines.append('> {}'.format(description))
+        lines.append('')
+
+        toc_items = _collect_toc(commands, self._base_cls, prefix='',
+                                 allow_method_list=self._allow_methods,
+                                 hide_method_list=self._hide_methods,
+                                 command_prefix='')
+        if toc_items:
+            lines.append('## Table of Contents')
+            lines.append('')
+            for item in toc_items:
+                indent = '  ' * item['depth']
+                anchor = item['display'].lower().replace(' ', '-').replace('_', '-')
+                if item['is_group']:
+                    lines.append('{}- [`{}`  *(子命令组)*](#{}-子命令组)'.format(
+                        indent, item['display'], anchor))
+                else:
+                    lines.append('{}- [`{}`](#{})'.format(indent, item['display'], anchor))
+            lines.append('')
+
+        lines.append('---')
+        lines.append('')
+
+        lines.append('## System Params')
+        lines.append('')
+        lines.append('| Flag | Description |')
+        lines.append('|------|-------------|')
+        sys_params = [
+            ('`-h`, `--help`', '显示帮助信息'),
+            ('`-fh`, `--full-help`', '显示完整帮助（所有参数详情）'),
+            ('`-eh`, `--easy-help`', '显示简易帮助（argparse 原生格式）'),
+            ('`--cmd-version`', '显示版本号'),
+            ('`--web`', '以 Web UI + REST API 模式启动'),
+            ('`--web-port PORT`', 'Web UI 服务端口（用于 `--web`）'),
+        ]
+        for flag, desc in sys_params:
+            lines.append('| {} | {} |'.format(flag, desc))
+        lines.append('')
+
+        init_params = _collect_init_params(self.entry_cls)
+        if init_params:
+            lines.append('## Global Params (`__init__`)')
+            lines.append('')
+            lines.append('| Flag | Type | Default | Description |')
+            lines.append('|------|------|---------|-------------|')
+            for p in init_params:
+                lines.append('| `{}` | `{}` | `{}` | {} |'.format(
+                    p['flag'], p['type'], p['default'], p['desc']))
+            lines.append('')
+
+        lines.append('## Quick Start')
+        lines.append('')
+        lines.append('```bash')
+        lines.append('# 查看完整帮助')
+        lines.append('{} {} -fh'.format(self.python, self.script))
+        lines.append('')
+        lines.append('# 查看版本')
+        lines.append('{} {} --cmd-version'.format(self.python, self.script))
+        lines.append('')
+        lines.append('# 启动 Web UI')
+        lines.append('{} {} --web'.format(self.python, self.script))
+        lines.append('```')
+        lines.append('')
+
+        lines.append('## 命令行约定')
+        lines.append('')
+        lines.append('命令格式：`python script.py [全局参数] <子命令路径> [命令参数]`')
+        lines.append('')
+        lines.append('| 标记 | 含义 |')
+        lines.append('|------|------|')
+        lines.append('| `${value}` | 带默认值的参数 — 可按需替换 |')
+        lines.append('| `$<name>` | **必填**参数 — 必须提供值 |')
+        lines.append('| `--flag`（无值） | 布尔开关，添加即启用 |')
+        lines.append('')
+
+        lines.append('---')
+        lines.append('')
+        lines.append('## Commands')
+        lines.append('')
+
+        _collect_md_doc(commands, self._base_cls, self.script, self.python,
+                        global_args, '', lines, depth=0,
+                        allow_method_list=self._allow_methods,
+                        hide_method_list=self._hide_methods,
+                        command_prefix='')
+
+        return '\n'.join(lines)
+
+
+def _collect_toc(commands, base_cls, prefix='', depth=0, allow_method_list=None,
+                 hide_method_list=None, command_prefix=''):
+    """递归收集命令目录结构"""
+    items = []
+    for cmd_name, cmd_info in commands.items():
+        full_path = '{} {}'.format(prefix, cmd_name).strip() if prefix else cmd_name
+        display = full_path.replace('_', '-')
+
+        if cmd_info.get('is_group'):
+            items.append({'display': display, 'is_group': True, 'depth': depth})
+            group_cls = cmd_info['cls']
+            group_instance = _safe_instantiate(group_cls)
+            group_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+            sub_commands = discover_commands(group_instance, base_cls,
+                                             include_builtins=False, enable_exec=False,
+                                             allow_method_list=allow_method_list,
+                                             hide_method_list=hide_method_list,
+                                             command_prefix=group_path)
+            items.extend(_collect_toc(sub_commands, base_cls, prefix=full_path,
+                                      depth=depth + 1,
+                                      allow_method_list=allow_method_list,
+                                      hide_method_list=hide_method_list,
+                                      command_prefix=group_path))
+        else:
+            items.append({'display': display, 'is_group': False, 'depth': depth})
+    return items
+
+
+def _collect_init_params(entry_cls):
+    """收集 __init__ 的全局参数信息列表"""
+    from .arg import unwrap_arg
+    from .type_utils import type_display_name
+
+    init_method = entry_cls.__init__
+    if init_method is object.__init__:
+        return []
+
+    sig = inspect.signature(init_method)
+    results = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        has_default = param.default is not inspect.Parameter.empty
+        default_val = param.default if has_default else None
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            raw_hint = type(default_val) if default_val is not None else str
+        real_type, arg_inst = unwrap_arg(raw_hint)
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+        flag = '--{}'.format(pname.replace('_', '-'))
+        if arg_inst and arg_inst.aliases:
+            flag = '{}, {}'.format(flag, ', '.join(arg_inst.aliases))
+        results.append({
+            'flag': flag,
+            'type': type_display_name(real_type),
+            'default': default_val if has_default else '*(required)*',
+            'desc': desc or '-',
+        })
+    return results
+
+
+def _collect_text_doc(commands, base_cls, script_name, python_path, global_args,
+                      prefix, lines, depth, allow_method_list=None,
+                      hide_method_list=None, command_prefix=''):
+    """递归收集纯文本格式的命令文档"""
+    for cmd_name, cmd_info in commands.items():
+        full_path = '{} {}'.format(prefix, cmd_name).strip() if prefix else cmd_name
+
+        if cmd_info.get('is_group'):
+            group_cls = cmd_info['cls']
+            group_doc = cmd_info.get('doc', '')
+            indent = '  ' * depth
+            lines.append('')
+            lines.append('{}[{}]  {}'.format(indent, full_path, group_doc))
+            group_instance = _safe_instantiate(group_cls)
+            group_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+            sub_commands = discover_commands(group_instance, base_cls,
+                                             include_builtins=False, enable_exec=False,
+                                             allow_method_list=allow_method_list,
+                                             hide_method_list=hide_method_list,
+                                             command_prefix=group_path)
+            _collect_text_doc(sub_commands, base_cls, script_name, python_path,
+                              global_args, full_path, lines, depth=depth + 1,
+                              allow_method_list=allow_method_list,
+                              hide_method_list=hide_method_list,
+                              command_prefix=group_path)
+        else:
+            method = cmd_info['method']
+            doc = cmd_info.get('doc', '')
+            method_args = _format_method_args(method)
+            display_name = cmd_name.replace('_', '-')
+            parts = [python_path, script_name]
+            if global_args:
+                parts.append(global_args)
+            if prefix:
+                parts.append(prefix)
+            parts.append(display_name)
+            if method_args:
+                parts.append(method_args)
+            cmd_line = ' '.join(parts)
+            indent = '  ' * depth
+            lines.append('')
+            lines.append('{}{}  {}'.format(indent, full_path.replace('_', '-'), doc))
+            lines.append('{}  {}'.format(indent, cmd_line))
+
+
+def _collect_md_doc(commands, base_cls, script_name, python_path, global_args,
+                    prefix, lines, depth, allow_method_list=None,
+                    hide_method_list=None, command_prefix=''):
+    """递归收集 Markdown 格式的命令文档"""
+    from .type_utils import (
+        is_optional, unwrap_optional, type_display_name,
+    )
+
+    for cmd_name, cmd_info in commands.items():
+        full_path = '{} {}'.format(prefix, cmd_name).strip() if prefix else cmd_name
+        display = full_path.replace('_', '-')
+
+        if cmd_info.get('is_group'):
+            group_cls = cmd_info['cls']
+            group_doc = cmd_info.get('doc', '')
+            level = '#' * min(depth + 3, 6)
+            lines.append('{} `{}` *(子命令组)*'.format(level, display))
+            lines.append('')
+            if group_doc:
+                lines.append('> {}'.format(group_doc))
+                lines.append('')
+            group_instance = _safe_instantiate(group_cls)
+            group_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+            sub_commands = discover_commands(group_instance, base_cls,
+                                             include_builtins=False, enable_exec=False,
+                                             allow_method_list=allow_method_list,
+                                             hide_method_list=hide_method_list,
+                                             command_prefix=group_path)
+            _collect_md_doc(sub_commands, base_cls, script_name, python_path,
+                            global_args, full_path, lines, depth=depth + 1,
+                            allow_method_list=allow_method_list,
+                            hide_method_list=hide_method_list,
+                            command_prefix=group_path)
+        else:
+            method = cmd_info['method']
+            doc = cmd_info.get('doc', '')
+            method_args = _format_method_args(method)
+            display_name = cmd_name.replace('_', '-')
+
+            parts = [python_path, script_name]
+            if global_args:
+                parts.append(global_args)
+            if prefix:
+                parts.append(prefix)
+            parts.append(display_name)
+            if method_args:
+                parts.append(method_args)
+            cmd_line = ' '.join(parts)
+
+            level = '#' * min(depth + 3, 6)
+            lines.append('{} `{}`'.format(level, display))
+            lines.append('')
+            if doc:
+                lines.append(doc)
+                lines.append('')
+
+            sig = cmd_info['signature']
+            hints = cmd_info.get('type_hints', {})
+            arg_meta = cmd_info.get('arg_meta', {})
+            param_rows = []
+            for pname, param in sig.parameters.items():
+                if pname == 'self':
+                    continue
+                ptype = hints.get(pname, str)
+                real_type = unwrap_optional(ptype) if is_optional(ptype) else ptype
+                tname = type_display_name(real_type)
+                has_default = param.default is not inspect.Parameter.empty
+                arg_inst = arg_meta.get(pname)
+                desc = arg_inst.desc if arg_inst and arg_inst.desc else '-'
+                flag = '--{}'.format(pname.replace('_', '-'))
+                if arg_inst and arg_inst.aliases:
+                    flag = '{}, {}'.format(flag, ', '.join(arg_inst.aliases))
+                default_str = '`{}`'.format(param.default) if has_default else '*(required)*'
+                param_rows.append((flag, tname, default_str, desc))
+
+            if param_rows:
+                lines.append('| Param | Type | Default | Description |')
+                lines.append('|-------|------|---------|-------------|')
+                for flag, tname, default_str, desc in param_rows:
+                    lines.append('| `{}` | `{}` | {} | {} |'.format(
+                        flag, tname, default_str, desc))
+                lines.append('')
+
+            lines.append('```bash')
+            lines.append(cmd_line)
+            lines.append('```')
+            lines.append('')
+
+
+def _get_script_name():
+    """获取当前脚本名"""
+    import os
+    name = sys.argv[0] if sys.argv[0] else 'script.py'
+    return os.path.basename(name)
+
+
+def _get_method_class(method):
+    """从 unbound method 获取所属类"""
+    qualname = getattr(method, '__qualname__', '')
+    parts = qualname.split('.')
+    if len(parts) >= 2:
+        cls_name = parts[-2]
+        module = inspect.getmodule(method)
+        if module:
+            cls = getattr(module, cls_name, None)
+            if cls is not None:
+                return cls
+    return None
+
+
+def _find_base_cls(entry_cls):
+    """找到 NbCmd 基类"""
+    from .base import NbCmd
+    return NbCmd
+
+
+def _get_allow_method_list(entry_cls):
+    """从 entry_cls.Meta 获取命令白名单（为空表示不过滤）。"""
+    meta = getattr(entry_cls, 'Meta', None)
+    if meta is None:
+        return None
+    return getattr(meta, 'allow_method_list', None)
+
+
+def _get_hide_method_list(entry_cls):
+    """从 entry_cls.Meta 获取命令黑名单（为空表示不过滤）。"""
+    meta = getattr(entry_cls, 'Meta', None)
+    if meta is None:
+        return None
+    return getattr(meta, 'hide_method_list', None)
+
+
+def _find_command_path(entry_cls, target_cls, base_cls):
+    """
+    从 entry_cls 的 sub_commands 树中递归搜索 target_cls，
+    返回子命令组路径字符串（如 'db' 或 'server ops'）。
+    """
+    if target_cls is None or target_cls is entry_cls:
+        return ''
+
+    sub_cmds = getattr(entry_cls, 'sub_commands', {})
+    for group_name, group_val in sub_cmds.items():
+        group_cls = group_val if inspect.isclass(group_val) else group_val.__class__
+        if group_cls is target_cls:
+            return group_name
+
+        deeper = _find_command_path(group_cls, target_cls, base_cls)
+        if deeper:
+            return '{} {}'.format(group_name, deeper)
+
+    return ''
+
+
+def _format_init_args(entry_cls):
+    """将 entry_cls 的 __init__ 参数格式化为 CLI 全局参数字符串"""
+    init_method = entry_cls.__init__
+    if init_method is object.__init__:
+        return ''
+
+    sig = inspect.signature(init_method)
+    parts = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        flag = '--{}'.format(pname.replace('_', '-'))
+        default = param.default
+        if default is inspect.Parameter.empty:
+            ptype = param.annotation if param.annotation is not inspect.Parameter.empty else str
+            if ptype is bool:
+                parts.append(flag)
+            else:
+                parts.append('{} $<{}>'.format(flag, pname))
+        else:
+            if isinstance(default, bool):
+                if not default:
+                    parts.append(flag)
+            else:
+                parts.append('{} ${{{}}}'.format(flag, default))
+
+    return ' '.join(parts)
+
+
+def _format_method_args(method):
+    """将方法的参数格式化为 CLI 参数字符串"""
+    sig = inspect.signature(method)
+    parts = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        flag = '--{}'.format(pname.replace('_', '-'))
+        default = param.default
+        ptype = param.annotation if param.annotation is not inspect.Parameter.empty else str
+
+        if default is inspect.Parameter.empty:
+            if ptype is bool:
+                parts.append(flag)
+            else:
+                parts.append('{} $<{}>'.format(flag, pname))
+        else:
+            if isinstance(default, bool):
+                if not default:
+                    parts.append(flag)
+            else:
+                parts.append('{} ${{{}}}'.format(flag, default))
+
+    return ' '.join(parts)
+
+
+def _safe_instantiate(cls):
+    """安全实例化类，失败时用 __new__"""
+    try:
+        return cls()
+    except TypeError:
+        return cls.__new__(cls)
+
+
+def _apply_fmt(cmd_line, fmt):
+    """应用输出格式"""
+    if fmt == 'markdown':
+        return '```bash\n{}\n```'.format(cmd_line)
+    return cmd_line
+
+`````
+
+--- **end of file: nb_cmd/core/gen_cmd.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/meta.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+NbCmd Meta 配置基类。
+
+用法::
+
+    from nb_cmd import NbCmd, NbCmdMeta
+
+    class MyTool(NbCmd):
+        class Meta(NbCmdMeta):
+            name = "my-tool"
+            version = "1.0.0"
+            use_nb_log = True
+"""
+
+from typing import Dict, List, Optional
+
+
+class NbCmdMeta(object):
+    """
+    NbCmd 的 Meta 配置基类。
+
+    子类继承后可覆盖任意字段，IDE 可自动补全所有可用选项。
+    """
+    name: Optional[str] = None               # CLI/API 名称（默认用类名）
+    version: str = '0.0.1'                   # 版本号（--cmd-version 显示）
+    description: Optional[str] = None        # 描述（默认用类的 docstring）
+    use_nb_log: bool = False                 # 启用 nb_log 增强日志
+    log_level: str = 'INFO'                  # 日志级别
+    log_file: Optional[str] = None           # 日志文件路径
+    auto_save_last_args: bool = False        # 自动保存上次参数
+    config_file: Optional[str] = None        # 配置持久化文件路径
+    serve_host: str = '0.0.0.0'              # Web/API 绑定地址
+    serve_port: int = 8080                   # Web/API 默认端口
+    serve_workers: int = 1                   # 工作进程数
+    web_title: Optional[str] = None          # Web UI 页面标题
+    web_theme: str = 'light'                 # Web UI 主题 ('light' / 'dark')
+    enable_exec: bool = True                 # 是否暴露内置 exec 命令（False 可防止恶意执行）
+    help_mode: str = 'full'                  # -h 帮助模式: 'full'(完整帮助) / 'easy'(简易帮助)
+    aliases: Dict[str, List[str]] = {}       # 参数别名（推荐用 Annotated 替代）
+    allow_method_list: Optional[List[str]] = None  # 命令白名单（仅限制 CLI/API/Web 暴露；Python 直接调用不受影响）
+    hide_method_list: Optional[List[str]] = None   # 命令黑名单（与白名单互斥；仅限制 CLI/API/Web 暴露）
+    auth_token: Optional[str] = None               # 简易鉴权 token（配置后 API/Web 请求须带 Authorization: Bearer <token>）
+    timeout: int = 0                               # 命令执行超时秒数（0=不限；仅作用于 CLI/API/Web 模式）
+
+`````
+
+--- **end of file: nb_cmd/core/meta.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/parser.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+argparse 解析器自动构建模块。
+根据方法签名自动生成 argparse.ArgumentParser。
+"""
+import argparse
+import inspect
+
+from .type_utils import (
+    get_argparse_type, get_nargs, get_choices,
+    is_optional, unwrap_optional, type_display_name,
+)
+
+
+class _RawDefaultsHelpFormatter(argparse.RawDescriptionHelpFormatter,
+                                argparse.ArgumentDefaultsHelpFormatter):
+    pass
+
+
+def build_parser(instance, commands, meta, base_cls=None, allow_method_list=None,
+                 hide_method_list=None):
+    """
+    为顶层 NbCmd 实例构建完整的 argparse 解析器。
+
+    Parameters
+    ----------
+    instance : NbCmd 实例
+    commands : dict  由 discover_commands 返回
+    meta : Meta 配置类
+    base_cls : type, optional  NbCmd 基类，用于子命令组 discover 过滤
+    """
+    if base_cls is None:
+        from .base import NbCmd as _NbCmd
+        base_cls = _NbCmd
+    description = inspect.getdoc(instance) or instance.__class__.__name__
+    version = getattr(meta, 'version', '0.0.1')
+
+    parser = argparse.ArgumentParser(
+        description=description,
+        formatter_class=_RawDefaultsHelpFormatter,
+        add_help=False,
+    )
+
+    sys_group = parser.add_argument_group('system params')
+    sys_group.add_argument('-h', '--help', action='help',
+                           default=argparse.SUPPRESS, help='显示帮助信息（-h 行为由 Meta.help_mode 控制）')
+    sys_group.add_argument('--cmd-version', action='version', version=version)
+    sys_group.add_argument('-fh', '--full-help', action='store_true',
+                           default=False, help='显示所有命令的完整参数详情')
+    sys_group.add_argument('-eh', '--easy-help', action='store_true',
+                           default=False, help='显示简易帮助（argparse 原生格式）')
+    sys_group.add_argument('--web', action='store_true',
+                           help='以Web UI + REST API模式启动')
+    sys_group.add_argument('--web-port', type=int, default=None,
+                           help='Web UI 服务端口（用于 --web）')
+
+    init_group = parser.add_argument_group('init params')
+    _add_init_global_options(init_group, instance)
+
+    subparsers = parser.add_subparsers(dest='_nb_command',
+                                       title='commands', help='可用命令')
+
+    for cmd_name, cmd_info in commands.items():
+        cli_name = cmd_name.replace('_', '-')
+
+        if cmd_info.get('is_group'):
+            group_cls = cmd_info['cls']
+            group_doc = cmd_info.get('doc', '')
+            group_kwargs = cmd_info.get('init_kwargs', {})
+            sub = subparsers.add_parser(
+                cli_name,
+                help=group_doc + '（子命令组）' if group_doc else '子命令组',
+                description=group_doc,
+                formatter_class=_RawDefaultsHelpFormatter,
+            )
+            _build_group_subparser(sub, group_cls, base_cls, group_kwargs,
+                                   allow_method_list=allow_method_list,
+                                   hide_method_list=hide_method_list,
+                                   command_prefix=cmd_name)
+        else:
+            param_hint = _build_param_hint(cmd_info)
+            help_text = cmd_info['doc']
+            if param_hint:
+                help_text = '{} {}'.format(help_text, param_hint)
+            sub = subparsers.add_parser(
+                cli_name,
+                help=help_text,
+                description=cmd_info['full_doc'],
+                formatter_class=_RawDefaultsHelpFormatter,
+            )
+            _add_method_arguments(sub, cmd_info, meta)
+
+    return parser
+
+
+def _build_param_hint(cmd_info):
+    """为子命令生成简短的参数提示，显示在顶层 --help 的子命令描述后面"""
+    sig = cmd_info['signature']
+    arg_meta = cmd_info.get('arg_meta', {})
+    parts = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        has_default = param.default is not inspect.Parameter.empty
+        arg_inst = arg_meta.get(pname)
+        cli_name = '--' + pname.replace('_', '-')
+        if arg_inst and arg_inst.aliases:
+            short = arg_inst.aliases[0]
+            flag = '{}/{}'.format(short, cli_name)
+        else:
+            flag = cli_name
+        if has_default and param.default is not False and param.default is not True:
+            parts.append('{}={}'.format(flag, param.default))
+        else:
+            parts.append(flag)
+    if not parts:
+        return ''
+    return '({})'.format(', '.join(parts))
+
+
+def print_easy_help(instance, base_cls):
+    """打印简易帮助（argparse 原生格式）"""
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow_methods = getattr(meta, 'allow_method_list', None)
+    _hide_methods = getattr(meta, 'hide_method_list', None)
+    from .discovery import discover_commands
+    commands = discover_commands(instance, base_cls, enable_exec=_enable_exec,
+                                 allow_method_list=_allow_methods,
+                                 hide_method_list=_hide_methods)
+    parser = build_parser(instance, commands, meta, base_cls=base_cls,
+                          allow_method_list=_allow_methods,
+                          hide_method_list=_hide_methods)
+    parser.print_help()
+
+
+def get_full_help_text(instance, base_cls):
+    """生成完整帮助文本并返回字符串（无 ANSI 颜色码）"""
+    lines = _build_full_help_lines(instance, base_cls, color=False)
+    return '\n'.join(lines)
+
+
+def print_full_help(instance, base_cls):
+    """打印所有命令的完整参数详情到 stdout（带 ANSI 颜色码）"""
+    import sys as _sys
+    lines = _build_full_help_lines(instance, base_cls, color=True)
+    _sys.stdout.write('\n'.join(lines))
+    _sys.stdout.write('\n')
+    _sys.stdout.flush()
+
+
+def _build_full_help_lines(instance, base_cls, color=True):
+    """构建完整帮助的所有行，返回列表"""
+    from .discovery import discover_commands
+
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow_methods = getattr(meta, 'allow_method_list', None)
+    _hide_methods = getattr(meta, 'hide_method_list', None)
+    commands = discover_commands(instance, base_cls, enable_exec=_enable_exec,
+                                 allow_method_list=_allow_methods,
+                                 hide_method_list=_hide_methods)
+    description = inspect.getdoc(instance) or instance.__class__.__name__
+    version = getattr(meta, 'version', '0.0.1')
+
+    sep = '=' * 56
+    lines = [
+        '',
+        sep,
+        '  {} v{}'.format(instance.__class__.__name__, version),
+        '  {}'.format(description),
+        sep,
+        '',
+        'system params:',
+        '    {:<24s} {}'.format('--help, -h', '显示帮助信息'),
+        '    {:<24s} {}'.format('--full-help, -fh', '显示完整帮助（所有参数详情）'),
+        '    {:<24s} {}'.format('--easy-help, -eh', '显示简易帮助（argparse 原生格式）'),
+        '    {:<24s} {}'.format('--cmd-version', '显示版本号'),
+        '    {:<24s} {}'.format('--web', '以Web UI + REST API模式启动'),
+        '    {:<24s} {}'.format('--web-port PORT', 'Web UI 服务端口（用于 --web）'),
+        '',
+    ]
+
+    if _has_init_params(instance):
+        lines.append('init params:')
+        lines.extend(_build_init_param_lines(instance))
+        lines.append('')
+
+    lines.append('-' * 56)
+    lines.extend(_build_group_command_lines(commands, base_cls, prefix='', color=color,
+                                            allow_method_list=_allow_methods,
+                                            hide_method_list=_hide_methods,
+                                            command_prefix=''))
+
+    return lines
+
+
+def _build_group_command_lines(commands, base_cls, prefix='', color=True,
+                               allow_method_list=None, hide_method_list=None,
+                               command_prefix=''):
+    """递归收集命令组及其所有子命令的帮助行"""
+    from .discovery import discover_commands
+
+    lines = []
+    for cmd_name, cmd_info in commands.items():
+        cli_name = cmd_name.replace('_', '-')
+        full_name = '{} {}'.format(prefix, cli_name).strip() if prefix else cli_name
+        cmd_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+
+        if cmd_info.get('is_group'):
+            tag = '\033[36m[子命令组]\033[0m' if color else '[子命令组]'
+            lines.append('{} {}  {}'.format(full_name, tag, cmd_info.get('doc', '')))
+            group_cls = cmd_info['cls']
+            group_kwargs = cmd_info.get('init_kwargs', {})
+            try:
+                group_inst = group_cls(**group_kwargs) if group_kwargs else group_cls()
+            except TypeError:
+                group_inst = group_cls.__new__(group_cls)
+            group_cmds = discover_commands(group_inst, base_cls,
+                                           include_builtins=False,
+                                           allow_method_list=allow_method_list,
+                                           hide_method_list=hide_method_list,
+                                           command_prefix=cmd_path)
+            lines.extend(_build_group_command_lines(group_cmds, base_cls,
+                                                    prefix=full_name, color=color,
+                                                    allow_method_list=allow_method_list,
+                                                    hide_method_list=hide_method_list,
+                                                    command_prefix=cmd_path))
+            lines.append('')
+        else:
+            if prefix:
+                lines.append('')
+                lines.append('  {} — {}'.format(full_name, cmd_info.get('doc', '')))
+            else:
+                lines.append('{} — {}'.format(full_name, cmd_info.get('doc', '')))
+            lines.extend(_build_param_lines(cmd_info))
+            if not prefix:
+                lines.append('')
+
+    return lines
+
+
+def _build_param_lines(cmd_info):
+    """构建一个命令的完整参数列表行"""
+    sig = cmd_info['signature']
+    hints = cmd_info.get('type_hints', {})
+    arg_meta = cmd_info.get('arg_meta', {})
+    lines = []
+
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        ptype = hints.get(pname, str)
+        real_type = unwrap_optional(ptype) if is_optional(ptype) else ptype
+        type_name = type_display_name(real_type)
+        has_default = param.default is not inspect.Parameter.empty
+        arg_inst = arg_meta.get(pname)
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+
+        cli_flag = '--' + pname.replace('_', '-')
+        if arg_inst and arg_inst.aliases:
+            flags_str = '{}, {}'.format(cli_flag, ', '.join(arg_inst.aliases))
+        else:
+            flags_str = cli_flag
+
+        if has_default:
+            meta_str = '({}, 默认: {})'.format(type_name, param.default)
+        else:
+            meta_str = '({}, 必填)'.format(type_name)
+
+        if desc:
+            lines.append('    {:<24s} {}  {}'.format(flags_str, desc, meta_str))
+        else:
+            lines.append('    {:<24s} {}'.format(flags_str, meta_str))
+
+    return lines
+
+
+def _has_init_params(instance):
+    """判断实例的 __init__ 是否有自定义全局参数"""
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return False
+    sig = inspect.signature(init_method)
+    for pname, param in sig.parameters.items():
+        if pname != 'self':
+            return True
+    return False
+
+
+def _build_init_param_lines(instance):
+    """构建 __init__ 全局选项的详情行"""
+    from .arg import unwrap_arg
+
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return []
+
+    sig = inspect.signature(init_method)
+    lines = []
+
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+
+        has_default = param.default is not inspect.Parameter.empty
+        if has_default:
+            default_val = param.default
+        else:
+            default_val = getattr(instance, pname, None)
+
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            if default_val is not None:
+                raw_hint = type(default_val)
+            else:
+                raw_hint = str
+
+        real_type, arg_inst = unwrap_arg(raw_hint)
+        type_name = type_display_name(real_type)
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+
+        cli_flag = '--' + pname.replace('_', '-')
+        if arg_inst and arg_inst.aliases:
+            flags_str = '{}, {}'.format(cli_flag, ', '.join(arg_inst.aliases))
+        else:
+            flags_str = cli_flag
+
+        meta_str = '(全局, {}, 默认: {})'.format(type_name, default_val)
+
+        if desc:
+            lines.append('    {:<24s} {}  {}'.format(flags_str, desc, meta_str))
+        else:
+            lines.append('    {:<24s} {}'.format(flags_str, meta_str))
+
+    return lines
+
+
+def _add_init_global_options(parser, instance):
+    """将 __init__ 中的自定义参数变为全局选项，支持 Annotated 描述"""
+    from .arg import unwrap_arg
+
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return
+
+    sig = inspect.signature(init_method)
+
+    for param_name, param in sig.parameters.items():
+        if param_name == 'self':
+            continue
+
+        has_default = param.default is not inspect.Parameter.empty
+        if has_default:
+            default_val = param.default
+        else:
+            default_val = getattr(instance, param_name, None)
+
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            if default_val is not None:
+                raw_hint = type(default_val)
+            else:
+                raw_hint = str
+
+        param_type, arg_inst = unwrap_arg(raw_hint)
+
+        cli_flag = '--' + param_name.replace('_', '-')
+        extra_flags = arg_inst.aliases if arg_inst and arg_inst.aliases else []
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else None
+
+        metavar = param_name.upper()
+        if param_type is bool:
+            flags = [cli_flag] + extra_flags
+            auto_help = '(全局选项, bool, 默认: {})'.format(default_val)
+            parser.add_argument(
+                *flags,
+                action='store_true' if not default_val else 'store_false',
+                default=default_val,
+                dest='_nb_init_' + param_name,
+                help='{} {}'.format(desc, auto_help) if desc else auto_help,
+            )
+        else:
+            flags = [cli_flag] + extra_flags
+            auto_help = '(全局选项, {}, 默认: {})'.format(
+                type_display_name(param_type), default_val)
+            parser.add_argument(
+                *flags,
+                type=get_argparse_type(param_type),
+                default=default_val,
+                dest='_nb_init_' + param_name,
+                metavar=metavar,
+                help='{} {}'.format(desc, auto_help) if desc else auto_help,
+            )
+
+
+def _add_method_arguments(sub_parser, cmd_info, meta):
+    """根据方法签名向 subparser 添加参数"""
+    sig = cmd_info['signature']
+    hints = cmd_info.get('type_hints', {})
+    arg_meta = cmd_info.get('arg_meta', {})
+    method_name = cmd_info['method'].__name__
+
+    aliases_map = getattr(meta, 'aliases', {})
+
+    for param_name, param in sig.parameters.items():
+        if param_name == 'self':
+            continue
+
+        param_type = hints.get(param_name, str)
+        if is_optional(param_type):
+            param_type_unwrapped = unwrap_optional(param_type)
+        else:
+            param_type_unwrapped = param_type
+
+        has_default = param.default is not inspect.Parameter.empty
+        is_keyword_only = param.kind == inspect.Parameter.KEYWORD_ONLY
+
+        arg_inst = arg_meta.get(param_name)
+        if arg_inst and arg_inst.aliases:
+            extra_flags = list(arg_inst.aliases)
+        else:
+            alias_key = '{}.{}'.format(method_name, param_name)
+            extra_flags = aliases_map.get(alias_key, [])
+
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else None
+
+        cli_flag = '--' + param_name.replace('_', '-')
+        nargs = get_nargs(param_type)
+        choices = get_choices(param_type)
+        ap_type = get_argparse_type(param_type)
+        type_name = type_display_name(param_type_unwrapped)
+
+        if param_type_unwrapped is bool:
+            flags = [cli_flag] + extra_flags
+            auto_help = '(bool, 默认: {})'.format(param.default if has_default else False)
+            sub_parser.add_argument(
+                *flags,
+                action='store_true' if not (has_default and param.default) else 'store_false',
+                default=param.default if has_default else False,
+                dest=param_name,
+                help='{} {}'.format(desc, auto_help) if desc else auto_help,
+            )
+        elif has_default or is_keyword_only:
+            flags = [cli_flag] + extra_flags
+            auto_help = '({}, 默认: {})'.format(type_name, param.default if has_default else 'None')
+            kwargs = dict(
+                type=ap_type,
+                default=param.default if has_default else None,
+                dest=param_name,
+                help='{} {}'.format(desc, auto_help) if desc else auto_help,
+            )
+            if nargs is not None:
+                kwargs['nargs'] = nargs
+            if choices is not None:
+                kwargs['choices'] = choices
+            sub_parser.add_argument(*flags, **kwargs)
+        else:
+            auto_help = '({}, 必填)'.format(type_name)
+            help_text = '{} {}'.format(desc, auto_help) if desc else auto_help
+            if extra_flags:
+                flags = [cli_flag] + extra_flags
+                kwargs = dict(
+                    type=ap_type,
+                    required=True,
+                    dest=param_name,
+                    help=help_text,
+                )
+                if nargs is not None:
+                    kwargs['nargs'] = nargs
+                if choices is not None:
+                    kwargs['choices'] = choices
+                sub_parser.add_argument(*flags, **kwargs)
+            else:
+                kwargs = dict(
+                    type=ap_type,
+                    help=help_text,
+                    metavar=param_name.upper(),
+                )
+                if nargs is not None:
+                    kwargs['nargs'] = nargs
+                if choices is not None:
+                    kwargs['choices'] = choices
+                sub_parser.add_argument(param_name, **kwargs)
+
+
+def _build_group_subparser(parent_parser, group_cls, base_cls, init_kwargs=None, depth=1,
+                           allow_method_list=None, hide_method_list=None, command_prefix=''):
+    """递归为子命令组构建 subparser"""
+    from .discovery import discover_commands
+
+    if init_kwargs:
+        group_instance = group_cls(**init_kwargs)
+    else:
+        group_instance = group_cls.__new__(group_cls)
+        if hasattr(group_cls.__init__, '__func__') and group_cls.__init__ is not object.__init__:
+            try:
+                group_cls.__init__(group_instance)
+            except TypeError:
+                pass
+
+    group_commands = discover_commands(group_instance, base_cls, include_builtins=False,
+                                       allow_method_list=allow_method_list,
+                                       hide_method_list=hide_method_list,
+                                       command_prefix=command_prefix)
+
+    if not group_commands:
+        return
+
+    sub_group_meta = getattr(group_cls, 'Meta', type('Meta', (), {}))
+
+    dest = '_nb_sub_command' if depth == 1 else '_nb_sub_command_{}'.format(depth)
+    group_subparsers = parent_parser.add_subparsers(dest=dest, help='可用子命令')
+
+    for cmd_name, cmd_info in group_commands.items():
+        cli_name = cmd_name.replace('_', '-')
+
+        if cmd_info.get('is_group'):
+            nested_cls = cmd_info['cls']
+            nested_doc = cmd_info.get('doc', '')
+            nested_kwargs = cmd_info.get('init_kwargs', {})
+            nested_sub = group_subparsers.add_parser(
+                cli_name,
+                help=nested_doc + '（子命令组）' if nested_doc else '子命令组',
+                description=nested_doc,
+                formatter_class=_RawDefaultsHelpFormatter,
+            )
+            _build_group_subparser(nested_sub, nested_cls, base_cls, nested_kwargs, depth + 1,
+                                   allow_method_list=allow_method_list,
+                                   hide_method_list=hide_method_list,
+                                   command_prefix='{}/{}'.format(command_prefix, cmd_name)
+                                   if command_prefix else cmd_name)
+        else:
+            sub = group_subparsers.add_parser(
+                cli_name,
+                help=cmd_info['doc'],
+                description=cmd_info['full_doc'],
+                formatter_class=_RawDefaultsHelpFormatter,
+            )
+            _add_method_arguments(sub, cmd_info, sub_group_meta)
+
+`````
+
+--- **end of file: nb_cmd/core/parser.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/result_handler.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+返回值自动处理模块。
+根据返回值类型决定如何在 CLI / API 中展示结果。
+"""
+import json
+from pathlib import Path
+
+from ..ui.table import _display_width as _cjk_display_width
+
+
+def handle_cli_result(result):
+    """
+    CLI 模式下自动处理方法返回值。
+
+    规则:
+    - None          → 不输出
+    - str           → 直接 print
+    - int / float   → 直接 print
+    - dict          → JSON 格式化输出
+    - list[dict]    → 表格输出（降级为 JSON）
+    - list          → 每行一个
+    - Path          → 输出路径字符串
+    """
+    if result is None:
+        return
+
+    if isinstance(result, str):
+        print(result)
+        return
+
+    if isinstance(result, (int, float)):
+        print(result)
+        return
+
+    if isinstance(result, dict):
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    if isinstance(result, (list, tuple)):
+        if result and isinstance(result[0], dict):
+            _print_list_of_dicts_as_table(result)
+        else:
+            for item in result:
+                print(item)
+        return
+
+    if isinstance(result, Path):
+        print(str(result))
+        return
+
+    print(result)
+
+
+def handle_api_result(result):
+    """API 模式下处理返回值"""
+    if result is None:
+        return None
+
+    if isinstance(result, (str, int, float)):
+        return {"result": result}
+
+    if isinstance(result, dict):
+        return result
+
+    if isinstance(result, (list, tuple)):
+        return {"result": result}
+
+    if isinstance(result, Path):
+        return {"result": str(result)}
+
+    return {"result": str(result)}
+
+
+def _print_list_of_dicts_as_table(data):
+    """简易表格输出 list[dict]，无外部依赖"""
+    if not data:
+        return
+
+    headers = list(data[0].keys())
+    col_widths = {}
+    for h in headers:
+        col_widths[h] = len(str(h))
+    for row in data:
+        for h in headers:
+            val = str(row.get(h, ''))
+            if len(val) > col_widths[h]:
+                col_widths[h] = len(val)
+
+    for h in headers:
+        col_widths[h] = max(col_widths[h], _cjk_display_width(str(h)))
+    for row in data:
+        for h in headers:
+            w = _cjk_display_width(str(row.get(h, '')))
+            if w > col_widths[h]:
+                col_widths[h] = w
+
+    def _pad(text, width):
+        dw = _cjk_display_width(text)
+        return text + ' ' * (width - dw)
+
+    sep_line = '+' + '+'.join('-' * (col_widths[h] + 2) for h in headers) + '+'
+    header_line = '| ' + ' | '.join(_pad(str(h), col_widths[h]) for h in headers) + ' |'
+
+    print(sep_line)
+    print(header_line)
+    print(sep_line)
+    for row in data:
+        vals = [_pad(str(row.get(h, '')), col_widths[h]) for h in headers]
+        print('| ' + ' | '.join(vals) + ' |')
+    print(sep_line)
+
+
+
+`````
+
+--- **end of file: nb_cmd/core/result_handler.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/type_utils.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+Python类型 → argparse类型/nargs/choices 的映射工具。
+兼容 Python 3.7+。
+"""
+import enum
+from pathlib import Path
+
+
+def _get_origin(tp):
+    """兼容 3.7 的 typing.get_origin"""
+    return getattr(tp, '__origin__', None)
+
+
+def _get_args(tp):
+    """兼容 3.7 的 typing.get_args"""
+    return getattr(tp, '__args__', ())
+
+
+def is_optional(tp):
+    """判断是否是 Optional[X] (即 Union[X, None])"""
+    origin = _get_origin(tp)
+    if origin is not None:
+        import typing
+        if origin is getattr(typing, 'Union', None):
+            args = _get_args(tp)
+            return type(None) in args
+    return False
+
+
+def unwrap_optional(tp):
+    """Optional[X] → X"""
+    if is_optional(tp):
+        args = _get_args(tp)
+        non_none = [a for a in args if a is not type(None)]
+        if len(non_none) == 1:
+            return non_none[0]
+    return tp
+
+
+def is_enum_type(tp):
+    return isinstance(tp, type) and issubclass(tp, enum.Enum)
+
+
+def is_list_type(tp):
+    origin = _get_origin(tp)
+    return origin is list
+
+
+def is_tuple_type(tp):
+    origin = _get_origin(tp)
+    return origin is tuple
+
+
+def get_argparse_type(python_type):
+    """Python类型 → argparse type 参数"""
+    real_type = unwrap_optional(python_type)
+
+    if real_type is bool:
+        return None
+    if real_type in (int, float, str):
+        return real_type
+    if real_type is Path:
+        return str
+    if is_enum_type(real_type):
+        return str
+    if is_list_type(real_type):
+        args = _get_args(real_type)
+        if args:
+            inner = args[0]
+            if inner in (int, float, str):
+                return inner
+        return str
+    if is_tuple_type(real_type):
+        return str
+    return str
+
+
+def get_nargs(python_type):
+    """Python类型 → argparse nargs"""
+    real_type = unwrap_optional(python_type)
+    if is_list_type(real_type):
+        return '+'
+    if is_tuple_type(real_type):
+        args = _get_args(real_type)
+        if args:
+            return len(args)
+    return None
+
+
+def get_choices(python_type):
+    """Python类型 → argparse choices"""
+    real_type = unwrap_optional(python_type)
+    if is_enum_type(real_type):
+        return [e.value for e in real_type]
+    return None
+
+
+def convert_value(value, python_type):
+    """将 argparse 解析出的字符串值转为目标 Python 类型"""
+    real_type = unwrap_optional(python_type)
+
+    if value is None:
+        return None
+
+    if real_type is bool:
+        return value
+
+    if real_type in (int, float, str):
+        return real_type(value)
+
+    if real_type is Path:
+        return Path(value)
+
+    if is_enum_type(real_type):
+        for member in real_type:
+            if member.value == value:
+                return member
+        return real_type(value)
+
+    if is_list_type(real_type):
+        args = _get_args(real_type)
+        inner = args[0] if args else str
+        if isinstance(value, (list, tuple)):
+            return [inner(v) for v in value]
+        return [inner(value)]
+
+    if is_tuple_type(real_type):
+        args = _get_args(real_type)
+        if isinstance(value, (list, tuple)) and args:
+            return tuple(args[i](value[i]) for i in range(min(len(args), len(value))))
+        return value
+
+    return value
+
+
+def type_display_name(python_type):
+    """获取类型的可读显示名"""
+    if hasattr(python_type, '__name__'):
+        return python_type.__name__
+    return str(python_type).replace('typing.', '')
+
+`````
+
+--- **end of file: nb_cmd/core/type_utils.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/_io_dispatch.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+线程安全的 stdout/stderr 分发器。
+
+web_mode 和 api_mode 共用同一个 threading.local() + 分发器，
+避免并发请求之间 stdout 串流。
+
+用法:
+    注册输出目标:
+        _tls.output_queue = some_queue        # WebSocket 推送（队列模式）
+        _tls.captured_stdout = StringIO()     # API 捕获（StringIO 模式）
+        _tls.captured_stderr = StringIO()
+
+    注销:
+        _tls.output_queue = None
+        _tls.captured_stdout = None
+        _tls.captured_stderr = None
+
+    没有注册时, 写到原始 sys.stdout / sys.stderr。
+"""
+import sys
+import threading
+
+_tls = threading.local()
+_original_stdout = sys.stdout
+_original_stderr = sys.stderr
+
+
+class _DispatchWriter(object):
+    """
+    线程安全的 stdout/stderr 替代品。
+    按优先级检查当前线程的输出目标:
+      1. _tls.output_queue     → put((stream_type, data))     (WebSocket)
+      2. _tls.captured_stdout  → write(data)                  (API StringIO)
+      3. 原始流                → write(data)                  (服务器控制台)
+    """
+    def __init__(self, original, stream_type):
+        self._orig = original
+        self._type = stream_type
+        self._cap_attr = 'captured_stdout' if stream_type == 'stdout' else 'captured_stderr'
+        self.encoding = getattr(original, 'encoding', 'utf-8')
+
+    def write(self, data):
+        if not data:
+            return
+        q = getattr(_tls, 'output_queue', None)
+        if q is not None:
+            q.put((self._type, data))
+            return
+        cap = getattr(_tls, self._cap_attr, None)
+        if cap is not None:
+            cap.write(data)
+            return
+        self._orig.write(data)
+
+    def flush(self):
+        self._orig.flush()
+
+    def isatty(self):
+        return True
+
+    def fileno(self):
+        return self._orig.fileno()
+
+    def __getattr__(self, name):
+        return getattr(self._orig, name)
+
+
+def install():
+    """安装分发器（幂等，多次调用安全）"""
+    if not isinstance(sys.stdout, _DispatchWriter):
+        sys.stdout = _DispatchWriter(_original_stdout, 'stdout')
+        sys.stderr = _DispatchWriter(_original_stderr, 'stderr')
+
+`````
+
+--- **end of file: nb_cmd/core/_io_dispatch.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/core/__init__.py** (project: nb_cmd) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cmd/core/__init__.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/modes/api_mode.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+REST API 模式 —— 自动将 NbCmd 类的方法生成 FastAPI 路由。
+需要安装: pip install fastapi uvicorn
+"""
+import asyncio
+import functools
+import inspect
+import io
+import time
+
+from ..core.discovery import discover_commands
+from ..core.result_handler import handle_api_result
+
+
+async def _run_in_thread(func, *args):
+    """asyncio.to_thread 的 Python 3.7+ 兼容版"""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, functools.partial(func, *args))
+
+
+def start_api_server(instance, base_cls, host=None, port=None):
+    """
+    启动 REST API 服务。
+
+    Parameters
+    ----------
+    instance : NbCmd 实例
+    base_cls : NbCmd 类
+    host : str
+    port : int
+    """
+    try:
+        from fastapi import FastAPI
+        from fastapi.middleware.cors import CORSMiddleware
+        import uvicorn
+    except ImportError:
+        print("REST API模式需要安装 fastapi 和 uvicorn:")
+        print("  pip install fastapi uvicorn")
+        return
+
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    title = getattr(meta, 'name', None) or instance.__class__.__name__
+    description = inspect.getdoc(instance) or ''
+    version = getattr(meta, 'version', None) or '0.0.1'
+
+    if host is None:
+        host = getattr(meta, 'serve_host', '0.0.0.0')
+    if port is None:
+        port = getattr(meta, 'serve_port', 8080)
+
+    app = FastAPI(title=title, description=description, version=version)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow_methods = getattr(meta, 'allow_method_list', None)
+    _hide_methods = getattr(meta, 'hide_method_list', None)
+    _auth_token = getattr(meta, 'auth_token', None)
+    _timeout = getattr(meta, 'timeout', 0)
+    commands = discover_commands(instance, base_cls, enable_exec=_enable_exec,
+                                 allow_method_list=_allow_methods,
+                                 hide_method_list=_hide_methods)
+
+    if _auth_token:
+        _install_auth_middleware(app, _auth_token)
+
+    _register_routes(app, instance, commands, base_cls=base_cls,
+                     allow_method_list=_allow_methods, hide_method_list=_hide_methods,
+                     command_prefix='', timeout=_timeout)
+
+    from fastapi.responses import RedirectResponse
+
+    @app.get('/', include_in_schema=False)
+    async def root():
+        """根路径自动跳转到 Swagger 文档"""
+        return RedirectResponse(url='/docs')
+
+    @app.get('/help', summary='所有命令帮助')
+    async def help_all():
+        result = {}
+        for name, info in commands.items():
+            if info.get('is_group'):
+                result[name] = {'type': 'group', 'description': info.get('doc', '')}
+            else:
+                params = {}
+                for pname, param in info['signature'].parameters.items():
+                    if pname == 'self':
+                        continue
+                    ptype = info['type_hints'].get(pname, str)
+                    has_default = param.default is not inspect.Parameter.empty
+                    params[pname] = {
+                        'type': str(ptype),
+                        'required': not has_default,
+                        'default': _safe_default(param.default) if has_default else None,
+                    }
+                result[name] = {
+                    'type': 'command',
+                    'description': info.get('doc', ''),
+                    'parameters': params,
+                }
+        return result
+
+    print('API服务启动在 http://{}:{}'.format(host, port))
+    print('Swagger文档: http://{}:{}/docs'.format(host, port))
+    uvicorn.run(app, host=host, port=port)
+
+
+def _safe_default(value):
+    """将默认值转为 JSON 可序列化的形式"""
+    import enum
+    from pathlib import Path
+    if value is inspect.Parameter.empty:
+        return None
+    if isinstance(value, enum.Enum):
+        return value.value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, (str, int, float, bool, type(None))):
+        return value
+    if isinstance(value, (list, tuple, dict)):
+        return value
+    return str(value)
+
+
+def _register_routes(app, instance, commands, base_cls=None, prefix='',
+                     allow_method_list=None, hide_method_list=None,
+                     command_prefix='', timeout=0):
+    """为每个命令注册 POST 路由，支持递归注册子命令组"""
+    for cmd_name, cmd_info in commands.items():
+        if cmd_info.get('is_group'):
+            if base_cls is not None:
+                group_cls = cmd_info['cls']
+                group_kwargs = cmd_info.get('init_kwargs', {})
+                group_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+                try:
+                    group_instance = group_cls(**group_kwargs) if group_kwargs else group_cls()
+                except TypeError:
+                    group_instance = group_cls.__new__(group_cls)
+                parent_ctx = instance.nbctx if hasattr(instance, 'nbctx') else None
+                if parent_ctx is not None:
+                    group_instance.nbctx = parent_ctx
+                group_commands = discover_commands(group_instance, base_cls,
+                                                   include_builtins=False,
+                                                   allow_method_list=allow_method_list,
+                                                   hide_method_list=hide_method_list,
+                                                   command_prefix=group_path)
+                group_prefix = '{}/{}'.format(prefix, cmd_name) if prefix else cmd_name
+                _register_routes(app, group_instance, group_commands,
+                                 base_cls=base_cls, prefix=group_prefix,
+                                 allow_method_list=allow_method_list,
+                                 hide_method_list=hide_method_list,
+                                 command_prefix=group_path, timeout=timeout)
+            continue
+
+        sig = cmd_info['signature']
+        hints = cmd_info.get('type_hints', {})
+        cli_name = cmd_name.replace('_', '-')
+        if prefix:
+            route_path = '{}/{}'.format(prefix.replace('_', '-'), cli_name)
+        else:
+            route_path = cli_name
+        doc = cmd_info.get('doc', '')
+
+        try:
+            from pydantic import create_model as _create_model
+
+            fields = {}
+            for param_name, param in sig.parameters.items():
+                if param_name == 'self':
+                    continue
+                param_type = hints.get(param_name, str)
+
+                import enum
+                from pathlib import Path
+                from ..core.type_utils import unwrap_optional, is_enum_type, is_list_type, is_tuple_type
+
+                real_type = unwrap_optional(param_type)
+                if is_enum_type(real_type):
+                    real_type = str
+                if real_type is Path:
+                    real_type = str
+                if is_list_type(real_type):
+                    real_type = list
+                if is_tuple_type(real_type):
+                    real_type = list
+
+                has_default = param.default is not inspect.Parameter.empty
+                if has_default:
+                    default_val = param.default
+                    if isinstance(default_val, enum.Enum):
+                        default_val = default_val.value
+                    if isinstance(default_val, Path):
+                        default_val = str(default_val)
+                    fields[param_name] = (real_type, default_val)
+                else:
+                    fields[param_name] = (real_type, ...)
+
+            if _get_init_kwargs(instance):
+                from typing import Optional as _Optional
+                fields['init_params'] = (_Optional[dict], None)
+
+            model_name = '{}_{}_request'.format(prefix, cmd_name) if prefix else '{}_request'.format(cmd_name)
+            RequestModel = _create_model(model_name, **fields)
+        except Exception:
+            RequestModel = None
+
+        _make_route(app, route_path, doc, cmd_name, instance, RequestModel, hints, timeout=timeout)
+
+
+def _get_init_kwargs(instance):
+    """从实例上提取 __init__ 参数的当前值，用于重新实例化"""
+    cls = instance.__class__
+    init_method = cls.__init__
+    if init_method is object.__init__:
+        return {}
+    sig = inspect.signature(init_method)
+    kwargs = {}
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        if hasattr(instance, pname):
+            kwargs[pname] = getattr(instance, pname)
+    return kwargs
+
+
+def _get_init_types(instance):
+    """获取 __init__ 参数名到真实类型的映射，用于 REST API 中 _init_params 的类型转换"""
+    from ..core.arg import unwrap_arg
+    cls = instance.__class__
+    init_method = cls.__init__
+    if init_method is object.__init__:
+        return {}
+    sig = inspect.signature(init_method)
+    types = {}
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            val = getattr(instance, pname, None)
+            types[pname] = type(val) if val is not None else str
+        else:
+            real_type, _ = unwrap_arg(raw_hint)
+            types[pname] = real_type
+    return types
+
+
+def _make_route(app, path, summary, cmd_name, instance, request_model, type_hints, timeout=0):
+    """创建单个 API 路由，每次请求新建实例执行命令，支持 init_params 覆盖全局参数"""
+    _cmd_name = cmd_name
+    _cls = instance.__class__
+    _init_kwargs = _get_init_kwargs(instance)
+    _init_types = _get_init_types(instance)
+    _hints = type_hints
+    _path = path
+    _timeout = timeout
+
+    def _fresh(raw_init_params=None):
+        if not raw_init_params or not _init_types:
+            inst = _cls(**_init_kwargs) if _init_kwargs else _cls()
+        else:
+            from ..core.type_utils import convert_value
+            merged = dict(_init_kwargs)
+            for pname, val in raw_init_params.items():
+                if pname in _init_types:
+                    merged[pname] = convert_value(val, _init_types[pname])
+            inst = _cls(**merged) if merged else _cls()
+        ctx = inst.make_nbctx()
+        if ctx is not None:
+            inst.nbctx = ctx
+        return inst
+
+    def _convert_kwargs(kwargs):
+        from ..core.type_utils import convert_value
+        converted = {}
+        for k, v in kwargs.items():
+            if k in _hints:
+                converted[k] = convert_value(v, _hints[k])
+            else:
+                converted[k] = v
+        return converted
+
+    from ..core._io_dispatch import _tls as _api_tls, install as _install_io
+    _install_io()
+
+    def _exec_in_thread(fresh_inst, kwargs):
+        import asyncio as _aio
+        captured_out = io.StringIO()
+        captured_err = io.StringIO()
+        _api_tls.captured_stdout = captured_out
+        _api_tls.captured_stderr = captured_err
+        try:
+            method = getattr(fresh_inst, _cmd_name)
+            result = method(**_convert_kwargs(kwargs))
+            if inspect.iscoroutine(result):
+                result = _aio.run(result)
+        finally:
+            _api_tls.captured_stdout = None
+            _api_tls.captured_stderr = None
+        return result, captured_out.getvalue(), captured_err.getvalue()
+
+    async def _exec_with_timeout(fresh_inst, kwargs):
+        coro = _run_in_thread(_exec_in_thread, fresh_inst, kwargs)
+        if _timeout > 0:
+            return await asyncio.wait_for(coro, timeout=_timeout)
+        return await coro
+
+    if request_model is not None:
+        @app.post('/{}'.format(path), summary=summary)
+        async def endpoint(request: request_model):
+            start = time.time()
+            kwargs = request.dict() if hasattr(request, 'dict') else request.model_dump()
+            raw_init = kwargs.pop('init_params', None)
+            fresh_inst = _fresh(raw_init)
+            fresh_inst.before_run()
+            try:
+                result, stdout_output, stderr_output = await _exec_with_timeout(
+                    fresh_inst, kwargs)
+                api_result = handle_api_result(result)
+                duration_ms = int((time.time() - start) * 1000)
+                return {
+                    "status": "success",
+                    "result": api_result,
+                    "stdout": stdout_output if stdout_output else None,
+                    "stderr": stderr_output if stderr_output else None,
+                    "duration_ms": duration_ms,
+                }
+            except asyncio.TimeoutError:
+                duration_ms = int((time.time() - start) * 1000)
+                return {
+                    "status": "error",
+                    "error": "命令执行超时（{} 秒）".format(_timeout),
+                    "duration_ms": duration_ms,
+                }
+            except Exception as e:
+                fresh_inst.on_error(_path, e)
+                return {
+                    "status": "error",
+                    "error": str(e),
+                    "duration_ms": int((time.time() - start) * 1000),
+                }
+            finally:
+                fresh_inst.after_run()
+    else:
+        @app.post('/{}'.format(path), summary=summary)
+        async def endpoint(request: dict = {}):
+            start = time.time()
+            raw_init = request.pop('init_params', None)
+            fresh_inst = _fresh(raw_init)
+            fresh_inst.before_run()
+            try:
+                result, stdout_output, stderr_output = await _exec_with_timeout(
+                    fresh_inst, request)
+                api_result = handle_api_result(result)
+                duration_ms = int((time.time() - start) * 1000)
+                return {
+                    "status": "success",
+                    "result": api_result,
+                    "stdout": stdout_output if stdout_output else None,
+                    "stderr": stderr_output if stderr_output else None,
+                    "duration_ms": duration_ms,
+                }
+            except asyncio.TimeoutError:
+                duration_ms = int((time.time() - start) * 1000)
+                return {
+                    "status": "error",
+                    "error": "命令执行超时（{} 秒）".format(_timeout),
+                    "duration_ms": duration_ms,
+                }
+            except Exception as e:
+                fresh_inst.on_error(_path, e)
+                return {
+                    "status": "error",
+                    "error": str(e),
+                    "duration_ms": int((time.time() - start) * 1000),
+                }
+            finally:
+                fresh_inst.after_run()
+
+
+def _install_auth_middleware(app, token, exempt_prefixes=None):
+    """
+    安装 Bearer token 认证中间件。
+
+    Parameters
+    ----------
+    exempt_prefixes : list[str], optional
+        额外的免认证路径前缀列表。
+        默认已豁免 /docs /redoc /openapi.json。
+        Web 模式会传入 /api/ /ws/ 等前缀，使页面可以正常访问。
+    """
+    from starlette.middleware.base import BaseHTTPMiddleware
+    from starlette.responses import JSONResponse
+
+    _always_exempt = ('/', '/docs', '/redoc', '/openapi.json')
+    _extra_prefixes = tuple(exempt_prefixes) if exempt_prefixes else ()
+
+    class _AuthMiddleware(BaseHTTPMiddleware):
+        async def dispatch(self, request, call_next):
+            path = request.url.path
+            if path in _always_exempt:
+                return await call_next(request)
+            for prefix in _extra_prefixes:
+                if path.startswith(prefix):
+                    return await call_next(request)
+            auth_header = request.headers.get('authorization', '')
+            if not auth_header.startswith('Bearer '):
+                return JSONResponse({'detail': 'Missing or invalid Authorization header'},
+                                    status_code=401)
+            if auth_header[7:] != token:
+                return JSONResponse({'detail': 'Invalid token'}, status_code=403)
+            return await call_next(request)
+
+    app.add_middleware(_AuthMiddleware)
+
+`````
+
+--- **end of file: nb_cmd/modes/api_mode.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/modes/cli_mode.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+CLI 模式 —— 默认的命令行交互模式。
+"""
+import asyncio
+import inspect
+
+from ..core.discovery import discover_commands
+from ..core.parser import build_parser
+from ..core.type_utils import convert_value
+from ..core.result_handler import handle_cli_result
+
+
+def _run_method(method, kwargs):
+    """执行方法，自动处理同步和异步函数"""
+    result = method(**kwargs)
+    if inspect.iscoroutine(result):
+        result = asyncio.run(result)
+    return result
+
+
+def _run_method_with_timeout(method, kwargs, timeout):
+    """执行方法并在超时后抛出 TimeoutError（timeout=0 表示不限）"""
+    if timeout <= 0:
+        return _run_method(method, kwargs)
+
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(_run_method, method, kwargs)
+        try:
+            return future.result(timeout=timeout)
+        except concurrent.futures.TimeoutError:
+            raise TimeoutError(
+                '命令执行超时（{} 秒）。可通过 Meta.timeout 调整超时时间。'.format(timeout)
+            )
+
+
+def run_cli(instance, base_cls, args=None):
+    """
+    以 CLI 模式执行 NbCmd 实例。
+
+    Parameters
+    ----------
+    instance : NbCmd 实例
+    base_cls : NbCmd 类（用于过滤基类方法）
+    args : list, optional  命令行参数列表，默认 sys.argv[1:]
+    """
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow_methods = getattr(meta, 'allow_method_list', None)
+    _hide_methods = getattr(meta, 'hide_method_list', None)
+    _timeout = getattr(meta, 'timeout', 0)
+    commands = discover_commands(instance, base_cls, enable_exec=_enable_exec,
+                                 allow_method_list=_allow_methods,
+                                 hide_method_list=_hide_methods)
+    parser = build_parser(instance, commands, meta, base_cls=base_cls,
+                          allow_method_list=_allow_methods,
+                          hide_method_list=_hide_methods)
+
+    parsed = parser.parse_args(args)
+
+    _apply_init_args(instance, parsed)
+    _ensure_nbctx(instance)
+
+    command_name = getattr(parsed, '_nb_command', None)
+    if not command_name:
+        parser.print_help()
+        return
+
+    python_name = command_name.replace('-', '_')
+
+    if python_name in commands and commands[python_name].get('is_group'):
+        _run_group_command(instance, commands[python_name], parsed, base_cls, depth=1,
+                           allow_method_list=_allow_methods, hide_method_list=_hide_methods,
+                           command_prefix=python_name)
+        return
+
+    if python_name not in commands:
+        parser.print_help()
+        return
+
+    cmd_info = commands[python_name]
+    method = cmd_info['method']
+    kwargs = _extract_kwargs(method, cmd_info, parsed)
+
+    instance.before_run()
+    try:
+        result = _run_method_with_timeout(method, kwargs, _timeout)
+        handle_cli_result(result)
+    except Exception as e:
+        instance.on_error(command_name, e)
+        raise
+    finally:
+        instance.after_run()
+
+
+def _apply_init_args(instance, parsed):
+    """
+    将解析出的全局选项（__init__参数）应用到实例上。
+
+    通过重新调用 __init__（带 CLI 解析值）来更新实例状态，
+    这样用户在 __init__ 中直接赋值 self.nbctx = XxxCtx(...) 也能拿到正确的 CLI 值。
+    """
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return
+
+    sig = inspect.signature(init_method)
+    kwargs = {}
+    for param_name in sig.parameters:
+        if param_name == 'self':
+            continue
+        attr_name = '_nb_init_' + param_name
+        if hasattr(parsed, attr_name):
+            cli_val = getattr(parsed, attr_name)
+            if cli_val is not None:
+                kwargs[param_name] = cli_val
+            elif hasattr(instance, param_name):
+                kwargs[param_name] = getattr(instance, param_name)
+        elif hasattr(instance, param_name):
+            kwargs[param_name] = getattr(instance, param_name)
+
+    instance.__init__(**kwargs)
+
+
+def _extract_kwargs(method, cmd_info, parsed):
+    """从 parsed namespace 中提取方法所需的关键字参数"""
+    sig = cmd_info['signature']
+    hints = cmd_info.get('type_hints', {})
+    kwargs = {}
+
+    for param_name, param in sig.parameters.items():
+        if param_name == 'self':
+            continue
+
+        raw_value = getattr(parsed, param_name, None)
+        param_type = hints.get(param_name, str)
+        converted = convert_value(raw_value, param_type)
+        kwargs[param_name] = converted
+
+    return kwargs
+
+
+def _ensure_nbctx(instance):
+    """确保实例的 nbctx 已初始化（调用 make_nbctx）"""
+    if instance.nbctx is None:
+        ctx = instance.make_nbctx()
+        if ctx is not None:
+            instance.nbctx = ctx
+
+
+def _inject_nbctx(parent, child):
+    """将父级的 nbctx 注入到子命令组实例"""
+    parent_ctx = parent.nbctx
+    if parent_ctx is not None:
+        child.nbctx = parent_ctx
+
+
+def _run_group_command(instance, group_info, parsed, base_cls, depth=1,
+                       allow_method_list=None, hide_method_list=None, command_prefix=''):
+    """执行子命令组中的命令"""
+    group_cls = group_info['cls']
+    group_kwargs = group_info.get('init_kwargs', {})
+
+    try:
+        group_instance = group_cls(**group_kwargs) if group_kwargs else group_cls()
+    except TypeError:
+        group_instance = group_cls.__new__(group_cls)
+
+    _inject_nbctx(instance, group_instance)
+
+    dest = '_nb_sub_command' if depth == 1 else '_nb_sub_command_{}'.format(depth)
+    sub_command = getattr(parsed, dest, None)
+    if not sub_command:
+        print('请指定子命令。使用 --help 查看可用子命令。')
+        return
+
+    sub_python_name = sub_command.replace('-', '_')
+    sub_commands = discover_commands(group_instance, base_cls,
+                                     allow_method_list=allow_method_list,
+                                     hide_method_list=hide_method_list,
+                                     command_prefix=command_prefix)
+
+    if sub_python_name in sub_commands and sub_commands[sub_python_name].get('is_group'):
+        next_prefix = '{}/{}'.format(command_prefix, sub_python_name) if command_prefix else sub_python_name
+        _run_group_command(group_instance, sub_commands[sub_python_name], parsed, base_cls,
+                           depth=depth + 1, allow_method_list=allow_method_list,
+                           hide_method_list=hide_method_list,
+                           command_prefix=next_prefix)
+        return
+
+    if sub_python_name not in sub_commands:
+        print('未知子命令: {}'.format(sub_command))
+        return
+
+    cmd_info = sub_commands[sub_python_name]
+    method = cmd_info['method']
+    kwargs = _extract_kwargs(method, cmd_info, parsed)
+
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    _timeout = getattr(meta, 'timeout', 0)
+
+    group_instance.before_run()
+    try:
+        result = _run_method_with_timeout(method, kwargs, _timeout)
+        handle_cli_result(result)
+    except Exception as e:
+        group_instance.on_error(sub_command, e)
+        raise
+    finally:
+        group_instance.after_run()
+
+`````
+
+--- **end of file: nb_cmd/modes/cli_mode.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/modes/web_mode.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+Web UI 模式 —— 自动生成 Web 界面，支持命令行输入 + 参数表单 + 实时控制台。
+需要安装: pip install fastapi uvicorn websockets
+"""
+import asyncio
+import inspect
+import json
+import os
+import sys
+import threading
+import time
+
+from ..core.discovery import discover_commands
+from ..core.result_handler import handle_api_result
+
+
+def start_web_server(instance, base_cls, host=None, port=None):
+    """启动 Web UI 服务"""
+    try:
+        from fastapi import FastAPI
+        from fastapi.responses import HTMLResponse
+        from fastapi.middleware.cors import CORSMiddleware
+        from starlette.websockets import WebSocket, WebSocketDisconnect
+        import uvicorn
+    except ImportError:
+        print("Web UI模式需要安装 fastapi, uvicorn 和 websockets:")
+        print("  pip install fastapi uvicorn websockets")
+        return
+
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    title = getattr(meta, 'web_title', None) or getattr(meta, 'name', None) or instance.__class__.__name__
+    version = getattr(meta, 'version', None) or '0.0.1'
+    theme = getattr(meta, 'web_theme', 'light')
+
+    if host is None:
+        host = getattr(meta, 'serve_host', '0.0.0.0')
+    if port is None:
+        port = getattr(meta, 'serve_port', 8080)
+
+    app = FastAPI(title=title, version=version)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    from ..ui import colors as _colors_mod
+    _colors_mod._COLOR_ENABLED = True
+
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow_methods = getattr(meta, 'allow_method_list', None)
+    _hide_methods = getattr(meta, 'hide_method_list', None)
+    _auth_token = getattr(meta, 'auth_token', None)
+    _timeout = getattr(meta, 'timeout', 0)
+    commands = discover_commands(instance, base_cls, enable_exec=_enable_exec,
+                                 allow_method_list=_allow_methods,
+                                 hide_method_list=_hide_methods)
+    description = inspect.getdoc(instance) or instance.__class__.__name__
+
+    from ..core._io_dispatch import _tls, install as _install_io
+    _install_io()
+
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ui', 'static')
+    has_built_frontend = os.path.isfile(os.path.join(static_dir, 'index.html'))
+
+    if _auth_token:
+        from ..modes.api_mode import _install_auth_middleware
+        _install_auth_middleware(app, _auth_token, exempt_prefixes=[
+            '/api/', '/ws/', '/static/',
+        ])
+
+    from ..modes.api_mode import _register_routes as _register_pydantic_routes
+    _register_pydantic_routes(app, instance, commands, base_cls=base_cls,
+                              allow_method_list=_allow_methods,
+                              hide_method_list=_hide_methods,
+                              command_prefix='', timeout=_timeout)
+
+    def _build_group_result(cmds_dict, command_prefix=''):
+        """递归构建命令组的结构（含嵌套子命令组）"""
+        result = {}
+        for name, info in cmds_dict.items():
+            if info.get('is_group'):
+                g_cls = info['cls']
+                g_kwargs = info.get('init_kwargs', {})
+                group_path = '{}/{}'.format(command_prefix, name) if command_prefix else name
+                try:
+                    g_inst = g_cls(**g_kwargs) if g_kwargs else g_cls()
+                except TypeError:
+                    g_inst = g_cls.__new__(g_cls)
+                g_cmds = discover_commands(g_inst, base_cls, include_builtins=False,
+                                           allow_method_list=_allow_methods,
+                                           hide_method_list=_hide_methods,
+                                           command_prefix=group_path)
+                result[name] = {
+                    'type': 'group',
+                    'description': info.get('doc', ''),
+                    'sub_commands': _build_group_result(g_cmds, group_path),
+                }
+            else:
+                result[name] = _build_cmd_info(info)
+        return result
+
+    @app.get('/api/commands', summary='获取所有命令及参数定义')
+    async def get_commands():
+        return _build_group_result(commands, '')
+
+    init_params_info = _build_init_params_info(instance)
+    _user_cls = instance.__class__
+
+    @app.get('/api/init-params', summary='获取 __init__ 全局参数定义')
+    async def get_init_params():
+        result = []
+        for p in init_params_info:
+            result.append({
+                'name': p['name'],
+                'type': p['type'],
+                'widget': p['widget'],
+                'required': p.get('required', False),
+                'default': p['default'],
+                'current': _serialize_default(getattr(instance, p['name'], p['default'])),
+                'choices': p['choices'],
+                'description': p['description'],
+            })
+        return result
+
+    @app.get('/api/help/{command}', summary='获取命令帮助')
+    async def get_help(command: str):
+        python_name = command.replace('-', '_')
+        if python_name not in commands:
+            return {"error": "未知命令: {}".format(command)}
+        info = commands[python_name]
+        return {
+            "command": command,
+            "description": info.get('full_doc', info.get('doc', '')),
+        }
+
+    import queue as _queue
+    import sqlite3 as _sqlite3
+
+    _db_path = os.path.join(os.getcwd(), 'nb_cmd_web.db')
+
+    def _get_db():
+        conn = _sqlite3.connect(_db_path)
+        conn.execute('CREATE TABLE IF NOT EXISTS saved_commands '
+                     '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+                     'command TEXT UNIQUE NOT NULL, '
+                     'created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        conn.execute('CREATE TABLE IF NOT EXISTS command_history '
+                     '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+                     'command TEXT NOT NULL, '
+                     'executed_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        return conn
+
+    _get_db().close()
+
+    @app.get('/api/saved-commands', summary='获取收藏命令列表')
+    async def get_saved_commands():
+        conn = _get_db()
+        rows = conn.execute(
+            'SELECT id, command, created_at FROM saved_commands ORDER BY id DESC'
+        ).fetchall()
+        conn.close()
+        return [{'id': r[0], 'command': r[1], 'created_at': r[2]} for r in rows]
+
+    @app.post('/api/save-command', summary='收藏命令（去重）')
+    async def save_command(body: dict):
+        cmd = body.get('command', '').strip()
+        if not cmd:
+            return {'status': 'error', 'message': '命令不能为空'}
+        conn = _get_db()
+        try:
+            conn.execute('INSERT OR IGNORE INTO saved_commands (command) VALUES (?)', (cmd,))
+            conn.commit()
+        finally:
+            conn.close()
+        return {'status': 'ok'}
+
+    @app.delete('/api/save-command', summary='取消收藏命令')
+    async def delete_saved_command(body: dict):
+        cmd = body.get('command', '').strip()
+        conn = _get_db()
+        try:
+            conn.execute('DELETE FROM saved_commands WHERE command = ?', (cmd,))
+            conn.commit()
+        finally:
+            conn.close()
+        return {'status': 'ok'}
+
+    @app.get('/api/history', summary='获取命令执行历史（最近1000条）')
+    async def get_history():
+        conn = _get_db()
+        rows = conn.execute(
+            'SELECT id, command, executed_at FROM command_history '
+            'ORDER BY id DESC LIMIT 1000'
+        ).fetchall()
+        conn.close()
+        return [{'id': r[0], 'command': r[1], 'executed_at': r[2]} for r in rows]
+
+    @app.post('/api/history', summary='记录一条执行历史')
+    async def post_history(body: dict):
+        cmd = body.get('command', '').strip()
+        if not cmd:
+            return {'status': 'error'}
+        conn = _get_db()
+        try:
+            conn.execute('INSERT INTO command_history (command) VALUES (?)', (cmd,))
+            conn.execute(
+                'DELETE FROM command_history WHERE id NOT IN '
+                '(SELECT id FROM command_history ORDER BY id DESC LIMIT 1000)')
+            conn.commit()
+        finally:
+            conn.close()
+        return {'status': 'ok'}
+
+    def _make_instance(raw_init_params=None):
+        """每次请求创建一个新的用户类实例，彼此隔离"""
+        if not init_params_info:
+            inst = _user_cls()
+        else:
+            from ..core.type_utils import convert_value
+            kwargs = {}
+            for p in init_params_info:
+                pname = p['name']
+                if raw_init_params and pname in raw_init_params:
+                    kwargs[pname] = convert_value(raw_init_params[pname], p['_real_type'])
+                elif p.get('required'):
+                    kwargs[pname] = getattr(instance, pname)
+            inst = _user_cls(**kwargs) if kwargs else _user_cls()
+        ctx = inst.make_nbctx()
+        if ctx is not None:
+            inst.nbctx = ctx
+        return inst
+
+    def _resolve_command(route_path, raw_init_params=None):
+        """根据路由路径解析出 (method, target_instance, cmd_info)，支持多层嵌套"""
+        parts = route_path.replace('-', '_').split('/')
+        if len(parts) == 1:
+            cmd_name = parts[0]
+            if cmd_name in commands and not commands[cmd_name].get('is_group'):
+                info = commands[cmd_name]
+                target_inst = _make_instance(raw_init_params)
+                method = getattr(target_inst, cmd_name)
+                return method, target_inst, info
+        elif len(parts) >= 2:
+            root_inst = _make_instance(raw_init_params)
+            current_cmds = commands
+            current_inst = root_inst
+            current_path = ''
+            for i, part in enumerate(parts):
+                if part not in current_cmds:
+                    break
+                info = current_cmds[part]
+                if info.get('is_group'):
+                    current_path = '{}/{}'.format(current_path, part) if current_path else part
+                    g_cls = info['cls']
+                    g_kwargs = info.get('init_kwargs', {})
+                    try:
+                        child_inst = g_cls(**g_kwargs) if g_kwargs else g_cls()
+                    except TypeError:
+                        child_inst = g_cls.__new__(g_cls)
+                    parent_ctx = current_inst.nbctx if current_inst is not None else None
+                    if parent_ctx is not None:
+                        child_inst.nbctx = parent_ctx
+                    current_inst = child_inst
+                    current_cmds = discover_commands(current_inst, base_cls,
+                                                     include_builtins=False,
+                                                     allow_method_list=_allow_methods,
+                                                     hide_method_list=_hide_methods,
+                                                     command_prefix=current_path)
+                elif i == len(parts) - 1 and current_inst is not None:
+                    return info['method'], current_inst, info
+        return None, None, None
+
+    def _cancel_thread(tid):
+        """向指定线程注入 KeyboardInterrupt，模拟 Ctrl+C"""
+        import ctypes
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(
+            ctypes.c_ulong(tid), ctypes.py_object(KeyboardInterrupt))
+        return res == 1
+
+    @app.websocket('/ws/execute')
+    async def ws_execute(websocket: WebSocket):
+        await websocket.accept()
+        cancel_event = threading.Event()
+        worker_thread = None
+        try:
+            msg = await websocket.receive_json()
+            route_path = msg.get('command', '')
+            raw_kwargs = msg.get('args', {})
+            raw_init_params = msg.get('init_params', None)
+
+            method, target_inst, cmd_info = _resolve_command(
+                route_path, raw_init_params)
+            if method is None:
+                await websocket.send_json({
+                    'type': 'error', 'error': '未知命令: {}'.format(route_path)
+                })
+                return
+
+            kwargs = _convert_request_params(raw_kwargs, cmd_info)
+            output_q = _queue.Queue()
+            result_holder = {'result': None, 'error': None, 'cancelled': False}
+
+            def _run():
+                _tls.output_queue = output_q
+                saved_streams = []
+                if hasattr(target_inst, '_logger') and target_inst._logger:
+                    for h in target_inst._logger.handlers:
+                        if hasattr(h, 'stream'):
+                            saved_streams.append((h, h.stream))
+                            h.stream = sys.stderr
+                try:
+                    target_inst.before_run()
+                    r = method(**kwargs)
+                    if inspect.iscoroutine(r):
+                        r = asyncio.run(r)
+                    result_holder['result'] = handle_api_result(r)
+                except KeyboardInterrupt:
+                    result_holder['cancelled'] = True
+                except Exception as exc:
+                    if cancel_event.is_set():
+                        result_holder['cancelled'] = True
+                    else:
+                        result_holder['error'] = str(exc)
+                        target_inst.on_error(route_path, exc)
+                finally:
+                    for h, orig in saved_streams:
+                        h.stream = orig
+                    _tls.output_queue = None
+                    target_inst.after_run()
+                    output_q.put(None)
+
+            t = threading.Thread(target=_run, daemon=True)
+            worker_thread = t
+            start_ts = time.time()
+            t.start()
+
+            if _timeout > 0:
+                def _auto_timeout():
+                    if not cancel_event.wait(_timeout):
+                        cancel_event.set()
+                        if t.is_alive() and t.ident:
+                            _cancel_thread(t.ident)
+                        result_holder['error'] = '命令执行超时（{} 秒）'.format(_timeout)
+                _timer = threading.Thread(target=_auto_timeout, daemon=True)
+                _timer.start()
+
+            async def _listen_cancel():
+                """后台监听客户端的取消消息"""
+                try:
+                    while not cancel_event.is_set():
+                        client_msg = await asyncio.wait_for(
+                            websocket.receive_json(), timeout=0.1)
+                        if client_msg.get('action') == 'cancel':
+                            cancel_event.set()
+                            if t.is_alive() and t.ident:
+                                _cancel_thread(t.ident)
+                            return
+                except asyncio.TimeoutError:
+                    pass
+                except (WebSocketDisconnect, Exception):
+                    cancel_event.set()
+
+            while True:
+                listen_task = asyncio.ensure_future(_listen_cancel())
+                try:
+                    item = output_q.get(timeout=0.05)
+                    if item is None:
+                        listen_task.cancel()
+                        break
+                    stream_type, data = item
+                    await websocket.send_json({'type': stream_type, 'data': data})
+                except _queue.Empty:
+                    if not t.is_alive():
+                        while not output_q.empty():
+                            item = output_q.get_nowait()
+                            if item is None:
+                                break
+                            await websocket.send_json({
+                                'type': item[0], 'data': item[1]
+                            })
+                        listen_task.cancel()
+                        break
+                    await asyncio.sleep(0.02)
+                finally:
+                    if not listen_task.done():
+                        listen_task.cancel()
+
+            t.join(timeout=2)
+            duration = int((time.time() - start_ts) * 1000)
+
+            if result_holder['cancelled'] or cancel_event.is_set():
+                await websocket.send_json({
+                    'type': 'cancelled',
+                    'duration_ms': duration,
+                })
+            elif result_holder['error']:
+                await websocket.send_json({
+                    'type': 'error',
+                    'error': result_holder['error'],
+                    'duration_ms': duration,
+                })
+            else:
+                await websocket.send_json({
+                    'type': 'complete',
+                    'result': result_holder['result'],
+                    'duration_ms': duration,
+                })
+        except WebSocketDisconnect:
+            cancel_event.set()
+            if worker_thread and worker_thread.is_alive() and worker_thread.ident:
+                _cancel_thread(worker_thread.ident)
+        except Exception:
+            pass
+
+    if has_built_frontend:
+        from fastapi.staticfiles import StaticFiles
+        app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+    else:
+        html_content = _generate_builtin_html(title, version, description, theme, _enable_exec)
+
+        @app.get('/', response_class=HTMLResponse, include_in_schema=False)
+        async def index():
+            return html_content
+
+    print('Web UI启动在 http://{}:{}'.format(host, port))
+    print('API文档: http://{}:{}/docs'.format(host, port))
+    uvicorn.run(app, host=host, port=port)
+
+
+def _serialize_default(value):
+    """将默认值转换为 JSON 可序列化的形式"""
+    if value is inspect.Parameter.empty or value is None:
+        return None
+    import enum
+    from pathlib import Path
+    if isinstance(value, enum.Enum):
+        return value.value
+    if isinstance(value, Path):
+        return str(value)
+    try:
+        json.dumps(value)
+        return value
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _build_init_params_info(instance):
+    """提取 __init__ 中带默认值的参数，返回前端所需的参数定义列表"""
+    from ..core.arg import unwrap_arg
+    from ..core.type_utils import (
+        type_display_name, is_enum_type, unwrap_optional,
+        is_optional as _is_opt, is_list_type, get_choices,
+    )
+
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return []
+
+    sig = inspect.signature(init_method)
+
+    params = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+
+        has_default = param.default is not inspect.Parameter.empty
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            if has_default and param.default is not None:
+                raw_hint = type(param.default)
+            else:
+                raw_hint = str
+
+        real_type, arg_inst = unwrap_arg(raw_hint)
+        unwrapped = unwrap_optional(real_type) if _is_opt(real_type) else real_type
+        type_name = type_display_name(unwrapped)
+        choices = get_choices(real_type)
+
+        widget = 'text'
+        if unwrapped is bool:
+            widget = 'checkbox'
+        elif unwrapped is int:
+            widget = 'number'
+        elif unwrapped is float:
+            widget = 'number'
+        elif is_enum_type(unwrapped):
+            widget = 'select'
+        elif is_list_type(unwrapped):
+            widget = 'tags'
+
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+
+        params.append({
+            'name': pname,
+            'type': type_name,
+            'widget': widget,
+            'required': not has_default,
+            'default': _serialize_default(param.default) if has_default else None,
+            'choices': choices,
+            'description': desc,
+            '_real_type': real_type,
+        })
+    return params
+
+
+def _build_cmd_info(info):
+    """将一条 discover_commands 返回的命令信息转为前端所需的格式"""
+    from ..core.type_utils import (
+        type_display_name, is_enum_type, unwrap_optional,
+        is_optional as _is_opt, is_list_type,
+        get_choices,
+    )
+    arg_meta = info.get('arg_meta', {})
+    params = []
+    for pname, param in info['signature'].parameters.items():
+        if pname == 'self':
+            continue
+        ptype = info['type_hints'].get(pname, str)
+        has_default = param.default is not inspect.Parameter.empty
+        is_kw_only = param.kind == inspect.Parameter.KEYWORD_ONLY
+
+        real_type = unwrap_optional(ptype)
+        type_name = type_display_name(real_type)
+        choices = get_choices(ptype)
+
+        widget = 'text'
+        if real_type is bool:
+            widget = 'checkbox'
+        elif real_type is int:
+            widget = 'number'
+        elif real_type is float:
+            widget = 'number'
+        elif is_enum_type(real_type):
+            widget = 'select'
+        elif is_list_type(real_type):
+            widget = 'tags'
+
+        arg_inst = arg_meta.get(pname)
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+
+        params.append({
+            'name': pname,
+            'type': type_name,
+            'widget': widget,
+            'required': not has_default and not is_kw_only,
+            'default': _serialize_default(param.default if has_default else None),
+            'choices': choices,
+            'optional': _is_opt(ptype),
+            'description': desc,
+        })
+    return {
+        'type': 'command',
+        'description': info.get('doc', ''),
+        'full_doc': info.get('full_doc', ''),
+        'parameters': params,
+    }
+
+
+def _convert_request_params(request, cmd_info):
+    """将 HTTP 请求参数转换为方法调用参数"""
+    from ..core.type_utils import convert_value
+    sig = cmd_info['signature']
+    hints = cmd_info.get('type_hints', {})
+    kwargs = {}
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        if pname in request:
+            ptype = hints.get(pname, str)
+            kwargs[pname] = convert_value(request[pname], ptype)
+        elif param.default is not inspect.Parameter.empty:
+            kwargs[pname] = param.default
+    return kwargs
+
+
+def _generate_builtin_html(title, version, description, theme, enable_exec=True):
+    """生成内置的 Web UI HTML 页面（当没有 Vue 前端构建产物时使用）"""
+    dark_css = """
+        :root { --bg: #1a1a2e; --card-bg: #16213e; --text: #e0e0e0; --border: #0f3460;
+                --primary: #0097e6; --primary-hover: #00b4d8; --input-bg: #0f3460;
+                --console-bg: #0d1b2a; --success: #2ecc71; --warning: #f39c12;
+                --error: #e74c3c; --info: #3498db; --hover-bg: #1b2838; }
+    """ if theme == 'dark' else """
+        :root { --bg: #f5f6fa; --card-bg: #ffffff; --text: #2c3e50; --border: #dcdde1;
+                --primary: #0097e6; --primary-hover: #0078b8; --input-bg: #ffffff;
+                --console-bg: #1e272e; --success: #2ecc71; --warning: #f39c12;
+                --error: #e74c3c; --info: #3498db; --hover-bg: #f0f0f0; }
+    """
+
+    return '''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>''' + title + '''</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+''' + dark_css + '''
+body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+       background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+.header { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex;
+           align-items: center; justify-content: space-between; background: var(--card-bg); }
+.header h1 { font-size: 18px; }
+.header .version { color: var(--primary); font-size: 13px; }
+.main { flex: 1; display: flex; overflow: hidden; }
+.left-panel { width: 45%; min-width: 200px; display: flex; flex-direction: column; overflow: hidden; }
+.resizer { width: 5px; cursor: col-resize; background: var(--border); flex-shrink: 0;
+           transition: background 0.15s; }
+.resizer:hover, .resizer.active { background: var(--primary); }
+.right-panel { flex: 1; min-width: 200px; display: flex; flex-direction: column; overflow: hidden; }
+.cmd-input-area { padding: 16px; border-bottom: 1px solid var(--border); background: var(--card-bg); }
+.cmd-input-area label { font-size: 13px; color: var(--info); margin-bottom: 6px; display: block; }
+.cmd-input-wrapper { display: flex; align-items: center; background: var(--input-bg);
+                      border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; }
+.cmd-input-wrapper span.prompt { color: var(--primary); font-family: monospace; margin-right: 8px; font-weight: bold; }
+.cmd-input-wrapper input { flex: 1; border: none; outline: none; background: transparent;
+                            color: var(--text); font-family: monospace; font-size: 15px; padding: 10px 0; }
+.cmd-input-wrapper button { background: var(--primary); color: #fff; border: none; padding: 6px 16px;
+                             border-radius: 4px; cursor: pointer; font-size: 13px; margin-left: 8px; }
+.cmd-input-wrapper button:hover { background: var(--primary-hover); }
+.form-area { flex: 1; overflow-y: auto; padding: 0; }
+.form-section { border-bottom: 1px solid var(--border); }
+.form-section-header { padding: 10px 16px; cursor: pointer; display: flex; align-items: center;
+                        justify-content: space-between; background: var(--card-bg); }
+.form-section-header:hover { background: var(--hover-bg); }
+.form-section-header .cmd-name { font-weight: bold; font-size: 14px; }
+.form-section-header .cmd-desc { font-size: 12px; color: #888; margin-left: 8px; }
+.form-section-body { padding: 12px 16px; display: none; background: var(--bg); }
+.form-section-body.open { display: block; }
+.form-group { margin-bottom: 10px; display: flex; align-items: center; }
+.form-group label { min-width: 120px; font-size: 13px; text-align: right; padding-right: 12px; white-space: nowrap; }
+.form-group input, .form-group select { flex: 1; padding: 6px 10px; border: 1px solid var(--border);
+                                          border-radius: 4px; background: var(--input-bg); color: var(--text);
+                                          font-size: 13px; }
+.form-group input[type=checkbox] { flex: none; width: 18px; height: 18px; }
+.form-actions { margin-top: 8px; display: flex; gap: 8px; justify-content: flex-end; }
+.form-actions button { padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border);
+                        cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); }
+.form-actions button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.console-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.console-label { padding: 8px 16px; font-size: 13px; color: var(--info); background: var(--card-bg);
+                  border-bottom: 1px solid var(--border); }
+.console-output { flex: 1; background: var(--console-bg); color: #a8e6cf; font-family: "Consolas","Courier New",monospace;
+                   font-size: 13px; line-height: 1.6; padding: 12px 16px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+.console-output .ts { color: #636e72; }
+.console-output .cmd-echo { color: var(--primary); }
+.console-output .err { color: var(--error); }
+.console-output .ok { color: var(--success); }
+.status-bar { padding: 6px 16px; font-size: 12px; border-top: 1px solid var(--border);
+               background: var(--card-bg); display: flex; justify-content: space-between; color: #888; }
+.arrow { transition: transform 0.2s; } .arrow.open { transform: rotate(90deg); }
+.save-cmd-btn { background: transparent; color: #888; border: none; font-size: 18px; cursor: pointer;
+               padding: 4px 8px; margin-left: 4px; line-height: 1; }
+.save-cmd-btn:hover { color: #ffd740; }
+.s2-wrap { display: flex; flex-direction: column; gap: 6px; padding: 6px 16px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+.s2-box { position: relative; flex: 1; }
+.s2-trigger { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border: 1px solid var(--border);
+              border-radius: 4px; background: var(--input-bg); cursor: pointer; font-size: 13px;
+              transition: border-color 0.15s; user-select: none; }
+.s2-trigger:hover { border-color: var(--primary); }
+.s2-box.open .s2-trigger { border-color: var(--primary); border-radius: 4px 4px 0 0; }
+.s2-icon { flex-shrink: 0; font-size: 14px; }
+.s2-label { flex-shrink: 0; font-size: 13px; }
+.s2-count { font-size: 11px; color: #888; background: var(--bg); padding: 0 6px; border-radius: 8px; margin-left: auto; }
+.s2-arrow { flex-shrink: 0; font-size: 10px; color: #888; transition: transform 0.2s; }
+.s2-box.open .s2-arrow { transform: rotate(180deg); }
+.s2-drop { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000;
+           background: var(--card-bg); border: 1px solid var(--primary); border-top: none;
+           border-radius: 0 0 4px 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.s2-box.open .s2-drop { display: block; }
+.s2-search { width: 100%; padding: 7px 10px; border: none; border-bottom: 1px solid var(--border);
+             outline: none; background: var(--input-bg); color: var(--text); font-size: 12px; box-sizing: border-box; }
+.s2-list { max-height: 200px; overflow-y: auto; }
+.s2-item { padding: 6px 10px; cursor: pointer; font-family: monospace; font-size: 12px;
+           display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+.s2-item:hover { background: var(--hover-bg); }
+.s2-item .s2-iico { margin-right: 6px; flex-shrink: 0; font-size: 11px; }
+.s2-item .s2-itxt { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.s2-item .s2-idel { flex-shrink: 0; margin-left: 6px; color: #888; cursor: pointer;
+                     border: none; background: none; font-size: 13px; padding: 0 4px; }
+.s2-item .s2-idel:hover { color: var(--error); }
+.s2-empty { padding: 10px; font-size: 11px; color: #636e72; text-align: center; }
+button:disabled, .form-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+.clear-btn { background: transparent; color: #888; border: 1px solid var(--border); padding: 2px 10px;
+             border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 12px; }
+.clear-btn:hover { color: #fff; background: var(--error); border-color: var(--error); }
+.stop-btn { display: none; background: var(--error); color: #fff; border: none; padding: 2px 10px;
+            border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 8px; }
+.stop-btn:hover { opacity: 0.85; }
+.stop-btn.visible { display: inline-block; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>''' + title + ''' <span class="version">v''' + version + '''</span></h1>
+  <span>''' + description + '''</span>
+</div>
+<div class="main">
+  <div class="left-panel">
+    <div class="cmd-input-area">
+      <label>&#128421; 命令行输入</label>
+      <div class="cmd-input-wrapper">
+        <span class="prompt">$</span>
+        <input id="cmdInput" type="text" placeholder="输入命令..." autofocus autocomplete="off" />
+        <button onclick="executeFromInput()">执行</button>
+        <button class="save-cmd-btn" onclick="saveCurrentCmd()" onmousedown="event.preventDefault()" title="收藏当前命令">&#9733;</button>
+      </div>
+    </div>
+    <div class="s2-wrap">
+      <div class="s2-box" id="s2Saved">
+        <div class="s2-trigger" onclick="toggleS2('s2Saved')">
+          <span class="s2-icon" style="color:#ffd740;">&#9733;</span>
+          <span class="s2-label">收藏</span>
+          <span class="s2-count" id="savedCount">0</span>
+          <span class="s2-arrow">&#9662;</span>
+        </div>
+        <div class="s2-drop" onmousedown="event.stopPropagation()">
+          <input class="s2-search" id="savedSearch" type="text" placeholder="搜索收藏..." oninput="renderSaved()" />
+          <div class="s2-list" id="savedBody"></div>
+        </div>
+      </div>
+      <div class="s2-box" id="s2Hist">
+        <div class="s2-trigger" onclick="toggleS2('s2Hist')">
+          <span class="s2-icon" style="color:#82b1ff;">&#128339;</span>
+          <span class="s2-label">历史</span>
+          <span class="s2-count" id="histCount">0</span>
+          <span class="s2-arrow">&#9662;</span>
+        </div>
+        <div class="s2-drop" onmousedown="event.stopPropagation()">
+          <input class="s2-search" id="histSearch" type="text" placeholder="搜索历史..." oninput="renderHist()" />
+          <div class="s2-list" id="histBody"></div>
+        </div>
+      </div>
+    </div>
+    <div id="initParamsArea" style="display:none;"></div>
+    <div class="form-area" id="formArea">
+      <p style="padding:16px;color:#888;">加载中...</p>
+    </div>
+  </div>
+  <div class="resizer" id="resizer"></div>
+  <div class="right-panel">
+    <div class="console-area">
+      <div class="console-label">&#128203; 实时控制台输出<button class="clear-btn" onclick="clearConsole()" title="清空控制台">&#128465; 清空</button><button class="stop-btn" id="stopBtn" onclick="cancelExecution()" title="停止执行">&#9632; 停止</button></div>
+      <div class="console-output" id="consoleOutput"></div>
+    </div>
+  </div>
+</div>
+<div class="status-bar">
+  <span id="statusText">状态: 就绪</span>
+  <span id="execCount">执行次数: 0</span>
+</div>
+
+<script>
+let commands = {};
+let initParamNames = [];
+let enableExec = ''' + ('true' if enable_exec else 'false') + ''';
+let history = [];
+let historyIdx = -1;
+let execCount = 0;
+let isExecuting = false;
+let activeWs = null;
+
+function setExecuting(running) {
+  isExecuting = running;
+  var btns = document.querySelectorAll('.form-actions button.primary, .cmd-input-wrapper button');
+  btns.forEach(function(b) { b.disabled = running; });
+  var stopBtn = document.getElementById('stopBtn');
+  if (running) { stopBtn.classList.add('visible'); } else { stopBtn.classList.remove('visible'); }
+}
+
+function cancelExecution() {
+  if (activeWs && activeWs.readyState === WebSocket.OPEN) {
+    activeWs.send(JSON.stringify({action: 'cancel'}));
+  }
+}
+
+function clearConsole() {
+  document.getElementById('consoleOutput').innerHTML = '';
+}
+
+function esc(s) { var d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
+
+function ansiToHtml(raw) {
+  var fgMap = {
+    '30':'#b0bec5','31':'#ff6b6b','32':'#69f0ae','33':'#ffd740',
+    '34':'#82b1ff','35':'#b388ff','36':'#84ffff','37':'#ffffff',
+    '90':'#cfd8dc','91':'#ff1744','92':'#76ff03','93':'#ffff00',
+    '94':'#40c4ff','95':'#ea80fc','96':'#18ffff','97':'#ffffff'
+  };
+  var bgMap = {
+    '40':'#90a4ae','41':'#ff5252','42':'#69f0ae','43':'#ffff00',
+    '44':'#448aff','45':'#7c4dff','46':'#18ffff','47':'#e0e0e0',
+    '100':'#b0bec5','101':'#ff8a80','102':'#b9f6ca','103':'#ffff8d',
+    '104':'#82b1ff','105':'#b388ff','106':'#84ffff','107':'#eeeeee'
+  };
+  var bgTxt = {
+    '40':'#fff','41':'#fff','42':'#000','43':'#000',
+    '44':'#fff','45':'#fff','46':'#000','47':'#000',
+    '100':'#000','101':'#000','102':'#000','103':'#000',
+    '104':'#000','105':'#000','106':'#000','107':'#000'
+  };
+  var parts = String(raw).split(/\\x1b\\[([0-9;]*)m/);
+  var html = '', spans = 0;
+  for (var i = 0; i < parts.length; i++) {
+    if (i % 2 === 0) {
+      html += esc(parts[i]);
+    } else {
+      var codes = parts[i].split(';');
+      for (var j = 0; j < codes.length; j++) {
+        var c = codes[j];
+        if (c === '0' || c === '') {
+          while (spans > 0) { html += '</span>'; spans--; }
+        } else if (c === '1') {
+          html += '<span style="font-weight:bold">'; spans++;
+        } else if (c === '4') {
+          html += '<span style="text-decoration:underline">'; spans++;
+        } else if (fgMap[c]) {
+          html += '<span style="color:' + fgMap[c] + '">'; spans++;
+        } else if (bgMap[c]) {
+          html += '<span style="background:' + bgMap[c] + ';color:' + (bgTxt[c]||'#fff') + ';padding:2px 6px;border-radius:3px">'; spans++;
+        }
+      }
+    }
+  }
+  while (spans > 0) { html += '</span>'; spans--; }
+  return html;
+}
+
+function findCmdInfo(pyName) {
+  var parts = pyName.split('/');
+  var node = commands;
+  for (var i = 0; i < parts.length; i++) {
+    if (!node || !node[parts[i]]) return null;
+    if (i === parts.length - 1) return node[parts[i]];
+    if (node[parts[i]].type === 'group' && node[parts[i]].sub_commands) {
+      node = node[parts[i]].sub_commands;
+    } else {
+      return null;
+    }
+  }
+  return null;
+}
+
+async function loadCommands() {
+  try {
+    const resp = await fetch('/api/commands');
+    commands = await resp.json();
+    renderForms();
+  } catch(e) { console.error(e); }
+}
+
+async function loadInitParams() {
+  try {
+    var resp = await fetch('/api/init-params');
+    var params = await resp.json();
+    if (!params || params.length === 0) return;
+    initParamNames = params.map(function(p) { return p.name; });
+    var area = document.getElementById('initParamsArea');
+    area.style.display = 'block';
+    var html = '<div class="form-section"><div class="form-section-header" onclick="toggleSection(this)">';
+    html += '<span><span class="arrow open">&#9654;</span> <span class="cmd-name" style="color:var(--warning);">&#9881; 全局选项</span>';
+    html += '<span class="cmd-desc">__init__ 参数，每次执行自动携带</span></span></div>';
+    html += '<div class="form-section-body open" id="initParamsForm">';
+    params.forEach(function(p) {
+      var descHtml = p.description ? '<span style="font-size:11px;color:#888;margin-left:4px;">' + esc(p.description) + '</span>' : '';
+      html += '<div class="form-group"><label>' + p.name + (p.required?' *':'') + ':' + descHtml + '</label>';
+      var val = p.current != null ? p.current : (p.default != null ? p.default : '');
+      if (p.widget === 'checkbox') {
+        html += '<input type="checkbox" data-init-param="' + p.name + '"' + (val ? ' checked' : '') + '/>';
+      } else if (p.widget === 'select' && p.choices) {
+        html += '<select data-init-param="' + p.name + '">';
+        p.choices.forEach(function(c) {
+          html += '<option value="' + c + '"' + (c == val ? ' selected' : '') + '>' + c + '</option>';
+        });
+        html += '</select>';
+      } else if (p.widget === 'number') {
+        html += '<input type="number" data-init-param="' + p.name + '" value="' + val + '"/>';
+      } else {
+        html += '<input type="text" data-init-param="' + p.name + '" value="' + val + '"/>';
+      }
+      html += '</div>';
+    });
+    html += '</div></div>';
+    area.innerHTML = html;
+  } catch(e) { console.error(e); }
+}
+
+function getInitParams() {
+  var form = document.getElementById('initParamsForm');
+  if (!form) return null;
+  var data = {};
+  var hasAny = false;
+  form.querySelectorAll('[data-init-param]').forEach(function(el) {
+    var name = el.dataset.initParam;
+    if (el.type === 'checkbox') { data[name] = el.checked; hasAny = true; }
+    else if (el.type === 'number' && el.value !== '') { data[name] = Number(el.value); hasAny = true; }
+    else if (el.value !== '') { data[name] = el.value; hasAny = true; }
+  });
+  return hasAny ? data : null;
+}
+
+function renderParamFields(params) {
+  var html = '';
+  if (!params) return html;
+  params.forEach(function(p) {
+    var descHtml = p.description ? '<span style="font-size:11px;color:#888;margin-left:4px;">' + esc(p.description) + '</span>' : '';
+    html += '<div class="form-group"><label>' + p.name + (p.required?' *':'') + ':' + descHtml + '</label>';
+    var ph = p.description || p.type;
+    if (p.widget === 'checkbox') {
+      html += '<input type="checkbox" data-param="' + p.name + '"' + (p.default?' checked':'') + '/>';
+    } else if (p.widget === 'select' && p.choices) {
+      html += '<select data-param="' + p.name + '">';
+      p.choices.forEach(function(c) {
+        html += '<option value="' + c + '"' + (c==p.default?' selected':'') + '>' + c + '</option>';
+      });
+      html += '</select>';
+    } else if (p.widget === 'number') {
+      html += '<input type="number" data-param="' + p.name + '" placeholder="' + esc(ph) + '" value="' + (p.default!=null?p.default:'') + '"/>';
+    } else {
+      html += '<input type="text" data-param="' + p.name + '" placeholder="' + esc(ph) + '" value="' + (p.default!=null?p.default:'') + '"/>';
+    }
+    html += '</div>';
+  });
+  return html;
+}
+
+function renderCmdSection(formId, cliLabel, description, params) {
+  var html = '<div class="form-section"><div class="form-section-header" onclick="toggleSection(this)">';
+  html += '<span><span class="arrow">&#9654;</span> <span class="cmd-name">' + cliLabel + '</span>';
+  html += '<span class="cmd-desc">' + (description||'') + '</span></span></div>';
+  html += '<div class="form-section-body" id="form_' + formId + '">';
+  html += renderParamFields(params);
+  html += '<div class="form-actions">';
+  html += '<button onclick="generateCmd(\\'' + formId + '\\')">生成命令</button>';
+  html += '<button class="primary" onclick="executeForm(\\'' + formId + '\\')">直接执行</button>';
+  html += '</div></div></div>';
+  return html;
+}
+
+function renderGroup(cmds, prefix) {
+  var html = '';
+  for (var [name, info] of Object.entries(cmds)) {
+    var cliName = name.replace(/_/g, '-');
+    var fullPrefix = prefix ? prefix + '/' + name : name;
+    var fullLabel = prefix ? prefix.replace(/_/g,'-').replace(/\\//g,' ') + ' ' + cliName : cliName;
+    if (info.type === 'group') {
+      html += '<div class="form-section"><div class="form-section-header" onclick="toggleSection(this)">';
+      html += '<span><span class="arrow">&#9654;</span> <span class="cmd-name" style="color:var(--primary);">' + fullLabel + '</span>';
+      html += '<span class="cmd-desc">[组] ' + (info.description||'') + '</span></span></div>';
+      html += '<div class="form-section-body">';
+      if (info.sub_commands) { html += renderGroup(info.sub_commands, fullPrefix); }
+      html += '</div></div>';
+    } else {
+      html += renderCmdSection(fullPrefix, fullLabel, info.description, info.parameters);
+    }
+  }
+  return html;
+}
+
+function renderForms() {
+  const area = document.getElementById('formArea');
+  var html = renderGroup(commands, '');
+  area.innerHTML = html || '<p style="padding:16px;color:#888;">无可用命令</p>';
+}
+
+function toggleSection(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function getFormData(formId) {
+  const form = document.getElementById('form_' + formId);
+  if (!form) return {};
+  const data = {};
+  form.querySelectorAll('[data-param]').forEach(function(el) {
+    const name = el.dataset.param;
+    if (el.type === 'checkbox') { data[name] = el.checked; }
+    else if (el.type === 'number' && el.value) { data[name] = Number(el.value); }
+    else if (el.value) { data[name] = el.value; }
+  });
+  return data;
+}
+
+function generateCmd(formId) {
+  var data = getFormData(formId);
+  var cliName = formId.replace(/_/g, '-').replace('/', ' ');
+  var parts = cliName.split(' ');
+  var pyName = formId.replace(/-/g, '_');
+  var info = findCmdInfo(pyName);
+  if (info && info.parameters) {
+    info.parameters.forEach(function(p) {
+      if (p.name in data) {
+        if (p.required && p.widget !== 'checkbox') {
+          parts.push(String(data[p.name]));
+        } else if (p.widget === 'checkbox') {
+          if (data[p.name]) parts.push('--' + p.name.replace(/_/g, '-'));
+        } else {
+          parts.push('--' + p.name.replace(/_/g, '-') + ' ' + String(data[p.name]));
+        }
+      }
+    });
+  }
+  var initP = getInitParams();
+  if (initP) {
+    Object.entries(initP).forEach(function(e) {
+      if (typeof e[1] === 'boolean') {
+        if (e[1]) parts.push('--' + e[0].replace(/_/g, '-'));
+      } else {
+        parts.push('--' + e[0].replace(/_/g, '-'));
+        parts.push(String(e[1]));
+      }
+    });
+  }
+  document.getElementById('cmdInput').value = parts.join(' ');
+  document.getElementById('cmdInput').focus();
+}
+
+async function executeForm(formId) {
+  var data = getFormData(formId);
+  var routePath = formId.replace(/_/g, '-');
+  await doExecute(routePath, data);
+}
+
+async function executeFromInput() {
+  const input = document.getElementById('cmdInput');
+  const raw = input.value.trim();
+  if (!raw) return;
+  const parts = raw.split(/\\s+/);
+  const firstPy = parts[0].replace(/-/g, '_');
+  var routePath, cmdInfo, argStart;
+  if (commands[firstPy] && commands[firstPy].type === 'group' && parts.length > 1) {
+    var subPy = parts[1].replace(/-/g, '_');
+    var grpInfo = commands[firstPy];
+    cmdInfo = grpInfo.sub_commands ? grpInfo.sub_commands[subPy] : null;
+    routePath = parts[0] + '/' + parts[1];
+    argStart = 2;
+  } else if (commands[firstPy]) {
+    cmdInfo = commands[firstPy];
+    routePath = parts[0];
+    argStart = 1;
+  } else if (enableExec) {
+    await doExecute('exec', {cmd: raw});
+    return;
+  } else {
+    appendLog('[错误] 未知命令: ' + parts[0], 'error');
+    return;
+  }
+  const kwargs = {};
+  const inputInitP = {};
+  if (cmdInfo && cmdInfo.parameters) {
+    let posIdx = 0;
+    const positionals = cmdInfo.parameters.filter(function(p){return p.required;});
+    for (let i = argStart; i < parts.length; i++) {
+      if (parts[i].startsWith('--')) {
+        const flag = parts[i].substring(2).replace(/-/g, '_');
+        if (initParamNames.indexOf(flag) >= 0) {
+          if (i + 1 < parts.length && !parts[i+1].startsWith('--')) { i++; inputInitP[flag] = parts[i]; }
+          continue;
+        }
+        const param = cmdInfo.parameters.find(function(p){return p.name === flag;});
+        if (param && param.widget === 'checkbox') { kwargs[flag] = true; }
+        else if (i + 1 < parts.length) { i++; kwargs[flag] = parts[i]; }
+      } else {
+        if (posIdx < positionals.length) {
+          kwargs[positionals[posIdx].name] = parts[i]; posIdx++;
+        } else if (positionals.length > 0) {
+          var lastP = positionals[positionals.length - 1].name;
+          kwargs[lastP] += ' ' + parts[i];
+        }
+      }
+    }
+  }
+  var overrideInit = Object.keys(inputInitP).length > 0 ? inputInitP : null;
+  await doExecute(routePath, kwargs, overrideInit);
+}
+
+function doExecute(routePath, kwargs, initParamsOverride) {
+  if (isExecuting) return;
+  setExecuting(true);
+  var consoleEl = document.getElementById('consoleOutput');
+  var ts = new Date().toLocaleTimeString();
+  var initP = initParamsOverride || getInitParams();
+  var cmdStr = routePath.replace(/\\//g, ' ');
+  Object.entries(kwargs).forEach(function(e) {
+    if (typeof e[1] === 'boolean') { if(e[1]) cmdStr += ' --' + e[0].replace(/_/g,'-'); }
+    else cmdStr += ' --' + e[0].replace(/_/g,'-') + ' ' + e[1];
+  });
+
+  function _finish(statusMsg) {
+    setExecuting(false);
+    activeWs = null;
+    document.getElementById('statusText').innerText = statusMsg;
+  }
+
+  consoleEl.innerHTML += '<span class="ts">[' + ts + ']</span> <span class="cmd-echo">$ ' + cmdStr + '</span>\\n';
+  document.getElementById('statusText').innerText = '状态: 执行中... ' + cmdStr;
+
+  var wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  var wsUrl = wsProto + '//' + location.host + '/ws/execute';
+
+  try {
+    var ws = new WebSocket(wsUrl);
+    activeWs = ws;
+    ws.onopen = function() {
+      var payload = {command: routePath, args: kwargs};
+      if (initP) payload.init_params = initP;
+      ws.send(JSON.stringify(payload));
+    };
+    ws.onmessage = function(event) {
+      var msg = JSON.parse(event.data);
+      if (msg.type === 'stdout') {
+        consoleEl.innerHTML += ansiToHtml(msg.data);
+      } else if (msg.type === 'stderr') {
+        consoleEl.innerHTML += ansiToHtml(msg.data);
+      } else if (msg.type === 'complete') {
+        if (msg.result != null) {
+          var resultStr = typeof msg.result === 'object'
+            ? JSON.stringify(msg.result, null, 2) : String(msg.result);
+          consoleEl.innerHTML += '<span class="ok">' + esc(resultStr) + '</span>\\n';
+        }
+        consoleEl.innerHTML += '<span class="ok">[完成] ' + (msg.duration_ms||0) + 'ms</span>\\n\\n';
+        execCount++;
+        document.getElementById('execCount').innerText = '执行次数: ' + execCount;
+        _finish('状态: 就绪  |  最后执行: ' + cmdStr + ' ' + ts);
+      } else if (msg.type === 'cancelled') {
+        consoleEl.innerHTML += '<span class="err">[已取消] ' + (msg.duration_ms||0) + 'ms</span>\\n\\n';
+        _finish('状态: 就绪  |  已取消: ' + cmdStr);
+      } else if (msg.type === 'error') {
+        consoleEl.innerHTML += '<span class="err">[错误] ' + esc(msg.error||'未知错误') + '</span>\\n\\n';
+        _finish('状态: 就绪  |  出错: ' + cmdStr);
+      }
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    };
+    ws.onerror = function() {
+      setExecuting(false); activeWs = null;
+      _doExecuteFallback(routePath, kwargs, cmdStr, ts);
+    };
+    ws.onclose = function() {
+      if (isExecuting) { setExecuting(false); activeWs = null; }
+    };
+  } catch(e) {
+    setExecuting(false); activeWs = null;
+    _doExecuteFallback(routePath, kwargs, cmdStr, ts);
+  }
+  addHistory(cmdStr);
+}
+
+function _doExecuteFallback(routePath, kwargs, cmdStr, ts) {
+  var consoleEl = document.getElementById('consoleOutput');
+  fetch('/' + routePath, {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(kwargs)
+  }).then(function(resp) { return resp.json(); }).then(function(data) {
+    if (data.stdout) consoleEl.innerHTML += ansiToHtml(data.stdout);
+    if (data.stderr) consoleEl.innerHTML += ansiToHtml(data.stderr);
+    if (data.status === 'success') {
+      if (data.result != null) {
+        var resultStr = typeof data.result === 'object'
+          ? JSON.stringify(data.result, null, 2) : String(data.result);
+        consoleEl.innerHTML += '<span class="ok">' + esc(resultStr) + '</span>\\n';
+      }
+      consoleEl.innerHTML += '<span class="ok">[完成] ' + (data.duration_ms||0) + 'ms</span>\\n\\n';
+    } else {
+      consoleEl.innerHTML += '<span class="err">[错误] ' + esc(data.error||'未知错误') + '</span>\\n\\n';
+    }
+    execCount++;
+    document.getElementById('execCount').innerText = '执行次数: ' + execCount;
+    document.getElementById('statusText').innerText = '状态: 就绪  |  最后执行: ' + cmdStr + ' ' + ts;
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+  }).catch(function(e) {
+    consoleEl.innerHTML += '<span class="err">[网络错误] ' + e.message + '</span>\\n\\n';
+  });
+}
+
+let savedCmds = [];
+
+function addHistory(cmd) {
+  history.unshift(cmd);
+  if (history.length > 100) history.pop();
+  fetch('/api/history', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({command: cmd})
+  }).catch(function(){});
+  renderSaved(); renderHist();
+}
+
+async function loadHistory() {
+  try {
+    var resp = await fetch('/api/history');
+    var data = await resp.json();
+    history = data.map(function(d){ return d.command; });
+  } catch(e) { console.error(e); }
+}
+
+async function saveCurrentCmd() {
+  var cmd = document.getElementById('cmdInput').value.trim();
+  if (!cmd) return;
+  await fetch('/api/save-command', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({command: cmd})
+  });
+  await loadSavedCmds();
+  renderSaved();
+}
+
+async function deleteSavedCmd(cmd, ev) {
+  if (ev) ev.stopPropagation();
+  await fetch('/api/save-command', {
+    method: 'DELETE', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({command: cmd})
+  });
+  await loadSavedCmds();
+  renderSaved();
+}
+
+async function loadSavedCmds() {
+  try {
+    var resp = await fetch('/api/saved-commands');
+    savedCmds = await resp.json();
+  } catch(e) { console.error(e); }
+}
+
+function fuzzyMatch(query, text) {
+  if (!query) return true;
+  var q = query.toLowerCase();
+  var t = text.toLowerCase();
+  if (t.indexOf(q) >= 0) return true;
+  var qi = 0;
+  for (var ti = 0; ti < t.length && qi < q.length; ti++) {
+    if (t[ti] === q[qi]) qi++;
+  }
+  return qi === q.length;
+}
+
+function renderSaved() {
+  var body = document.getElementById('savedBody');
+  var q = document.getElementById('savedSearch').value.trim();
+  var filtered = savedCmds.filter(function(s) { return fuzzyMatch(q, s.command); });
+  document.getElementById('savedCount').textContent = savedCmds.length;
+  var html = '';
+  if (filtered.length > 0) {
+    filtered.forEach(function(s) {
+      html += '<div class="s2-item" onclick="fillCmd(\\''+s.command.replace(/'/g,"\\\\'")+'\\')">';
+      html += '<span class="s2-iico" style="color:#ffd740;">&#9733;</span>';
+      html += '<span class="s2-itxt">' + esc(s.command) + '</span>';
+      html += '<button class="s2-idel" onclick="deleteSavedCmd(\\''+s.command.replace(/'/g,"\\\\'")+'\\'  ,event)" title="取消收藏">&times;</button>';
+      html += '</div>';
+    });
+  } else {
+    html += '<div class="s2-empty">' + (q ? '无匹配' : '点击 ★ 收藏命令') + '</div>';
+  }
+  body.innerHTML = html;
+}
+
+function renderHist() {
+  var body = document.getElementById('histBody');
+  var q = document.getElementById('histSearch').value.trim();
+  var seen = {};
+  var filtered = [];
+  history.forEach(function(h) {
+    if (!seen[h] && fuzzyMatch(q, h)) { filtered.push(h); seen[h]=true; }
+  });
+  document.getElementById('histCount').textContent = history.length;
+  var html = '';
+  if (filtered.length > 0) {
+    filtered.forEach(function(h) {
+      html += '<div class="s2-item" onclick="fillCmd(\\''+h.replace(/'/g,"\\\\'")+'\\')">';
+      html += '<span class="s2-iico" style="color:#82b1ff;">&#128339;</span>';
+      html += '<span class="s2-itxt">' + esc(h) + '</span>';
+      html += '</div>';
+    });
+  } else {
+    html += '<div class="s2-empty">' + (q ? '无匹配' : '执行命令后自动记录') + '</div>';
+  }
+  body.innerHTML = html;
+}
+
+function fillCmd(cmd) {
+  document.getElementById('cmdInput').value = cmd;
+  document.getElementById('cmdInput').focus();
+  document.querySelectorAll('.s2-box.open').forEach(function(b) { b.classList.remove('open'); });
+}
+
+function toggleS2(id) {
+  var el = document.getElementById(id);
+  var wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.s2-box.open').forEach(function(b) { b.classList.remove('open'); });
+  if (!wasOpen) {
+    el.classList.add('open');
+    var si = el.querySelector('.s2-search');
+    if (si) { si.value = ''; si.focus(); }
+    if (id === 's2Saved') renderSaved();
+    else renderHist();
+  }
+}
+
+document.addEventListener('mousedown', function(e) {
+  document.querySelectorAll('.s2-box.open').forEach(function(box) {
+    if (!box.contains(e.target)) box.classList.remove('open');
+  });
+});
+
+const cmdInput = document.getElementById('cmdInput');
+cmdInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { executeFromInput(); }
+  else if (e.key === 'Tab') {
+    e.preventDefault();
+    var val = cmdInput.value.trim();
+    var allNames = [];
+    Object.keys(commands).forEach(function(n) { allNames.push(n.replace(/_/g,'-')); });
+    var matches = allNames.filter(function(n){return n.startsWith(val);});
+    if (matches.length === 1) cmdInput.value = matches[0] + ' ';
+  }
+});
+
+Promise.all([loadHistory(), loadSavedCmds()]).then(function() { renderSaved(); renderHist(); });
+loadCommands();
+loadInitParams();
+
+(function() {
+  var resizer = document.getElementById('resizer');
+  var left = document.querySelector('.left-panel');
+  var main = document.querySelector('.main');
+  var dragging = false;
+  resizer.addEventListener('mousedown', function(e) {
+    dragging = true;
+    resizer.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    var rect = main.getBoundingClientRect();
+    var offset = e.clientX - rect.left;
+    var pct = (offset / rect.width) * 100;
+    if (pct < 15) pct = 15;
+    if (pct > 80) pct = 80;
+    left.style.width = pct + '%';
+  });
+  document.addEventListener('mouseup', function() {
+    if (!dragging) return;
+    dragging = false;
+    resizer.classList.remove('active');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+})();
+</script>
+</body>
+</html>'''
+
+`````
+
+--- **end of file: nb_cmd/modes/web_mode.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/modes/__init__.py** (project: nb_cmd) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cmd/modes/__init__.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/ui/colors.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+彩色终端输出，纯标准库实现，无外部依赖。
+在不支持 ANSI 的终端上自动降级为无色输出。
+"""
+import os
+import sys
+
+
+def _supports_color():
+    """检测当前终端是否支持 ANSI 颜色"""
+    if os.getenv('NO_COLOR'):
+        return False
+    if os.getenv('FORCE_COLOR'):
+        return True
+    if not hasattr(sys.stdout, 'isatty'):
+        return False
+    if not sys.stdout.isatty():
+        return False
+    if sys.platform == 'win32':
+        return os.getenv('ANSICON') is not None or 'WT_SESSION' in os.environ or os.getenv('TERM_PROGRAM') == 'vscode'
+    return True
+
+
+_COLOR_ENABLED = _supports_color()
+
+_COLORS = {
+    'reset': '\033[0m',
+    'bold': '\033[1m',
+    'red': '\033[31m',
+    'green': '\033[32m',
+    'yellow': '\033[33m',
+    'blue': '\033[34m',
+    'magenta': '\033[35m',
+    'cyan': '\033[36m',
+    'white': '\033[37m',
+    'bright_red': '\033[91m',
+    'bright_green': '\033[92m',
+    'bright_yellow': '\033[93m',
+    'bright_blue': '\033[94m',
+}
+
+
+def _colorize(text, color_name):
+    if not _COLOR_ENABLED:
+        return text
+    color_code = _COLORS.get(color_name, '')
+    reset = _COLORS['reset']
+    return '{}{}{}'.format(color_code, text, reset)
+
+
+def print_success(msg):
+    sys.stdout.write(_colorize('[OK] {}'.format(msg), 'bright_green') + '\n')
+    sys.stdout.flush()
+
+
+def print_warning(msg):
+    sys.stdout.write(_colorize('[WARN] {}'.format(msg), 'bright_yellow') + '\n')
+    sys.stdout.flush()
+
+
+def print_error(msg):
+    sys.stderr.write(_colorize('[ERROR] {}'.format(msg), 'bright_red') + '\n')
+    sys.stderr.flush()
+
+
+def print_info(msg):
+    sys.stdout.write(_colorize('[INFO] {}'.format(msg), 'bright_blue') + '\n')
+    sys.stdout.flush()
+
+`````
+
+--- **end of file: nb_cmd/ui/colors.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/ui/helper.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+UI 工具方法集合 —— cmdui 单例的实现。
+
+通过 ``from nb_cmd import cmdui`` 导入使用。
+"""
+import json
+import sys
+
+from .colors import print_success, print_warning, print_error, print_info
+from .table import print_table, print_kv
+from .progress import progress as _progress_iter
+
+
+class UIHelper(object):
+    """
+    NbCmd 的 UI 工具方法集合。
+
+    通过 ``from nb_cmd import cmdui`` 导入使用，避免与用户自定义的子命令方法名冲突。
+    包含: 输出(table/kv/tree/json_print)、彩色(success/warning/error/info)、
+          交互(confirm/prompt/select)、进度(progress) 等工具。
+    """
+
+    def table(self, data, headers=None):
+        """表格输出"""
+        print_table(data, headers)
+
+    def kv(self, data):
+        """键值对输出"""
+        print_kv(data)
+
+    def tree(self, data, prefix='', is_last=True):
+        """树形输出"""
+        if isinstance(data, dict):
+            items = list(data.items())
+            for i, (key, value) in enumerate(items):
+                last = (i == len(items) - 1)
+                connector = '└── ' if last else '├── '
+                if isinstance(value, dict):
+                    sys.stdout.write('{}{}{}\n'.format(prefix, connector, key))
+                    extension = '    ' if last else '│   '
+                    self.tree(value, prefix + extension, last)
+                else:
+                    sys.stdout.write('{}{}{}: {}\n'.format(prefix, connector, key, value))
+
+    def json_print(self, data):
+        """JSON美化输出"""
+        sys.stdout.write(json.dumps(data, ensure_ascii=False, indent=2, default=str) + '\n')
+        sys.stdout.flush()
+
+    def progress(self, iterable, desc=None, total=None):
+        """进度条迭代器"""
+        return _progress_iter(iterable, desc=desc, total=total)
+
+    def confirm(self, message):
+        """确认提示，返回 True/False"""
+        try:
+            answer = input('{} [y/N]: '.format(message)).strip().lower()
+            return answer in ('y', 'yes')
+        except (EOFError, KeyboardInterrupt):
+            return False
+
+    def prompt(self, message, default=None):
+        """输入提示"""
+        try:
+            if default is not None:
+                answer = input('{} [{}]: '.format(message, default)).strip()
+                return answer if answer else default
+            else:
+                return input('{}: '.format(message)).strip()
+        except (EOFError, KeyboardInterrupt):
+            return default
+
+    def select(self, message, choices):
+        """选择提示"""
+        sys.stdout.write(message + '\n')
+        for i, choice in enumerate(choices):
+            sys.stdout.write('  {}. {}\n'.format(i + 1, choice))
+        sys.stdout.flush()
+        try:
+            idx = int(input('请选择 [1-{}]: '.format(len(choices))).strip()) - 1
+            if 0 <= idx < len(choices):
+                return choices[idx]
+        except (ValueError, EOFError, KeyboardInterrupt):
+            pass
+        return choices[0] if choices else None
+
+    def success(self, msg):
+        """绿色成功信息"""
+        print_success(msg)
+
+    def warning(self, msg):
+        """黄色警告信息"""
+        print_warning(msg)
+
+    def error(self, msg):
+        """红色错误信息"""
+        print_error(msg)
+
+    def info(self, msg):
+        """蓝色信息"""
+        print_info(msg)
+
+
+cmdui = UIHelper()
+
+`````
+
+--- **end of file: nb_cmd/ui/helper.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/ui/progress.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+纯标准库的进度条实现，无外部依赖。
+"""
+import sys
+import time
+
+
+class ProgressBar(object):
+    """简易进度条，兼容 Python 3.7+"""
+
+    def __init__(self, iterable=None, desc=None, total=None, bar_width=30, file=None):
+        self.iterable = iterable
+        self.desc = desc or ''
+        self.bar_width = bar_width
+        self.file = file or sys.stderr
+
+        if total is not None:
+            self.total = total
+        elif iterable is not None:
+            try:
+                self.total = len(iterable)
+            except TypeError:
+                self.total = None
+        else:
+            self.total = None
+
+        self.n = 0
+        self.start_time = None
+
+    def __iter__(self):
+        self.start_time = time.time()
+        self.n = 0
+        for item in self.iterable:
+            yield item
+            self.n += 1
+            self._display()
+        self._display(final=True)
+        self.file.write('\n')
+        self.file.flush()
+
+    def _display(self, final=False):
+        elapsed = time.time() - self.start_time if self.start_time else 0
+
+        if self.total and self.total > 0:
+            frac = self.n / self.total
+            percent = int(frac * 100)
+            filled = int(self.bar_width * frac)
+            bar = '█' * filled + '░' * (self.bar_width - filled)
+
+            if elapsed > 0 and self.n > 0:
+                rate = self.n / elapsed
+                remaining = (self.total - self.n) / rate if rate > 0 else 0
+                eta_str = _format_time(remaining)
+                elapsed_str = _format_time(elapsed)
+            else:
+                eta_str = '?'
+                elapsed_str = '00:00'
+
+            line = '\r{} {} {}% {}/{} [{}<{}]'.format(
+                self.desc, bar, percent, self.n, self.total,
+                elapsed_str, eta_str
+            )
+        else:
+            line = '\r{} {} 项已处理 [{:.1f}s]'.format(
+                self.desc, self.n, elapsed
+            )
+
+        self.file.write(line)
+        self.file.flush()
+
+
+def _format_time(seconds):
+    if seconds < 60:
+        return '{:02d}:{:02d}'.format(0, int(seconds))
+    minutes = int(seconds // 60)
+    secs = int(seconds % 60)
+    if minutes < 60:
+        return '{:02d}:{:02d}'.format(minutes, secs)
+    hours = minutes // 60
+    minutes = minutes % 60
+    return '{:d}:{:02d}:{:02d}'.format(hours, minutes, secs)
+
+
+def progress(iterable, desc=None, total=None):
+    """便捷函数：返回带进度条的可迭代对象"""
+    return ProgressBar(iterable=iterable, desc=desc, total=total)
+
+`````
+
+--- **end of file: nb_cmd/ui/progress.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/ui/table.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+纯标准库的表格输出，支持 CJK 字符对齐。
+"""
+import sys
+
+
+def _write(text):
+    sys.stdout.write(text + '\n')
+    sys.stdout.flush()
+
+
+def _display_width(text):
+    width = 0
+    for ch in str(text):
+        code = ord(ch)
+        if (0x4E00 <= code <= 0x9FFF) or (0x3400 <= code <= 0x4DBF) or \
+           (0xF900 <= code <= 0xFAFF) or (0xFF00 <= code <= 0xFFEF) or \
+           (0x3000 <= code <= 0x303F):
+            width += 2
+        else:
+            width += 1
+    return width
+
+
+def _pad(text, width):
+    text = str(text)
+    dw = _display_width(text)
+    return text + ' ' * max(0, width - dw)
+
+
+def print_table(data, headers=None):
+    """
+    将 list[dict] 或 list[list] 格式化为表格输出。
+
+    Parameters
+    ----------
+    data : list[dict] 或 list[list]
+    headers : list[str], optional
+    """
+    if not data:
+        _write('(空)')
+        return
+
+    if isinstance(data[0], dict):
+        if headers is None:
+            headers = list(data[0].keys())
+        rows = [[row.get(h, '') for h in headers] for row in data]
+    else:
+        if headers is None:
+            headers = ['列{}'.format(i + 1) for i in range(len(data[0]))]
+        rows = data
+
+    col_widths = [_display_width(str(h)) for h in headers]
+    for row in rows:
+        for i, val in enumerate(row):
+            w = _display_width(str(val))
+            if w > col_widths[i]:
+                col_widths[i] = w
+
+    top = '┌' + '┬'.join('─' * (w + 2) for w in col_widths) + '┐'
+    mid = '├' + '┼'.join('─' * (w + 2) for w in col_widths) + '┤'
+    bot = '└' + '┴'.join('─' * (w + 2) for w in col_widths) + '┘'
+
+    header_line = '│ ' + ' │ '.join(_pad(str(h), col_widths[i]) for i, h in enumerate(headers)) + ' │'
+
+    _write(top)
+    _write(header_line)
+    _write(mid)
+    for row in rows:
+        line = '│ ' + ' │ '.join(_pad(str(row[i]) if i < len(row) else '', col_widths[i]) for i in range(len(headers))) + ' │'
+        _write(line)
+    _write(bot)
+
+
+def print_kv(data):
+    """
+    键值对格式化输出。
+
+    Parameters
+    ----------
+    data : dict
+    """
+    if not data:
+        return
+
+    max_key_width = max(_display_width(str(k)) for k in data.keys())
+
+    for key, value in data.items():
+        padded_key = _pad(str(key), max_key_width)
+        _write('{}:  {}'.format(padded_key, value))
+
+`````
+
+--- **end of file: nb_cmd/ui/table.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/ui/__init__.py** (project: nb_cmd) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cmd/ui/__init__.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/utils/config.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+参数持久化模块 —— 自动保存/恢复上一次执行的参数。
+"""
+import json
+import os
+
+
+class ConfigManager(object):
+    """管理参数持久化到 JSON 文件"""
+
+    def __init__(self, config_file=None):
+        if config_file:
+            self.config_file = os.path.expanduser(config_file)
+        else:
+            self.config_file = None
+        self._data = {}
+        if self.config_file:
+            self._load()
+
+    def _load(self):
+        if self.config_file and os.path.exists(self.config_file):
+            try:
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    self._data = json.load(f)
+            except Exception:
+                self._data = {}
+
+    def save_args(self, command, kwargs):
+        """保存命令的参数"""
+        if not self.config_file:
+            return
+        serializable = {}
+        for k, v in kwargs.items():
+            try:
+                json.dumps(v)
+                serializable[k] = v
+            except (TypeError, ValueError):
+                serializable[k] = str(v)
+        self._data[command] = serializable
+        self._write()
+
+    def load_args(self, command):
+        """加载命令上次保存的参数"""
+        return self._data.get(command, {})
+
+    def _write(self):
+        if not self.config_file:
+            return
+        dir_path = os.path.dirname(self.config_file)
+        if dir_path and not os.path.exists(dir_path):
+            os.makedirs(dir_path, exist_ok=True)
+        try:
+            with open(self.config_file, 'w', encoding='utf-8') as f:
+                json.dump(self._data, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+`````
+
+--- **end of file: nb_cmd/utils/config.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/utils/validators.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+参数校验装饰器。
+"""
+import functools
+
+
+def validate(**validators):
+    """
+    参数校验装饰器。
+    每个关键字参数是一个 lambda/callable，接收参数值，返回 True/False。
+
+    示例::
+
+        @validate(port=lambda x: 1 <= x <= 65535)
+        def deploy(self, host: str, port: int = 22):
+            ...
+
+    校验失败时抛出 ValueError。
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            import inspect
+            sig = inspect.signature(func)
+            bound = sig.bind(*args, **kwargs)
+            bound.apply_defaults()
+
+            for param_name, check_fn in validators.items():
+                if param_name in bound.arguments:
+                    value = bound.arguments[param_name]
+                    if not check_fn(value):
+                        raise ValueError(
+                            '参数 {} 校验失败 (当前值: {})'.format(param_name, value)
+                        )
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+`````
+
+--- **end of file: nb_cmd/utils/validators.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: nb_cmd/utils/__init__.py** (project: nb_cmd) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cmd/utils/__init__.py** (project: nb_cmd) --- 
+
+---
+
+
+
+---
+
 # Merged from: nb_config_all_docs_and_codes.md
 
 # markdown content namespace: nb_config readme 
@@ -33015,6 +42753,8199 @@ print(center3.config)
 ```
 
 --- **end of file: examples/ex_update_config.py** --- 
+
+---
+
+
+
+---
+
+# Merged from: nb_cron_all_docs_and_codes.md
+
+﻿
+# 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
+
+> **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
+> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+
+## 🧠 AI 认知与解析准则
+
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+
+### 1. 信息的层级与互补
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
+*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
+*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+
+### 2. 文件边界与架构感知
+*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
+    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
+*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
+*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+
+### 3. 代码生成与交互
+*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
+*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
+*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
+    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
+    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+
+---
+# markdown content namespace: nb_cron project summary 
+
+
+
+- `nb_cron` is a powerful cron library for Python.
+- `NbCron(...)` is the main class to create a cron object. 
+
+
+## 📋 nb_cron most core source files metadata (Entry Points)
+
+
+以下是项目 nb_cron 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+
+
+
+### the project nb_cron most core source code files as follows: 
+- `nb_cron/__init__.py`
+- `nb_cron/core/scheduler.py`
+
+
+### 📄 Python File Metadata: `nb_cron/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+nb_cron - A powerful and simple cron job scheduler that dominates APScheduler.
+
+Usage::
+
+    from nb_cron import NbCron, cron_register, explain_cron
+
+    cron = NbCron("my_project")  # name 必传，隔离不同项目
+
+    @cron.job("0 */5 * * * *")
+    @cron_register('my_task')
+    def my_task():
+        print("every 5 minutes")
+
+    cron.start()  # 不阻塞，Ctrl+C 退出
+`````
+
+#### 📦 Imports
+
+- `from nb_cron._version import __version__`
+- `from nb_cron.core.registry import add_cron_register`
+- `from nb_cron.core.registry import cron_register`
+- `from nb_cron.core.scheduler import NbCron`
+- `from nb_cron.cron_utils.translator import explain_cron`
+- `from nb_cron.executors.base_executor import BaseExecutor`
+- `from nb_cron.executors.thread_executor import ThreadExecutor`
+
+
+---
+
+
+
+
+### 📄 Python File Metadata: `nb_cron/core/scheduler.py`
+
+#### 📦 Imports
+
+- `import logging`
+- `import re`
+- `import signal`
+- `import threading`
+- `import time`
+- `from datetime import datetime`
+- `from datetime import timedelta`
+- `from typing import Callable`
+- `from typing import List`
+- `from typing import Optional`
+- `from typing import Union`
+- `from nb_cron.core.job import Job`
+- `from nb_cron.core.registry import FunctionRegistry`
+- `from nb_cron.executors.base_executor import BaseExecutor`
+- `from nb_cron.executors.threadpool import _ExecutionResult`
+- `from nb_cron.executors.thread_executor import ThreadExecutor`
+- `from nb_cron.locks.base import BaseLock`
+- `from nb_cron.locks.memory_lock import MemoryLock`
+- `from nb_cron.metrics.collector import MetricsCollector`
+- `from nb_cron.stores.base import BaseStore`
+- `from nb_cron.stores.memory import MemoryStore`
+- `from nb_cron.triggers.base import BaseTrigger`
+- `from nb_cron.triggers.cron_trigger import CronTrigger`
+- `from nb_cron.triggers.date_trigger import DateTrigger`
+- `from nb_cron.triggers.interval_trigger import IntervalTrigger`
+- `from nb_cron.utils import get_local_timezone`
+- `from nb_cron.utils import now as _now`
+- `from nb_cron.stores.sqlalchemy_store import SQLAlchemyStore`
+- `from nb_cron.locks.sqlalchemy_lock import SQLAlchemyLock`
+- `from nb_cron.stores.redis_store import RedisStore`
+- `from nb_cron.stores.mongo_store import MongoStore`
+- `from nb_cron.locks.redis_lock import RedisLock`
+- `from nb_cron.locks.mongo_lock import MongoLock`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class NbCron`
+*Line: 107*
+
+**Docstring:**
+`````
+The one and only scheduler class you need.
+
+Usage::
+
+    from nb_cron import NbCron, cron_register
+
+    cron = NbCron("my_project")  # name 必传，隔离不同项目
+    # cron = NbCron("my_project", "redis://localhost:6379/0")
+
+    @cron.job("0 */5 * * * *")
+    @cron_register('report')
+    def task_a(): ...
+
+    cron.start()  # 不阻塞，Ctrl+C 退出
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, name: str, store_url: Optional[str] = None, max_workers: int = 20, tick_seconds: float = 1.0, misfire_grace_seconds: int = 60, tz = None, executor: Optional[BaseExecutor] = None)`
+  - **Parameters:**
+    - `self`
+    - `name: str`
+    - `store_url: Optional[str] = None`
+    - `max_workers: int = 20`
+    - `tick_seconds: float = 1.0`
+    - `misfire_grace_seconds: int = 60`
+    - `tz = None`
+    - `executor: Optional[BaseExecutor] = None`
+
+**Public Methods (13):**
+- `def job(self, expression: str) -> Callable`
+  - **Docstring:**
+  `````
+  装饰器，注册定时任务。函数必须先用 @cron_register 注册。
+  
+  :param expression: 触发表达式
+  :param trigger: "cron" / "interval" / "date"，不传则自动推断
+  `````
+- `def add_job(self, func: Union[Callable, str], expression: str) -> Job`
+- `def start(self) -> None`
+  - **Docstring:**
+  `````
+  启动调度器（非阻塞，立即返回）。
+  
+  - ``start()`` 后面的代码会继续执行。
+  - 主线程跑完后进程**不会退出**，定时任务继续运行。
+  - ``Ctrl+C`` 优雅停止。
+  `````
+- `def stop(self, wait: bool = True) -> None`
+- `def is_running(self) -> bool`
+- `def pause_job(self, job_id: str) -> None`
+- `def resume_job(self, job_id: str) -> None`
+- `def remove_job(self, job_id: str) -> None`
+- `def trigger_job(self, job_id: str) -> None`
+- `def cleanup_history_jobs(self, older_than_days: int = 7) -> int`
+  - **Docstring:**
+  `````
+  清理已执行完毕的一次性任务（date trigger），防止存储膨胀。
+  
+  :param older_than_days: 保留最近多少天内的历史任务，超过此天数的将被删除。
+  :return: 删除的任务数量
+  `````
+- `def enable_auto_cleanup(self, cron_expression: str = '0 0 0 * * *', older_than_days: int = 7)`
+  - **Docstring:**
+  `````
+  启用自动清理历史一次性任务的功能。
+  
+  :param cron_expression: 清理任务的 cron 表达式，默认每天 0 点
+  :param older_than_days: 清理多少天前的任务
+  `````
+- `def get_jobs(self) -> List[Job]`
+- `def get_job(self, job_id: str) -> Optional[Job]`
+
+
+---
+
+
+
+## 🔗 nb_cron Some File Dependencies Analysis
+
+以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
+
+### 📊 Internal Dependencies Graph
+
+`````
+Core Files (imported by other files, sorted by import count):
+  ◆ nb_cron/__init__.py (imported by 1 files)
+  ◆ nb_cron/core/scheduler.py (imported by 1 files)
+
+`````
+
+### 📋 Detailed Dependencies
+
+#### `nb_cron/__init__.py`
+
+**Imports from project:**
+- `nb_cron/core/scheduler.py`
+
+**Imported by:**
+- `nb_cron/core/scheduler.py`
+
+#### `nb_cron/core/scheduler.py`
+
+**Imports from project:**
+- `nb_cron/__init__.py`
+
+**Imported by:**
+- `nb_cron/__init__.py`
+
+
+---
+# markdown content namespace: nb_cron Project Root Dir Some Files 
+
+
+## nb_cron File Tree (relative dir: `.`)
+
+
+`````
+
+├── README.md
+└── pyproject.toml
+
+`````
+
+---
+
+
+## nb_cron (relative dir: `.`)  Included Files (total: 2 files)
+
+
+- `README.md`
+
+- `pyproject.toml`
+
+
+---
+
+
+--- **start of file: README.md** (project: nb_cron) --- 
+
+`````markdown
+
+# 🚀 nb_cron
+
+**下一代 Python 分布式定时任务框架（全面超越 APScheduler）**
+
+nb_cron 是一个强大、极简且**专为云原生架构设计**的定时任务调度库。它不仅彻底解决了 APScheduler 常年存在的序列化崩溃、多实例重复执行等痛点，更在架构理念上实现了**“业务逻辑与调度配置的物理隔离”**，让 Python 定时任务的管理进入真正的现代化阶段。
+
+### 🥊 核心痛点对决：APScheduler vs nb_cron
+
+| 痛点场景 | 😭 APScheduler 的历史包袱 | 🤩 nb_cron 的现代解决方案 |
+| :--- | :--- | :--- |
+| **云原生多副本部署**<br>*(K8s/多容器)* | 致命弱点：多实例会**重复执行任务**，需手动硬编码第三方 Redis 锁，极易死锁。 | **天生云原生**：内置极其可靠的分布式锁（Redis/Mongo/SQL），天然支持 K8s 多副本平滑扩容，保证 **exactly-once**（绝不重复执行）。 |
+| **微服务跨项目调度** | 强耦合：任务代码和调度器必须在同一个项目中，无法集中化管理。 | **跨 Git 项目可视化编排**：首创业务与调度解耦机制。A 项目只写函数，B 项目（调度中心）通过 Web UI 动态下发定时配置。 |
+| **代码重构与序列化** | Pickle 地狱：存入 DB 的是函数内存地址，一旦代码重构（改名/移动文件路径），反序列化直接崩溃，任务全线瘫痪。 | **彻底抛弃 Pickle**：首创 `@cron_register` 稳定名称注册表，存入 DB 的仅是纯字符串。代码随便重构，只要名字在，任务照样跑。 |
+| **可视化管理后台** | 官方**没有 UI**，想要启停任务、看日志只能自己从头手搓前后端。 | **原生自带 Web UI**：内置开箱即用的 Vue3 + Element Plus 现代化后台。**前端已预编译到 `nb_cron/web`，Python 开发者无需安装 Node.js 即可一键启动。** |
+| **精度与时区** | Cron 不支持秒级精度；时区配置与 Misfire 策略行为混乱。 | **强制 6 字段 Cron**（支持秒级）；默认本地时区（可传 `tz`），Misfire 容忍策略极简可控。 |
+| **多项目共享存储** | 多项目共用一个 Redis 时极易发生 Key 冲突，互相踩踏任务。 | **强制物理隔离**：初始化必须传 `name` 参数，按项目名称进行 Redis Key 的绝对隔离。 |
+| **选择困难症** | 提供 7 种 Scheduler 类（Blocking, Background, AsyncIO...），新手永远选错。 | **大道至简**：全局只有一个 `NbCron` 类，永远在后台非阻塞运行，同时兼容同步与 `async` 异步函数。 |
+| **集群分布式消费** | 只能在本地调度并执行，面对海量重计算任务力不从心。 | **一键变身分布式 MQ**：支持无缝切换至 `FunboostExecutor`，瞬间获得**失败重试、指数退避、超时杀死**等工业级分布式消息队列消费能力。 |
+
+### ✨ 为什么 nb_cron 是“下一代”框架？
+
+传统的定时任务框架，往往把**“业务代码”**和**“定时规则（如每天凌晨两点）”**死死绑在一起。
+nb_cron 带来了全新的架构理念：
+
+1. **配置即数据，无需重启服务**：通过 Web UI 随时修改任务的 Cron 表达式或启停任务，配置实时写入 Redis 并生效，你的业务进程**全程无需重启**。
+2. **函数定义与任务调度的物理分离**：让后端开发人员只管专心写业务函数并打上 `@cron_register` 标记；让运维或运营人员在独立的 Web 页面上，通过下拉菜单选择已注册的函数，在nb_cron_ui 的前端去创建定时任务。
+
+
+## 安装
+
+> **⚠️ 重要提示**：PyPI 上的包名是 `nb_cron_nb`（不是 `nb_cron`），因为 `nb_cron` 已被他人占用。**代码中的 import 仍然是 `from nb_cron import ...`**，只是安装时用 `pip install nb_cron_nb`。
+
+```bash
+# 基础安装（内存存储）
+pip install nb_cron_nb
+
+# Redis 存储 + FastAPI Web（推荐，生产环境一行搞定）
+pip install nb_cron_nb[redis,fastapi]
+
+# Redis + Flask
+pip install nb_cron_nb[redis,flask]
+
+# 全部功能
+pip install nb_cron_nb[all]
+```
+
+各可选组件：
+
+| 组件 | 安装命令 | 说明 |
+|---|---|---|
+| redis | `pip install nb_cron_nb[redis]` | Redis 存储 + 分布式锁 |
+| mongo | `pip install nb_cron_nb[mongo]` | MongoDB 存储 + 分布式锁 |
+| sqlalchemy | `pip install nb_cron_nb[sqlalchemy]` | SQLite/MySQL/PostgreSQL 存储 |
+| fastapi | `pip install nb_cron_nb[fastapi]` | FastAPI Web 框架集成 |
+| flask | `pip install nb_cron_nb[flask]` | Flask Web 框架集成 |
+| django | `pip install nb_cron_nb[django]` | Django + Ninja 框架集成 |
+
+## 快速开始
+
+### 最简用法
+
+```python
+from nb_cron import NbCron, cron_register
+
+cron = NbCron("my_project")  # name 必传，隔离不同项目
+
+@cron.job("0 */5 * * * *")  # 每5分钟执行（6字段：秒 分 时 日 月 周）
+@cron_register('my_task')   # 必须注册稳定名称
+def my_task():
+    print("Hello nb_cron!")
+
+cron.start()  # 不阻塞，定时任务后台运行，进程不会退出
+```
+
+### 完整示例
+
+```python
+from datetime import timedelta, timezone
+from nb_cron import NbCron, cron_register, add_cron_register, explain_cron
+
+# 创建调度器（name 必传，选一个存储后端）
+cron = NbCron("my_project")                                      # 内存存储
+# cron = NbCron("my_project", "redis://localhost:6379/0")         # Redis（推荐）
+# cron = NbCron("my_project", tz=timezone(timedelta(hours=8)))    # 指定东八区
+# cron = NbCron("my_project", tz=timezone.utc)                    # UTC
+
+# ── 装饰器方式（@cron_register 在下，@cron.job 在上） ──
+
+# 无参数任务
+@cron.job("0 */5 * * * *")
+@cron_register('report')
+def report_task():
+    print("生成报告")
+
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 30 9 * * * *", args=("admin@example.com",), kwargs={"report_type": "daily"})
+@cron_register('send_report_email')
+def send_report_email(to_address: str, report_type: str = "daily"):
+    print(f"发送{report_type}报表到 {to_address}")
+
+# 有参数任务（装饰器中直接传参）
+@cron.job("0 0 2 * * *", args=("backup_db",), kwargs={"compress": True})
+@cron_register('backup')
+def backup_database(db_name: str, compress: bool = False):
+    print(f"备份数据库 {db_name}, 压缩={compress}")
+
+# 异步任务也支持
+@cron.job("30 0 9 * * 1-5", trigger="cron")
+@cron_register('async_work')
+async def async_task():
+    print("异步任务也支持！")
+
+# 间隔任务
+@cron.job("@every 30s", trigger="interval")
+@cron_register('heartbeat')
+def heartbeat():
+    print("心跳")
+
+# 日期任务（一次性）
+@cron.job("2026-10-01 09:00:00", trigger="date")
+@cron_register('national_day')
+def national_day_task():
+    print("国庆节任务")
+
+# ── 非装饰器写法（适合第三方函数或动态注册） ──
+
+# 方式 1：add_cron_register + add_job
+def send_sms(phone: str, message: str):
+    """发送短信（第三方函数）"""
+    print(f"发送短信到 {phone}: {message}")
+
+add_cron_register('send_sms', send_sms)
+cron.add_job(
+    'send_sms',
+    "0 0 8 * * *",
+    trigger="cron",
+    job_id="morning_sms",
+    name="早安短信",
+    args=("13800138000", "早上好！"),
+)
+
+# 方式 2：直接 add_job（自动注册）
+from nb_cron import cron_register
+
+def cleanup_logs(days: int = 7):
+    """清理日志"""
+    print(f"清理{days}天前的日志")
+
+cron_register('cleanup_logs', cleanup_logs)
+cron.add_job(
+    cleanup_logs,  # 传函数对象
+    "0 0 3 * * 0",
+    trigger="cron",
+    job_id="weekly_cleanup",
+    name="每周清理",
+    kwargs={"days": 30},  # 覆盖默认参数
+)
+
+# 方式 3：批量注册任务
+def process_order(order_id: int):
+    """处理订单"""
+    print(f"处理订单 {order_id}")
+
+add_cron_register('process_order', process_order)
+
+# 动态添加多个不同参数的任务
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch1", args=(1001,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch2", args=(1002,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_batch3", args=(1003,))
+
+# ── 启动 ──
+cron.start()
+
+# ── 管理 ──
+cron.pause_job("daily_backup")
+cron.resume_job("daily_backup")
+cron.trigger_job("daily_backup")
+cron.remove_job("daily_backup")
+jobs = cron.get_jobs()
+
+# ── Cron 翻译 ──
+print(explain_cron("0 30 9 * * *", "zh"))    # "每天 09:30:00 执行"
+print(explain_cron("0 30 9 * * *", "en"))    # "At 09:30:00, every day"
+```
+
+---
+
+## 项目隔离（name 参数）
+
+`NbCron` 的第一个参数 `name` 是**必传**的，用于隔离不同项目的数据：
+
+- **Redis**: keys 格式为 `nb_cron:{name}:jobs`、`nb_cron:{name}:metrics`、`nb_cron:{name}:due`、`nb_cron:{name}:lock:*`
+- **MongoDB**: collections 为 `nb_cron_{name}_jobs`、`nb_cron_{name}_metrics`、`nb_cron_{name}_locks`
+- **SQLAlchemy**: 表名为 `nb_cron_{name}_jobs`、`nb_cron_{name}_metrics`、`nb_cron_{name}_locks`
+- **Web UI**: 侧边栏标题显示 `name`，方便区分
+
+```python
+# 同一个 Redis，不同项目互不干扰
+cron_a = NbCron("billing_service", "redis://localhost:6379/0")
+cron_b = NbCron("user_service", "redis://localhost:6379/0")
+
+# cron_a 只看到 billing_service:jobs 下的任务
+# cron_b 只看到 user_service:jobs 下的任务
+```
+
+不传 `name` 或传空字符串会直接报错：
+
+```python
+NbCron("")   # ValueError: NbCron name 不能为空
+NbCron()     # TypeError: missing required argument 'name'
+```
+
+---
+
+## 时区支持
+
+nb_cron 默认使用**本地时区**。所有时间（`next_run_time`、日期表达式解析等）都基于调度器的时区。
+
+```python
+from datetime import timedelta, timezone
+
+# 默认：本地时区（推荐）
+cron = NbCron("my_project")
+
+# 显式指定时区
+cron = NbCron("my_project", tz=timezone(timedelta(hours=8)))   # 东八区
+cron = NbCron("my_project", tz=timezone.utc)                   # UTC
+
+# Python 3.9+ 可用 zoneinfo
+from zoneinfo import ZoneInfo
+cron = NbCron("my_project", tz=ZoneInfo("Asia/Shanghai"))
+```
+
+`tz` 参数接受任何 `datetime.tzinfo` 对象。
+
+---
+
+## 三种触发器类型
+
+nb_cron 支持三种触发器类型，通过 `trigger` 参数显式指定（也可以不传，自动推断）：
+
+| trigger 值 | 含义 | expression 示例 |
+|---|---|---|
+| `"cron"` | 6 字段 cron 表达式 | `"0 */5 * * * *"` |
+| `"interval"` | 固定间隔重复执行 | `"@every 30s"`, `"5m"`, `"2h"` |
+| `"date"` | 指定时间执行一次 | `"2026-10-01 09:00:00"`, `"2026年10月01日"` |
+
+### 自动推断 vs 显式指定
+
+```python
+# 自动推断（不传 trigger，nb_cron 自动判断）
+@cron.job("0 */5 * * * *")              # → cron
+@cron.job("@every 30s")                 # → interval
+@cron.job("2026-10-01 09:00:00")        # → date
+
+# 显式指定（推荐，语义更清晰）
+@cron.job("0 */5 * * * *", trigger="cron")
+@cron.job("@every 30s", trigger="interval")
+@cron.job("2026-10-01 09:00:00", trigger="date")
+
+# trigger="interval" 时支持简写（不需要 @every 前缀）
+@cron.job("30s", trigger="interval")     # 等价于 @every 30s
+@cron.job("5m", trigger="interval")      # 等价于 @every 5m
+@cron.job("2h", trigger="interval")      # 等价于 @every 2h
+```
+
+> **注意：** 以上所有 `@cron.job` 下面都需要 `@cron_register('名称')` 装饰器。
+
+---
+
+## 函数注册（强制）
+
+nb_cron **强制要求**所有定时函数必须通过 `@cron_register` 注册一个**稳定名称**（`cron_func_name`）。
+这确保函数标识不依赖文件路径——重命名文件、移动函数不会影响调度。
+
+```python
+from nb_cron import cron_register, add_cron_register
+
+# 装饰器注册
+@cron_register('daily_backup')
+def backup_db():
+    print("备份")
+
+backup_db.cron_func_name  # → 'daily_backup'  （IDE 可补全）
+
+# 函数调用注册（适合第三方函数）
+def send_email():
+    print("发邮件")
+add_cron_register('send_email', send_email)
+
+# 也支持 cron_register 两参数形式
+cron_register('send_email', send_email)
+```
+
+### 与 `@cron.job` 配合
+
+`@cron_register` 放下面（靠近函数），`@cron.job` 放上面：
+
+```python
+@cron.job("0 0 2 * * *", trigger="cron")     # 第二步：读 .cron_func_name，注册调度
+@cron_register('daily_backup')                # 第一步：设 .cron_func_name，注册函数
+def backup_db():
+    print("备份")
+```
+
+### `add_job` 三种传参方式
+
+```python
+# 1. 传函数对象（自动读 .cron_func_name）
+cron.add_job(backup_db, "0 0 2 * * *", trigger="cron")
+
+# 2. 传注册名字符串
+cron.add_job('daily_backup', "0 0 2 * * *", trigger="cron")
+
+# 3. 传 .cron_func_name（IDE 安全，等价于方式 2）
+cron.add_job(backup_db.cron_func_name, "0 0 2 * * *", trigger="cron")
+
+# 4. 带参数的任务（args 和 kwargs）
+def send_email(to: str, subject: str, body: str = ""):
+    print(f"发送邮件到 {to}: {subject}")
+
+cron_register('send_email', send_email)
+
+# 在装饰器中传参
+@cron.job("0 9 * * * *", args=("admin@example.com", "日报"), kwargs={"body": "这是日报内容"})
+@cron_register('daily_report_email')
+def daily_report_email(to: str, subject: str, body: str = ""):
+    print(f"发送日报到 {to}")
+
+# 或在 add_job 中传参
+cron.add_job(
+    'send_email',
+    "0 9 * * * *",
+    trigger="cron",
+    job_id="morning_email",
+    args=("user@example.com", "晨报"),
+    kwargs={"body": "这是晨报内容"},
+)
+
+# 5. 批量添加同函数不同参数的任务
+def process_batch(batch_id: int):
+    print(f"处理批次 {batch_id}")
+
+cron_register('process_batch', process_batch)
+cron.add_job('process_batch', "@every 10m", job_id="batch_1", args=(1,))
+cron.add_job('process_batch', "@every 10m", job_id="batch_2", args=(2,))
+cron.add_job('process_batch', "@every 10m", job_id="batch_3", args=(3,))
+```
+
+### 未注册直接报错
+
+```python
+@cron.job("0 */5 * * * *")
+def simple_task():          # ❌ ValueError: 函数 'simple_task' 未注册 cron_func_name
+    pass
+```
+
+---
+
+## 函数找不到的处理
+
+如果 Redis 中存储了某个 job 但对应的定时函数没有被导入或已被删除：
+
+- **失败次数 +1**（计入 metrics）
+- **job 状态变为 `error`**
+- **前端显示红色"异常"标签**，不再显示"运行中"误导用户
+- **日志打印 ERROR 级别信息**
+- **继续调度**（下次触发时再次尝试，便于热修复后自动恢复）
+
+---
+
+## Web UI 管理后台（重点）
+
+nb_cron 自带漂亮的管理后台，包含：
+- **仪表盘**：任务总数、运行中/已暂停/异常卡片、24小时执行趋势图、成功率饼图
+- **任务管理**：列表搜索/筛选、暂停/恢复/立即执行/删除操作、新建任务对话框
+- **任务详情**：执行指标图表、最近10次执行记录、错误日志
+- **Cron 工具**：Cron 表达式翻译器
+- **中英文切换**
+
+支持 **FastAPI、Flask、Django** 三种框架一键启动。
+
+---
+
+### 方式一：FastAPI 启动（推荐）
+
+```bash
+pip install nb_cron_nb[redis,fastapi]
+```
+
+创建 `app.py`：
+
+```python
+from nb_cron import NbCron, cron_register
+from nb_cron.web import get_fastapi_app
+
+cron = NbCron("my_project", "redis://localhost:6379/0")
+
+# 无参数任务
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    print("heartbeat OK")
+
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="数据同步", args=(), kwargs={"source": "mysql", "target": "redis"})
+@cron_register('sync_data')
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
+
+# 有参数任务（装饰器中传参）
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份", args=("prod_db",), kwargs={"compress": True})
+@cron_register('daily_backup')
+def daily_backup(db_name: str, compress: bool = False):
+    print(f"backup {db_name}, compress={compress}")
+
+# 非装饰器写法：第三方函数
+def send_email(to: str, subject: str, body: str):
+    """发送邮件（第三方库函数）"""
+    print(f"邮件已发送到 {to}: {subject}")
+
+cron_register('send_email', send_email)
+cron.add_job(
+    'send_email',
+    "0 0 9 * * 1-5",
+    trigger="cron",
+    job_id="morning_report_email",
+    name="晨报邮件",
+    args=("admin@example.com", "每日晨报", "这是晨报内容"),
+)
+
+# 批量添加同函数不同参数的任务
+def process_queue(queue_name: str):
+    """处理队列"""
+    print(f"processing queue: {queue_name}")
+
+cron_register('process_queue', process_queue)
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_1", args=("queue_1",))
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_2", args=("queue_2",))
+cron.add_job('process_queue', "@every 1m", job_id="process_queue_3", args=("queue_3",))
+
+app = get_fastapi_app(cron)
+
+@app.on_event("startup")
+def startup():
+    cron.start()
+
+@app.on_event("shutdown")
+def shutdown():
+    cron.stop()
+```
+
+启动：
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+打开浏览器访问：
+
+| 地址 | 说明 |
+|---|---|
+| http://localhost:8000/nb_cron/ui/ | 管理后台 UI 页面 |
+| http://localhost:8000/nb_cron/api/jobs | REST API - 任务列表 |
+| http://localhost:8000/nb_cron/api/health | 健康检查（含时区信息） |
+| http://localhost:8000/nb_cron/api/dashboard/stats | 仪表盘统计数据 |
+| http://localhost:8000/nb_cron/api/cron/explain?expression=0+*/5+*+*+*+* | Cron 翻译 |
+| http://localhost:8000/docs | FastAPI 自动生成的 Swagger 文档 |
+
+---
+
+### 方式二：Flask 启动
+
+```bash
+pip install nb_cron_nb[redis,flask]
+```
+
+创建 `app.py`：
+
+```python
+from nb_cron import NbCron, cron_register
+from nb_cron.web import get_flask_app
+
+cron = NbCron("my_project", "redis://localhost:6379/0")
+
+# 无参数任务
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳")
+@cron_register('heartbeat')
+def heartbeat():
+    print("heartbeat OK")
+
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="同步", kwargs={"source": "mysql", "target": "redis"})
+@cron_register('sync_data')
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
+
+# 非装饰器写法
+def cleanup(days: int = 7):
+    """清理日志"""
+    print(f"cleanup logs older than {days} days")
+
+cron_register('cleanup', cleanup)
+cron.add_job(
+    'cleanup',
+    "0 0 3 * * 0",
+    trigger="cron",
+    job_id="weekly_cleanup",
+    name="每周清理",
+    kwargs={"days": 30},
+)
+
+app = get_flask_app(cron)
+
+if __name__ == "__main__":
+    cron.start()
+    app.run(host="0.0.0.0", port=5000, debug=False)
+```
+
+启动：
+
+```bash
+# 开发模式
+python app.py
+
+# 生产模式（注意: 只用 1 个 worker，或用 Redis 存储自动防重复）
+gunicorn app:app -w 1 -b 0.0.0.0:5000
+```
+
+访问 http://localhost:5000/nb_cron/ui/
+
+---
+
+### 方式三：Django 启动
+
+```bash
+pip install nb_cron_nb[redis,django]
+```
+
+**Step 1** — 创建调度器配置文件 `your_project/cron_config.py`：
+
+```python
+from nb_cron import NbCron, cron_register
+
+cron = NbCron("my_project", "redis://localhost:6379/0")
+
+# 无参数任务
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳")
+@cron_register('heartbeat')
+def heartbeat():
+    print("heartbeat OK")
+
+# 有参数任务（必须在装饰器中传 args/kwargs）
+@cron.job("0 */5 * * * *", trigger="cron", name="同步", kwargs={"source": "mysql", "target": "redis"})
+@cron_register('sync_data')
+def sync_data(source: str = "mysql", target: str = "redis"):
+    print(f"sync from {source} to {target}")
+
+# 非装饰器写法：批量添加任务
+def process_order(order_id: int):
+    """处理订单"""
+    print(f"processing order {order_id}")
+
+cron_register('process_order', process_order)
+cron.add_job('process_order', "@every 5m", job_id="process_order_1", args=(1001,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_2", args=(1002,))
+cron.add_job('process_order', "@every 5m", job_id="process_order_3", args=(1003,))
+```
+
+**Step 2** — 在 `urls.py` 中挂载路由：
+
+```python
+from django.contrib import admin
+from django.urls import path
+from your_project.cron_config import cron
+from nb_cron.web import get_django_urls
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+] + get_django_urls(cron)
+```
+
+**Step 3** — 在 `apps.py` 中启动调度器（防止 reload 重复启动）：
+
+```python
+import os
+from django.apps import AppConfig
+
+class YourAppConfig(AppConfig):
+    name = 'your_app'
+
+    def ready(self):
+        if os.environ.get('RUN_MAIN') == 'true':
+            from your_project.cron_config import cron
+            cron.start()
+```
+
+启动：
+
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+访问 http://localhost:8000/nb_cron/ui/
+
+---
+
+## 前端 UI 构建说明
+
+nb_cron 的管理后台前端源码位于 `nb_cron_ui/` 目录，使用以下技术栈：
+
+- **Vue 3** — 响应式前端框架
+- **Element Plus** — UI 组件库
+- **ECharts** — 图表库
+- **Pinia** — 状态管理
+- **Vue I18n** — 中英文国际化
+- **Vue Router** — 路由管理
+- **Vite** — 构建工具
+
+### 构建前端（发布前必须执行）
+
+```bash
+cd nb_cron_ui
+npm install          # 安装依赖
+npm run build        # 编译，输出到 nb_cron/web/static/
+```
+
+构建完成后，`nb_cron/web/static/` 目录下会生成 `index.html` 和 `assets/` 目录，
+Python 后端会自动读取并在 `/nb_cron/ui/` 路径下提供服务。
+
+### 前端开发模式
+
+如果你要修改前端代码：
+
+```bash
+# 终端 1：启动后端 API（以 FastAPI 为例）
+uvicorn your_app:app --port 8000
+
+# 终端 2：启动前端开发服务器（自动代理 API 到 8000 端口）
+cd nb_cron_ui
+npm run dev
+```
+
+Vite 开发服务器会自动将 `/nb_cron/api/` 请求代理到 `http://localhost:8000`，
+实现前后端分离开发、热更新。
+
+### 前端目录结构
+
+```
+nb_cron_ui/
+├── package.json              # 依赖配置
+├── vite.config.js            # Vite 配置（base路径、构建输出、API代理）
+├── index.html                # 入口 HTML
+├── src/
+│   ├── main.js               # Vue 应用入口
+│   ├── App.vue               # 根组件
+│   ├── router/index.js       # 路由配置
+│   ├── stores/app.js         # Pinia 状态管理（侧边栏、标签页、语言）
+│   ├── i18n/                 # 国际化
+│   │   ├── index.js          # i18n 配置
+│   │   ├── zh.js             # 中文翻译
+│   │   └── en.js             # 英文翻译
+│   ├── api/index.js          # Axios API 封装
+│   ├── views/
+│   │   ├── Dashboard.vue     # 仪表盘（统计卡片 + ECharts 图表）
+│   │   ├── JobList.vue       # 任务列表（搜索/操作/状态展示/新建任务）
+│   │   ├── JobDetail.vue     # 任务详情（指标 + 执行记录 + 错误日志）
+│   │   └── CronTool.vue      # Cron 表达式翻译工具
+│   └── components/
+│       ├── AppLayout.vue     # 整体布局（侧边栏 + 顶栏 + 内容区）
+│       ├── Sidebar.vue       # 左侧导航栏
+│       └── TabsBar.vue       # 右侧多标签栏
+```
+
+---
+
+## Cron 表达式
+
+nb_cron **强制 6 字段** cron 表达式，消除歧义：
+
+```
+┌──────────── 秒 (0-59)
+│ ┌────────── 分 (0-59)
+│ │ ┌──────── 时 (0-23)
+│ │ │ ┌────── 日 (1-31)
+│ │ │ │ ┌──── 月 (1-12)
+│ │ │ │ │ ┌── 周 (0-6, 0=周日)
+│ │ │ │ │ │
+* * * * * *
+```
+
+**传入 5 字段会直接报错**，避免用户写错。
+
+### 常用示例
+
+| 表达式 | 含义 |
+|---|---|
+| `* * * * * *` | 每秒 |
+| `0 * * * * *` | 每分钟整秒 |
+| `*/10 * * * * *` | 每10秒 |
+| `0 */5 * * * *` | 每5分钟 |
+| `0 0 * * * *` | 每小时整点 |
+| `0 30 9 * * *` | 每天 09:30:00 |
+| `0 0 9 * * 1-5` | 工作日 09:00:00 |
+| `0 0 0 1 * *` | 每月1号 00:00:00 |
+| `0 0 2 * * 0` | 每周日 02:00:00 |
+
+### 间隔表达式
+
+除了 cron，也支持 `@every` 简写（trigger 自动推断为 `interval`）：
+
+```python
+@cron.job("@every 30s")                        # 每30秒（自动推断）
+@cron.job("@every 5m", trigger="interval")     # 每5分钟（显式指定）
+@cron.job("2h", trigger="interval")            # 每2小时（简写，显式指定时可省略 @every）
+@cron.job("@every 1d")                         # 每天
+@cron.job("@every 1w")                         # 每周
+```
+
+### 日期表达式（一次性任务）
+
+支持多种日期格式（trigger 自动推断为 `date`），日期按调度器的时区解析：
+
+```python
+@cron.job("2026-10-01 09:00:00", trigger="date")     # ISO 格式
+@cron.job("2026-10-01", trigger="date")               # 仅日期（当天 00:00:00）
+@cron.job("2026/10/01 09:00:00", trigger="date")      # 斜线分隔
+@cron.job("2026年10月01日", trigger="date")             # 中文日期
+```
+
+### Cron 翻译功能
+
+```python
+from nb_cron import explain_cron
+
+print(explain_cron("0 30 9 * * *", "zh"))     # "每天09:30:00执行"
+print(explain_cron("0 30 9 * * *", "en"))     # "At 09:30:00, every day"
+print(explain_cron("0 0 9 * * 1-5", "zh"))    # "每周一至周五09:00:00执行"
+print(explain_cron("*/5 * * * * *", "zh"))     # "每5秒执行"
+```
+
+REST API 也支持翻译：`GET /nb_cron/api/cron/explain?expression=0+*/5+*+*+*+*`
+
+---
+
+## 分布式部署
+
+nb_cron 在 Redis/MongoDB/SQLAlchemy 存储模式下**自动支持分布式**：
+
+```python
+cron = NbCron("my_project", "redis://localhost:6379/0")
+```
+
+**原理：** 每次任务触发时，调度器先用 `SET NX PX` (Redis) 或 `findOneAndUpdate` (MongoDB) 获取分布式锁。锁的 key 包含任务 ID 和触发时间戳，确保同一次触发只有一个实例执行。
+
+不需要额外配置，不需要 leader election，开箱即用。
+
+---
+
+## REST API
+
+所有 API 前缀：`/nb_cron/api/`
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| GET | `/jobs` | 获取所有任务（含指标） |
+| GET | `/jobs/{job_id}` | 获取单个任务详情 |
+| POST | `/jobs` | 创建任务 |
+| DELETE | `/jobs/{job_id}` | 删除任务 |
+| POST | `/jobs/{job_id}/pause` | 暂停任务 |
+| POST | `/jobs/{job_id}/resume` | 恢复任务 |
+| POST | `/jobs/{job_id}/trigger` | 立即触发一次 |
+| GET | `/jobs/{job_id}/metrics` | 获取任务指标 |
+| GET | `/dashboard/stats` | 仪表盘统计（含 error_count） |
+| GET | `/cron/explain?expression=...` | Cron 表达式翻译 |
+| GET | `/functions` | 获取已注册函数列表 |
+| GET | `/health` | 健康检查（含时区信息） |
+
+### 创建任务 API
+
+`POST /nb_cron/api/jobs`
+
+```json
+{
+    "func_ref": "daily_backup",
+    "expression": "0 0 2 * * *",
+    "trigger": "cron",
+    "job_id": "my_job",
+    "name": "我的任务",
+    "args": ["backup_db"],
+    "kwargs": {"compress": true},
+    "max_instances": 1
+}
+```
+
+- `func_ref`: 函数的 `cron_func_name`（通过 `@cron_register` 注册的稳定名称）
+- `trigger`: 可选 `"cron"` / `"interval"` / `"date"`，不传则自动推断
+- `args`: 位置参数列表，会按顺序传给函数
+- `kwargs`: 关键字参数字典，会作为命名参数传给函数
+
+### 创建带参数的任务示例
+
+```json
+// 发送邮件任务
+POST /nb_cron/api/jobs
+{
+    "func_ref": "send_email",
+    "expression": "0 9 * * * *",
+    "trigger": "cron",
+    "job_id": "morning_email",
+    "name": "晨报邮件",
+    "args": ["admin@example.com", "每日晨报"],
+    "kwargs": {"body": "这是晨报内容"}
+}
+
+// 批量处理任务（同函数不同参数）
+POST /nb_cron/api/jobs
+{
+    "func_ref": "process_queue",
+    "expression": "@every 1m",
+    "trigger": "interval",
+    "job_id": "process_queue_1",
+    "name": "处理队列 1",
+    "args": ["queue_1"]
+}
+
+POST /nb_cron/api/jobs
+{
+    "func_ref": "process_queue",
+    "expression": "@every 1m",
+    "trigger": "interval",
+    "job_id": "process_queue_2",
+    "name": "处理队列 2",
+    "args": ["queue_2"]
+}
+```
+
+### 获取已注册函数
+
+`GET /nb_cron/api/functions`
+
+从存储后端（Redis/MongoDB/SQLAlchemy）读取所有已注册的函数名称列表，支持跨 Git 项目共享。
+
+**跨项目工作原理：**
+- 项目 A 中用 `@cron_register` 标记的函数，会在 `cron.start()` 时自动同步到 Redis
+- 项目 B 的 Web UI 通过此 API 读取 Redis 中的函数列表
+- 即使项目 A 没有运行，函数列表依然可用（持久化在 Redis 中）
+
+**示例：**
+```bash
+# 项目 A：只标记函数，不添加定时任务
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+@cron_register('generate_report')
+def generate_report(type):
+    ...
+
+cron.start()  # 函数名自动同步到 Redis
+
+# 项目 B：Web UI 调用 API
+GET /nb_cron/api/functions
+# 返回：{"functions": ["send_email", "generate_report"]}
+
+# Web UI 下拉框显示这些函数，用户可以选择并创建定时任务
+```
+
+---
+
+## 存储后端
+
+| 后端 | URL 格式 | 分布式锁 | 适用场景 |
+|---|---|---|---|
+| Memory | `None`（默认） | 进程内锁 | 开发/单实例 |
+| Redis | `redis://host:port/db` | SET NX PX | 生产/分布式（推荐） |
+| MongoDB | `mongodb://host:port/db` | findOneAndUpdate | 生产/分布式 |
+| SQLAlchemy | `sqlite:///path` / `mysql+pymysql://...` | INSERT conflict | 生产/分布式 |
+
+---
+
+## 任务指标
+
+nb_cron 自动收集每个任务的执行指标（固定大小，不爆内存）：
+
+- `total_runs` - 总执行次数
+- `success_count` / `fail_count` - 成功/失败次数
+- `last_run_at` - 最后执行时间
+- `last_error` - 最后一次错误信息（截断500字符）
+- `avg_duration_ms` / `max_duration_ms` / `min_duration_ms` - 执行耗时统计
+- `recent_results` - 最近10次执行结果（环形缓冲区）
+- `hourly_stats` - 24小时逐时统计（固定24个槽位）
+
+Redis 中单个任务的指标占用不超过 2KB。
+
+---
+
+## 任务状态
+
+| 状态 | 含义 | 前端显示 |
+|---|---|---|
+| `active` | 正常运行中 | 绿色 `运行中` |
+| `paused` | 已暂停 | 黄色 `已暂停` |
+| `error` | 定时函数未找到 | 红色 `异常` |
+
+当函数未找到时（如函数被删除、模块未导入），job 自动标记为 `error` 状态并计入失败次数。修复函数后，下次触发会自动恢复。
+
+---
+
+## API 参考
+
+### `NbCron(name, store_url=None, max_workers=20, tick_seconds=1.0, misfire_grace_seconds=60, tz=None)`
+
+创建调度器实例。
+
+- `name`: **必传**，调度器名称。用于隔离不同项目的 Redis keys / MongoDB collections / SQL 表。多个项目共享同一个 Redis 时互不干扰。UI 侧边栏会显示此名称
+- `store_url`: 存储后端 URL，None 表示内存存储
+- `max_workers`: 线程池大小
+- `tick_seconds`: 调度循环间隔（秒）
+- `misfire_grace_seconds`: misfire 容忍时间（超过此时间的错过任务会被跳过）
+- `tz`: 时区，默认 `None` 使用本地时区。接受任何 `datetime.tzinfo` 对象
+
+### `@cron.job(expression, *, trigger=None, job_id=None, name=None, args=(), kwargs=None, max_instances=1)`
+
+装饰器，注册定时任务。同时支持同步函数和 async 函数。**函数必须先用 `@cron_register` 注册。**
+
+- `expression`: 触发表达式（cron / 间隔 / 日期时间）
+- `trigger`: 触发器类型，可选 `"cron"` / `"interval"` / `"date"`，不传则自动推断
+
+### `cron.add_job(func, expression, *, trigger=None, job_id=None, name=None, ...)`
+
+编程方式添加任务，返回 Job 对象。
+
+- `func`: 函数对象 **或** `cron_func_name` 字符串（通过 `@cron_register` 注册的名称）
+- `expression`: 触发表达式
+- `trigger`: 触发器类型，可选 `"cron"` / `"interval"` / `"date"`，不传则自动推断
+
+### `@cron_register(cron_func_name)` / `add_cron_register(cron_func_name, func)` / `cron_register(cron_func_name, func)`
+
+给函数绑定路径无关的稳定名称。被装饰的函数会多出 `.cron_func_name` 属性。
+
+```python
+from nb_cron import cron_register, add_cron_register
+```
+
+### `cron.start()` / `cron.stop(wait=True)`
+
+- `start()` **不阻塞**，立即返回，后面的代码继续执行。
+- 主线程跑完后进程**不会退出**，定时任务持续运行。
+- `Ctrl+C` 优雅停止。
+- 不需要任何 `sleep` / `join` / `input` / `block` 参数。
+
+### `@every` 间隔任务首次何时执行
+
+`@every 5s` 等 **IntervalTrigger** 首次 `next_run` 为「注册时刻的 `now`」，会在**下一个调度 tick 内**执行第一次，**不会**先空等 5 秒；之后每隔 5 秒一次。
+
+### `cron.pause_job(job_id)` / `cron.resume_job(job_id)`
+
+暂停/恢复任务。
+
+### `cron.trigger_job(job_id)`
+
+立即执行一次（不等待下次触发时间）。
+
+### `cron.get_jobs()` / `cron.get_job(job_id)` / `cron.remove_job(job_id)`
+
+查询/删除任务。
+
+### `explain_cron(expression, lang="en")`
+
+翻译 cron 表达式为人类可读文本。`lang` 支持 `"zh"`（中文）和 `"en"`（英文）。
+
+### `get_fastapi_app(cron)` / `get_flask_app(cron)` / `get_django_urls(cron)`
+
+一行创建带 Web UI 的应用，分别返回 FastAPI app、Flask app、Django URL 列表。
+
+```python
+from nb_cron.web import get_fastapi_app, get_flask_app, get_django_urls
+```
+
+---
+
+## 示例代码
+
+完整可运行的示例代码在 `examples/` 目录下：
+
+| 文件 | 说明 |
+|---|---|
+| `example_fastapi_redis.py` | FastAPI + Redis 完整示例，含多个任务 |
+| `example_flask_redis.py` | Flask + Redis 完整示例 |
+| `example_django_redis.py` | Django + Redis 集成指南（分步说明） |
+| `example_memory_simple.py` | 最简示例，内存存储，无需 Redis |
+| `demo_cross_git_project_manage_corn_tasks/proj1.py` | **跨项目示例 - 项目 1**：函数定义与定时任务 |
+| `demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py` | **跨项目示例 - 项目 2**：Web UI 管理后台 |
+
+---
+
+## 跨 Git 项目示例（重点）
+
+nb_cron 的核心特性：函数定义与任务调度分离，支持跨 Git 项目管理。
+
+- **项目 1**（`proj1.py`）：业务项目，用 `@cron_register` 标记函数，函数名自动同步到 Redis
+- **项目 2**（`proj2_fastapi_cron.py`）：FastAPI 管理后台，通过 Web UI 为项目 1 的函数添加定时任务
+
+### 快速开始
+
+```bash
+# 终端 1：启动项目 1
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+
+# 终端 2：启动项目 2
+uvicorn proj2_fastapi_cron:app --reload
+
+# 访问 Web UI：http://localhost:8000/nb_cron/ui/
+```
+
+### 工作原理
+
+```
+项目 1 (业务项目)          Redis              项目 2 (管理后台)
+@cron_register('func')   →  函数名列表  →   GET /api/functions
+cron.start() 同步        →  job 配置    ←   POST /api/jobs 创建
+执行函数 (本地进程)       ←  调度任务    ←   Web UI 操作
+```
+
+### 优势
+
+- **职责分离**：项目 1 专注业务，项目 2 专注调度
+- **安全**：只有 `@cron_register` 标记的函数才暴露
+- **灵活**：项目 2 动态创建任务，无需修改项目 1 的代码
+- **可维护**：项目 1 重构不影响项目 2 的调度
+
+### 应用场景
+
+微服务架构、多租户 SaaS、DevOps 自动化、数据平台等。
+
+---
+
+## Funboost 执行器（核弹级能力）
+
+关于funboost的教程请参考：[https://funboost.readthedocs.io/zh-cn/latest/index.html](https://funboost.readthedocs.io/zh-cn/latest/index.html)
+
+
+nb_cron 默认的执行器是在本地线程池中直接调用函数。但如果你将 `executor` 指定为 `FunboostExecutor`，nb_cron 的任务触发时**不在本地执行**，而是通过 funboost 的 `.push()` 把任务推送到消息队列（Redis / RabbitMQ / Kafka / MEMORY_QUEUE 等），由 funboost worker 进程消费执行。
+
+这意味着你**瞬间获得了 funboost 的全部能力**：
+
+### 为什么 FunboostExecutor 这么强？
+
+因为 funboost 的 `BoosterParams` 提供了**工业级**的任务消费能力，一个参数类就覆盖了 99% 的调度和函数运行控制需求：
+
+| 能力 | BoosterParams 参数 | 说明 |
+|---|---|---|
+| **30+ 种消息队列** | `broker_kind` | Redis / RabbitMQ / Kafka / RocketMQ / Celery / SQS ... 30+ 种中间件随意切换 |
+| **精准控频** | `qps` | 指定每秒执行次数，支持小数（如 `0.01` = 每100秒1次），无需关心并发数 |
+| **分布式控频** | `is_using_distributed_frequency_control` | 多个消费者实例共享同一 qps 限额，总频率不超 |
+| **智能并发池** | `concurrent_num` + `concurrent_mode` | 线程/协程/协程+多进程/单线程，自适应扩缩容，任务少时自动缩减线程 |
+| **自动重试** | `max_retry_times` | 函数出错自动重试，支持指数退避（`is_using_advanced_retry`） |
+| **指数退避重试** | `advanced_retry_config` | `1s → 2s → 4s → 8s → 16s → 32s → 60s...`，支持 sleep 模式和 requeue 模式 |
+| **死信队列** | `is_push_to_dlx_queue_when_retry_max_times` | 重试耗尽后自动进入死信队列，不丢消息 |
+| **函数超时** | `function_timeout` | 运行超时自动杀死，防止任务卡死 |
+| **消息过期** | `msg_expire_seconds` | 消息超过指定时间自动丢弃，不执行过期任务 |
+| **任务去重** | `do_task_filtering` + `task_filtering_expire_seconds` | 相同参数的任务自动去重，防止重复执行 |
+| **运行时间限制** | `allow_run_time_cron` | 只在指定 cron 时间段内消费执行，如 `* 9-17 * * 1-5` 仅工作日上班时间 |
+| **执行结果持久化** | `function_result_status_persistance_conf` | 保存函数入参、运行结果、运行状态到 MongoDB，可追溯 |
+| **RPC 模式** | `is_using_rpc_mode` | 发布端可同步获取消费端的执行结果 |
+| **多进程消费** | `mp_consume(process_num=N)` | 协程/线程 + 多进程叠加，性能炸裂 |
+| **消费者分组** | `booster_group` | 按业务分组启动消费者，灵活管理 |
+| **自定义并发池** | `specify_concurrent_pool` | 多个消费者共享一个线程池，节约资源 |
+| **async 支持** | `specify_async_loop` | 指定 event loop，支持 aiohttp 等要求同 loop 的异步库 |
+
+### 安装
+
+```bash
+pip install nb_cron_nb[redis] funboost
+```
+
+### 基本用法
+
+```python
+from funboost import BoosterParams, BrokerEnum
+from nb_cron import NbCron, cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+
+# 创建 funboost 执行器，BoosterParams 的所有参数都支持 IDE 自动补全
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",       # 消息队列名
+        broker_kind=BrokerEnum.REDIS,         # 中间件类型，30+ 种可选
+        concurrent_num=50,                    # 并发数
+        qps=20,                               # 精准控频：每秒最多执行 20 次
+        max_retry_times=3,                    # 失败自动重试 3 次
+        is_using_distributed_frequency_control=True,  # 分布式控频
+    )
+)
+
+# NbCron 构造时自动调用 executor.bind_cron(self)
+# worker 执行完后直接用 cron.metrics.record() 写指标，无需重建 store
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+@cron.job("0 */5 * * * *", kwargs={"user_id": 42})
+@cron_register('my_task')
+def my_task(user_id: int):
+    print(f"processing user {user_id}")
+
+# 启动 funboost 消费者 + nb_cron 调度器
+funboost_executor.consume()   # 单进程消费（非阻塞）
+# funboost_executor.mp_consume(process_num=4)  # 多进程消费，性能炸裂
+cron.start()
+```
+
+### 工作原理
+
+```
+nb_cron 调度器               funboost 消息队列              funboost worker
+cron tick 触发任务  ─push()→  Redis/RabbitMQ/Kafka  ─consume()→  解析 cron_func_name
+计算 next_run_time           持久化存储，不丢消息            FunctionRegistry.resolve()
+分布式锁防重复                                               执行函数 + 上报 metrics
+```
+
+**关键区别**：默认执行器是「调度 + 执行在同一进程」，FunboostExecutor 是「调度端 push，消费端执行」，天然解耦。
+
+### 高级用法
+
+`BoosterParams` 的 入参非常丰富，各种函数控制功能都有，所以`nb_cron`的执行器可以充分借助`funboost`的威力，所以作者没有给`nb_cron`默认的本地线程池executor加太多功能，例如重试功能/超时杀死功能等。因为你即使没有安装任何消息队列，也可以 `BoosterParams(...,broker_kind=BrokerEnum.MEMORY_QUEUE)` 来使用funboost的内存队列。
+
+#### 1. 指数退避重试
+
+```python
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",
+        broker_kind=BrokerEnum.REDIS,
+        max_retry_times=5,
+        is_using_advanced_retry=True,
+        advanced_retry_config={
+            'retry_mode': 'requeue',          # requeue 模式：消息发回队列延迟重试，不占线程
+            'retry_base_interval': 1.0,        # 基础间隔 1s
+            'retry_multiplier': 2.0,           # 指数退避倍数
+            'retry_max_interval': 60.0,        # 最大间隔 60s
+            'retry_jitter': True,              # 随机抖动，防止惊群
+        },
+    )
+)
+# 重试间隔：1s → 2s → 4s → 8s → 16s → 32s → 60s → 60s...
+```
+#### 2. Worker 独立进程部署（横向扩展）
+
+调度端和消费端可以完全分离部署，消费端可以独立横向扩展：
+
+```python
+# scheduler.py — 调度端（只 push，不消费）
+from nb_cron import NbCron, cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS)
+)
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+@cron.job("0 */5 * * * *")
+@cron_register('my_task')
+def my_task():
+    print("执行任务")
+
+cron.start()  # 只调度，不消费
+
+# worker.py — 消费端（独立进程，可部署多台机器）
+from nb_cron import NbCron
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+import my_tasks  # 触发 @cron_register，让注册表生效
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS)
+)
+cron = NbCron("my_project", "redis://localhost:6379/0", executor=funboost_executor)
+
+funboost_executor.mp_consume(process_num=4)  # 4 进程消费
+```
+
+#### 3. 自定义指标回调
+
+```python
+def my_recorder(job_id, success, duration_ms, error):
+    # 同时上报 Prometheus / 自定义监控系统
+    prometheus_metrics.labels(job_id=job_id).observe(duration_ms)
+
+funboost_executor = FunboostExecutor(
+    BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS),
+    metrics_recorder=my_recorder,
+)
+```
+
+### FunboostExecutor vs 默认执行器
+
+| 特性 | 默认 Executor | FunboostExecutor |
+|---|---|---|
+| 执行方式 | 本地线程池直接调用 | push 到消息队列，worker 消费执行 |
+| 消息持久化 | ❌ 进程崩溃任务丢失 | ✅ 消息队列持久化，不丢任务 |
+| 横向扩展 | ❌ 只能单进程 | ✅ worker 独立部署，无限扩展 |
+| 精准控频 | ❌ | ✅ qps 参数，支持分布式控频 |
+| 自动重试 | ❌ | ✅ max_retry_times + 指数退避 |
+| 任务去重 | ❌ | ✅ do_task_filtering |
+| 消息过期 | ❌ | ✅ msg_expire_seconds |
+| 死信队列 | ❌ | ✅ 重试耗尽自动进入死信队列 |
+| 函数超时 | ❌ | ✅ function_timeout |
+| 运行时间限制 | ❌ | ✅ allow_run_time_cron |
+| 30+ 种消息队列 | ❌ | ✅ broker_kind 一键切换 |
+| 多进程消费 | ❌ | ✅ mp_consume(process_num=N) |
+| 执行结果持久化 | ✅ (store) | ✅ (store + funboost MongoDB) |
+
+---
+
+## 运行示例
+
+```bash
+# FastAPI + Redis（推荐）
+cd examples
+pip install nb_cron_nb[redis,fastapi]
+uvicorn example_fastapi_redis:app --reload
+
+# Flask + Redis
+pip install nb_cron_nb[redis,flask]
+python example_flask_redis.py
+
+# 最简示例（无需 Redis）
+pip install nb_cron_nb[fastapi]
+uvicorn example_memory_simple:app --reload
+
+# 跨 Git 项目示例（重点推荐）
+# 终端 1：启动项目 1（业务项目）
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+
+# 终端 2：启动项目 2（FastAPI 管理后台）
+uvicorn proj2_fastapi_cron:app --reload
+```
+
+---
+
+## 历史一次性定时任务清理功能
+```
+cron = NbCron("my_project", "redis://localhost:6379/0")
+cron.cleanup_history_jobs(older_than_days=30)   # 手动清理
+cron.enable_auto_cleanup()                       # 每天0点自动清理7天前的
+```
+
+## License
+
+MIT - ydf0509
+
+`````
+
+--- **end of file: README.md** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: pyproject.toml** (project: nb_cron) --- 
+
+`````text
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nb_cron_nb"
+version = "0.1.1"
+description = "A powerful and simple cron job scheduler that dominates APScheduler"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+authors = [
+    {name = "ydf0509"}
+]
+keywords = ["cron", "scheduler", "distributed", "job", "task"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Distributed Computing",
+]
+dependencies = [
+    "croniter>=1.0.0",
+    "pydantic>=1.10.0",
+]
+
+[project.optional-dependencies]
+redis = ["redis>=4.0.0"]
+mongo = ["pymongo>=4.0.0"]
+sqlalchemy = ["sqlalchemy>=1.4.0"]
+fastapi = ["fastapi>=0.100.0", "uvicorn>=0.20.0"]
+flask = ["flask>=2.0.0"]
+django = ["django>=3.2.0", "django-ninja>=0.22.0"]
+all = [
+    "nb_cron_nb[redis,mongo,sqlalchemy,fastapi,flask,django]",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.20.0",
+    "httpx>=0.24.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ydf0509/nb_cron"
+Repository = "https://github.com/ydf0509/nb_cron"
+
+[tool.setuptools.packages.find]
+include = ["nb_cron*"]
+
+[tool.setuptools.package-data]
+"nb_cron.web" = ["static/**/*"]
+
+`````
+
+--- **end of file: pyproject.toml** (project: nb_cron) --- 
+
+---
+
+# markdown content namespace: nb_cron examples 
+
+
+## nb_cron File Tree (relative dir: `examples`)
+
+
+`````
+
+└── examples
+    ├── demo1.py
+    ├── demo_clean_history_date_job.py
+    ├── demo_cross_git_project_manage_corn_tasks
+    │   ├── proj1.py
+    │   ├── proj2_fastapi_cron.py
+    │   └── 跨项目定时任务管理说明文档.md
+    ├── example_django_redis.py
+    ├── example_fastapi_redis.py
+    ├── example_flask_redis.py
+    ├── example_memory_simple.py
+    └── use_funboost
+        ├── example_auto_execute_by_funboost.py
+        ├── funboost_demo.py
+        └── manual_funboost.py
+
+`````
+
+---
+
+
+<<<<<<< HEAD
+## nb_cron (relative dir: `examples`)  Included Files (total: 12 files)
+=======
+## nb_cron (relative dir: `examples`)  Included Files (total: 11 files)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+
+- `examples/demo1.py`
+
+- `examples/demo_clean_history_date_job.py`
+
+- `examples/example_django_redis.py`
+
+- `examples/example_fastapi_redis.py`
+
+- `examples/example_flask_redis.py`
+
+- `examples/example_memory_simple.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/proj1.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py`
+
+- `examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md`
+
+- `examples/use_funboost/example_auto_execute_by_funboost.py`
+
+- `examples/use_funboost/funboost_demo.py`
+
+- `examples/use_funboost/manual_funboost.py`
+
+
+---
+
+
+--- **start of file: examples/demo1.py** (project: nb_cron) --- 
+
+`````python
+"""
+demo1 — 最小调度示例
+
+cron.start() 不阻塞，后面的代码继续执行。
+主线程跑完后进程不会退出，定时任务继续运行。
+Ctrl+C 优雅退出。
+"""
+from nb_cron import NbCron, cron_register, add_cron_register, explain_cron
+
+cron = NbCron("demo")  # name 必传，隔离不同项目
+
+@cron.job("0 */5 * * * *")
+@cron_register('report')
+def report_task():
+    print("生成报告")
+
+@cron.job("30 0 9 * * 1-5", trigger="cron")
+@cron_register('async_work')
+async def async_task():
+    print("异步任务也支持！")
+
+@cron.job("@every 1s", trigger="interval")
+@cron_register('heartbeat')
+def heartbeat():
+    print("心跳", flush=True)
+
+@cron.job("2026-12-31 23:59:59", trigger="date")
+@cron_register('new_year')
+def new_year_countdown():
+    print("新年倒计时任务！")
+
+def backup():
+    print("备份数据库")
+add_cron_register('backup', backup)
+
+@cron.job("*/10 * * * * *")
+@cron_register('report2')
+def report_task2():
+    print("生成报告2", flush=True)
+
+cron.add_job('backup', "0 0 2 * * *", trigger="cron", job_id="daily_backup", name="每日备份")
+cron.add_job(report_task.cron_func_name, "0 30 8 * * *", trigger="cron", job_id="morning_report", name="晨报")
+
+print(explain_cron("0 30 9 * * *", "zh"))
+print(explain_cron("0 30 9 * * *", "en"))
+
+cron.start()
+
+print("start() 后面的代码正常执行！")
+print("定时任务在后台运行，进程不会退出")
+print("按 Ctrl+C 退出")
+
+`````
+
+--- **end of file: examples/demo1.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_clean_history_date_job.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron 一次性定时任务清理示例
+================================
+
+演示如何：
+1. 创建多个一次性（date trigger）任务
+2. 手动清理历史任务
+3. 启用自动清理
+
+运行：
+    python demo_clean_history_date_job.py
+"""
+import logging
+from datetime import datetime, timedelta, timezone
+import time
+
+
+from funboost import BoosterParams, BrokerEnum
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+)
+
+executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch2",
+        broker_kind=BrokerEnum.REDIS,
+        concurrent_num=10,
+        qps=20,
+        # max_retry_times=3,
+    )
+)
+executor.consume()
+# 创建调度器（使用 Redis 存储，需要先启动 Redis 服务）
+cron = NbCron("cleanup_demo2", "redis://localhost:6379/0",executor=executor)
+
+# ─── 注册任务函数 ────────────────────────────────────────────────────
+
+@cron_register('test_date_job')
+def test_date_job(job_name: str):
+    print(f"[一次性任务] 执行: {job_name}")
+
+# ─── 创建多个一次性任务 ─────────────────────────────────────────────
+
+# 过去的任务（已过期）
+past_time = datetime.now() - timedelta(days=10)
+
+# 创建第一个过去的任务
+cron.add_job(
+    'test_date_job',
+    past_time.strftime("%Y-%m-%d %H:%M:%S"),
+    trigger="date",
+    job_id="past_job_1",
+    name="过去的任务1",
+    args=("过去的任务1",)
+)
+
+# 创建第二个过去的任务（更早）
+cron.add_job(
+    'test_date_job',
+    (past_time - timedelta(days=5)).strftime("%Y-%m-%d %H:%M:%S"),
+    trigger="date",
+    job_id="past_job_2",
+    name="过去的任务2",
+    args=("过去的任务2",)
+)
+
+# 手动修改任务的 updated_at 为过去时间，模拟已执行完毕的任务
+print("\n=== 模拟任务执行完毕 ===")
+jobs = cron.get_jobs()
+for job in jobs:
+    if job.trigger_type == "date" and job.next_run_time is None:
+        # 手动更新 updated_at 为 8 天前（超过 7 天的清理阈值）
+        job.updated_at = datetime.now() - timedelta(days=8)
+        cron.store.update_job(job)
+        print(f"已更新任务 {job.name} 的 updated_at 为 8 天前")
+
+# 未来的任务（未执行）
+future_time = datetime.now() + timedelta(minutes=30)
+cron.add_job(
+    'test_date_job',
+    future_time.strftime("%Y-%m-%d %H:%M:%S"),
+    trigger="date",
+    job_id="future_job",
+    name="未来的任务",
+    args=("未来的任务",)
+)
+
+# ─── 查看当前任务 ───────────────────────────────────────────────────
+print("\n=== 当前所有任务 ===")
+jobs = cron.get_jobs()
+for job in jobs:
+    status = "已过期" if job.next_run_time and job.next_run_time < datetime.now(job.next_run_time.tzinfo) else "正常"
+    print(f"- {job.name} (ID: {job.job_id}) - 类型: {job.trigger_type} - 状态: {status}")
+
+# ─── 手动清理历史任务 ───────────────────────────────────────────────
+# print("\n=== 手动清理历史任务 ===")
+# # delete_count = cron.cleanup_history_jobs(older_than_days=7)
+# print(f"清理结果: 删除了 {delete_count} 个过期的一次性任务")
+
+cron.enable_auto_cleanup(
+    cron_expression="*/5 * * * * *",  # 每5s执行一次清理
+    older_than_days=7  # 清理7天前的任务
+)
+
+time.sleep(10)
+
+# ─── 查看清理后任务 ─────────────────────────────────────────────────
+print("\n=== 清理后剩余任务 ===")
+jobs_after = cron.get_jobs()
+for job in jobs_after:
+    status = "已过期" if job.next_run_time and job.next_run_time < datetime.now(job.next_run_time.tzinfo) else "正常"
+    print(f"- {job.name} (ID: {job.job_id}) - 类型: {job.trigger_type} - 状态: {status}")
+
+# ─── 启用自动清理 ───────────────────────────────────────────────────
+# print("\n=== 启用自动清理 ===")
+# cron.enable_auto_cleanup(
+#     cron_expression="0 0 0 * * *",  # 每天0点执行
+#     older_than_days=7  # 清理7天前的任务
+# )
+# print("已启用自动清理: 每天0点清理7天前的一次性任务")
+
+# ─── 启动调度器 ─────────────────────────────────────────────────────
+print("\n=== 启动调度器 ===")
+cron.start()
+print("调度器已启动，按 Ctrl+C 退出")
+
+# # 保持进程运行
+# import time
+# try:
+#     while True:
+#         time.sleep(1)
+# except KeyboardInterrupt:
+#     print("\n正在停止...")
+#     cron.stop()
+#     print("已停止")
+
+`````
+
+--- **end of file: examples/demo_clean_history_date_job.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_django_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + Django + Redis 集成指南
+
+安装依赖:
+    pip install nb_cron_nb[redis,django]
+
+使用方式: 把以下代码集成到你的 Django 项目中
+
+步骤:
+    1. 在 your_project/cron_config.py 中配置调度器
+    2. 在 your_project/urls.py 中挂载路由
+    3. 在 your_project/apps.py 的 AppConfig.ready() 中启动调度器
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+"""
+
+# ═══════════════════════════════════════════
+# Step 1: cron_config.py - 配置调度器和任务
+# ═══════════════════════════════════════════
+"""
+# your_project/cron_config.py
+
+import logging
+from nb_cron import NbCron, cron_register
+
+logging.basicConfig(level=logging.INFO)
+
+# name 必传，隔离不同项目
+cron = NbCron("my_django_app", "redis://localhost:6379/0")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    logging.info("heartbeat OK")
+
+@cron.job("0 */5 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    logging.info("data synced")
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    logging.info("backup completed")
+"""
+
+# ═══════════════════════════════════════════
+# Step 2: urls.py - 挂载 nb_cron 路由
+# ═══════════════════════════════════════════
+"""
+# your_project/urls.py
+
+from django.contrib import admin
+from django.urls import path
+from your_project.cron_config import cron
+from nb_cron.web.app import get_django_urls
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # ... 你的其他路由 ...
+] + get_django_urls(cron)
+
+# 访问:
+#   UI:  http://localhost:8000/nb_cron/ui/
+#   API: http://localhost:8000/nb_cron/api/jobs
+"""
+
+# ═══════════════════════════════════════════
+# Step 3: apps.py - 在 Django 启动时启动调度器
+# ═══════════════════════════════════════════
+"""
+# your_app/apps.py
+
+from django.apps import AppConfig
+
+class YourAppConfig(AppConfig):
+    name = 'your_app'
+
+    def ready(self):
+        from your_project.cron_config import cron
+        # 防止 Django reload 时重复启动
+        import os
+        if os.environ.get('RUN_MAIN') == 'true':
+            cron.start()
+"""
+
+# ═══════════════════════════════════════════
+# 启动 Django 开发服务器
+# ═══════════════════════════════════════════
+"""
+python manage.py runserver 0.0.0.0:8000
+"""
+
+`````
+
+--- **end of file: examples/example_django_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_fastapi_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron_nb[redis,fastapi]
+
+启动方式:
+    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+cron = NbCron("example_fastapi很长很长很长", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨2:30执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上9点生成日报"""
+    logging.info("daily report generated")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    cron.start()
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    cron.stop()
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("example_fastapi_redis:app", host="0.0.0.0", port=8000, reload=True)
+
+`````
+
+--- **end of file: examples/example_fastapi_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_flask_redis.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + Flask + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron_nb[redis,flask]
+
+启动方式（开发）:
+    python example_flask_redis.py
+
+启动方式（生产）:
+    gunicorn example_flask_redis:app -w 1 -b 0.0.0.0:5000
+
+访问地址:
+    管理后台 UI:  http://localhost:5000/nb_cron/ui/
+    REST API:     http://localhost:5000/nb_cron/api/jobs
+    健康检查:     http://localhost:5000/nb_cron/api/health
+"""
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.web.app import get_flask_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储） ───
+cron = NbCron("example_flask", "redis://localhost:6379/0")
+
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat222():
+    logging.info("heartbeat OK")
+
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    logging.info("backup completed")
+
+
+# ─── 创建 Flask app ───
+app = get_flask_app(cron)
+
+# ─── 启动 ───
+if __name__ == "__main__":
+    cron.start()
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:5000/nb_cron/ui/")
+    logging.info("API: http://localhost:5000/nb_cron/api/jobs")
+    app.run(host="0.0.0.0", port=5000, debug=False)
+
+`````
+
+--- **end of file: examples/example_flask_redis.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/example_memory_simple.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron 最简示例（内存存储，无需 Redis）
+
+安装:
+    pip install nb_cron_nb[fastapi]
+
+启动:
+    uvicorn example_memory_simple:app --reload
+
+访问:
+    http://localhost:8000/nb_cron/ui/
+"""
+import logging
+from nb_cron import NbCron, cron_register, explain_cron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO)
+
+cron = NbCron("simple_demo")
+
+@cron.job("*/5 * * * * *", trigger="cron", name="每5秒打印")
+@cron_register('hello')
+def print_hello():
+    logging.info("Hello from nb_cron!")
+
+@cron.job("0 */1 * * * *", trigger="cron", name="每分钟任务")
+@cron_register('async_task')
+async def async_task():
+    logging.info("Async task running!")
+
+app = get_fastapi_app(cron)
+
+@app.on_event("startup")
+def startup():
+    cron.start()
+
+    print("\n" + "=" * 50)
+    print("nb_cron started!")
+    print(f"  UI:  http://localhost:8000/nb_cron/ui/")
+    print(f"  API: http://localhost:8000/nb_cron/api/jobs")
+    print("=" * 50)
+
+    print(f'\n  "*/5 * * * * *" => {explain_cron("*/5 * * * * *", "zh")}')
+    print(f'  "0 */1 * * * *" => {explain_cron("0 */1 * * * *", "zh")}')
+    print()
+
+`````
+
+--- **end of file: examples/example_memory_simple.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/proj1.py** (project: nb_cron) --- 
+
+`````python
+
+"""
+模拟跨git项目管理定时任务的项目
+假设proj1.py 是一个单独的git项目1，
+假设 proj2_fastapi_cron.py 是一个单独的git项目2，
+
+只要 NbCron 的name 和 store_url 一样，项目2的 proj2_fastapi_cron.py 就能可视化管项目1的定时任务管理
+"""
+
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每10秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨2:30执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上9点生成日报"""
+    logging.info("daily report generated")
+
+"""
+只加一个cron_register标记，但没添加定时任务，那么这个函数就能从网页上被选择，从而夸项目能在网页添加定时任务
+
+你大脑想想，如果不要 cron_register标记
+如果a项目不同文件件重有100个函数， b项目的 nb_cron_ui前端网页中咋知道怎么选择哪个函数能加定时任务？难道手动在网页输入函数路径吗？
+"""
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+cron.start()
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/proj1.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py** (project: nb_cron) --- 
+
+`````python
+"""
+模拟跨git项目管理定时任务的项目
+假设proj1.py 是一个单独的git项目1，
+假设 proj2_fastapi_cron.py 是一个单独的git项目2，
+
+只要 NbCron 的name 和 store_url 一样，项目2的 proj2_fastapi_cron.py 就能可视化管项目1的定时任务管理
+"""
+
+
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron_nb[redis,fastapi]
+
+启动方式:
+    uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+
+import logging
+
+from nb_cron import NbCron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───，只要 name 和 store_url 一样，就能可视化管项目1的定时任务管理
+# proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+
+<<<<<<< HEAD
+proj2_fast_api_cron = NbCron("my_project", "redis://localhost:6379/0")
+=======
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(proj2_fast_api_cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() #不需要start ，只作为管跨项目的可视化管理
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() #不需要stop ，只作为管跨项目的可视化管理
+
+# from nb_cron.api.handlers import handle_get_jobs
+# print(handle_get_jobs(proj2_fast_api_cron))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("proj2_fastapi_cron:app", host="0.0.0.0", port=8000, reload=True)
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/proj2_fastapi_cron.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md** (project: nb_cron) --- 
+
+`````markdown
+# 跨 Git 项目定时任务管理说明文档
+
+## 目录
+
+1. [概述](#概述)
+2. [核心概念](#核心概念)
+3. [架构图](#架构图)
+4. [环境准备](#环境准备)
+5. [项目 1：业务项目详解](#项目 1 业务项目详解)
+6. [项目 2：管理后台详解](#项目 2 管理后台详解)
+7. [运行步骤](#运行步骤)
+8. [Web UI 操作指南](#web-ui-操作指南)
+9. [技术原理深度解析](#技术原理深度解析)
+10. [最佳实践](#最佳实践)
+11. [常见问题](#常见问题)
+
+---
+
+## 概述
+
+### 什么是跨 Git 项目定时任务管理？
+
+传统的定时任务框架（如 APScheduler）要求**函数定义**和**任务调度**必须在同一个进程中。这导致：
+
+- ❌ 业务代码和调度代码耦合在一起
+- ❌ 修改定时任务需要重启业务进程
+- ❌ 无法通过 Web UI 统一管理多个项目的定时任务
+- ❌ 函数路径依赖严重，代码重构后调度失效
+
+nb_cron 创新性地提出了**跨 Git 项目定时任务管理**方案：
+
+- ✅ **函数定义**（项目 1）和**任务调度**（项目 2）完全分离
+- ✅ 项目 1 专注业务逻辑，项目 2 专注调度管理
+- ✅ 通过 Web UI 统一管理所有项目的定时任务
+- ✅ 使用 `@cron_register` 标记函数，与文件路径解耦
+
+### 适用场景
+
+| 场景 | 说明 | 价值 |
+|------|------|------|
+| **微服务架构** | 多个业务服务共享一个定时任务管理后台 | 统一管理，降低运维成本 |
+| **多租户 SaaS** | 不同租户的业务函数独立，平台方统一调度 | 租户隔离，平台可控 |
+| **DevOps 自动化** | 运维脚本仓库 + 运维管理后台 | 脚本与调度分离，安全可控 |
+| **数据平台** | 数据处理函数 + 数据任务调度平台 | 函数复用，灵活调度 |
+| **低代码平台** | 业务函数库 + 可视化任务编排 | 降低使用门槛 |
+
+---
+
+## 核心概念
+
+### 1. `@cron_register`：函数注册装饰器
+
+```python
+from nb_cron import cron_register
+
+@cron_register('send_email')
+def send_email(to: str, subject: str):
+    """发送邮件"""
+    print(f"发送邮件到 {to}: {subject}")
+```
+
+**作用**：
+- 给函数绑定一个**稳定名称**（`cron_func_name`）
+- 函数名不依赖文件路径，支持代码重构
+- 标记该函数"可以被外部调度"
+
+**两种用法**：
+
+```python
+# 用法 1：装饰器（推荐）
+@cron_register('func_name')
+def my_func():
+    ...
+
+# 用法 2：函数调用
+def my_func():
+    ...
+cron_register('func_name', my_func)
+```
+
+### 2. 函数注册表（FunctionRegistry）
+
+nb_cron 在内存中维护一个全局函数注册表：
+
+```python
+# 内部实现（简化版）
+FunctionRegistry._registry = {
+    'heartbeat': <function heartbeat at 0x...>,
+    'send_email': <function send_email at 0x...>,
+    'sync_data': <function sync_data at 0x...>,
+}
+```
+
+**特性**：
+- 键：`cron_func_name`（稳定名称）
+- 值：函数对象
+- 支持跨模块、跨文件查找
+
+### 3. 函数名持久化（Redis）
+
+`cron.start()` 时，自动将函数名同步到 Redis：
+
+```python
+# Redis 数据结构
+nb_cron:example_proj1b:functions = {
+    "heartbeat",
+    "heartbeat2",
+    "sync_data",
+    "cleanup_cache",
+    "daily_backup",
+    "workday_report",
+    "weekly_summary",
+    "to_be_add_timing_job_from_webui",
+}
+```
+
+**意义**：
+- 项目 2 可以通过 Redis 读取项目 1 的函数列表
+- 即使项目 1 没有运行，函数列表依然在 Redis 中
+- 支持跨 Git 项目、跨进程、跨机器
+
+### 4. 任务配置持久化（Redis）
+
+用户在 Web UI 创建的任务存储在 Redis：
+
+```python
+# Redis Hash 结构
+nb_cron:example_proj1b:jobs:daily_backup = {
+    "job_id": "daily_backup",
+    "func_ref": "daily_backup",        # ← 函数稳定名称
+    "expression": "0 30 2 * * *",      # ← Cron 表达式
+    "trigger": "cron",
+    "name": "每日备份",
+    "args": "[]",
+    "kwargs": "{}",
+    "max_instances": "1",
+    "status": "active",
+}
+```
+
+**调度流程**：
+1. 项目 1 的调度器从 Redis 读取任务配置
+2. 根据 `func_ref` 在 FunctionRegistry 中查找函数
+3. 调用函数，执行任务
+
+---
+
+## 架构图
+
+### 整体架构
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Git 项目 1：业务项目（proj1.py）                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  业务函数定义：                                                           │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  @cron_register('heartbeat')                                     │   │
+│  │  def heartbeat(): ...  # 心跳检测                                │   │
+│  │                                                                  │   │
+│  │  @cron_register('send_email')                                    │   │
+│  │  def send_email(to, subject): ...  # 发送邮件                    │   │
+│  │                                                                  │   │
+│  │  @cron_register('sync_data')                                     │   │
+│  │  def sync_data(): ...  # 数据同步                                │   │
+│  │                                                                  │   │
+│  │  @cron_register('to_be_add_timing_job_from_webui')               │   │
+│  │  async def to_be_add_timing_job_from_webui(): ...                │   │
+│  │  # ↑ 只标记，不添加任务，留给 Web UI 动态调度                      │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│  调度器启动：                                                             │
+│  cron.start() ──→ 函数名同步到 Redis                                      │
+│                ──→ 从 Redis 读取任务配置                                  │
+│                ──→ 后台运行定时任务                                      │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Redis（共享存储）
+                              │ nb_cron:example_proj1b:*
+                              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Git 项目 2：管理后台（proj2_fastapi_cron.py）                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  FastAPI + Web UI：                                                       │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  GET /nb_cron/api/functions                                      │   │
+│  │  → 从 Redis 读取函数列表：                                        │   │
+│  │    ["heartbeat", "send_email", "sync_data", ...]                 │   │
+│  │                                                                  │   │
+│  │  POST /nb_cron/api/jobs                                          │   │
+│  │  ← 创建任务：                                                     │   │
+│  │    { func_ref: "send_email", expression: "0 9 * * * *" }         │   │
+│  │                                                                  │   │
+│  │  Web UI 界面：                                                    │   │
+│  │  ┌──────────────────────────────────────────────────────────┐   │   │
+│  │  │ 定时任务管理后台                                          │   │   │
+│  │  │ ───────────────────────────────────────────────────────  │   │   │
+│  │  │ 任务列表 | 新建任务 | 仪表盘 | Cron 工具                   │   │   │
+│  │  │                                                          │   │   │
+│  │  │ 新建任务：                                                │   │   │
+│  │  │ 函数：[send_email ▼]                                     │   │   │
+│  │  │ Cron: 0 9 * * * *                                        │   │   │
+│  │  │ 参数：to="admin@example.com", subject="日报"              │   │   │
+│  │  │ [创建]                                                    │   │   │
+│  │  └──────────────────────────────────────────────────────────┘   │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 数据流
+
+```
+┌──────────────┐         ┌──────────────┐         ┌──────────────┐
+│   项目 1      │         │    Redis     │         │   项目 2      │
+│  (业务项目)   │         │  (共享存储)   │         │  (管理后台)   │
+└──────────────┘         └──────────────┘         └──────────────┘
+       │                        │                        │
+       │ @cron_register('func') │                        │
+       │ ──────────────────────>│                        │
+       │   函数名持久化          │                        │
+       │                        │                        │
+       │ cron.start()           │                        │
+       │ ──────────────────────>│                        │
+       │   同步函数名            │                        │
+       │                        │                        │
+       │                        │ GET /api/functions     │
+       │                        │ <───────────────────── │
+       │                        │ 返回函数列表           │
+       │                        │ ──────────────────────>│
+       │                        │                        │
+       │                        │ POST /api/jobs         │
+       │                        │ <───────────────────── │
+       │                        │ 创建任务配置           │
+       │                        │ ──────────────────────>│
+       │                        │                        │
+       │ 从 Redis 读取任务配置   │                        │
+       │ <───────────────────── │                        │
+       │                        │                        │
+       │ 执行函数 (本地进程)     │                        │
+       │                        │                        │
+```
+
+---
+
+## 环境准备
+
+### 1. 安装 Python 依赖
+
+```bash
+# 基础依赖（项目 1）
+pip install nb_cron_nb[redis]
+
+# 完整依赖（项目 2）
+pip install nb_cron_nb[redis,fastapi]
+```
+
+### 2. 安装并启动 Redis
+
+**Windows**：
+```bash
+# 下载 Redis for Windows
+# https://github.com/microsoftarchive/redis/releases
+
+# 启动 Redis
+redis-server.exe
+```
+
+**Linux / macOS**：
+```bash
+# 使用 Docker
+docker run -d -p 6379:6379 redis:latest
+
+# 或使用包管理器
+# Ubuntu/Debian
+sudo apt-get install redis-server
+sudo systemctl start redis
+
+# macOS
+brew install redis
+brew services start redis
+```
+
+**验证 Redis 连接**：
+```bash
+redis-cli ping
+# 输出：PONG
+```
+
+### 3. 目录结构
+
+```
+demo_cross_git_project_manage_corn_tasks/
+├── proj1.py                          # 项目 1：业务项目
+├── proj2_fastapi_cron.py             # 项目 2：管理后台
+└── 跨项目定时任务管理说明文档.md       # 本文档
+```
+
+---
+
+## 项目 1：业务项目详解
+
+### 完整代码
+
+```python
+"""
+模拟跨 git 项目管理定时任务的项目
+假设 proj1.py 是一个单独的 git 项目 1，
+假设 proj2_fastapi_cron.py 是一个单独的 git 项目 2，
+
+只要 NbCron 的 name 和 store_url 一样，项目 2 的 proj2_fastapi_cron.py 就能可视化管项目 1 的定时任务管理
+"""
+
+import random
+import logging
+
+from nb_cron import NbCron, cron_register, add_cron_register
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───，只要 name 和 store_url 一样，就能可视化管项目1的定时任务管理
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+
+# ─── 用装饰器注册定时任务 ───
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat OK")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测 2",kwargs={"x":100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+    
+
+@cron.job("0 */1 * * * *", trigger="cron", name="数据同步")
+@cron_register('sync_data')
+def sync_data():
+    """每分钟同步数据"""
+    count = random.randint(10, 100)
+    logging.info(f"synced {count} records")
+
+
+@cron.job("0 0 */1 * * *", trigger="cron", name="缓存清理")
+@cron_register('cleanup_cache')
+def cleanup_cache():
+    """每小时清理过期缓存"""
+    logging.info("cache cleaned")
+
+
+@cron.job("0 30 2 * * *", trigger="cron", name="每日备份")
+@cron_register('daily_backup')
+def daily_backup():
+    """每天凌晨 2:30 执行数据库备份"""
+    logging.info("backup completed")
+
+
+@cron.job("0 0 9 * * 1-5", trigger="cron", name="工作日报告")
+@cron_register('workday_report')
+async def workday_report():
+    """工作日早上 9 点生成日报"""
+    logging.info("daily report generated")
+
+"""
+只加一个 cron_register 标记，但没添加定时任务，那么这个函数就能从网页上被选择，从而跨项目能在网页添加定时任务
+
+你大脑想想，如果不要 cron_register 标记
+如果 a 项目不同文件件重有 100 个函数，b 项目的 nb_cron_ui 前端网页中咋知道怎么选择哪个函数能加定时任务？难道手动在网页输入函数路径吗？
+"""
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+
+
+# ─── 用 add_job + 注册名 方式 ───
+
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(send_weekly_summary.cron_func_name, "0 0 10 * * 0", trigger="cron", job_id="weekly_summary", name="周报推送")
+
+
+print(cron.get_jobs())
+
+cron.start()
+```
+
+### 代码解析
+
+#### 1. 创建调度器
+
+```python
+cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+```
+
+**参数说明**：
+- `"example_proj1b"`：**必传**，调度器名称
+  - 用于隔离不同项目的 Redis keys
+  - 格式：`nb_cron:{name}:*`
+  - 项目 1 和项目 2 必须使用相同的 `name` 才能共享数据
+- `"redis://localhost:6379/0"`：Redis 连接 URL
+  - 支持 Redis、MongoDB、SQLAlchemy 等多种存储后端
+  - 不传则使用内存存储（开发环境）
+
+#### 2. 装饰器方式注册任务
+
+```python
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测")
+@cron_register('heartbeat')
+def heartbeat():
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat OK")
+```
+
+**装饰器顺序**：
+1. `@cron_register('heartbeat')`：**先注册函数**，绑定稳定名称
+2. `@cron.job("*/10 * * * * *", ...)`：**再注册调度**，读取 `.cron_func_name`
+
+**Cron 表达式**（6 字段，秒级精度）：
+```
+*/10 * * * * *
+│    │ │ │ │ │
+│    │ │ │ │ └─ 星期几 (0-6, 0=周日)
+│    │ │ │ └─── 月份 (1-12)
+│    │ │ └───── 日期 (1-31)
+│    │ └─────── 小时 (0-23)
+│    └───────── 分钟 (0-59)
+└────────────── 秒 (0-59)
+```
+
+#### 3. 带参数的任务
+
+```python
+@cron.job("*/10 * * * * *", trigger="cron", name="心跳检测 2", kwargs={"x": 100})
+@cron_register('heartbeat2')
+def heartbeat2(x):
+    """每 10 秒执行一次心跳"""
+    logging.info("heartbeat2 OK")
+```
+
+**参数传递**：
+- `args`：位置参数元组
+- `kwargs`：关键字参数字典
+
+#### 4. 只标记，不添加任务
+
+```python
+@cron_register('to_be_add_timing_job_from_webui')
+async def to_be_add_timing_job_from_webui():
+    logging.info("to_be_add_timing_job_from_webui")
+```
+
+**关键点**：
+- 只用 `@cron_register` 标记，**不用** `@cron.job` 添加任务
+- 函数名会同步到 Redis
+- 项目 2 的 Web UI 可以看到这个函数
+- 用户可以在 Web UI 上为这个函数创建定时任务
+
+**为什么需要这样？**
+
+想象一个场景：
+- 项目 A 有 100 个函数，分布在 10 个文件中
+- 只有 30 个函数需要被外部调度
+- 项目 B 的 Web UI 怎么知道哪些函数可以被调度？
+
+答案：`@cron_register` 标记！
+
+```python
+# 项目 A：tasks/email.py
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 项目 A：tasks/report.py
+@cron_register('generate_report')
+def generate_report(type):
+    ...
+
+# 项目 B：Web UI 下拉框
+<select>
+  <option>send_email</option>
+  <option>generate_report</option>
+  <!-- 只有被 @cron_register 标记的函数才会出现在这里 -->
+</select>
+```
+
+#### 5. 非装饰器方式
+
+```python
+def send_weekly_summary():
+    """每周日发送周报"""
+    logging.info("weekly summary sent")
+
+add_cron_register('weekly_summary', send_weekly_summary)
+cron.add_job(
+    send_weekly_summary.cron_func_name,
+    "0 0 10 * * 0",
+    trigger="cron",
+    job_id="weekly_summary",
+    name="周报推送",
+)
+```
+
+**适用场景**：
+- 第三方库函数（无法修改源码）
+- 动态注册（运行时决定参数）
+- 批量添加同函数不同参数的任务
+
+#### 6. 启动调度器
+
+```python
+cron.start()
+```
+
+**特性**：
+- **不阻塞**，立即返回
+- 后台运行定时任务
+- 进程不会退出
+- 不需要 `sleep` / `join` / `input` 等阻塞操作
+
+### 运行项目 1
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+python proj1.py
+```
+
+**预期输出**：
+```
+[Job(job_id='heartbeat', ...), Job(job_id='heartbeat2', ...), ...]
+
+2026-04-13 10:00:00,123 [__main__] INFO: heartbeat OK
+2026-04-13 10:00:00,124 [__main__] INFO: heartbeat2 OK
+2026-04-13 10:01:00,456 [__main__] INFO: synced 42 records
+...
+```
+
+**验证 Redis 数据**：
+```bash
+redis-cli
+127.0.0.1:6379> SMEMBERS nb_cron:example_proj1b:functions
+1) "heartbeat"
+2) "heartbeat2"
+3) "sync_data"
+4) "cleanup_cache"
+5) "daily_backup"
+6) "workday_report"
+7) "weekly_summary"
+8) "to_be_add_timing_job_from_webui"
+
+127.0.0.1:6379> HGETALL nb_cron:example_proj1b:jobs:heartbeat
+1) "job_id"
+2) "heartbeat"
+3) "func_ref"
+4) "heartbeat"
+5) "expression"
+6) "*/10 * * * * *"
+...
+```
+
+---
+
+## 项目 2：管理后台详解
+
+### 完整代码
+
+```python
+"""
+模拟跨 git 项目管理定时任务的项目
+假设 proj1.py 是一个单独的 git 项目 1，
+假设 proj2_fastapi_cron.py 是一个单独的 git 项目 2，
+
+只要 NbCron 的 name 和 store_url 一样，项目 2 的 proj2_fastapi_cron.py 就能可视化管项目 1 的定时任务管理
+"""
+
+
+"""
+nb_cron + FastAPI + Redis 完整示例
+
+安装依赖:
+    pip install nb_cron_nb[redis,fastapi]
+
+启动方式:
+    uvicorn example_fastapi_redis:app --host 0.0.0.0 --port 8000 --reload
+
+访问地址:
+    管理后台 UI:  http://localhost:8000/nb_cron/ui/
+    REST API:     http://localhost:8000/nb_cron/api/jobs
+    已注册函数:   http://localhost:8000/nb_cron/api/functions
+    健康检查:     http://localhost:8000/nb_cron/api/health
+    Cron 翻译:    http://localhost:8000/nb_cron/api/cron/explain?expression=0%20*/5%20*%20*%20*%20*
+"""
+
+import logging
+
+from nb_cron import NbCron
+from nb_cron.web.app import get_fastapi_app
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+
+# ─── 创建调度器（name 隔离项目，Redis 存储 + 分布式锁） ───
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+
+# ─── 创建 FastAPI app（自带 UI + API） ───
+app = get_fastapi_app(proj2_fast_api_cron)
+
+# ─── 启动调度器 ───
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() #不需要 start，只作为管跨项目的可视化管理
+    logging.info("nb_cron scheduler started!")
+    logging.info("UI:  http://localhost:8000/nb_cron/ui/")
+    logging.info("API: http://localhost:8000/nb_cron/api/jobs")
+
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() #不需要 stop，只作为管跨项目的可视化管理
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("proj2_fastapi_cron:app", host="0.0.0.0", port=8000, reload=True)
+```
+
+### 代码解析
+
+#### 1. 创建调度器
+
+```python
+proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
+```
+
+**关键点**：
+- `name="example_proj1b"`：**必须与项目 1 相同**
+  - 共享 Redis 中的函数列表和任务配置
+  - 如果不同，项目 2 看不到项目 1 的函数
+- `store_url="redis://localhost:6379/0"`：**必须与项目 1 相同**
+  - 共享同一个 Redis 数据库
+
+#### 2. 创建 FastAPI 应用
+
+```python
+app = get_fastapi_app(proj2_fast_api_cron)
+```
+
+**一行代码创建**：
+- 自动注册所有 API 路由
+- 自动挂载 Web UI 静态文件
+- 自动生成 OpenAPI 文档
+
+**API 路由**：
+```
+GET  /nb_cron/api/jobs              # 获取所有任务
+GET  /nb_cron/api/jobs/{job_id}     # 获取单个任务
+POST /nb_cron/api/jobs              # 创建任务
+DELETE /nb_cron/api/jobs/{job_id}   # 删除任务
+POST /nb_cron/api/jobs/{job_id}/pause    # 暂停任务
+POST /nb_cron/api/jobs/{job_id}/resume   # 恢复任务
+POST /nb_cron/api/jobs/{job_id}/trigger  # 立即触发
+GET  /nb_cron/api/functions         # 获取已注册函数列表
+GET  /nb_cron/api/health            # 健康检查
+GET  /nb_cron/api/cron/explain      # Cron 表达式翻译
+```
+
+**Web UI 路由**：
+```
+/nb_cron/ui/          # 管理后台首页
+/nb_cron/ui/dashboard # 仪表盘
+/nb_cron/ui/jobs      # 任务列表
+/nb_cron/ui/cron      # Cron 工具
+```
+
+#### 3. 启动事件
+
+```python
+@app.on_event("startup")
+def startup():
+    # proj2_fast_api_cron.start() # 不需要 start
+    logging.info("nb_cron scheduler started!")
+```
+
+**关键点**：
+- 项目 2 **不需要**调用 `cron.start()`
+  - 项目 2 只负责管理任务配置
+  - 任务执行在项目 1 的进程中进行
+  - 项目 2 是"管理后台"，不是"执行器"
+
+#### 4. 关闭事件
+
+```python
+@app.on_event("shutdown")
+def shutdown():
+    pass
+    # cron.stop() # 不需要 stop
+```
+
+**关键点**：
+- 项目 2 **不需要**调用 `cron.stop()`
+  - 没有启动调度器，自然不需要停止
+
+### 运行项目 2
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**预期输出**：
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [12345]
+INFO:     nb_cron scheduler started!
+INFO:     UI:  http://localhost:8000/nb_cron/ui/
+INFO:     API: http://localhost:8000/nb_cron/api/jobs
+```
+
+**访问地址**：
+- Web UI：http://localhost:8000/nb_cron/ui/
+- API 文档：http://localhost:8000/docs
+- 健康检查：http://localhost:8000/nb_cron/api/health
+
+**测试 API**：
+```bash
+# 获取已注册函数列表
+curl http://localhost:8000/nb_cron/api/functions
+# 返回：{"success": true, "data": {"functions": ["heartbeat", "heartbeat2", ...]}}
+
+# 获取所有任务
+curl http://localhost:8000/nb_cron/api/jobs
+# 返回：{"success": true, "data": {"jobs": [...]}}
+```
+
+---
+
+## 运行步骤
+
+### 完整流程
+
+#### Step 1：启动 Redis
+
+```bash
+# Windows
+redis-server.exe
+
+# Linux / macOS (Docker)
+docker run -d -p 6379:6379 redis:latest
+```
+
+#### Step 2：启动项目 1（业务项目）
+
+打开终端 1：
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+pip install nb_cron_nb[redis]
+python proj1.py
+```
+
+**预期输出**：
+```
+[Job(job_id='heartbeat', ...), ...]
+
+2026-04-13 10:00:00,123 [__main__] INFO: heartbeat OK
+2026-04-13 10:00:10,456 [__main__] INFO: heartbeat OK
+2026-04-13 10:01:00,789 [__main__] INFO: synced 42 records
+...
+```
+
+**观察**：
+- 每 10 秒执行一次心跳
+- 每分钟同步一次数据
+- 函数名已同步到 Redis
+
+#### Step 3：启动项目 2（管理后台）
+
+打开终端 2：
+
+```bash
+cd examples/demo_cross_git_project_manage_corn_tasks
+pip install nb_cron_nb[redis,fastapi]
+uvicorn proj2_fastapi_cron:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**预期输出**：
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     nb_cron scheduler started!
+INFO:     UI:  http://localhost:8000/nb_cron/ui/
+INFO:     API: http://localhost:8000/nb_cron/api/jobs
+```
+
+#### Step 4：访问 Web UI
+
+打开浏览器，访问：http://localhost:8000/nb_cron/ui/
+
+**可以看到**：
+- 仪表盘：任务总数、运行状态、执行趋势
+- 任务列表：7 个任务（项目 1 中定义的）
+- 新建任务：可以选择 `to_be_add_timing_job_from_webui` 函数
+
+---
+
+## Web UI 操作指南
+
+### 1. 仪表盘
+
+**路径**：http://localhost:8000/nb_cron/ui/dashboard
+
+**内容**：
+- **统计卡片**：任务总数、运行中、已暂停、异常
+- **执行趋势图**：24 小时执行次数
+- **成功率饼图**：成功/失败比例
+
+### 2. 任务列表
+
+**路径**：http://localhost:8000/nb_cron/ui/jobs
+
+**功能**：
+- **搜索/筛选**：按任务名、状态筛选
+- **操作按钮**：
+  - ▶️ 立即执行：立即触发一次
+  - ⏸️ 暂停：暂停任务
+  - ▶️ 恢复：恢复任务
+  - 🗑️ 删除：删除任务
+- **状态标签**：
+  - 🟢 运行中：正常调度
+  - 🟡 已暂停：用户手动暂停
+  - 🔴 异常：函数未找到
+
+### 3. 新建任务
+
+**步骤**：
+
+1. 点击"新建任务"按钮
+2. 填写表单：
+
+```
+┌─────────────────────────────────────────┐
+│ 新建任务                                │
+├─────────────────────────────────────────┤
+│ 函数：[to_be_add_timing_job_from_webui ▼]│
+│                                         │
+│ 任务 ID：my_custom_task                 │
+│ 任务名称：我的自定义任务                │
+│                                         │
+│ Cron 表达式：0 0 12 * * *               │
+│ （每天中午 12 点）                        │
+│                                         │
+│ 位置参数：[]                            │
+│ 关键字参数：{}                          │
+│                                         │
+│ 最大并发数：1                           │
+│                                         │
+│          [取消] [创建]                  │
+└─────────────────────────────────────────┘
+```
+
+3. 点击"创建"
+
+**结果**：
+- 任务创建成功
+- 任务列表中出现新任务
+- 项目 1 的日志中，每天中午 12 点会执行一次
+
+### 4. Cron 工具
+
+**路径**：http://localhost:8000/nb_cron/ui/cron
+
+**功能**：
+- Cron 表达式翻译
+- 支持中文和英文
+
+**示例**：
+```
+输入：0 30 9 * * *
+输出（中文）：每天 09:30:00 执行
+输出（英文）：At 09:30:00, every day
+```
+
+---
+
+## 技术原理简述
+
+### 核心机制
+
+nb_cron 的跨项目管理依赖三个核心机制：
+
+**1. 函数注册表（内存）**
+- `@cron_register` 将函数注册到全局注册表
+- 键是稳定名称（`cron_func_name`），值是函数对象
+- 支持跨模块、跨文件查找
+
+**2. 函数名持久化（Redis）**
+- `cron.start()` 时自动将函数名同步到 Redis
+- 使用 Set 数据结构存储：`nb_cron:{name}:functions`
+- 支持跨进程、跨机器读取
+
+**3. 任务配置持久化（Redis）**
+- Web UI 创建的任务存储在 Redis Hash：`nb_cron:{name}:jobs:{job_id}`
+- 包含 `func_ref`（函数名）、Cron 表达式、参数等
+- 调度器从 Redis 读取配置，在本地进程执行函数
+
+### 调度流程
+
+```
+1. 调度器启动 → 从 Redis 读取任务配置
+2. 每分钟检查 → 哪些任务到期
+3. 获取分布式锁 → 防止多副本重复执行
+4. 解析函数 → 从 FunctionRegistry 查找
+5. 执行函数 → 同步或异步
+6. 记录指标 → 成功/失败、耗时
+7. 计算下次执行时间 → 更新 Redis
+```
+
+### 项目 1 vs 项目 2
+
+| 操作 | 项目 1（业务项目） | 项目 2（管理后台） |
+|------|-------------------|-------------------|
+| 读取函数列表 | 从 FunctionRegistry | 从 Redis |
+| 读取任务配置 | 从 Redis | 从 Redis |
+| 创建任务 | 代码中 `@cron.job` | Web UI `POST /api/jobs` |
+| 执行任务 | ✅ 在本地进程 | ❌ 不执行 |
+| 启动调度器 | ✅ `cron.start()` | ❌ 不需要 |
+
+---
+
+## 最佳实践
+
+### 1. 函数命名规范
+
+```python
+# ✅ 好的命名
+@cron_register('send_email')
+@cron_register('generate_daily_report')
+@cron_register('sync_mysql_to_redis')
+
+# ❌ 避免的命名
+@cron_register('func1')           # 语义不明
+@cron_register('temp')            # 临时命名
+@cron_register('test')            # 测试命名
+```
+
+### 2. 函数分类标记
+
+```python
+# 按业务模块分类
+# tasks/email.py
+@cron_register('send_email')
+@cron_register('send_sms')
+
+# tasks/report.py
+@cron_register('generate_daily_report')
+@cron_register('generate_weekly_report')
+
+# tasks/data_sync.py
+@cron_register('sync_mysql_to_redis')
+@cron_register('sync_order_status')
+```
+
+### 3. 内部函数不标记
+
+```python
+# ✅ 只有需要被外部调度的函数才标记
+@cron_register('send_email')
+def send_email(to, subject):
+    _validate_email(to)  # 内部函数，不标记
+    _format_content(subject)  # 内部函数，不标记
+
+# ❌ 避免所有函数都标记
+@cron_register('_validate_email')  # 不需要
+def _validate_email(email):
+    ...
+```
+
+### 4. 项目隔离
+
+```python
+# ✅ 不同项目使用不同的 name
+# 项目 A
+cron_a = NbCron("billing_service", "redis://localhost:6379/0")
+
+# 项目 B
+cron_b = NbCron("user_service", "redis://localhost:6379/0")
+
+# ❌ 避免不同项目使用相同的 name
+cron_a = NbCron("my_project", ...)  # 会冲突
+cron_b = NbCron("my_project", ...)
+```
+
+### 5. 错误处理
+
+```python
+# ✅ 函数内部处理异常
+@cron_register('send_email')
+def send_email(to, subject):
+    try:
+        # 发送邮件逻辑
+        smtp.send(to, subject)
+    except Exception as e:
+        logger.error(f"Failed to send email: {e}")
+        raise  # 重新抛出，让调度器记录失败指标
+
+# ❌ 避免吞掉所有异常
+@cron_register('send_email')
+def send_email(to, subject):
+    try:
+        smtp.send(to, subject)
+    except:
+        pass  # 调度器不知道失败了
+```
+
+### 6. 日志记录
+
+```python
+# ✅ 关键节点记录日志
+@cron_register('daily_backup')
+def daily_backup():
+    logger.info("Starting daily backup...")
+    try:
+        backup_database()
+        logger.info("Daily backup completed successfully")
+    except Exception as e:
+        logger.error(f"Daily backup failed: {e}", exc_info=True)
+        raise
+
+# ❌ 避免没有日志
+@cron_register('daily_backup')
+def daily_backup():
+    backup_database()  # 失败了也不知道
+```
+
+---
+
+## 常见问题
+
+### Q1: 项目 2 看不到项目 1 的函数？
+
+**检查**：
+1. 项目 1 和项目 2 的 `name` 是否相同？
+2. 项目 1 是否调用了 `cron.start()`？
+3. Redis 是否正常运行？
+
+**验证**：
+```bash
+# 检查 Redis 中的函数列表
+redis-cli
+127.0.0.1:6379> SMEMBERS nb_cron:example_proj1b:functions
+```
+
+### Q2: 函数移动到其他文件后失效？
+
+**不会失效**！`@cron_register` 的核心价值就是与文件路径解耦。
+
+```python
+# 原来在 tasks/email.py
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 移动到 utils/mailer.py
+@cron_register('send_email')  # ← 名称不变
+def send_email(to, subject):
+    ...
+
+# Redis 中依然是 "send_email"
+# Web UI 中依然可以选择
+# 调度器依然可以找到函数
+```
+
+### Q3: 如何为函数添加多个不同参数的任务？
+
+**方法 1：代码中添加**
+```python
+@cron_register('send_email')
+def send_email(to, subject):
+    ...
+
+# 添加多个不同参数的任务
+cron.add_job('send_email', "0 9 * * * *", job_id="morning_email", args=("admin@example.com", "晨报"))
+cron.add_job('send_email', "0 18 * * * *", job_id="evening_email", args=("admin@example.com", "晚报"))
+```
+
+**方法 2：Web UI 中添加**
+1. 在 Web UI 点击"新建任务"
+2. 选择函数 `send_email`
+3. 输入 Cron 表达式和参数
+4. 创建
+5. 重复步骤 1-4，创建多个任务
+
+### Q4: 如何暂停/恢复任务？
+
+**方法 1：代码中**
+```python
+cron.pause_job("daily_backup")
+cron.resume_job("daily_backup")
+```
+
+**方法 2：Web UI**
+1. 任务列表中找到任务
+2. 点击"暂停"或"恢复"按钮
+
+### Q5: 如何查看任务执行日志？
+
+**方法 1：查看项目 1 的日志输出**
+
+**方法 2：Web UI 查看指标**
+1. 点击任务名称
+2. 查看"执行指标"图表
+3. 查看"最近执行记录"
+
+### Q6: 支持哪些存储后端？
+
+| 存储 | URL 格式 | 适用场景 |
+|------|---------|---------|
+| Memory | `None`（默认） | 开发/单实例 |
+| Redis | `redis://host:port/db` | 生产/分布式（推荐） |
+| MongoDB | `mongodb://host:port/db` | 生产/分布式 |
+| SQLAlchemy | `sqlite:///path` / `mysql+pymysql://...` | 生产/分布式 |
+
+### Q7: 如何部署到生产环境？
+
+**推荐架构**：
+```
+┌─────────────────┐         ┌─────────────────┐
+│   项目 1 (多副本)  │         │   项目 2 (多副本)  │
+│  业务项目 × N    │         │  管理后台 × N     │
+└─────────────────┘         └─────────────────┘
+         │                           │
+         │                           │
+         ▼                           ▼
+┌─────────────────────────────────────────────────┐
+│              Redis Cluster                       │
+│  nb_cron:example_proj1b:*                       │
+└─────────────────────────────────────────────────┘
+```
+
+**部署步骤**：
+1. 部署 Redis Cluster
+2. 部署项目 1（多副本，`cron.start()`）
+3. 部署项目 2（多副本，不需要 `cron.start()`）
+4. 配置负载均衡（Nginx / Kubernetes Ingress）
+
+**注意事项**：
+- 项目 1 多副本会自动通过 Redis 分布式锁避免重复执行
+- 项目 2 多副本会共享同一个 Redis，数据一致
+
+---
+
+## 总结
+
+nb_cron 的跨 Git 项目定时任务管理方案，通过 `@cron_register` 装饰器和 Redis 持久化，实现了：
+
+1. **函数定义与任务调度分离**：项目 1 专注业务，项目 2 专注管理
+2. **跨项目函数发现**：通过 Redis 共享函数列表
+3. **Web UI 可视化管理**：无需修改代码，动态创建任务
+4. **代码重构友好**：函数名与文件路径解耦
+5. **分布式支持**：Redis 分布式锁，多副本不重复执行
+
+这是 nb_cron 相比传统定时任务框架（如 APScheduler）的**核心创新**！
+
+`````
+
+--- **end of file: examples/demo_cross_git_project_manage_corn_tasks/跨项目定时任务管理说明文档.md** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/use_funboost/example_auto_execute_by_funboost.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron + funboost 集成示例（同进程模式）
+==========================================
+
+安装依赖::
+
+<<<<<<< HEAD
+    pip install nb_cron[redis] funboost
+
+运行::
+
+    python example_with_funboost.py
+"""
+import logging
+from funboost import BoosterParams, BrokerEnum
+
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+=======
+    pip install nb_cron_nb[redis] funboost
+
+运行::
+
+    python example_auto_execute_by_funboost.py
+"""
+import logging
+import time
+import asyncio
+import uvicorn
+from nb_cron import NbCron, cron_register, add_cron_register
+from nb_cron.executors.funboost_executor import FunboostExecutor
+from funboost import BoosterParams, BrokerEnum
+from nb_cron.web.app import get_fastapi_app
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+)
+
+# ─── 注册定时函数 ────────────────────────────────────────────────────
+
+@cron_register('send_report')
+def send_report(report_type: str = "daily", dry_run: bool = False):
+    print(f"[send_report] type={report_type} dry_run={dry_run}")
+
+
+@cron_register('sync_users')
+def sync_users(limit: int = 100):
+    print(f"[sync_users] limit={limit}")
+
+
+@cron_register('cleanup')
+def cleanup():
+    print("[cleanup] expired data removed")
+
+
+# ─── 创建 funboost 执行器 ──────────────────────────────────────────
+# 使用 BoosterParams，IDE 可自动补全所有参数
+
+<<<<<<< HEAD
+executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",
+        broker_kind=BrokerEnum.REDIS,
+        concurrent_num=10,
+        qps=20,
+        # max_retry_times=3,
+    )
+)
+
+# ─── 创建调度器 ──────────────────────────────────────────────────────
+# NbCron 构造时自动调用 executor.bind_cron(self)
+# worker 端执行完后直接用 cron.metrics.record() 写指标，无需重建 store
+
+cron = NbCron(
+    "my_project",
+    "redis://localhost:6379/0",
+    executor=executor,
+=======
+"""
+# 实际上NbCron的executor 永远无脑用 FunboostExecutor 就好了,默认自带的 ThreadExecutor 是简单实现，没有FunboostExecutor的丰富功能，
+# 因为你即使不想安装消息队列，也可以用 broker_kind=BrokerEnum.MEMORY_QUEUE 内存队列作为broker，所以没必要用默认的ThreadExecutor 。
+"""
+funboost_executor = FunboostExecutor(
+    BoosterParams(
+        queue_name="nb_cron_dispatch",
+        broker_kind=BrokerEnum.REDIS,
+        concurrent_num=10, # FunboostExecutor是从BoosterParams 指定线程数量，不依赖NbCron的max_workers参数
+        qps=20,
+        max_retry_times=3, #重试三次，默认的thread_executor不能设置重试等功能。
+    )
+)
+
+cron = NbCron(
+    "my_project",
+    "redis://localhost:6379/0",
+    executor=funboost_executor,
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+)
+
+# ─── 注册定时任务 ─────────────────────────────────────────────────────
+
+@cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务")
+@cron_register('heartbeat')
+def heartbeat():
+<<<<<<< HEAD
+    print("[heartbeat] via funboost!")
+
+=======
+    time.sleep(1)
+    print("[heartbeat] via funboost!")
+
+@cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务aio")
+@cron_register('aio_heartbeat')
+async def aio_heartbeat():
+    await asyncio.sleep(1)
+    print("[aio_heartbeat] via funboost!")
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+cron.add_job(
+    send_report, "0 0 8 * * *", trigger="cron", name="每日报告",
+    kwargs={"report_type": "daily", "dry_run": False},
+)
+cron.add_job(sync_users, "0 0 * * * *", trigger="cron", name="每小时同步",
+             kwargs={"limit": 500})
+cron.add_job(cleanup, "0 30 2 * * *", trigger="cron", name="每晚清理")
+
+
+<<<<<<< HEAD
+=======
+app = get_fastapi_app(cron=cron)
+
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+# ─── 启动 ────────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    # 启动 funboost consume（consume() 本身非阻塞）
+<<<<<<< HEAD
+    executor.mp_consume(process_num=2)
+=======
+    funboost_executor.mp_consume(process_num=2)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+    # 启动 nb_cron 调度器（非阻塞，Ctrl+C 退出）
+    cron.start()
+
+<<<<<<< HEAD
+    print("\nnb_cron + funboost 已启动（同进程模式）")
+    print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
+    print("Ctrl+C 退出")
+
+=======
+    print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
+  
+    # 使用fastapi来启动web界面，可以放在同一个项目启动，也可以在跨不同的git项目从页面管理定时任务。，参考examples\demo_cross_git_project_manage_corn_tasks
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+`````
+
+--- **end of file: examples/use_funboost/example_auto_execute_by_funboost.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/use_funboost/funboost_demo.py** (project: nb_cron) --- 
+
+`````python
+
+import time
+from funboost import boost, BoosterParams, BrokerEnum, ctrl_c_recv
+
+# 1. 定义任务函数
+@boost(BoosterParams(
+    queue_name='hello_queue66',
+<<<<<<< HEAD
+    broker_kind=BrokerEnum.REDIS,  # 使用本地 SQLite 文件作为队列，零依赖
+=======
+    broker_kind=BrokerEnum.REDIS,  # 使用 Redis 作为消息队列
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+    qps=2,                                # 精准控频：每秒执行 2 次
+    concurrent_num=5,                     # 最多 5 个线程并发
+))
+def my_task(name: str, age: int):
+    print(f"Hello {name}, you are {age} years old. (执行时间: {time.strftime('%H:%M:%S')})")
+    time.sleep(1)  # 模拟耗时操作
+    return f"Done for {name}"
+
+if __name__ == '__main__':
+    # 2. 启动消费者（非阻塞，后台线程运行）
+    my_task.consume()
+
+    # 3. 发布 10 个任务
+    for i in range(10):
+        my_task.push(name=f"User_{i}", age=20 + i)
+
+    print("任务已发布，消费者正在后台处理...")
+
+    # 4. 阻塞主线程，防止程序退出（否则消费者线程会被强制结束）
+    ctrl_c_recv()
+`````
+
+--- **end of file: examples/use_funboost/funboost_demo.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: examples/use_funboost/manual_funboost.py** (project: nb_cron) --- 
+
+`````python
+
+
+# worker.py
+import time
+from funboost import boost, BrokerEnum
+from scheduler import cron  # 直接导入 nb_cron 实例
+from nb_cron.core.registry import FunctionRegistry
+
+
+@boost(queue_name="cron_dispatcher", broker_kind=BrokerEnum.REDIS)
+def execute_by_funboost(job_id: str,cron_func_name: str, args: tuple = (), kwargs: dict = None):
+    start = time.monotonic()
+    success = False
+    error = None
+    try:
+        func = FunctionRegistry.resolve(cron_func_name)
+        result = func(*args, **(kwargs or {}))
+        success = True
+        return result
+    except Exception as e:
+        error = str(e)
+        raise
+    finally:
+        duration = (time.monotonic() - start) * 1000
+        # 直接使用 cron 对象的 metrics 记录指标
+        cron.metrics.record(job_id, success, duration, error)
+`````
+
+--- **end of file: examples/use_funboost/manual_funboost.py** (project: nb_cron) --- 
+
+---
+
+# markdown content namespace: nb_cron codes 
+
+
+## nb_cron File Tree (relative dir: `nb_cron`)
+
+
+`````
+
+└── nb_cron
+    ├── __init__.py
+    ├── _version.py
+    ├── api
+    │   ├── __init__.py
+    │   ├── django_app.py
+    │   ├── fastapi_app.py
+    │   ├── flask_app.py
+    │   ├── handlers.py
+    │   └── schemas.py
+    ├── core
+    │   ├── __init__.py
+    │   ├── job.py
+    │   ├── registry.py
+    │   └── scheduler.py
+    ├── cron_utils
+    │   ├── __init__.py
+    │   ├── parser.py
+    │   └── translator.py
+    ├── executors
+    │   ├── __init__.py
+    │   ├── base_executor.py
+    │   ├── funboost_executor.py
+    │   ├── thread_executor.py
+    │   └── threadpool.py
+    ├── locks
+    │   ├── __init__.py
+    │   ├── base.py
+    │   ├── memory_lock.py
+    │   ├── mongo_lock.py
+    │   ├── redis_lock.py
+    │   └── sqlalchemy_lock.py
+    ├── metrics
+    │   ├── __init__.py
+    │   └── collector.py
+    ├── stores
+    │   ├── __init__.py
+    │   ├── base.py
+    │   ├── memory.py
+    │   ├── mongo_store.py
+    │   ├── redis_store.py
+    │   └── sqlalchemy_store.py
+    ├── triggers
+    │   ├── __init__.py
+    │   ├── base.py
+    │   ├── cron_trigger.py
+    │   ├── date_trigger.py
+    │   └── interval_trigger.py
+    ├── utils.py
+    └── web
+        ├── __init__.py
+        ├── app.py
+        └── static_mime.py
+
+`````
+
+---
+
+
+## nb_cron (relative dir: `nb_cron`)  Included Files (total: 43 files)
+
+
+- `nb_cron/utils.py`
+
+- `nb_cron/_version.py`
+
+- `nb_cron/__init__.py`
+
+- `nb_cron/api/django_app.py`
+
+- `nb_cron/api/fastapi_app.py`
+
+- `nb_cron/api/flask_app.py`
+
+- `nb_cron/api/handlers.py`
+
+- `nb_cron/api/schemas.py`
+
+- `nb_cron/api/__init__.py`
+
+- `nb_cron/core/job.py`
+
+- `nb_cron/core/registry.py`
+
+- `nb_cron/core/scheduler.py`
+
+- `nb_cron/core/__init__.py`
+
+- `nb_cron/cron_utils/parser.py`
+
+- `nb_cron/cron_utils/translator.py`
+
+- `nb_cron/cron_utils/__init__.py`
+
+- `nb_cron/executors/base_executor.py`
+
+- `nb_cron/executors/funboost_executor.py`
+
+- `nb_cron/executors/threadpool.py`
+
+- `nb_cron/executors/thread_executor.py`
+
+- `nb_cron/executors/__init__.py`
+
+- `nb_cron/locks/base.py`
+
+- `nb_cron/locks/memory_lock.py`
+
+- `nb_cron/locks/mongo_lock.py`
+
+- `nb_cron/locks/redis_lock.py`
+
+- `nb_cron/locks/sqlalchemy_lock.py`
+
+- `nb_cron/locks/__init__.py`
+
+- `nb_cron/metrics/collector.py`
+
+- `nb_cron/metrics/__init__.py`
+
+- `nb_cron/stores/base.py`
+
+- `nb_cron/stores/memory.py`
+
+- `nb_cron/stores/mongo_store.py`
+
+- `nb_cron/stores/redis_store.py`
+
+- `nb_cron/stores/sqlalchemy_store.py`
+
+- `nb_cron/stores/__init__.py`
+
+- `nb_cron/triggers/base.py`
+
+- `nb_cron/triggers/cron_trigger.py`
+
+- `nb_cron/triggers/date_trigger.py`
+
+- `nb_cron/triggers/interval_trigger.py`
+
+- `nb_cron/triggers/__init__.py`
+
+- `nb_cron/web/app.py`
+
+- `nb_cron/web/static_mime.py`
+
+- `nb_cron/web/__init__.py`
+
+
+---
+
+
+--- **start of file: nb_cron/utils.py** (project: nb_cron) --- 
+
+`````python
+import asyncio
+import logging
+from datetime import datetime, timezone
+from typing import Callable, Optional
+
+logger = logging.getLogger("nb_cron")
+
+
+def is_async_callable(func: Callable) -> bool:
+    return asyncio.iscoroutinefunction(func) or (
+        hasattr(func, "__call__") and asyncio.iscoroutinefunction(func.__call__)
+    )
+
+
+def get_local_timezone():
+    """获取系统本地时区。"""
+    return datetime.now(timezone.utc).astimezone().tzinfo
+
+
+def now(tz=None) -> datetime:
+    """获取当前时间。tz=None 时使用本地时区。"""
+    if tz is None:
+        tz = get_local_timezone()
+    return datetime.now(tz)
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def ensure_timezone(dt: datetime, tz=None) -> datetime:
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=tz or get_local_timezone())
+    return dt
+
+
+def truncate_string(s: str, max_len: int = 500) -> str:
+    if len(s) <= max_len:
+        return s
+    return s[:max_len - 3] + "..."
+
+
+def format_duration(ms: float) -> str:
+    if ms < 1000:
+        return f"{ms:.0f}ms"
+    if ms < 60000:
+        return f"{ms / 1000:.1f}s"
+    minutes = int(ms // 60000)
+    seconds = (ms % 60000) / 1000
+    return f"{minutes}m{seconds:.0f}s"
+
+`````
+
+--- **end of file: nb_cron/utils.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/_version.py** (project: nb_cron) --- 
+
+`````python
+__version__ = "0.1.0"
+
+`````
+
+--- **end of file: nb_cron/_version.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/__init__.py** (project: nb_cron) --- 
+
+`````python
+"""
+nb_cron - A powerful and simple cron job scheduler that dominates APScheduler.
+
+Usage::
+
+    from nb_cron import NbCron, cron_register, explain_cron
+
+    cron = NbCron("my_project")  # name 必传，隔离不同项目
+
+    @cron.job("0 */5 * * * *")
+    @cron_register('my_task')
+    def my_task():
+        print("every 5 minutes")
+
+    cron.start()  # 不阻塞，Ctrl+C 退出
+"""
+
+from nb_cron._version import __version__
+from nb_cron.core.registry import add_cron_register, cron_register
+from nb_cron.core.scheduler import NbCron
+from nb_cron.cron_utils.translator import explain_cron
+from nb_cron.executors.base_executor import BaseExecutor
+from nb_cron.executors.thread_executor import ThreadExecutor
+
+__all__ = [
+    "NbCron",
+    "cron_register",
+    "add_cron_register",
+    "explain_cron",
+    "BaseExecutor",
+    "ThreadExecutor",
+    "__version__",
+]
+
+`````
+
+--- **end of file: nb_cron/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/django_app.py** (project: nb_cron) --- 
+
+`````python
+"""Django Ninja router for nb_cron management API."""
+from nb_cron.api import handlers
+
+
+def create_router(cron):
+    """
+    Create a Django Ninja Router bound to the given NbCron instance.
+    Mount at /nb_cron/api in your Django urls.py.
+    """
+    try:
+        from ninja import Router
+    except ImportError:
+        raise ImportError(
+            "django-ninja is required. Install with: pip install nb_cron_nb[django]"
+        )
+
+    router = Router()
+
+    @router.get("/jobs")
+    def get_jobs(request):
+        return handlers.handle_get_jobs(cron)
+
+    @router.get("/jobs/{job_id}")
+    def get_job(request, job_id: str):
+        return handlers.handle_get_job(cron, job_id)
+
+    @router.post("/jobs")
+    def create_job(request, data: dict):
+        return handlers.handle_create_job(cron, data)
+
+    @router.delete("/jobs/{job_id}")
+    def delete_job(request, job_id: str):
+        return handlers.handle_delete_job(cron, job_id)
+
+    @router.post("/jobs/{job_id}/pause")
+    def pause_job(request, job_id: str):
+        return handlers.handle_pause_job(cron, job_id)
+
+    @router.post("/jobs/{job_id}/resume")
+    def resume_job(request, job_id: str):
+        return handlers.handle_resume_job(cron, job_id)
+
+    @router.post("/jobs/{job_id}/trigger")
+    def trigger_job(request, job_id: str):
+        return handlers.handle_trigger_job(cron, job_id)
+
+    @router.get("/jobs/{job_id}/metrics")
+    def get_metrics(request, job_id: str):
+        return handlers.handle_get_metrics(cron, job_id)
+
+    @router.get("/dashboard/stats")
+    def dashboard_stats(request):
+        return handlers.handle_dashboard_stats(cron)
+
+    @router.get("/cron/explain")
+    def cron_explain(request, expression: str):
+        return handlers.handle_cron_explain(expression)
+
+    @router.get("/functions")
+    def get_functions(request):
+        return handlers.handle_get_functions(cron)
+
+    @router.get("/health")
+    def health(request):
+        return handlers.handle_health(cron)
+
+    return router
+
+`````
+
+--- **end of file: nb_cron/api/django_app.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/fastapi_app.py** (project: nb_cron) --- 
+
+`````python
+"""FastAPI router for nb_cron management API."""
+from typing import Optional
+
+from nb_cron.api import handlers
+
+
+def create_router(cron):
+    """
+    Create a FastAPI APIRouter bound to the given NbCron instance.
+    All endpoints are prefixed with /nb_cron/api.
+    """
+    try:
+        from fastapi import APIRouter, Query
+        from fastapi.responses import JSONResponse
+    except ImportError:
+        raise ImportError(
+            "fastapi is required. Install with: pip install nb_cron_nb[fastapi]"
+        )
+
+    router = APIRouter(prefix="/nb_cron/api", tags=["nb_cron"])
+
+    @router.get("/jobs")
+    def get_jobs():
+        return JSONResponse(handlers.handle_get_jobs(cron))
+
+    @router.get("/jobs/{job_id}")
+    def get_job(job_id: str):
+        return JSONResponse(handlers.handle_get_job(cron, job_id))
+
+    @router.post("/jobs")
+    async def create_job(data: dict):
+        return JSONResponse(handlers.handle_create_job(cron, data))
+
+    @router.delete("/jobs/{job_id}")
+    def delete_job(job_id: str):
+        return JSONResponse(handlers.handle_delete_job(cron, job_id))
+
+    @router.post("/jobs/{job_id}/pause")
+    def pause_job(job_id: str):
+        return JSONResponse(handlers.handle_pause_job(cron, job_id))
+
+    @router.post("/jobs/{job_id}/resume")
+    def resume_job(job_id: str):
+        return JSONResponse(handlers.handle_resume_job(cron, job_id))
+
+    @router.post("/jobs/{job_id}/trigger")
+    def trigger_job(job_id: str):
+        return JSONResponse(handlers.handle_trigger_job(cron, job_id))
+
+    @router.get("/jobs/{job_id}/metrics")
+    def get_metrics(job_id: str):
+        return JSONResponse(handlers.handle_get_metrics(cron, job_id))
+
+    @router.get("/dashboard/stats")
+    def dashboard_stats():
+        return JSONResponse(handlers.handle_dashboard_stats(cron))
+
+    @router.get("/cron/explain")
+    def cron_explain(expression: str = Query(...)):
+        return JSONResponse(handlers.handle_cron_explain(expression))
+
+    @router.get("/functions")
+    def get_functions():
+        return JSONResponse(handlers.handle_get_functions(cron))
+
+    @router.get("/health")
+    def health():
+        return JSONResponse(handlers.handle_health(cron))
+
+    return router
+
+`````
+
+--- **end of file: nb_cron/api/fastapi_app.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/flask_app.py** (project: nb_cron) --- 
+
+`````python
+"""Flask blueprint for nb_cron management API."""
+from nb_cron.api import handlers
+
+
+def create_blueprint(cron):
+    """
+    Create a Flask Blueprint bound to the given NbCron instance.
+    All endpoints are prefixed with /nb_cron/api.
+    """
+    try:
+        from flask import Blueprint, jsonify, request
+    except ImportError:
+        raise ImportError(
+            "flask is required. Install with: pip install nb_cron_nb[flask]"
+        )
+
+    bp = Blueprint("nb_cron_api", __name__, url_prefix="/nb_cron/api")
+
+    @bp.route("/jobs", methods=["GET"])
+    def get_jobs():
+        return jsonify(handlers.handle_get_jobs(cron))
+
+    @bp.route("/jobs/<job_id>", methods=["GET"])
+    def get_job(job_id):
+        return jsonify(handlers.handle_get_job(cron, job_id))
+
+    @bp.route("/jobs", methods=["POST"])
+    def create_job():
+        data = request.get_json(force=True)
+        return jsonify(handlers.handle_create_job(cron, data))
+
+    @bp.route("/jobs/<job_id>", methods=["DELETE"])
+    def delete_job(job_id):
+        return jsonify(handlers.handle_delete_job(cron, job_id))
+
+    @bp.route("/jobs/<job_id>/pause", methods=["POST"])
+    def pause_job(job_id):
+        return jsonify(handlers.handle_pause_job(cron, job_id))
+
+    @bp.route("/jobs/<job_id>/resume", methods=["POST"])
+    def resume_job(job_id):
+        return jsonify(handlers.handle_resume_job(cron, job_id))
+
+    @bp.route("/jobs/<job_id>/trigger", methods=["POST"])
+    def trigger_job(job_id):
+        return jsonify(handlers.handle_trigger_job(cron, job_id))
+
+    @bp.route("/jobs/<job_id>/metrics", methods=["GET"])
+    def get_metrics(job_id):
+        return jsonify(handlers.handle_get_metrics(cron, job_id))
+
+    @bp.route("/dashboard/stats", methods=["GET"])
+    def dashboard_stats():
+        return jsonify(handlers.handle_dashboard_stats(cron))
+
+    @bp.route("/cron/explain", methods=["GET"])
+    def cron_explain():
+        expression = request.args.get("expression", "")
+        return jsonify(handlers.handle_cron_explain(expression))
+
+    @bp.route("/functions", methods=["GET"])
+    def get_functions():
+        return jsonify(handlers.handle_get_functions(cron))
+
+    @bp.route("/health", methods=["GET"])
+    def health():
+        return jsonify(handlers.handle_health(cron))
+
+    return bp
+
+`````
+
+--- **end of file: nb_cron/api/flask_app.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/handlers.py** (project: nb_cron) --- 
+
+`````python
+"""
+Framework-agnostic request handlers.
+Each function takes an NbCron instance and request data, returns a dict.
+All data is read from the store — never from in-memory FunctionRegistry —
+so a standalone web project can manage jobs across Git repositories.
+"""
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.scheduler import NbCron
+from nb_cron.cron_utils.translator import explain_cron
+
+
+def handle_get_jobs(cron: NbCron) -> Dict[str, Any]:
+    jobs = cron.get_jobs()
+    all_metrics = cron.metrics.get_all_metrics()
+    result = []
+    for job in jobs:
+        d = job.to_dict()
+        m = all_metrics.get(job.job_id)
+        d["metrics"] = m
+        try:
+            trigger = cron._rebuild_trigger(job)
+            d["trigger_description_zh"] = trigger.get_description("zh")
+            d["trigger_description_en"] = trigger.get_description("en")
+        except Exception:
+            d["trigger_description_zh"] = ""
+            d["trigger_description_en"] = ""
+        result.append(d)
+    return {"success": True, "data": result}
+
+
+def handle_get_job(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    job = cron.get_job(job_id)
+    if not job:
+        return {"success": False, "message": f"Job '{job_id}' not found", "data": None}
+    d = job.to_dict()
+    d["metrics"] = cron.metrics.get_metrics(job_id)
+    try:
+        trigger = cron._rebuild_trigger(job)
+        d["trigger_description_zh"] = trigger.get_description("zh")
+        d["trigger_description_en"] = trigger.get_description("en")
+    except Exception:
+        d["trigger_description_zh"] = ""
+        d["trigger_description_en"] = ""
+    return {"success": True, "data": d}
+
+
+def handle_create_job(cron: NbCron, data: dict) -> Dict[str, Any]:
+    func_ref = data.get("func_ref", "")
+    expression = data.get("expression", "")
+    trigger = data.get("trigger")
+    job_id = data.get("job_id")
+    name = data.get("name")
+    args = tuple(data.get("args", []))
+    kwargs = data.get("kwargs", {})
+    max_instances = data.get("max_instances", 1)
+
+    try:
+        job = cron.add_job(
+            func_ref, expression,
+            trigger=trigger, job_id=job_id, name=name,
+            args=args, kwargs=kwargs,
+            max_instances=max_instances,
+        )
+        return {"success": True, "data": job.to_dict(), "message": "Job created"}
+    except Exception as e:
+        return {"success": False, "message": str(e), "data": None}
+
+
+def handle_delete_job(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    job = cron.get_job(job_id)
+    if not job:
+        return {"success": False, "message": f"Job '{job_id}' not found"}
+    cron.remove_job(job_id)
+    return {"success": True, "message": f"Job '{job_id}' removed"}
+
+
+def handle_pause_job(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    job = cron.get_job(job_id)
+    if not job:
+        return {"success": False, "message": f"Job '{job_id}' not found"}
+    cron.pause_job(job_id)
+    return {"success": True, "message": f"Job '{job_id}' paused"}
+
+
+def handle_resume_job(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    job = cron.get_job(job_id)
+    if not job:
+        return {"success": False, "message": f"Job '{job_id}' not found"}
+    cron.resume_job(job_id)
+    return {"success": True, "message": f"Job '{job_id}' resumed"}
+
+
+def handle_trigger_job(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    try:
+        cron.trigger_job(job_id)
+        return {"success": True, "message": f"Job '{job_id}' triggered"}
+    except ValueError as e:
+        return {"success": False, "message": str(e)}
+
+
+def handle_get_metrics(cron: NbCron, job_id: str) -> Dict[str, Any]:
+    m = cron.metrics.get_metrics(job_id)
+    return {"success": True, "data": m}
+
+
+def handle_dashboard_stats(cron: NbCron) -> Dict[str, Any]:
+    stats = cron.metrics.get_dashboard_stats()
+    jobs = cron.get_jobs()
+    stats["active_count"] = sum(1 for j in jobs if j.status == "active")
+    stats["paused_count"] = sum(1 for j in jobs if j.status == "paused")
+    stats["error_count"] = sum(1 for j in jobs if j.status == "error")
+    stats["job_count"] = len(jobs)
+    return {"success": True, "data": stats}
+
+
+def handle_cron_explain(expression: str) -> Dict[str, Any]:
+    try:
+        zh = explain_cron(expression, "zh")
+        en = explain_cron(expression, "en")
+        return {"success": True, "data": {"expression": expression, "zh": zh, "en": en}}
+    except ValueError as e:
+        return {"success": False, "message": str(e), "data": None}
+
+
+def handle_get_functions(cron: NbCron) -> Dict[str, Any]:
+    """返回所有已注册的函数名称列表（从 store 读取，支持跨项目）。"""
+    names = cron.store.get_function_names()
+    return {
+        "success": True,
+        "data": {
+            "functions": names,
+        },
+    }
+
+
+def handle_health(cron: NbCron) -> Dict[str, Any]:
+    return {
+        "success": True,
+        "data": {
+            "name": cron.name,
+            "running": cron.is_running(),
+            "job_count": len(cron.get_jobs()),
+            "store_type": type(cron.store).__name__,
+            "lock_type": type(cron.lock).__name__,
+            "tz": str(cron.tz),
+        },
+    }
+
+`````
+
+--- **end of file: nb_cron/api/handlers.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/schemas.py** (project: nb_cron) --- 
+
+`````python
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
+
+class JobCreate(BaseModel):
+    job_id: Optional[str] = None
+    func_ref: str = Field(..., description="已注册的 cron_func_name（通过 @cron_register 注册）")
+    expression: str = Field(..., description="触发表达式：cron / 间隔 / 日期时间")
+    trigger: Optional[str] = Field(None, description="触发器类型: 'cron' / 'interval' / 'date'，不传则自动推断")
+    name: Optional[str] = None
+    args: List[Any] = Field(default_factory=list)
+    kwargs: Dict[str, Any] = Field(default_factory=dict)
+    max_instances: int = 1
+
+
+class JobResponse(BaseModel):
+    job_id: str
+    func_ref: str
+    trigger_type: str
+    trigger_args: Dict[str, Any] = Field(default_factory=dict)
+    name: str
+    status: str
+    max_instances: int = 1
+    next_run_time: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class JobMetrics(BaseModel):
+    total_runs: int = 0
+    success_count: int = 0
+    fail_count: int = 0
+    last_run_at: Optional[str] = None
+    last_success_at: Optional[str] = None
+    last_error: Optional[str] = None
+    last_error_at: Optional[str] = None
+    avg_duration_ms: float = 0.0
+    max_duration_ms: float = 0.0
+    min_duration_ms: float = 0.0
+    last_duration_ms: float = 0.0
+    recent_results: List[Dict[str, Any]] = Field(default_factory=list)
+    hourly_stats: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class JobWithMetrics(JobResponse):
+    metrics: Optional[JobMetrics] = None
+
+
+class DashboardStats(BaseModel):
+    job_count: int = 0
+    active_count: int = 0
+    paused_count: int = 0
+    error_count: int = 0
+    total_runs: int = 0
+    total_success: int = 0
+    total_fail: int = 0
+    success_rate: float = 0.0
+    hourly_stats: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class CronExplain(BaseModel):
+    expression: str
+    zh: str
+    en: str
+
+
+class ApiResponse(BaseModel):
+    success: bool = True
+    message: str = "ok"
+    data: Any = None
+
+`````
+
+--- **end of file: nb_cron/api/schemas.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/api/__init__.py** (project: nb_cron) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cron/api/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/core/job.py** (project: nb_cron) --- 
+
+`````python
+import re
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+_ISO_TZ_RE = re.compile(r"([+-]\d{2}:\d{2})$")
+
+
+def _parse_iso(s: str) -> datetime:
+    """Parse ISO datetime string, compatible with Python 3.7+."""
+    tz_match = _ISO_TZ_RE.search(s)
+    if tz_match:
+        tz_str = tz_match.group(1)
+        base_str = s[:tz_match.start()]
+        dt = datetime.fromisoformat(base_str)
+        sign = 1 if tz_str[0] == "+" else -1
+        hours, minutes = int(tz_str[1:3]), int(tz_str[4:6])
+        from datetime import timedelta
+        tz = timezone(timedelta(hours=sign * hours, minutes=sign * minutes))
+        dt = dt.replace(tzinfo=tz)
+    else:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
+class Job:
+    __slots__ = (
+        "job_id", "func_ref", "trigger_type", "trigger_args",
+        "args", "kwargs", "name", "status", "max_instances",
+        "next_run_time", "created_at", "updated_at",
+    )
+
+    def __init__(
+        self,
+        job_id: str,
+        func_ref: str,
+        trigger_type: str,
+        trigger_args: Optional[Dict[str, Any]] = None,
+        args: Optional[Tuple] = None,
+        kwargs: Optional[Dict[str, Any]] = None,
+        name: Optional[str] = None,
+        status: str = "active",
+        max_instances: int = 1,
+        next_run_time: Optional[datetime] = None,
+        created_at: Optional[datetime] = None,
+        updated_at: Optional[datetime] = None,
+    ):
+        self.job_id = job_id
+        self.func_ref = func_ref
+        self.trigger_type = trigger_type
+        self.trigger_args = trigger_args or {}
+        self.args = args or ()
+        self.kwargs = kwargs or {}
+        self.name = name or job_id
+        self.status = status
+        self.max_instances = max_instances
+        self.next_run_time = next_run_time
+        self.created_at = created_at or datetime.now(timezone.utc)
+        self.updated_at = updated_at or datetime.now(timezone.utc)
+
+    def to_dict(self) -> Dict[str, Any]:
+        d = {
+            "job_id": self.job_id,
+            "func_ref": self.func_ref,
+            "trigger_type": self.trigger_type,
+            "trigger_args": self.trigger_args,
+            "args": list(self.args),
+            "kwargs": self.kwargs,
+            "name": self.name,
+            "status": self.status,
+            "max_instances": self.max_instances,
+            "next_run_time": self.next_run_time.isoformat() if self.next_run_time else None,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+        return d
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Job":
+        data = dict(data)
+        for key in ("next_run_time", "created_at", "updated_at"):
+            val = data.get(key)
+            if isinstance(val, str):
+                data[key] = _parse_iso(val)
+        if "args" in data and isinstance(data["args"], list):
+            data["args"] = tuple(data["args"])
+        return cls(**data)
+
+    def __repr__(self) -> str:
+        return (
+            f"Job(id={self.job_id!r}, func={self.func_ref!r}, "
+            f"trigger={self.trigger_type}, status={self.status}, "
+            f"next_run={self.next_run_time})"
+        )
+
+`````
+
+--- **end of file: nb_cron/core/job.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/core/registry.py** (project: nb_cron) --- 
+
+`````python
+from typing import Callable, Dict, List, Optional
+
+
+class FunctionRegistry:
+    _registry: Dict[str, Callable] = {}
+    _reverse_registry: Dict[int, str] = {}  # id(func) -> cron_func_name
+
+    @classmethod
+    def register_by_name(cls, cron_func_name: str, func: Callable) -> None:
+        """以稳定名称注册函数，带冲突检查。"""
+        func_id = id(func)
+
+        existing_name = cls._reverse_registry.get(func_id)
+        if existing_name and existing_name != cron_func_name:
+            raise ValueError(
+                f"函数 '{func.__name__}' 已经注册为 '{existing_name}'，"
+                f"不能再次注册为 '{cron_func_name}'。一个函数只能有一个 cron_func_name。"
+            )
+
+        existing_func = cls._registry.get(cron_func_name)
+        if existing_func is not None and id(existing_func) != func_id:
+            raise ValueError(
+                f"cron_func_name '{cron_func_name}' 已被函数 '{existing_func.__name__}' 注册，"
+                f"不能重复用于函数 '{func.__name__}'。"
+            )
+
+        func.cron_func_name = cron_func_name  # type: ignore[attr-defined]
+        cls._registry[cron_func_name] = func
+        cls._reverse_registry[func_id] = cron_func_name
+
+    @classmethod
+    def register(cls, func: Callable) -> str:
+        """注册函数，返回 cron_func_name。函数必须先通过 @cron_register 注册。"""
+        cron_name = getattr(func, "cron_func_name", None)
+        if not cron_name:
+            raise ValueError(
+                f"函数 {func.__name__!r} 未注册 cron_func_name。"
+                f"请先使用 @cron_register('名称') 装饰器注册函数。"
+            )
+        return cron_name
+
+    @classmethod
+    def resolve(cls, ref: str) -> Callable:
+        if ref in cls._registry:
+            return cls._registry[ref]
+        raise ValueError(
+            f"Function '{ref}' not found in registry. "
+            f"Did you forget to use @cron_register('{ref}')?"
+        )
+
+    @classmethod
+    def is_registered(cls, ref: str) -> bool:
+        return ref in cls._registry
+
+    @classmethod
+    def get_all(cls) -> Dict[str, Callable]:
+        return dict(cls._registry)
+
+    @classmethod
+    def get_named_functions(cls) -> List[str]:
+        """返回所有已注册的函数名称列表。"""
+        return list(cls._registry.keys())
+
+    @classmethod
+    def clear(cls) -> None:
+        cls._registry.clear()
+        cls._reverse_registry.clear()
+
+
+def cron_register(cron_func_name: Optional[str] = None, func: Optional[Callable] = None) -> Callable:
+    """
+    注册函数到 nb_cron 函数注册表，绑定一个稳定名称。
+
+    用法::
+
+        @cron_register('daily_backup')
+        def backup_db():
+            ...
+
+        backup_db.cron_func_name  # 'daily_backup'
+
+        # 无参形式，默认使用函数名
+        @cron_register()
+        def send_email():
+            ...
+
+        send_email.cron_func_name  # 'send_email'
+
+        # 无括号形式
+        @cron_register
+        def my_task():
+            ...
+
+        my_task.cron_func_name  # 'my_task'
+
+        # 函数调用形式
+        cron_register('send_email', send_email_func)
+    """
+    if callable(cron_func_name):
+        fn = cron_func_name
+        FunctionRegistry.register_by_name(fn.__name__, fn)
+        return fn
+
+    if func is not None:
+        name = cron_func_name if cron_func_name is not None else func.__name__
+        FunctionRegistry.register_by_name(name, func)
+        return func
+
+    def decorator(fn: Callable) -> Callable:
+        name = cron_func_name if cron_func_name is not None else fn.__name__
+        FunctionRegistry.register_by_name(name, fn)
+        return fn
+    return decorator
+
+
+def add_cron_register(cron_func_name: str, func: Callable) -> None:
+    """
+    注册函数到 nb_cron 函数注册表（非装饰器形式）。
+
+    用法::
+
+        add_cron_register('daily_backup', backup_func)
+    """
+    FunctionRegistry.register_by_name(cron_func_name, func)
+
+`````
+
+--- **end of file: nb_cron/core/registry.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/core/scheduler.py** (project: nb_cron) --- 
+
+`````python
+import logging
+import re
+import signal
+import threading
+import time
+from datetime import datetime, timedelta
+from typing import Callable, List, Optional, Union
+
+from nb_cron.core.job import Job
+from nb_cron.core.registry import FunctionRegistry
+from nb_cron.executors.base_executor import BaseExecutor
+from nb_cron.executors.threadpool import _ExecutionResult
+from nb_cron.executors.thread_executor import ThreadExecutor
+from nb_cron.locks.base import BaseLock
+from nb_cron.locks.memory_lock import MemoryLock
+from nb_cron.metrics.collector import MetricsCollector
+from nb_cron.stores.base import BaseStore
+from nb_cron.stores.memory import MemoryStore
+from nb_cron.triggers.base import BaseTrigger
+from nb_cron.triggers.cron_trigger import CronTrigger
+from nb_cron.triggers.date_trigger import DateTrigger
+from nb_cron.triggers.interval_trigger import IntervalTrigger
+from nb_cron.utils import get_local_timezone, now as _now
+
+logger = logging.getLogger("nb_cron")
+
+_EVERY_RE = re.compile(
+    r"^@every\s+(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hour|hours|d|day|days|w|week|weeks)$",
+    re.IGNORECASE,
+)
+
+_UNIT_MAP = {
+    "s": "seconds", "sec": "seconds", "second": "seconds", "seconds": "seconds",
+    "m": "minutes", "min": "minutes", "minute": "minutes", "minutes": "minutes",
+    "h": "hours", "hour": "hours", "hours": "hours",
+    "d": "days", "day": "days", "days": "days",
+    "w": "weeks", "week": "weeks", "weeks": "weeks",
+}
+
+_DATE_FORMATS = [
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%d %H:%M",
+    "%Y-%m-%d",
+    "%Y/%m/%d %H:%M:%S",
+    "%Y/%m/%d %H:%M",
+    "%Y/%m/%d",
+    "%Y年%m月%d日 %H:%M:%S",
+    "%Y年%m月%d日 %H:%M",
+    "%Y年%m月%d日",
+]
+
+
+def _try_parse_date(expr: str, tz=None) -> Optional[datetime]:
+    for fmt in _DATE_FORMATS:
+        try:
+            dt = datetime.strptime(expr, fmt)
+            return dt.replace(tzinfo=tz or get_local_timezone())
+        except ValueError:
+            continue
+    return None
+
+
+def _parse_expression(expression: str, trigger: Optional[str] = None, tz=None) -> BaseTrigger:
+    """解析表达式为触发器对象。"""
+    expr = expression.strip()
+    if trigger is not None:
+        trigger = trigger.lower()
+        if trigger == "cron":
+            return CronTrigger(expr)
+        if trigger == "interval":
+            m = _EVERY_RE.match(expr)
+            if m:
+                val = int(m.group(1))
+                unit = _UNIT_MAP[m.group(2).lower()]
+                return IntervalTrigger(**{unit: val})
+            m2 = re.match(r"^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hour|hours|d|day|days|w|week|weeks)$", expr, re.IGNORECASE)
+            if m2:
+                val = int(m2.group(1))
+                unit = _UNIT_MAP[m2.group(2).lower()]
+                return IntervalTrigger(**{unit: val})
+            raise ValueError(f"trigger='interval' 但表达式无法解析: '{expr}'。示例: '30s', '5m', '@every 2h'")
+        if trigger == "date":
+            dt = _try_parse_date(expr, tz)
+            if dt is None:
+                raise ValueError(f"trigger='date' 但表达式无法解析为日期: '{expr}'。示例: '2026-10-01 09:00:00'")
+            return DateTrigger(dt)
+        raise ValueError(f"不支持的 trigger 类型: '{trigger}'。可选: 'cron', 'interval', 'date'")
+    m = _EVERY_RE.match(expr)
+    if m:
+        val = int(m.group(1))
+        unit = _UNIT_MAP[m.group(2).lower()]
+        return IntervalTrigger(**{unit: val})
+    if len(expr.split()) == 6:
+        return CronTrigger(expr)
+    dt = _try_parse_date(expr, tz)
+    if dt is not None:
+        return DateTrigger(dt)
+    raise ValueError(
+        f"无法识别的表达式: '{expr}'。支持的格式：\n"
+        f"  6-field cron: '0 30 9 * * 1-5'（秒 分 时 日 月 周）\n"
+        f"  间隔:          '@every 30s / 5m / 2h'  或  trigger='interval', expression='30s'\n"
+        f"  指定时间:      '2026-10-01 09:00:00'  或  trigger='date', expression='2026-10-01'"
+    )
+
+
+class NbCron:
+    """
+    The one and only scheduler class you need.
+
+    Usage::
+
+        from nb_cron import NbCron, cron_register
+
+        cron = NbCron("my_project")  # name 必传，隔离不同项目
+        # cron = NbCron("my_project", "redis://localhost:6379/0")
+
+        @cron.job("0 */5 * * * *")
+        @cron_register('report')
+        def task_a(): ...
+
+        cron.start()  # 不阻塞，Ctrl+C 退出
+    """
+
+    def __init__(
+        self,
+        name: str,
+        store_url: Optional[str] = None,
+        max_workers: int = 20,
+        tick_seconds: float = 1.0,
+        misfire_grace_seconds: int = 60,
+        tz=None,
+        executor: Optional[BaseExecutor] = None,
+    ):
+        if not name or not name.strip():
+            raise ValueError("NbCron name 不能为空。请传一个唯一名称标识你的项目，例如 NbCron('my_project')")
+        self.name = name.strip()
+        self.tz = tz or get_local_timezone()
+        self.store: BaseStore = self._create_store(store_url, self.name)
+        self.lock: BaseLock = self._create_lock(store_url, self.name)
+        self.executor: BaseExecutor = executor or ThreadExecutor(max_workers=max_workers)
+        # 若执行器支持 bind_cron（如 FunboostExecutor），注入自身引用
+        if hasattr(self.executor, "bind_cron"):
+            self.executor.bind_cron(self)
+        self.metrics = MetricsCollector(self.store)
+        self._tick_seconds = tick_seconds
+        self._misfire_grace = misfire_grace_seconds
+        self._running = False
+        self._thread: Optional[threading.Thread] = None
+        self._pending: List[dict] = []
+        self._store_url = store_url
+        self._stop_completed = False
+
+    def _now(self) -> datetime:
+        return _now(self.tz)
+
+    # ── Store / Lock factory ──
+
+    @staticmethod
+    def _create_store(url: Optional[str], name: str) -> BaseStore:
+        if url is None:
+            return MemoryStore()
+        if url.startswith("redis://") or url.startswith("rediss://"):
+            from nb_cron.stores.redis_store import RedisStore
+            return RedisStore(url, name=name)
+        if url.startswith("mongodb://") or url.startswith("mongodb+srv://"):
+            from nb_cron.stores.mongo_store import MongoStore
+            parts = url.rsplit("/", 1)
+            db_name = parts[1] if len(parts) > 1 and parts[1] else "nb_cron"
+            return MongoStore(url=url, db_name=db_name, name=name)
+        from nb_cron.stores.sqlalchemy_store import SQLAlchemyStore
+        return SQLAlchemyStore(url, name=name)
+
+    @staticmethod
+    def _create_lock(url: Optional[str], name: str) -> BaseLock:
+        if url is None:
+            return MemoryLock()
+        if url.startswith("redis://") or url.startswith("rediss://"):
+            from nb_cron.locks.redis_lock import RedisLock
+            return RedisLock(url, name=name)
+        if url.startswith("mongodb://") or url.startswith("mongodb+srv://"):
+            from nb_cron.locks.mongo_lock import MongoLock
+            parts = url.rsplit("/", 1)
+            db_name = parts[1] if len(parts) > 1 and parts[1] else "nb_cron"
+            return MongoLock(url=url, db_name=db_name, name=name)
+        from nb_cron.locks.sqlalchemy_lock import SQLAlchemyLock
+        return SQLAlchemyLock(url, name=name)
+
+    # ── Decorator ──
+
+    def job(
+        self,
+        expression: str,
+        *,
+        trigger: Optional[str] = None,
+        job_id: Optional[str] = None,
+        name: Optional[str] = None,
+        args: tuple = (),
+        kwargs: Optional[dict] = None,
+        max_instances: int = 1,
+    ) -> Callable:
+        """
+        装饰器，注册定时任务。函数必须先用 @cron_register 注册。
+
+        :param expression: 触发表达式
+        :param trigger: "cron" / "interval" / "date"，不传则自动推断
+        """
+        def decorator(func: Callable) -> Callable:
+            ref = FunctionRegistry.register(func)
+            jid = job_id or ref
+            self._pending.append({
+                "job_id": jid,
+                "func_ref": ref,
+                "expression": expression,
+                "trigger": trigger,
+                "name": name or getattr(func, "__name__", jid),
+                "args": args,
+                "kwargs": kwargs or {},
+                "max_instances": max_instances,
+            })
+            return func
+        return decorator
+
+    # ── add_job ──
+
+    def add_job(
+        self,
+        func: Union[Callable, str],
+        expression: str,
+        *,
+        trigger: Optional[str] = None,
+        job_id: Optional[str] = None,
+        name: Optional[str] = None,
+        args: tuple = (),
+        kwargs: Optional[dict] = None,
+        max_instances: int = 1,
+    ) -> Job:
+        if isinstance(func, str):
+            ref = func
+            if FunctionRegistry.is_registered(ref):
+                pass
+            elif not self.store.function_exists(ref):
+                raise ValueError(
+                    f"Function '{ref}' not found in registry or store. "
+                    f"Did you forget to use @cron_register('{ref}')?"
+                )
+            func_name = name or ref
+        else:
+            ref = FunctionRegistry.register(func)
+            func_name = name or getattr(func, "__name__", ref)
+        jid = job_id or ref
+        trigger_obj = _parse_expression(expression, trigger, tz=self.tz)
+        cur = self._now()
+        next_run = trigger_obj.get_next_fire_time(None, cur)
+        trigger_info = trigger_obj.get_trigger_info()
+
+        job = Job(
+            job_id=jid,
+            func_ref=ref,
+            trigger_type=trigger_info["type"],
+            trigger_args=trigger_info,
+            args=args,
+            kwargs=kwargs or {},
+            name=func_name,
+            status="active",
+            max_instances=max_instances,
+            next_run_time=next_run,
+        )
+
+        if self.store.job_exists(jid):
+            self.store.update_job(job)
+        else:
+            self.store.add_job(job)
+
+        self.store.register_function(ref)
+        logger.info("Job added: %s -> next run: %s", jid, next_run)
+        return job
+
+    # ── Control ──
+
+    def start(self) -> None:
+        """
+        启动调度器（非阻塞，立即返回）。
+
+        - ``start()`` 后面的代码会继续执行。
+        - 主线程跑完后进程**不会退出**，定时任务继续运行。
+        - ``Ctrl+C`` 优雅停止。
+        """
+        if self._running:
+            logger.warning("Scheduler already running")
+            return
+        self._flush_pending()
+        self._sync_registry_to_store()
+        self._running = True
+        self._thread = threading.Thread(
+            target=self._run_loop,
+            daemon=False,
+            name="nb_cron-scheduler",
+        )
+        self._thread.start()
+        self._install_signal_handler()
+        logger.info("nb_cron [%s] scheduler started (tick=%.1fs, tz=%s)", self.name, self._tick_seconds, self.tz)
+
+    def _install_signal_handler(self) -> None:
+        if threading.current_thread() is not threading.main_thread():
+            return
+        def _handler(signum, frame):
+            self.stop(wait=False)
+        try:
+            signal.signal(signal.SIGINT, _handler)
+            signal.signal(signal.SIGTERM, _handler)
+        except (OSError, ValueError):
+            pass
+
+    def stop(self, wait: bool = True) -> None:
+        if self._stop_completed:
+            return
+        self._running = False
+        if self._thread and wait:
+            self._thread.join(timeout=10)
+        self.executor.shutdown()
+        self.store.close()
+        self.lock.close()
+        self._stop_completed = True
+        logger.info("nb_cron [%s] scheduler stopped", self.name)
+
+    def is_running(self) -> bool:
+        return self._running
+
+    # ── Job management ──
+
+    def pause_job(self, job_id: str) -> None:
+        job = self.store.get_job(job_id)
+        if job:
+            job.status = "paused"
+            job.updated_at = self._now()
+            self.store.update_job(job)
+
+    def resume_job(self, job_id: str) -> None:
+        job = self.store.get_job(job_id)
+        if job:
+            job.status = "active"
+            trigger = self._rebuild_trigger(job)
+            job.next_run_time = trigger.get_next_fire_time(None, self._now())
+            job.updated_at = self._now()
+            self.store.update_job(job)
+
+    def remove_job(self, job_id: str) -> None:
+        self.store.remove_job(job_id)
+        logger.info("Job removed: %s", job_id)
+
+    def trigger_job(self, job_id: str) -> None:
+        job = self.store.get_job(job_id)
+        if not job:
+            raise ValueError(f"Job '{job_id}' not found")
+        if FunctionRegistry.is_registered(job.func_ref):
+            func = FunctionRegistry.resolve(job.func_ref)
+            self.executor.submit(
+                func_ref=job.func_ref,
+                func=func,
+                args=job.args,
+                kwargs=job.kwargs,
+                job_id=job_id,
+                callback=lambda r: self._on_job_done(job_id, r),
+            )
+        else:
+            job.next_run_time = self._now()
+            job.status = "active"
+            job.updated_at = self._now()
+            self.store.update_job(job)
+
+    def cleanup_history_jobs(self, older_than_days: int = 7) -> int:
+        """清理已执行完毕的一次性任务（date trigger），防止存储膨胀。
+
+        :param older_than_days: 保留最近多少天内的历史任务，超过此天数的将被删除。
+        :return: 删除的任务数量
+        """
+        count = self.store.cleanup_expired_jobs(older_than_days)
+        logger.info("Cleaned up %d expired one-time jobs older than %d days", count, older_than_days)
+        return count
+
+    def enable_auto_cleanup(self, cron_expression: str = "0 0 0 * * *", older_than_days: int = 7):
+        """启用自动清理历史一次性任务的功能。
+
+        :param cron_expression: 清理任务的 cron 表达式，默认每天 0 点
+        :param older_than_days: 清理多少天前的任务
+        """
+        cleanup_job_id = f"_auto_cleanup_{self.name}"
+        self._auto_cleanup_days = older_than_days
+
+        if not hasattr(self, "_auto_cleanup_func"):
+            def _auto_cleanup_task():
+                return self.cleanup_history_jobs(self._auto_cleanup_days)
+
+            self._auto_cleanup_func = _auto_cleanup_task
+            FunctionRegistry.register_by_name(cleanup_job_id, self._auto_cleanup_func)
+
+        self.add_job(
+            self._auto_cleanup_func,
+            cron_expression,
+            trigger="cron",
+            job_id=cleanup_job_id,
+            name="内置-历史任务自动清理",
+            max_instances=1,
+        )
+        logger.info("Auto cleanup enabled: %s, older_than_days=%d", cron_expression, older_than_days)
+
+    def get_jobs(self) -> List[Job]:
+        return self.store.get_all_jobs()
+
+    def get_job(self, job_id: str) -> Optional[Job]:
+        return self.store.get_job(job_id)
+
+    # ── Internal ──
+
+    def _flush_pending(self) -> None:
+        for p in self._pending:
+            try:
+                trigger = _parse_expression(p["expression"], p.get("trigger"), tz=self.tz)
+                cur = self._now()
+                next_run = trigger.get_next_fire_time(None, cur)
+                trigger_info = trigger.get_trigger_info()
+                job = Job(
+                    job_id=p["job_id"],
+                    func_ref=p["func_ref"],
+                    trigger_type=trigger_info["type"],
+                    trigger_args=trigger_info,
+                    args=p["args"],
+                    kwargs=p["kwargs"],
+                    name=p["name"],
+                    max_instances=p["max_instances"],
+                    next_run_time=next_run,
+                )
+                if self.store.job_exists(job.job_id):
+                    self.store.update_job(job)
+                else:
+                    self.store.add_job(job)
+                self.store.register_function(p["func_ref"])
+                logger.info("Registered job: %s -> next run: %s", job.job_id, next_run)
+            except Exception:
+                logger.exception("Failed to register pending job: %s", p.get("job_id"))
+        self._pending.clear()
+
+    def _sync_registry_to_store(self) -> None:
+        """将 FunctionRegistry 中所有已注册函数名同步到 store，
+        确保只用 @cron_register 标记但未添加任务的函数也能在跨项目 Web UI 中被选择。"""
+        for name in FunctionRegistry.get_named_functions():
+            try:
+                self.store.register_function(name)
+            except Exception:
+                logger.exception("Failed to sync function to store: %s", name)
+
+    def _run_loop(self) -> None:
+        while self._running:
+            try:
+                self._tick()
+            except Exception:
+                logger.exception("Scheduler tick error")
+            time.sleep(self._tick_seconds)
+
+    def _tick(self) -> None:
+        cur = self._now()
+        due_jobs = self.store.get_due_jobs(cur)
+        for job in due_jobs:
+            self._process_job(job, cur)
+
+    def _process_job(self, job: Job, cur: datetime) -> None:
+        if job.next_run_time is None:
+            return
+        grace = timedelta(seconds=self._misfire_grace)
+        if cur - job.next_run_time > grace:
+            logger.warning(
+                "Misfired job %s (due=%s, now=%s, grace=%ss), skipping",
+                job.job_id, job.next_run_time, cur, self._misfire_grace,
+            )
+            self._advance_next_run(job, cur)
+            return
+
+        fire_ts = int(job.next_run_time.timestamp())
+        lock_key = f"{job.job_id}:{fire_ts}"
+        if not self.lock.acquire(lock_key, ttl_seconds=max(300, self._misfire_grace * 2)):
+            return
+
+        try:
+            func = FunctionRegistry.resolve(job.func_ref)
+        except ValueError:
+            error_msg = f"Function not found: {job.func_ref}"
+            logger.error("Cannot resolve function for job %s: %s", job.job_id, job.func_ref)
+            self.metrics.record(
+                job_id=job.job_id, success=False, duration_ms=0, error=error_msg,
+            )
+            job.status = "error"
+            job.updated_at = self._now()
+            self.store.update_job(job)
+            self._advance_next_run(job, cur)
+            return
+
+        logger.debug("Executing job %s", job.job_id)
+        self.executor.submit(
+            func_ref=job.func_ref,
+            func=func,
+            args=job.args,
+            kwargs=job.kwargs,
+            job_id=job.job_id,
+            callback=lambda r: self._on_job_done(job.job_id, r),
+        )
+        self._advance_next_run(job, cur)
+
+    def _advance_next_run(self, job: Job, cur: datetime) -> None:
+        trigger = self._rebuild_trigger(job)
+        next_run = trigger.get_next_fire_time(job.next_run_time, cur)
+        self.store.update_next_run_time(job.job_id, next_run)
+
+    def _on_job_done(self, job_id: str, result: _ExecutionResult) -> None:
+        self.metrics.record(
+            job_id=job_id,
+            success=result.success,
+            duration_ms=result.duration_ms,
+            error=result.error,
+        )
+        if result.success:
+            logger.debug("Job %s completed in %.1fms", job_id, result.duration_ms)
+        else:
+            logger.error("Job %s failed (%.1fms): %s", job_id, result.duration_ms, result.error)
+
+    @staticmethod
+    def _rebuild_trigger(job: Job) -> BaseTrigger:
+        info = job.trigger_args
+        t = info.get("type", job.trigger_type)
+        if t == "cron":
+            return CronTrigger(info["expression"])
+        if t == "interval":
+            return IntervalTrigger(
+                weeks=info.get("weeks", 0),
+                days=info.get("days", 0),
+                hours=info.get("hours", 0),
+                minutes=info.get("minutes", 0),
+                seconds=info.get("seconds", 0),
+            )
+        if t == "date":
+            return DateTrigger(datetime.fromisoformat(info["run_time"]))
+        raise ValueError(f"Unknown trigger type: {t}")
+
+`````
+
+--- **end of file: nb_cron/core/scheduler.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/core/__init__.py** (project: nb_cron) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cron/core/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/cron_utils/parser.py** (project: nb_cron) --- 
+
+`````python
+from datetime import datetime, timezone
+from typing import Optional
+
+from croniter import croniter
+
+
+def _user_to_croniter(expression: str) -> str:
+    """sec min hour day month dow -> min hour day month dow sec"""
+    fields = expression.strip().split()
+    sec, min_, hour, day, month, dow = fields
+    return f"{min_} {hour} {day} {month} {dow} {sec}"
+
+
+def validate_cron(expression: str) -> str:
+    fields = expression.strip().split()
+    if len(fields) != 6:
+        raise ValueError(
+            f"nb_cron requires exactly 6-field cron "
+            f"(second minute hour day month weekday), "
+            f"got {len(fields)} fields: '{expression}'. "
+            f"Example: '0 */5 * * * *' means every 5 minutes at second 0."
+        )
+    croniter_expr = _user_to_croniter(expression)
+    try:
+        croniter(croniter_expr)
+    except (ValueError, KeyError, TypeError) as e:
+        raise ValueError(f"Invalid cron expression: '{expression}' ({e})")
+    return expression
+
+
+def next_fire_time(
+    expression: str,
+    base: Optional[datetime] = None,
+) -> datetime:
+    validate_cron(expression)
+    croniter_expr = _user_to_croniter(expression)
+    if base is None:
+        base = datetime.now(timezone.utc)
+    elif base.tzinfo is None:
+        base = base.replace(tzinfo=timezone.utc)
+    cron = croniter(croniter_expr, base)
+    nxt = cron.get_next(datetime)
+    if nxt.tzinfo is None:
+        nxt = nxt.replace(tzinfo=timezone.utc)
+    return nxt
+
+`````
+
+--- **end of file: nb_cron/cron_utils/parser.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/cron_utils/translator.py** (project: nb_cron) --- 
+
+`````python
+"""
+Translate a 6-field cron expression to human-readable Chinese or English.
+
+Format: second minute hour day_of_month month day_of_week
+"""
+from typing import List, Optional
+
+WEEKDAY_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+WEEKDAY_ZH = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+MONTH_EN = [
+    "", "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+]
+MONTH_ZH = [
+    "", "1月", "2月", "3月", "4月", "5月", "6月",
+    "7月", "8月", "9月", "10月", "11月", "12月",
+]
+
+
+def explain_cron(expression: str, lang: str = "en") -> str:
+    fields = expression.strip().split()
+    if len(fields) != 6:
+        raise ValueError(
+            f"nb_cron requires exactly 6-field cron "
+            f"(second minute hour day month weekday), "
+            f"got {len(fields)} fields: '{expression}'."
+        )
+    second, minute, hour, dom, month, dow = fields
+    if lang == "zh":
+        return _translate_zh(second, minute, hour, dom, month, dow)
+    return _translate_en(second, minute, hour, dom, month, dow)
+
+
+def _translate_en(sec: str, min_: str, hour: str, dom: str, month: str, dow: str) -> str:
+    parts: List[str] = []
+
+    if sec == "*" and min_ == "*" and hour == "*" and dom == "*" and month == "*" and dow == "*":
+        return "Every second"
+
+    time_desc = _time_desc_en(sec, min_, hour)
+    when_desc = _when_desc_en(dom, month, dow)
+
+    if when_desc:
+        parts.append(time_desc)
+        parts.append(when_desc)
+    else:
+        parts.append(time_desc)
+
+    return ", ".join(parts)
+
+
+def _time_desc_en(sec: str, min_: str, hour: str) -> str:
+    if sec == "*" and min_ == "*" and hour == "*":
+        return "Every second"
+    if min_ == "*" and hour == "*":
+        return _field_desc_en(sec, "second")
+    if hour == "*":
+        sec_part = _at_field_en(sec, "second") if sec != "0" else ""
+        min_part = _field_desc_en(min_, "minute")
+        return f"{min_part}{sec_part}" if sec_part else min_part
+
+    if _is_specific(hour) and _is_specific(min_) and _is_specific(sec):
+        return f"At {_pad(hour)}:{_pad(min_)}:{_pad(sec)}"
+
+    parts = []
+    parts.append(_field_desc_en(hour, "hour"))
+    if min_ != "*" and min_ != "0":
+        parts.append(_at_field_en(min_, "minute"))
+    if sec != "*" and sec != "0":
+        parts.append(_at_field_en(sec, "second"))
+    return " ".join(parts)
+
+
+def _when_desc_en(dom: str, month: str, dow: str) -> str:
+    parts = []
+    if dow != "*":
+        parts.append(f"on {_weekday_desc_en(dow)}")
+    if dom != "*":
+        parts.append(f"on day {_list_desc(dom)} of the month")
+    if month != "*":
+        parts.append(f"in {_month_desc_en(month)}")
+    return " ".join(parts)
+
+
+def _field_desc_en(field: str, unit: str) -> str:
+    if field == "*":
+        return f"every {unit}"
+    if field.startswith("*/"):
+        n = field[2:]
+        return f"every {n} {unit}s" if n != "1" else f"every {unit}"
+    if "-" in field and "/" in field:
+        range_part, step = field.split("/")
+        start, end = range_part.split("-")
+        return f"every {step} {unit}s from {start} through {end}"
+    if "-" in field:
+        start, end = field.split("-")
+        return f"every {unit} from {start} through {end}"
+    if "," in field:
+        return f"at {unit} {field}"
+    return f"at {unit} {field}"
+
+
+def _at_field_en(field: str, unit: str) -> str:
+    if field == "*":
+        return ""
+    if field.startswith("*/"):
+        return f" every {field[2:]} {unit}s"
+    return f" at {unit} {field}"
+
+
+def _weekday_desc_en(field: str) -> str:
+    if "," in field:
+        days = [_single_weekday_en(d.strip()) for d in field.split(",")]
+        return ", ".join(days)
+    if "-" in field:
+        start, end = field.split("-")
+        return f"{_single_weekday_en(start)} through {_single_weekday_en(end)}"
+    return _single_weekday_en(field)
+
+
+def _single_weekday_en(val: str) -> str:
+    try:
+        idx = int(val) % 7
+        return WEEKDAY_EN[idx]
+    except ValueError:
+        return val
+
+
+def _month_desc_en(field: str) -> str:
+    if "," in field:
+        months = [_single_month_en(m.strip()) for m in field.split(",")]
+        return ", ".join(months)
+    if "-" in field:
+        start, end = field.split("-")
+        return f"{_single_month_en(start)} through {_single_month_en(end)}"
+    return _single_month_en(field)
+
+
+def _single_month_en(val: str) -> str:
+    try:
+        idx = int(val)
+        if 1 <= idx <= 12:
+            return MONTH_EN[idx]
+    except ValueError:
+        pass
+    return val
+
+
+# ── Chinese translation ──
+
+def _translate_zh(sec: str, min_: str, hour: str, dom: str, month: str, dow: str) -> str:
+    if sec == "*" and min_ == "*" and hour == "*" and dom == "*" and month == "*" and dow == "*":
+        return "每秒执行"
+
+    parts: List[str] = []
+    when = _when_desc_zh(dom, month, dow)
+    if when:
+        parts.append(when)
+    time_part = _time_desc_zh(sec, min_, hour)
+    parts.append(time_part)
+    parts.append("执行")
+    return "".join(parts)
+
+
+def _time_desc_zh(sec: str, min_: str, hour: str) -> str:
+    if sec == "*" and min_ == "*" and hour == "*":
+        return "每秒"
+    if min_ == "*" and hour == "*":
+        return _field_desc_zh(sec, "秒")
+    if hour == "*":
+        result = _field_desc_zh(min_, "分钟")
+        if sec != "0" and sec != "*":
+            result += _at_field_zh(sec, "秒")
+        elif sec == "0":
+            result += "的第0秒"
+        return result
+
+    if _is_specific(hour) and _is_specific(min_) and _is_specific(sec):
+        return f"{_pad(hour)}:{_pad(min_)}:{_pad(sec)}"
+
+    parts = []
+    parts.append(_field_desc_zh(hour, "小时"))
+    if min_ != "*":
+        if _is_specific(min_):
+            parts.append(f"第{min_}分")
+        else:
+            parts.append(_field_desc_zh(min_, "分钟"))
+    if sec != "*" and sec != "0":
+        if _is_specific(sec):
+            parts.append(f"第{sec}秒")
+        else:
+            parts.append(_field_desc_zh(sec, "秒"))
+    elif sec == "0":
+        parts.append("第0秒")
+    return "".join(parts)
+
+
+def _when_desc_zh(dom: str, month: str, dow: str) -> str:
+    parts = []
+    if month != "*":
+        parts.append(_month_desc_zh(month))
+    if dom != "*":
+        parts.append(_dom_desc_zh(dom))
+    if dow != "*":
+        parts.append(_weekday_desc_zh(dow))
+    return "".join(parts)
+
+
+def _field_desc_zh(field: str, unit: str) -> str:
+    if field == "*":
+        return f"每{unit}"
+    if field.startswith("*/"):
+        n = field[2:]
+        return f"每{n}{unit}"
+    if "-" in field and "/" in field:
+        range_part, step = field.split("/")
+        start, end = range_part.split("-")
+        return f"从第{start}到第{end}{unit}, 每{step}{unit}"
+    if "-" in field:
+        start, end = field.split("-")
+        return f"第{start}到第{end}{unit}"
+    if "," in field:
+        return f"第{field}{unit}"
+    return f"第{field}{unit}"
+
+
+def _at_field_zh(field: str, unit: str) -> str:
+    if field == "*":
+        return ""
+    if field.startswith("*/"):
+        return f"每{field[2:]}{unit}"
+    return f"第{field}{unit}"
+
+
+def _weekday_desc_zh(field: str) -> str:
+    if "," in field:
+        days = [_single_weekday_zh(d.strip()) for d in field.split(",")]
+        return "每" + "、".join(days)
+    if "-" in field:
+        start, end = field.split("-")
+        return f"每{_single_weekday_zh(start)}至{_single_weekday_zh(end)}"
+    return f"每{_single_weekday_zh(field)}"
+
+
+def _single_weekday_zh(val: str) -> str:
+    try:
+        idx = int(val) % 7
+        return WEEKDAY_ZH[idx]
+    except ValueError:
+        return val
+
+
+def _month_desc_zh(field: str) -> str:
+    if "," in field:
+        months = [_single_month_zh(m.strip()) for m in field.split(",")]
+        return "、".join(months)
+    if "-" in field:
+        start, end = field.split("-")
+        return f"{_single_month_zh(start)}至{_single_month_zh(end)}"
+    return _single_month_zh(field)
+
+
+def _single_month_zh(val: str) -> str:
+    try:
+        idx = int(val)
+        if 1 <= idx <= 12:
+            return MONTH_ZH[idx]
+    except ValueError:
+        pass
+    return val
+
+
+def _dom_desc_zh(field: str) -> str:
+    if "," in field:
+        return f"每月{field}日"
+    if "-" in field:
+        start, end = field.split("-")
+        return f"每月{start}日至{end}日"
+    if field.startswith("*/"):
+        return f"每{field[2:]}天"
+    return f"每月{field}日"
+
+
+# ── helpers ──
+
+def _is_specific(field: str) -> bool:
+    try:
+        int(field)
+        return True
+    except ValueError:
+        return False
+
+
+def _list_desc(field: str) -> str:
+    return field
+
+
+def _pad(val: str) -> str:
+    try:
+        return f"{int(val):02d}"
+    except ValueError:
+        return val
+
+`````
+
+--- **end of file: nb_cron/cron_utils/translator.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/cron_utils/__init__.py** (project: nb_cron) --- 
+
+`````python
+from nb_cron.cron_utils.parser import validate_cron, next_fire_time
+from nb_cron.cron_utils.translator import explain_cron
+
+__all__ = ["validate_cron", "next_fire_time", "explain_cron"]
+
+`````
+
+--- **end of file: nb_cron/cron_utils/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/executors/base_executor.py** (project: nb_cron) --- 
+
+`````python
+"""
+执行器基类。
+
+nb_cron 的调度器负责「到时间触发」，执行器负责「真正运行任务」。
+
+内置两个实现：
+  - ThreadExecutor  — 默认，本地自适应线程池
+  - FunboostExecutor — 把任务推入 funboost 队列，由 funboost worker 消费执行
+
+可自定义执行器，只需继承 BaseExecutor 实现 submit()。
+
+用法::
+
+    from nb_cron import NbCron
+    from nb_cron.executors.funboost_executor import FunboostExecutor
+
+    executor = FunboostExecutor(BoosterParams(queue_name="my_queue", broker_kind=BrokerEnum.REDIS))
+    cron = NbCron("my_project", "redis://localhost:6379/0", executor=executor)
+"""
+from abc import ABC, abstractmethod
+from typing import Any, Callable, Dict, Optional, Tuple
+
+
+class BaseExecutor(ABC):
+    """
+    执行器接口。
+
+    调度器触发任务时调用 ``submit()``，执行器决定如何执行。
+    - 本地执行：线程池直接运行
+    - funboost：推送到队列，异步 worker 消费
+    - 自定义：RQ / Celery / ... 任意消息队列
+    """
+
+    @abstractmethod
+    def submit(
+        self,
+        func_ref: str,
+        func: Callable,
+        args: Tuple,
+        kwargs: Dict[str, Any],
+        job_id: str,
+        callback: Optional[Callable] = None,
+    ) -> None:
+        """
+        提交一次任务执行。
+
+        Parameters
+        ----------
+        func_ref:
+            函数的 cron_func_name，用于远程 worker 通过注册表重新解析。
+        func:
+            当前进程已解析的可调用对象（本地执行器直接用；远程执行器只用 func_ref）。
+        args:
+            位置参数。
+        kwargs:
+            关键字参数。
+        job_id:
+            任务 ID，用于 metrics 记录。
+        callback:
+            本地执行完成后的回调 ``callback(_ExecutionResult)``。
+            远程执行器（如 funboost）执行发生在另一进程，此回调通常被忽略，
+            由远程 worker 自行记录 metrics。
+        """
+
+    def shutdown(self, wait: bool = True) -> None:
+        """释放资源（可选）。"""
+
+`````
+
+--- **end of file: nb_cron/executors/base_executor.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/executors/funboost_executor.py** (project: nb_cron) --- 
+
+`````python
+"""
+Funboost 执行器。
+
+任务触发时，nb_cron 不在本地执行函数，而是调用 funboost 的 .push() 把
+(cron_func_name, args, kwargs, job_id) 推送到消息队列（Redis / RabbitMQ / ...），
+由 funboost worker 进程消费执行，执行完毕后自动向 store 写入成功/失败指标。
+
+安装依赖::
+
+    pip install funboost
+
+用法::
+
+    from funboost import BoosterParams, BrokerEnum
+    from nb_cron import NbCron, cron_register
+    from nb_cron.executors.funboost_executor import FunboostExecutor
+
+    executor = FunboostExecutor(
+        BoosterParams(
+            queue_name="nb_cron_dispatch",
+            broker_kind=BrokerEnum.REDIS,
+            concurrent_num=10,
+            qps=20,
+        )
+    )
+    # NbCron 构造时会自动把自身注入给 executor，worker 端直接复用 metrics
+    cron = NbCron("my_project", "redis://localhost:6379/0", executor=executor)
+
+<<<<<<< HEAD
+    @cron.job("0 */5 * * * *")
+=======
+    @cron.job("0 */5 * * * *", kwargs={"user_id": 42})
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+    @cron_register('my_task')
+    def my_task(user_id: int):
+        print(f"processing user {user_id}")
+
+    # 启动 funboost consume（consume() 本身非阻塞）+ scheduler
+<<<<<<< HEAD
+    executor.consume()  # 或 executor.mp_consume(process_num=4)
+=======
+    executor.consume()
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+    cron.start()
+
+Worker 端单独进程（可横向扩展）::
+
+    # worker.py
+    from funboost import BoosterParams, BrokerEnum
+    from nb_cron import NbCron
+    from nb_cron.executors.funboost_executor import FunboostExecutor
+    import my_tasks   # 触发 @cron_register，让注册表生效
+
+    executor = FunboostExecutor(
+        BoosterParams(queue_name="nb_cron_dispatch", broker_kind=BrokerEnum.REDIS)
+    )
+    cron = NbCron("my_project", "redis://localhost:6379/0", executor=executor)
+
+    executor.consume()  # 或 executor.mp_consume(process_num=4)
+
+自定义 metrics_recorder（高级，如同时上报 Prometheus）::
+
+    def my_recorder(job_id, success, duration_ms, error):
+        ...  # 自定义逻辑
+
+    executor = FunboostExecutor(
+        BoosterParams(...),
+        metrics_recorder=my_recorder,
+    )
+"""
+import logging
+import time as _time
+import traceback
+from typing import Any, Callable, Dict, Optional, Tuple
+<<<<<<< HEAD
+
+from nb_cron.executors.base_executor import BaseExecutor
+from funboost import boost, BoosterParams
+
+logger = logging.getLogger("nb_cron.funboost_executor")
+
+=======
+import inspect
+
+import asyncio
+import threading
+
+
+
+from nb_cron.executors.base_executor import BaseExecutor
+from funboost import boost, BoosterParams, ConcurrentModeEnum
+
+logger = logging.getLogger("nb_cron.funboost_executor")
+
+tl = threading.local()
+
+
+def _get_thread_local_loop() -> asyncio.AbstractEventLoop:
+    if not hasattr(tl, 'asyncio_loop'):
+        loop = asyncio.new_event_loop()
+        tl.asyncio_loop = loop
+    return tl.asyncio_loop
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+class FunboostExecutor(BaseExecutor):
+    """
+    将 nb_cron 任务推入 funboost 消息队列，由 funboost worker 异步消费执行。
+    执行完毕后自动上报成功/失败指标。
+
+    Parameters
+    ----------
+    booster_params:
+        funboost ``BoosterParams`` 对象，支持 IDE 自动补全所有参数（queue_name、
+        broker_kind、concurrent_num、qps、max_retry_times 等）。
+    metrics_recorder:
+        可选自定义指标回调，签名 ``(job_id, success, duration_ms, error_msg) -> None``。
+        不传则使用 NbCron 注入的 metrics（推荐，自动写入 store）。
+    """
+
+    def __init__(
+        self,
+        booster_params: "BoosterParams",
+        metrics_recorder: Optional[Callable[[str, bool, float, Optional[str]], None]] = None,
+    ):
+<<<<<<< HEAD
+        self._booster_params = booster_params
+        self._metrics_recorder = metrics_recorder
+        # NbCron 构造时会自动赋值（见 NbCron.__init__）
+        self._cron: Optional[Any] = None
+        self.booster = self._build_dispatch_func()
+        self.consume = self.booster.consume
+        self.mp_consume = self.booster.mp_consume
+    
+=======
+        self.booster_params = booster_params
+        self.booster_params.concurrent_mode = ConcurrentModeEnum.THREADING # 用户无需指定并发模式，_nb_cron_dispatch函数内部自动处理asyncio和同步函数
+        self._metrics_recorder = metrics_recorder
+        # NbCron 构造时会自动赋值（见 NbCron.__init__）
+        self._cron: Optional[Any] = None
+        self.booster = self._build_booster()
+        self.consume = self.booster.consume
+        self.mp_consume = self.booster.mp_consume
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+
+    # ── NbCron 注入 ──────────────────────────────────────────────────
+
+    def bind_cron(self, cron: Any) -> None:
+        """由 NbCron.__init__ 自动调用，把 scheduler 实例注入进来，
+        worker 端直接复用 cron.metrics.record() 写入指标，无需重建 store。"""
+        self._cron = cron
+
+    # ── 内部方法 ────────────────────────────────────────────────────
+
+    def _get_metrics_recorder(self) -> Optional[Callable]:
+        """
+        指标记录器优先级：
+          1. 自定义 metrics_recorder
+          2. NbCron 注入的 cron.metrics.record（推荐）
+          3. None（只打 debug 日志）
+        """
+        if self._metrics_recorder:
+            return self._metrics_recorder
+        if self._cron is not None:
+            return self._cron.metrics.record
+        return None
+
+<<<<<<< HEAD
+    def _build_dispatch_func(self):
+        """构建 @boost 装饰的统一 dispatch 函数。"""
+        booster_params = self._booster_params
+=======
+    def _build_booster(self):
+        """构建 @boost 装饰的统一 dispatch 函数。"""
+        booster_params = self.booster_params
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+        executor_ref = self
+
+        @boost(booster_params)
+        def _nb_cron_dispatch(
+            cron_func_name: str,
+            args: list,
+            kwargs: dict,
+            job_id: str,
+        ):
+            """
+            funboost worker 消费的真正入口。
+            解析 cron_func_name → 执行函数 → 上报成功/失败指标。
+            """
+            from nb_cron.core.registry import FunctionRegistry
+
+            start = _time.monotonic()
+            success = False
+            error_msg: Optional[str] = None
+<<<<<<< HEAD
+
+            try:
+                func = FunctionRegistry.resolve(cron_func_name)
+                result = func(*args, **(kwargs or {}))
+=======
+            kwargs = kwargs or {}
+
+            try:
+                func = FunctionRegistry.resolve(cron_func_name)
+                if inspect.iscoroutinefunction(func):
+                    has_specify_async_loop = None
+                    loop = booster_params.specify_async_loop
+                    if loop is not None:
+                        has_specify_async_loop = True
+                    else:
+                        has_specify_async_loop = False
+                        loop = _get_thread_local_loop()
+                    if has_specify_async_loop:
+                        """
+                        # 有些aio三方包，例如aiohttp的cleint需要确保实例化和发请求，必须在同一个loop运行，此时必须指定loop。 
+                        # 如果指定了loop，用户记得还要去亲自去启动looploop.run_forever()，否则async def的函数不会被执行。
+                        """
+                        future = asyncio.run_coroutine_threadsafe(func(*args, **kwargs ), loop)
+                        result = future.result()
+                    else:
+                        result = loop.run_until_complete(func(*args, **kwargs))
+                else:
+                    result = func(*args, **kwargs)
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+                success = True
+                return result
+            except Exception as exc:
+                error_msg = str(exc)
+                logger.error(
+                    "funboost job FAILED: job_id=%s func=%s error=%s\n%s",
+                    job_id, cron_func_name, exc, traceback.format_exc(),
+                )
+                raise
+            finally:
+                duration_ms = (_time.monotonic() - start) * 1000
+                logger.debug(
+                    "funboost job %s: func=%s success=%s duration=%.1fms",
+                    job_id, cron_func_name, success, duration_ms,
+                )
+                recorder = executor_ref._get_metrics_recorder()
+                if recorder:
+                    try:
+                        recorder(job_id, success, duration_ms, error_msg)
+                    except Exception:
+                        logger.warning(
+                            "funboost metrics 上报失败: job_id=%s", job_id, exc_info=True
+                        )
+                else:
+                    logger.debug(
+                        "funboost metrics 未配置 recorder，跳过上报: job_id=%s", job_id
+                    )
+
+        return _nb_cron_dispatch
+
+    # ── 公开接口 ────────────────────────────────────────────────────
+
+    def submit(
+        self,
+        func_ref: str,
+        func: Callable,
+        args: Tuple,
+        kwargs: Dict[str, Any],
+        job_id: str,
+        callback: Optional[Callable] = None,
+    ) -> None:
+        """推入 funboost 队列。callback 被忽略（执行在 worker 进程）。"""
+        logger.debug(
+            "push to funboost: job_id=%s func=%s queue=%s",
+<<<<<<< HEAD
+            job_id, func_ref, self._booster_params.queue_name,
+=======
+            job_id, func_ref, self.booster_params.queue_name,
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+        )
+        self.booster.push(
+            cron_func_name=func_ref,
+            args=list(args),
+            kwargs=kwargs or {},
+            job_id=job_id,
+        )
+<<<<<<< HEAD
+        
+    
+
+    # def start_funboost_consume(self, process_num: int = 1) -> None:
+    #     """
+    #     启动 funboost 消费者。
+
+    #     ``consume()`` 本身非阻塞，``mp_consume()`` 在此基础上支持多进程。
+
+    #     Parameters
+    #     ----------
+    #     process_num:
+    #         消费者进程数，默认 1。多进程可提升并发消费能力。
+    #     """
+    #     logger.info(
+    #         "Funboost worker starting (queue=%s, process_num=%d)",
+    #         self._booster_params.queue_name, process_num,
+    #     )
+    #     self._dispatch_func.mp_consume(process_num=process_num)
+
+=======
+
+    
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+    def shutdown(self, wait: bool = True) -> None:
+        pass
+
+`````
+
+--- **end of file: nb_cron/executors/funboost_executor.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/executors/threadpool.py** (project: nb_cron) --- 
+
+`````python
+import asyncio
+import logging
+import queue
+import threading
+import time
+import traceback
+from typing import Any, Callable, Optional
+
+from nb_cron.utils import is_async_callable
+
+logger = logging.getLogger("nb_cron.executor")
+
+_SENTINEL = object()
+
+
+class _ExecutionResult:
+    __slots__ = ("success", "result", "error", "duration_ms")
+
+    def __init__(self, success: bool, result: Any, error: Optional[str], duration_ms: float):
+        self.success = success
+        self.result = result
+        self.error = error
+        self.duration_ms = duration_ms
+
+
+class AdaptiveThreadPool:
+    """
+    自适应线程池：按需创建 worker，空闲 idle_timeout 秒后自动退出。
+    sync / async 任务共用同一池，并发统一受 max_workers 控制。
+    不依赖 stdlib ThreadPoolExecutor（其 atexit 在 Python 3.9+ 会提前 shutdown）。
+    """
+
+    def __init__(self, max_workers: int = 20, idle_timeout: float = 5.0):
+        self._max_workers = max_workers
+        self._idle_timeout = idle_timeout
+        self._queue: queue.Queue = queue.Queue()
+        self._lock = threading.Lock()
+        self._num_threads = 0
+        self._num_idle = 0
+        self._closed = False
+
+    def submit(
+        self,
+        func: Callable,
+        args: tuple = (),
+        kwargs: Optional[dict] = None,
+        callback: Optional[Callable[[_ExecutionResult], None]] = None,
+    ) -> None:
+        kwargs = kwargs or {}
+
+        def _run():
+            start = time.monotonic()
+            try:
+                if is_async_callable(func):
+                    result = asyncio.run(func(*args, **kwargs))
+                else:
+                    result = func(*args, **kwargs)
+                duration = (time.monotonic() - start) * 1000
+                er = _ExecutionResult(True, result, None, duration)
+            except Exception as e:
+                duration = (time.monotonic() - start) * 1000
+                tb = traceback.format_exc()
+                logger.error("Job execution failed: %s\n%s", e, tb)
+                er = _ExecutionResult(False, None, str(e), duration)
+            if callback:
+                try:
+                    callback(er)
+                except Exception:
+                    logger.exception("Callback error")
+
+        if self._closed:
+            return
+        self._queue.put(_run)
+        with self._lock:
+            if self._num_idle == 0 and self._num_threads < self._max_workers:
+                self._num_threads += 1
+                threading.Thread(
+                    target=self._worker, name="nb_cron-worker",
+                ).start()
+
+    def _worker(self) -> None:
+        with self._lock:
+            self._num_idle += 1
+        while True:
+            try:
+                task = self._queue.get(timeout=self._idle_timeout)
+            except queue.Empty:
+                with self._lock:
+                    self._num_idle -= 1
+                    self._num_threads -= 1
+                return
+            if task is _SENTINEL:
+                self._queue.task_done()
+                with self._lock:
+                    self._num_idle -= 1
+                    self._num_threads -= 1
+                return
+            with self._lock:
+                self._num_idle -= 1
+            try:
+                task()
+            except Exception:
+                logger.exception("Unexpected error in worker")
+            self._queue.task_done()
+            with self._lock:
+                self._num_idle += 1
+
+    @property
+    def num_threads(self) -> int:
+        with self._lock:
+            return self._num_threads
+
+    def shutdown(self, wait: bool = True) -> None:
+        self._closed = True
+        if wait:
+            self._queue.join()
+        with self._lock:
+            for _ in range(self._num_threads):
+                self._queue.put(_SENTINEL)
+
+`````
+
+--- **end of file: nb_cron/executors/threadpool.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/executors/thread_executor.py** (project: nb_cron) --- 
+
+`````python
+"""
+默认执行器：本地自适应线程池。
+封装 AdaptiveThreadPool，实现 BaseExecutor 接口。
+"""
+from typing import Any, Callable, Dict, Optional, Tuple
+
+from nb_cron.executors.base_executor import BaseExecutor
+from nb_cron.executors.threadpool import AdaptiveThreadPool, _ExecutionResult
+
+
+class ThreadExecutor(BaseExecutor):
+    """
+    本地线程池执行器（默认）。
+
+    任务在当前进程的自适应线程池中直接执行，执行完成后触发 callback 记录 metrics。
+    """
+
+    def __init__(self, max_workers: int = 20, idle_timeout: float = 5.0):
+        self._pool = AdaptiveThreadPool(max_workers=max_workers, idle_timeout=idle_timeout)
+
+    def submit(
+        self,
+        func_ref: str,
+        func: Callable,
+        args: Tuple,
+        kwargs: Dict[str, Any],
+        job_id: str,
+        callback: Optional[Callable[[_ExecutionResult], None]] = None,
+    ) -> None:
+        self._pool.submit(func, args=args, kwargs=kwargs, callback=callback)
+
+    def shutdown(self, wait: bool = True) -> None:
+        self._pool.shutdown(wait=wait)
+
+`````
+
+--- **end of file: nb_cron/executors/thread_executor.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/executors/__init__.py** (project: nb_cron) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cron/executors/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/base.py** (project: nb_cron) --- 
+
+`````python
+from abc import ABC, abstractmethod
+
+
+class BaseLock(ABC):
+
+    @abstractmethod
+    def acquire(self, lock_key: str, ttl_seconds: int = 60) -> bool:
+        """
+        Try to acquire a distributed lock.
+        Returns True if acquired, False if already held by another instance.
+        The lock auto-expires after ttl_seconds.
+        """
+
+    @abstractmethod
+    def release(self, lock_key: str) -> None:
+        """Release a previously acquired lock."""
+
+    def close(self) -> None:
+        """Release resources (optional override)."""
+
+`````
+
+--- **end of file: nb_cron/locks/base.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/memory_lock.py** (project: nb_cron) --- 
+
+`````python
+import threading
+import time
+from typing import Dict, Tuple
+
+from nb_cron.locks.base import BaseLock
+
+
+class MemoryLock(BaseLock):
+    """In-process lock for single-instance deployments."""
+
+    def __init__(self):
+        self._locks: Dict[str, float] = {}  # key -> expire_timestamp
+        self._mutex = threading.Lock()
+
+    def acquire(self, lock_key: str, ttl_seconds: int = 60) -> bool:
+        now = time.time()
+        with self._mutex:
+            expire = self._locks.get(lock_key, 0)
+            if expire > now:
+                return False
+            self._locks[lock_key] = now + ttl_seconds
+            return True
+
+    def release(self, lock_key: str) -> None:
+        with self._mutex:
+            self._locks.pop(lock_key, None)
+
+    def _cleanup_expired(self) -> None:
+        now = time.time()
+        with self._mutex:
+            expired = [k for k, v in self._locks.items() if v <= now]
+            for k in expired:
+                del self._locks[k]
+
+`````
+
+--- **end of file: nb_cron/locks/memory_lock.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/mongo_lock.py** (project: nb_cron) --- 
+
+`````python
+import uuid
+from datetime import datetime, timedelta, timezone
+
+from nb_cron.locks.base import BaseLock
+
+
+class MongoLock(BaseLock):
+    """Distributed lock based on MongoDB unique index + TTL."""
+
+    def __init__(self, url: str = "mongodb://localhost:27017", db_name: str = "nb_cron", name: str = "nb_cron"):
+        try:
+            from pymongo import MongoClient
+            from pymongo.errors import DuplicateKeyError
+        except ImportError:
+            raise ImportError(
+                "pymongo package is required for MongoLock. "
+                "Install with: pip install nb_cron_nb[mongo]"
+            )
+        self._client = MongoClient(url)
+        self._collection = self._client[db_name][f"nb_cron_{name}_locks"]
+        self._collection.create_index("lock_key", unique=True)
+        self._collection.create_index("expire_at", expireAfterSeconds=0)
+        self._token = str(uuid.uuid4())
+        self._DuplicateKeyError = DuplicateKeyError
+
+    def acquire(self, lock_key: str, ttl_seconds: int = 60) -> bool:
+        now = datetime.now(timezone.utc)
+        expire_at = now + timedelta(seconds=ttl_seconds)
+        self._collection.delete_many({
+            "lock_key": lock_key,
+            "expire_at": {"$lte": now},
+        })
+        try:
+            self._collection.insert_one({
+                "lock_key": lock_key,
+                "token": self._token,
+                "expire_at": expire_at,
+                "acquired_at": now,
+            })
+            return True
+        except self._DuplicateKeyError:
+            return False
+
+    def release(self, lock_key: str) -> None:
+        self._collection.delete_one({
+            "lock_key": lock_key,
+            "token": self._token,
+        })
+
+    def close(self) -> None:
+        self._client.close()
+
+`````
+
+--- **end of file: nb_cron/locks/mongo_lock.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/redis_lock.py** (project: nb_cron) --- 
+
+`````python
+import uuid
+
+from nb_cron.locks.base import BaseLock
+
+
+class RedisLock(BaseLock):
+    """
+    Distributed lock based on Redis SET NX PX.
+    Guarantees exactly-once execution across multiple instances.
+    """
+
+    def __init__(self, url: str = "redis://localhost:6379/0", name: str = "nb_cron"):
+        try:
+            import redis
+        except ImportError:
+            raise ImportError(
+                "redis package is required for RedisLock. "
+                "Install with: pip install nb_cron_nb[redis]"
+            )
+        self._client = redis.Redis.from_url(url, decode_responses=True)
+        self._token = str(uuid.uuid4())
+        self._prefix = f"nb_cron:{name}"
+
+    def acquire(self, lock_key: str, ttl_seconds: int = 60) -> bool:
+        key = f"{self._prefix}:lock:{lock_key}"
+        acquired = self._client.set(key, self._token, nx=True, px=ttl_seconds * 1000)
+        return bool(acquired)
+
+    def release(self, lock_key: str) -> None:
+        key = f"{self._prefix}:lock:{lock_key}"
+        lua = """
+        if redis.call("get", KEYS[1]) == ARGV[1] then
+            return redis.call("del", KEYS[1])
+        else
+            return 0
+        end
+        """
+        self._client.eval(lua, 1, key, self._token)
+
+    def close(self) -> None:
+        self._client.close()
+
+`````
+
+--- **end of file: nb_cron/locks/redis_lock.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/sqlalchemy_lock.py** (project: nb_cron) --- 
+
+`````python
+import uuid
+from datetime import datetime, timedelta, timezone
+
+from nb_cron.locks.base import BaseLock
+
+
+class SQLAlchemyLock(BaseLock):
+    """Distributed lock using a SQL table with INSERT conflict detection."""
+
+    def __init__(self, url: str = "sqlite:///nb_cron.db", name: str = "nb_cron"):
+        try:
+            from sqlalchemy import (
+                Column, DateTime, MetaData, String, Table, create_engine,
+            )
+            from sqlalchemy.orm import sessionmaker
+        except ImportError:
+            raise ImportError(
+                "sqlalchemy package is required for SQLAlchemyLock. "
+                "Install with: pip install nb_cron_nb[sqlalchemy]"
+            )
+        self._engine = create_engine(url, pool_pre_ping=True)
+        self._Session = sessionmaker(bind=self._engine)
+        self._metadata = MetaData()
+        self._table = Table(
+            f"nb_cron_{name}_locks", self._metadata,
+            Column("lock_key", String(512), primary_key=True),
+            Column("token", String(64), nullable=False),
+            Column("expire_at", DateTime(timezone=True), nullable=False),
+        )
+        self._metadata.create_all(self._engine)
+        self._token = str(uuid.uuid4())
+
+    def acquire(self, lock_key: str, ttl_seconds: int = 60) -> bool:
+        now = datetime.now(timezone.utc)
+        expire_at = now + timedelta(seconds=ttl_seconds)
+        session = self._Session()
+        try:
+            session.execute(
+                self._table.delete().where(self._table.c.expire_at <= now)
+            )
+            session.commit()
+
+            existing = session.execute(
+                self._table.select().where(self._table.c.lock_key == lock_key)
+            ).fetchone()
+            if existing:
+                return False
+
+            try:
+                session.execute(
+                    self._table.insert().values(
+                        lock_key=lock_key,
+                        token=self._token,
+                        expire_at=expire_at,
+                    )
+                )
+                session.commit()
+                return True
+            except Exception:
+                session.rollback()
+                return False
+        finally:
+            session.close()
+
+    def release(self, lock_key: str) -> None:
+        session = self._Session()
+        try:
+            session.execute(
+                self._table.delete().where(
+                    self._table.c.lock_key == lock_key,
+                    self._table.c.token == self._token,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
+    def close(self) -> None:
+        self._engine.dispose()
+
+`````
+
+--- **end of file: nb_cron/locks/sqlalchemy_lock.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/locks/__init__.py** (project: nb_cron) --- 
+
+`````python
+from nb_cron.locks.base import BaseLock
+
+__all__ = ["BaseLock"]
+
+`````
+
+--- **end of file: nb_cron/locks/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/metrics/collector.py** (project: nb_cron) --- 
+
+`````python
+import threading
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+from nb_cron.stores.base import BaseStore
+from nb_cron.utils import truncate_string
+
+MAX_RECENT_RESULTS = 10
+HOURLY_SLOTS = 24
+
+
+def _empty_metrics() -> Dict[str, Any]:
+    return {
+        "total_runs": 0,
+        "success_count": 0,
+        "fail_count": 0,
+        "last_run_at": None,
+        "last_success_at": None,
+        "last_error": None,
+        "last_error_at": None,
+        "avg_duration_ms": 0.0,
+        "max_duration_ms": 0.0,
+        "min_duration_ms": 0.0,
+        "last_duration_ms": 0.0,
+        "recent_results": [],
+        "hourly_stats": [{"hour": i, "success": 0, "fail": 0} for i in range(HOURLY_SLOTS)],
+    }
+
+
+class MetricsCollector:
+
+    def __init__(self, store: BaseStore):
+        self._store = store
+        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._lock = threading.Lock()
+
+    def record(
+        self,
+        job_id: str,
+        success: bool,
+        duration_ms: float,
+        error: Optional[str] = None,
+    ) -> None:
+        now = datetime.now(timezone.utc)
+        with self._lock:
+            m = self._cache.get(job_id)
+            if m is None:
+                stored = self._store.get_metrics(job_id)
+                m = stored if stored else _empty_metrics()
+                self._cache[job_id] = m
+
+            m["total_runs"] += 1
+            m["last_run_at"] = now.isoformat()
+            m["last_duration_ms"] = round(duration_ms, 2)
+
+            if success:
+                m["success_count"] += 1
+                m["last_success_at"] = now.isoformat()
+            else:
+                m["fail_count"] += 1
+                m["last_error"] = truncate_string(error or "Unknown error")
+                m["last_error_at"] = now.isoformat()
+
+            total = m["total_runs"]
+            prev_avg = m["avg_duration_ms"]
+            m["avg_duration_ms"] = round(prev_avg + (duration_ms - prev_avg) / total, 2)
+            m["max_duration_ms"] = round(max(m["max_duration_ms"], duration_ms), 2)
+            if m["min_duration_ms"] == 0:
+                m["min_duration_ms"] = round(duration_ms, 2)
+            else:
+                m["min_duration_ms"] = round(min(m["min_duration_ms"], duration_ms), 2)
+
+            recent: list = m.get("recent_results", [])
+            recent.append({
+                "time": now.isoformat(),
+                "success": success,
+                "duration_ms": round(duration_ms, 2),
+                "error": truncate_string(error) if error else None,
+            })
+            if len(recent) > MAX_RECENT_RESULTS:
+                recent[:] = recent[-MAX_RECENT_RESULTS:]
+            m["recent_results"] = recent
+
+            hour_idx = now.hour % HOURLY_SLOTS
+            hourly: list = m.get("hourly_stats", [])
+            if len(hourly) < HOURLY_SLOTS:
+                hourly = [{"hour": i, "success": 0, "fail": 0} for i in range(HOURLY_SLOTS)]
+                m["hourly_stats"] = hourly
+            if success:
+                hourly[hour_idx]["success"] += 1
+            else:
+                hourly[hour_idx]["fail"] += 1
+
+            self._store.save_metrics(job_id, m)
+
+    def get_metrics(self, job_id: str) -> Dict[str, Any]:
+        with self._lock:
+            cached = self._cache.get(job_id)
+            if cached:
+                return dict(cached)
+        stored = self._store.get_metrics(job_id)
+        return stored if stored else _empty_metrics()
+
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        stored = self._store.get_all_metrics()
+        with self._lock:
+            for jid, m in self._cache.items():
+                stored[jid] = dict(m)
+        return stored
+
+    def get_dashboard_stats(self) -> Dict[str, Any]:
+        all_m = self.get_all_metrics()
+        total_runs = 0
+        total_success = 0
+        total_fail = 0
+        job_count = len(all_m)
+        for m in all_m.values():
+            total_runs += m.get("total_runs", 0)
+            total_success += m.get("success_count", 0)
+            total_fail += m.get("fail_count", 0)
+
+        hourly_agg = [{"hour": i, "success": 0, "fail": 0} for i in range(HOURLY_SLOTS)]
+        for m in all_m.values():
+            for slot in m.get("hourly_stats", []):
+                idx = slot["hour"] % HOURLY_SLOTS
+                hourly_agg[idx]["success"] += slot.get("success", 0)
+                hourly_agg[idx]["fail"] += slot.get("fail", 0)
+
+        return {
+            "job_count": job_count,
+            "total_runs": total_runs,
+            "total_success": total_success,
+            "total_fail": total_fail,
+            "success_rate": round(total_success / total_runs * 100, 1) if total_runs else 0,
+            "hourly_stats": hourly_agg,
+        }
+
+`````
+
+--- **end of file: nb_cron/metrics/collector.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/metrics/__init__.py** (project: nb_cron) --- 
+
+`````python
+
+`````
+
+--- **end of file: nb_cron/metrics/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/base.py** (project: nb_cron) --- 
+
+`````python
+from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.job import Job
+
+
+class BaseStore(ABC):
+
+    @abstractmethod
+    def cleanup_expired_jobs(self, older_than_days: int = 7) -> int:
+        """Delete one-time (date trigger) jobs that have finished and are older than *older_than_days*.
+        Returns the number of deleted jobs."""
+
+    @abstractmethod
+    def add_job(self, job: Job) -> None:
+        """Persist a new job. Raises if job_id already exists."""
+
+    @abstractmethod
+    def update_job(self, job: Job) -> None:
+        """Update an existing job in-place."""
+
+    @abstractmethod
+    def remove_job(self, job_id: str) -> None:
+        """Remove a job by id."""
+
+    @abstractmethod
+    def get_job(self, job_id: str) -> Optional[Job]:
+        """Return a single job or None."""
+
+    @abstractmethod
+    def get_all_jobs(self) -> List[Job]:
+        """Return all jobs."""
+
+    @abstractmethod
+    def get_due_jobs(self, now: datetime) -> List[Job]:
+        """Return active jobs whose next_run_time <= now."""
+
+    @abstractmethod
+    def update_next_run_time(self, job_id: str, next_run_time: Optional[datetime]) -> None:
+        """Update only the next_run_time for a job."""
+
+    @abstractmethod
+    def save_metrics(self, job_id: str, metrics: Dict[str, Any]) -> None:
+        """Persist metrics dict for a job."""
+
+    @abstractmethod
+    def get_metrics(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Load metrics dict for a job."""
+
+    @abstractmethod
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        """Load metrics for all jobs.  {job_id: metrics_dict}"""
+
+    # ── Function registry (cross-project support) ──
+
+    @abstractmethod
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        """Persist a registered function name so it's visible across projects."""
+
+    @abstractmethod
+    def get_function_names(self) -> List[str]:
+        """Return all registered function names."""
+
+    def function_exists(self, func_name: str) -> bool:
+        return func_name in self.get_function_names()
+
+    def close(self) -> None:
+        """Release resources (optional override)."""
+
+    def job_exists(self, job_id: str) -> bool:
+        return self.get_job(job_id) is not None
+
+`````
+
+--- **end of file: nb_cron/stores/base.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/memory.py** (project: nb_cron) --- 
+
+`````python
+import copy
+import threading
+<<<<<<< HEAD
+from datetime import datetime, timedelta, timezone
+=======
+from datetime import datetime
+>>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.job import Job
+from nb_cron.stores.base import BaseStore
+
+
+class MemoryStore(BaseStore):
+
+    def __init__(self):
+        self._jobs: Dict[str, Job] = {}
+        self._metrics: Dict[str, Dict[str, Any]] = {}
+        self._functions: Dict[str, Dict[str, Any]] = {}
+        self._lock = threading.Lock()
+
+    def cleanup_expired_jobs(self, older_than_days: int = 7) -> int:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=older_than_days)
+        to_delete = []
+        with self._lock:
+            for job_id, job in self._jobs.items():
+                if job.trigger_type != "date":
+                    continue
+                if job.next_run_time is not None:
+                    continue
+                updated = job.updated_at
+                if updated.tzinfo is None:
+                    updated = updated.replace(tzinfo=timezone.utc)
+                if updated < cutoff:
+                    to_delete.append(job_id)
+            for job_id in to_delete:
+                del self._jobs[job_id]
+                self._metrics.pop(job_id, None)
+            return len(to_delete)
+
+    def add_job(self, job: Job) -> None:
+        with self._lock:
+            if job.job_id in self._jobs:
+                raise ValueError(f"Job '{job.job_id}' already exists")
+            self._jobs[job.job_id] = copy.deepcopy(job)
+
+    def update_job(self, job: Job) -> None:
+        with self._lock:
+            if job.job_id not in self._jobs:
+                raise ValueError(f"Job '{job.job_id}' not found")
+            self._jobs[job.job_id] = copy.deepcopy(job)
+
+    def remove_job(self, job_id: str) -> None:
+        with self._lock:
+            self._jobs.pop(job_id, None)
+            self._metrics.pop(job_id, None)
+
+    def get_job(self, job_id: str) -> Optional[Job]:
+        with self._lock:
+            job = self._jobs.get(job_id)
+            return copy.deepcopy(job) if job else None
+
+    def get_all_jobs(self) -> List[Job]:
+        with self._lock:
+            return [copy.deepcopy(j) for j in self._jobs.values()]
+
+    def get_due_jobs(self, now: datetime) -> List[Job]:
+        with self._lock:
+            result = []
+            for job in self._jobs.values():
+                if (
+                    job.status == "active"
+                    and job.next_run_time is not None
+                    and job.next_run_time <= now
+                ):
+                    result.append(copy.deepcopy(job))
+            return result
+
+    def update_next_run_time(self, job_id: str, next_run_time: Optional[datetime]) -> None:
+        with self._lock:
+            job = self._jobs.get(job_id)
+            if job:
+                job.next_run_time = next_run_time
+
+    def save_metrics(self, job_id: str, metrics: Dict[str, Any]) -> None:
+        with self._lock:
+            self._metrics[job_id] = copy.deepcopy(metrics)
+
+    def get_metrics(self, job_id: str) -> Optional[Dict[str, Any]]:
+        with self._lock:
+            m = self._metrics.get(job_id)
+            return copy.deepcopy(m) if m else None
+
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        with self._lock:
+            return {k: copy.deepcopy(v) for k, v in self._metrics.items()}
+
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        with self._lock:
+            self._functions[func_name] = metadata or {}
+
+    def get_function_names(self) -> List[str]:
+        with self._lock:
+            return list(self._functions.keys())
+
+`````
+
+--- **end of file: nb_cron/stores/memory.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/mongo_store.py** (project: nb_cron) --- 
+
+`````python
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.job import Job
+from nb_cron.stores.base import BaseStore
+
+
+class MongoStore(BaseStore):
+
+    def __init__(self, url: str = "mongodb://localhost:27017", db_name: str = "nb_cron", name: str = "nb_cron"):
+        try:
+            from pymongo import MongoClient
+        except ImportError:
+            raise ImportError(
+                "pymongo package is required for MongoStore. "
+                "Install with: pip install nb_cron_nb[mongo]"
+            )
+        self._client = MongoClient(url)
+        self._db = self._client[db_name]
+        self._jobs = self._db[f"nb_cron_{name}_jobs"]
+        self._metrics_col = self._db[f"nb_cron_{name}_metrics"]
+        self._functions_col = self._db[f"nb_cron_{name}_functions"]
+        self._jobs.create_index("job_id", unique=True)
+        self._jobs.create_index("next_run_time")
+        self._functions_col.create_index("func_name", unique=True)
+
+    def cleanup_expired_jobs(self, older_than_days: int = 7) -> int:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=older_than_days)
+        query = {
+            "trigger_type": "date",
+            "next_run_time": None,
+            "updated_at": {"$lt": cutoff.isoformat()},
+        }
+        job_ids = [doc["job_id"] for doc in self._jobs.find(query, {"job_id": 1})]
+        if not job_ids:
+            return 0
+        result = self._jobs.delete_many({"job_id": {"$in": job_ids}})
+        self._metrics_col.delete_many({"job_id": {"$in": job_ids}})
+        return result.deleted_count
+
+    def add_job(self, job: Job) -> None:
+        doc = job.to_dict()
+        doc["_id"] = job.job_id
+        if self._jobs.find_one({"job_id": job.job_id}):
+            raise ValueError(f"Job '{job.job_id}' already exists")
+        self._jobs.insert_one(doc)
+
+    def update_job(self, job: Job) -> None:
+        doc = job.to_dict()
+        self._jobs.replace_one({"job_id": job.job_id}, doc, upsert=True)
+
+    def remove_job(self, job_id: str) -> None:
+        self._jobs.delete_one({"job_id": job_id})
+        self._metrics_col.delete_one({"job_id": job_id})
+
+    def get_job(self, job_id: str) -> Optional[Job]:
+        doc = self._jobs.find_one({"job_id": job_id})
+        if doc is None:
+            return None
+        doc.pop("_id", None)
+        return Job.from_dict(doc)
+
+    def get_all_jobs(self) -> List[Job]:
+        result = []
+        for doc in self._jobs.find():
+            doc.pop("_id", None)
+            result.append(Job.from_dict(doc))
+        return result
+
+    def get_due_jobs(self, now: datetime) -> List[Job]:
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        query = {
+            "status": "active",
+            "next_run_time": {"$ne": None, "$lte": now.isoformat()},
+        }
+        result = []
+        for doc in self._jobs.find(query):
+            doc.pop("_id", None)
+            result.append(Job.from_dict(doc))
+        return result
+
+    def update_next_run_time(self, job_id: str, next_run_time: Optional[datetime]) -> None:
+        self._jobs.update_one(
+            {"job_id": job_id},
+            {"$set": {
+                "next_run_time": next_run_time.isoformat() if next_run_time else None,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }},
+        )
+
+    def save_metrics(self, job_id: str, metrics: Dict[str, Any]) -> None:
+        metrics["job_id"] = job_id
+        self._metrics_col.replace_one({"job_id": job_id}, metrics, upsert=True)
+
+    def get_metrics(self, job_id: str) -> Optional[Dict[str, Any]]:
+        doc = self._metrics_col.find_one({"job_id": job_id})
+        if doc is None:
+            return None
+        doc.pop("_id", None)
+        doc.pop("job_id", None)
+        return doc
+
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        result = {}
+        for doc in self._metrics_col.find():
+            jid = doc.pop("job_id", None)
+            doc.pop("_id", None)
+            if jid:
+                result[jid] = doc
+        return result
+
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        doc = {"func_name": func_name, **(metadata or {})}
+        self._functions_col.replace_one({"func_name": func_name}, doc, upsert=True)
+
+    def get_function_names(self) -> List[str]:
+        return [doc["func_name"] for doc in self._functions_col.find({}, {"func_name": 1})]
+
+    def close(self) -> None:
+        self._client.close()
+
+`````
+
+--- **end of file: nb_cron/stores/mongo_store.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/redis_store.py** (project: nb_cron) --- 
+
+`````python
+import json
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.job import Job
+from nb_cron.stores.base import BaseStore
+
+
+class RedisStore(BaseStore):
+
+    def __init__(self, url: str = "redis://localhost:6379/0", name: str = "nb_cron"):
+        try:
+            import redis
+        except ImportError:
+            raise ImportError(
+                "redis package is required for RedisStore. "
+                "Install with: pip install nb_cron_nb[redis]"
+            )
+        self._client = redis.Redis.from_url(url, decode_responses=True)
+        self._jobs_key = f"nb_cron:{name}:jobs"
+        self._metrics_key = f"nb_cron:{name}:metrics"
+        self._due_key = f"nb_cron:{name}:due"
+        self._functions_key = f"nb_cron:{name}:functions"
+
+    def cleanup_expired_jobs(self, older_than_days: int = 7) -> int:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=older_than_days)
+        deleted_count = 0
+        pipe = self._client.pipeline()
+        for job_id, raw in self._client.hgetall(self._jobs_key).items():
+            job = Job.from_dict(json.loads(raw))
+            if job.trigger_type != "date":
+                continue
+            if job.next_run_time is not None:
+                continue
+            updated = job.updated_at
+            if updated.tzinfo is None:
+                updated = updated.replace(tzinfo=timezone.utc)
+            if updated < cutoff:
+                pipe.hdel(self._jobs_key, job_id)
+                pipe.hdel(self._metrics_key, job_id)
+                pipe.zrem(self._due_key, job_id)
+                deleted_count += 1
+        pipe.execute()
+        return deleted_count
+
+    def add_job(self, job: Job) -> None:
+        if self._client.hexists(self._jobs_key, job.job_id):
+            raise ValueError(f"Job '{job.job_id}' already exists")
+        pipe = self._client.pipeline()
+        pipe.hset(self._jobs_key, job.job_id, json.dumps(job.to_dict()))
+        if job.next_run_time and job.status == "active":
+            score = job.next_run_time.timestamp()
+            pipe.zadd(self._due_key, {job.job_id: score})
+        pipe.execute()
+
+    def update_job(self, job: Job) -> None:
+        pipe = self._client.pipeline()
+        pipe.hset(self._jobs_key, job.job_id, json.dumps(job.to_dict()))
+        pipe.zrem(self._due_key, job.job_id)
+        if job.next_run_time and job.status == "active":
+            score = job.next_run_time.timestamp()
+            pipe.zadd(self._due_key, {job.job_id: score})
+        pipe.execute()
+
+    def remove_job(self, job_id: str) -> None:
+        pipe = self._client.pipeline()
+        pipe.hdel(self._jobs_key, job_id)
+        pipe.hdel(self._metrics_key, job_id)
+        pipe.zrem(self._due_key, job_id)
+        pipe.execute()
+
+    def get_job(self, job_id: str) -> Optional[Job]:
+        raw = self._client.hget(self._jobs_key, job_id)
+        if raw is None:
+            return None
+        return Job.from_dict(json.loads(raw))
+
+    def get_all_jobs(self) -> List[Job]:
+        raw_map = self._client.hgetall(self._jobs_key)
+        return [Job.from_dict(json.loads(v)) for v in raw_map.values()]
+
+    def get_due_jobs(self, now: datetime) -> List[Job]:
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        score = now.timestamp()
+        job_ids = self._client.zrangebyscore(self._due_key, "-inf", score)
+        jobs = []
+        for jid in job_ids:
+            job = self.get_job(jid)
+            if job and job.status == "active":
+                jobs.append(job)
+        return jobs
+
+    def update_next_run_time(self, job_id: str, next_run_time: Optional[datetime]) -> None:
+        raw = self._client.hget(self._jobs_key, job_id)
+        if raw is None:
+            return
+        data = json.loads(raw)
+        data["next_run_time"] = next_run_time.isoformat() if next_run_time else None
+        data["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+        pipe = self._client.pipeline()
+        pipe.hset(self._jobs_key, job_id, json.dumps(data))
+        pipe.zrem(self._due_key, job_id)
+        if next_run_time:
+            pipe.zadd(self._due_key, {job_id: next_run_time.timestamp()})
+        pipe.execute()
+
+    def save_metrics(self, job_id: str, metrics: Dict[str, Any]) -> None:
+        self._client.hset(self._metrics_key, job_id, json.dumps(metrics, default=str))
+
+    def get_metrics(self, job_id: str) -> Optional[Dict[str, Any]]:
+        raw = self._client.hget(self._metrics_key, job_id)
+        if raw is None:
+            return None
+        return json.loads(raw)
+
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        raw_map = self._client.hgetall(self._metrics_key)
+        return {k: json.loads(v) for k, v in raw_map.items()}
+
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        self._client.hset(self._functions_key, func_name, json.dumps(metadata or {}))
+
+    def get_function_names(self) -> List[str]:
+        return list(self._client.hkeys(self._functions_key))
+
+    def close(self) -> None:
+        self._client.close()
+
+`````
+
+--- **end of file: nb_cron/stores/redis_store.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/sqlalchemy_store.py** (project: nb_cron) --- 
+
+`````python
+import json
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
+
+from nb_cron.core.job import Job
+from nb_cron.stores.base import BaseStore
+
+
+class SQLAlchemyStore(BaseStore):
+
+    def __init__(self, url: str = "sqlite:///nb_cron.db", name: str = "nb_cron"):
+        try:
+            from sqlalchemy import (
+                Column, DateTime, Integer, MetaData, String, Table, Text,
+                create_engine,
+            )
+            from sqlalchemy.orm import sessionmaker
+        except ImportError:
+            raise ImportError(
+                "sqlalchemy package is required for SQLAlchemyStore. "
+                "Install with: pip install nb_cron_nb[sqlalchemy]"
+            )
+
+        self._engine = create_engine(url, pool_pre_ping=True)
+        self._Session = sessionmaker(bind=self._engine)
+        self._metadata = MetaData()
+
+        self._jobs_table = Table(
+            f"nb_cron_{name}_jobs", self._metadata,
+            Column("job_id", String(255), primary_key=True),
+            Column("data", Text, nullable=False),
+            Column("next_run_time", DateTime(timezone=True), index=True, nullable=True),
+            Column("status", String(32), default="active", index=True),
+        )
+
+        self._metrics_table = Table(
+            f"nb_cron_{name}_metrics", self._metadata,
+            Column("job_id", String(255), primary_key=True),
+            Column("data", Text, nullable=False),
+        )
+
+        self._functions_table = Table(
+            f"nb_cron_{name}_functions", self._metadata,
+            Column("func_name", String(255), primary_key=True),
+            Column("data", Text, nullable=False),
+        )
+
+        self._metadata.create_all(self._engine)
+
+    def cleanup_expired_jobs(self, older_than_days: int = 7) -> int:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=older_than_days)
+        session = self._Session()
+        try:
+            rows = session.execute(
+                self._jobs_table.select().where(
+                    self._jobs_table.c.next_run_time.is_(None),
+                )
+            ).fetchall()
+            job_ids = []
+            for row in rows:
+                data = json.loads(row.data if hasattr(row, "data") else row[1])
+                if data.get("trigger_type") != "date":
+                    continue
+                updated_str = data.get("updated_at") or data.get("created_at")
+                if not updated_str:
+                    continue
+                job = Job.from_dict(data)
+                updated = job.updated_at
+                if updated.tzinfo is None:
+                    updated = updated.replace(tzinfo=timezone.utc)
+                if updated < cutoff:
+                    job_ids.append(data["job_id"])
+            if job_ids:
+                session.execute(
+                    self._jobs_table.delete().where(self._jobs_table.c.job_id.in_(job_ids))
+                )
+                session.execute(
+                    self._metrics_table.delete().where(self._metrics_table.c.job_id.in_(job_ids))
+                )
+                session.commit()
+                return len(job_ids)
+            return 0
+        finally:
+            session.close()
+
+    def add_job(self, job: Job) -> None:
+        session = self._Session()
+        try:
+            existing = session.execute(
+                self._jobs_table.select().where(
+                    self._jobs_table.c.job_id == job.job_id
+                )
+            ).fetchone()
+            if existing:
+                raise ValueError(f"Job '{job.job_id}' already exists")
+            session.execute(
+                self._jobs_table.insert().values(
+                    job_id=job.job_id,
+                    data=json.dumps(job.to_dict()),
+                    next_run_time=job.next_run_time,
+                    status=job.status,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
+    def update_job(self, job: Job) -> None:
+        session = self._Session()
+        try:
+            session.execute(
+                self._jobs_table.update()
+                .where(self._jobs_table.c.job_id == job.job_id)
+                .values(
+                    data=json.dumps(job.to_dict()),
+                    next_run_time=job.next_run_time,
+                    status=job.status,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
+    def remove_job(self, job_id: str) -> None:
+        session = self._Session()
+        try:
+            session.execute(
+                self._jobs_table.delete().where(self._jobs_table.c.job_id == job_id)
+            )
+            session.execute(
+                self._metrics_table.delete().where(self._metrics_table.c.job_id == job_id)
+            )
+            session.commit()
+        finally:
+            session.close()
+
+    def get_job(self, job_id: str) -> Optional[Job]:
+        session = self._Session()
+        try:
+            row = session.execute(
+                self._jobs_table.select().where(self._jobs_table.c.job_id == job_id)
+            ).fetchone()
+            if row is None:
+                return None
+            data = json.loads(row.data if hasattr(row, "data") else row[1])
+            return Job.from_dict(data)
+        finally:
+            session.close()
+
+    def get_all_jobs(self) -> List[Job]:
+        session = self._Session()
+        try:
+            rows = session.execute(self._jobs_table.select()).fetchall()
+            result = []
+            for row in rows:
+                data = json.loads(row.data if hasattr(row, "data") else row[1])
+                result.append(Job.from_dict(data))
+            return result
+        finally:
+            session.close()
+
+    def get_due_jobs(self, now: datetime) -> List[Job]:
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        session = self._Session()
+        try:
+            rows = session.execute(
+                self._jobs_table.select().where(
+                    self._jobs_table.c.status == "active",
+                    self._jobs_table.c.next_run_time <= now,
+                    self._jobs_table.c.next_run_time.isnot(None),
+                )
+            ).fetchall()
+            result = []
+            for row in rows:
+                data = json.loads(row.data if hasattr(row, "data") else row[1])
+                result.append(Job.from_dict(data))
+            return result
+        finally:
+            session.close()
+
+    def update_next_run_time(self, job_id: str, next_run_time: Optional[datetime]) -> None:
+        session = self._Session()
+        try:
+            row = session.execute(
+                self._jobs_table.select().where(self._jobs_table.c.job_id == job_id)
+            ).fetchone()
+            if row is None:
+                return
+            data = json.loads(row.data if hasattr(row, "data") else row[1])
+            data["next_run_time"] = next_run_time.isoformat() if next_run_time else None
+            data["updated_at"] = datetime.now(timezone.utc).isoformat()
+            session.execute(
+                self._jobs_table.update()
+                .where(self._jobs_table.c.job_id == job_id)
+                .values(
+                    data=json.dumps(data),
+                    next_run_time=next_run_time,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
+    def save_metrics(self, job_id: str, metrics: Dict[str, Any]) -> None:
+        session = self._Session()
+        try:
+            existing = session.execute(
+                self._metrics_table.select().where(
+                    self._metrics_table.c.job_id == job_id
+                )
+            ).fetchone()
+            payload = json.dumps(metrics, default=str)
+            if existing:
+                session.execute(
+                    self._metrics_table.update()
+                    .where(self._metrics_table.c.job_id == job_id)
+                    .values(data=payload)
+                )
+            else:
+                session.execute(
+                    self._metrics_table.insert().values(job_id=job_id, data=payload)
+                )
+            session.commit()
+        finally:
+            session.close()
+
+    def get_metrics(self, job_id: str) -> Optional[Dict[str, Any]]:
+        session = self._Session()
+        try:
+            row = session.execute(
+                self._metrics_table.select().where(
+                    self._metrics_table.c.job_id == job_id
+                )
+            ).fetchone()
+            if row is None:
+                return None
+            return json.loads(row.data if hasattr(row, "data") else row[1])
+        finally:
+            session.close()
+
+    def get_all_metrics(self) -> Dict[str, Dict[str, Any]]:
+        session = self._Session()
+        try:
+            rows = session.execute(self._metrics_table.select()).fetchall()
+            result = {}
+            for row in rows:
+                jid = row.job_id if hasattr(row, "job_id") else row[0]
+                data = row.data if hasattr(row, "data") else row[1]
+                result[jid] = json.loads(data)
+            return result
+        finally:
+            session.close()
+
+    def register_function(self, func_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        session = self._Session()
+        try:
+            existing = session.execute(
+                self._functions_table.select().where(
+                    self._functions_table.c.func_name == func_name
+                )
+            ).fetchone()
+            payload = json.dumps(metadata or {})
+            if existing:
+                session.execute(
+                    self._functions_table.update()
+                    .where(self._functions_table.c.func_name == func_name)
+                    .values(data=payload)
+                )
+            else:
+                session.execute(
+                    self._functions_table.insert().values(func_name=func_name, data=payload)
+                )
+            session.commit()
+        finally:
+            session.close()
+
+    def get_function_names(self) -> List[str]:
+        session = self._Session()
+        try:
+            rows = session.execute(self._functions_table.select()).fetchall()
+            return [row.func_name if hasattr(row, "func_name") else row[0] for row in rows]
+        finally:
+            session.close()
+
+    def close(self) -> None:
+        self._engine.dispose()
+
+`````
+
+--- **end of file: nb_cron/stores/sqlalchemy_store.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/stores/__init__.py** (project: nb_cron) --- 
+
+`````python
+from nb_cron.stores.base import BaseStore
+
+__all__ = ["BaseStore"]
+
+`````
+
+--- **end of file: nb_cron/stores/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/triggers/base.py** (project: nb_cron) --- 
+
+`````python
+from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import Optional
+
+
+class BaseTrigger(ABC):
+
+    @abstractmethod
+    def get_next_fire_time(
+        self,
+        previous_fire_time: Optional[datetime],
+        now: datetime,
+    ) -> Optional[datetime]:
+        """Calculate next fire time after `now`, given the previous fire time."""
+
+    @abstractmethod
+    def get_trigger_info(self) -> dict:
+        """Return serializable trigger configuration."""
+
+    @abstractmethod
+    def get_description(self, lang: str = "en") -> str:
+        """Return human-readable description of this trigger."""
+
+`````
+
+--- **end of file: nb_cron/triggers/base.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/triggers/cron_trigger.py** (project: nb_cron) --- 
+
+`````python
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional
+
+from croniter import croniter
+
+from nb_cron.triggers.base import BaseTrigger
+
+
+def _user_to_croniter(expression: str) -> str:
+    """
+    Convert user format (sec min hour day month dow)
+    to croniter format (min hour day month dow sec).
+    """
+    fields = expression.strip().split()
+    sec, min_, hour, day, month, dow = fields
+    return f"{min_} {hour} {day} {month} {dow} {sec}"
+
+
+def _croniter_to_user(expression: str) -> str:
+    """
+    Convert croniter format (min hour day month dow sec)
+    back to user format (sec min hour day month dow).
+    """
+    fields = expression.strip().split()
+    min_, hour, day, month, dow, sec = fields
+    return f"{sec} {min_} {hour} {day} {month} {dow}"
+
+
+class CronTrigger(BaseTrigger):
+    """
+    Cron trigger that REQUIRES exactly 6 fields:
+        second  minute  hour  day_of_month  month  day_of_week
+
+    5-field expressions will raise ValueError immediately.
+
+    Internally converts to croniter's format (min hour day month dow sec)
+    for calculation.
+    """
+
+    def __init__(self, expression: str):
+        self.expression = self._validate(expression)
+        self._croniter_expr = _user_to_croniter(self.expression)
+
+    @staticmethod
+    def _validate(expression: str) -> str:
+        fields = expression.strip().split()
+        if len(fields) != 6:
+            raise ValueError(
+                f"nb_cron requires exactly 6-field cron (second minute hour day month weekday), "
+                f"got {len(fields)} fields: '{expression}'. "
+                f"Example: '0 */5 * * * *' means every 5 minutes at second 0."
+            )
+        croniter_expr = _user_to_croniter(expression)
+        try:
+            croniter(croniter_expr)
+        except (ValueError, KeyError, TypeError) as e:
+            raise ValueError(f"Invalid cron expression: '{expression}' ({e})")
+        return expression.strip()
+
+    def get_next_fire_time(
+        self,
+        previous_fire_time: Optional[datetime],
+        now: datetime,
+    ) -> Optional[datetime]:
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        base = previous_fire_time if previous_fire_time else now
+        if base.tzinfo is None:
+            base = base.replace(tzinfo=timezone.utc)
+        cron = croniter(self._croniter_expr, base)
+        next_time = cron.get_next(datetime)
+        if next_time.tzinfo is None:
+            next_time = next_time.replace(tzinfo=timezone.utc)
+        if next_time <= now and previous_fire_time:
+            cron = croniter(self._croniter_expr, now)
+            next_time = cron.get_next(datetime)
+            if next_time.tzinfo is None:
+                next_time = next_time.replace(tzinfo=timezone.utc)
+        return next_time
+
+    def get_trigger_info(self) -> Dict[str, Any]:
+        return {"type": "cron", "expression": self.expression}
+
+    def get_description(self, lang: str = "en") -> str:
+        from nb_cron.cron_utils.translator import explain_cron
+        return explain_cron(self.expression, lang)
+
+    def __repr__(self) -> str:
+        return f"CronTrigger('{self.expression}')"
+
+`````
+
+--- **end of file: nb_cron/triggers/cron_trigger.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/triggers/date_trigger.py** (project: nb_cron) --- 
+
+`````python
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional
+
+from nb_cron.triggers.base import BaseTrigger
+
+
+class DateTrigger(BaseTrigger):
+    """One-time trigger that fires at a specific datetime."""
+
+    def __init__(self, run_time: datetime):
+        if run_time.tzinfo is None:
+            run_time = run_time.replace(tzinfo=timezone.utc)
+        self.run_time = run_time
+
+    def get_next_fire_time(
+        self,
+        previous_fire_time: Optional[datetime],
+        now: datetime,
+    ) -> Optional[datetime]:
+        if previous_fire_time is not None:
+            return None
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        if self.run_time > now:
+            return self.run_time
+        return None
+
+    def get_trigger_info(self) -> Dict[str, Any]:
+        return {"type": "date", "run_time": self.run_time.isoformat()}
+
+    def get_description(self, lang: str = "en") -> str:
+        time_str = self.run_time.strftime("%Y-%m-%d %H:%M:%S")
+        if lang == "zh":
+            return f"在 {time_str} 执行一次"
+        return f"Run once at {time_str}"
+
+    def __repr__(self) -> str:
+        return f"DateTrigger({self.run_time.isoformat()})"
+
+`````
+
+--- **end of file: nb_cron/triggers/date_trigger.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/triggers/interval_trigger.py** (project: nb_cron) --- 
+
+`````python
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, Optional
+
+from nb_cron.triggers.base import BaseTrigger
+
+
+class IntervalTrigger(BaseTrigger):
+
+    def __init__(
+        self,
+        weeks: int = 0,
+        days: int = 0,
+        hours: int = 0,
+        minutes: int = 0,
+        seconds: int = 0,
+        start_time: Optional[datetime] = None,
+    ):
+        self.interval = timedelta(
+            weeks=weeks, days=days, hours=hours,
+            minutes=minutes, seconds=seconds,
+        )
+        if self.interval.total_seconds() <= 0:
+            raise ValueError("Interval must be positive")
+        self.start_time = start_time
+        self._weeks = weeks
+        self._days = days
+        self._hours = hours
+        self._minutes = minutes
+        self._seconds = seconds
+
+    def get_next_fire_time(
+        self,
+        previous_fire_time: Optional[datetime],
+        now: datetime,
+    ) -> Optional[datetime]:
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        if previous_fire_time is not None:
+            if previous_fire_time.tzinfo is None:
+                previous_fire_time = previous_fire_time.replace(tzinfo=timezone.utc)
+            next_time = previous_fire_time + self.interval
+            if next_time <= now:
+                skipped = int((now - next_time).total_seconds() / self.interval.total_seconds())
+                next_time += self.interval * (skipped + 1)
+                if next_time <= now:
+                    next_time += self.interval
+            return next_time
+        if self.start_time is not None:
+            st = self.start_time
+            if st.tzinfo is None:
+                st = st.replace(tzinfo=timezone.utc)
+            if st > now:
+                return st
+            skipped = int((now - st).total_seconds() / self.interval.total_seconds())
+            next_time = st + self.interval * (skipped + 1)
+            if next_time <= now:
+                next_time += self.interval
+            return next_time
+        # 首次调度：尽快执行（下一拍 tick 内），而不是先空等一个整周期。
+        # 之后由 previous_fire_time 分支按 interval 推进。
+        return now
+
+    def get_trigger_info(self) -> Dict[str, Any]:
+        return {
+            "type": "interval",
+            "weeks": self._weeks,
+            "days": self._days,
+            "hours": self._hours,
+            "minutes": self._minutes,
+            "seconds": self._seconds,
+        }
+
+    def get_description(self, lang: str = "en") -> str:
+        parts_en = []
+        parts_zh = []
+        if self._weeks:
+            parts_en.append(f"{self._weeks} week{'s' if self._weeks > 1 else ''}")
+            parts_zh.append(f"{self._weeks}周")
+        if self._days:
+            parts_en.append(f"{self._days} day{'s' if self._days > 1 else ''}")
+            parts_zh.append(f"{self._days}天")
+        if self._hours:
+            parts_en.append(f"{self._hours} hour{'s' if self._hours > 1 else ''}")
+            parts_zh.append(f"{self._hours}小时")
+        if self._minutes:
+            parts_en.append(f"{self._minutes} minute{'s' if self._minutes > 1 else ''}")
+            parts_zh.append(f"{self._minutes}分钟")
+        if self._seconds:
+            parts_en.append(f"{self._seconds} second{'s' if self._seconds > 1 else ''}")
+            parts_zh.append(f"{self._seconds}秒")
+        if lang == "zh":
+            return "每" + "".join(parts_zh) + "执行一次"
+        return "Every " + " ".join(parts_en)
+
+    def __repr__(self) -> str:
+        total = self.interval.total_seconds()
+        return f"IntervalTrigger(every {total}s)"
+
+`````
+
+--- **end of file: nb_cron/triggers/interval_trigger.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/triggers/__init__.py** (project: nb_cron) --- 
+
+`````python
+from nb_cron.triggers.base import BaseTrigger
+from nb_cron.triggers.cron_trigger import CronTrigger
+from nb_cron.triggers.interval_trigger import IntervalTrigger
+from nb_cron.triggers.date_trigger import DateTrigger
+
+__all__ = ["BaseTrigger", "CronTrigger", "IntervalTrigger", "DateTrigger"]
+
+`````
+
+--- **end of file: nb_cron/triggers/__init__.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/web/app.py** (project: nb_cron) --- 
+
+`````python
+"""
+One-line app factories for FastAPI / Flask / Django.
+
+Usage::
+
+    # FastAPI
+    from nb_cron.web import get_fastapi_app
+    app = get_fastapi_app(cron)          # uvicorn module:app
+
+    # Flask
+    from nb_cron.web import get_flask_app
+    app = get_flask_app(cron)            # flask run / gunicorn module:app
+
+    # Django - in urls.py
+    from nb_cron.web import get_django_urls
+    urlpatterns += get_django_urls(cron)
+"""
+from pathlib import Path
+
+from nb_cron.web.static_mime import guess_asset_content_type, register_static_mimetypes
+
+STATIC_DIR = Path(__file__).parent / "static"
+
+# Fix Windows: .js must not be served as text/plain (breaks ES modules)
+register_static_mimetypes()
+
+
+def get_fastapi_app(cron, title: str = "nb_cron", **kwargs):
+    try:
+        from fastapi import FastAPI
+        from fastapi.middleware.cors import CORSMiddleware
+        from fastapi.responses import FileResponse, HTMLResponse
+    except ImportError:
+        raise ImportError("Install with: pip install nb_cron_nb[fastapi]")
+
+    from nb_cron.api.fastapi_app import create_router
+
+    app = FastAPI(title=title, **kwargs)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.include_router(create_router(cron))
+
+    @app.get("/")
+    async def redirect_to_ui():
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(url="/nb_cron/ui/")
+
+    if STATIC_DIR.exists():
+        assets_root = (STATIC_DIR / "assets").resolve()
+
+        @app.get("/nb_cron/ui/favicon.svg")
+        async def serve_favicon():
+            favicon = STATIC_DIR / "favicon.svg"
+            if favicon.exists():
+                return FileResponse(str(favicon), media_type="image/svg+xml")
+            return HTMLResponse("", status_code=404)
+
+        @app.get("/nb_cron/ui/assets/{asset_path:path}")
+        async def serve_ui_assets(asset_path: str):
+            """Explicit MIME types — Windows mimetypes often serve .js as text/plain."""
+            from fastapi import HTTPException
+
+            target = (STATIC_DIR / "assets" / asset_path).resolve()
+            try:
+                target.relative_to(assets_root)
+            except ValueError:
+                raise HTTPException(status_code=404, detail="Not found")
+            if not target.is_file():
+                raise HTTPException(status_code=404, detail="Not found")
+            return FileResponse(
+                str(target),
+                media_type=guess_asset_content_type(asset_path),
+            )
+
+        @app.get("/nb_cron/ui/{rest_of_path:path}")
+        async def serve_spa(rest_of_path: str = ""):
+            index = STATIC_DIR / "index.html"
+            if index.exists():
+                return FileResponse(str(index))
+            return HTMLResponse("<h1>nb_cron UI not built</h1><p>Run: cd nb_cron_ui && npm run build</p>")
+
+        @app.get("/nb_cron/ui")
+        async def serve_spa_root():
+            index = STATIC_DIR / "index.html"
+            if index.exists():
+                return FileResponse(str(index))
+            return HTMLResponse("<h1>nb_cron UI not built</h1><p>Run: cd nb_cron_ui && npm run build</p>")
+
+    return app
+
+
+def get_flask_app(cron, **kwargs):
+    try:
+        from flask import Flask, send_from_directory, send_file
+        from flask_cors import CORS
+    except ImportError:
+        try:
+            from flask import Flask, send_from_directory, send_file
+        except ImportError:
+            raise ImportError("Install with: pip install nb_cron_nb[flask]")
+
+    from nb_cron.api.flask_app import create_blueprint
+
+    app = Flask(__name__, **kwargs)
+    try:
+        from flask_cors import CORS
+        CORS(app)
+    except ImportError:
+        pass
+
+    app.register_blueprint(create_blueprint(cron))
+
+    @app.route("/")
+    def redirect_to_ui():
+        from flask import redirect
+        return redirect("/nb_cron/ui/")
+
+    if STATIC_DIR.exists():
+        @app.route("/nb_cron/ui/favicon.svg")
+        def serve_favicon():
+            return send_from_directory(str(STATIC_DIR), "favicon.svg", mimetype="image/svg+xml")
+
+        @app.route("/nb_cron/ui/assets/<path:filename>")
+        def serve_assets(filename):
+            return send_from_directory(
+                str(STATIC_DIR / "assets"),
+                filename,
+                mimetype=guess_asset_content_type(filename),
+            )
+
+        @app.route("/nb_cron/ui")
+        @app.route("/nb_cron/ui/")
+        @app.route("/nb_cron/ui/<path:path>")
+        def serve_spa(path=""):
+            index = STATIC_DIR / "index.html"
+            if index.exists():
+                return send_file(str(index))
+            return "<h1>nb_cron UI not built</h1><p>Run: cd nb_cron_ui && npm run build</p>", 200
+
+    return app
+
+
+def get_django_urls(cron):
+    try:
+        from django.urls import path
+        from django.http import FileResponse as DjFileResponse, HttpResponse
+    except ImportError:
+        raise ImportError("Install with: pip install nb_cron_nb[django]")
+
+    from nb_cron.api.django_app import create_router
+
+    try:
+        from ninja import NinjaAPI
+    except ImportError:
+        raise ImportError("Install with: pip install nb_cron_nb[django]")
+
+    api = NinjaAPI(urls_namespace="nb_cron")
+    api.add_router("/nb_cron/api", create_router(cron))
+
+    assets_dir = (STATIC_DIR / "assets").resolve()
+
+    def serve_ui_asset(request, path):
+        from django.http import Http404
+
+        target = (STATIC_DIR / "assets" / path).resolve()
+        try:
+            target.relative_to(assets_dir)
+        except ValueError:
+            raise Http404("Not found")
+        if not target.is_file():
+            raise Http404("Not found")
+        return DjFileResponse(
+            str(target),
+            content_type=guess_asset_content_type(path),
+        )
+
+    def serve_spa(request, rest=""):
+        index = STATIC_DIR / "index.html"
+        if index.exists():
+            return DjFileResponse(str(index), content_type="text/html")
+        return HttpResponse(
+            "<h1>nb_cron UI not built</h1><p>Run: cd nb_cron_ui && npm run build</p>"
+        )
+
+    def redirect_to_ui(request):
+        from django.http import HttpResponseRedirect
+        return HttpResponseRedirect("/nb_cron/ui/")
+
+    urls = [
+        path("", redirect_to_ui),
+        path("nb_cron/api/", api.urls),
+        path("nb_cron/ui/assets/<path:path>", serve_ui_asset),
+        path("nb_cron/ui/", serve_spa),
+        path("nb_cron/ui/<path:rest>", serve_spa),
+    ]
+    return urls
+
+`````
+
+--- **end of file: nb_cron/web/app.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/web/static_mime.py** (project: nb_cron) --- 
+
+`````python
+"""
+Ensure correct Content-Type for Vite-built assets.
+
+On Windows, mimetypes.guess_type() often returns text/plain for .js,
+which breaks <script type="module"> in browsers (strict MIME check).
+"""
+import mimetypes
+from pathlib import Path
+
+_STATIC_TYPES = (
+    (".js", "application/javascript"),
+    (".mjs", "application/javascript"),
+    (".cjs", "application/javascript"),
+    (".css", "text/css"),
+    (".json", "application/json"),
+    (".map", "application/json"),
+    (".svg", "image/svg+xml"),
+    (".wasm", "application/wasm"),
+    (".woff2", "font/woff2"),
+    (".woff", "font/woff"),
+    (".ttf", "font/ttf"),
+    (".ico", "image/x-icon"),
+)
+
+
+def register_static_mimetypes() -> None:
+    """Register MIME types so Starlette StaticFiles / uvicorn serve correct headers."""
+    for ext, ctype in _STATIC_TYPES:
+        mimetypes.add_type(ctype, ext, strict=True)
+
+
+def guess_asset_content_type(filename: str) -> str:
+    """Return Content-Type for a file under assets/; safe for Windows."""
+    ext = Path(filename).suffix.lower()
+    for e, ctype in _STATIC_TYPES:
+        if e == ext:
+            return ctype
+    guessed, _ = mimetypes.guess_type(filename)
+    if guessed and guessed != "text/plain":
+        return guessed
+    return "application/octet-stream"
+
+
+register_static_mimetypes()
+
+`````
+
+--- **end of file: nb_cron/web/static_mime.py** (project: nb_cron) --- 
+
+---
+
+
+--- **start of file: nb_cron/web/__init__.py** (project: nb_cron) --- 
+
+`````python
+from nb_cron.web.app import get_fastapi_app, get_flask_app, get_django_urls
+
+__all__ = ["get_fastapi_app", "get_flask_app", "get_django_urls"]
+
+`````
+
+--- **end of file: nb_cron/web/__init__.py** (project: nb_cron) --- 
 
 ---
 
@@ -48986,925 +66917,6 @@ python -m pip install nb_time --upgrade -i https://pypi.org/simple   # 及时的
 `````
 
 --- **end of file: setup.py** (project: nb_time) --- 
-
----
-
-# markdown content namespace: nb_time codes 
-
-
-## nb_time File Tree (relative dir: `nb_time`)
-
-
-`````
-
-└── nb_time
-    └── __init__.py
-
-`````
-
----
-
-
-## nb_time (relative dir: `nb_time`)  Included Files (total: 1 files)
-
-
-- `nb_time/__init__.py`
-
-
----
-
-
---- **start of file: nb_time/__init__.py** (project: nb_time) --- 
-
-
-### 📄 Python File Metadata: `nb_time/__init__.py`
-
-#### 📦 Imports
-
-- `import copy`
-- `import functools`
-- `import logging`
-- `import pickle`
-- `import sys`
-- `import threading`
-- `import types`
-- `import typing`
-- `import re`
-- `import time`
-- `import datetime`
-- `from dateutil.relativedelta import relativedelta`
-- `import dateutil.parser`
-- `import pytz`
-- `import arrow`
-- `from tzlocal import get_localzone`
-- `import nb_log`
-- `import arrow`
-
-#### 🏛️ Classes (8)
-
-##### 📌 `class DateTimeValue`
-*Line: 41*
-
-**🔧 Constructor (`__init__`):**
-- `def __init__(self, year, month, day, hour = 0, minute = 0, second = 0, microsecond = 0)`
-  - **Parameters:**
-    - `self`
-    - `year`
-    - `month`
-    - `day`
-    - `hour = 0`
-    - `minute = 0`
-    - `second = 0`
-    - `microsecond = 0`
-
-**Public Methods (1):**
-- `def dict(self)`
-
-##### 📌 `class TimeInParamError(Exception)`
-*Line: 63*
-
-##### 📌 `class ArrowWrap(arrow.Arrow)`
-*Line: 66*
-
-**Public Methods (1):**
-- `def to_nb_time(self)`
-
-##### 📌 `class NbTime`
-*Line: 70*
-
-**Docstring:**
-`````
-时间转换，支持链式操作，纯面向对象的的。
-
-相比模块级下面定义几十个函数，然后将不同类型的时间变量传到不同的函数中return结果，然后把结果作为入参传入到另一个函数进行转换，
-纯面向对象支持链式转换的要方便很多。
-
-初始化能够接受的变量类型丰富，可以传入一切类型的时间变量。
-`````
-
-**🔧 Constructor (`__init__`):**
-- `def __init__(self, datetimex: typing.Union[None, int, float, datetime.datetime, str, 'NbTime', DateTimeValue, arrow.Arrow] = None)`
-  - **Docstring:**
-  `````
-  :param datetimex: 接受时间戳  datatime类型 和 时间字符串 和类对象本身四种类型,如果为None，则默认当前时间now。
-  :param time_zone  时区例如 Asia/Shanghai， UTC  UTC+8  GMT+8  Etc/GMT-8 等,也可以是 datetime.timezone(datetime.timedelta(hours=7))东7区,
-                    默认是操作系统时区
-  `````
-  - **Parameters:**
-    - `self`
-    - `datetimex: typing.Union[None, int, float, datetime.datetime, str, 'NbTime', DateTimeValue, arrow.Arrow] = None`
-
-**Public Methods (22):**
-- `def set_default_formatter(cls, datetime_formatter: str)` `classmethod`
-- `def set_default_time_zone(cls, time_zone: str)` `classmethod`
-- `def get_localzone_name() -> str` `staticmethod` `functools.lru_cache()`
-- `def get_time_zone_str(self, time_zone: typing.Union[str, datetime.tzinfo, None] = None)`
-- `def universal_parse_datetime_str(self, datetime_str)`
-- `def build_datetime_obj(self, datetimex)`
-- `def add_timezone_to_time_str(cls, datetimex: str, time_zone: str)` `classmethod`
-- `def get_timezone_offset(cls, time_zone: str) -> datetime.timedelta` `classmethod`
-- `def build_pytz_timezone(cls, time_zone: typing.Union[str, datetime.tzinfo]) -> datetime.tzinfo` `classmethod`
-  - **Docstring:**
-  `````
-  pytz 不支持 GTM+8  UTC+7 这种时区表示方式
-  Etc/GMT-8 就是 GMT+8 代表东8区。
-  `````
-- `def get_str(self, formatter = None)`
-- `def fast_get_str_formatter_datetime_no_zone(self)`
-- `def is_greater_than_now(self) -> bool`
-- `def humanize(self) -> str`
-- `def to_arrow(self) -> ArrowWrap`
-- `def isoformat(self, timespec: str = 'seconds') -> str`
-  - **Docstring:**
-  `````
-  返回 ISO 8601 格式字符串
-  :param timespec: 'seconds', 'milliseconds', 'microseconds'
-  `````
-- `def clone(self) -> 'NbTime'`
-- `def shift(self, years = 0, months = 0, days = 0, leapdays = 0, weeks = 0, hours = 0, minutes = 0, seconds = 0, microseconds = 0) -> 'NbTime'`
-- `def replace(self, year = None, month = None, day = None, hour = None, minute = None, second = None, microsecond = None)`
-- `def to_tz(self, time_zone: str) -> 'NbTime'`
-- `def to_utc(self)`
-- `def to_utc8(self)`
-- `def seconds_to_hour_minute_second(seconds)` `staticmethod`
-  - **Docstring:**
-  `````
-  把秒转化成还需要的时间
-  :param seconds:
-  :return:
-  `````
-
-**Properties (9):**
-- `@property datetime_str -> str`
-- `@property time_str -> str`
-- `@property date_str -> str`
-- `@property timestamp -> float`
-- `@property timestamp_millisecond -> float`
-- `@property arrow -> ArrowWrap`
-- `@property today_zero -> 'NbTime'`
-- `@property today_zero_timestamp -> float`
-- `@property same_day_zero -> 'NbTime'`
-
-**Class Variables (17):**
-- `FORMATTER_DATETIME = '%Y-%m-%d %H:%M:%S %z'`
-- `FORMATTER_DATETIME_WITH_ZONE = '%Y-%m-%d %H:%M:%S %z'`
-- `FORMATTER_DATETIME_NO_ZONE = '%Y-%m-%d %H:%M:%S'`
-- `FORMATTER_MILLISECOND = '%Y-%m-%d %H:%M:%S.%f %z'`
-- `FORMATTER_DATE = '%Y-%m-%d'`
-- `FORMATTER_TIME = '%H:%M:%S'`
-- `FORMATTER_ISO = '%Y-%m-%dT%H:%M:%S%z'`
-- `TIMEZONE_UTC = 'UTC'`
-- `TIMEZONE_EASTERN_7 = 'UTC+7'`
-- `TIMEZONE_EASTERN_8 = 'UTC+8'`
-- `TIMEZONE_E8 = 'Etc/GMT-8'`
-- `TIMEZONE_ASIA_SHANGHAI = 'Asia/Shanghai'`
-- `TIMEZONE_TZ_EAST_8 = datetime.timezone(datetime.timedelta(hours=8), name='UTC+08:00')`
-- `TIMEZONE_TZ_UTC = datetime.timezone(datetime.timedelta(hours=0), name='UTC+07:00')`
-- `default_formatter: str = None`
-- `default_time_zone: str = None`
-- `time_zone_str__obj_map = {}`
-
-##### 📌 `class PopularNbTime(NbTime)`
-*Line: 458*
-
-**Properties (6):**
-- `@property ago_1_days`
-- `@property ago_7_days`
-- `@property ago_30_days`
-- `@property ago_180_days`
-- `@property ago_360_days`
-- `@property ago_720_days`
-
-##### 📌 `class UtcNbTime(NbTime)`
-*Line: 484*
-
-**Class Variables (1):**
-- `default_time_zone = NbTime.TIMEZONE_UTC`
-
-##### 📌 `class ShanghaiNbTime(NbTime)`
-*Line: 488*
-
-**Class Variables (2):**
-- `default_time_zone = NbTime.TIMEZONE_TZ_EAST_8`
-- `default_formatter = NbTime.FORMATTER_DATETIME_NO_ZONE`
-
-##### 📌 `class NowTimeStrCache`
-*Line: 494*
-
-**Public Methods (1):**
-- `def fast_get_now_time_str(cls, timezone_str: str = None) -> str` `classmethod`
-  - **Docstring:**
-  `````
-  获取当前时间字符串，格式为 '%Y-%m-%d %H:%M:%S'。
-  通过缓存机制，同一秒内的多次调用直接返回缓存结果，极大提升性能。
-  适用于对时间精度要求不高（秒级即可）的高并发场景。
-  :return: 格式化后的时间字符串，例如 '2024-06-12 15:30:45'
-  `````
-
-**Class Variables (3):**
-- `_cached_time_str: typing.Optional[str] = None`
-- `_cached_time_second: int = 0`
-- `_time_cache_lock = threading.Lock()`
-
-#### 🔧 Public Functions (2)
-
-- `def get_localzone_ignore_version()` `functools.lru_cache()`
-  - *Line: 23*
-
-- `def calculate_age(birth_date, datetime_formatter = '%Y-%m-%d')`
-  - *Line: 537*
-
-
----
-
-`````python
-import copy
-import functools
-import logging
-import pickle
-import sys
-import threading
-import types
-import typing
-import re
-import time
-import datetime
-from dateutil.relativedelta import relativedelta
-import dateutil.parser
-import pytz
-import arrow
-
-# from pydantic import BaseModel
-
-logger = logging.getLogger(__name__)
-
-
-@functools.lru_cache()
-def get_localzone_ignore_version():  # python3.9以上不一样.  tzlocal 版本在不同python版本上自动安装不同版本
-    from tzlocal import get_localzone
-    try:
-        return get_localzone().zone
-    except AttributeError as e:
-        return get_localzone().key
-
-
-# class DateTimeValue(BaseModel):
-#     year: int
-#     month: int
-#     day: int
-#     hour: int = 0
-#     minute: int = 0
-#     second: int = 0
-#     microsecond: int = 0
-
-
-class DateTimeValue:
-    def __init__(self, year, month, day, hour=0, minute=0, second=0, microsecond=0):
-        self.year = year
-        self.month = month
-        self.day = day
-        self.hour = hour
-        self.minute = minute
-        self.second = second
-        self.microsecond = microsecond
-
-    def dict(self):
-        return {
-            'year': self.year,
-            'month': self.month,
-            'day': self.day,
-            'hour': self.hour,
-            'minute': self.minute,
-            'second': self.second,
-            'microsecond': self.microsecond
-        }
-
-
-class TimeInParamError(Exception):
-    pass
-
-class ArrowWrap(arrow.Arrow):
-    def to_nb_time(self):
-        return NbTime(self)
-
-class NbTime:
-    """ 时间转换，支持链式操作，纯面向对象的的。
-
-    相比模块级下面定义几十个函数，然后将不同类型的时间变量传到不同的函数中return结果，然后把结果作为入参传入到另一个函数进行转换，
-    纯面向对象支持链式转换的要方便很多。
-
-    初始化能够接受的变量类型丰富，可以传入一切类型的时间变量。
-
-    """
-    FORMATTER_DATETIME = "%Y-%m-%d %H:%M:%S %z"  # 2023-07-03 16:20:21 +0800 ,这种字符串格式的时间清晰明了没有时区的歧义.
-    FORMATTER_DATETIME_WITH_ZONE = "%Y-%m-%d %H:%M:%S %z"
-    FORMATTER_DATETIME_NO_ZONE = "%Y-%m-%d %H:%M:%S"
-    FORMATTER_MILLISECOND = "%Y-%m-%d %H:%M:%S.%f %z"
-    FORMATTER_DATE = "%Y-%m-%d"
-    FORMATTER_TIME = "%H:%M:%S"
-    FORMATTER_ISO = "%Y-%m-%dT%H:%M:%S%z"  # iso8601,全球最标准的时间格式
-
-    TIMEZONE_UTC = 'UTC'
-    TIMEZONE_EASTERN_7 = 'UTC+7'
-    TIMEZONE_EASTERN_8 = 'UTC+8'  # UTC+08:00 这是东八区
-    TIMEZONE_E8 = 'Etc/GMT-8'  # 这个也是东八区，这个Etc/GMT是标准的pytz的支持的格式。
-    TIMEZONE_ASIA_SHANGHAI = 'Asia/Shanghai'  # 就是东八区.
-    TIMEZONE_TZ_EAST_8 = datetime.timezone(datetime.timedelta(hours=8),
-                                           name='UTC+08:00')  # 这种性能比pytz 'Asia/Shanghai' 性能高很多。但pytz可以处理历史夏令时。
-    TIMEZONE_TZ_UTC = datetime.timezone(datetime.timedelta(hours=0), name='UTC+07:00')
-
-    default_formatter: str = None
-    default_time_zone: str = None
-
-    @classmethod
-    def set_default_formatter(cls, datetime_formatter: str):
-        cls.default_formatter = datetime_formatter
-
-    @classmethod
-    def set_default_time_zone(cls, time_zone: str):
-        cls.default_time_zone = time_zone
-
-    @staticmethod
-    @functools.lru_cache()
-    def get_localzone_name() -> str:
-        zone = get_localzone_ignore_version()
-        print(f'auto get the system time zone is "{zone}"')
-        return zone
-
-    time_zone_str__obj_map = {}
-
-    def __init__(self,
-                 datetimex: typing.Union[
-                     None, int, float, datetime.datetime, str, 'NbTime', DateTimeValue, arrow.Arrow] = None,
-                 *,
-                 datetime_formatter: str = None,
-                 time_zone: typing.Union[str, datetime.tzinfo, None] = None):
-        """
-        :param datetimex: 接受时间戳  datatime类型 和 时间字符串 和类对象本身四种类型,如果为None，则默认当前时间now。
-        :param time_zone  时区例如 Asia/Shanghai， UTC  UTC+8  GMT+8  Etc/GMT-8 等,也可以是 datetime.timezone(datetime.timedelta(hours=7))东7区,
-                          默认是操作系统时区
-        """
-        # init_params = copy.copy(locals())
-        # init_params.pop('self')
-        # init_params.pop('datetimex')
-
-        self._raw_in_params = {'datetimex':datetimex,'datetime_formatter':datetime_formatter,'time_zone':time_zone}
- 
-        init_params = {'datetime_formatter': datetime_formatter, 'time_zone': time_zone}
-        self.init_params = init_params
-        self.first_param = datetimex
-
-        self.time_zone_str = self.get_time_zone_str(time_zone)
-        self.datetime_formatter = datetime_formatter or self.default_formatter or self.FORMATTER_ISO
-        '''
-        将 time_zone 转成 pytz 可以识别的对应时区
-        '''
-        self.time_zone_obj = self.build_pytz_timezone(self.time_zone_str)
-        self.datetime_obj = self.build_datetime_obj(datetimex)
-        self.datetime = self.datetime_obj
-
-    def _build_nb_time(self, datetimex) -> 'NbTime':
-        return self.__class__(datetimex, **self.init_params)
-
-    def get_time_zone_str(self, time_zone: typing.Union[str, datetime.tzinfo, None] = None):
-        return time_zone or self.default_time_zone or self.get_localzone_name()
-
-    def universal_parse_datetime_str(self, datetime_str):
-        try:
-            return dateutil.parser.parse(datetime_str)
-        except Exception as e:
-            date_string = datetime_str  # "2013-05-05 12:30:45 America/Chicago"
-            date_parts = date_string.split()
-            parsed_date = dateutil.parser.parse(' '.join(date_parts[:-1]))
-            timezone = dateutil.tz.gettz(date_parts[-1])
-            datetime_obj = parsed_date.replace(tzinfo=timezone)
-            return self._build_nb_time(datetime_obj).datetime_obj
-
-    def build_datetime_obj(self, datetimex):
-        if datetimex is None:
-            # print(self.time_zone_obj,type(self.time_zone_obj))
-            datetime_obj = datetime.datetime.now(tz=self.time_zone_obj)
-        elif isinstance(datetimex, str):
-            # print(self.datetime_formatter)
-            if '%z' in self.datetime_formatter and ('+' not in datetimex or '-' not in datetimex):
-                datetimex = self.add_timezone_to_time_str(datetimex, self.time_zone_str)
-            try:
-                datetime_obj = datetime.datetime.strptime(datetimex, self.datetime_formatter)
-            except Exception as e:
-                # print(e,type(e))
-                # print(f'尝试使用万能时间字符串解析 {datetimex}')
-                logger.warning(f'warning! formatter: {self.datetime_formatter} cannot parse time str: {datetimex}  , {type(e)} , {e}  , will try use  Universal time string parsing')
-                datetime_obj = self.universal_parse_datetime_str(datetimex)
-            # print(repr(datetime_obj))
-            if datetime_obj.tzinfo is None:
-                if isinstance(self.time_zone_obj, pytz.BaseTzInfo):
-                    datetime_obj = self.time_zone_obj.localize(datetime_obj, )
-                else:
-                    datetime_obj = datetime_obj.replace(tzinfo=self.time_zone_obj, )
-            else:
-                datetime_obj = datetime_obj.astimezone(self.time_zone_obj)
-            # if isinstance(self.time_zone_obj,pytz.BaseTzInfo) and datetime_obj.tzinfo is None:
-            #     datetime_obj = self.time_zone_obj.localize(datetime_obj, )
-            # else:
-            #     datetime_obj = datetime_obj.replace(tzinfo=self.time_zone_obj, )
-            # print(repr(datetime_obj))
-        elif isinstance(datetimex, (int, float)):
-            if datetimex < 1:
-                datetimex += 86400
-            if datetimex >= 10 ** 12:
-                # raise TimeInParamError(
-                #     f'Invalid datetime param: {datetimex}. need seconds,not microseconds')  # 需要传入秒，而不是毫秒
-                datetimex = datetimex / 1000.0
-            datetime_obj = datetime.datetime.fromtimestamp(datetimex, tz=self.time_zone_obj)  # 时间戳0在windows会出错。
-        elif isinstance(datetimex, datetime.datetime):
-            datetime_obj = datetimex
-            if datetimex.tzinfo is None:
-                # 视为 self.time_zone_obj 时区的时间
-                datetime_obj = self.time_zone_obj.localize(datetimex) if isinstance(self.time_zone_obj, pytz.BaseTzInfo) else datetimex.replace(tzinfo=self.time_zone_obj)
-            else:
-                datetime_obj = datetimex.astimezone(self.time_zone_obj)
-        elif isinstance(datetimex, DateTimeValue):
-            datetime_obj = datetime.datetime(**datetimex.dict(), tzinfo=self.time_zone_obj)
-        elif isinstance(datetimex, NbTime):
-            datetime_obj = datetimex.datetime_obj
-            datetime_obj = datetime_obj.astimezone(tz=self.time_zone_obj)
-        elif isinstance(datetimex, arrow.Arrow):
-            datetime_obj = datetimex.datetime
-            datetime_obj = datetime_obj.astimezone(tz=self.time_zone_obj)
-        else:
-            raise ValueError('input parameters is not right')
-        return datetime_obj
-
-    @classmethod
-    def add_timezone_to_time_str(cls, datetimex: str, time_zone: str):
-        offset = cls.get_timezone_offset(time_zone)
-        offset_hour = int(offset.total_seconds() // 3600)
-        abs_offset_hour = abs(offset_hour)
-        int_timezone = ''
-        if abs_offset_hour < 10:
-            int_timezone = f'0{abs_offset_hour}00'
-        else:
-            int_timezone = f'{abs_offset_hour}00'
-        if offset_hour < 0:
-            int_timezone = f'-{int_timezone}'
-        else:
-            int_timezone = f'+{int_timezone}'
-        if not cls._contains_two_or_more_letters(datetimex):
-            datetimex += f' {int_timezone}'
-        return datetimex
-
-    @staticmethod
-    def _contains_two_or_more_letters(text):
-        pattern = r"[a-zA-Z]"
-        letters = re.findall(pattern, text)
-        return len(letters) >= 2
-
-    @classmethod
-    def get_timezone_offset(cls, time_zone: str) -> datetime.timedelta:
-        tz = cls.build_pytz_timezone(time_zone)
-        # 将时区转换为以Etc/GMT+形式表示的时区
-        offset = tz.utcoffset(datetime.datetime.now())
-        return offset
-
-    @staticmethod
-    def _utc_to_etc(timezone_str: str):
-        """把UTC+8或UTC+08:00 转化成pytz可以识别的Etc/GMT-8的时区格式"""
-        offset_match = re.match(r"UTC([+-]?)(\d{1,2}):?(\d{0,2})", timezone_str,re.IGNORECASE)
-        if not offset_match:
-            return timezone_str
-        # 提取小时和分钟的偏移量
-        sign = offset_match.group(1)
-        hours = offset_match.group(2)
-        minutes = offset_match.group(3)
-
-        if sign == "+":
-            sign = "-"
-        else:
-            sign = "+"
-
-        # 构建新的时区表示
-        new_timezone = f"Etc/GMT{sign}{int(hours)}"
-        return new_timezone
-
-    @classmethod
-    def build_pytz_timezone(cls, time_zone: typing.Union[str, datetime.tzinfo]) -> datetime.tzinfo:
-        """pytz 不支持 GTM+8  UTC+7 这种时区表示方式
-        Etc/GMT-8 就是 GMT+8 代表东8区。
-        """
-        # print(time_zone,type(time_zone))
-        time_zone0 = time_zone
-        if time_zone0 in cls.time_zone_str__obj_map:
-            # print('zhijie')
-            return cls.time_zone_str__obj_map[time_zone0]
-
-        if isinstance(time_zone, datetime.tzinfo):
-            return time_zone
-
-        # 常见时区字符串转化为内置的timezone类型，比pytz性能高很多。
-        if time_zone in (cls.TIMEZONE_ASIA_SHANGHAI, cls.TIMEZONE_E8, cls.TIMEZONE_EASTERN_8):
-            # print('aaaa')
-            return cls.TIMEZONE_TZ_EAST_8
-        if time_zone in (cls.TIMEZONE_UTC, 'UTC+0'):
-            return cls.TIMEZONE_TZ_UTC
-
-        if 'Etc/GMT' in time_zone:
-            tz = pytz.timezone(time_zone)
-            cls.time_zone_str__obj_map[time_zone0] = tz
-            return tz
-        # print(time_zone,type(time_zone))
-        time_zone = cls._utc_to_etc(time_zone)
-        # print(time_zone)
-        # pytz_timezone_xialinshi = pytz.timezone(time_zone)
-        pytz_timezone = pytz.timezone(time_zone, )
-        cls.time_zone_str__obj_map[time_zone0] = pytz_timezone
-        return pytz_timezone
-
-    @property
-    def datetime_str(self) -> str:
-        return self.get_str()
-
-    @property
-    def time_str(self) -> str:
-        return self.datetime_obj.strftime(self.FORMATTER_TIME)
-
-    @property
-    def date_str(self) -> str:
-        return self.datetime_obj.strftime(self.FORMATTER_DATE)
-
-    def get_str(self, formatter=None):
-        # print(self.datetime_formatter)
-        return self.datetime_obj.strftime(formatter or self.datetime_formatter)
-
-    def fast_get_str_formatter_datetime_no_zone(self):
-        return f'{self.datetime_obj.year:04d}-{self.datetime_obj.month:02d}-{self.datetime_obj.day:02d} {self.datetime_obj.hour:02d}:{self.datetime_obj.minute:02d}:{self.datetime_obj.second:02d}'
-
-    @property
-    def timestamp(self) -> float:
-        return self.datetime_obj.timestamp()
-
-    @property
-    def timestamp_millisecond(self) -> float:
-        return self.datetime_obj.timestamp() * 1000
-
-    def is_greater_than_now(self) -> bool:
-        return self.timestamp > time.time()
-
-    def __lt__(self, other: 'NbTime'):
-        return self.timestamp < other.timestamp
-
-    def __gt__(self, other: 'NbTime'):
-        return self.timestamp > other.timestamp
-
-    def __eq__(self, other: 'NbTime'):
-        return self.timestamp == other.timestamp
-
-    def __str__(self) -> str:
-        return f'<NbTime [{self.datetime_str}] ({self.time_zone_str})>'
-
-    def __repr__(self) -> str:
-        return f'<NbTime [{self.datetime_str}] ({self.time_zone_str})>'
-
-    def humanize(self)->str:
-        return self.arrow.humanize()
-
-    def to_arrow(self)->ArrowWrap:
-        # return arrow.get(self.datetime_obj)
-        return ArrowWrap(year=self.datetime_obj.year, month=self.datetime_obj.month, day=self.datetime_obj.day,
-                         hour=self.datetime_obj.hour,minute=self.datetime_obj.minute,second=self.datetime_obj.second,
-                         microsecond=self.datetime_obj.microsecond,
-                         tzinfo=self.time_zone_str)
-
-    @property
-    def arrow(self) -> ArrowWrap:
-        if getattr(self, '_arrow_obj', None) is None:
-            self._arrow_obj = self.to_arrow()
-        return self._arrow_obj
-
-    def isoformat(self, timespec: str = 'seconds') -> str:
-        """
-        返回 ISO 8601 格式字符串
-        :param timespec: 'seconds', 'milliseconds', 'microseconds'
-        """
-        return self.datetime_obj.isoformat(timespec=timespec)
-
-    def __call__(self) -> datetime.datetime:
-        return self.datetime_obj
-
-    def clone(self) -> "NbTime":
-        return self._build_nb_time(self.datetime_obj, )
-
-    def __copy__(self):
-        return self.clone()
-
-    
-    # def __getstate__(self):
-    #     # 自定义序列化时保存的状态
-    #     state = self._raw_in_params
-    #     return state
-    
-    # def __setstate__(self, state):
-    #     new_self = self.__class__(**state)
-    #     self.__dict__.update(new_self.__dict__)
-    
-    def shift(self, years=0, months=0, days=0, leapdays=0, weeks=0,
-              hours=0, minutes=0, seconds=0, microseconds=0, ) -> 'NbTime':
-        relativedeltax = relativedelta(years=years, months=months, days=days, leapdays=leapdays, weeks=weeks,
-                                       hours=hours, minutes=minutes, seconds=seconds,
-                                       microseconds=microseconds, )
-        new_date = self.datetime_obj + relativedeltax
-        # seconds_delta = seconds + minutes * 60 + hours * 3600 + days * 86400 + weeks * 86400 * 7
-        return self._build_nb_time(new_date, )
-
-    def replace(self, year=None,
-                month=None,
-                day=None,
-                hour=None,
-                minute=None,
-                second=None,
-                microsecond=None,
-                ):
-        kw = copy.copy(locals())
-        kw.pop('self')
-        kw_new = {}
-        for k, v in kw.items():
-            if v is not None:
-                kw_new[k] = v
-        datetime_new = self.datetime_obj.replace(**kw_new)
-        return self._build_nb_time(datetime_new)
-
-    def to_tz(self, time_zone: str) -> 'NbTime':
-        init_params = copy.copy(self.init_params)
-        init_params['time_zone'] = time_zone
-        return self.__class__(self.timestamp, **init_params)
-
-    def to_utc(self):
-        return self.to_tz(self.TIMEZONE_UTC)
-
-    def to_utc8(self):
-        return self.to_tz(self.TIMEZONE_E8)
-
-    @property
-    def today_zero(self) -> 'NbTime':
-        now = datetime.datetime.now(tz=self.time_zone_obj)
-        today_zero_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        return self._build_nb_time(today_zero_datetime, )
-
-    @property
-    def today_zero_timestamp(self) -> float:
-        return self.today_zero.timestamp
-
-    @property
-    def same_day_zero(self) -> 'NbTime':
-        """
-        获取时间对象对应的当天的该对象时区的0点的 NbTime对象
-        :return:
-        """
-
-        same_day_zero_datetime = self.datetime_obj.replace(hour=0, minute=0, second=0, microsecond=0)
-        return self._build_nb_time(same_day_zero_datetime, )
-
-    @staticmethod
-    def seconds_to_hour_minute_second(seconds):
-        """
-        把秒转化成还需要的时间
-        :param seconds:
-        :return:
-        """
-        m, s = divmod(seconds, 60)
-        h, m = divmod(m, 60)
-        return "%02d:%02d:%02d" % (h, m, s)
-
-
-class PopularNbTime(NbTime):
-    @property
-    def ago_1_days(self):
-        return self.shift(days=-1)
-
-    @property
-    def ago_7_days(self):
-        return self.shift(days=-7)
-
-    @property
-    def ago_30_days(self):
-        return self.shift(days=-30)
-
-    @property
-    def ago_180_days(self):
-        return self.shift(days=-180)
-
-    @property
-    def ago_360_days(self):
-        return self.shift(days=-360)
-
-    @property
-    def ago_720_days(self):
-        return self.shift(days=-720)
-
-
-class UtcNbTime(NbTime):
-    default_time_zone = NbTime.TIMEZONE_UTC
-
-
-class ShanghaiNbTime(NbTime):
-    # default_time_zone = NbTime.TIMEZONE_ASIA_SHANGHAI
-    default_time_zone = NbTime.TIMEZONE_TZ_EAST_8
-    default_formatter = NbTime.FORMATTER_DATETIME_NO_ZONE
-
-
-class NowTimeStrCache:
-    # 生成100万次当前时间字符串%Y-%m-%d %H:%M:%S仅需0.4秒.
-    # 全局变量，用于存储缓存的时间字符串和对应的整秒时间戳
-    _cached_time_str: typing.Optional[str] = None
-    _cached_time_second: int = 0
-
-    # 为了线程安全，使用锁。在极高并发下，锁的开销远小于每毫秒都进行时间格式化。
-    _time_cache_lock = threading.Lock()
-
-    @classmethod
-    def fast_get_now_time_str(cls, timezone_str: str = None) -> str:
-        """
-        获取当前时间字符串，格式为 '%Y-%m-%d %H:%M:%S'。
-        通过缓存机制，同一秒内的多次调用直接返回缓存结果，极大提升性能。
-        适用于对时间精度要求不高（秒级即可）的高并发场景。
-        :return: 格式化后的时间字符串，例如 '2024-06-12 15:30:45'
-        """
-        # timezone_str = timezone_str or FunboostCommonConfig.TIMEZONE
-
-        # 获取当前的整秒时间戳（去掉小数部分）
-        current_second = int(time.time())
-
-        # 如果缓存的时间戳与当前秒数一致，直接返回缓存的字符串。
-        if current_second == cls._cached_time_second:
-            return cls._cached_time_str
-
-        # 如果不一致，说明进入新的一秒，需要重新计算并更新缓存。
-        # 使用锁确保在多线程环境下，只有一个线程会执行更新操作。
-
-        with cls._time_cache_lock:
-            # 双重检查锁定 (Double-Checked Locking)，防止在等待锁的过程中，其他线程已经更新了缓存。
-            if current_second == cls._cached_time_second:
-                return cls._cached_time_str
-
-            # 重新计算时间字符串。这里直接使用 time.strftime，因为它在秒级更新的场景下性能足够。
-            # 我们不需要像 Funboost 那样为每一毫秒的调用都去做查表优化。
-            now = datetime.datetime.now(tz=pytz.timezone(timezone_str))
-            cls._cached_time_str = now.strftime('%Y-%m-%d %H:%M:%S', )
-            cls._cached_time_second = current_second
-
-        return cls._cached_time_str
-
-
-def calculate_age(birth_date,datetime_formatter='%Y-%m-%d'):
-    birth_date = NbTime(birth_date,datetime_formatter=datetime_formatter)
-    now = NbTime()
-    age = now.datetime_obj.year - birth_date.datetime_obj.year
-    # 如果今年生日还没到，减一岁
-    if (now.datetime_obj.month, now.datetime_obj.day) < (birth_date.datetime_obj.month, birth_date.datetime_obj.day):
-        age -= 1
-    return age
-
-
-
-if __name__ == '__main__':
-    import nb_log
-
-    """
-    1557113661.0
-    '2019-05-06 12:34:21'
-    '2019/05/06 12:34:21'
-    NbTime(1557113661.0)()
-    """
-
-    print(NbTime.get_localzone_name())
-
-    print(NbTime(time_zone='UTC+8').today_zero_timestamp)
-    print(NbTime(time_zone='UTC+7').datetime_obj)
-    print(NbTime(time_zone='UTC+8').datetime_str)
-    print(NbTime(time_zone='UTC+7').time_zone_obj)
-
-    print(NbTime.get_timezone_offset('Asia/Shanghai'))
-    # NbTime.set_default_formatter(NbTime.FORMATTER_MILLISECOND)
-    NbTime.set_default_time_zone('UTC+8')
-
-    # print(NbTime('2023-05-06 12:12:12'))
-    print(NbTime())
-    print(NbTime(datetime.datetime.now()))  # 和上面等效
-    print(NbTime(1709192429))
-    print(NbTime('2024-02-26 15:58:21', datetime_formatter=NbTime.FORMATTER_DATETIME_NO_ZONE,
-                 time_zone=NbTime.TIMEZONE_EASTERN_7).datetime)
-    print(NbTime(DateTimeValue(year=2022, month=5, day=9, hour=6), time_zone='UTC+7'))
-    print(NbTime(datetime.datetime(2022, 5, 9, 6, 0, 0, )))
-
-    print(NbTime(datetime.datetime.now(tz=pytz.timezone('Etc/GMT+0')), time_zone='UTC+8'))
-    print(NbTime().shift(months=1).shift(hours=-1))
-    print(NbTime(datetime_formatter=NbTime.FORMATTER_MILLISECOND).to_tz(time_zone='UTC+8').to_tz(time_zone='UTC+0'))
-
-    print(NbTime.get_timezone_offset(NbTime.get_localzone_name()).total_seconds())
-
-    print(NbTime(time_zone='UTC+7').today_zero_timestamp)
-
-    print(NbTime.seconds_to_hour_minute_second(450))
-
-    print(NbTime(time_zone=NbTime.TIMEZONE_ASIA_SHANGHAI).datetime.tzinfo)
-
-    print(NbTime(time_zone='UTC+8').time_zone_obj)
-    print(NbTime(time_zone='UTC+07:00').time_zone_obj)
-
-    print(NbTime(time_zone=datetime.timezone(datetime.timedelta(hours=7))))
-
-    print(
-        NbTime(NbTime('2024-02-29 07:40:34', time_zone='UTC+0', datetime_formatter=NbTime.FORMATTER_DATETIME_NO_ZONE),
-               time_zone='UTC+8', datetime_formatter=NbTime.FORMATTER_MILLISECOND).datetime_str
-    )
-
-    print(NbTime('2024-02-29 07:40:34', time_zone='UTC+7'))
-    print(NbTime(NbTime('2024-02-29 07:40:34', time_zone='UTC+7'), time_zone='UTC+8',
-                 datetime_formatter=NbTime.FORMATTER_ISO).datetime_str)
-    print(NbTime('2024-02-29 07:40:34', time_zone='UTC+7').to_tz('UTC+8').to_tz('utc').to_utc().datetime_str)
-
-    print(NbTime().get_str('%Y%m%d'))
-    print(NbTime().today_zero)
-    print(NbTime().today_zero_timestamp)
-
-    print(NbTime().replace(day=10, ).to_tz('UTC+6'))
-    print(NbTime().replace(day=10, ).to_tz('utc+6'))
-    print(NbTime().shift(days=-7).timestamp_millisecond)
-    print(NbTime().shift(days=-1).to_tz('UTC').same_day_zero.timestamp)  # 昨天utc 0时区的时间戳
-
-    print(NbTime(1709283094))
-
-    print(NbTime(DateTimeValue(year=2023, month=7, day=5, hour=4, minute=3, second=2, microsecond=1))
-          > NbTime(DateTimeValue(year=2023, month=6, day=6, hour=4, minute=3, second=2, microsecond=1)))
-
-    print(NbTime(1727252278000))
-
-    print(PopularNbTime().ago_7_days.timestamp_millisecond)
-
-    print(UtcNbTime())
-
-    print(UtcNbTime().today_zero.timestamp_millisecond)
-
-    print(ShanghaiNbTime())
-
-    print(NbTime('20230506T010203.886 +08:00'))
-    print(NbTime('2023-05-06 01:02:03.886'))
-    print(NbTime('2023-05-06T01:02:03.886 +08:00'))
-    print(NbTime('20221206 1:2:3'))
-    print(NbTime('Fri Jul 19 06:38:27 2024'))
-    print(NbTime('2013-05-05 12:30:45 America/Chicago'))
-    print(NbTime('2013-05-05 12:30:45 America/Chicago').isoformat())
-    print(NbTime('Jun 12 2024 10:30AM'))
-
-    import arrow
-
-    # print(arrow.get("tomorrow at 3pm")) # 报错
-    # print(NbTime("tomorrow at 3pm"))
-    print(arrow.now().shift(hours=-3).shift(days=6).humanize())
-    print(arrow.now().shift(hours=-3).shift(days=6))
-
-    print(NbTime('2025-09-29 10:01:02').humanize())
-    print(NbTime('2025-09-29 10:01:02').isoformat('microseconds'))
-
-    print(NbTime(arrow.now(tz='utc+7')))
-
-    print(NbTime().arrow.floor('hour'))
-    print(NbTime().arrow.floor('day'))
-    print(NbTime().arrow.ceil('day').to_nb_time().timestamp) # nb_time 和 arrow 之间 无限链式转化
-
-
-    nbt6 = NbTime()
-
-    nbt6_pickled =pickle.dumps(nbt6)
-    print(nbt6_pickled)
-    nbt6_new = pickle.loads(nbt6_pickled)
-    print(nbt6_new)
-
-    print(calculate_age('1990-11-01',datetime_formatter='%Y-%m-%d'))
-    print(calculate_age('19901101',datetime_formatter='%Y%m%d'))
-    print(calculate_age('1990-10-01',datetime_formatter='%Y-%m-%d'))
-    print(calculate_age('19901001',datetime_formatter='%Y%m%d'))
-
-    print()
-    for i in range(1000000):
-        # ShanghaiNbTime(time_zone='Asia/Shanghai').get_str()
-        # ShanghaiNbTime(time_zone='UTC+8').get_str()
-        # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # NbTime(time_zone='Asia/Shanghai') # 3秒100万次
-        arrow.now(tz='Asia/Shanghai') # 20秒100万次
-        # datetime.datetime.now(tz=datetime.timezone(datetime.timedelta(hours=8)))
-        # NbTime().fast_get_str_formatter_datetime_no_zone()
-        # get_now_time_str_by_tz()
-
-        # ts = 1717567890  # 示例时间戳
-        # time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ts))
-
-        # datetime.datetime.now()#.strftime("%Y-%m-%d %H:%M:%S")
-        # NowTimeStrCache.fast_get_now_time_str('Asia/Shanghai')
-    print()
-
-`````
-
---- **end of file: nb_time/__init__.py** (project: nb_time) --- 
 
 ---
 
