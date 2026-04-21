@@ -476,9 +476,10 @@ class AiMdGenerator(NbPath):
         relative_paths_to_include = []
         for path_obj in target_dir_path.rglob("*"):
             # Automatically exclude directories starting with a dot at the project root
+            # unless the path is under the explicitly specified target directory
             try:
                 first_part = path_obj.relative_to(project_root_path).parts[0]
-                if first_part.startswith('.'):
+                if first_part.startswith('.') and target_dir_path not in path_obj.parents and path_obj != target_dir_path:
                     continue
             except (ValueError, IndexError):
                 continue
