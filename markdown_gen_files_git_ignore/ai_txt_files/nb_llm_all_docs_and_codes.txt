@@ -61,6 +61,7 @@ nb_llm — 大开大合的 LLM 框架
 - `from nb_llm.core.chat import Pipeline`
 - `from nb_llm.core.config import ChatConfig`
 - `from nb_llm.core.config import SendOptions`
+- `from nb_llm.core.config import RAGConfig`
 - `from nb_llm.core.response import ChatResponse`
 - `from nb_llm.core.response import StreamResponse`
 - `from nb_llm.core.data_types import UsageInfo`
@@ -71,6 +72,7 @@ nb_llm — 大开大合的 LLM 框架
 - `from nb_llm.core.data_types import TeamResult`
 - `from nb_llm.core.data_types import CostTracker`
 - `from nb_llm.core.data_types import DataMixin`
+- `from nb_llm.core.base_model import NbBaseModel`
 - `from nb_llm.core.history_backends import HistoryBackend`
 - `from nb_llm.core.history_backends import MemoryBackend`
 - `from nb_llm.core.history_backends import FileBackend`
@@ -90,9 +92,23 @@ nb_llm — 大开大合的 LLM 框架
 - `from nb_llm.providers.registry import register_provider`
 - `from nb_llm.embedding.embedding import Embedding`
 - `from nb_llm.rag.rag import RAG`
+- `from nb_llm.rag.vectorstore import MemoryVectorStore`
+- `from nb_llm.rag.vectorstore import FaissVectorStore`
+- `from nb_llm.rag.vectorstore import ChromaVectorStore`
 - `from nb_llm.agents.router import Router`
 - `from nb_llm.agents.team import Team`
 - `from nb_llm.workflow.step import step`
+- `from nb_llm.loggers import logger_request`
+- `from nb_llm.loggers import logger_response`
+- `from nb_llm.loggers import logger_tools`
+- `from nb_llm.loggers import logger_history`
+- `from nb_llm.loggers import logger_cache`
+- `from nb_llm.loggers import logger_retry`
+- `from nb_llm.loggers import logger_router`
+- `from nb_llm.loggers import logger_team`
+- `from nb_llm.loggers import logger_pipeline`
+- `from nb_llm.loggers import logger_rag`
+- `from nb_llm.loggers import logger_embedding`
 
 
 ---
@@ -318,10 +334,10 @@ result = chat.ask("精确回答", SendOptions(
 import asyncio
 
 async def main():
-    answer = await chat.asend("你好")
-    async for chunk in chat.astream("写一首诗"):
+    answer = await chat.aio_send("你好")
+    async for chunk in chat.aio_stream("写一首诗"):
         print(chunk, end="")
-    answers = await chat.abatch(["问题1", "问题2"], concurrency=5)
+    answers = await chat.aio_batch(["问题1", "问题2"], concurrency=5)
 
 asyncio.run(main())
 ```
@@ -572,14 +588,24 @@ setup(
     ├── 13_step_decorator.py
     ├── 14_context_manager.py
     ├── 15_pydantic_output.py
-    └── 16_async.py
+    ├── 16_async.py
+    ├── 17_team.py
+    ├── 18_router.py
+    ├── 19_retry_fallback.py
+    ├── 20_history_backend.py
+    ├── 21_on_tool_call.py
+    ├── 22_tool_choice.py
+    ├── 23_tool_management.py
+    ├── 24_web_weather_search.py
+    ├── 25_rag.py
+    └── 26_rag_real_project.py
 
 `````
 
 ---
 
 
-## nb_llm (relative dir: `examples`)  Included Files (total: 16 files)
+## nb_llm (relative dir: `examples`)  Included Files (total: 26 files)
 
 
 - `examples/01_hello.py`
@@ -614,6 +640,26 @@ setup(
 
 - `examples/16_async.py`
 
+- `examples/17_team.py`
+
+- `examples/18_router.py`
+
+- `examples/19_retry_fallback.py`
+
+- `examples/20_history_backend.py`
+
+- `examples/21_on_tool_call.py`
+
+- `examples/22_tool_choice.py`
+
+- `examples/23_tool_management.py`
+
+- `examples/24_web_weather_search.py`
+
+- `examples/25_rag.py`
+
+- `examples/26_rag_real_project.py`
+
 
 ---
 
@@ -625,11 +671,12 @@ setup(
 示例 01：最简单的一问一答
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -652,11 +699,12 @@ print(f"tokens: {answer.usage.total_tokens}")
 send() 自动记住上下文，ask() 无记忆。
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个友好的中文助手",
 ))
@@ -685,11 +733,12 @@ for msg in chat.history:
 示例 03：系统提示词 + 参数控制
 """
 from nb_llm import Chat, ChatConfig, SendOptions
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个专业的英文翻译，只返回翻译结果，不要解释。",
     temperature=0.3,
@@ -722,11 +771,12 @@ print(f"\n高温翻译: {answer2}")
 示例 04：流式输出
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -754,11 +804,12 @@ print(f"usage: {stream.usage.to_dict()}")
 示例 05：JSON 结构化输出
 """
 from nb_llm import Chat, ChatConfig, SendOptions
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个数据助手，请严格返回 JSON 格式。",
 ))
@@ -786,11 +837,12 @@ print(f"类型: {type(result.parsed)}")
 用 @chat.tool 装饰器注册工具，模型自动调用。
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -844,11 +896,12 @@ print(f"调用了的工具: {[(tc.name, tc.args) for tc in result.tool_calls_mad
 """
 import time
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="用一句话回答问题。",
 ))
@@ -885,25 +938,21 @@ print(f"总耗时: {elapsed:.2f}s（{len(prompts)} 个问题并发处理）")
 示例 08：管道（Pipeline）—— >> 运算符链式处理
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
-config_base = ChatConfig(
-    base_url="https://api.siliconflow.cn/v1",
-    api_key=SILICONFLOW_API_KEY,
-)
-
 translator = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url=config_base.base_url,
-    api_key=config_base.api_key,
+    model=MODEL,
+    base_url=BASE_URL,
+    api_key=SILICONFLOW_API_KEY,
     system="你是一个中译英翻译，只返回英文翻译结果。",
     name="翻译",
 ))
 
 summarizer = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url=config_base.base_url,
-    api_key=config_base.api_key,
+    model=MODEL,
+    base_url=BASE_URL,
+    api_key=SILICONFLOW_API_KEY,
     system="请用一句话总结以下英文内容的要点，用英文回答。",
     name="总结",
 ))
@@ -930,11 +979,12 @@ print(f"model: {result.model}")
 一个 Chat 实例管理多个独立会话，适合多用户场景。
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个友好的助手",
 ))
@@ -974,11 +1024,12 @@ print(f"B 的历史: {len(user_b.history)} 条")
 """
 import time
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -1021,19 +1072,20 @@ print(f"结果: {result}")
 """
 from dataclasses import dataclass
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 
 @dataclass
 class SiliconFlowConfig(ChatConfig):
     """硅基流动统一基础配置"""
-    base_url: str = "https://api.siliconflow.cn/v1"
+    base_url: str = BASE_URL
     api_key: str = SILICONFLOW_API_KEY
 
 
 # 用继承后的配置创建 Chat
 chat = Chat(SiliconFlowConfig(
-    model="THUDM/GLM-4-9B-0414",
+    model=MODEL,
     system="你是一个诗人",
     temperature=0.8,
 ))
@@ -1064,11 +1116,12 @@ print(f"克隆 system: {chat2.system}")
 示例 12：费用追踪 (CostTracker)
 """
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -1100,11 +1153,12 @@ for i, detail in enumerate(tracker.details):
 """
 from nb_llm import Chat, ChatConfig, step
 from nb_llm.workflow.step import on_step_event
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 
@@ -1150,14 +1204,15 @@ print("=== 工作流结束 ===")
 import os
 import tempfile
 from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 
 save_path = os.path.join(tempfile.gettempdir(), 'nb_llm_demo_history.json')
 
 # 使用 with 语句，退出时自动清理
 with Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个简洁的助手",
 )) as chat:
@@ -1173,8 +1228,8 @@ print(f"with 退出后历史: {len(chat.history)} 条")
 
 # 在新的 Chat 中加载历史
 chat2 = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
 ))
 chat2.load(save_path)
@@ -1198,16 +1253,18 @@ os.remove(save_path)
 `````python
 """
 示例 15：Pydantic 结构化输出
-用 Pydantic BaseModel 精确控制 AI 的输出格式。
+用 NbBaseModel（或原生 BaseModel）精确控制 AI 的输出格式。
+NbBaseModel 自动兼容 Pydantic v1 和 v2，提供统一的 to_dict() / to_json_str() 等方法。
 """
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import List
 
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
-from nb_llm import Chat, ChatConfig, SendOptions
+from nb_llm import Chat, ChatConfig, SendOptions, NbBaseModel
 
 
-class Movie(BaseModel):
+class Movie(NbBaseModel):
     """电影信息"""
     title: str = Field(description="电影名称")
     year: int = Field(description="上映年份")
@@ -1216,8 +1273,8 @@ class Movie(BaseModel):
 
 
 chat = Chat(ChatConfig(
-    model="THUDM/GLM-4-9B-0414",
-    base_url="https://api.siliconflow.cn/v1",
+    model=MODEL,
+    base_url=BASE_URL,
     api_key=SILICONFLOW_API_KEY,
     system="你是一个电影数据库助手。请严格按照 JSON 格式返回数据。",
 ))
@@ -1235,7 +1292,7 @@ if result.parsed:
     print(f"  年份: {result.parsed.year}")
     print(f"  类型: {result.parsed.genre}")
     print(f"  评分: {result.parsed.rating}")
-    print(f"  转字典: {result.parsed.model_dump()}")
+    print(f"  转字典: {result.parsed.to_dict()}")
 print(f"tokens: {result.usage.total_tokens}")
 
 `````
@@ -1253,31 +1310,32 @@ print(f"tokens: {result.usage.total_tokens}")
 """
 import asyncio
 
+from my_configs.common_config import MODEL, BASE_URL
 from my_configs.secret_config import SILICONFLOW_API_KEY
 from nb_llm import Chat, ChatConfig
 
 
 async def main():
     chat = Chat(ChatConfig(
-        model="THUDM/GLM-4-9B-0414",
-        base_url="https://api.siliconflow.cn/v1",
+        model=MODEL,
+        base_url=BASE_URL,
         api_key=SILICONFLOW_API_KEY,
     ))
 
     # 异步单次调用
-    result = await chat.aask("Python 用一句话介绍")
-    print(f"aask: {result}")
+    result = await chat.aio_ask("Python 用一句话介绍")
+    print(f"aio_ask: {result}")
 
     # 异步多轮对话
-    r1 = await chat.asend("我叫Alice")
-    print(f"asend1: {r1}")
+    r1 = await chat.aio_send("我叫Alice")
+    print(f"aio_send1: {r1}")
 
-    r2 = await chat.asend("我叫什么？")
-    print(f"asend2: {r2}")
+    r2 = await chat.aio_send("我叫什么？")
+    print(f"aio_send2: {r2}")
 
     # 异步批量
     prompts = ["1+1=?", "2+2=?", "3+3=?"]
-    results = await chat.abatch(prompts, concurrency=3)
+    results = await chat.aio_batch(prompts, concurrency=3)
     for p, r in zip(prompts, results):
         print(f"  {p} → {r.text.strip()}")
 
@@ -1287,6 +1345,673 @@ asyncio.run(main())
 `````
 
 --- **end of file: examples/16_async.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/17_team.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 17：Team 多智能体协作
+多个 Chat 角色分别发言、轮流讨论，最后自动总结结论。
+"""
+from nb_llm import Chat, ChatConfig, Team
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+pm = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    system="你是一个产品经理，关注用户需求和产品体验。",
+    name="产品经理",
+))
+
+dev = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    system="你是一个后端开发工程师，关注技术实现和系统架构。",
+    name="开发工程师",
+))
+
+qa = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    system="你是一个测试工程师，关注质量保障和边界情况。",
+    name="测试工程师",
+))
+
+team = Team(pm, dev, qa)
+print(f"团队: {team}")
+
+result = team.discuss("设计一个简单的用户登录功能", rounds=1)
+
+print(f"\n=== 讨论记录 ===")
+for msg in result.transcript:
+    print(f"[{msg.agent_name}] 第{msg.round}轮:")
+    print(f"  {msg.content[:100]}...")
+    print()
+
+print(f"=== 最终结论 ===")
+print(result.conclusion)
+print(f"\n总轮数: {result.rounds}")
+
+`````
+
+--- **end of file: examples/17_team.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/18_router.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 18：Router 智能路由
+根据用户输入自动分类，路由到对应的专家 Chat。
+"""
+from nb_llm import Chat, ChatConfig, Router
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+base = dict(model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY)
+
+tech_expert = Chat(ChatConfig(
+    **base, system="你是一个技术专家，擅长解答编程和技术问题。", name="技术",
+))
+
+life_expert = Chat(ChatConfig(
+    **base, system="你是一个生活顾问，擅长日常生活建议。", name="生活",
+))
+
+classifier = Chat(ChatConfig(**base))
+
+router = Router(
+    experts={"技术": tech_expert, "生活": life_expert},
+    classifier=classifier,
+)
+print(f"路由器: {router}")
+
+questions = [
+    "Python 的 GIL 是什么？",
+    "周末去哪里玩比较好？",
+]
+
+for q in questions:
+    print(f"\nQ: {q}")
+    result = router.send(q)
+    print(f"路由到: [{router.last_route}]（分类原文: '{router.last_classify_raw}'）")
+    print(f"A: {result}")
+
+`````
+
+--- **end of file: examples/18_router.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/19_retry_fallback.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 19：容错降级 (retry + fallback)
+retry 自动重试失败的请求，fallback 在主模型不可用时切换到备用模型。
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model=MODEL,
+    base_url=BASE_URL,
+    api_key=SILICONFLOW_API_KEY,
+    retry=2,
+    retry_delay=1.0,
+))
+
+print("=== retry 自动重试（正常情况下不会触发重试） ===")
+result = chat.ask("1+1=? 只回答数字")
+print(f"结果: {result}")
+print(f"config.retry: {chat.config.retry}")
+print(f"config.retry_delay: {chat.config.retry_delay}s")
+
+print("\n=== fallback 备用模型配置说明 ===")
+print("ChatConfig 参数:")
+print("  fallback='备用模型名'  — 主模型失败时自动切换")
+print("  retry=3               — 切换前先重试 N 次")
+print("  retry_delay=1.0       — 重试间隔（指数退避）")
+print("\n示例配置:")
+print("  ChatConfig(model='gpt-4o', fallback='deepseek', retry=3)")
+print("  → 先尝试 gpt-4o 3 次，都失败则自动切换到 deepseek")
+
+`````
+
+--- **end of file: examples/19_retry_fallback.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/20_history_backend.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 20：历史持久化后端
+支持 memory（默认）、file（JSON 文件）、sqlite（数据库）三种后端。
+对话历史自动持久化，重启后可恢复。
+"""
+import os
+import tempfile
+from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+tmpdir = tempfile.mkdtemp()
+
+print("=== 1. SQLite 后端 ===")
+db_path = os.path.join(tmpdir, "chat_history.db")
+chat1 = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    history_backend="sqlite",
+    history_url=db_path,
+))
+
+r1 = chat1.send("我叫张三")
+print(f"回复: {r1}")
+print(f"历史: {len(chat1.history)} 条")
+
+chat1_reloaded = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    history_backend="sqlite",
+    history_url=db_path,
+))
+print(f"重新加载后历史: {len(chat1_reloaded.history)} 条（自动恢复）")
+chat1_reloaded._history_backend.close()
+chat1._history_backend.close()
+
+print("\n=== 2. File (JSON) 后端 ===")
+file_dir = os.path.join(tmpdir, "file_history")
+os.makedirs(file_dir, exist_ok=True)
+chat2 = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    history_backend="file",
+    history_url=file_dir,
+))
+
+r2 = chat2.send("今天天气真好")
+print(f"回复: {r2}")
+print(f"JSON 文件位置: {file_dir}")
+
+print("\n=== 3. Memory 后端（默认） ===")
+print("ChatConfig() 默认使用 memory 后端，数据仅在进程内存中")
+print("重启后历史丢失，适合临时对话")
+
+import shutil
+shutil.rmtree(tmpdir, ignore_errors=True)
+
+`````
+
+--- **end of file: examples/20_history_backend.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/21_on_tool_call.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 21：on_tool_call 钩子 + tool_call_rounds 内部过程观察 + DEBUG 日志
+当模型调用工具时自动触发回调，并通过 result.tool_call_rounds 查看完整中间过程。
+开启 nb_llm 的 DEBUG 日志可以看到模型的原始 JSON 响应。
+"""
+import json
+import logging
+import nb_log
+from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+logging.basicConfig(
+    level=logging.WARNING,
+    format='[%(name)s] %(message)s',
+)
+# logging.getLogger('nb_llm.request').setLevel(logging.DEBUG)
+# logging.getLogger('nb_llm.response').setLevel(logging.DEBUG)
+# logging.getLogger('nb_llm.tools').setLevel(logging.DEBUG)
+
+nb_log.get_logger('nb_llm')
+
+chat = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+))
+
+tool_log = []
+
+
+@chat.on_tool_call
+def log_tool(name, args):
+    tool_log.append({'tool': name, 'args': args})
+    print(f"  [钩子触发] {name}({args})")
+
+
+@chat.tool
+def get_weather(city: str) -> str:
+    """获取城市天气
+
+    Args:
+        city: 城市名称
+    """
+    return f"{city}：晴，25°C"
+
+
+@chat.tool
+def get_time(timezone: str) -> str:
+    """获取当前时间
+
+    Args:
+        timezone: 时区，如 'Asia/Shanghai'
+    """
+    return f"{timezone}: 2026-04-20 15:30:00"
+
+
+print("=" * 60)
+print("提问：北京现在几点？天气怎么样？")
+print("=" * 60)
+result = chat.ask("北京现在几点？天气怎么样？")
+
+print(f"\n{'=' * 60}")
+print("【内部过程详解】通过 result.tool_call_rounds 查看")
+print("=" * 60)
+
+for rnd in result.tool_call_rounds:
+    print(f"\n--- 第 {rnd.round_index + 1} 轮 ---")
+    print(f"  模型返回的 tool_calls 请求:")
+    for tc in rnd.model_tool_calls:
+        print(f"    → 调用 {tc['name']}({json.dumps(tc['arguments'], ensure_ascii=False)})")
+    print(f"  工具执行结果（回传给模型）:")
+    for tr in rnd.tool_results:
+        print(f"    ← {tr['name']} 返回: {tr['result']}")
+
+print(f"\n{'=' * 60}")
+print(f"【最终回答】（模型综合工具结果后生成）")
+print("=" * 60)
+print(result)
+
+print(f"\n{'=' * 60}")
+print("【工具调用汇总】")
+print("=" * 60)
+for i, tc in enumerate(result.tool_calls_made):
+    print(f"  [{i+1}] {tc.name}({tc.args}) → {tc.result}  ({tc.elapsed:.3f}s)")
+
+print(f"\n钩子捕获日志: {tool_log}")
+
+`````
+
+--- **end of file: examples/21_on_tool_call.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/22_tool_choice.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 22：tool_choice 工具选择策略
+通过 SendOptions(tool_choice=...) 控制模型是否/如何调用工具。
+"""
+from nb_llm import Chat, ChatConfig, SendOptions
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+))
+
+
+@chat.tool
+def search(query: str) -> str:
+    """搜索互联网信息
+
+    Args:
+        query: 搜索关键词
+    """
+    return f"搜索结果：关于'{query}'的最新信息..."
+
+
+@chat.tool
+def calculator(expression: str) -> str:
+    """计算数学表达式
+
+    Args:
+        expression: 数学表达式
+    """
+    return str(eval(expression))
+
+
+print(f"已注册工具: {[t['function']['name'] for t in chat.tools]}")
+
+print("\n=== tool_choice='auto'（默认，模型自行决定） ===")
+r1 = chat.ask("1+2等于几？")
+print(f"结果: {r1}")
+print(f"调用了: {[tc.name for tc in r1.tool_calls_made]}")
+
+print("\n=== tool_choice='none'（禁用工具调用） ===")
+r2 = chat.ask("1+2等于几？", SendOptions(tool_choice="none"))
+print(f"结果: {r2}")
+print(f"调用了: {[tc.name for tc in r2.tool_calls_made]}（空=未调用工具）")
+
+print("\n=== tool_choice 可选值说明 ===")
+print("  'auto'      — 模型自行决定是否调用工具（默认）")
+print("  'none'      — 禁用工具调用，强制模型自己回答")
+print("  'required'  — 必须调用工具")
+print("  '工具名'    — 强制调用指定的工具")
+
+`````
+
+--- **end of file: examples/22_tool_choice.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/23_tool_management.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 23：动态工具管理
+运行时添加、移除、清空工具。
+"""
+from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+chat = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+))
+
+
+def get_weather(city: str) -> str:
+    """获取城市天气
+
+    Args:
+        city: 城市名称
+    """
+    return f"{city}：晴，25°C"
+
+
+def search(query: str) -> str:
+    """搜索信息
+
+    Args:
+        query: 搜索关键词
+    """
+    return f"搜索结果：{query}"
+
+
+print("=== 1. add_tool 动态添加 ===")
+chat.add_tool(get_weather)
+print(f"当前工具: {[t['function']['name'] for t in chat.tools]}")
+
+print("\n=== 2. add_tools 批量添加 ===")
+chat.add_tools([search])
+print(f"当前工具: {[t['function']['name'] for t in chat.tools]}")
+
+print("\n=== 3. remove_tool 移除单个工具 ===")
+chat.remove_tool("search")
+print(f"移除 search 后: {[t['function']['name'] for t in chat.tools]}")
+
+print("\n=== 4. remove_tool 也支持传函数引用 ===")
+chat.add_tool(search)
+print(f"重新添加: {[t['function']['name'] for t in chat.tools]}")
+chat.remove_tool(search)
+print(f"按引用移除: {[t['function']['name'] for t in chat.tools]}")
+
+print("\n=== 5. clear_tools 清空所有工具 ===")
+chat.add_tools([search])
+print(f"清空前: {[t['function']['name'] for t in chat.tools]}")
+chat.clear_tools()
+print(f"清空后: {chat.tools}")
+
+print("\n=== 6. @chat.tool 装饰器（最常用） ===")
+@chat.tool
+def hello(name: str) -> str:
+    """打招呼
+
+    Args:
+        name: 用户名
+    """
+    return f"你好, {name}!"
+
+print(f"装饰器注册: {[t['function']['name'] for t in chat.tools]}")
+
+`````
+
+--- **end of file: examples/23_tool_management.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/24_web_weather_search.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 24：真实天气查询工具
+模型自动判断是否需要查天气，调用 wttr.in 免费天气 API（无需注册、无需 API key）。
+"""
+import logging
+import requests
+from nb_llm import Chat, ChatConfig
+from my_configs.common_config import MODEL, BASE_URL
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
+logging.getLogger('nb_llm.tools').setLevel(logging.DEBUG)
+
+chat = Chat(ChatConfig(
+    model=MODEL, base_url=BASE_URL, api_key=SILICONFLOW_API_KEY,
+    system=(
+        "你是一个天气助手。当用户询问天气相关问题时，你必须使用 get_weather 工具查询实时数据，"
+        "不要凭记忆回答。如果涉及多个城市的比较，你必须对每个城市都调用一次 get_weather，"
+        "拿到所有城市的数据后再做比较回答。"
+    ),
+))
+
+
+@chat.tool
+def get_weather(city: str) -> str:
+    """查询指定城市的实时天气
+
+    Args:
+        city: 城市名称，如 '北京'、'上海'、'London'
+    """
+    try:
+        resp = requests.get(
+            f"https://wttr.in/{city}?format=j1",
+            timeout=10,
+            headers={"Accept-Language": "zh-CN"},
+        )
+        resp.encoding = 'utf-8'
+        data = resp.json()
+        current = data["current_condition"][0]
+        desc = current.get("lang_zh", [{}])
+        desc_text = desc[0]["value"] if desc else current.get("weatherDesc", [{}])[0].get("value", "未知")
+        temp = current["temp_C"]
+        feels = current["FeelsLikeC"]
+        humidity = current["humidity"]
+        wind = current["windspeedKmph"]
+        return f"{city}: {desc_text}, 气温{temp}°C, 体感{feels}°C, 湿度{humidity}%, 风速{wind}km/h"
+    except Exception as e:
+        return f"查询失败: {e}"
+
+
+questions = [
+    "北京今天天气怎么样？",
+    "上海和广州哪个更热？",
+    "1+1等于几？",
+]
+
+for q in questions:
+    print(f"\n{'='*60}")
+    print(f"Q: {q}")
+    print("=" * 60)
+    result = chat.ask(q)
+    print(f"A: {result}")
+
+    if result.tool_calls_made:
+        print(f"\n  [工具调用]: {[(tc.name, tc.args) for tc in result.tool_calls_made]}")
+
+`````
+
+--- **end of file: examples/24_web_weather_search.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/25_rag.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 25：RAG（检索增强生成）
+将自定义知识加载到向量库，模型根据检索到的相关片段来回答问题。
+
+依赖：只需要一个 Embedding API（这里用 SiliconFlow 免费的 bce-embedding）。
+"""
+import logging
+from nb_llm import RAG, RAGConfig
+from my_configs.common_config import MODEL, BASE_URL, MODEL_EMBEDDING
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
+logging.getLogger('nb_llm.rag').setLevel(logging.DEBUG)
+logging.getLogger('nb_llm.embedding').setLevel(logging.DEBUG)
+
+rag = RAG(RAGConfig(
+    model=MODEL,
+    api_key=SILICONFLOW_API_KEY,
+    base_url=BASE_URL,
+    embedding_model=MODEL_EMBEDDING,
+    top_k=3,
+    chunk_size=200,
+))
+
+knowledge = """
+nb_llm 是一个轻量级的 Python LLM 框架，专注于简洁易用。
+
+核心特性：
+1. Chat 类：一行代码即可与 LLM 对话，支持同步和异步（aio_send / aio_ask）。
+2. 工具调用（Function Calling）：通过 @chat.tool 装饰器注册函数，模型自动判断是否调用。
+3. 结构化输出：支持 Pydantic 模型作为响应类型，自动解析 JSON。
+4. 流式输出：chat.stream() 方法实时返回生成内容。
+5. 多模型容错：支持 retry + fallback，主模型失败自动切换备用模型。
+6. RAG：内置文档加载、切片、向量化、检索，一站式构建知识库。
+7. Router：智能路由，根据用户问题自动分发给不同领域的专家模型。
+8. Team：多智能体协作，多个 Chat 实例围绕一个主题进行讨论并汇总结论。
+9. Pipeline：管道式处理，将多个步骤串联执行。
+10. NbBaseModel：Pydantic v1/v2 兼容基类，统一 API。
+
+作者信息：
+nb_llm 由 ydf 开发，遵循 MIT 开源协议。项目地址在 GitHub 上。
+框架设计理念是"够用就好"，不追求大而全，而是聚焦 LLM 应用最常见的 80% 场景。
+
+版本信息：
+当前版本 0.1.0，支持 Python 3.7+。
+底层使用 OpenAI 兼容协议，可以对接 OpenAI、SiliconFlow、DeepSeek 等任何兼容 API。
+
+安装方式：
+pip install nb_llm
+
+日志系统：
+nb_llm 内置了细粒度的日志体系，包括 nb_llm.request、nb_llm.response、nb_llm.tools 等 10 个独立 logger。
+用户可以按需开启某个 logger 的 DEBUG 级别，而不会被无关日志淹没。
+"""
+
+print("正在构建知识库...")
+rag.add_text(knowledge)
+print(f"知识库就绪: {rag}\n")
+
+questions = [
+    "nb_llm 支持哪些核心功能？",
+    "nb_llm 怎么安装？",
+    "nb_llm 的作者是谁？设计理念是什么？",
+    "nb_llm 支持哪些日志？",
+    "TensorFlow 怎么安装？",
+]
+
+for q in questions:
+    print(f"\n{'='*60}")
+    print(f"Q: {q}")
+    print("=" * 60)
+    result = rag.chat(q)
+    print(f"A: {result}")
+
+    if result.sources:
+        print(f"\n  [参考来源] 共检索到 {len(result.sources)} 个片段:")
+        for i, src in enumerate(result.sources):
+            snippet = src.chunk[:80].replace('\n', ' ')
+            print(f"    [{i+1}] (相似度 {src.score:.4f}) {snippet}...")
+
+`````
+
+--- **end of file: examples/25_rag.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: examples/26_rag_real_project.py** (project: nb_llm) --- 
+
+`````python
+"""
+示例 26：RAG 进阶 — 用真实项目文件构建知识库
+将 nb_llm 的 examples、README.md、API 文档全部加载到 RAG 知识库，
+然后测试模型能否基于这些真实内容回答问题。
+"""
+import logging
+from nb_llm import RAG, RAGConfig
+from my_configs.common_config import MODEL, BASE_URL, MODEL_EMBEDDING
+from my_configs.secret_config import SILICONFLOW_API_KEY
+
+logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
+logging.getLogger('nb_llm.rag').setLevel(logging.DEBUG)
+
+rag = RAG(RAGConfig(
+    model=MODEL,
+    api_key=SILICONFLOW_API_KEY,
+    base_url=BASE_URL,
+    embedding_model=MODEL_EMBEDDING,
+    top_k=5,
+    chunk_size=500,
+    chunk_overlap=50,
+))
+
+print("正在加载项目文件到知识库...")
+
+rag.add("examples/")
+rag.add("README.md")
+rag.add("tests/ai_docs/nb_llm_api_doc.md")
+
+print(f"知识库就绪: {rag}\n")
+
+questions = [
+    "nb_llm 怎么做流式输出？请给出代码示例",
+    "nb_llm 的 Router 路由器怎么使用？",
+    "nb_llm 支持哪些历史持久化后端？",
+    "怎么用 nb_llm 注册和调用工具(Function Calling)？",
+    "nb_llm 的 Team 多智能体协作怎么用？",
+    "PyTorch 的分布式训练怎么做？",
+]
+
+for q in questions:
+    print(f"\n{'='*70}")
+    print(f"Q: {q}")
+    print("=" * 70)
+    result = rag.chat(q)
+    print(f"A: {result}")
+
+    if result.sources:
+        print(f"\n  [参考来源] 共检索到 {len(result.sources)} 个片段:")
+        for i, src in enumerate(result.sources):
+            file_info = f"({src.file}) " if src.file else ""
+            snippet = src.chunk[:80].replace('\n', ' ')
+            print(f"    [{i+1}] {file_info}(相似度 {src.score:.4f}) {snippet}...")
+
+`````
+
+--- **end of file: examples/26_rag_real_project.py** (project: nb_llm) --- 
 
 ---
 
@@ -1307,6 +2032,7 @@ asyncio.run(main())
     │   └── team.py
     ├── core
     │   ├── __init__.py
+    │   ├── base_model.py
     │   ├── chat.py
     │   ├── config.py
     │   ├── data_types.py
@@ -1316,6 +2042,7 @@ asyncio.run(main())
     │   ├── __init__.py
     │   └── embedding.py
     ├── exceptions.py
+    ├── loggers.py
     ├── middleware
     │   ├── __init__.py
     │   └── cache.py
@@ -1346,10 +2073,12 @@ asyncio.run(main())
 ---
 
 
-## nb_llm (relative dir: `nb_llm`)  Included Files (total: 32 files)
+## nb_llm (relative dir: `nb_llm`)  Included Files (total: 34 files)
 
 
 - `nb_llm/exceptions.py`
+
+- `nb_llm/loggers.py`
 
 - `nb_llm/__init__.py`
 
@@ -1360,6 +2089,8 @@ asyncio.run(main())
 - `nb_llm/agents/team.py`
 
 - `nb_llm/agents/__init__.py`
+
+- `nb_llm/core/base_model.py`
 
 - `nb_llm/core/chat.py`
 
@@ -1498,6 +2229,65 @@ class SchemaValidationError(NbLLMError):
 ---
 
 
+--- **start of file: nb_llm/loggers.py** (project: nb_llm) --- 
+
+`````python
+"""
+nb_llm 日志体系 — 集中定义所有 logger
+
+用法：
+    import logging
+    logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
+
+    # 按需开启某个 logger
+    logging.getLogger('nb_llm.request').setLevel(logging.DEBUG)
+    logging.getLogger('nb_llm.response').setLevel(logging.DEBUG)
+
+    # 或一次性开启所有 nb_llm 日志
+    logging.getLogger('nb_llm').setLevel(logging.DEBUG)
+"""
+import logging
+
+logger_request = logging.getLogger('nb_llm.request')
+"""每次发给 LLM 的完整请求体（messages + tools + 参数）"""
+
+logger_response = logging.getLogger('nb_llm.response')
+"""每次 LLM 返回的完整原始 JSON 响应"""
+
+logger_tools = logging.getLogger('nb_llm.tools')
+"""工具调用循环：模型请求了哪些工具、工具返回了什么、循环了几轮"""
+
+logger_history = logging.getLogger('nb_llm.history')
+"""历史记录后端：save / load / clear 操作"""
+
+logger_cache = logging.getLogger('nb_llm.cache')
+"""响应缓存：命中(hit) / 未命中(miss) / 写入(set)"""
+
+logger_retry = logging.getLogger('nb_llm.retry')
+"""重试与降级：第几次重试、退避时长、是否触发 fallback"""
+
+logger_router = logging.getLogger('nb_llm.router')
+"""智能路由：分类 prompt、模型返回的类别、最终路由到哪个 expert"""
+
+logger_team = logging.getLogger('nb_llm.team')
+"""多智能体协作：每轮讨论内容、各 agent 发言、最终总结"""
+
+logger_pipeline = logging.getLogger('nb_llm.pipeline')
+"""管道执行：每个步骤的输入/输出"""
+
+logger_rag = logging.getLogger('nb_llm.rag')
+"""RAG 检索：查询向量、检索到的 top-K 文档、相似度分数"""
+
+logger_embedding = logging.getLogger('nb_llm.embedding')
+"""Embedding 向量化：请求的文本数量、模型、返回的向量维度"""
+
+`````
+
+--- **end of file: nb_llm/loggers.py** (project: nb_llm) --- 
+
+---
+
+
 --- **start of file: nb_llm/__init__.py** (project: nb_llm) --- 
 
 `````python
@@ -1505,13 +2295,14 @@ class SchemaValidationError(NbLLMError):
 nb_llm — 大开大合的 LLM 框架
 """
 from nb_llm.core.chat import Chat, ChatSession, Pipeline
-from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.core.config import ChatConfig, SendOptions, RAGConfig
 from nb_llm.core.response import ChatResponse, StreamResponse
 from nb_llm.core.data_types import (
     UsageInfo, ToolCallRecord, PendingToolCall,
     SourceInfo, TeamMessage, TeamResult, CostTracker,
     DataMixin,
 )
+from nb_llm.core.base_model import NbBaseModel
 from nb_llm.core.history_backends import (
     HistoryBackend, MemoryBackend, FileBackend, SqliteBackend, RedisBackend,
 )
@@ -1524,15 +2315,22 @@ from nb_llm.exceptions import (
 from nb_llm.providers.registry import register_provider
 from nb_llm.embedding.embedding import Embedding
 from nb_llm.rag.rag import RAG
+from nb_llm.rag.vectorstore import MemoryVectorStore, FaissVectorStore, ChromaVectorStore
 from nb_llm.agents.router import Router
 from nb_llm.agents.team import Team
 from nb_llm.workflow.step import step
+from nb_llm.loggers import (  # noqa: F401 - 方便用户发现可用 logger
+    logger_request, logger_response, logger_tools,
+    logger_history, logger_cache, logger_retry,
+    logger_router, logger_team, logger_pipeline, logger_rag,
+    logger_embedding,
+)
 
 __version__ = "0.1.0"
 
 __all__ = [
     # 核心
-    "Chat", "ChatConfig", "SendOptions",
+    "Chat", "ChatConfig", "SendOptions", "RAGConfig",
     # 返回值
     "ChatResponse", "StreamResponse",
     "UsageInfo", "ToolCallRecord", "PendingToolCall",
@@ -1546,7 +2344,7 @@ __all__ = [
     # 中间件
     "ResponseCache",
     # 基础
-    "DataMixin",
+    "NbBaseModel", "DataMixin",
     # 异常
     "NbLLMError", "ProviderError", "RateLimitError", "TokenLimitError",
     "AuthenticationError", "TimeoutError", "ToolExecutionError",
@@ -1733,6 +2531,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional
 
+from nb_llm.loggers import logger_router as logger
+
 if TYPE_CHECKING:
     from nb_llm.core.chat import Chat
     from nb_llm.core.config import SendOptions
@@ -1751,6 +2551,8 @@ class Router:
             raise ValueError("Router 至少需要一个 expert")
         self.experts = experts
         self.classifier = classifier
+        self.last_route: Optional[str] = None
+        self.last_classify_raw: Optional[str] = None
 
     def send(self, prompt: str,
              options: Optional[SendOptions] = None) -> ChatResponse:
@@ -1760,18 +2562,30 @@ class Router:
             f"可选分类：{', '.join(expert_names)}\n"
             f"用户输入：{prompt}"
         )
+        logger.debug("分类提问: %s", classify_prompt)
         category = str(self.classifier.ask(classify_prompt)).strip().lower()
+        self.last_classify_raw = category
+        logger.debug("模型分类结果: '%s'", category)
 
+        matched_name = None
         expert = self.experts.get(category)
+        if expert is not None:
+            matched_name = category
+
         if expert is None:
             for name, chat in self.experts.items():
                 if name.lower() in category or category in name.lower():
                     expert = chat
+                    matched_name = name
                     break
 
         if expert is None:
+            matched_name = list(self.experts.keys())[0]
             expert = list(self.experts.values())[0]
+            logger.debug("未精确匹配，降级到默认 expert: %s", matched_name)
 
+        self.last_route = matched_name
+        logger.debug("最终路由 → expert '%s'", matched_name)
         return expert.send(prompt, options)
 
     def __call__(self, prompt: str,
@@ -1798,6 +2612,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
 
 from nb_llm.core.data_types import TeamMessage, TeamResult
+from nb_llm.loggers import logger_team as logger
 
 if TYPE_CHECKING:
     from nb_llm.core.chat import Chat
@@ -1817,6 +2632,8 @@ class Team:
         self.moderator = moderator
 
     def discuss(self, topic: str, rounds: int = 3) -> TeamResult:
+        logger.debug("开始讨论，主题: %s，轮数: %d，agents: %d",
+                     topic, rounds, len(self.agents))
         transcript: List[TeamMessage] = []
         shared_context = f"讨论主题：{topic}\n\n"
 
@@ -1833,8 +2650,12 @@ class Team:
                 )
                 transcript.append(msg)
                 shared_context += f"[{msg.agent_name}] (第{msg.round}轮): {msg.content}\n\n"
+                logger.debug("[Round %d] %s: %.100s...",
+                             round_num + 1, agent_name, msg.content)
 
         summarizer = self.moderator or self.agents[0]
+        logger.debug("总结阶段，由 %s 执行",
+                     getattr(summarizer, 'name', None) or 'moderator')
         conclusion = summarizer.ask(f"请总结以下讨论的结论：\n{shared_context}")
 
         return TeamResult(
@@ -1865,6 +2686,85 @@ class Team:
 ---
 
 
+--- **start of file: nb_llm/core/base_model.py** (project: nb_llm) --- 
+
+`````python
+"""
+NbBaseModel — Pydantic v1/v2 兼容基类。
+
+用户继承 NbBaseModel 代替直接继承 pydantic.BaseModel，
+即可使用统一的 API，不受 Pydantic 版本差异影响。
+
+用法::
+
+    from nb_llm import NbBaseModel
+    from pydantic import Field
+
+    class Movie(NbBaseModel):
+        title: str = Field(description="电影名称")
+        year: int = Field(description="上映年份")
+
+    movie = Movie(title="星际穿越", year=2014)
+    print(movie.to_dict())          # {'title': '星际穿越', 'year': 2014}
+    print(movie.to_json_str())      # '{"title":"星际穿越","year":2014}'
+    print(Movie.get_json_schema())  # JSON Schema dict
+"""
+from __future__ import annotations
+
+import json as json_mod
+from typing import Any, Dict, Type, TypeVar
+
+from pydantic import BaseModel
+
+T = TypeVar('T', bound='NbBaseModel')
+
+
+class NbBaseModel(BaseModel):
+    """Pydantic v1/v2 兼容基类，提供统一 API。"""
+
+    def to_dict(self) -> Dict[str, Any]:
+        """转为字典（兼容 v1 dict() 和 v2 model_dump()）"""
+        if hasattr(self, 'model_dump'):
+            return self.model_dump()
+        return self.dict()
+
+    def to_json_str(self, **kwargs) -> str:
+        """转为 JSON 字符串（兼容 v1 json() 和 v2 model_dump_json()）"""
+        if hasattr(self, 'model_dump_json'):
+            return self.model_dump_json(**kwargs)
+        return self.json(**kwargs)
+
+    @classmethod
+    def get_json_schema(cls) -> Dict[str, Any]:
+        """获取 JSON Schema（兼容 v1 schema() 和 v2 model_json_schema()）"""
+        if hasattr(cls, 'model_json_schema'):
+            return cls.model_json_schema()
+        return cls.schema()
+
+    @classmethod
+    def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
+        """从字典构造（兼容 v1 构造器 和 v2 model_validate()）"""
+        if hasattr(cls, 'model_validate'):
+            return cls.model_validate(data)
+        return cls(**data)
+
+    @classmethod
+    def from_json(cls: Type[T], json_str: str) -> T:
+        """从 JSON 字符串构造（兼容 v1 parse_raw() 和 v2 model_validate_json()）"""
+        if hasattr(cls, 'model_validate_json'):
+            return cls.model_validate_json(json_str)
+        if hasattr(cls, 'parse_raw'):
+            return cls.parse_raw(json_str)
+        data = json_mod.loads(json_str)
+        return cls(**data)
+
+`````
+
+--- **end of file: nb_llm/core/base_model.py** (project: nb_llm) --- 
+
+---
+
+
 --- **start of file: nb_llm/core/chat.py** (project: nb_llm) --- 
 
 `````python
@@ -1876,6 +2776,7 @@ import json as json_mod
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.loggers import logger_cache, logger_retry, logger_pipeline
 from nb_llm.core.data_types import (
     CostTracker, PendingToolCall, SourceInfo, UsageInfo,
 )
@@ -2046,7 +2947,7 @@ class Chat:
 
     # ==================== 异步接口 ====================
 
-    async def asend(self, prompt: str,
+    async def aio_send(self, prompt: str,
                     options: Optional[SendOptions] = None) -> ChatResponse:
         messages = self._build_messages(prompt, options)
         response = await self._async_call(messages, options)
@@ -2058,19 +2959,19 @@ class Chat:
         self._persist_history()
         return chat_resp
 
-    async def aask(self, prompt: str,
+    async def aio_ask(self, prompt: str,
                    options: Optional[SendOptions] = None) -> ChatResponse:
         messages = self._build_messages(prompt, options, include_history=False)
         response = await self._async_call(messages, options)
         text = self._extract_text(response)
         return self._build_chat_response(response, text, options)
 
-    async def astream(self, prompt: str,
+    async def aio_stream(self, prompt: str,
                       options: Optional[SendOptions] = None) -> StreamResponse:
         messages = self._build_messages(prompt, options)
         self._fire_before_hooks(messages, options)
         try:
-            aiter = self._provider.astream_completion(messages, self.config, options)
+            aiter = self._provider.aio_stream_completion(messages, self.config, options)
         except Exception as e:
             self._fire_error_hooks(e)
             raise
@@ -2091,7 +2992,7 @@ class Chat:
         self._history.append({'role': 'user', 'content': prompt})
         return sr
 
-    async def abatch(self, prompts: List[str],
+    async def aio_batch(self, prompts: List[str],
                      options: Optional[SendOptions] = None,
                      concurrency: int = 5) -> List[ChatResponse]:
         import asyncio
@@ -2099,7 +3000,7 @@ class Chat:
 
         async def _ask_one(idx: int, prompt: str):
             async with sem:
-                resp = await self.aask(prompt, options)
+                resp = await self.aio_ask(prompt, options)
                 return idx, resp
 
         tasks = [_ask_one(i, p) for i, p in enumerate(prompts)]
@@ -2114,17 +3015,18 @@ class Chat:
         self._fire_before_hooks(messages, options)
         try:
             tools_schema = self._tool_executor.schemas if self._tool_executor.schemas else None
-            response = await self._provider.achat_completion(
+            response = await self._provider.aio_chat_completion(
                 messages, config=self.config, options=options, tools=tools_schema,
             )
             if tools_schema and self._tool_executor.schemas:
                 max_rounds = options.max_tool_rounds if options else 10
-                response, records, pending = await self._tool_executor.async_execute_loop(
+                response, records, pending, rounds = await self._tool_executor.async_execute_loop(
                     self._provider, messages, response,
                     config=self.config, options=options, max_rounds=max_rounds,
                 )
                 response['_tool_calls_made'] = records
                 response['_tool_calls_pending'] = pending
+                response['_tool_call_rounds'] = rounds
             return response
         except Exception as e:
             self._fire_error_hooks(e)
@@ -2336,13 +3238,20 @@ class Chat:
             fields_desc = []
             example_obj = {}
 
-            if hasattr(rt, 'model_json_schema'):
+            schema = None
+            if hasattr(rt, 'get_json_schema'):
+                schema = rt.get_json_schema()
+            elif hasattr(rt, 'model_json_schema'):
                 schema = rt.model_json_schema()
+            elif hasattr(rt, 'schema') and callable(getattr(rt, 'schema', None)):
+                schema = rt.schema()
+
+            if schema is not None:
                 props = schema.get('properties', {})
                 required = schema.get('required', [])
                 for fname, finfo in props.items():
                     ftype = finfo.get('type', 'string')
-                    fdesc = finfo.get('description', '')
+                    fdesc = finfo.get('description', finfo.get('title', ''))
                     req_mark = '（必填）' if fname in required else '（可选）'
                     fields_desc.append(f"- {fname} ({ftype}): {fdesc} {req_mark}")
                     example_obj[fname] = _schema_type_placeholder(ftype)
@@ -2381,7 +3290,9 @@ class Chat:
         if self._cache:
             cached = self._cache.get(messages, self.config, options)
             if cached is not None:
+                logger_cache.debug("缓存命中 (hit)")
                 return cached
+            logger_cache.debug("缓存未命中 (miss)")
 
         self._fire_before_hooks(messages, options)
 
@@ -2398,6 +3309,7 @@ class Chat:
 
         if self._cache:
             self._cache.set(messages, response, self.config, options)
+            logger_cache.debug("缓存写入 (set)")
 
         return response
 
@@ -2479,12 +3391,13 @@ class Chat:
 
                 if tools_schema and self._tool_executor.schemas:
                     max_rounds = options.max_tool_rounds if options else 10
-                    response, records, pending = self._tool_executor.execute_loop(
+                    response, records, pending, rounds = self._tool_executor.execute_loop(
                         self._provider, messages, response,
                         config=self.config, options=options, max_rounds=max_rounds,
                     )
                     response['_tool_calls_made'] = records
                     response['_tool_calls_pending'] = pending
+                    response['_tool_call_rounds'] = rounds
 
                 return response
 
@@ -2492,10 +3405,14 @@ class Chat:
                 last_error = e
                 if attempt < max_retries:
                     import time
-                    time.sleep(self.config.retry_delay * (2 ** attempt))
+                    delay = self.config.retry_delay * (2 ** attempt)
+                    logger_retry.debug("第 %d/%d 次重试失败: %s，退避 %.1fs",
+                                       attempt + 1, max_retries, e, delay)
+                    time.sleep(delay)
                     continue
 
                 if self.config.fallback:
+                    logger_retry.debug("重试耗尽，触发 fallback → %s", self.config.fallback)
                     return self._call_fallback(messages, options)
                 raise
 
@@ -2531,6 +3448,7 @@ class Chat:
 
         tool_calls_made = response.pop('_tool_calls_made', [])
         tool_calls_pending = response.pop('_tool_calls_pending', [])
+        tool_call_rounds = response.pop('_tool_call_rounds', [])
 
         resp = ChatResponse(
             text,
@@ -2539,6 +3457,7 @@ class Chat:
             finish_reason=first_choice.get('finish_reason', 'stop'),
             tool_calls=tool_calls_pending,
             tool_calls_made=tool_calls_made,
+            tool_call_rounds=tool_call_rounds,
             raw=response,
             model=response.get('model', self._provider.model),
             logprobs=first_choice.get('logprobs'),
@@ -2608,7 +3527,9 @@ class Chat:
 
         for attempt in range(max_retries + 1):
             try:
-                if hasattr(response_type, 'model_validate_json'):
+                if hasattr(response_type, 'from_json'):
+                    return response_type.from_json(clean_text)
+                elif hasattr(response_type, 'model_validate_json'):
                     return response_type.model_validate_json(clean_text)
                 elif hasattr(response_type, 'model_validate'):
                     data = json_mod.loads(clean_text)
@@ -2639,11 +3560,17 @@ class Chat:
 
                 if isinstance(e, json_mod.JSONDecodeError):
                     raise JsonParseError(
-                        f"JSON 解析失败（重试 {max_retries} 次后）",
+                        f"JSON 解析失败（重试 {max_retries} 次后）\n"
+                        f"原始返回文本: {text}\n"
+                        f"清理后文本: {clean_text}\n"
+                        f"解析错误: {e}",
                         raw_text=text, parse_error=e,
                     )
                 raise SchemaValidationError(
-                    f"结构化输出验证失败（重试 {max_retries} 次后）: {e}",
+                    f"结构化输出验证失败（重试 {max_retries} 次后）\n"
+                    f"原始返回文本: {text}\n"
+                    f"清理后文本: {clean_text}\n"
+                    f"验证错误: {e}",
                     raw_text=text, validation_error=e, response_type=response_type,
                 )
 
@@ -2653,7 +3580,11 @@ class Chat:
             return json_mod.loads(clean_text)
         except json_mod.JSONDecodeError as e:
             raise JsonParseError(
-                f"JSON 解析失败: {e}", raw_text=text, parse_error=e,
+                f"JSON 解析失败\n"
+                f"原始返回文本: {text}\n"
+                f"清理后文本: {clean_text}\n"
+                f"解析错误: {e}",
+                raw_text=text, parse_error=e,
             )
 
     def _trim_history(self) -> None:
@@ -2803,8 +3734,13 @@ class Pipeline:
             return ChatResponse(prompt)
         current = prompt
         last_resp = None
-        for chat in self._chats:
+        for i, chat in enumerate(self._chats):
+            step_name = chat.config.name or chat.config.model or f'step_{i}'
+            logger_pipeline.debug("[Step %d/%d] %s 输入: %.100s...",
+                                  i + 1, len(self._chats), step_name, str(current))
             last_resp = chat.ask(str(current), options)
+            logger_pipeline.debug("[Step %d/%d] %s 输出: %.100s...",
+                                  i + 1, len(self._chats), step_name, str(last_resp))
             current = last_resp
         return last_resp
 
@@ -2846,7 +3782,7 @@ class _SyncWrap:
 --- **start of file: nb_llm/core/config.py** (project: nb_llm) --- 
 
 `````python
-"""ChatConfig 和 SendOptions dataclass 定义"""
+"""ChatConfig、SendOptions、RAGConfig dataclass 定义"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -2937,6 +3873,42 @@ class SendOptions:
     # 追踪
     tags: Optional[List[str]] = None
     metadata: Optional[dict] = None
+
+
+@dataclass
+class RAGConfig:
+    """
+    RAG 的配置类。
+    dataclass 设计：用户可继承重写，IDE 完美补全所有字段。
+
+    示例::
+
+        config = RAGConfig(
+            model="deepseek",
+            embedding_model="text-embedding-3-small",
+            top_k=5,
+        )
+        rag = RAG(config)
+    """
+    model: str = "deepseek"
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    system: Optional[str] = None  # None=默认严格模式, ""=关闭
+
+    # Embedding 配置
+    embedding_model: str = "text-embedding-3-small"
+    embedding_api_key: Optional[str] = None
+    embedding_base_url: Optional[str] = None
+
+    # 切分参数
+    chunk_size: int = 500
+    chunk_overlap: int = 50
+
+    # 检索参数
+    top_k: int = 5
+
+    # 向量库
+    vectorstore: str = "memory"  # "memory" | "sqlite" | "chromadb"
 
 `````
 
@@ -3060,6 +4032,19 @@ class PendingToolCall:
         return f"PendingToolCall(name={self.name!r}, args={self.args!r})"
 
 
+class ToolCallRound(DataMixin):
+    """工具调用循环中的一轮记录，用于调试/观察模型行为"""
+
+    def __init__(self, round_index: int = 0,
+                 model_tool_calls: Optional[List[dict]] = None,
+                 tool_results: Optional[List[dict]] = None,
+                 raw_response: Optional[dict] = None) -> None:
+        self.round_index = round_index
+        self.model_tool_calls = model_tool_calls or []
+        self.tool_results = tool_results or []
+        self.raw_response = raw_response or {}
+
+
 class SourceInfo(DataMixin):
     """RAG 检索到的来源信息"""
 
@@ -3138,6 +4123,8 @@ import json
 import os
 from typing import Dict, List, Optional
 
+from nb_llm.loggers import logger_history as logger
+
 
 class HistoryBackend:
     """历史后端基类"""
@@ -3159,13 +4146,17 @@ class MemoryBackend(HistoryBackend):
         self._store: Dict[str, List[dict]] = {}
 
     def load(self, session_id: str = 'default') -> List[dict]:
-        return list(self._store.get(session_id, []))
+        data = list(self._store.get(session_id, []))
+        logger.debug("MemoryBackend.load(session=%s) → %d 条消息", session_id, len(data))
+        return data
 
     def save(self, history: List[dict], session_id: str = 'default') -> None:
         self._store[session_id] = list(history)
+        logger.debug("MemoryBackend.save(session=%s) ← %d 条消息", session_id, len(history))
 
     def clear(self, session_id: str = 'default') -> None:
         self._store.pop(session_id, None)
+        logger.debug("MemoryBackend.clear(session=%s)", session_id)
 
 
 class FileBackend(HistoryBackend):
@@ -3183,18 +4174,23 @@ class FileBackend(HistoryBackend):
         path = self._path(session_id)
         if os.path.exists(path):
             with open(path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+            logger.debug("FileBackend.load(session=%s, path=%s) → %d 条消息", session_id, path, len(data))
+            return data
+        logger.debug("FileBackend.load(session=%s, path=%s) → 文件不存在，返回空", session_id, path)
         return []
 
     def save(self, history: List[dict], session_id: str = 'default') -> None:
         path = self._path(session_id)
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
+        logger.debug("FileBackend.save(session=%s, path=%s) ← %d 条消息", session_id, path, len(history))
 
     def clear(self, session_id: str = 'default') -> None:
         path = self._path(session_id)
         if os.path.exists(path):
             os.remove(path)
+            logger.debug("FileBackend.clear(session=%s, path=%s) 已删除", session_id, path)
 
 
 class SqliteBackend(HistoryBackend):
@@ -3217,7 +4213,10 @@ class SqliteBackend(HistoryBackend):
         )
         row = cursor.fetchone()
         if row:
-            return json.loads(row[0])
+            data = json.loads(row[0])
+            logger.debug("SqliteBackend.load(session=%s, db=%s) → %d 条消息", session_id, self.db_path, len(data))
+            return data
+        logger.debug("SqliteBackend.load(session=%s, db=%s) → 无记录", session_id, self.db_path)
         return []
 
     def save(self, history: List[dict], session_id: str = 'default') -> None:
@@ -3238,10 +4237,12 @@ class SqliteBackend(HistoryBackend):
                 (session_id, messages_json, time.time()),
             )
         self._conn.commit()
+        logger.debug("SqliteBackend.save(session=%s, db=%s) ← %d 条消息", session_id, self.db_path, len(history))
 
     def clear(self, session_id: str = 'default') -> None:
         self._conn.execute('DELETE FROM history WHERE session_id = ?', (session_id,))
         self._conn.commit()
+        logger.debug("SqliteBackend.clear(session=%s, db=%s)", session_id, self.db_path)
 
     def close(self) -> None:
         self._conn.close()
@@ -3319,7 +4320,7 @@ from __future__ import annotations
 from typing import Any, List, Optional, Iterator
 
 from nb_llm.core.data_types import (
-    UsageInfo, ToolCallRecord, PendingToolCall, SourceInfo,
+    UsageInfo, ToolCallRecord, PendingToolCall, SourceInfo, ToolCallRound,
 )
 
 
@@ -3334,6 +4335,7 @@ class ChatResponse(str):
     finish_reason: str
     tool_calls: List[PendingToolCall]
     tool_calls_made: List[ToolCallRecord]
+    tool_call_rounds: List[ToolCallRound]
     sources: List[SourceInfo]
     parsed: Any
     choices: Optional[List[ChatResponse]]
@@ -3348,6 +4350,7 @@ class ChatResponse(str):
         instance.finish_reason = kwargs.get('finish_reason', 'stop')
         instance.tool_calls = kwargs.get('tool_calls', [])
         instance.tool_calls_made = kwargs.get('tool_calls_made', [])
+        instance.tool_call_rounds = kwargs.get('tool_call_rounds', [])
         instance.sources = kwargs.get('sources', [])
         instance.parsed = kwargs.get('parsed', None)
         instance.choices = kwargs.get('choices', None)
@@ -3486,12 +4489,20 @@ class StreamResponse:
 """Embedding 向量化类"""
 from __future__ import annotations
 
+import json
 import os
 from typing import List, Optional, Union
 
+from nb_llm.loggers import logger_embedding as logger
+
+try:
+    import requests as _requests
+except ImportError:
+    _requests = None
+
 try:
     import openai as openai_sdk
-except ImportError:
+except (ImportError, Exception):
     openai_sdk = None
 
 
@@ -3509,6 +4520,7 @@ class Embedding:
     """
     Embedding 向量化。
     支持字符串和字符串列表输入，返回向量或向量列表。
+    优先使用 openai SDK，不可用时退回 requests 直接调 HTTP。
     """
 
     def __init__(self, model: str = "text-embedding-3-small",
@@ -3525,6 +4537,7 @@ class Embedding:
         self.base_url = base_url or default_base_url
         self.api_key = api_key or os.environ.get(key_env, '') or os.environ.get('NB_LLM_API_KEY', '')
         self._client = None
+        self._use_requests = (openai_sdk is None)
 
     def _get_client(self):
         if self._client is None:
@@ -3536,15 +4549,83 @@ class Embedding:
             )
         return self._client
 
-    def embed(self, text: Union[str, List[str]]) -> Union[List[float], List[List[float]]]:
+    @staticmethod
+    def _summarize_response(raw_data: dict, preview_dims: int = 5) -> dict:
+        """生成响应摘要：保留结构，embedding 向量只展示前几维"""
+        summary = {}
+        for k, v in raw_data.items():
+            if k == 'data':
+                summary['data'] = []
+                for item in v:
+                    item_summary = {}
+                    for ik, iv in item.items():
+                        if ik == 'embedding' and isinstance(iv, list) and len(iv) > preview_dims * 2:
+                            head = [round(x, 6) for x in iv[:preview_dims]]
+                            tail = [round(x, 6) for x in iv[-2:]]
+                            item_summary['embedding'] = f"{head} ... {tail}  ({len(iv)}维)"
+                        else:
+                            item_summary[ik] = iv
+                    summary['data'].append(item_summary)
+            else:
+                summary[k] = v
+        return summary
+
+    def _embed_via_requests(self, texts: List[str]) -> List[List[float]]:
+        if _requests is None:
+            raise ImportError("需要安装 requests 或 openai: pip install requests")
+        url = self.base_url.rstrip('/') + '/embeddings'
+        headers = {
+            'Authorization': f'Bearer {self.api_key}',
+            'Content-Type': 'application/json',
+        }
+        payload = {'model': self.model, 'input': texts}
+        logger.debug("发送 Embedding 请求 → %s\n%s",
+                     self.model,
+                     json.dumps(payload, ensure_ascii=False, indent=2))
+        resp = _requests.post(url, headers=headers, json=payload, timeout=60)
+        resp.raise_for_status()
+        data = resp.json()
+        logger.debug("收到 Embedding 响应 ← %s\n%s",
+                     self.model,
+                     json.dumps(self._summarize_response(data), ensure_ascii=False, indent=2))
+        items = sorted(data['data'], key=lambda x: x['index'])
+        return [item['embedding'] for item in items]
+
+    def embed(self, text: Union[str, List[str]],
+              batch_size: int = 20) -> Union[List[float], List[List[float]]]:
         is_single = isinstance(text, str)
         texts = [text] if is_single else text
 
+        if len(texts) <= batch_size:
+            vectors = self._embed_batch(texts)
+        else:
+            vectors = []
+            for i in range(0, len(texts), batch_size):
+                batch = texts[i:i + batch_size]
+                logger.debug("分批 Embedding: 第 %d/%d 批 (%d 条)",
+                             i // batch_size + 1,
+                             (len(texts) + batch_size - 1) // batch_size,
+                             len(batch))
+                vectors.extend(self._embed_batch(batch))
+
+        return vectors[0] if is_single else vectors
+
+    def _embed_batch(self, texts: List[str]) -> List[List[float]]:
+        if self._use_requests:
+            return self._embed_via_requests(texts)
+
+        payload = {'model': self.model, 'input': texts}
+        logger.debug("发送 Embedding 请求 → %s (via openai SDK)\n%s",
+                     self.model,
+                     json.dumps(payload, ensure_ascii=False, indent=2))
         client = self._get_client()
         resp = client.embeddings.create(model=self.model, input=texts)
         vectors = [item.embedding for item in resp.data]
-
-        return vectors[0] if is_single else vectors
+        dim = len(vectors[0]) if vectors else 0
+        usage = resp.usage if hasattr(resp, 'usage') else {}
+        logger.debug("收到 Embedding 响应 ← %s\n  向量数: %d, 维度: %d, usage: %s",
+                     self.model, len(vectors), dim, usage)
+        return vectors
 
     def __call__(self, text: Union[str, List[str]]) -> Union[List[float], List[List[float]]]:
         return self.embed(text)
@@ -3832,13 +4913,13 @@ class BaseProvider(ABC):
                           options: Optional[SendOptions] = None) -> Iterator[dict]:
         ...
 
-    async def achat_completion(self, messages: list,
+    async def aio_chat_completion(self, messages: list,
                                config: Optional[ChatConfig] = None,
                                options: Optional[SendOptions] = None,
                                tools: Optional[list] = None) -> dict:
         return self.chat_completion(messages, config, options, tools)
 
-    async def astream_completion(self, messages: list,
+    async def aio_stream_completion(self, messages: list,
                                  config: Optional[ChatConfig] = None,
                                  options: Optional[SendOptions] = None) -> AsyncIterator[dict]:
         for chunk in self.stream_completion(messages, config, options):
@@ -3858,6 +4939,7 @@ class BaseProvider(ABC):
 from __future__ import annotations
 
 import json
+import logging
 import time
 from typing import TYPE_CHECKING, AsyncIterator, Iterator, Optional
 
@@ -3865,6 +4947,7 @@ from nb_llm.exceptions import (
     AuthenticationError, ProviderError, RateLimitError,
     TokenLimitError, TimeoutError as NbTimeoutError,
 )
+from nb_llm.loggers import logger_request, logger_response
 from nb_llm.providers.base import BaseProvider
 
 if TYPE_CHECKING:
@@ -3973,9 +5056,18 @@ class OpenAICompatibleProvider(BaseProvider):
                         config: Optional[ChatConfig] = None,
                         options: Optional[SendOptions] = None,
                         tools: Optional[list] = None) -> dict:
+        body = self._build_request_body(messages, config, options, tools)
+        logger_request.debug("发送请求 → %s\n%s",
+                             self.model, json.dumps(body, ensure_ascii=False, indent=2))
+
         if self._use_sdk:
-            return self._sdk_chat(messages, config, options, tools)
-        return self._http_chat(messages, config, options, tools)
+            result = self._sdk_chat(messages, config, options, tools)
+        else:
+            result = self._http_chat(messages, config, options, tools)
+
+        logger_response.debug("收到响应 ← %s\n%s",
+                              self.model, json.dumps(result, ensure_ascii=False, indent=2))
+        return result
 
     def _sdk_chat(self, messages: list, config: Optional[ChatConfig],
                   options: Optional[SendOptions],
@@ -4095,13 +5187,22 @@ class OpenAICompatibleProvider(BaseProvider):
             )
         return self._async_client
 
-    async def achat_completion(self, messages: list,
+    async def aio_chat_completion(self, messages: list,
                                config: Optional[ChatConfig] = None,
                                options: Optional[SendOptions] = None,
                                tools: Optional[list] = None) -> dict:
+        body = self._build_request_body(messages, config, options, tools)
+        logger_request.debug("[async] 发送请求 → %s\n%s",
+                             self.model, json.dumps(body, ensure_ascii=False, indent=2))
+
         if self._use_sdk:
-            return await self._async_sdk_chat(messages, config, options, tools)
-        return self.chat_completion(messages, config, options, tools)
+            result = await self._async_sdk_chat(messages, config, options, tools)
+        else:
+            result = self.chat_completion(messages, config, options, tools)
+
+        logger_response.debug("[async] 收到响应 ← %s\n%s",
+                              self.model, json.dumps(result, ensure_ascii=False, indent=2))
+        return result
 
     async def _async_sdk_chat(self, messages: list, config: Optional[ChatConfig],
                                options: Optional[SendOptions],
@@ -4126,7 +5227,7 @@ class OpenAICompatibleProvider(BaseProvider):
         except openai_sdk.APIError as e:
             raise ProviderError(str(e))
 
-    async def astream_completion(self, messages: list,
+    async def aio_stream_completion(self, messages: list,
                                  config: Optional[ChatConfig] = None,
                                  options: Optional[SendOptions] = None) -> AsyncIterator[dict]:
         if self._use_sdk:
@@ -4414,6 +5515,26 @@ _LOADER_MAP = {
     '.docx': DocxLoader,
     '.html': HTMLLoader,
     '.htm': HTMLLoader,
+    '.py': TextLoader,
+    '.js': TextLoader,
+    '.ts': TextLoader,
+    '.java': TextLoader,
+    '.go': TextLoader,
+    '.rs': TextLoader,
+    '.c': TextLoader,
+    '.cpp': TextLoader,
+    '.h': TextLoader,
+    '.yaml': TextLoader,
+    '.yml': TextLoader,
+    '.toml': TextLoader,
+    '.ini': TextLoader,
+    '.cfg': TextLoader,
+    '.xml': TextLoader,
+    '.sql': TextLoader,
+    '.sh': TextLoader,
+    '.bat': TextLoader,
+    '.log': TextLoader,
+    '.rst': TextLoader,
 }
 
 
@@ -4448,9 +5569,10 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional
 
-from nb_llm.core.config import ChatConfig, SendOptions
+from nb_llm.core.config import ChatConfig, RAGConfig, SendOptions
 from nb_llm.core.data_types import SourceInfo
 from nb_llm.embedding.embedding import Embedding
+from nb_llm.loggers import logger_rag as logger
 from nb_llm.rag.loaders import get_loader, walk_files
 from nb_llm.rag.splitter import SmartSplitter
 from nb_llm.rag.vectorstore import MemoryVectorStore, create_vectorstore
@@ -4463,26 +5585,43 @@ class RAG:
     """
     RAG（检索增强生成）一站式封装。
     一行代码构建知识库，自动检索+注入上下文。
+
+    用法::
+
+        rag = RAG(RAGConfig(model="deepseek", embedding_model="bce-embedding"))
+        rag.add_text("知识内容...")
+        answer = rag.chat("问题")
     """
+
+    DEFAULT_SYSTEM = (
+        '你是一个知识库助手。请严格根据下方提供的参考资料回答用户问题。\n'
+        '如果参考资料中没有相关信息，请明确告知"参考资料中未找到相关信息"，不要编造答案。'
+    )
 
     def __init__(
         self,
+        config: Optional[RAGConfig] = None,
         sources: Optional[List[str]] = None,
-        *,
-        model: str = "deepseek",
-        embedding_model: str = "text-embedding-3-small",
-        chunk_size: int = 500,
-        chunk_overlap: int = 50,
-        top_k: int = 5,
-        vectorstore: str = "memory",
     ) -> None:
         from nb_llm.core.chat import Chat
 
-        self._chat = Chat(ChatConfig(model))
-        self.embedding = Embedding(embedding_model)
-        self.vectorstore = create_vectorstore(vectorstore)
-        self.splitter = SmartSplitter(chunk_size, chunk_overlap)
-        self.top_k = top_k
+        if config is None:
+            config = RAGConfig()
+        self.config = config
+
+        rag_system = config.system if config.system is not None else self.DEFAULT_SYSTEM
+        self._chat = Chat(ChatConfig(
+            model=config.model, api_key=config.api_key, base_url=config.base_url,
+            system=rag_system,
+        ))
+        self.embedding = Embedding(
+            model=config.embedding_model,
+            api_key=config.embedding_api_key or config.api_key,
+            base_url=config.embedding_base_url or config.base_url,
+        )
+        self.vectorstore = create_vectorstore(config.vectorstore)
+        self.splitter = SmartSplitter(config.chunk_size, config.chunk_overlap)
+        self.top_k = config.top_k
         self._file_map: dict = {}
 
         if sources:
@@ -4503,6 +5642,7 @@ class RAG:
         if not chunks:
             return
 
+        logger.debug("加载文件: %s → %d 个 chunk", path, len(chunks))
         vectors = self.embedding.embed(chunks)
         if isinstance(vectors[0], float):
             vectors = [vectors]
@@ -4514,6 +5654,7 @@ class RAG:
     def retrieve(self, query: str,
                  top_k: Optional[int] = None) -> List[SourceInfo]:
         k = top_k or self.top_k
+        logger.debug("检索 query: %.100s..., top_k=%d", query, k)
         query_vec = self.embedding.embed(query)
         results = self.vectorstore.search(query_vec, k)
 
@@ -4524,6 +5665,14 @@ class RAG:
                 chunk=chunk_text,
                 score=score,
             ))
+        if sources:
+            lines = [f"检索到 {len(sources)} 条结果:"]
+            for i, src in enumerate(sources):
+                preview = src.chunk[:100].replace('\n', ' ')
+                lines.append(f"  [{i+1}] (相似度 {src.score:.4f}) {preview}...")
+            logger.debug("\n".join(lines))
+        else:
+            logger.debug("检索到 0 条结果")
         return sources
 
     def chat(self, prompt: str,
@@ -4535,6 +5684,7 @@ class RAG:
         context = '\n\n'.join(context_parts)
 
         augmented_prompt = f"参考资料：\n{context}\n\n用户问题：{prompt}"
+        logger.debug("增强后的 prompt:\n%s", augmented_prompt)
         resp = self._chat.ask(augmented_prompt, options)
         resp.sources = sources
         return resp
@@ -4658,11 +5808,11 @@ class SmartSplitter:
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 
 class MemoryVectorStore:
-    """内存向量库（默认，适合原型验证）"""
+    """纯 Python 内存向量库（零依赖，适合原型验证）"""
 
     def __init__(self) -> None:
         self._chunks: List[str] = []
@@ -4703,6 +5853,148 @@ class MemoryVectorStore:
         return len(self._chunks)
 
 
+class FaissVectorStore:
+    """
+    基于 FAISS（Meta）的高性能向量库。
+    使用 L2 归一化 + Inner Product 实现余弦相似度搜索。
+    需要安装: pip install faiss-cpu
+    """
+
+    def __init__(self) -> None:
+        try:
+            import faiss as _faiss
+            import numpy as _np
+        except ImportError:
+            raise ImportError("FaissVectorStore 需要安装: pip install faiss-cpu")
+        self._faiss = _faiss
+        self._np = _np
+        self._index = None
+        self._dim = 0
+        self._chunks: List[str] = []
+        self._metadata: List[dict] = []
+
+    def add(self, chunks: List[str], vectors: List[List[float]],
+            metadata: Optional[List[dict]] = None) -> None:
+        np = self._np
+        arr = np.array(vectors, dtype=np.float32)
+        self._faiss.normalize_L2(arr)
+
+        if self._index is None:
+            self._dim = arr.shape[1]
+            self._index = self._faiss.IndexFlatIP(self._dim)
+        self._index.add(arr)
+
+        self._chunks.extend(chunks)
+        if metadata:
+            self._metadata.extend(metadata)
+        else:
+            self._metadata.extend([{}] * len(chunks))
+
+    def search(self, query_vector: List[float],
+               top_k: int = 5) -> List[Tuple[str, float, dict]]:
+        if self._index is None or self._index.ntotal == 0:
+            return []
+
+        np = self._np
+        query = np.array([query_vector], dtype=np.float32)
+        self._faiss.normalize_L2(query)
+
+        k = min(top_k, self._index.ntotal)
+        scores, indices = self._index.search(query, k)
+
+        results = []
+        for score, idx in zip(scores[0], indices[0]):
+            if idx < 0:
+                continue
+            results.append((self._chunks[idx], float(score), self._metadata[idx]))
+        return results
+
+    def clear(self) -> None:
+        self._index = None
+        self._chunks.clear()
+        self._metadata.clear()
+
+    def __len__(self) -> int:
+        return len(self._chunks)
+
+
+class ChromaVectorStore:
+    """
+    基于 ChromaDB 的向量库，支持内存模式和持久化模式。
+    需要安装: pip install chromadb
+    """
+
+    def __init__(self, persist_directory: Optional[str] = None) -> None:
+        try:
+            import chromadb as _chromadb
+        except ImportError:
+            raise ImportError("ChromaVectorStore 需要安装: pip install chromadb")
+        self._chromadb = _chromadb
+
+        if persist_directory:
+            self._client = _chromadb.PersistentClient(path=persist_directory)
+        else:
+            self._client = _chromadb.EphemeralClient()
+
+        self._collection = self._client.get_or_create_collection(
+            name="nb_llm_rag",
+            metadata={"hnsw:space": "cosine"},
+        )
+        self._id_counter = 0
+
+    def add(self, chunks: List[str], vectors: List[List[float]],
+            metadata: Optional[List[dict]] = None) -> None:
+        ids = [f"doc_{self._id_counter + i}" for i in range(len(chunks))]
+        metas = metadata if metadata else [{}] * len(chunks)
+        safe_metas = []
+        for m in metas:
+            safe = {}
+            for k, v in m.items():
+                if isinstance(v, (str, int, float, bool)):
+                    safe[k] = v
+            safe_metas.append(safe if safe else {"_placeholder": ""})
+
+        self._collection.add(
+            ids=ids,
+            embeddings=vectors,
+            documents=chunks,
+            metadatas=safe_metas,
+        )
+        self._id_counter += len(chunks)
+
+    def search(self, query_vector: List[float],
+               top_k: int = 5) -> List[Tuple[str, float, dict]]:
+        if self._collection.count() == 0:
+            return []
+
+        k = min(top_k, self._collection.count())
+        result = self._collection.query(
+            query_embeddings=[query_vector],
+            n_results=k,
+        )
+
+        results = []
+        docs = result.get('documents', [[]])[0]
+        distances = result.get('distances', [[]])[0]
+        metadatas = result.get('metadatas', [[]])[0]
+
+        for doc, dist, meta in zip(docs, distances, metadatas):
+            score = 1.0 - dist
+            results.append((doc, score, meta or {}))
+        return results
+
+    def clear(self) -> None:
+        self._client.delete_collection("nb_llm_rag")
+        self._collection = self._client.get_or_create_collection(
+            name="nb_llm_rag",
+            metadata={"hnsw:space": "cosine"},
+        )
+        self._id_counter = 0
+
+    def __len__(self) -> int:
+        return self._collection.count()
+
+
 def _cosine_similarity(a: List[float], b: List[float]) -> float:
     if len(a) != len(b):
         return 0.0
@@ -4714,11 +6006,14 @@ def _cosine_similarity(a: List[float], b: List[float]) -> float:
     return dot / (norm_a * norm_b)
 
 
-def create_vectorstore(store_type: str = "memory") -> MemoryVectorStore:
-    if store_type == "memory":
-        return MemoryVectorStore()
-    else:
-        return MemoryVectorStore()
+def create_vectorstore(
+    store_type: str = "memory",
+) -> Union[MemoryVectorStore, FaissVectorStore, ChromaVectorStore]:
+    if store_type == "faiss":
+        return FaissVectorStore()
+    if store_type == "chromadb":
+        return ChromaVectorStore()
+    return MemoryVectorStore()
 
 `````
 
@@ -4745,11 +6040,13 @@ def create_vectorstore(store_type: str = "memory") -> MemoryVectorStore:
 from __future__ import annotations
 
 import json
+import logging
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from nb_llm.core.data_types import ToolCallRecord, PendingToolCall
+from nb_llm.core.data_types import ToolCallRecord, PendingToolCall, ToolCallRound
 from nb_llm.exceptions import ToolExecutionError
+from nb_llm.loggers import logger_tools as logger
 
 
 class ToolExecutor:
@@ -4803,6 +6100,18 @@ class ToolExecutor:
         except Exception as e:
             raise ToolExecutionError(name, args, e)
 
+    def _log_round_start(self, round_count: int, response: dict,
+                         model_tc_info: list) -> None:
+        """记录每一轮工具调用开始时的 debug 日志"""
+        logger.debug("[Round %d] 模型请求调用 %d 个工具: %s",
+                     round_count, len(model_tc_info),
+                     [f"{tc['name']}({tc['arguments']})" for tc in model_tc_info])
+
+    def _log_tool_result(self, round_count: int, fn_name: str,
+                         result_str: str) -> None:
+        """记录单个工具执行结果的 debug 日志"""
+        logger.debug("[Round %d] 工具 %s 返回: %s", round_count, fn_name, result_str)
+
     def execute_loop(self, provider: Any, messages: list, response: dict,
                      config: Any = None, options: Any = None,
                      max_rounds: int = 10) -> Tuple[dict, List[ToolCallRecord], List[PendingToolCall]]:
@@ -4810,14 +6119,17 @@ class ToolExecutor:
         Function Calling 循环：
         1. 模型返回 tool_calls → 执行 → 结果追加到 messages → 再次调用模型
         2. 重复直到没有 tool_calls 或超过 max_rounds
+        返回 (final_response, records, pending, rounds)
         """
         all_records: List[ToolCallRecord] = []
         all_pending: List[PendingToolCall] = []
+        all_rounds: List[ToolCallRound] = []
         round_count = 0
 
         while round_count < max_rounds:
             tool_calls = self._parse_tool_calls(response)
             if not tool_calls:
+                logger.debug("[Round %d] 模型未返回 tool_calls，循环结束", round_count)
                 break
 
             choices = response.get('choices', [])
@@ -4826,6 +6138,21 @@ class ToolExecutor:
             assistant_msg = choices[0].get('message', {})
             messages.append(assistant_msg)
 
+            model_tc_info = []
+            for tc in tool_calls:
+                try:
+                    parsed_args = json.loads(tc['function']['arguments'])
+                except (json.JSONDecodeError, TypeError):
+                    parsed_args = {}
+                model_tc_info.append({
+                    'id': tc.get('id', ''),
+                    'name': tc['function']['name'],
+                    'arguments': parsed_args,
+                })
+
+            self._log_round_start(round_count, response, model_tc_info)
+
+            round_tool_results = []
             has_auto = False
             for tc in tool_calls:
                 fn_name = tc['function']['name']
@@ -4836,15 +6163,18 @@ class ToolExecutor:
 
                 tool_info = self._tools.get(fn_name)
                 if not tool_info:
+                    tool_result_str = f"Error: 工具 '{fn_name}' 未注册"
                     messages.append({
                         'role': 'tool',
                         'tool_call_id': tc['id'],
-                        'content': f"Error: 工具 '{fn_name}' 未注册",
+                        'content': tool_result_str,
                     })
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args, result=None,
                         error=f"工具 '{fn_name}' 未注册",
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': tool_result_str, 'error': True})
+                    self._log_tool_result(round_count, fn_name, tool_result_str)
                     has_auto = True
                     continue
 
@@ -4868,18 +6198,30 @@ class ToolExecutor:
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args, result=result, elapsed=elapsed,
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': str(result)})
+                    self._log_tool_result(round_count, fn_name, str(result))
                     has_auto = True
                 except ToolExecutionError as e:
+                    tool_err_str = f"Error: {e.original_error}"
                     messages.append({
                         'role': 'tool',
                         'tool_call_id': tc['id'],
-                        'content': f"Error: {e.original_error}",
+                        'content': tool_err_str,
                     })
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args,
                         error=str(e.original_error),
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': tool_err_str, 'error': True})
+                    self._log_tool_result(round_count, fn_name, tool_err_str)
                     has_auto = True
+
+            all_rounds.append(ToolCallRound(
+                round_index=round_count,
+                model_tool_calls=model_tc_info,
+                tool_results=round_tool_results,
+                raw_response=response,
+            ))
 
             if all_pending and not has_auto:
                 break
@@ -4892,7 +6234,7 @@ class ToolExecutor:
             else:
                 break
 
-        return response, all_records, all_pending
+        return response, all_records, all_pending, all_rounds
 
     async def async_execute_loop(
             self, provider: Any, messages: list, response: dict,
@@ -4901,11 +6243,13 @@ class ToolExecutor:
         """异步版工具循环"""
         all_records: List[ToolCallRecord] = []
         all_pending: List[PendingToolCall] = []
+        all_rounds: List[ToolCallRound] = []
         round_count = 0
 
         while round_count < max_rounds:
             tool_calls = self._parse_tool_calls(response)
             if not tool_calls:
+                logger.debug("[Async Round %d] 模型未返回 tool_calls，循环结束", round_count)
                 break
 
             choices = response.get('choices', [])
@@ -4914,6 +6258,21 @@ class ToolExecutor:
             assistant_msg = choices[0].get('message', {})
             messages.append(assistant_msg)
 
+            model_tc_info = []
+            for tc in tool_calls:
+                try:
+                    parsed_args = json.loads(tc['function']['arguments'])
+                except (json.JSONDecodeError, TypeError):
+                    parsed_args = {}
+                model_tc_info.append({
+                    'id': tc.get('id', ''),
+                    'name': tc['function']['name'],
+                    'arguments': parsed_args,
+                })
+
+            self._log_round_start(round_count, response, model_tc_info)
+
+            round_tool_results = []
             has_auto = False
             for tc in tool_calls:
                 fn_name = tc['function']['name']
@@ -4924,15 +6283,18 @@ class ToolExecutor:
 
                 tool_info = self._tools.get(fn_name)
                 if not tool_info:
+                    tool_result_str = f"Error: 工具 '{fn_name}' 未注册"
                     messages.append({
                         'role': 'tool',
                         'tool_call_id': tc['id'],
-                        'content': f"Error: 工具 '{fn_name}' 未注册",
+                        'content': tool_result_str,
                     })
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args, result=None,
                         error=f"工具 '{fn_name}' 未注册",
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': tool_result_str, 'error': True})
+                    self._log_tool_result(round_count, fn_name, tool_result_str)
                     has_auto = True
                     continue
 
@@ -4955,31 +6317,43 @@ class ToolExecutor:
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args, result=result, elapsed=elapsed,
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': str(result)})
+                    self._log_tool_result(round_count, fn_name, str(result))
                     has_auto = True
                 except ToolExecutionError as e:
+                    tool_err_str = f"Error: {e.original_error}"
                     messages.append({
                         'role': 'tool',
                         'tool_call_id': tc['id'],
-                        'content': f"Error: {e.original_error}",
+                        'content': tool_err_str,
                     })
                     all_records.append(ToolCallRecord(
                         name=fn_name, args=fn_args,
                         error=str(e.original_error),
                     ))
+                    round_tool_results.append({'name': fn_name, 'result': tool_err_str, 'error': True})
+                    self._log_tool_result(round_count, fn_name, tool_err_str)
                     has_auto = True
+
+            all_rounds.append(ToolCallRound(
+                round_index=round_count,
+                model_tool_calls=model_tc_info,
+                tool_results=round_tool_results,
+                raw_response=response,
+            ))
 
             if all_pending and not has_auto:
                 break
 
             if has_auto:
-                response = await provider.achat_completion(
+                response = await provider.aio_chat_completion(
                     messages, config=config, options=options, tools=self.schemas,
                 )
                 round_count += 1
             else:
                 break
 
-        return response, all_records, all_pending
+        return response, all_records, all_pending, all_rounds
 
 `````
 

@@ -146,7 +146,6 @@
 - `from funboost.core.func_params_model import BoosterParamsComplete`
 - `from funboost.funboost_config_deafult import FunboostCommonConfig`
 - `from funboost.funboost_config_deafult import BrokerConnConfig`
-- `from funboost.utils.paramiko_util import ParamikoFolderUploader`
 - `from funboost.consumers.base_consumer import wait_for_possible_has_finish_all_tasks_by_conusmer_list`
 - `from funboost.consumers.base_consumer import FunctionResultStatus`
 - `from funboost.consumers.base_consumer import AbstractConsumer`
@@ -187,6 +186,7 @@
 - `from funboost.core.funboost_pool import MemoryFunboostPool`
 - `from funboost.core.funboost_pool import FunboostPool`
 - `from funboost.core.funboost_pool import FunboostPoolPickleFunc`
+- `from funboost.utils.paramiko_util import ParamikoFolderUploader`
 
 
 ---
@@ -472,14 +472,14 @@ BoosterParams 是 funboost 最核心的入参模型，掌握了 BoosterParams �
 - `table_name: typing.Optional[str] = None`
 
 ##### 📌 `class BoosterParamsFieldsAssit`
-*Line: 56*
+*Line: 44*
 
 **Class Variables (2):**
 - `has_been_deleted_fields = ['retry_interval', 'is_do_not_run_by_specify_time_effect', 'do_not_run_by_specify_time']`
 - `rename_fields = {'is_send_consumer_hearbeat_to_redis': 'is_send_consumer_heartbeat_to_redis', 'consumin_function_decorator': 'consuming_function_decorator', 'msg_expire_senconds': 'msg_expire_seconds'}`
 
 ##### 📌 `class BoosterParams(BaseJsonAbleModel)`
-*Line: 72*
+*Line: 60*
 
 **Docstring:**
 `````
@@ -554,7 +554,7 @@ pydatinc pycharm编程代码补全,请安装 pydantic插件, 在pycharm的  file
 - `booster_registry_name: str = StrConst.BOOSTER_REGISTRY_NAME_DEFAULT`
 
 ##### 📌 `class BoosterParamsComplete(BoosterParams)`
-*Line: 346*
+*Line: 334*
 
 **Docstring:**
 `````
@@ -576,7 +576,7 @@ specify_concurrent_pool 同一个进程的不同booster函数,共用一个线程
 - `specify_concurrent_pool: FunboostBaseConcurrentPool = Field(default_factory=functools.partial(ConcurrentPoolBuilder.get_pool, FlexibleThreadPool, 500))`
 
 ##### 📌 `class TaskOptions(BaseJsonAbleModel)`
-*Line: 366*
+*Line: 354*
 
 **Docstring:**
 `````
@@ -608,7 +608,7 @@ specify_concurrent_pool 同一个进程的不同booster函数,共用一个线程
 - `otel_context: typing.Optional[dict] = None`
 
 ##### 📌 `class PublisherParams(BaseJsonAbleModel)`
-*Line: 421*
+*Line: 409*
 
 **Class Variables (21):**
 - `queue_name: str`
@@ -655,7 +655,7 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 用户也可以按照文档4.21章节,轻松扩展任何物质概念作为funboost的broker.
 `````
 
-**Class Variables (53):**
+**Class Variables (54):**
 - `EMPTY = 'EMPTY'`
 - `RABBITMQ_AMQPSTORM = 'RABBITMQ_AMQPSTORM'`
 - `RABBITMQ = RABBITMQ_AMQPSTORM`
@@ -696,7 +696,8 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 - `TCP = 'TCP'`
 - `HTTP = 'HTTP'`
 - `GRPC = 'GRPC'`
-- `NATS = 'NATS'`
+- `NATS_CORE = 'NATS_CORE'`
+- `NATS_JETSTREAM = 'NATS_JETSTREAM'`
 - `TXT_FILE = 'TXT_FILE'`
 - `PEEWEE = 'PEEWEE'`
 - `CELERY = 'CELERY'`
@@ -711,11 +712,7 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 - `WEBSOCKET = 'WEBSOCKET'`
 
 ##### 📌 `class ConcurrentModeEnum`
-<<<<<<< HEAD
-*Line: 199*
-=======
-*Line: 198*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 201*
 
 **Docstring:**
 `````
@@ -734,11 +731,7 @@ funboost的多进程和多线程 asyncio是叠加的，不是互斥的。
 - `SOLO = SINGLE_THREAD`
 
 ##### 📌 `class FunctionKind`
-<<<<<<< HEAD
-*Line: 217*
-=======
-*Line: 216*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 219*
 
 **Docstring:**
 `````
@@ -753,11 +746,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `COMMON_FUNCTION = 'COMMON_FUNCTION'`
 
 ##### 📌 `class ConstStrForClassMethod`
-<<<<<<< HEAD
-*Line: 228*
-=======
-*Line: 227*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 230*
 
 **Class Variables (5):**
 - `FIRST_PARAM_NAME = 'first_param_name'`
@@ -767,11 +756,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `CLS_FILE = 'cls_file'`
 
 ##### 📌 `class RedisKeys`
-<<<<<<< HEAD
-*Line: 236*
-=======
-*Line: 235*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 238*
 
 **Public Methods (9):**
 - `def gen_funboost_apscheduler_redis_lock_key_by_queue_name(queue_name)` `staticmethod`
@@ -808,11 +793,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `FUNBOOST_UNACK_REGISTRY_PREFIX = 'funboost_unack_registry:'`
 
 ##### 📌 `class ConsumingFuncInputParamsCheckerField`
-<<<<<<< HEAD
-*Line: 300*
-=======
-*Line: 299*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 302*
 
 **Class Variables (6):**
 - `is_manual_func_input_params = 'is_manual_func_input_params'`
@@ -823,22 +804,14 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `func_position = 'func_position'`
 
 ##### 📌 `class MongoDbName`
-<<<<<<< HEAD
-*Line: 309*
-=======
-*Line: 308*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 311*
 
 **Class Variables (2):**
 - `TASK_STATUS_DB = 'funboost_task_status'`
 - `MONGOMQ_DB = 'funboost_mongomq'`
 
 ##### 📌 `class StrConst`
-<<<<<<< HEAD
-*Line: 313*
-=======
-*Line: 312*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 315*
 
 **Class Variables (4):**
 - `BOOSTER_REGISTRY_NAME_DEFAULT = 'booster_registry_default'`
@@ -847,11 +820,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `FILTERED_TASK_RESULT = 'filtered_task_result'`
 
 ##### 📌 `class EnvConst`
-<<<<<<< HEAD
-*Line: 319*
-=======
-*Line: 318*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 321*
 
 **Class Variables (2):**
 - `FUNBOOST_FAAS_CARE_PROJECT_NAME = 'funboost.faas.care_project_name'`
@@ -1814,13 +1783,14 @@ asyncio异步编程，最重要的方法有 aio_push aio_publish，
 - `@property publisher_of_dlx_queue`
 - `@property concurrent_pool`
 
-**Class Variables (3):**
+**Class Variables (4):**
 - `_time_interval_for_check_allow_run_by_cron = 60`
 - `BROKER_KIND = None`
+- `_REQUEUE_IS_NATIVE_NACK = False`
 - `logger_apscheduler = get_logger('push_for_apscheduler_use_database_store', log_filename='push_for_apscheduler_use_database_store.log')`
 
 ##### 📌 `class ConcurrentModeDispatcher(FunboostFileLoggerMixin)`
-*Line: 1298*
+*Line: 1299*
 
 **🔧 Constructor (`__init__`):**
 - `def __init__(self, consumerx: AbstractConsumer)`
@@ -1834,7 +1804,7 @@ asyncio异步编程，最重要的方法有 aio_push aio_publish，
 - `def schedulal_task_with_no_block(self)`
 
 ##### 📌 `class MetricCalculation`
-*Line: 1404*
+*Line: 1405*
 
 **Docstring:**
 `````
@@ -1860,7 +1830,7 @@ MetricCalculation 是统计消费函数执行次数、失败次数、平均耗�
 - `UNIT_TIME_FOR_COUNT = 10`
 
 ##### 📌 `class DistributedConsumerStatistics(RedisMixin, FunboostFileLoggerMixin)`
-*Line: 1495*
+*Line: 1497*
 
 **Docstring:**
 `````
@@ -1895,7 +1865,7 @@ MetricCalculation 是统计消费函数执行次数、失败次数、平均耗�
 #### 🔧 Public Functions (1)
 
 - `def wait_for_possible_has_finish_all_tasks_by_conusmer_list(consumer_list: typing.List[AbstractConsumer], minutes: int = 3)`
-  - *Line: 1389*
+  - *Line: 1390*
   - **Docstring:**
   `````
   判断多个消费者是否消费完成了。
@@ -1983,7 +1953,6 @@ care_project_name 的作用是：
 
 **Public Methods (4):**
 - `def get_all_queue_names(self) -> list`
-  - *获取所有队列名称，带30秒缓存（类级别缓存，所有实例共享）*
 - `def get_queue_names_by_project_name(self, project_name: str) -> list`
   - *根据项目名称获取队列名称，带30秒缓存（类级别缓存，所有实例共享）*
 - `def hmget_many_by_all_queue_names(self, key)`
@@ -1993,20 +1962,24 @@ care_project_name 的作用是：
 - `@property all_queue_names`
 - `@property project_name_queues`
 
-**Class Variables (4):**
+**Class Variables (6):**
 - `_cache_all_queue_names = None`
 - `_cache_all_queue_names_ts = 0`
 - `_cache_queue_names_by_project = {}`
+- `_cache_no_project_queue_names = None`
+- `_cache_no_project_queue_names_ts = 0`
 - `_cache_ttl = 30`
 
 ##### 📌 `class ActiveCousumerProcessInfoGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 181*
+*Line: 172*
 
 **Docstring:**
 `````
 获取分布式环境中的消费进程信息。
 使用这里面的4个方法需要相应函数的@boost装饰器设置 is_send_consumer_heartbeat_to_redis=True，这样会自动发送活跃心跳到redis。否则查询不到该函数的消费者进程信息。
 要想使用消费者进程信息统计功能，用户无论使用何种消息队列中间件类型，用户都必须安装redis，并在 funboost_config.py 中配置好redis链接信息
+
+所有 的last_x_s指标 代表最近10秒内的统计信息
 `````
 
 **🔧 Constructor (`__init__`):**
@@ -2049,7 +2022,7 @@ care_project_name 的作用是：
   - *获取所有机器ip对应的活跃消费者进程信息，按机器ip划分,不需要传入机器ip，自动扫描redis键。请不要在 funboost_config.py 的redis 指定的db中放太多其他业务的缓存键值对*
 
 ##### 📌 `class QueuesConusmerParamsGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 282*
+*Line: 275*
 
 **Docstring:**
 `````
@@ -2074,7 +2047,7 @@ care_project_name 的作用是：
 - `def cycle_get_queues_params_and_active_consumers_and_report(self, daemon = True)`
 
 ##### 📌 `class SingleQueueConusmerParamsGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 405*
+*Line: 399*
 
 **Docstring:**
 `````
@@ -2536,30 +2509,6 @@ Entry Points (not imported by other project files):
   行265: ## 1.2 框架功能介绍
   行279: ### 1.2.1 🆚 对比：Funboost 取代传统线程池
   行283: #### ❌ 方式 A：手动开启线程池 (传统)
-<<<<<<< HEAD
-  行299: #### ✅ 方式 B：Funboost @boost 模式 (推荐)
-  行318: #### ✅ 方式 C：FunboostPool 模式
-  行331: ### 1.2.2 🚀 任务控制功能矩阵
-  行335: #### 🌌 维度一：连接与架构 (Connectivity & Architecture)
-  行346: #### ⚡ 维度二：并发与吞吐 (Concurrency & Throughput)
-  行353: #### 🛡️ 维度三：可靠性保障 (Reliability)
-  行362: #### 🕹️ 维度四：流量治理 (Traffic Governance)
-  行372: #### 🎼 维度五：调度与编排 (Scheduling & Orchestration)
-  行379: #### 🔭 维度六：可观测性 (Observability)
-  行387: #### 🧬 维度七：开发体验 (Developer Experience)
-  行399: ## 1.3 🚀 快速上手：你的第一个 Funboost 程序
-  行407: ### 1.3.1 ✨ Hello World：最简单的任务调度
-  行454: ### 1.3.2 🔥 进阶实战：RPC、定时任务与丝滑连招
-  行534: ### 1.3.3 ✂️ 极简写法：省略 `@boost`
-  行545: ### 1.3.4 ❌ 过时写法： 直接在 @boost传各种配置入参，不推荐
-  行556: ## 🖥️ funweb (Funboost Web Manager) 界面预览
-  行580: ## 1.4 💡 为什么 Python 极其需要分布式函数计算？
-  行584: ### 1️⃣ 痛点一：GIL 锁的限制 (多核利用率低)
-  行592: ### 2️⃣ 痛点二：原生性能瓶颈 (动态语言特性)
-  行604: ## 1.5 🎓 最佳学习路径
-  行623: ## 1.6 🥋 funboost 练就吸星大法神功，一招吸走 Celery 毕生内力
-  行633: ### ⚔️ 降维打击：化繁为简的绝世武功
-=======
   行299: #### ✅ 方式 B：Funboost 模式 (推荐)
   行318: ### 1.2.2 🚀 任务控制功能矩阵
   行322: #### 🌌 维度一：连接与架构 (Connectivity & Architecture)
@@ -2581,7 +2530,6 @@ Entry Points (not imported by other project files):
   行588: ## 1.5 🎓 最佳学习路径
   行607: ## 1.6 🥋 funboost 练就吸星大法神功，一招吸走 Celery 毕生内力
   行617: ### ⚔️ 降维打击：化繁为简的绝世武功
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 ============================================================
 文件: c10.md
@@ -2939,103 +2887,6 @@ Entry Points (not imported by other project files):
   行1238: ### 4.8.2 使用分布式函数调度框架，无论接口耗时多少，轻松达到8qps的例子
   行1283: ### 4.8.3  并发数量和qps(每秒执行多少次)之间的区别
   行1306: ## 4.9 演示延时运行任务
-<<<<<<< HEAD
-  行1420: ### 4.9.2 Funboost 延时消息实现原理与REDIS_ZSET_DELAY专用延时中间件模式介绍
-  行1424: #### 4.9.2.1 🛠️ 默认模式：基于 APScheduler 二次投递
-  行1435: #### 4.9.2.2 🚀 专业模式：基于 `REDIS_ZSET_DELAY` 原生延时队列
-  行1445: #### 4.9.2.3 💻 专业模式：基于 `REDIS_ZSET_DELAY` broker 的使用示例
-  行1487: #### 4.9.2.4 📌 选择建议
-  行1495: ## 4.10 在web中如flask fastapi django 如何搭配使用消费框架的例子。
-  行1544: ## 4.11 保存消费状态和结果包mongo，开启消费状态结果的web页面
-  行1546: ### 4.11.1 保存消费状态和结果到mongodb
-  行1602: ### 4.11.2 框架是可以自动保存消费状态/结果到mongo，你想保存到MySQL?
-  行1610: #### 4.11.2.b  作者自己贡献一个吧函数消费状态保存到mysql的函数,(2024.02新增)
-  行1707: ### 4.11.3 可视化，启动python分布式函数调度框架之函数运行结果状态web
-  行1711: ## 4.12 框架 asyncio 方式运行协程
-  行1715: ### 4.12.1 concurrent_mode=ConcurrentModeEnum.ASYNC 运行协程
-  行1733: ### 4.12.2 concurrent_mode=ConcurrentModeEnum.THREADING 运行asyncio协程
-  行1760: ## 4.13 跨项目怎么发布任务或者获取函数执行结果(即不定义@boost消费函数就发送消息)？
-  行1837: ## 4.13b 彩蛋!!不使用funboost的消费功能,funboost作为各种消息队列的万能发布者
-  行1873: ## 4.14 获取消费进程信息的方法(用于排查查看正在运行的消费者)
-  行1912: ## 4.16 文件日志所在的地方
-  行1925: ### 4.16.1 没亲自指定 日志文件名
-  行1936: ### 4.16.2 亲自指定日志文件名,log_filename的值
-  行1993: ### 4.16.3 把用户自己的业务日志和funboost框架日志写到同一个文件
-  行2002: ## 4.16.4 funboost 日志由 nb_log 提供。
-  行2008: ## 4.17 判断函数运行完所有任务，再执行后续操作
-  行2070: ## 4.18 暂停消费
-  行2121: ## 4.19 用户自定义记录函数消费 状态/结果 钩子函数
-  行2164: ### 4.19.b 自定义保存函数消费状态结果到mysql/sqlite/pgsql请看4.11.2.b的章节
-  行2166: ## 4.20 通过 broker_exclusive_config 参数 设置不同中间件能使用到的差异化独特配置
-  行2189: ### 4.20.2 怎么知道每种消息队列 broker_exclusive_config 能支持哪些独有特殊的参数配置
-  行2199: ## 4.21 【funboost完全自由定制扩展（方式1）】 使用 register_custom_broker 完全彻底自由灵活自定义扩展和定制修改中间件(消费者和发布者)
-  行2249: ## 4.21b 【完全自由定制扩展(方式2)】,使用 consumer_override_cls 和 publisher_override_cls 来自定义消费者 发布者。
-  行2253: ### 4.21b.1 重写某些方法的例子
-  行2308: ### 4.21b.2 完全实现新增中间件类型.
-  行2398: ### 4.21b.3 funboost的用户自定义扩展比celery更容易,更彻底
-  行2412: ## 4.21c 不想吃苦？让ai来帮你扩展funboost中间件或者定制运行逻辑
-  行2420: ### 4.21c.2 假设你要使用python内置的list作为 funboost的消息队列：
-  行2435: #### 4.21c.2.2 说个ai使用技巧秘密，网页版ai大模型生成funboost代码 吊打编程 ide中的 ai大模型和claude code
-  行2458: ## 4.23 演示funboost框架是如何代替用户手写调用线程池的
-  行2511: ## 4.24 设置消费函数重试次数
-  行2537: ### 4.24.1 抛出ExceptionForRequeue类型错误，消息立即重回消息队列
-  行2557: ### 4.24.2 抛出 ExceptionForPushToDlxqueue 类型错误，消息发送到单独另外的死信队列中
-  行2576: ### 4.24.3  设置is_push_to_dlx_queue_when_retry_max_times,重试到max_retry_times最大次数没成功发送到死信队列
-  行2583: ### 4.24.4 (内置辅助)将一个消息队列中的消息转移到另一个队列
-  行2605: ### 4.24.5 funboost 高级重试：指数退避重试
-  行2619: #### 4.24.5.1 `advanced_retry_config` 参数详解
-  行2629: #### 4.24.5.2 示例：配置一个典型的指数退避
-  行2657: ## 4.25 push 和 publish 发布消息的区别
-  行2662: ### 核心区别对比
-  行2671: ### 代码演示与说明
-  行2709: ## 4.26 性能调优演示
-  行2732: ### 4.26.1 在一个进程中启动多个函数的消费，适合轻型任务
-  行2744: ### 4.26.2 在多个进程中启动函数的消费，适合一次启动大量函数的消费或重型任务
-  行2760: ## 4.28 funboost 支持celery框架整体作为funboost的broker (2023.4新增)
-  行2829: ## 4.29 funboost支持任务优先级队列
-  行2833: ### 4.29.1 队列支持优先级的说明：
-  行2843: ### 4.29.2 优先级通俗理解，用食堂打饭比喻：
-  行2858: ### 4.29.3 队列支持任务优先级的代码主要有三点：
-  行2872: ### 4.29.4 队列支持任务优先级的代码如下：
-  行2901: ### 4.29.5 消息队列优先级是针对一个queue内消息的，那么怎样才能实现不同函数之间的按优先级运行？
-  行2965: ## 4.30 funboost 远程杀死(取消)任务
-  行2983: ### 4.30.1 funboost远程杀死函数的代码例子
-  行3028: ### 4.30.2 远程强制杀死函数、超时自动杀死(function_timeout设置不为0)， 这两个功能要注意死锁：
-  行3056: ### 4.30.2.b 如果想启用funboost函数超时自动杀死功能或者 远程杀死函数功能，推荐消费函数中使用可过期锁 expire_lock
-  行3067: ## 4.31 神级别 fct (funboost_current_task) 上下文获取当前消息和任务状态
-  行3138: ## 4.32 重磅更新！！！ funboost 独家新增支持实例方法和类方法作为消费函数
-  行3146: ### 4.32.0 !!! 实例方法和类方法作为funboost任务时候，push方法需要特别注意第一个入参。
-  行3183: ### 4.32.1 funboost 支持实例方法和类方法作为消费函数的原理
-  行3233: ### 4.32.2 funboost 支持实例方法、类方法、静态方法、普通函数 4种类型，作为消费函数的例子
-  行3306: ## 4.33  @boost设置is_auto_start_consuming_message，自动启动消费。
-  行3333: ## 4.34 pyinstaller 打包 funboost项目为exe 的说明
-  行3339: ## 4.35 演示 funboost 的函数入参过滤功能
-  行3382: ### 4.35.2 警告！！！: funboost的 rpc功能和 函数入参过滤过滤 不要同时使用
-  行3391: ## 4.35c 使用 nb_cache 作为缓存装饰器
-  行3393: ### 4.35c.1 为什么 要用 nb_cache 而不是 funboost 自带的 do_task_filtering
-  行3402: ### 4.35c.2 nb_cache 功能比 funboost自带的 do_task_filtering 全面太多了
-  行3409: #### 4.35c.2.2 举个例子 nb_cache 的防止缓存击穿为什么吊打 funboost的 do_task_filtering
-  行3417: ### 4.35c.2 如何在 funboost 中使用 nb_cache
-  行3424: #### 4.35c.2.1 方式一，@boost 和 @cache 叠加使用
-  行3451: #### 4.35c.2.2 方式二 cache 装饰器传给 funboost 的 `consuming_function_decorator`
-  行3482: ## 4.36 演示`funboost`入参可以是自定义类型(不可json序列化的类型的入参,自动使用pickle)(2025-07新增支持)
-  行3582: ## 4.37 funboost 启动消费函数的方式大全(再次集中总结)
-  行3586: ### 4.37.1. 基础启动 (最常用)
-  行3602: ### 4.37.2. 多进程叠加并发启动 (高性能推荐)
-  行3616: ### 4.37.3. 自动启动 (懒人模式)
-  行3631: ### 4.37.4. 批量启动所有消费者(最粗暴无脑)
-  行3650: ### 4.37.5. 分组启动 (Group Start)
-  行3666: ### 4.37.6. 命令行启动 (CLI)
-  行3675: ### 4.37.7. 远程自动部署启动 (Fabric)
-  行3685: ### 4.37.8. Celery 模式启动 (特殊)
-  行3691: ## 4.38 MemoryFunboostPool 和 FunboostPool 的使用
-  行3695: ### 4.38.1 MemoryFunboostPool：内存增强型任务池
-  行3727: ### 4.38.2 FunboostPool：全能与分布式任务池
-  行3794: ### 4.38.3 选择指南
-  行3811: ## 4.100 使用funboost时候对框架的疑问和猜测，使用控制变量法
-  行3873: ### 4.100.b 举个例子，验证测试框架的超时杀死 function_timeout参数的作用
-  行3920: ## 4.200 [分布式函数调度框架qq群]
-=======
   行1408: ## 4.10 在web中如flask fastapi django 如何搭配使用消费框架的例子。
   行1457: ## 4.11 保存消费状态和结果包mongo，开启消费状态结果的web页面
   行1459: ### 4.11.1 保存消费状态和结果到mongodb
@@ -3122,7 +2973,6 @@ Entry Points (not imported by other project files):
   行3609: ## 4.100 使用funboost时候对框架的疑问和猜测，使用控制变量法
   行3671: ### 4.100.b 举个例子，验证测试框架的超时杀死 function_timeout参数的作用
   行3718: ## 4.200 [分布式函数调度框架qq群]
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 ============================================================
 文件: c4b.md
@@ -4768,7 +4618,7 @@ if __name__ == '__main__':
         pool.submit(f, i)
 ```
 
-#### ✅ 方式 B：Funboost @boost 模式 (推荐)
+#### ✅ 方式 B：Funboost 模式 (推荐)
 ```python
 import time
 from funboost import BoosterParams, BrokerEnum
@@ -4785,19 +4635,6 @@ def f(x):
 if __name__ == '__main__':
     for i in range(100):
         f.push(i)
-```
-
-####  ✅ 方式 C：FunboostPool 模式 
-
-`FunboostPool` 完美平替 `concurrent.futures.ThreadPoolExecutor`，只需要替换一行实例化代码，无任何负担，兼容用户老项目到极致了。
-
-详见教程 4.38章节 `## 4.38 MemoryFunboostPool 和 FunboostPool 的使用`
-
-```python
-from funboost import MemoryFunboostPool,FunboostPool
-pool = MemoryFunboostPool(10,) # 完美支持submit 和map，入参和返回类型一致。
-future = pool.submit(task_fun, 1, 2) # future类型是 concurrent.futures.Future 。
-print(future.result()) # 一样能通过future获取结果
 ```
 
 ### 1.2.2 🚀 任务控制功能矩阵
@@ -4898,13 +4735,11 @@ from funboost import boost, BrokerEnum, BoosterParams
 def task_fun(x, y):
     print(f'{x} + {y} = {x + y}')
     time.sleep(3)  # 模拟耗时，框架会自动并发绕过阻塞
-    return x + y
 
 if __name__ == "__main__":
     # 1. 生产者：发布 100 个任务
-    print(task_fun(10,20)) # 即使task_fun加了@boost装饰器，task_fun函数仍能直接本地调用，函数入参不会发到消息队列。这就是双模运行。
     for i in range(100):
-        task_fun.push(i, y=i * 2) # 发布消息 {"x":i,"y":i*2} 到消息队列task_queue_name1 中。
+        task_fun.push(i, y=i * 2)
     
     # 2. 消费者：启动循环调度
     task_fun.consume()
@@ -5023,10 +4858,6 @@ def task_fun(a, b):
     return a + b
 ```
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 ## 🖥️ funweb (Funboost Web Manager) 界面预览
 
@@ -5388,7 +5219,7 @@ if __name__ == '__main__':
     f_beat.consume()  # 启动f_beat消费，这个是登记celery worker要启动消费的函数，真正的启动worker消费需要运行 realy_start_celery_worker，realy_start_celery_worker是一次性启动所有登记的需要运行的函数  
     f_beat2.consume() # 启动f_beat2消费，这个是登记celery worker要启动消费的函数，真正的启动worker消费需要运行 realy_start_celery_worker，realy_start_celery_worker是一次性启动所有登记的需要运行的函数  
     CeleryHelper.realy_start_celery_worker(worker_name='test_worker啊')  # 这个是真正的启动celery worker 函数消费。  
-
+    print('CeleryHelper.realy_start_celery_worker()  之后的代码不会被运行')  
 
 
 ```  
@@ -12129,93 +11960,6 @@ for i in range(1, 20):
         misfire_grace_time=100000000))  
 ```  
 
-好的，这样确实更直观。我把绝对定时的例子改成 **2026年10月1日早上8点整**，这样用户一眼就能看出是“指定死日期”的定时任务。
-
-以下是修正后的 **4.9.2 章节完整内容**，替换了绝对定时的例子：
-
----
-
-好的，这个建议非常到位。如果业务本身就是**以延时任务为主导**（例如订单超时取消、定时提醒），那么使用专用延时队列显然是更合理的架构选型。
-
-以下是在“选择建议”表格中增加这一行的完整内容：
-
----
-
-### 4.9.2 Funboost 延时消息实现原理与REDIS_ZSET_DELAY专用延时中间件模式介绍
-
-Funboost 支持两种延时机制，核心区别在于**“何时判断时间”**。
-
-#### 4.9.2.1 🛠️ 默认模式：基于 APScheduler 二次投递
-
-1. 消息携带 `countdown/eta` 发往原 Broker（如 Redis List、Kafka）。
-2. 消费者拉取后识别为延时任务，立即 ACK 并从原队列移除。
-3. 交由内置 `APScheduler` 计时，到期后将消息**重新推回原队列** ,实际是借助了APScheduler的能力。
-4. 消费者再次拉取并执行（此时无延时字段）。
-
-**⚠️ 注意**：若队列积压大量普通消息，队尾的延时消息无法及时取出，导致执行滞后。**仅适合低频、无积压场景。**
-
----
-
-#### 4.9.2.2 🚀 专业模式：基于 `REDIS_ZSET_DELAY` 原生延时队列
-
-1. 消息直接存入 **Redis Sorted Set**，Score = 到期时间戳。
-2. 专用消费者持续执行 `ZRANGEBYSCORE` 拉取 `Score <= now` 的消息。
-3. 时间到达立即拉取执行，无需二次入队。是funboost作者自己使用redis zset结构实现的延时任务，没有借助APScheduler的能力。
-
-**✅ 优势**：无视队列顺序，不受普通消息积压影响，精准定时，没有broker中间商赚差价。**生产环境推荐。**
-
----
-
-#### 4.9.2.3 💻 专业模式：基于 `REDIS_ZSET_DELAY` broker 的使用示例
-
-```python
-import datetime
-from funboost import boost, BoosterParams, TaskOptions, BrokerEnum
-
-
-# 定义延时任务（使用专用延时队列）
-@boost(BoosterParams(queue_name="delay_add", broker_kind=BrokerEnum.REDIS_ZSET_DELAY))
-def add(x, y):
-    print(f"{x} + {y} = {x + y}")
-
-
-
-if __name__ == '__main__':
-    # 启动消费
-    add.consume()
-
-    # 1. 相对延时（60秒后执行 3+5）
-    add.publish(
-        {"x": 3, "y": 5},
-        task_options=TaskOptions(
-            other_extra_params={
-                'for_broker_redis_zset_delay': {'delay_seconds': 20}
-            }
-        )
-    )
-
-    # 2. 绝对定时（2026年10月1日 08:00:00 执行 10+20）
-    target_time = datetime.datetime(2026, 10, 1, 8, 0, 0)
-    eta_timestamp = target_time.timestamp()
-
-    add.publish(
-        {"x": 10, "y": 20},
-        task_options=TaskOptions(
-            other_extra_params={
-                'for_broker_redis_zset_delay': {'eta_timestamp': eta_timestamp}
-            }
-        )
-    )
-```
-
-#### 4.9.2.4 📌 选择建议
-
-| 场景 | 推荐方案 |
-| :--- | :--- |
-| 开发测试 / 极低频延时 | 默认 `TaskOptions(countdown=…)` |
-| 业务以延时任务为主（如订单超时、定时提醒） | **`BrokerEnum.REDIS_ZSET_DELAY`** |
-| 生产环境 / 高频延时 / 严格守时 | **`BrokerEnum.REDIS_ZSET_DELAY`** |
-
 ## 4.10 在web中如flask fastapi django 如何搭配使用消费框架的例子。  
 
 ```  
@@ -13531,15 +13275,13 @@ def f2(a, b):
 
 
 if __name__ == '__main__':  
-    f1.consume()  # 登记celery worker命令需要启动的--queues  
-    f2.consume()  # 登记celery worker命令需要启动的--queues  
-    CeleryHelper.realy_start_celery_worker(worker_name='测试celery worker2') # 正正的启动celery worker  
-    
     for i in range(200):  
         f1.push(i, i * 2)  
         f2.push(a=i, b=i * 10)  
 
-    
+    f1.consume()  # 登记celery worker命令需要启动的--queues  
+    f2.consume()  # 登记celery worker命令需要启动的--queues  
+    CeleryHelper.realy_start_celery_worker(worker_name='测试celery worker2') # 正正的启动celery worker  
 
 
 ```  
@@ -24697,7 +24439,6 @@ boost_scrapy 就是这样的框架，使用 funboost的引擎来封装的，封�
 - `from funboost.core.func_params_model import BoosterParamsComplete`
 - `from funboost.funboost_config_deafult import FunboostCommonConfig`
 - `from funboost.funboost_config_deafult import BrokerConnConfig`
-- `from funboost.utils.paramiko_util import ParamikoFolderUploader`
 - `from funboost.consumers.base_consumer import wait_for_possible_has_finish_all_tasks_by_conusmer_list`
 - `from funboost.consumers.base_consumer import FunctionResultStatus`
 - `from funboost.consumers.base_consumer import AbstractConsumer`
@@ -24738,6 +24479,7 @@ boost_scrapy 就是这样的框架，使用 funboost的引擎来封装的，封�
 - `from funboost.core.funboost_pool import MemoryFunboostPool`
 - `from funboost.core.funboost_pool import FunboostPool`
 - `from funboost.core.funboost_pool import FunboostPoolPickleFunc`
+- `from funboost.utils.paramiko_util import ParamikoFolderUploader`
 
 
 ---
@@ -25023,14 +24765,14 @@ BoosterParams 是 funboost 最核心的入参模型，掌握了 BoosterParams �
 - `table_name: typing.Optional[str] = None`
 
 ##### 📌 `class BoosterParamsFieldsAssit`
-*Line: 56*
+*Line: 44*
 
 **Class Variables (2):**
 - `has_been_deleted_fields = ['retry_interval', 'is_do_not_run_by_specify_time_effect', 'do_not_run_by_specify_time']`
 - `rename_fields = {'is_send_consumer_hearbeat_to_redis': 'is_send_consumer_heartbeat_to_redis', 'consumin_function_decorator': 'consuming_function_decorator', 'msg_expire_senconds': 'msg_expire_seconds'}`
 
 ##### 📌 `class BoosterParams(BaseJsonAbleModel)`
-*Line: 72*
+*Line: 60*
 
 **Docstring:**
 `````
@@ -25105,7 +24847,7 @@ pydatinc pycharm编程代码补全,请安装 pydantic插件, 在pycharm的  file
 - `booster_registry_name: str = StrConst.BOOSTER_REGISTRY_NAME_DEFAULT`
 
 ##### 📌 `class BoosterParamsComplete(BoosterParams)`
-*Line: 346*
+*Line: 334*
 
 **Docstring:**
 `````
@@ -25127,7 +24869,7 @@ specify_concurrent_pool 同一个进程的不同booster函数,共用一个线程
 - `specify_concurrent_pool: FunboostBaseConcurrentPool = Field(default_factory=functools.partial(ConcurrentPoolBuilder.get_pool, FlexibleThreadPool, 500))`
 
 ##### 📌 `class TaskOptions(BaseJsonAbleModel)`
-*Line: 366*
+*Line: 354*
 
 **Docstring:**
 `````
@@ -25159,7 +24901,7 @@ specify_concurrent_pool 同一个进程的不同booster函数,共用一个线程
 - `otel_context: typing.Optional[dict] = None`
 
 ##### 📌 `class PublisherParams(BaseJsonAbleModel)`
-*Line: 421*
+*Line: 409*
 
 **Class Variables (21):**
 - `queue_name: str`
@@ -25206,7 +24948,7 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 用户也可以按照文档4.21章节,轻松扩展任何物质概念作为funboost的broker.
 `````
 
-**Class Variables (53):**
+**Class Variables (54):**
 - `EMPTY = 'EMPTY'`
 - `RABBITMQ_AMQPSTORM = 'RABBITMQ_AMQPSTORM'`
 - `RABBITMQ = RABBITMQ_AMQPSTORM`
@@ -25247,7 +24989,8 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 - `TCP = 'TCP'`
 - `HTTP = 'HTTP'`
 - `GRPC = 'GRPC'`
-- `NATS = 'NATS'`
+- `NATS_CORE = 'NATS_CORE'`
+- `NATS_JETSTREAM = 'NATS_JETSTREAM'`
 - `TXT_FILE = 'TXT_FILE'`
 - `PEEWEE = 'PEEWEE'`
 - `CELERY = 'CELERY'`
@@ -25262,11 +25005,7 @@ funboost也内置支持了各种python三方包和消费框架作为broker,例�
 - `WEBSOCKET = 'WEBSOCKET'`
 
 ##### 📌 `class ConcurrentModeEnum`
-<<<<<<< HEAD
-*Line: 199*
-=======
-*Line: 198*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 201*
 
 **Docstring:**
 `````
@@ -25285,11 +25024,7 @@ funboost的多进程和多线程 asyncio是叠加的，不是互斥的。
 - `SOLO = SINGLE_THREAD`
 
 ##### 📌 `class FunctionKind`
-<<<<<<< HEAD
-*Line: 217*
-=======
-*Line: 216*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 219*
 
 **Docstring:**
 `````
@@ -25304,11 +25039,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `COMMON_FUNCTION = 'COMMON_FUNCTION'`
 
 ##### 📌 `class ConstStrForClassMethod`
-<<<<<<< HEAD
-*Line: 228*
-=======
-*Line: 227*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 230*
 
 **Class Variables (5):**
 - `FIRST_PARAM_NAME = 'first_param_name'`
@@ -25318,11 +25049,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `CLS_FILE = 'cls_file'`
 
 ##### 📌 `class RedisKeys`
-<<<<<<< HEAD
-*Line: 236*
-=======
-*Line: 235*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 238*
 
 **Public Methods (9):**
 - `def gen_funboost_apscheduler_redis_lock_key_by_queue_name(queue_name)` `staticmethod`
@@ -25359,11 +25086,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `FUNBOOST_UNACK_REGISTRY_PREFIX = 'funboost_unack_registry:'`
 
 ##### 📌 `class ConsumingFuncInputParamsCheckerField`
-<<<<<<< HEAD
-*Line: 300*
-=======
-*Line: 299*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 302*
 
 **Class Variables (6):**
 - `is_manual_func_input_params = 'is_manual_func_input_params'`
@@ -25374,22 +25097,14 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `func_position = 'func_position'`
 
 ##### 📌 `class MongoDbName`
-<<<<<<< HEAD
-*Line: 309*
-=======
-*Line: 308*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 311*
 
 **Class Variables (2):**
 - `TASK_STATUS_DB = 'funboost_task_status'`
 - `MONGOMQ_DB = 'funboost_mongomq'`
 
 ##### 📌 `class StrConst`
-<<<<<<< HEAD
-*Line: 313*
-=======
-*Line: 312*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 315*
 
 **Class Variables (4):**
 - `BOOSTER_REGISTRY_NAME_DEFAULT = 'booster_registry_default'`
@@ -25398,11 +25113,7 @@ funboost也能直接支持@boost加到 类方法和实例方法上（但这需�
 - `FILTERED_TASK_RESULT = 'filtered_task_result'`
 
 ##### 📌 `class EnvConst`
-<<<<<<< HEAD
-*Line: 319*
-=======
-*Line: 318*
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+*Line: 321*
 
 **Class Variables (2):**
 - `FUNBOOST_FAAS_CARE_PROJECT_NAME = 'funboost.faas.care_project_name'`
@@ -26365,13 +26076,14 @@ asyncio异步编程，最重要的方法有 aio_push aio_publish，
 - `@property publisher_of_dlx_queue`
 - `@property concurrent_pool`
 
-**Class Variables (3):**
+**Class Variables (4):**
 - `_time_interval_for_check_allow_run_by_cron = 60`
 - `BROKER_KIND = None`
+- `_REQUEUE_IS_NATIVE_NACK = False`
 - `logger_apscheduler = get_logger('push_for_apscheduler_use_database_store', log_filename='push_for_apscheduler_use_database_store.log')`
 
 ##### 📌 `class ConcurrentModeDispatcher(FunboostFileLoggerMixin)`
-*Line: 1298*
+*Line: 1299*
 
 **🔧 Constructor (`__init__`):**
 - `def __init__(self, consumerx: AbstractConsumer)`
@@ -26385,7 +26097,7 @@ asyncio异步编程，最重要的方法有 aio_push aio_publish，
 - `def schedulal_task_with_no_block(self)`
 
 ##### 📌 `class MetricCalculation`
-*Line: 1404*
+*Line: 1405*
 
 **Docstring:**
 `````
@@ -26411,7 +26123,7 @@ MetricCalculation 是统计消费函数执行次数、失败次数、平均耗�
 - `UNIT_TIME_FOR_COUNT = 10`
 
 ##### 📌 `class DistributedConsumerStatistics(RedisMixin, FunboostFileLoggerMixin)`
-*Line: 1495*
+*Line: 1497*
 
 **Docstring:**
 `````
@@ -26446,7 +26158,7 @@ MetricCalculation 是统计消费函数执行次数、失败次数、平均耗�
 #### 🔧 Public Functions (1)
 
 - `def wait_for_possible_has_finish_all_tasks_by_conusmer_list(consumer_list: typing.List[AbstractConsumer], minutes: int = 3)`
-  - *Line: 1389*
+  - *Line: 1390*
   - **Docstring:**
   `````
   判断多个消费者是否消费完成了。
@@ -26534,7 +26246,6 @@ care_project_name 的作用是：
 
 **Public Methods (4):**
 - `def get_all_queue_names(self) -> list`
-  - *获取所有队列名称，带30秒缓存（类级别缓存，所有实例共享）*
 - `def get_queue_names_by_project_name(self, project_name: str) -> list`
   - *根据项目名称获取队列名称，带30秒缓存（类级别缓存，所有实例共享）*
 - `def hmget_many_by_all_queue_names(self, key)`
@@ -26544,20 +26255,24 @@ care_project_name 的作用是：
 - `@property all_queue_names`
 - `@property project_name_queues`
 
-**Class Variables (4):**
+**Class Variables (6):**
 - `_cache_all_queue_names = None`
 - `_cache_all_queue_names_ts = 0`
 - `_cache_queue_names_by_project = {}`
+- `_cache_no_project_queue_names = None`
+- `_cache_no_project_queue_names_ts = 0`
 - `_cache_ttl = 30`
 
 ##### 📌 `class ActiveCousumerProcessInfoGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 181*
+*Line: 172*
 
 **Docstring:**
 `````
 获取分布式环境中的消费进程信息。
 使用这里面的4个方法需要相应函数的@boost装饰器设置 is_send_consumer_heartbeat_to_redis=True，这样会自动发送活跃心跳到redis。否则查询不到该函数的消费者进程信息。
 要想使用消费者进程信息统计功能，用户无论使用何种消息队列中间件类型，用户都必须安装redis，并在 funboost_config.py 中配置好redis链接信息
+
+所有 的last_x_s指标 代表最近10秒内的统计信息
 `````
 
 **🔧 Constructor (`__init__`):**
@@ -26600,7 +26315,7 @@ care_project_name 的作用是：
   - *获取所有机器ip对应的活跃消费者进程信息，按机器ip划分,不需要传入机器ip，自动扫描redis键。请不要在 funboost_config.py 的redis 指定的db中放太多其他业务的缓存键值对*
 
 ##### 📌 `class QueuesConusmerParamsGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 282*
+*Line: 275*
 
 **Docstring:**
 `````
@@ -26625,7 +26340,7 @@ care_project_name 的作用是：
 - `def cycle_get_queues_params_and_active_consumers_and_report(self, daemon = True)`
 
 ##### 📌 `class SingleQueueConusmerParamsGetter(RedisMixin, RedisReportInfoGetterMixin, FunboostFileLoggerMixin)`
-*Line: 405*
+*Line: 399*
 
 **Docstring:**
 `````
@@ -28046,7 +27761,7 @@ class BoosterParams(BaseJsonAbleModel):
 
 > 本文档专为 AI 设计，用于快速定位 funboost 源码中的类、函数、模块位置。
 >
-> 生成时间: 2026-04-17 （请注意时间，部分代码文件的行号有可能会随时间发生小幅变化）
+> 生成时间: 2026-05-09 （请注意时间，部分代码文件的行号有可能会随时间发生小幅变化）
 >
 > 源码根目录: `funboost/funboost/`
 >
@@ -28130,7 +27845,7 @@ funboost/
 │   ├── pulsar_consumer.py         # Pulsar
 │   ├── nsq_consumer.py            # NSQ
 │   ├── mqtt_consumer.py           # MQTT
-│   ├── nats_consumer.py           # NATS
+│   ├── (已移至 contrib/register_custom_broker_contrib/nats_core_broker.py)
 │   ├── zeromq_consumer.py         # ZeroMQ
 │   ├── mongomq_consumer.py        # MongoDB
 │   ├── persist_queue_consumer.py  # SQLite (persistqueue)
@@ -28179,7 +27894,7 @@ funboost/
 │   ├── pulsar_publisher.py        # Pulsar
 │   ├── nsq_publisher.py           # NSQ
 │   ├── mqtt_publisher.py          # MQTT
-│   ├── nats_publisher.py          # NATS
+│   ├── (已移至 contrib/register_custom_broker_contrib/nats_core_broker.py)
 │   ├── zeromq_publisher.py        # ZeroMQ
 │   ├── mongomq_publisher.py       # MongoDB
 │   ├── persist_queue_publisher.py # SQLite (persistqueue)
@@ -28263,6 +27978,14 @@ funboost/
 │   ├── register_custom_broker_contrib/    # 自定义broker
 │   │   ├── watchdog_broker.py     # WatchdogPublisher/Consumer 文件监控
 │   │   └── websocket_broker.py    # WebSocketPublisher/Consumer
+│   ├── funspider/                         # 爬虫辅助扩展(httpx+SQLModel)
+│   │   ├── __init__.py            # 导出 SimpleSpiderClient, AsyncSpiderClient, SpiderItem
+│   │   ├── http.py                # SpiderResponse, SimpleSpiderClient, AsyncSpiderClient
+│   │   ├── item.py                # SpiderItem (SQLModel ORM, sync/async insert/upsert)
+│   │   ├── README.md              # funspider说明文档
+│   │   └── funspider_demos/       # 爬虫示例
+│   │       ├── funspider_demo1.py # 新闻爬虫完整示例(同步+异步混用)
+│   │       └── fake_news_site.py  # 模拟新闻网站(FastAPI)
 │   └── save_function_result_status/       # 结果持久化
 │       ├── readme.md                      # 结果持久化说明
 │       ├── save_result_status_to_sqldb.py
@@ -28296,7 +28019,8 @@ funboost/
 │   │   ├── web_helper.py          # IP/hostname
 │   │   ├── system_monitor.py      # 系统监控API
 │   │   ├── script_deploy.py       # 脚本部署CRUD
-│   │   └── log_viewer.py          # 日志查看器
+│   │   ├── log_viewer.py          # 日志查看器
+│   │   └── queue_alerts.py        # 队列告警系统(积压/QPS/掉线/失败率/耗时)
 │   ├── templates/                 # 15个HTML模板
 │   │   ├── index.html             # 首页
 │   │   ├── login.html             # 登录页
@@ -28313,6 +28037,7 @@ funboost/
 │   │   ├── deploy_detail.html     # 部署详情
 │   │   ├── log_viewer.html        # 日志查看器
 │   │   ├── system_monitor.html    # 系统监控
+│   │   ├── queue_alerts.html      # 告警配置页面(规则CRUD+告警记录+测试通知)
 │   │   └── app.py中仍在使用的路由.md  # 路由参考文档
 │   ├── _ai_do_tasks_md/           # AI任务备忘
 │   │   ├── ai写web必须遵守的.md
@@ -28466,7 +28191,7 @@ RPC:  is_using_rpc_mode, rpc_result_expire_seconds, rpc_timeout
 | RabbitMQ | `RABBITMQ_AMQPSTORM`(=`RABBITMQ`), `RABBITMQ_COMPLEX_ROUTING` |
 | Kafka | `KAFKA`, `KAFKA_CONFLUENT` |
 | RocketMQ | `ROCKETMQ`, `ROCKETMQ5` |
-| 其他MQ | `PULSAR`, `NSQ`, `MQTT`, `NATS`, `ZEROMQ`, `SQS`, `HTTPSQS` |
+| 其他MQ | `PULSAR`, `NSQ`, `MQTT`, `NATS_CORE`, `NATS_JETSTREAM`, `ZEROMQ`, `SQS`, `HTTPSQS` |
 | 内存/文件 | `MEMORY_QUEUE`, `FASTEST_MEM_QUEUE`, `SQLITE_QUEUE`(=`PERSISTQUEUE`), `TXT_FILE` |
 | 数据库 | `MONGOMQ`, `SQLACHEMY`, `POSTGRES`, `PEEWEE` |
 | 网络协议 | `TCP`, `UDP`, `HTTP`, `GRPC`, `WEBSOCKET` |
@@ -28907,7 +28632,19 @@ def generate_broker_exclusive_config()           # 生成merged配置
 | `redis_hash_update_broker.py` | `RedisHashUpdatePublisher`, `RedisHashUpdateConsumer` | Redis HASH 可更新覆盖消息(latest-wins语义) |
 | `celery_pool_as_funboost_broker.py` | `CeleryPoolPublisher`, `CeleryPoolConsumer` | 复用 CeleryPool 作为 funboost broker |
 
-### 8.3 其他 Contrib
+### 8.3 funspider 爬虫辅助扩展 (`contrib/funspider/`)
+
+> 基于 httpx + SQLModel 的爬虫辅助组件，提供 ORM 模型与同步/异步双引擎客户端。
+> 导入路径: `from funboost.contrib.funspider import SimpleSpiderClient, AsyncSpiderClient, SpiderItem, Field, create_engine, create_async_engine`
+
+| 文件 | 核心类 | 功能 |
+|------|--------|------|
+| `http.py` | `SpiderResponse` | 统一封装 httpx 响应，内置 `.xpath()`/`.css()`/`.re()`/`.resp_dict` |
+| `http.py` | `SimpleSpiderClient` | 同步爬虫客户端(httpx.Client)，支持重试+代理函数列表+随机UA |
+| `http.py` | `AsyncSpiderClient` | 异步爬虫客户端(httpx.AsyncClient)，同上 |
+| `item.py` | `SpiderItem` | SQLModel ORM 基类，`.insert()`/`.upsert()`/`.aio_insert()`/`.aio_upsert()` |
+
+### 8.4 其他 Contrib
 
 | 文件 | 功能 |
 |------|------|
@@ -29044,6 +28781,7 @@ start_funboost_web_manager()   # 启动Web管理界面
 | `system_monitor.py` | Redis心跳采集, 系统监控API |
 | `script_deploy.py` | 脚本部署CRUD, Git操作, 进程控制, 日志tail |
 | `log_viewer.py` | 日志查看器(文件夹白名单, tail, grep, stream) |
+| `queue_alerts.py` | 队列告警系统: 5种告警类型(积压/QPS骤降/消费者掉线/失败率飙升/耗时过高)，多通道通知(钉钉/企微/飞书/Webhook)，告警去抖，后台10秒轮询检查 |
 | `web_helper.py` | IP/hostname辅助函数 |
 
 ---
@@ -29083,7 +28821,8 @@ start_funboost_web_manager()   # 启动Web管理界面
 | `PULSAR` | `PulsarConsumer` | `consumers/pulsar_consumer.py` | `PulsarPublisher` | `publishers/pulsar_publisher.py` |
 | `NSQ` | `NsqConsumer` | `consumers/nsq_consumer.py` | `NsqPublisher` | `publishers/nsq_publisher.py` |
 | `MQTT` | `MqttConsumer` | `consumers/mqtt_consumer.py` | `MqttPublisher` | `publishers/mqtt_publisher.py` |
-| `NATS` | `NatsConsumer` | `consumers/nats_consumer.py` | `NatsPublisher` | `publishers/nats_publisher.py` |
+| `NATS_CORE` | `NatsConsumer` | `contrib/register_custom_broker_contrib/nats_core_broker.py` | `NatsPublisher` | 同文件 |
+| `NATS_JETSTREAM` | `NatsJetStreamConsumer` | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` | `NatsJetStreamPublisher` | 同文件 |
 | `ZEROMQ` | `ZeromqConsumer` | `consumers/zeromq_consumer.py` | `ZeromqPublisher` | `publishers/zeromq_publisher.py` |
 | `SQLITE_QUEUE` | `PersistQueueConsumer` | `consumers/persist_queue_consumer.py` | `PersistQueuePublisher` | `publishers/persist_queue_publisher.py` |
 | `MONGOMQ` | `MongoMqConsumer` | `consumers/mongomq_consumer.py` | `MongoMqPublisher` | `publishers/mongomq_publisher.py` |
@@ -29267,6 +29006,10 @@ BoosterParams.consumer_override_cls = MyMixin
 | 怎么接OpenTelemetry / 链路追踪 | OpenTelemetry, tracing, 链路 | `contrib/override_publisher_consumer_cls/funboost_otel_mixin.py` |
 | 怎么监听文件变化触发任务 | 文件监控, watchdog, 文件变化 | `contrib/register_custom_broker_contrib/watchdog_broker.py` |
 | 怎么用WebSocket | WebSocket, ws | `contrib/register_custom_broker_contrib/websocket_broker.py` |
+| 怎么用NATS Core / NATS无持久化 | NATS, nats-py, Core | `contrib/register_custom_broker_contrib/nats_core_broker.py` |
+| 怎么用NATS JetStream / NATS持久化 | NATS, JetStream, nats-py, 持久化 | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` |
+| 怎么用funboost做爬虫 / 爬虫辅助 | 爬虫, spider, 爬取, httpx, funspider | `contrib/funspider/` (SimpleSpiderClient, AsyncSpiderClient, SpiderItem) |
+| 怎么配置队列告警 / 积压告警 / 掉线告警 | 告警, alert, 积压, 掉线, 通知 | `funweb/flask_bps/queue_alerts.py` |
 | 怎么远程部署 | 部署, deploy, fabric | `core/fabric_deploy_helper.py` L17 `fabric_deploy` |
 | Web管理界面怎么启动 | web, 管理界面, funweb, 后台 | `funweb/app.py` → `start_funboost_web_manager` |
 | 命令行怎么用 / CLI | 命令行, CLI, python -m | `core/cli/funboost_fire.py` L15 `BoosterFire` |
@@ -29326,6 +29069,10 @@ BoosterParams.consumer_override_cls = MyMixin
 | 告警通知 | `contrib/override_publisher_consumer_cls/alert_notifier_mixin.py` |
 | Watchdog broker | `contrib/register_custom_broker_contrib/watchdog_broker.py` |
 | WebSocket broker | `contrib/register_custom_broker_contrib/websocket_broker.py` |
+| NATS Core broker | `contrib/register_custom_broker_contrib/nats_core_broker.py` |
+| NATS JetStream | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` |
+| 爬虫辅助(funspider) | `contrib/funspider/` → `SimpleSpiderClient`, `AsyncSpiderClient`, `SpiderItem` |
+| 队列告警 | `funweb/flask_bps/queue_alerts.py` → `alert_bp`, `_check_rules_once` |
 | Redis管理 | `utils/redis_manager.py` → `RedisManager` (L35) / `RedisMixin` (L77) |
 | MongoDB | `utils/mongo_util.py` → `MongoMixin` (L20) |
 | 装饰器工具 | `utils/decorators.py` → `keep_circulating` (L102) 等 |
@@ -29675,7 +29422,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
     │   ├── mqtt_consumer.py
     │   ├── mysql_cdc_consumer.py
     │   ├── nameko_consumer.py
-    │   ├── nats_consumer.py
     │   ├── nsq_consumer.py
     │   ├── peewee_conusmer.py
     │   ├── persist_queue_consumer.py
@@ -29712,6 +29458,14 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
     │   │   └── mysql2mysql.py
     │   ├── django_db_deco.py
     │   ├── funboost框架的额外贡献功能.md
+    │   ├── funspider
+    │   │   ├── README.md
+    │   │   ├── __init__.py
+    │   │   ├── funspider_demos
+    │   │   │   ├── fake_news_site.py
+    │   │   │   └── funspider_demo1.py
+    │   │   ├── http.py
+    │   │   └── item.py
     │   ├── override_publisher_consumer_cls
     │   │   ├── README.md
     │   │   ├── __init__.py
@@ -29726,10 +29480,9 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
     │   ├── redis_consume_latest_msg_broker.py
     │   ├── register_custom_broker_contrib
     │   │   ├── celery_pool_as_funboost_broker.py
-<<<<<<< HEAD
+    │   │   ├── nats_core_broker.py
+    │   │   ├── nats_jetstream_broker.py
     │   │   ├── redis_hash_update_broker.py
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     │   │   ├── redis_zset_broker.py
     │   │   ├── watchdog_broker.py
     │   │   └── websocket_broker.py
@@ -29820,7 +29573,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
     │   ├── mqtt_publisher.py
     │   ├── mysql_cdc_publisher.py
     │   ├── nameko_publisher.py
-    │   ├── nats_publisher.py
     │   ├── nsq_publisher.py
     │   ├── peewee_publisher.py
     │   ├── persist_queue_publisher.py
@@ -29906,11 +29658,7 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 ---
 
 
-<<<<<<< HEAD
-## funboost (relative dir: `funboost`)  Included Files (total: 264 files)
-=======
-## funboost (relative dir: `funboost`)  Included Files (total: 263 files)
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
+## funboost (relative dir: `funboost`)  Included Files (total: 270 files)
 
 
 - `funboost/constant.py`
@@ -30039,8 +29787,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 
 - `funboost/consumers/nameko_consumer.py`
 
-- `funboost/consumers/nats_consumer.py`
-
 - `funboost/consumers/nsq_consumer.py`
 
 - `funboost/consumers/peewee_conusmer.py`
@@ -30115,6 +29861,18 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 
 - `funboost/contrib/cdc/__init__.py`
 
+- `funboost/contrib/funspider/http.py`
+
+- `funboost/contrib/funspider/item.py`
+
+- `funboost/contrib/funspider/README.md`
+
+- `funboost/contrib/funspider/__init__.py`
+
+- `funboost/contrib/funspider/funspider_demos/fake_news_site.py`
+
+- `funboost/contrib/funspider/funspider_demos/funspider_demo1.py`
+
 - `funboost/contrib/override_publisher_consumer_cls/alert_notifier_mixin.py`
 
 - `funboost/contrib/override_publisher_consumer_cls/circuit_breaker_mixin.py`
@@ -30135,11 +29893,12 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 
 - `funboost/contrib/register_custom_broker_contrib/celery_pool_as_funboost_broker.py`
 
-<<<<<<< HEAD
+- `funboost/contrib/register_custom_broker_contrib/nats_core_broker.py`
+
+- `funboost/contrib/register_custom_broker_contrib/nats_jetstream_broker.py`
+
 - `funboost/contrib/register_custom_broker_contrib/redis_hash_update_broker.py`
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 - `funboost/contrib/register_custom_broker_contrib/redis_zset_broker.py`
 
 - `funboost/contrib/register_custom_broker_contrib/watchdog_broker.py`
@@ -30293,8 +30052,6 @@ ai agent在运行 funboost 测试代码时候，让funboost运行1分钟左右�
 - `funboost/publishers/mysql_cdc_publisher.py`
 
 - `funboost/publishers/nameko_publisher.py`
-
-- `funboost/publishers/nats_publisher.py`
 
 - `funboost/publishers/nsq_publisher.py`
 
@@ -30593,7 +30350,9 @@ class BrokerEnum:
 
     GRPC = 'GRPC' # 使用知名grpc作为broker,可以使用 sync_call 方法同步获取grpc的结果, 简单程度暴击用户手写原生的 grpc客户端 服务端
 
-    NATS = 'NATS'  # 高性能中间件nats,中间件服务端性能很好,。
+    NATS_CORE = 'NATS_CORE'  # 高性能中间件nats Core模式(无持久化),使用nats-py官方asyncio客户端。pip install nats-py
+
+    NATS_JETSTREAM = 'NATS_JETSTREAM'  # NATS JetStream持久化模式,支持消费确认/持久化/消费者组。用法见 contrib/register_custom_broker_contrib/nats_jetstream_broker.py
 
     TXT_FILE = 'TXT_FILE'  # 磁盘txt文件作为消息队列，支持单机持久化，不支持多机分布式。不建议这个，用sqlite。
 
@@ -31159,8 +30918,6 @@ from funboost.core.func_params_model import (BoosterParams, BoosterParamsComplet
                                              TaskOptions, PublisherParams, BoosterParamsComplete)
 from funboost.funboost_config_deafult import FunboostCommonConfig, BrokerConnConfig
 
-# from funboost.core.fabric_deploy_helper import fabric_deploy, kill_all_remote_tasks # fabric2还没适配python3.12以上版本，不在这里导入，否则高版本python报错。
-from funboost.utils.paramiko_util import ParamikoFolderUploader
 
 from funboost.consumers.base_consumer import (wait_for_possible_has_finish_all_tasks_by_conusmer_list,
                                               FunctionResultStatus, AbstractConsumer)
@@ -31200,6 +30957,11 @@ from funboost.core.funboost_pool import MemoryFunboostPool,FunboostPool,Funboost
 
 
 
+# from funboost.core.fabric_deploy_helper import fabric_deploy, kill_all_remote_tasks # fabric2还没适配python3.12以上版本，不在这里导入，否则高版本python报错。
+try:
+    from funboost.utils.paramiko_util import ParamikoFolderUploader
+except ImportError:
+    pass
 
 `````
 
@@ -31749,111 +31511,22 @@ class CeleryHelper:
 
 `````python
 """
-<<<<<<< HEAD
 CeleryPool —— 将 Celery 封装为 concurrent.futures.Executor 兼容接口。
 无需 @app.task、无需手动启 worker，submit 任意函数即可获得分布式执行能力。
 
 用法::
-=======
-CeleryPool —— 将 Celery 封装为 concurrent.futures.Executor 兼容的通用任务池
-==============================================================================
-
-1. 设计背景
------------
-
-Celery 是 Python 生态中最流行的分布式任务队列框架，功能强大但上手门槛高。
-使用原生 Celery 时，开发者需要：
-
-  a) 为每个任务函数加 @app.task 装饰器，侵入业务代码
-  b) 手动创建 Celery app 并管理配置
-  c) 另起终端启动 worker 进程
-  d) 通过 AsyncResult 获取结果，API 与 concurrent.futures 不兼容
-  e) 理解 Celery 的序列化、路由、backend、ack 等概念
-
-CeleryPool 的目标：把以上所有复杂度封装掉，让用户像使用
-concurrent.futures.ThreadPoolExecutor 一样使用 Celery 分布式能力。
-
-
-2. CeleryPool 相比原生 Celery 的核心优势
------------------------------------------
-
-┌─────────────────────┬───────────────────────────────┬─────────────────────────────────┐
-│        维度          │       原生 Celery              │        CeleryPool               │
-├─────────────────────┼───────────────────────────────┼─────────────────────────────────┤
-│ 函数定义             │ 必须用 @app.task 装饰器标注     │ 任意普通函数，无需装饰器          │
-│ Worker 启动          │ 需另开终端 celery -A ... worker │ 自动在线程中启动 worker          │
-│ 返回值类型           │ celery.result.AsyncResult      │ concurrent.futures.Future        │
-│ 获取结果方式         │ result.get(timeout=...)        │ future.result(timeout=...)       │
-│ 多任务批量执行       │ group / chord / chain           │ pool.map(fn, iterable)           │
-│ 超时处理             │ result.get(timeout) 抛 TimeoutError │ future.result(timeout) 同上  │
-│ 异常传播             │ result.get() 重新抛出远端异常    │ future.result() 同上             │
-│ 与标准库兼容性       │ 不兼容 concurrent.futures       │ 完全兼容                         │
-│ 与 as_completed 兼容 │ 不支持                         │ 惰性模式下需先 result()           │
-│ 资源消耗             │ result.get() 内部轮询消耗线程    │ 惰性模式：不调用 result() 零开销  │
-│ 学习曲线             │ 需理解 task/app/worker/broker   │ 只需理解 submit/result           │
-│ 代码侵入性           │ 业务函数必须注册为 task          │ 业务函数保持纯净                 │
-└─────────────────────┴───────────────────────────────┴─────────────────────────────────┘
-
-
-3. 用法示例
------------
-
-3.1 最简用法 —— 3 行代码替代原生 Celery 完整流程
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
     from funboost.assist.celery_pool import CeleryPool
 
     def add(a, b):
         return a + b
 
-<<<<<<< HEAD
     def multiply(x, y):
         return x * y
-=======
-    pool = CeleryPool(
-        broker_url='redis://localhost:6379/0',
-        result_backend='redis://localhost:6379/0',
-        queue_name='my_add_queue',
-    )
-    future = pool.submit(add, 1, 2)
-    print(future.result())   # 输出: 3
-
-  对比原生 Celery 需要的步骤:
-    # 1) 创建 tasks.py
-    from celery import Celery
-    app = Celery('tasks', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-    @app.task
-    def add(a, b):
-        return a + b
-
-    # 2) 另起终端运行 worker
-    #    celery -A tasks worker --loglevel=info
-
-    # 3) 在主程序中调用
-    result = add.delay(1, 2)
-    print(result.get(timeout=10))   # 输出: 3
-
-
-3.2 批量提交 —— pool.map 对齐 concurrent.futures.Executor.map
-
-    results = list(pool.map(add, [(1, 2), (3, 4), (5, 6)]))
-    # [3, 7, 11]
-
-
-3.3 "发射后不管"模式 —— 不设置 result_backend
-
-    pool = CeleryPool(broker_url='redis://localhost:6379/0', queue_name='fire_and_forget')
-    pool.submit(send_email, to='user@example.com', body='hello')
-    # 不需要结果，任务静默执行，零资源浪费
-
-
-3.4 自定义并发与队列
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
     pool = CeleryPool(
         broker_url='redis://localhost:6379/0',
         result_backend='redis://localhost:6379/0',
-<<<<<<< HEAD
         queue_name='demo_queue',
         other_celery_app_conf={'task_acks_late': True, 'worker_prefetch_multiplier': 1},
     )
@@ -31862,174 +31535,6 @@ concurrent.futures.ThreadPoolExecutor 一样使用 Celery 分布式能力。
     f2 = pool.submit(multiply, 3, 7)
     print(f1.result(timeout=10))  # 3
     print(f2.result(timeout=10))  # 21
-=======
-        concurrent_num=8,          # 8 个并发 worker 线程
-        pool_type='threads',       # 线程池模式（默认）
-        queue_name='my_tasks',     # 队列名（必传）
-        worker_loglevel='INFO',    # worker 日志级别
-    )
-
-
-3.5 注入额外 Celery 配置
-
-    pool = CeleryPool(
-        broker_url='redis://localhost:6379/0',
-        result_backend='redis://localhost:6379/0',
-        queue_name='advanced_queue',
-        other_celery_app_conf={
-            'task_acks_late': True,               # 任务完成后再 ack
-            'worker_prefetch_multiplier': 1,       # 每次只预取 1 个任务
-            'task_time_limit': 300,                # 单个任务最大执行时间 300s
-            'task_soft_time_limit': 240,           # 软超时 240s（触发 SoftTimeLimitExceeded）
-            'broker_connection_retry_on_startup': True,
-        },
-    )
-
-
-3.6 与 concurrent.futures 工具函数配合
-
-    from concurrent.futures import as_completed, wait
-
-    futures = [pool.submit(add, i, i*10) for i in range(5)]
-
-    # 注意：惰性模式下，需要先触发 result() 才能让 done() 返回 True
-    for f in futures:
-        print(f.result())
-
-    # 或者使用 wait
-    done, not_done = wait(futures, timeout=30)
-
-
-3.7 异常处理
-
-    def risky_task(x):
-        if x < 0:
-            raise ValueError(f"负数不允许: {x}")
-        return x * 2
-
-    future = pool.submit(risky_task, -1)
-    try:
-        future.result()
-    except ValueError as e:
-        print(f"捕获到远端异常: {e}")
-
-
-3.8 同进程 vs 分布式
-
-    CeleryPool 自动处理两种场景：
-
-    同进程模式（默认 is_auto_start_worker=True）：
-      - worker 在当前进程的线程中启动
-      - 函数从 _FUNC_REGISTRY 直接引用，无需可导入
-      - 适合开发、测试、单机部署
-
-    分布式模式（is_auto_start_worker=False）：
-      - 需要在远程机器上独立启动 worker
-      - 函数必须是顶层可导入的（worker 通过 importlib 动态导入）
-      - 适合生产环境多机部署
-
-
-4. 架构概览
------------
-
-    ┌─────────────────┐
-    │   用户代码        │
-    │  pool.submit(fn) │
-    └───────┬─────────┘
-            │  fn → func_path (模块路径字符串)
-            ▼
-    ┌─────────────────┐
-    │  universal_task   │  Celery 注册的唯一 task
-    │  .apply_async()   │  将 (func_path, args, kwargs) 序列化到队列
-    └───────┬─────────┘
-            │  通过 Broker (Redis/RabbitMQ)
-            ▼
-    ┌─────────────────┐
-    │  Celery Worker    │  消费消息
-    │  _import_and_call │  还原函数引用并执行
-    └───────┬─────────┘
-            │  结果写入 Result Backend
-            ▼
-    ┌─────────────────┐
-    │  CeleryFuture     │  惰性轮询 Backend 获取结果
-    │  .result()        │  → 指数退避: 0.01s → 0.02s → 0.04s → ... → 5s
-    └─────────────────┘
-
-    关键设计决策:
-    - 只注册一个 universal_task，通过 func_path 分发所有函数
-    - CeleryFuture 继承 concurrent.futures.Future，惰性解析
-    - 不调用 .result() = 不消耗任何轮询线程/资源
-
-
-5. 惰性结果获取（Lazy Resolution）
-----------------------------------
-
-CeleryFuture 采用惰性解析策略：
-
-  - 创建 future 时不会立刻去 Backend 拉取结果
-  - 只在用户调用 future.result() 时才触发轮询
-  - 轮询采用指数退避策略：初始 10ms，每次翻倍，上限 5s
-  - 线程安全：使用 threading.Lock + double-check locking 保证并发安全
-  - 幂等性：多次调用 result() 只在首次触发解析，后续直接返回缓存值
-
-  惰性模式的代价：
-    done() 在 result() 调用之前始终返回 False（因为结果尚未解析）。
-    这意味着 concurrent.futures.as_completed() 和 add_done_callback()
-    需要在调用 result() 之后才能正确工作。
-    这是在"零资源浪费"和"API 完全兼容"之间的权衡选择。
-
-
-6. 线程安全保证
----------------
-
-CeleryFuture._ensure_resolved 使用 double-check locking：
-
-    if self._resolved:       # 第一次检查（无锁，快速返回）
-        return
-    with self._resolve_lock: # 加锁
-        if self._resolved:   # 第二次检查（防止并发重复解析）
-            return
-        ... 执行轮询和结果设置 ...
-
-  这确保了：
-    - 多个线程同时调用 result() 时只有一个线程执行实际解析
-    - 解析完成后 self._resolved = True，后续调用零开销直接返回
-    - self._cr（Celery AsyncResult 引用）在解析后设为 None，释放资源
-
-
-7. 函数路由机制
----------------
-
-CeleryPool 使用单一 universal_task + 函数路径字符串 实现任意函数路由：
-
-    submit(add, 1, 2)
-      → func_path = "mymodule.add"
-      → universal_task.apply_async(args=["mymodule.add", [1, 2], {}])
-      → Worker 端: _import_and_call("mymodule.add", [1, 2], {})
-                    → 先查 _FUNC_REGISTRY（同进程直接引用）
-                    → 再 importlib.import_module 动态导入（分布式模式）
-                    → 调用 add(1, 2) 并返回结果
-
-    优势：
-    - 用户无需给每个函数加 @app.task 装饰器
-    - 新增函数无需修改 Celery 配置
-    - 同一个 worker 可执行任意函数
-
-
-8. 适用场景
------------
-
-  适合：
-    - 希望用最少代码获得分布式任务能力
-    - 已有大量业务函数，不想逐一加 @app.task
-    - 需要与 concurrent.futures 生态兼容（如 as_completed、wait）
-    - 开发阶段快速验证、测试
-
-  不适合：
-    - 需要 Celery 高级特性（Canvas: chain / chord / group / starmap）
-    - 需要精细的 task 级配置（rate_limit / retry / countdown 等）
-    - 对 done() / as_completed() 的实时性有严格要求（惰性模式限制）
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 """
 
 import importlib
@@ -32150,13 +31655,10 @@ class CeleryFuture(Future):
                     self.set_exception(e)
 
 
-<<<<<<< HEAD
 _pool_cache: typing.Dict[str, 'CeleryPool'] = {}
 _pool_cache_lock = threading.Lock()
 
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 class CeleryPool:
     """
     将 Celery 封装为 concurrent.futures.Executor 兼容的通用任务池。
@@ -32190,13 +31692,10 @@ class CeleryPool:
         - 需要 Redis / RabbitMQ 等外部 Broker 运行
         - 惰性模式下 done() / as_completed() 需先调 result() 触发
 
-<<<<<<< HEAD
     单例语义：
         同一个 queue_name 只创建一次实例，后续 CeleryPool(queue_name='x') 返回缓存的实例。
         避免 for 循环实例化时重复创建 Celery app 和 worker。
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     典型用法：
         pool = CeleryPool(
             broker_url='redis://localhost:6379/0',
@@ -32207,7 +31706,6 @@ class CeleryPool:
         print(future.result())
     """
 
-<<<<<<< HEAD
     def __new__(cls, *args, **kwargs):
         queue_name = kwargs.get('queue_name')
         if queue_name is not None:
@@ -32219,8 +31717,6 @@ class CeleryPool:
                 return instance
         return super().__new__(cls)
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     def __init__(
         self,
         broker_url: str = 'redis://localhost:6379/0',
@@ -32250,12 +31746,9 @@ class CeleryPool:
                                        可传入任何 Celery 支持的配置项，例如：
                                        {'task_acks_late': True, 'worker_prefetch_multiplier': 1}
         """
-<<<<<<< HEAD
         if getattr(self, '_initialized', False):
             return
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         self.broker_url = broker_url
         self.result_backend = result_backend
         self.concurrent_num = concurrent_num
@@ -32281,11 +31774,7 @@ class CeleryPool:
         if other_celery_app_conf:
             app_conf.update(other_celery_app_conf)
 
-<<<<<<< HEAD
         self.app = Celery(f'celery_pool_{self.queue_name}')
-=======
-        self.app = Celery('celery_pool')
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         self.app.conf.update(**app_conf)
 
         @self.app.task(name=task_name)
@@ -32296,17 +31785,11 @@ class CeleryPool:
 
         self._worker_thread = None
         if is_auto_start_worker:
-<<<<<<< HEAD
             self.start_worker()
 
         self._initialized = True
 
     def start_worker(self):
-=======
-            self._start_worker()
-
-    def _start_worker(self):
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         """在线程中启动 Celery worker，通过 sleep 等待其就绪。"""
         def _run():
             self.app.worker_main([
@@ -32326,12 +31809,9 @@ class CeleryPool:
         self._worker_thread.start()
         time.sleep(self.worker_startup_timeout)
 
-<<<<<<< HEAD
         from celery._state import _set_task_join_will_block
         _set_task_join_will_block(False)
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     def submit(self, fn: typing.Callable, *args, **kwargs) -> Future:
         """
         提交任意函数到 Celery 执行，返回 concurrent.futures.Future。
@@ -32348,7 +31828,6 @@ class CeleryPool:
 
     map = Executor.map
 
-<<<<<<< HEAD
     def get_message_count(self) -> int:
         """查询当前队列中未消费的消息数量。"""
         with self.app.connection_or_acquire() as conn:
@@ -32360,8 +31839,6 @@ class CeleryPool:
         with self.app.connection_or_acquire() as conn:
             return conn.default_channel.queue_purge(self.queue_name) or 0
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     def shutdown(self, wait: bool = True):
         pass
 
@@ -32371,10 +31848,7 @@ class CeleryPool:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.shutdown()
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 `````
 
 --- **end of file: funboost/assist/celery_pool.py** (project: funboost) --- 
@@ -32547,7 +32021,7 @@ import os
 import uuid
 from rq.worker import RandomWorker
 from funboost.core.loggers import get_funboost_file_logger
-from redis3 import Redis
+from redis5 import Redis
 from rq import Worker
 from funboost.funboost_config_deafult import BrokerConnConfig
 from funboost.assist.rq_windows_worker import WindowsWorker
@@ -35292,6 +34766,7 @@ class GlobalVars:
 class AbstractConsumer(metaclass=abc.ABCMeta, ):
     _time_interval_for_check_allow_run_by_cron = 60
     BROKER_KIND = None
+    _REQUEUE_IS_NATIVE_NACK = False  # 子类覆盖为True表示_requeue使用了broker原生NACK机制（如RabbitMQ basic_nack/reject、NATS JetStream nak），已requeue的消息不应再调用_confirm_consume
 
     @property
     def publisher_of_same_queue(self):
@@ -36101,7 +35576,7 @@ class AbstractConsumer(metaclass=abc.ABCMeta, ):
                     if interval:
                         if not self._wait_before_retry(kw, current_retry_times, interval):
                             break
-            if not (current_function_result_status._has_requeue and self.BROKER_KIND in [BrokerEnum.RABBITMQ_AMQPSTORM, BrokerEnum.RABBITMQ_PIKA, BrokerEnum.RABBITMQ_RABBITPY]):  # 已经nack了，不能ack，否则rabbitmq delevar tag 报错
+            if not (current_function_result_status._has_requeue and self._REQUEUE_IS_NATIVE_NACK):
                 self._confirm_consume(kw)
             current_function_result_status.run_status = RunStatus.finish
             current_function_result_status.time_end = time.time()
@@ -36266,7 +35741,7 @@ class AbstractConsumer(metaclass=abc.ABCMeta, ):
                         if not await self._async_wait_before_retry(kw, current_retry_times, interval):
                             break
 
-            if not (current_function_result_status._has_requeue and self.BROKER_KIND in [BrokerEnum.RABBITMQ_AMQPSTORM, BrokerEnum.RABBITMQ_PIKA, BrokerEnum.RABBITMQ_RABBITPY]):
+            if not (current_function_result_status._has_requeue and self._REQUEUE_IS_NATIVE_NACK):
                 await simple_run_in_executor(self._confirm_consume, kw)
             current_function_result_status.run_status = RunStatus.finish
             current_function_result_status.time_end = time.time()
@@ -36612,6 +36087,7 @@ class MetricCalculation:
         self.current_time_for_execute_task_times_every_unit_time = time.time()
         self.consuming_function_cost_time_total_every_unit_time_tmp = 0
         self.last_execute_task_time = time.time()  # 最近一次执行任务的时间。
+        # last_x_s 代表最近10秒
         self.last_x_s_execute_count = 0
         self.last_x_s_execute_count_fail = 0
         self.last_x_s_avarage_function_spend_time = None
@@ -38253,6 +37729,7 @@ class KombuConsumer(AbstractConsumer, ):
     """
     使用kombu作为中间件,这个能直接一次性支持很多种小众中间件，但性能很差，除非是分布式函数调度框架没实现的中间件种类用户才可以用这种，用户也可以自己对比性能。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     def custom_init(self):
@@ -38422,6 +37899,7 @@ class MongoMqConsumer(AbstractConsumer, MongoMixin):
     """
     Mongo queue包实现的基于mongo的消息队列，支持消费确认。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     def _dispatch_task(self):
@@ -38703,51 +38181,6 @@ def batch_start_nameko_service_in_new_process(boost_fun_list: typing.List, proce
 ---
 
 
---- **start of file: funboost/consumers/nats_consumer.py** (project: funboost) --- 
-
-`````python
-﻿import json
-# from pynats import NATSClient, NATSMessage  # noqa
-
-from funboost.consumers.base_consumer import AbstractConsumer
-from funboost.core.lazy_impoter import NatsImporter
-from funboost.funboost_config_deafult import BrokerConnConfig
-
-
-class NatsConsumer(AbstractConsumer):
-    """
-    nats作为中间件实现的。
-    """
-
-
-    def _dispatch_task(self):
-        # print(88888888888888)
-        nats_client = NatsImporter().NATSClient(BrokerConnConfig.NATS_URL, socket_timeout=600, socket_keepalive=True)
-        nats_client.connect()
-
-        def callback(msg: NatsImporter().NATSMessage):
-            # print(type(msg))
-            # print(msg.reply)
-            # print(f"Received a message with subject {msg.subject}: {msg.payload}")
-            kw = {'body': msg.payload}
-            self._submit_task(kw)
-
-        nats_client.subscribe(subject=self.queue_name, callback=callback)
-        nats_client.wait()
-
-    def _confirm_consume(self, kw):
-        pass   # 没有确认消费
-
-    def _requeue(self, kw):
-        self.publisher_of_same_queue.publish(kw['body'])
-
-`````
-
---- **end of file: funboost/consumers/nats_consumer.py** (project: funboost) --- 
-
----
-
-
 --- **start of file: funboost/consumers/nsq_consumer.py** (project: funboost) --- 
 
 `````python
@@ -38771,6 +38204,7 @@ class NsqConsumer(AbstractConsumer):
     """
     nsq作为中间件实现的。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     def _dispatch_task(self):
@@ -38817,6 +38251,7 @@ class PeeweeConsumer(AbstractConsumer):
     """
     peewee实现的操作5种数据库模拟消息队列，支持消费确认。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     def _dispatch_task(self):
@@ -38861,6 +38296,7 @@ class PersistQueueConsumer(AbstractConsumer):
     """
     persist queue包实现的本地持久化消息队列。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
     def _dispatch_task(self):
         pub = PersistQueuePublisher(publisher_params=PublisherParams(queue_name=self.queue_name))
@@ -38912,6 +38348,7 @@ class PostgresConsumer(AbstractConsumer):
     2. LISTEN/NOTIFY: 实时通知机制，比轮询更高效
     3. 使用原生 psycopg2 连接池
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
     BROKER_KIND = None  # 会被框架自动设置
 
@@ -39031,6 +38468,7 @@ class PulsarConsumer(AbstractConsumer, ):
     """
     pulsar作为中间件实现的。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
 
@@ -39091,6 +38529,7 @@ class RabbitmqConsumerAmqpStorm(AbstractConsumer):
     使用AmqpStorm实现的，多线程安全的，不用加锁。
     funboost 强烈推荐使用这个做消息队列中间件。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
     # _rabbitmq_pb_cls = RabbitmqPublisherUsingAmqpStorm
 
@@ -39157,6 +38596,7 @@ class RabbitmqAmqpConsumer(AbstractConsumer):
     使用 amqp 包实现，高性能 AMQP 客户端。
     amqp 是 Celery/Kombu 底层依赖，性能比 pika 更好。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
     def _dispatch_task(self):
         def callback(message):
@@ -39382,6 +38822,7 @@ class RabbitmqConsumer(AbstractConsumer):
     使用pika包实现的。
     pika包 子线程去使用chanel执行ack，由于跨线程操作chanel报错，比较麻烦。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     # noinspection PyAttributeOutsideInit
@@ -39498,6 +38939,7 @@ class RabbitmqConsumerRabbitpy(AbstractConsumer):
     """
     使用rabbitpy实现的
     """
+    _REQUEUE_IS_NATIVE_NACK = True
     def custom_init(self):
         raise Exception('不建议使用这个中间件模式，建议使用 BrokerEnum.RABBITMQ_AMQPSTORM 操作rabbitmq')
 
@@ -40377,7 +39819,7 @@ except ImportError:
         '需要安装 rocketmq-python-client 包: pip install rocketmq-python-client\n'
         '这是 RocketMQ 5.x 的官方 Python SDK，支持 Windows/Linux/macOS'
     )
-class RocketmqConsumer(AbstractConsumer):
+class Rocketmq5Consumer(AbstractConsumer):
     """
     RocketMQ 5.x 消费者，使用 SimpleConsumer 模式
     
@@ -40401,6 +39843,7 @@ class RocketmqConsumer(AbstractConsumer):
         - max_message_num: 每次拉取的最大消息数，默认 32
         - tag: 消息过滤 tag，默认 '*' 表示不过滤
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
     def custom_init(self):
         self._consumer = None
@@ -40646,6 +40089,7 @@ class SqlachemyConsumer(AbstractConsumer):
     """
     sqlachemy实现的操作5种数据库模拟消息队列，支持消费确认。
     """
+    _REQUEUE_IS_NATIVE_NACK = True
 
 
     def _dispatch_task(self):
@@ -41478,6 +40922,980 @@ class MySql2Mysql:
 `````
 
 --- **end of file: funboost/contrib/cdc/__init__.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/http.py** (project: funboost) --- 
+
+`````python
+import json
+import random
+import httpx
+from parsel import Selector
+from typing import Optional, Dict, List, Callable
+from funboost.core.loggers import get_funboost_file_logger
+
+logger = get_funboost_file_logger('funspider.http')
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+]
+
+
+class SpiderResponse:
+    """统一封装 httpx 响应，提供 xpath/css/re 解析"""
+    def __init__(self, resp: httpx.Response):
+        self.status_code = resp.status_code
+        self.url = str(resp.url)
+        self._text = resp.text
+        self._content = resp.content
+        self._selector: Optional[Selector] = None
+        self._resp_dict: Optional[dict] = None
+
+    @property
+    def selector(self) -> Selector:
+        if self._selector is None:
+            self._selector = Selector(text=self._text)
+        return self._selector
+
+    @property
+    def text(self) -> str:
+        return self._text
+
+    @property
+    def content(self) -> bytes:
+        return self._content
+
+    @property
+    def resp_dict(self) -> dict:
+        if self._resp_dict is None:
+            try:
+                self._resp_dict = json.loads(self._text)
+            except json.JSONDecodeError:
+                raise ValueError(
+                    f"响应不是合法 JSON (URL: {self.url}), 前200字符: {self._text[:200]}"
+                )
+        return self._resp_dict
+
+    def xpath(self, query: str) -> list:
+        return self.selector.xpath(query)
+
+    def css(self, query: str) -> list:
+        return self.selector.css(query)
+
+    def re(self, pattern: str) -> List[str]:
+        return self.selector.re(pattern)
+
+    def re_first(self, pattern: str) -> Optional[str]:
+        return self.selector.re_first(pattern)
+
+
+class BaseSpiderClient:
+    def __init__(
+        self,
+        retry_times: int = 2,
+        timeout: float = 30,
+        proxy_getter_list: Optional[List[Callable[[], Optional[str]]]] = None,
+        user_agents: Optional[List[str]] = None,
+    ):
+        self.retry_times = retry_times
+        self.timeout = timeout
+        self._proxy_getter_list = proxy_getter_list or []
+        self._proxy_index = 0
+        self._user_agents = user_agents or USER_AGENTS
+
+    def _random_ua(self) -> str:
+        return random.choice(self._user_agents)
+
+    def _merge_headers(self, headers: Dict[str, str]) -> Dict[str, str]:
+        h = {"User-Agent": self._random_ua()}
+        h.update(headers or {})
+        return h
+
+    def _get_proxy(self) -> Optional[str]:
+        if not self._proxy_getter_list:
+            return None
+        func = self._proxy_getter_list[self._proxy_index % len(self._proxy_getter_list)]
+        self._proxy_index += 1
+        return func()
+
+
+class SimpleSpiderClient(BaseSpiderClient):
+    """同步爬虫客户端 (httpx.Client)"""
+    def __init__(
+        self,
+        retry_times: int = 2,
+        timeout: float = 30,
+        proxy_getter_list: Optional[List[Callable[[], Optional[str]]]] = None,
+        user_agents: Optional[List[str]] = None,
+    ):
+        super().__init__(retry_times, timeout, proxy_getter_list, user_agents)
+        self.client = httpx.Client(timeout=self.timeout)
+
+    def request(self, method: str, url: str, **kwargs) -> SpiderResponse:
+        headers = self._merge_headers(kwargs.pop('headers', {}))
+        last_exc = None
+        for attempt in range(self.retry_times + 1):
+            try:
+                proxy = self._get_proxy()
+                if proxy:
+                    kwargs['proxy'] = proxy
+                resp = self.client.request(method, url, headers=headers, **kwargs)
+                resp.raise_for_status()
+                return SpiderResponse(resp)
+            except Exception as e:
+                last_exc = e
+                logger.warning(f"[Sync] {url} 请求失败 (第{attempt+1}次): {e}")
+        raise last_exc
+
+    def get(self, url: str, **kwargs) -> SpiderResponse:
+        return self.request("GET", url, **kwargs)
+
+    def post(self, url: str, **kwargs) -> SpiderResponse:
+        return self.request("POST", url, **kwargs)
+
+    def close(self):
+        self.client.close()
+
+
+class AsyncSpiderClient(BaseSpiderClient):
+    """异步爬虫客户端 (httpx.AsyncClient) – 不绑定 Loop，可在 Funboost ASYNC 模式自由使用"""
+    def __init__(
+        self,
+        retry_times: int = 2,
+        timeout: float = 30,
+        proxy_getter_list: Optional[List[Callable[[], Optional[str]]]] = None,
+        user_agents: Optional[List[str]] = None,
+    ):
+        super().__init__(retry_times, timeout, proxy_getter_list, user_agents)
+        self.client = httpx.AsyncClient(timeout=self.timeout)
+
+    async def request(self, method: str, url: str, **kwargs) -> SpiderResponse:
+        headers = self._merge_headers(kwargs.pop('headers', {}))
+        last_exc = None
+        for attempt in range(self.retry_times + 1):
+            try:
+                proxy = self._get_proxy()
+                if proxy:
+                    kwargs['proxy'] = proxy
+                resp = await self.client.request(method, url, headers=headers, **kwargs)
+                resp.raise_for_status()
+                return SpiderResponse(resp)
+            except Exception as e:
+                last_exc = e
+                logger.warning(f"[Async] {url} 请求失败 (第{attempt+1}次): {e}")
+        raise last_exc
+
+    async def get(self, url: str, **kwargs) -> SpiderResponse:
+        return await self.request("GET", url, **kwargs)
+
+    async def post(self, url: str, **kwargs) -> SpiderResponse:
+        return await self.request("POST", url, **kwargs)
+
+    async def aclose(self):
+        await self.client.aclose()
+`````
+
+--- **end of file: funboost/contrib/funspider/http.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/item.py** (project: funboost) --- 
+
+`````python
+import json
+from typing import List, Optional,Union
+from sqlmodel import SQLModel, Session, select,create_engine
+from sqlalchemy import Engine, or_, and_
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, AsyncEngine
+from sqlalchemy.orm import sessionmaker
+from funboost.core.loggers import get_funboost_file_logger
+
+logger = get_funboost_file_logger('funspider.item')
+
+class SpiderItem(SQLModel, table=False):
+    """
+    爬虫 Item 基类 – 同步/异步双引擎。
+    子类通过 __engine__ 绑定同步数据库，__async_engine__ 绑定异步数据库。
+    """
+
+    __engine__: Optional[Engine] = None  # 同步数据库引擎
+    __async_engine__: Optional[AsyncEngine] = None  # 异步数据库引擎
+    __async_session_factory__ = None  # 异步会话工厂（懒加载）
+    __default_upsert_unique_fields__: List[str] = []  # upsert 去重字段默认值，子类可覆盖。你如果不写的话 upsert时候需要传递 unique_fields 参数。
+
+    __mongo_collection__ = None        # pymongo.collection.Collection（同步）
+    __async_mongo_collection__ = None   # motor.motor_asyncio.AsyncIOMotorCollection（异步）
+
+    @classmethod
+    def _get_class_engine(cls) -> Engine:
+        if cls.__engine__ is not None:
+            return cls.__engine__
+        from sqlmodel import create_engine
+        return create_engine("sqlite:///funspider_default.db")
+
+    @classmethod
+    def _get_class_async_engine(cls):
+        if cls.__async_engine__ is not None:
+            return cls.__async_engine__
+        raise RuntimeError(f"{cls.__name__} 未设置 __async_engine__，无法使用异步方法。")
+
+    @classmethod
+    def _get_async_session_factory(cls):
+        if cls.__async_session_factory__ is None:
+            engine = cls._get_class_async_engine()
+            cls.__async_session_factory__ = sessionmaker(
+                engine, class_=AsyncSession, expire_on_commit=False
+            )
+        return cls.__async_session_factory__
+
+    @classmethod
+    def create_table(cls):
+        eng = cls._get_class_engine()
+        SQLModel.metadata.create_all(eng, tables=[cls.__table__])
+        logger.info(f"表 {cls.__tablename__} 已创建 (引擎: {eng.url})")
+
+    @classmethod
+    def _get_session(cls, engine: Engine):
+        return Session(engine)
+
+    def _resolve_engine(self, engine: Engine = None) -> Engine:
+        if engine is not None:
+            return engine
+        return self.__class__._get_class_engine()
+
+    def to_dict(self, exclude_unset: bool = False) -> dict:
+        if hasattr(self, "model_dump"):
+            return self.model_dump(exclude_unset=exclude_unset)
+        return self.dict(exclude_unset=exclude_unset)
+
+    def to_json(self, exclude_unset: bool = False) -> str:
+        return json.dumps(self.to_dict(exclude_unset=exclude_unset), ensure_ascii=False)
+
+    # ---------- 同步 ----------
+    def insert(self, engine: Engine = None):
+        eng = self._resolve_engine(engine)
+        with self._get_session(eng) as session:
+            session.add(self)
+            session.commit()
+            session.refresh(self)
+        return self
+
+    def upsert(self, unique_fields: List[str] = None, engine: Engine = None):
+        unique_fields = unique_fields or self.__class__.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{self.__class__.__name__} 未设置 __default_upsert_unique_fields__，且调用 upsert 时未传 unique_fields")
+        eng = self._resolve_engine(engine)
+        with self._get_session(eng) as session:
+            filters = {f: getattr(self, f) for f in unique_fields}
+            stmt = select(type(self)).filter_by(**filters)
+            existing = session.exec(stmt).first()
+            if existing:
+                for key, val in self.to_dict(exclude_unset=True).items():
+                    setattr(existing, key, val)
+                session.add(existing)
+                session.commit()
+                session.refresh(existing)
+                return existing
+            session.add(self)
+            session.commit()
+            session.refresh(self)
+            return self
+
+    @classmethod
+    def bulk_upsert(cls, items, unique_fields=None, engine=None):
+        # type: (List[SpiderItem], List[str], Engine) -> List[SpiderItem]
+        unique_fields = unique_fields or cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，且调用 bulk_upsert 时未传 unique_fields")
+        if not items:
+            return []
+        eng = engine or cls._get_class_engine()
+        results = []
+        with cls._get_session(eng) as session:
+            if len(unique_fields) == 1:
+                col = getattr(cls, unique_fields[0])
+                vals = [getattr(it, unique_fields[0]) for it in items]
+                stmt = select(cls).where(col.in_(vals))
+            else:
+                conditions = [
+                    and_(*[getattr(cls, f) == getattr(it, f) for f in unique_fields])
+                    for it in items
+                ]
+                stmt = select(cls).where(or_(*conditions))
+            existing_map = {
+                tuple(getattr(rec, f) for f in unique_fields): rec
+                for rec in session.exec(stmt).all()
+            }
+            for item in items:
+                key = tuple(getattr(item, f) for f in unique_fields)
+                existing = existing_map.get(key)
+                if existing:
+                    for k, v in item.to_dict(exclude_unset=True).items():
+                        setattr(existing, k, v)
+                    session.add(existing)
+                    results.append(existing)
+                else:
+                    session.add(item)
+                    results.append(item)
+            session.commit()
+            for r in results:
+                session.refresh(r)
+        return results
+
+    # ---------- 异步 ----------
+    async def aio_insert(self):
+        factory = self.__class__._get_async_session_factory()
+        async with factory() as session:
+            session.add(self)
+            await session.commit()
+            await session.refresh(self)
+        return self
+
+    async def aio_upsert(self, unique_fields: List[str] = None):
+        unique_fields = unique_fields or self.__class__.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{self.__class__.__name__} 未设置 __default_upsert_unique_fields__，且调用 aio_upsert 时未传 unique_fields")
+        factory = self.__class__._get_async_session_factory()
+        async with factory() as session:
+            filters = {f: getattr(self, f) for f in unique_fields}
+            stmt = select(type(self)).filter_by(**filters)
+            result = await session.execute(stmt)
+            existing = result.scalar_one_or_none()
+            if existing:
+                for key, val in self.to_dict(exclude_unset=True).items():
+                    setattr(existing, key, val)
+                session.add(existing)
+                await session.commit()
+                await session.refresh(existing)
+                return existing
+            session.add(self)
+            await session.commit()
+            await session.refresh(self)
+            return self
+
+    @classmethod
+    async def aio_bulk_upsert(cls, items, unique_fields=None):
+        # type: (List[SpiderItem], List[str]) -> List[SpiderItem]
+        unique_fields = unique_fields or cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，且调用 aio_bulk_upsert 时未传 unique_fields")
+        if not items:
+            return []
+        factory = cls._get_async_session_factory()
+        results = []
+        async with factory() as session:
+            if len(unique_fields) == 1:
+                col = getattr(cls, unique_fields[0])
+                vals = [getattr(it, unique_fields[0]) for it in items]
+                stmt = select(cls).where(col.in_(vals))
+            else:
+                conditions = [
+                    and_(*[getattr(cls, f) == getattr(it, f) for f in unique_fields])
+                    for it in items
+                ]
+                stmt = select(cls).where(or_(*conditions))
+            result = await session.execute(stmt)
+            existing_map = {
+                tuple(getattr(rec, f) for f in unique_fields): rec
+                for rec in result.scalars().all()
+            }
+            for item in items:
+                key = tuple(getattr(item, f) for f in unique_fields)
+                existing = existing_map.get(key)
+                if existing:
+                    for k, v in item.to_dict(exclude_unset=True).items():
+                        setattr(existing, k, v)
+                    session.add(existing)
+                    results.append(existing)
+                else:
+                    session.add(item)
+                    results.append(item)
+            await session.commit()
+            for r in results:
+                await session.refresh(r)
+        return results
+
+    # ---------- MongoDB 同步 ----------
+    def _to_mongo_doc(self):
+        doc = self.to_dict()
+        if doc.get('id') is None:
+            doc.pop('id', None)
+        return doc
+
+    @classmethod
+    def _resolve_mongo_coll(cls, collection=None):
+        coll = collection if collection is not None else cls.__mongo_collection__
+        if coll is None:
+            raise RuntimeError(f"{cls.__name__} 未设置 __mongo_collection__，请在类上配置或传入 collection 参数")
+        return coll
+
+    @classmethod
+    def _resolve_async_mongo_coll(cls, collection=None):
+        coll = collection if collection is not None else cls.__async_mongo_collection__
+        if coll is None:
+            raise RuntimeError(f"{cls.__name__} 未设置 __async_mongo_collection__，请在类上配置或传入 collection 参数")
+        return coll
+
+    @classmethod
+    def ensure_mongo_indexes(cls, collection=None, unique=True):
+        """根据 __default_upsert_unique_fields__ 在 MongoDB 集合上创建索引（同步）"""
+        unique_fields = cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            logger.warning(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，跳过索引创建")
+            return
+        coll = cls._resolve_mongo_coll(collection)
+        import pymongo as _pymongo
+        index_keys = [(f, _pymongo.ASCENDING) for f in unique_fields]
+        index_name = coll.create_index(index_keys, unique=unique)
+        logger.info(f"MongoDB 索引已创建: {coll.full_name} -> {index_name} (fields={unique_fields}, unique={unique})")
+        return index_name
+
+    @classmethod
+    async def aio_ensure_mongo_indexes(cls, collection=None, unique=True):
+        """根据 __default_upsert_unique_fields__ 在 MongoDB 集合上创建索引（异步）"""
+        unique_fields = cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            logger.warning(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，跳过索引创建")
+            return
+        coll = cls._resolve_async_mongo_coll(collection)
+        import pymongo as _pymongo
+        index_keys = [(f, _pymongo.ASCENDING) for f in unique_fields]
+        index_name = await coll.create_index(index_keys, unique=unique)
+        logger.info(f"MongoDB 索引已创建: {coll.full_name} -> {index_name} (fields={unique_fields}, unique={unique})")
+        return index_name
+
+    def mongo_save(self, collection=None):
+        coll = self.__class__._resolve_mongo_coll(collection)
+        doc = self._to_mongo_doc()
+        return coll.insert_one(doc)
+
+    def mongo_upsert(self, unique_fields=None, collection=None):
+        unique_fields = unique_fields or self.__class__.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{self.__class__.__name__} 未设置 __default_upsert_unique_fields__，且调用 mongo_upsert 时未传 unique_fields")
+        coll = self.__class__._resolve_mongo_coll(collection)
+        doc = self._to_mongo_doc()
+        filter_dict = {f: doc[f] for f in unique_fields}
+        return coll.update_one(filter_dict, {"$set": doc}, upsert=True)
+
+    @classmethod
+    def mongo_bulk_upsert(cls, items, unique_fields=None, collection=None):
+        unique_fields = unique_fields or cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，且调用 mongo_bulk_upsert 时未传 unique_fields")
+        if not items:
+            return None
+        coll = cls._resolve_mongo_coll(collection)
+        from pymongo import UpdateOne
+        ops = []
+        for item in items:
+            doc = item._to_mongo_doc()
+            filter_dict = {f: doc[f] for f in unique_fields}
+            ops.append(UpdateOne(filter_dict, {"$set": doc}, upsert=True))
+        return coll.bulk_write(ops)
+
+    # ---------- MongoDB 异步 ----------
+    async def aio_mongo_save(self, collection=None):
+        coll = self.__class__._resolve_async_mongo_coll(collection)
+        doc = self._to_mongo_doc()
+        return await coll.insert_one(doc)
+
+    async def aio_mongo_upsert(self, unique_fields=None, collection=None):
+        unique_fields = unique_fields or self.__class__.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{self.__class__.__name__} 未设置 __default_upsert_unique_fields__，且调用 aio_mongo_upsert 时未传 unique_fields")
+        coll = self.__class__._resolve_async_mongo_coll(collection)
+        doc = self._to_mongo_doc()
+        filter_dict = {f: doc[f] for f in unique_fields}
+        return await coll.update_one(filter_dict, {"$set": doc}, upsert=True)
+
+    @classmethod
+    async def aio_mongo_bulk_upsert(cls, items, unique_fields=None, collection=None):
+        unique_fields = unique_fields or cls.__default_upsert_unique_fields__
+        if not unique_fields:
+            raise ValueError(f"{cls.__name__} 未设置 __default_upsert_unique_fields__，且调用 aio_mongo_bulk_upsert 时未传 unique_fields")
+        if not items:
+            return None
+        coll = cls._resolve_async_mongo_coll(collection)
+        from pymongo import UpdateOne
+        ops = []
+        for item in items:
+            doc = item._to_mongo_doc()
+            filter_dict = {f: doc[f] for f in unique_fields}
+            ops.append(UpdateOne(filter_dict, {"$set": doc}, upsert=True))
+        return await coll.bulk_write(ops)
+`````
+
+--- **end of file: funboost/contrib/funspider/item.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/README.md** (project: funboost) --- 
+
+`````markdown
+
+# 🕷️ funspider – Funboost 爬虫辅助扩展
+
+> **基于 `Funboost` 的工程化爬虫辅助组件，提供 ORM 模型与双引擎客户端。**
+
+**`funspider`** 是 `Funboost` 分布式函数调度框架的一个用户贡献扩展。如果说 `boost_spider` 代表着极致的**自由与简洁**，那么 `funspider` 则提供了一种**结构化与强类型**的辅助选择。
+
+它不是 `boost_spider` 的替代品，而是为偏爱 **ORM 模型驱动** 和 **异步协程收发** 的开发者提供的另一种趁手工具。
+
+---
+
+## ✨ 核心定位
+
+- ✅ **范式互补**：`boost_spider` 推崇纯字典流和极致自由；`funspider` 额外提供 SQLModel ORM 封装的选项，为复杂数据关系提供类型安全保障。
+- ✅ **双引擎客户端**：基于 `httpx`，内置 `SimpleSpiderClient`（同步）与 `AsyncSpiderClient`（异步），可在同一个爬虫项目中按需混用。
+- ✅ **强类型数据模型**：基于 `SQLModel`，支持 `VARCHAR(n)`、索引、外键等精确字段定义，享受 IDE 智能补全与静态检查。
+- ✅ **增强响应解析**：`SpiderResponse` 对象内置 `.xpath()`、`.css()`、`.re()` 等方法，无需切换工具即可快速提取数据。
+- ✅ **灵活代理接入**：支持传入自定义代理获取函数列表，轻松对接阿布云、快代理等任意商业代理服务。
+
+---
+
+## 📦 安装
+
+`funspider` 代码随 `funboost` 一起发布，但默认不安装其依赖项。
+
+**1. 安装 Funboost**
+```bash
+pip install funboost
+```
+
+**2. 按需安装相关依赖**
+```bash
+# 安装 funspider 所需的所有依赖
+pip install sqlmodel httpx parsel
+
+# 根据需求安装数据库驱动
+pip install pymysql aiomysql        # MySQL
+pip install psycopg2-binary         # PostgreSQL
+```
+
+---
+
+## 🚀 快速上手
+
+以下示例展示了 `funspider` 的核心用法：继承 `BoosterParams` 复用配置、使用强类型 `SpiderItem` 模型入库，以及混用同步和异步客户端。
+
+### 1. 定义数据模型 (ORM)
+
+```python
+from funboost.contrib.funspider import SpiderItem, Field, create_engine, create_async_engine
+
+class NewsItem(SpiderItem, table=True):
+    __tablename__ = "news"
+    __engine__ = create_engine("mysql+pymysql://user:pass@localhost/db")
+    __async_engine__ = create_async_engine("mysql+aiomysql://user:pass@localhost/db")
+    __default_upsert_unique_fields__ = ["news_id"]
+
+    id: int | None = Field(default=None, primary_key=True)
+    news_id: int = Field(unique=True)
+    title: str = Field(max_length=200)   # 精确控制 VARCHAR(200)
+    url: str = Field(max_length=500)
+    content: str                         # TEXT
+```
+
+### 2. 编写爬虫函数 (同步 + 异步混用)
+
+```python
+from funboost import boost, BoosterParams, BoostersManager, BrokerEnum, ConcurrentModeEnum
+from funboost.contrib.funspider import SimpleSpiderClient, AsyncSpiderClient
+
+NEWS_GROUP = "news_crawler"
+
+class NewsCrawlerParams(BoosterParams):
+    broker_kind: str = BrokerEnum.REDIS_ACK_ABLE
+    booster_group: str = NEWS_GROUP
+
+base_url = "https://example.com"
+
+def abuyun_proxy():
+    return "http://user:pass@proxy.abuyun.com:9020"
+
+def redis_pool_proxy():
+    import redis
+    r = redis.Redis(host="localhost", port=6379, db=0)
+    return r.srandmember("proxy_pool")
+
+sync_client = SimpleSpiderClient(proxy_getter_list=[abuyun_proxy, redis_pool_proxy], retry_times=3)
+async_client = AsyncSpiderClient(proxy_getter_list=[abuyun_proxy, redis_pool_proxy], retry_times=3)
+
+@boost(NewsCrawlerParams(queue_name="list", qps=2))
+def crawl_list(page: int):
+    resp = sync_client.get(f"{base_url}/list?page={page}")
+    for url in resp.css("a.detail::attr(href)").getall():
+        crawl_detail.push(detail_url=url)
+
+@boost(NewsCrawlerParams(queue_name="detail", qps=5))
+def crawl_detail(detail_url: str):
+    resp = sync_client.get(detail_url)
+    title = resp.xpath("//h1/text()").get()
+    news_id = int(resp.re_first(r"news/(\d+)"))
+    NewsItem(news_id=news_id, title=title, url=detail_url).upsert()
+    crawl_comments.push(news_id=news_id)
+
+@boost(NewsCrawlerParams(queue_name="comments", qps=10, concurrent_mode=ConcurrentModeEnum.ASYNC,
+                         do_task_filtering=True, task_filtering_expire_seconds=3600))
+async def crawl_comments(news_id: int):
+    resp = await async_client.get(f"{base_url}/comments/{news_id}")
+    for comment in resp.resp_dict["list"]:
+        await CommentItem(...).aio_upsert()
+```
+
+### 3. 启动消费
+
+```python
+if __name__ == "__main__":
+    BoostersManager.consume_group(NEWS_GROUP)
+    crawl_list.push(page=1)
+```
+
+---
+
+## 🔧 进阶配置
+
+### 自定义代理
+
+```python
+def abuyun_proxy():
+    return "http://user:pass@proxy.abuyun.com:9020"
+
+client = SimpleSpiderClient(proxy_getter_list=[abuyun_proxy])
+```
+
+---
+
+## 🆚 与 `boost_spider` 的风格对比
+
+`funspider` 和 `boost_spider` 都是基于 `Funboost` 的生产级爬虫解决方案。核心差异在于**设计哲学和开发范式**，而非能力强弱：
+
+| 特性 | `boost_spider` | `funspider` |
+|------|----------------|------------|
+| **设计理念** | **自由至上、极简字典流**。以最原生、最直接的方式让开发者掌控一切。 | **ORM 辅助、强类型流**。为习惯使用 ORM 模型管理数据的开发者提供便利封装。 |
+| **数据模型** | 纯 Python 字典。开发者可完全自定义如何建表和校验（如手写 DDL 或结合 SQLAlchemy）。 | SQLModel 模型类。将数据定义、字段校验和数据库同步集成在类属性中。 |
+| **字段控制** | 灵活。你完全控制建表语句，想约束什么字段长度和索引都行。 | 直观。在 ORM 模型中声明 `Field(max_length=200)`，IDE 自动补全。 |
+| **HTTP 客户端** | 同步 `RequestClient`，内置丰富代理、重试功能。 | 同步 + 异步双客户端，基于 `httpx`。 |
+| **代理配置** | 对象化配置，优雅简洁。 | 函数式注入，灵活自由。 |
+| **开发偏好** | 喜欢直接、轻量、完全掌控的纯粹 Python 体验。 | 偏好在大型项目中通过 ORM 标准管理数据库结构和关系。 |
+| **生产环境** | ✅ **完全胜任**，性能卓越，久经考验。 | ✅ **完全胜任**，结构清晰，便于团队协作。 |
+
+**选型建议**：
+-   如果你喜欢 `funboost` 那种“不加修饰、直接赋能”的爽快感，**`boost_spider`** 是无脑首选。
+-   如果你所在团队重度使用 SQLAlchemy/SQLModel，且希望爬虫的数据模型也能无缝融入项目 ORM 体系，**`funspider`** 会是更顺手的选择。
+
+---
+
+## 📖 完整示例
+
+参见源码目录下的演示文件：
+- 入口文件：`funspider/funspider_demos/funspider_demo1.py`
+- 模拟网站：`funspider/funspider_demos/fake_news_site.py`
+
+演示内容：
+- 新闻列表页（同步） → 详情页（同步） → 评论页（异步）
+- 同步/异步客户端混用
+- SQLModel 数据入库
+
+---
+
+## 🧠 设计哲学
+
+`funspider` 提供的仅仅是 `SpiderItem`, `SpiderResponse`, `SimpleSpiderClient`, `AsyncSpiderClient` 这几个**辅助类**。
+
+真正的核心竞争力——分布式调度、QPS 控频、自动重试、断点续传——完全由 **`Funboost`** 核心引擎驱动。
+
+我们希望你的爬虫代码是平铺直叙的函数，而不是层层嵌套的回调。
+`````
+
+--- **end of file: funboost/contrib/funspider/README.md** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/__init__.py** (project: funboost) --- 
+
+`````python
+from .http import SimpleSpiderClient, AsyncSpiderClient, SpiderResponse
+from .item import SpiderItem
+
+
+from sqlmodel import  Field, create_engine
+from sqlalchemy.ext.asyncio import create_async_engine
+
+`````
+
+--- **end of file: funboost/contrib/funspider/__init__.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/funspider_demos/fake_news_site.py** (project: funboost) --- 
+
+`````python
+import uvicorn
+from fastapi import FastAPI, Query
+from fastapi.responses import HTMLResponse, JSONResponse
+
+app = FastAPI()
+
+NEWS_DATA = [
+    {"id": i, "title": f"第{i}条新闻：{'人工智能' if i % 3 == 0 else '量子计算' if i % 3 == 1 else '航天探索'}领域重大突破", "summary": f"这是第{i}条新闻的摘要内容，涵盖了最新的科技动态。"}
+    for i in range(1, 51)
+]
+
+COMMENTS_DATA = {
+    i: [
+        {"id": j, "news_id": i, "user": f"user_{i}_{j}", "content": f"这是对第{i}条新闻的第{j}条评论，{'说得好！' if j % 2 == 0 else '有不同看法。'}", "like_count": (i * j) % 100}
+        for j in range(1, (i % 5) + 3)
+    ]
+    for i in range(1, 51)
+}
+
+
+@app.get("/", response_class=HTMLResponse)
+def index():
+    return '<h1>Fake News Site</h1><p><a href="/news/list?page=1">新闻列表</a></p>'
+
+
+@app.get("/news/list", response_class=HTMLResponse)
+def news_list(page: int = Query(1, ge=1), page_size: int = Query(10, ge=1, le=50)):
+    start = (page - 1) * page_size
+    end = start + page_size
+    items = NEWS_DATA[start:end]
+    total_pages = (len(NEWS_DATA) + page_size - 1) // page_size
+
+    rows = ""
+    for item in items:
+        rows += f'''
+        <tr>
+            <td>{item['id']}</td>
+            <td><a href="/news/detail/{item['id']}">{item['title']}</a></td>
+            <td>{item['summary'][:20]}...</td>
+        </tr>'''
+
+    nav = ""
+    if page > 1:
+        nav += f'<a class="prev-page" href="/news/list?page={page-1}&page_size={page_size}">上一页</a> '
+    if page < total_pages:
+        nav += f'<a class="next-page" href="/news/list?page={page+1}&page_size={page_size}">下一页</a>'
+
+    return f'''
+    <html><body>
+    <h1>新闻列表 - 第{page}页/共{total_pages}页</h1>
+    <table border="1" cellpadding="5">
+        <tr><th>ID</th><th>标题</th><th>摘要</th></tr>
+        {rows}
+    </table>
+    <p>{nav}</p>
+    </body></html>'''
+
+
+@app.get("/news/detail/{news_id}", response_class=HTMLResponse)
+def news_detail(news_id: int):
+    news = NEWS_DATA[news_id - 1] if 1 <= news_id <= len(NEWS_DATA) else None
+    if not news:
+        return HTMLResponse("<h1>404 新闻不存在</h1>", status_code=404)
+
+    comments = COMMENTS_DATA.get(news_id, [])
+    comment_rows = ""
+    for c in comments:
+        comment_rows += f'''
+        <tr>
+            <td>{c['user']}</td>
+            <td>{c['content']}</td>
+            <td>{c['like_count']}</td>
+        </tr>'''
+
+    return f'''
+    <html><body>
+    <h1>{news['title']}</h1>
+    <div class="content">
+        <p>{news['summary']}</p>
+        <p>这是第{news_id}条新闻的完整正文内容。当前新闻涉及领域正在经历快速发展，
+        多项关键技术取得突破性进展。专家表示，这一趋势将在未来几年持续加速，
+        对整个行业产生深远影响。</p>
+        <p>发布时间：2025-01-{news_id:02d} 10:00:00</p>
+        <p>作者：记者_{news_id}</p>
+        <p>分类：{"科技" if news_id % 2 == 0 else "社会"}</p>
+    </div>
+    <h2>评论 ({len(comments)}条)</h2>
+    <p><a href="/news/comments/{news_id}">查看全部评论</a></p>
+    <table border="1" cellpadding="5">
+        <tr><th>用户</th><th>内容</th><th>点赞</th></tr>
+        {comment_rows}
+    </table>
+    <p><a href="/news/list?page=1">返回列表</a></p>
+    </body></html>'''
+
+
+@app.get("/news/comments/{news_id}", response_class=JSONResponse)
+def news_comments(news_id: int):
+    if news_id not in COMMENTS_DATA:
+        return {"news_id": news_id, "comments": [], "total": 0}
+    comments = COMMENTS_DATA[news_id]
+    return {"news_id": news_id, "comments": comments, "total": len(comments)}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8888)
+
+`````
+
+--- **end of file: funboost/contrib/funspider/funspider_demos/fake_news_site.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/funspider/funspider_demos/funspider_demo1.py** (project: funboost) --- 
+
+`````python
+import re
+from typing import ClassVar, Optional
+from funboost import boost, BoosterParams, BoostersManager, BrokerEnum, ctrl_c_recv, ConcurrentModeEnum
+from funboost.contrib.funspider import SimpleSpiderClient, AsyncSpiderClient, SpiderItem, create_engine, create_async_engine, Field
+
+NEWS_GROUP = "news_crawler"
+
+
+class NewsCrawlerParams(BoosterParams):
+    broker_kind: str = BrokerEnum.REDIS_ACK_ABLE
+    booster_group: str = NEWS_GROUP
+
+# ---------- 数据库 ----------
+MYSQL_ENGINE = create_engine("mysql+pymysql://root:123456@127.0.0.1:3306/testdb")
+ASYNC_MYSQL_ENGINE = create_async_engine("mysql+aiomysql://root:123456@127.0.0.1:3306/testdb")
+
+
+class NewsItem(SpiderItem, table=True):
+    __tablename__: ClassVar[str] = "news"
+    __engine__ = MYSQL_ENGINE
+    __async_engine__ = ASYNC_MYSQL_ENGINE
+    __default_upsert_unique_fields__ = ["news_id"]
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    news_id: int = Field(unique=True)
+    title: str
+    summary: str
+    content: str
+    author: str
+    category: str
+    publish_time: str
+    url: str
+
+
+class CommentItem(SpiderItem, table=True):
+    __tablename__: ClassVar[str] = "comments"
+    __engine__ = MYSQL_ENGINE
+    __async_engine__ = ASYNC_MYSQL_ENGINE
+    __default_upsert_unique_fields__ = ["comment_id"]
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    comment_id: int = Field(unique=True)
+    news_id: int
+    user: str
+    content: str
+    like_count: int
+
+
+NewsItem.create_table()
+CommentItem.create_table()
+
+def get_proxy_abuyun():
+    return "http://userxx:passwdxx@http-pro.abuyun.com:9000"
+
+def get_proxy_none():
+    return None
+
+# ---------- 客户端 ----------
+sync_client = SimpleSpiderClient(proxy_getter_list=[
+    # get_proxy_abuyun,
+ get_proxy_none
+ ])
+async_client = AsyncSpiderClient(proxy_getter_list=[
+    # get_proxy_abuyun,
+ get_proxy_none
+ ])
+
+BASE_URL = "http://127.0.0.1:8888"
+
+
+# ---------- 列表页爬虫（同步）：解析列表页，推送详情页任务 ----------
+@boost(NewsCrawlerParams(queue_name="news_list", qps=2))
+def crawl_list(page: int):
+    resp = sync_client.get(f"{BASE_URL}/news/list?page={page}")
+    links = resp.css("table a::attr(href)").getall()
+    for href in links:
+        if href and "/news/detail/" in href:
+            detail_url = f"{BASE_URL}{href}" if href.startswith("/") else href
+            crawl_detail.push(detail_url=detail_url)
+    next_href = resp.css("a.next-page::attr(href)").get("")
+    if next_href:
+        crawl_list.push(page=page + 1)
+
+
+# ---------- 详情页爬虫（同步）：解析新闻详情，保存新闻 + 推送评论任务 ----------
+@boost(NewsCrawlerParams(queue_name="news_detail", qps=5))
+def crawl_detail(detail_url: str):
+    resp = sync_client.get(detail_url)
+    title = resp.css("h1::text").get("").strip()
+    content_p = resp.css("div.content p::text").getall()
+    content = "\n".join(content_p) if content_p else ""
+    author = ""
+    category = ""
+    publish_time = ""
+    for p_text in content_p:
+        if p_text.startswith("作者："):
+            author = p_text.replace("作者：", "").strip()
+        elif p_text.startswith("分类："):
+            category = p_text.replace("分类：", "").strip()
+        elif p_text.startswith("发布时间："):
+            publish_time = p_text.replace("发布时间：", "").strip()
+    summary = content_p[0] if content_p else ""
+
+    news_id = int(re.search(r"/news/detail/(\d+)", detail_url).group(1))
+
+    NewsItem(
+        news_id=news_id, title=title, summary=summary,
+        content=content, author=author, category=category,
+        publish_time=publish_time, url=detail_url,
+    ).upsert()
+
+    crawl_comments.push(news_id=news_id)
+
+
+# ---------- 评论页爬虫（异步）：请求评论接口，保存评论 ----------
+@boost(NewsCrawlerParams(queue_name="news_comments", qps=10, concurrent_mode=ConcurrentModeEnum.ASYNC,
+                         do_task_filtering=True, task_filtering_expire_seconds=3600))
+async def crawl_comments(news_id: int):
+    resp = await async_client.get(f"{BASE_URL}/news/comments/{news_id}")
+    data = resp.resp_dict
+    for c in data.get("comments", []):
+        item = CommentItem(
+            comment_id=c["id"], news_id=c["news_id"],
+            user=c["user"], content=c["content"],
+            like_count=c["like_count"],
+        )
+        await item.aio_upsert()
+
+
+if __name__ == '__main__':
+    BoostersManager.consume_group(NEWS_GROUP)
+
+    crawl_list.push(page=1)
+
+    ctrl_c_recv()
+
+`````
+
+--- **end of file: funboost/contrib/funspider/funspider_demos/funspider_demo1.py** (project: funboost) --- 
 
 ---
 
@@ -44426,20 +44844,12 @@ def batch_insert_to_db(items: list):
 
 核心思路：
     CeleryPool 已经封装了 Celery app 创建、worker 自动启动、universal_task 注册等逻辑。
-<<<<<<< HEAD
     本方案直接复用 CeleryPool 实例的 app 和 start_worker()，
-=======
-    本方案直接复用 CeleryPool 实例的 app 和 _start_worker()，
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     只需在其 app 上额外注册一个 "funboost 消息处理 task"，就能桥接 funboost 的消息协议。
 
     Publisher：通过 pool.app.send_task() 发送 funboost 消息
     Consumer：在 pool.app 上注册 task 解析 funboost 消息并调用消费函数
-<<<<<<< HEAD
     Worker：  复用 pool.start_worker() 自动在后台线程启动
-=======
-    Worker：  复用 pool._start_worker() 自动在后台线程启动
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 运行方式：
     D:\\ProgramData\\Miniconda3\\envs\\py39b\\python.exe tests/ai_codes/celery_pool_as_funboost_broker.py
@@ -44447,11 +44857,6 @@ def batch_insert_to_db(items: list):
 
 import json
 import time
-<<<<<<< HEAD
-=======
-import threading
-import typing
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 import uuid
 
 from funboost import (
@@ -44467,36 +44872,6 @@ from funboost.assist.celery_pool import CeleryPool
 
 BROKER_KIND_CELERY_POOL = 'CELERY_POOL'
 
-<<<<<<< HEAD
-=======
-_pool_cache: typing.Dict[str, CeleryPool] = {}
-_pool_cache_lock = threading.Lock()
-
-
-def _get_or_create_pool(queue_name: str, config: dict) -> CeleryPool:
-    """
-    获取或创建指定 queue 的 CeleryPool 实例。
-    同一个 queue_name 的 Publisher 和 Consumer 共享同一个 CeleryPool。
-    首次创建时 is_auto_start_worker=False，由 Consumer 显式启动。
-    """
-    with _pool_cache_lock:
-        if queue_name in _pool_cache:
-            return _pool_cache[queue_name]
-
-        pool = CeleryPool(
-            broker_url=config.get('broker_url', 'redis://localhost:6379/0'),
-            result_backend=config.get('result_backend'),
-            concurrent_num=config.get('concurrent_num', 4),
-            pool_type=config.get('pool_type', 'threads'),
-            queue_name=queue_name,
-            is_auto_start_worker=False,
-            worker_loglevel=config.get('worker_loglevel', 'WARNING'),
-            worker_startup_timeout=config.get('worker_startup_timeout', 3.0),
-        )
-        _pool_cache[queue_name] = pool
-        return pool
-
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 # ============================================================================
 # Publisher：复用 CeleryPool.app 发送 funboost 消息
@@ -44507,7 +44882,6 @@ class CeleryPoolPublisher(AbstractPublisher):
     def custom_init(self):
         super().custom_init()
         config = self.publisher_params.broker_exclusive_config
-<<<<<<< HEAD
         self._pool = CeleryPool(
             broker_url=config.get('broker_url', 'redis://localhost:6379/0'),
             result_backend=config.get('result_backend'),
@@ -44518,9 +44892,6 @@ class CeleryPoolPublisher(AbstractPublisher):
             worker_loglevel=config.get('worker_loglevel', 'WARNING'),
             worker_startup_timeout=config.get('worker_startup_timeout', 3.0),
         )
-=======
-        self._pool = _get_or_create_pool(self.queue_name, config)
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         self._task_name = f'funboost_celery_pool_{self.queue_name}'
 
     def _publish_impl(self, msg: str):
@@ -44534,7 +44905,6 @@ class CeleryPoolPublisher(AbstractPublisher):
         """覆写基类，返回 Celery 原生 AsyncResult 而非 funboost AsyncResult"""
         t_start = time.time()
         celery_result = self._wrapped_publish_impl(publish_msg_context.msg_json)
-<<<<<<< HEAD
         self._post_publish_log_and_count(t_start, publish_msg_context)
         return celery_result
 
@@ -44544,45 +44914,13 @@ class CeleryPoolPublisher(AbstractPublisher):
 
     def get_message_count(self):
         return self._pool.get_message_count()
-=======
-        current_time = time.time()
-        if self.logger.isEnabledFor(10):
-            self.logger.debug(
-                f'向{self._queue_name} 队列，推送消息 '
-                f'耗时{round(current_time - t_start, 4)}秒  '
-                f'{publish_msg_context.msg_function_kw}',
-                extra={'task_id': publish_msg_context.task_id},
-            )
-        self.count_per_minute += 1
-        self.publish_msg_num_total += 1
-        if current_time - self._current_time > 10:
-            with self._lock_for_count:
-                if current_time - self._current_time > 10:
-                    self.logger.info(
-                        f'10秒内推送了 {self.count_per_minute} 条消息,'
-                        f'累计推送了 {self.publish_msg_num_total} 条消息到 '
-                        f'{self._queue_name} 队列中')
-                    self._init_count()
-        self._after_publish(publish_msg_context)
-        return celery_result
-
-    def clear(self):
-        pass
-
-    def get_message_count(self):
-        return -1
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
     def close(self):
         pass
 
 
 # ============================================================================
-<<<<<<< HEAD
 # Consumer：复用 CeleryPool.app 注册 task + CeleryPool.start_worker()
-=======
-# Consumer：复用 CeleryPool.app 注册 task + CeleryPool._start_worker()
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 # ============================================================================
 
 class CeleryPoolConsumer(AbstractConsumer):
@@ -44592,7 +44930,6 @@ class CeleryPoolConsumer(AbstractConsumer):
     def custom_init(self):
         super().custom_init()
         config = self.consumer_params.broker_exclusive_config
-<<<<<<< HEAD
         self._pool = CeleryPool(
             broker_url=config.get('broker_url', 'redis://localhost:6379/0'),
             result_backend=config.get('result_backend'),
@@ -44603,9 +44940,6 @@ class CeleryPoolConsumer(AbstractConsumer):
             worker_loglevel=config.get('worker_loglevel', 'WARNING'),
             worker_startup_timeout=config.get('worker_startup_timeout', 3.0),
         )
-=======
-        self._pool = _get_or_create_pool(self.queue_name, config)
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
         task_name = f'funboost_celery_pool_{self.queue_name}'
         consuming_func = self.consuming_function
@@ -44654,11 +44988,7 @@ class CeleryPoolConsumer(AbstractConsumer):
 
     def start_consuming_message(self):
         if not self._pool._worker_thread:
-<<<<<<< HEAD
             self._pool.start_worker()
-=======
-            self._pool._start_worker()
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
             self.logger.info(
                 f'[CELERY_POOL] 复用 CeleryPool worker: '
                 f'queue={self.queue_name}, pool={self._pool.pool_type}, '
@@ -44744,11 +45074,7 @@ if __name__ == '__main__':
     print(f'随机后缀: {random_suffix}')
     print('=' * 60)
 
-<<<<<<< HEAD
     print('\n>>> 启动消费者（复用 CeleryPool.start_worker()）...')
-=======
-    print('\n>>> 启动消费者（复用 CeleryPool._start_worker()）...')
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     add.consume()
     multiply.consume()
 
@@ -44788,7 +45114,393 @@ if __name__ == '__main__':
 ---
 
 
-<<<<<<< HEAD
+--- **start of file: funboost/contrib/register_custom_broker_contrib/nats_core_broker.py** (project: funboost) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+NATS Core Broker - 基于 NATS Core 的轻量级消息队列
+
+设计理念：
+    - 使用 nats-py (官方asyncio客户端) 实现 NATS Core 发布/订阅
+    - 轻量高性能，适用于对延迟敏感但不需要持久化的场景
+    - 不支持持久化和消费确认，消息丢失风险由业务层自行处理
+    - 支持 Queue Group（消费者组），多个消费者实例可负载均衡分摊消息
+
+使用方式：
+    from funboost import boost, BoosterParams, BrokerEnum
+
+    # 默认模式（负载均衡）：多个消费者分摊消息
+    @boost(BoosterParams(
+        queue_name='nats_core_queue',
+        broker_kind=BrokerEnum.NATS_CORE,
+    ))
+    def process_message(x, y):
+        return x + y
+
+    # 广播模式：每个消费者都收到全部消息
+    @boost(BoosterParams(
+        queue_name='nats_core_broadcast',
+        broker_kind=BrokerEnum.NATS_CORE,
+        broker_exclusive_config={'queue_group': ''},
+    ))
+    def broadcast_handler(x, y):
+        return x + y
+
+    如需持久化+ACK，请使用 BrokerEnum.NATS_JETSTREAM
+
+依赖：
+    pip install nats-py
+"""
+
+import asyncio
+import threading
+
+import nats
+
+from funboost import register_custom_broker, AbstractConsumer, AbstractPublisher, BrokerEnum
+from funboost.core.broker_kind__exclusive_config_default_define import register_broker_exclusive_config_default
+from funboost.funboost_config_deafult import BrokerConnConfig
+
+register_broker_exclusive_config_default(BrokerEnum.NATS_CORE, {
+    'nats_url': '',          # 可选，覆盖全局 BrokerConnConfig.NATS_URL
+    'queue_group': 'default',  # 消费者组名；非空=负载均衡，空字符串=广播模式
+})
+
+
+class NatsPublisher(AbstractPublisher):
+    """NATS Core 发布者，使用 nats-py 官方 asyncio 客户端"""
+
+    def custom_init(self):
+        super().custom_init()
+        config = self.publisher_params.broker_exclusive_config
+        self._nats_url = config['nats_url'] or BrokerConnConfig.NATS_URL
+
+        self._loop = asyncio.new_event_loop()
+        self._loop_thread = threading.Thread(target=self._loop.run_forever, daemon=True)
+        self._loop_thread.start()
+
+        async def _connect():
+            self._nc = await nats.connect(
+                self._nats_url,
+                reconnect_time_wait=2,
+                max_reconnect_attempts=-1,
+            )
+
+        future = asyncio.run_coroutine_threadsafe(_connect(), self._loop)
+        future.result(timeout=10)
+        self.logger.info(f'NATS Core Publisher 连接成功: {self._nats_url}')
+
+    def _publish_impl(self, msg):
+        async def _pub():
+            await self._nc.publish(self.queue_name, msg.encode() if isinstance(msg, str) else msg)
+
+        future = asyncio.run_coroutine_threadsafe(_pub(), self._loop)
+        future.result(timeout=5)
+
+    def clear(self):
+        pass
+
+    def get_message_count(self):
+        return -1
+
+    def close(self):
+        if hasattr(self, '_nc'):
+            async def _close():
+                await self._nc.close()
+            try:
+                future = asyncio.run_coroutine_threadsafe(_close(), self._loop)
+                future.result(timeout=5)
+            except Exception:
+                pass
+        if hasattr(self, '_loop'):
+            self._loop.call_soon_threadsafe(self._loop.stop)
+
+
+class NatsConsumer(AbstractConsumer):
+    """
+    NATS Core 消费者，使用 nats-py 官方 asyncio 客户端。
+
+    注意: NATS Core 模式不支持持久化和消费确认。
+    如需持久化+ACK，请使用 NATS_JETSTREAM broker。
+
+    消费者组(Queue Group)：
+        - queue_group 非空时，同组消费者负载均衡分摊消息（默认行为）
+        - queue_group 为空字符串时，所有消费者都会收到每条消息（广播模式）
+    """
+
+    def custom_init(self):
+        super().custom_init()
+        config = self.consumer_params.broker_exclusive_config
+        self._nats_url = config['nats_url'] or BrokerConnConfig.NATS_URL
+        self._queue_group = config['queue_group']
+
+    def _dispatch_task(self):
+        async def _run():
+            nc = await nats.connect(
+                self._nats_url,
+                reconnect_time_wait=2,
+                max_reconnect_attempts=-1,
+            )
+
+            async def message_handler(msg):
+                kw = {'body': msg.data}
+                self._submit_task(kw)
+
+            subscribe_kwargs = dict(subject=self.queue_name, cb=message_handler)
+            if self._queue_group:
+                subscribe_kwargs['queue'] = self._queue_group
+            await nc.subscribe(**subscribe_kwargs)
+
+            mode_desc = f'负载均衡(group={self._queue_group})' if self._queue_group else '广播模式'
+            self.logger.info(f'NATS Core 消费者启动: {self._nats_url}, subject={self.queue_name}, {mode_desc}')
+
+            stop_event = asyncio.Event()
+            await stop_event.wait()
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(_run())
+
+    def _confirm_consume(self, kw):
+        pass
+
+    def _requeue(self, kw):
+        self.publisher_of_same_queue.publish(kw['body'])
+
+
+register_custom_broker(BrokerEnum.NATS_CORE, NatsPublisher, NatsConsumer)
+
+`````
+
+--- **end of file: funboost/contrib/register_custom_broker_contrib/nats_core_broker.py** (project: funboost) --- 
+
+---
+
+
+--- **start of file: funboost/contrib/register_custom_broker_contrib/nats_jetstream_broker.py** (project: funboost) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+NATS JetStream Broker - 基于 NATS JetStream 的持久化消息队列
+
+设计理念：
+    - 使用 NATS JetStream 实现消息持久化、消费确认、分组消费
+    - 比 NATS Core 更可靠，支持 ACK、消息回放、持久化订阅
+    - 适用于需要可靠消息传递但不想部署 RabbitMQ/Kafka 重型中间件的场景
+
+使用方式：
+    from funboost.contrib.register_custom_broker_contrib.nats_jetstream_broker import BROKER_KIND_NATS_JETSTREAM
+    
+    @boost(BoosterParams(
+        queue_name='jetstream_queue',
+        broker_kind=BROKER_KIND_NATS_JETSTREAM,
+        broker_exclusive_config={
+            'nats_url': 'nats://localhost:4222',  # 可选，默认从 BrokerConnConfig.NATS_URL 读
+            'stream_name': 'funboost',            # 可选，默认 'funboost'
+            'consumer_group': 'default',          # 可选，消费者组名
+            'ack_wait': 60,                       # 可选，ACK 超时秒数
+            'max_deliver': 3,                     # 可选，最大重投次数
+        }
+    ))
+    def process_message(x, y):
+        return x + y
+
+依赖：
+    pip install nats-py
+"""
+
+import asyncio
+import threading
+
+import nats
+import nats.errors
+from nats.js.api import ConsumerConfig
+
+from funboost import register_custom_broker, AbstractConsumer, AbstractPublisher, BrokerEnum
+from funboost.core.broker_kind__exclusive_config_default_define import register_broker_exclusive_config_default
+from funboost.funboost_config_deafult import BrokerConnConfig
+
+BROKER_KIND_NATS_JETSTREAM = BrokerEnum.NATS_JETSTREAM
+
+register_broker_exclusive_config_default(BROKER_KIND_NATS_JETSTREAM, {
+    'nats_url': '',
+    'stream_name': 'funboost',
+    'consumer_group': 'default',
+    'ack_wait': 60,
+    'max_deliver': 3,
+})
+
+
+class NatsJetStreamPublisher(AbstractPublisher):
+    """NATS JetStream 发布者，消息持久化到 Stream"""
+
+    def custom_init(self):
+        super().custom_init()
+        config = self.publisher_params.broker_exclusive_config
+        self._nats_url = config['nats_url'] or BrokerConnConfig.NATS_URL
+        self._stream_name = config['stream_name']
+
+        self._loop = asyncio.new_event_loop()
+        self._loop_thread = threading.Thread(target=self._loop.run_forever, daemon=True)
+        self._loop_thread.start()
+
+        async def _init():
+            self._nc = await nats.connect(
+                self._nats_url,
+                reconnect_time_wait=2,
+                max_reconnect_attempts=-1,
+            )
+            self._js = self._nc.jetstream()
+            try:
+                await self._js.find_stream_name_by_subject(self._subject)
+            except Exception:
+                await self._js.add_stream(
+                    name=self._stream_name,
+                    subjects=[f"{self._stream_name}.*"],
+                    retention="workqueue",
+                )
+
+        future = asyncio.run_coroutine_threadsafe(_init(), self._loop)
+        future.result(timeout=15)
+        self.logger.info(f'NATS JetStream Publisher 初始化完成, stream={self._stream_name}')
+
+    @property
+    def _subject(self):
+        return f"{self._stream_name}.{self.queue_name}"
+
+    def _publish_impl(self, msg):
+        async def _pub():
+            data = msg.encode() if isinstance(msg, str) else msg
+            await self._js.publish(self._subject, data)
+
+        future = asyncio.run_coroutine_threadsafe(_pub(), self._loop)
+        future.result(timeout=10)
+
+    def clear(self):
+        async def _purge():
+            try:
+                await self._js.purge_stream(self._stream_name, subject=self._subject)
+            except Exception as e:
+                self.logger.warning(f'清空 JetStream 消息失败: {e}')
+
+        future = asyncio.run_coroutine_threadsafe(_purge(), self._loop)
+        future.result(timeout=10)
+
+    def get_message_count(self):
+        return -1
+
+    def close(self):
+        if hasattr(self, '_nc'):
+            async def _close():
+                await self._nc.close()
+            try:
+                future = asyncio.run_coroutine_threadsafe(_close(), self._loop)
+                future.result(timeout=5)
+            except Exception:
+                pass
+        if hasattr(self, '_loop'):
+            self._loop.call_soon_threadsafe(self._loop.stop)
+
+
+class NatsJetStreamConsumer(AbstractConsumer):
+    """
+    NATS JetStream 消费者
+
+    特点：
+    - 持久化消费（durable consumer），重启不丢失消费位置
+    - 支持消费确认（ACK），未确认的消息会重投
+    - 支持消费者组（多个消费者分摊消息）
+    - Pull 模式拉取消息
+    """
+    _REQUEUE_IS_NATIVE_NACK = True
+
+    def custom_init(self):
+        super().custom_init()
+        config = self.consumer_params.broker_exclusive_config
+        self._nats_url = config['nats_url'] or BrokerConnConfig.NATS_URL
+        self._stream_name = config['stream_name']
+        self._consumer_group = config['consumer_group']
+        self._ack_wait = config['ack_wait']
+        self._max_deliver = config['max_deliver']
+
+    @property
+    def _subject(self):
+        return f"{self._stream_name}.{self.queue_name}"
+
+    @property
+    def _durable_name(self):
+        return f"{self.queue_name}_{self._consumer_group}"
+
+    def _dispatch_task(self):
+        self._loop = asyncio.new_event_loop()
+
+        async def _run():
+            nc = await nats.connect(
+                self._nats_url,
+                reconnect_time_wait=2,
+                max_reconnect_attempts=-1,
+            )
+            js = nc.jetstream()
+
+            try:
+                await js.find_stream_name_by_subject(self._subject)
+            except Exception:
+                await js.add_stream(
+                    name=self._stream_name,
+                    subjects=[f"{self._stream_name}.*"],
+                    retention="workqueue",
+                )
+
+            sub = await js.pull_subscribe(
+                self._subject,
+                durable=self._durable_name,
+                config=ConsumerConfig(
+                    ack_wait=self._ack_wait,
+                    max_deliver=self._max_deliver,
+                ),
+            )
+            self.logger.info(
+                f'NATS JetStream 消费者启动, subject={self._subject}, '
+                f'durable={self._durable_name}'
+            )
+
+            while True:
+                try:
+                    msgs = await sub.fetch(batch=1, timeout=5)
+                    for msg in msgs:
+                        kw = {'body': msg.data, '_nats_msg': msg}
+                        self._submit_task(kw)
+                except nats.errors.TimeoutError:
+                    pass
+                except Exception as e:
+                    self.logger.error(f'JetStream 拉取消息异常: {e}')
+                    await asyncio.sleep(1)
+
+        asyncio.set_event_loop(self._loop)
+        self._loop.run_until_complete(_run())
+
+    def _confirm_consume(self, kw):
+        nats_msg = kw['_nats_msg']
+        future = asyncio.run_coroutine_threadsafe(nats_msg.ack(), self._loop)
+        future.result(timeout=5)
+
+    def _requeue(self, kw):
+        nats_msg = kw['_nats_msg']
+        future = asyncio.run_coroutine_threadsafe(nats_msg.nak(), self._loop)
+        future.result(timeout=5)
+
+
+register_custom_broker(BROKER_KIND_NATS_JETSTREAM, NatsJetStreamPublisher, NatsJetStreamConsumer)
+
+`````
+
+--- **end of file: funboost/contrib/register_custom_broker_contrib/nats_jetstream_broker.py** (project: funboost) --- 
+
+---
+
+
 --- **start of file: funboost/contrib/register_custom_broker_contrib/redis_hash_update_broker.py** (project: funboost) --- 
 
 `````python
@@ -45057,8 +45769,6 @@ register_custom_broker(BROKER_KIND_REDIS_HASH_UPDATE, RedisHashUpdatePublisher, 
 ---
 
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 --- **start of file: funboost/contrib/register_custom_broker_contrib/redis_zset_broker.py** (project: funboost) --- 
 
 `````python
@@ -46613,11 +47323,12 @@ booster_registry_for_faas = BoosterRegistry(
 
 
 class RedisReportInfoGetterMixin:
-    # 类属性：所有实例共享的缓存
     _cache_all_queue_names = None
     _cache_all_queue_names_ts = 0
-    _cache_queue_names_by_project = {}  # {project_name: {'data': [...], 'ts': timestamp}}
-    _cache_ttl = 30  # 缓存30秒
+    _cache_queue_names_by_project = {}
+    _cache_no_project_queue_names = None
+    _cache_no_project_queue_names_ts = 0
+    _cache_ttl = 30
     
     def _init(self,care_project_name:typing.Optional[str]=None,):
         """
@@ -46633,23 +47344,14 @@ class RedisReportInfoGetterMixin:
             self.care_project_name = CareProjectNameEnv.get()
 
     def get_all_queue_names(self) ->list:
-        """获取所有队列名称，带30秒缓存（类级别缓存，所有实例共享）"""
-        current_time = time.time()
-        
-        # 检查缓存是否有效
-        if self._cache_all_queue_names is not None and (current_time - self._cache_all_queue_names_ts) < self._cache_ttl:
-            return self._cache_all_queue_names
-        
-        # 缓存失效，重新从redis获取
         if self.care_project_name:
-            result = self.project_name_queues
-        else:
-            result = list(self.redis_db_frame.smembers(RedisKeys.FUNBOOST_ALL_QUEUE_NAMES))
-        
-        # 更新缓存
-        self.__class__._cache_all_queue_names = result
-        self.__class__._cache_all_queue_names_ts = current_time
-        
+            return self.project_name_queues
+        current_time = time.time()
+        if self._cache_no_project_queue_names is not None and (current_time - self._cache_no_project_queue_names_ts) < self._cache_ttl:
+            return self._cache_no_project_queue_names
+        result = list(self.redis_db_frame.smembers(RedisKeys.FUNBOOST_ALL_QUEUE_NAMES))
+        self.__class__._cache_no_project_queue_names = result
+        self.__class__._cache_no_project_queue_names_ts = current_time
         return result
 
     def get_queue_names_by_project_name(self,project_name:str) ->list:
@@ -46695,9 +47397,8 @@ class RedisReportInfoGetterMixin:
             """
             self.logger.error(err_msg)
             return {}
-        ret_list = self.redis_db_frame.hmget(key,self.all_queue_names)
-        ret_list_exlude_none = [i for i in ret_list if i is not None]
-        return  dict(zip(self.all_queue_names, ret_list_exlude_none))
+        ret_list = self.redis_db_frame.hmget(key, self.all_queue_names)
+        return {k: v for k, v in zip(self.all_queue_names, ret_list) if v is not None}
     
     def get_all_project_names(self):
         return list(self.redis_db_frame.smembers(RedisKeys.FUNBOOST_ALL_PROJECT_NAMES))
@@ -46738,6 +47439,8 @@ class ActiveCousumerProcessInfoGetter(RedisMixin,RedisReportInfoGetterMixin,Funb
     获取分布式环境中的消费进程信息。
     使用这里面的4个方法需要相应函数的@boost装饰器设置 is_send_consumer_heartbeat_to_redis=True，这样会自动发送活跃心跳到redis。否则查询不到该函数的消费者进程信息。
     要想使用消费者进程信息统计功能，用户无论使用何种消息队列中间件类型，用户都必须安装redis，并在 funboost_config.py 中配置好redis链接信息
+    
+    所有 的last_x_s指标 代表最近10秒内的统计信息
     """
 
     def __init__(self,care_project_name:typing.Optional[str]=None):
@@ -46934,10 +47637,11 @@ class QueuesConusmerParamsGetter(RedisMixin, RedisReportInfoGetterMixin,Funboost
                 
                 queue_params_and_active_consumers = self.get_queues_params_and_active_consumers()
                 for queue,item in queue_params_and_active_consumers.items():
-                    if len(item['active_consumers']) == 0:
+                    active_consumer_count = len(item['active_consumers'])
+                    if active_consumer_count == 0:
                         continue
                     report_data = {k:v for k,v in item.items() if k not in ['queue_params','active_consumers']}
-                    
+                    report_data['active_consumer_count'] = active_consumer_count
                     report_data['report_ts'] = report_ts
                     self.redis_db_frame.zadd(RedisKeys.gen_funboost_queue_time_series_data_key_by_queue_name(queue),
                                             {Serialization.to_json_str(report_data):report_ts} )
@@ -49269,7 +49973,7 @@ if __name__ == "__main__":
     def greet(name):
         return f"Hello, {name}"
 
-    # 能执行asyncio函数，而且能支持指定asyncio loop，能自动启动指定的asyncio loop，例如某些aio的连接池的包，需要实例化和发请求在同一个loop。
+    # funboostpool能执行asyncio函数，而且能支持指定asyncio loop，能自动启动指定的asyncio loop，例如某些aio的连接池的包，需要实例化和发请求在同一个loop。
     async def aio_fun(x):
         await asyncio.sleep(1)
         return x * 10
@@ -49696,18 +50400,6 @@ class FunctionResultStatusPersistanceConfig(BaseJsonAbleModel):
         return self
 
 
-booster_params_has_been_deleted_fields = [
-    # 功能删除的字段
-    'retry_interval',
-    'is_do_not_run_by_specify_time_effect',
-    'do_not_run_by_specify_time',
-    # 字段名拼写错误修正：旧版拼写有误，新版已修正，旧 redis 元信息里存的是错误拼写的 key
-    'is_send_consumer_hearbeat_to_redis',  # 正确拼写: is_send_consumer_heartbeat_to_redis
-    'consumin_function_decorator',         # 正确拼写: consuming_function_decorator
-    'msg_expire_senconds',                 # 正确拼写: msg_expire_seconds
-]
-
-
 class BoosterParamsFieldsAssit:
     # 已经删除的字段，被别的字段功能替代了。
     has_been_deleted_fields = [
@@ -50124,7 +50816,7 @@ if __name__ == '__main__':
         "table_name": "3213"
     },
     is_fake_booster=True,
-    is_do_not_run_by_specify_time_effect=False,
+    
                         
                         specify_concurrent_pool=FlexibleThreadPool(100)).json_pre())
     # print(PublisherParams.schema_json())  # 注释掉，因为 PublisherParams 包含 Callable 类型字段，无法生成 JSON Schema
@@ -50608,14 +51300,6 @@ class AioHttpImporter:
         self.web = web
         self.Request = Request
 
-
-@singleton_no_lock
-class NatsImporter:
-    def __init__(self):
-        """pip install nats-python """
-        from pynats import NATSClient, NATSMessage
-        self.NATSClient = NATSClient
-        self.NATSMessage = NATSMessage
 
 
 @singleton_no_lock
@@ -55975,7 +56659,6 @@ import typing
 
 from funboost.publishers.empty_publisher import EmptyPublisher
 
-from funboost.publishers.nats_publisher import NatsPublisher
 from funboost.publishers.peewee_publisher import PeeweePublisher
 from funboost.publishers.redis_publisher_lpush import RedisPublisherLpush
 from funboost.publishers.redis_publisher_priority import RedisPriorityPublisher
@@ -55991,7 +56674,7 @@ from funboost.publishers.mongomq_publisher import MongoMqPublisher
 
 from funboost.publishers.persist_queue_publisher import PersistQueuePublisher
 
-from funboost.publishers.rabbitmq_pika_publisher import RabbitmqPublisher
+
 
 from funboost.publishers.redis_publisher import RedisPublisher
 
@@ -56007,11 +56690,10 @@ from funboost.consumers.kafka_consumer import KafkaConsumer
 from funboost.consumers.local_python_queue_consumer import LocalPythonQueueConsumer
 from funboost.consumers.fastest_mem_queue_consumer import FastestMemQueueConsumer
 from funboost.consumers.mongomq_consumer import MongoMqConsumer
-from funboost.consumers.nats_consumer import NatsConsumer
 
 from funboost.consumers.peewee_conusmer import PeeweeConsumer
 from funboost.consumers.persist_queue_consumer import PersistQueueConsumer
-from funboost.consumers.rabbitmq_pika_consumer import RabbitmqConsumer
+
 
 from funboost.consumers.redis_brpoplpush_consumer import RedisBrpopLpushConsumer
 from funboost.consumers.redis_consumer import RedisConsumer
@@ -56036,7 +56718,7 @@ broker_kind__publsiher_consumer_type_map = {
     BrokerEnum.REDIS: (RedisPublisher, RedisConsumer),
     BrokerEnum.MEMORY_QUEUE: (LocalPythonQueuePublisher, LocalPythonQueueConsumer),
     BrokerEnum.FASTEST_MEM_QUEUE: (FastestMemQueuePublisher, FastestMemQueueConsumer),
-    BrokerEnum.RABBITMQ_PIKA: (RabbitmqPublisher, RabbitmqConsumer),
+
     BrokerEnum.MONGOMQ: (MongoMqPublisher, MongoMqConsumer),
     BrokerEnum.PERSISTQUEUE: (PersistQueuePublisher, PersistQueueConsumer),
     BrokerEnum.KAFKA: (KafkaPublisher, KafkaConsumer),
@@ -56051,7 +56733,6 @@ broker_kind__publsiher_consumer_type_map = {
     BrokerEnum.UDP: (UDPPublisher, UDPConsumer),
     BrokerEnum.TCP: (TCPPublisher, TCPConsumer),
 
-    BrokerEnum.NATS: (NatsPublisher, NatsConsumer),
     BrokerEnum.TXT_FILE: (TxtFilePublisher, TxtFileConsumer),
     BrokerEnum.PEEWEE: (PeeweePublisher, PeeweeConsumer),
     BrokerEnum.REDIS_PUBSUB: (RedisPubSubPublisher, RedisPbSubConsumer),
@@ -56086,6 +56767,8 @@ def regist_to_funboost(broker_kind: str):
     这样当用户需要使用某些三方包中间件作为消息队列时候，按照import报错信息，用户自己去pip安装好。或者 pip install funboost[all] 一次性安装所有中间件。
     建议按照 https://github.com/ydf0509/funboost/blob/master/setup.py 中的 extra_brokers 和 install_requires 里面的版本号来安装三方包版本.
     """
+
+
     if broker_kind == BrokerEnum.RABBITMQ_AMQPSTORM:
         from funboost.publishers.rabbitmq_amqpstorm_publisher import RabbitmqPublisherUsingAmqpStorm
         from funboost.consumers.rabbitmq_amqpstorm_consumer import RabbitmqConsumerAmqpStorm
@@ -56100,6 +56783,11 @@ def regist_to_funboost(broker_kind: str):
         from funboost.publishers.rabbitmq_rabbitpy_publisher import RabbitmqPublisherUsingRabbitpy
         from funboost.consumers.rabbitmq_rabbitpy_consumer import RabbitmqConsumerRabbitpy
         register_custom_broker(BrokerEnum.RABBITMQ_RABBITPY, RabbitmqPublisherUsingRabbitpy, RabbitmqConsumerRabbitpy)
+        
+    if broker_kind == BrokerEnum.RABBITMQ_PIKA:
+        from funboost.publishers.rabbitmq_pika_publisher import RabbitmqPublisher
+        from funboost.consumers.rabbitmq_pika_consumer import RabbitmqConsumer
+        register_custom_broker(BrokerEnum.RABBITMQ_PIKA, RabbitmqPublisher, RabbitmqConsumer)
 
     if broker_kind == BrokerEnum.PULSAR:
         from funboost.consumers.pulsar_consumer import PulsarConsumer
@@ -56205,7 +56893,12 @@ def regist_to_funboost(broker_kind: str):
         
     if broker_kind in [BrokerEnum.REDIS_ZSET_PRIORITY, BrokerEnum.REDIS_ZSET_DELAY]:
         import funboost.contrib.register_custom_broker_contrib.redis_zset_broker # 已经在 redis_zset_broker.py 中注册了
-        
+
+    if broker_kind == BrokerEnum.NATS_JETSTREAM:
+        import funboost.contrib.register_custom_broker_contrib.nats_jetstream_broker  # 已经在 nats_jetstream_broker.py 中注册了
+    
+    if broker_kind == BrokerEnum.NATS_CORE:
+        import funboost.contrib.register_custom_broker_contrib.nats_core_broker  # 已经在 nats_core_broker.py 中注册了
 
 if __name__ == '__main__':
     import sys
@@ -56478,6 +57171,8 @@ from funboost.faas import flask_blueprint
 from funboost.funweb.flask_bps.script_deploy import deploy_bp
 from funboost.funweb.flask_bps.system_monitor import monitor_bp
 from funboost.funweb.flask_bps.log_viewer import log_bp
+from funboost.funweb.flask_bps.dashboard import dashboard_bp
+from funboost.funweb.flask_bps.queue_alerts import alert_bp
 
 app = Flask(__name__)
 app.secret_key =  os.getenv('FUNWEB_SECRET_KEY', "mtfy54321")
@@ -56496,6 +57191,8 @@ app.register_blueprint(flask_blueprint)
 app.register_blueprint(deploy_bp)
 app.register_blueprint(monitor_bp)
 app.register_blueprint(log_bp)
+app.register_blueprint(dashboard_bp)
+app.register_blueprint(alert_bp)
 
 
 
@@ -56641,6 +57338,7 @@ def serve_template(template):
 
 
 @app.route("/queue/get_time_series_data/<queue_name>", methods=["GET"])
+@login_required
 def get_time_series_data_by_queue_name(
     queue_name,
 ):
@@ -56766,7 +57464,7 @@ from funboost.funweb.app import (
 CareProjectNameEnv.set('test_project1')
 
 
-a=4
+
 
 if __name__ == '__main__':
     QueuesConusmerParamsGetter().cycle_get_queues_params_and_active_consumers_and_report(daemon=True)
@@ -56811,6 +57509,36 @@ from funboost.utils import time_util, decorators  # LoggerMixin 已废弃，Stat
 from funboost.utils.mongo_util import MongoMixin
 from funboost.utils.redis_manager import RedisMixin
 from funboost.core.active_cousumer_info_getter import QueuesConusmerParamsGetter, SingleQueueConusmerParamsGetter
+
+
+_mongo_available_cache = {'available': None, 'check_ts': 0}
+
+
+def _is_mongo_available(timeout_ms=3000, cache_ttl=30):
+    """
+    快速检测 MongoDB 是否可连接，结果缓存 cache_ttl 秒。
+    使用独立的短超时客户端探测，避免阻塞主逻辑。
+    """
+    now = time.time()
+    if _mongo_available_cache['available'] is not None and (now - _mongo_available_cache['check_ts']) < cache_ttl:
+        return _mongo_available_cache['available']
+
+    try:
+        import pymongo
+        from funboost.funboost_config_deafult import BrokerConnConfig
+        client = pymongo.MongoClient(
+            BrokerConnConfig.MONGO_CONNECT_URL,
+            serverSelectionTimeoutMS=timeout_ms,
+            connectTimeoutMS=timeout_ms,
+            socketTimeoutMS=timeout_ms,
+        )
+        client.admin.command('ping')
+        client.close()
+        _mongo_available_cache['available'] = True
+    except Exception:
+        _mongo_available_cache['available'] = False
+    _mongo_available_cache['check_ts'] = now
+    return _mongo_available_cache['available']
 
 # from test_frame.my_patch_frame_config import do_patch_frame_config
 #
@@ -56858,27 +57586,30 @@ def get_cols(queue_name_search: str):
     
     不再使用 db.list_collection_names()，而是从队列配置中获取表名
     注意：因为多个队列可能共享同一个表，所以查询时必须加上 queue_name 条件
-    """
-    db = MongoMixin().mongo_db_task_status
     
-    # 从队列配置获取所有队列及其对应的表名
+    当 MongoDB 不可用时，仍然返回队列名列表（count 为 -1 表示 MongoDB 不可用）
+    """
     queue_table_map = get_all_queue_table_info()
+
+    db = None
+    if _is_mongo_available():
+        db = MongoMixin().mongo_db_task_status
     
     result = []
     for queue_name, table_name in queue_table_map.items():
-        # 根据搜索条件过滤
         if queue_name_search and queue_name_search not in queue_name:
             continue
         
-        try:
-            # 必须加上 queue_name 条件，因为多个队列可能共享同一个表
-            count = db.get_collection(table_name).count_documents({'queue_name': queue_name})
-        except Exception:
-            count = 0
+        count = -1
+        if db is not None:
+            try:
+                count = db.get_collection(table_name).count_documents({'queue_name': queue_name})
+            except Exception:
+                count = 0
         
         result.append({
-            'collection_name': queue_name,  # 返回队列名（用于前端显示和后续查询）
-            'table_name': table_name,       # 实际的 MongoDB 表名
+            'collection_name': queue_name,
+            'table_name': table_name,
             'count': count
         })
     
@@ -56898,6 +57629,8 @@ def query_result(queue_name, start_time, end_time, is_success, function_params: 
     t0 = time.time()
     if not queue_name:
         return []
+    if not _is_mongo_available():
+        return {'error': 'MongoDB 不可用，无法查询执行结果'}
     db = MongoMixin().mongo_db_task_status
     
     # 根据队列名获取实际的 MongoDB 表名
@@ -56941,6 +57674,8 @@ def get_speed(queue_name, start_time, end_time):
     
     注意：因为多个队列可能共享同一个表，所以查询时必须加上 queue_name 条件
     """
+    if not _is_mongo_available():
+        return {'error': 'MongoDB 不可用，无法查询速率统计'}
     db = MongoMixin().mongo_db_task_status
     
     # 根据队列名获取实际的 MongoDB 表名
@@ -56987,6 +57722,8 @@ def get_consume_speed_curve(queue_name: str, start_time: str, end_time: str, gra
             'granularity': str
         }
     """
+    if not _is_mongo_available():
+        return {'error': 'MongoDB 不可用，无法查询消费速率曲线'}
     db = MongoMixin().mongo_db_task_status
     
     # 根据队列名获取实际的 MongoDB 表名
@@ -57146,11 +57883,13 @@ tags: []
 
 ---
 
-1. 前端不允许引入网络 cdn js和css资源
+1. 前端不允许引入网络 cdn js和css资源。
 
-2. 新写的代码，要参考之前的html的ui风格
+2. 新写的代码，要参考之前的html的ui风格；每个元素的设计都要很酷炫美观
 
-3. 要充分利用 RedisMixin 来操作redis，不要直接用pyredis
+3. 要充分利用 RedisMixin 来操作redis，不要直接用pyredis。 redis的key名字设计要合理，要参考现有的key名字设计。
+
+
 `````
 
 --- **end of file: funboost/funweb/_ai_do_tasks_md/ai写web必须遵守的.md** (project: funboost) --- 
@@ -57949,7 +58688,7 @@ class BoosterParams(BaseJsonAbleModel):
 
 > 本文档专为 AI 设计，用于快速定位 funboost 源码中的类、函数、模块位置。
 >
-> 生成时间: 2026-04-17 （请注意时间，部分代码文件的行号有可能会随时间发生小幅变化）
+> 生成时间: 2026-05-09 （请注意时间，部分代码文件的行号有可能会随时间发生小幅变化）
 >
 > 源码根目录: `funboost/funboost/`
 >
@@ -58033,7 +58772,7 @@ funboost/
 │   ├── pulsar_consumer.py         # Pulsar
 │   ├── nsq_consumer.py            # NSQ
 │   ├── mqtt_consumer.py           # MQTT
-│   ├── nats_consumer.py           # NATS
+│   ├── (已移至 contrib/register_custom_broker_contrib/nats_core_broker.py)
 │   ├── zeromq_consumer.py         # ZeroMQ
 │   ├── mongomq_consumer.py        # MongoDB
 │   ├── persist_queue_consumer.py  # SQLite (persistqueue)
@@ -58082,7 +58821,7 @@ funboost/
 │   ├── pulsar_publisher.py        # Pulsar
 │   ├── nsq_publisher.py           # NSQ
 │   ├── mqtt_publisher.py          # MQTT
-│   ├── nats_publisher.py          # NATS
+│   ├── (已移至 contrib/register_custom_broker_contrib/nats_core_broker.py)
 │   ├── zeromq_publisher.py        # ZeroMQ
 │   ├── mongomq_publisher.py       # MongoDB
 │   ├── persist_queue_publisher.py # SQLite (persistqueue)
@@ -58166,6 +58905,14 @@ funboost/
 │   ├── register_custom_broker_contrib/    # 自定义broker
 │   │   ├── watchdog_broker.py     # WatchdogPublisher/Consumer 文件监控
 │   │   └── websocket_broker.py    # WebSocketPublisher/Consumer
+│   ├── funspider/                         # 爬虫辅助扩展(httpx+SQLModel)
+│   │   ├── __init__.py            # 导出 SimpleSpiderClient, AsyncSpiderClient, SpiderItem
+│   │   ├── http.py                # SpiderResponse, SimpleSpiderClient, AsyncSpiderClient
+│   │   ├── item.py                # SpiderItem (SQLModel ORM, sync/async insert/upsert)
+│   │   ├── README.md              # funspider说明文档
+│   │   └── funspider_demos/       # 爬虫示例
+│   │       ├── funspider_demo1.py # 新闻爬虫完整示例(同步+异步混用)
+│   │       └── fake_news_site.py  # 模拟新闻网站(FastAPI)
 │   └── save_function_result_status/       # 结果持久化
 │       ├── readme.md                      # 结果持久化说明
 │       ├── save_result_status_to_sqldb.py
@@ -58199,7 +58946,8 @@ funboost/
 │   │   ├── web_helper.py          # IP/hostname
 │   │   ├── system_monitor.py      # 系统监控API
 │   │   ├── script_deploy.py       # 脚本部署CRUD
-│   │   └── log_viewer.py          # 日志查看器
+│   │   ├── log_viewer.py          # 日志查看器
+│   │   └── queue_alerts.py        # 队列告警系统(积压/QPS/掉线/失败率/耗时)
 │   ├── templates/                 # 15个HTML模板
 │   │   ├── index.html             # 首页
 │   │   ├── login.html             # 登录页
@@ -58216,6 +58964,7 @@ funboost/
 │   │   ├── deploy_detail.html     # 部署详情
 │   │   ├── log_viewer.html        # 日志查看器
 │   │   ├── system_monitor.html    # 系统监控
+│   │   ├── queue_alerts.html      # 告警配置页面(规则CRUD+告警记录+测试通知)
 │   │   └── app.py中仍在使用的路由.md  # 路由参考文档
 │   ├── _ai_do_tasks_md/           # AI任务备忘
 │   │   ├── ai写web必须遵守的.md
@@ -58369,7 +59118,7 @@ RPC:  is_using_rpc_mode, rpc_result_expire_seconds, rpc_timeout
 | RabbitMQ | `RABBITMQ_AMQPSTORM`(=`RABBITMQ`), `RABBITMQ_COMPLEX_ROUTING` |
 | Kafka | `KAFKA`, `KAFKA_CONFLUENT` |
 | RocketMQ | `ROCKETMQ`, `ROCKETMQ5` |
-| 其他MQ | `PULSAR`, `NSQ`, `MQTT`, `NATS`, `ZEROMQ`, `SQS`, `HTTPSQS` |
+| 其他MQ | `PULSAR`, `NSQ`, `MQTT`, `NATS_CORE`, `NATS_JETSTREAM`, `ZEROMQ`, `SQS`, `HTTPSQS` |
 | 内存/文件 | `MEMORY_QUEUE`, `FASTEST_MEM_QUEUE`, `SQLITE_QUEUE`(=`PERSISTQUEUE`), `TXT_FILE` |
 | 数据库 | `MONGOMQ`, `SQLACHEMY`, `POSTGRES`, `PEEWEE` |
 | 网络协议 | `TCP`, `UDP`, `HTTP`, `GRPC`, `WEBSOCKET` |
@@ -58810,7 +59559,19 @@ def generate_broker_exclusive_config()           # 生成merged配置
 | `redis_hash_update_broker.py` | `RedisHashUpdatePublisher`, `RedisHashUpdateConsumer` | Redis HASH 可更新覆盖消息(latest-wins语义) |
 | `celery_pool_as_funboost_broker.py` | `CeleryPoolPublisher`, `CeleryPoolConsumer` | 复用 CeleryPool 作为 funboost broker |
 
-### 8.3 其他 Contrib
+### 8.3 funspider 爬虫辅助扩展 (`contrib/funspider/`)
+
+> 基于 httpx + SQLModel 的爬虫辅助组件，提供 ORM 模型与同步/异步双引擎客户端。
+> 导入路径: `from funboost.contrib.funspider import SimpleSpiderClient, AsyncSpiderClient, SpiderItem, Field, create_engine, create_async_engine`
+
+| 文件 | 核心类 | 功能 |
+|------|--------|------|
+| `http.py` | `SpiderResponse` | 统一封装 httpx 响应，内置 `.xpath()`/`.css()`/`.re()`/`.resp_dict` |
+| `http.py` | `SimpleSpiderClient` | 同步爬虫客户端(httpx.Client)，支持重试+代理函数列表+随机UA |
+| `http.py` | `AsyncSpiderClient` | 异步爬虫客户端(httpx.AsyncClient)，同上 |
+| `item.py` | `SpiderItem` | SQLModel ORM 基类，`.insert()`/`.upsert()`/`.aio_insert()`/`.aio_upsert()` |
+
+### 8.4 其他 Contrib
 
 | 文件 | 功能 |
 |------|------|
@@ -58947,6 +59708,7 @@ start_funboost_web_manager()   # 启动Web管理界面
 | `system_monitor.py` | Redis心跳采集, 系统监控API |
 | `script_deploy.py` | 脚本部署CRUD, Git操作, 进程控制, 日志tail |
 | `log_viewer.py` | 日志查看器(文件夹白名单, tail, grep, stream) |
+| `queue_alerts.py` | 队列告警系统: 5种告警类型(积压/QPS骤降/消费者掉线/失败率飙升/耗时过高)，多通道通知(钉钉/企微/飞书/Webhook)，告警去抖，后台10秒轮询检查 |
 | `web_helper.py` | IP/hostname辅助函数 |
 
 ---
@@ -58986,7 +59748,8 @@ start_funboost_web_manager()   # 启动Web管理界面
 | `PULSAR` | `PulsarConsumer` | `consumers/pulsar_consumer.py` | `PulsarPublisher` | `publishers/pulsar_publisher.py` |
 | `NSQ` | `NsqConsumer` | `consumers/nsq_consumer.py` | `NsqPublisher` | `publishers/nsq_publisher.py` |
 | `MQTT` | `MqttConsumer` | `consumers/mqtt_consumer.py` | `MqttPublisher` | `publishers/mqtt_publisher.py` |
-| `NATS` | `NatsConsumer` | `consumers/nats_consumer.py` | `NatsPublisher` | `publishers/nats_publisher.py` |
+| `NATS_CORE` | `NatsConsumer` | `contrib/register_custom_broker_contrib/nats_core_broker.py` | `NatsPublisher` | 同文件 |
+| `NATS_JETSTREAM` | `NatsJetStreamConsumer` | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` | `NatsJetStreamPublisher` | 同文件 |
 | `ZEROMQ` | `ZeromqConsumer` | `consumers/zeromq_consumer.py` | `ZeromqPublisher` | `publishers/zeromq_publisher.py` |
 | `SQLITE_QUEUE` | `PersistQueueConsumer` | `consumers/persist_queue_consumer.py` | `PersistQueuePublisher` | `publishers/persist_queue_publisher.py` |
 | `MONGOMQ` | `MongoMqConsumer` | `consumers/mongomq_consumer.py` | `MongoMqPublisher` | `publishers/mongomq_publisher.py` |
@@ -59170,6 +59933,10 @@ BoosterParams.consumer_override_cls = MyMixin
 | 怎么接OpenTelemetry / 链路追踪 | OpenTelemetry, tracing, 链路 | `contrib/override_publisher_consumer_cls/funboost_otel_mixin.py` |
 | 怎么监听文件变化触发任务 | 文件监控, watchdog, 文件变化 | `contrib/register_custom_broker_contrib/watchdog_broker.py` |
 | 怎么用WebSocket | WebSocket, ws | `contrib/register_custom_broker_contrib/websocket_broker.py` |
+| 怎么用NATS Core / NATS无持久化 | NATS, nats-py, Core | `contrib/register_custom_broker_contrib/nats_core_broker.py` |
+| 怎么用NATS JetStream / NATS持久化 | NATS, JetStream, nats-py, 持久化 | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` |
+| 怎么用funboost做爬虫 / 爬虫辅助 | 爬虫, spider, 爬取, httpx, funspider | `contrib/funspider/` (SimpleSpiderClient, AsyncSpiderClient, SpiderItem) |
+| 怎么配置队列告警 / 积压告警 / 掉线告警 | 告警, alert, 积压, 掉线, 通知 | `funweb/flask_bps/queue_alerts.py` |
 | 怎么远程部署 | 部署, deploy, fabric | `core/fabric_deploy_helper.py` L17 `fabric_deploy` |
 | Web管理界面怎么启动 | web, 管理界面, funweb, 后台 | `funweb/app.py` → `start_funboost_web_manager` |
 | 命令行怎么用 / CLI | 命令行, CLI, python -m | `core/cli/funboost_fire.py` L15 `BoosterFire` |
@@ -59229,6 +59996,10 @@ BoosterParams.consumer_override_cls = MyMixin
 | 告警通知 | `contrib/override_publisher_consumer_cls/alert_notifier_mixin.py` |
 | Watchdog broker | `contrib/register_custom_broker_contrib/watchdog_broker.py` |
 | WebSocket broker | `contrib/register_custom_broker_contrib/websocket_broker.py` |
+| NATS Core broker | `contrib/register_custom_broker_contrib/nats_core_broker.py` |
+| NATS JetStream | `contrib/register_custom_broker_contrib/nats_jetstream_broker.py` |
+| 爬虫辅助(funspider) | `contrib/funspider/` → `SimpleSpiderClient`, `AsyncSpiderClient`, `SpiderItem` |
+| 队列告警 | `funweb/flask_bps/queue_alerts.py` → `alert_bp`, `_check_rules_once` |
 | Redis管理 | `utils/redis_manager.py` → `RedisManager` (L35) / `RedisMixin` (L77) |
 | MongoDB | `utils/mongo_util.py` → `MongoMixin` (L20) |
 | 装饰器工具 | `utils/decorators.py` → `keep_circulating` (L102) 等 |
@@ -61254,45 +62025,6 @@ class NamekoPublisher(AbstractPublisher):
 ---
 
 
---- **start of file: funboost/publishers/nats_publisher.py** (project: funboost) --- 
-
-`````python
-﻿from funboost.core.lazy_impoter import NatsImporter
-from funboost.publishers.base_publisher import AbstractPublisher
-from funboost.funboost_config_deafult import BrokerConnConfig
-
-
-class NatsPublisher(AbstractPublisher, ):
-    """
-    使用nats作为中间件
-    """
-
-    # noinspection PyAttributeOutsideInit
-    def custom_init(self):
-        self.nats_client = NatsImporter().NATSClient(BrokerConnConfig.NATS_URL)
-        self.nats_client.connect()
-
-    def _publish_impl(self, msg):
-        # print(msg)
-        self.nats_client.publish(subject=self.queue_name, payload=msg.encode())
-
-    def clear(self):
-        pass
-
-    def get_message_count(self):
-        return -1
-
-    def close(self):
-        # self.redis_db7.connection_pool.disconnect()
-        pass
-
-`````
-
---- **end of file: funboost/publishers/nats_publisher.py** (project: funboost) --- 
-
----
-
-
 --- **start of file: funboost/publishers/nsq_publisher.py** (project: funboost) --- 
 
 `````python
@@ -62354,7 +63086,7 @@ from funboost.publishers.base_publisher import AbstractPublisher
 from rocketmq import ClientConfiguration, Credentials, Producer, Message
 
 
-class RocketmqPublisher(AbstractPublisher):
+class Rocketmq5Publisher(AbstractPublisher):
     """
     RocketMQ 5.x 发布者，使用 rocketmq-python-client 包
     
@@ -64070,7 +64802,7 @@ from funboost.timing_job import FsdfBackgroundScheduler
 
 `````python
 from apscheduler.jobstores.redis import RedisJobStore
-from funboost.utils.redis_manager import RedisMixin,get_redis_conn_kwargs
+from funboost.utils.redis_manager import RedisMixin,get_redis_conn_kwargs_safe
 
 from funboost.timing_job import FunboostBackgroundScheduler
 from funboost.funboost_config_deafult import BrokerConnConfig, FunboostCommonConfig
@@ -64138,16 +64870,17 @@ class FunboostBackgroundSchedulerProcessJobsWithinRedisLock(FunboostBackgroundSc
             return 0.1
 
 
-jobstores = {
-    "default": RedisJobStore(**get_redis_conn_kwargs(),
-                             jobs_key='funboost.apscheduler.jobs',run_times_key="funboost.apscheduler.run_times")
-}
 
-"""
-建议不要亲自使用这个 funboost_background_scheduler_redis_store 对象，而是 ApsJobAdder来添加定时任务，自动多个apscheduler对象实例，
-尤其是redis作为jobstores时候，使用不同的jobstores，每个消费函数使用各自单独的jobs_key和 run_times_key
-"""
-funboost_background_scheduler_redis_store = FunboostBackgroundSchedulerProcessJobsWithinRedisLock(timezone=FunboostCommonConfig.TIMEZONE, daemon=False, jobstores=jobstores)
+# jobstores = {
+#     "default": RedisJobStore(**get_redis_conn_kwargs_safe(),
+#                              jobs_key='funboost.apscheduler.jobs',run_times_key="funboost.apscheduler.run_times")
+# }
+
+# """
+# 建议不要亲自使用这个 funboost_background_scheduler_redis_store 对象，而是 ApsJobAdder来添加定时任务，自动多个apscheduler对象实例，
+# 尤其是redis作为jobstores时候，使用不同的jobstores，每个消费函数使用各自单独的jobs_key和 run_times_key
+# """
+# funboost_background_scheduler_redis_store = FunboostBackgroundSchedulerProcessJobsWithinRedisLock(timezone=FunboostCommonConfig.TIMEZONE, daemon=False, jobstores=jobstores)
 
 
 
@@ -64370,7 +65103,7 @@ class FunboostBackgroundScheduler(BackgroundScheduler):
 
 
 FsdfBackgroundScheduler = FunboostBackgroundScheduler  # 兼容一下名字，fsdf是 function-scheduling-distributed-framework 老框架名字的缩写
-# funboost_aps_scheduler定时配置基于内存的，不可以跨机器远程动态添加/修改/删除定时任务配置。如果需要动态增删改查定时任务，可以使用funboost_background_scheduler_redis_store
+# funboost_aps_scheduler定时配置基于内存的，不可以跨机器远程动态添加/修改/删除定时任务配置。如果需要动态增删改查定时任务，可以使用redis作为jobstores的 ApsJobAdder
 
 """
 建议不要亲自使用这个 funboost_aps_scheduler 对象，而是 ApsJobAdder来添加定时任务，自动多个apscheduler对象实例，
@@ -64391,10 +65124,9 @@ if __name__ == '__main__':
 
     # 定时运行消费演示
     import datetime
-    from funboost import boost, BrokerEnum, fsdf_background_scheduler, timing_publish_deco, run_forever
+    from funboost import  BrokerEnum,boost
 
-
-    @Booster(boost_params=BoosterParams(queue_name='queue_test_666', broker_kind=BrokerEnum.LOCAL_PYTHON_QUEUE))
+    @boost(BoosterParams(queue_name='queue_test_666', broker_kind=BrokerEnum.LOCAL_PYTHON_QUEUE))
     def consume_func(x, y):
         print(f'{x} + {y} = {x + y}')
 
@@ -64418,8 +65150,7 @@ if __name__ == '__main__':
 
     # 启动消费
     consume_func.consume()
-    run_forever()
-
+   
 `````
 
 --- **end of file: funboost/timing_job/timing_job_base.py** (project: funboost) --- 
@@ -64491,7 +65222,7 @@ class ApsJobAdder:
             return cls.queue__redis_aps_map[queue_name]
         redis_jobstores = {
 
-            "default": RedisJobStore(**redis_manager.get_redis_conn_kwargs(),
+            "default": RedisJobStore(**redis_manager.get_redis_conn_kwargs_safe(),
                                     jobs_key=RedisKeys.gen_funboost_redis_apscheduler_jobs_key_by_queue_name(queue_name),
                                     run_times_key=RedisKeys.gen_funboost_redis_apscheduler_run_times_key_by_queue_name(queue_name),
                                      )
@@ -65175,7 +65906,7 @@ import traceback
 import unittest
 from functools import wraps
 # noinspection PyUnresolvedReferences
-import pysnooper
+# import pysnooper
 from tomorrow3 import threads as tomorrow_threads
 
 from funboost.utils import LogManager, nb_print, LoggerMixin
@@ -67154,15 +67885,36 @@ from funboost.utils import decorators
 
 def get_redis_conn_kwargs():
     return {'host': BrokerConnConfig.REDIS_HOST, 'port': BrokerConnConfig.REDIS_PORT,
-            'username': BrokerConnConfig.REDIS_USERNAME,'ssl' : BrokerConnConfig.REDIS_SSL,
+            'username': BrokerConnConfig.REDIS_USERNAME,
+            'ssl' : BrokerConnConfig.REDIS_SSL,
             'password': BrokerConnConfig.REDIS_PASSWORD, 'db': BrokerConnConfig.REDIS_DB,
             
             # 增强redis稳定性的，尤其外网redis
             'health_check_interval' :30,
             'socket_keepalive' :True,
             # 'socket_timeout':120,  # 不要设置socket_timeout，rpc blpop 等待可以设置很长的时间,和这冲突
-
             }
+
+
+def _get_redis_major_version():
+    """获取标准 redis 包的版本号，因为 RedisJobStore 等第三方库使用的是 redis 包而非 redis5"""
+    try:
+        import redis
+        return int(redis.__version__.split('.')[0])
+    except (AttributeError, ValueError, ImportError):
+        return 2
+
+
+def get_redis_conn_kwargs_safe():
+    """返回兼容低版本 redis 的连接参数，供第三方库（如 apscheduler RedisJobStore）使用"""
+    kwargs = get_redis_conn_kwargs()
+    major_version = _get_redis_major_version()
+    if major_version < 3:
+        for key in ('username', 'ssl', 'health_check_interval', 'socket_keepalive'):
+            kwargs.pop(key, None)
+    elif major_version < 4:
+        kwargs.pop('username', None)
+    return kwargs
 
 
 def _get_redis_conn_kwargs_by_db(db):
