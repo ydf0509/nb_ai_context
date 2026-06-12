@@ -2,29 +2,27 @@
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
 > **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
-> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+> **文档性质**：这**不是**一份普通的面向人类的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并，请开启“代码解析器”的心智模式。
 
 ## 🧠 AI 认知与解析准则
 
-这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请严格遵循以下自适应阅读策略：
 
-### 1. 信息的层级与互补
-*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
-*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
-*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+### 1. 信息的层级与冲突处理
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果生成器省略了对应源码，请完全信任文档逻辑，以此为基础推理。
+*   **源码即事实**：遇到 `.py` 源码或 AST 元数据（类/函数签名）时，以此作为实现细节、类型约束和语法准确性的**最终事实标准**。
+*   **冲突处理**：若文档与源码/AST 存在矛盾，请以源码为准，并在回答中向用户简要指出该差异。
+*   **测试代码的忽略**：为优化 Token 长度，集成/单元测试及非核心 API 源码通常被隐藏。**绝对不要**因此推断或提醒用户“项目缺乏测试”或“代码未实现”。
 
 ### 2. 文件边界与架构感知
-*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
-    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
-*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
-*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+*   **上下文定界**：工具使用 `--- **start of file: <路径>** ---` 等标记严格界定文件。**在你的回复中，请使用标准 Markdown 代码块，切勿模仿使用此类系统定界符。**
+*   **结构可视化**：利用“文件树 (File Tree)”章节建立项目的宏观架构认知。
+*   **依赖关系**：利用“文件依赖分析”章节理清模块间的 import 数据流向。
 
-### 3. 代码生成与交互
-*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
-*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
-*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
-    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
-    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+### 3. 严格的代码生成与交互边界
+*   **事实锚定 (Fact Anchoring)**：你生成的代码必须严格锚定在本文档范围内！API 调用必须基于**源码中的 AST 签名**或**文档中的演示示例**。
+*   **严禁臆造 (Zero Fabrication)**：绝对禁止编造文档中未定义或未提及的类名、方法名或参数。
+*   **越界拒绝**：如果用户询问的功能在当前提供的上下文中完全不存在，请明确告知“当前上下文中未包含该信息”，而不是试图凭空生成。
 
 ---
 # markdown content namespace: nb_llm project summary 
@@ -64,8 +62,13 @@ nb_llm — A powerful LLM framework
 - `from nb_llm.core.config import ChatConfig`
 - `from nb_llm.core.config import SendOptions`
 - `from nb_llm.core.config import RAGConfig`
+- `from nb_llm.core.config import RAGSendOptions`
+- `from nb_llm.core.config import EmbeddingConfig`
+- `from nb_llm.core.config import RerankConfig`
+- `from nb_llm.core.config import HistoryConfig`
 - `from nb_llm.core.response import ChatResponse`
 - `from nb_llm.core.response import StreamResponse`
+- `from nb_llm.core.response import RAGResponse`
 - `from nb_llm.core.data_types import UsageInfo`
 - `from nb_llm.core.data_types import ToolCallRecord`
 - `from nb_llm.core.data_types import PendingToolCall`
@@ -94,6 +97,7 @@ nb_llm — A powerful LLM framework
 - `from nb_llm.providers.registry import register_provider`
 - `from nb_llm.embedding.embedding import Embedding`
 - `from nb_llm.rag.rag import RAG`
+- `from nb_llm.rag.reranker import Reranker`
 - `from nb_llm.rag.vectorstore import MemoryVectorStore`
 - `from nb_llm.rag.vectorstore import FaissVectorStore`
 - `from nb_llm.rag.vectorstore import ChromaVectorStore`
@@ -304,12 +308,11 @@ ChatConfig, SendOptions, RAGConfig dataclass definitions
 - `from __future__ import annotations`
 - `from dataclasses import dataclass`
 - `from dataclasses import field`
-- `from dataclasses import field`
 - `from typing import List`
 - `from typing import Optional`
 - `from typing import Union`
 
-#### 🏛️ Classes (3)
+#### 🏛️ Classes (7)
 
 ##### 📌 `class ChatConfig`
 *Line: 9*
@@ -379,39 +382,113 @@ Dataclass design: after typing SendOptions(, IDE suggests all available fields.
 - `tags: Optional[List[str]] = None`
 - `metadata: Optional[dict] = None`
 
-##### 📌 `class RAGConfig`
+##### 📌 `class RAGSendOptions`
 *Line: 95*
 
 **Docstring:**
 `````
+Per-call options for RAG.send() / RAG.ask() / RAG.stream().
+Similar to SendOptions for Chat; controls retrieval and generation behavior per call.
+`````
+
+**Class Variables (4):**
+- `retrieve: bool = True`
+- `top_k: Optional[int] = None`
+- `query_rewrite: Optional[bool] = None`
+- `send_options: Optional[SendOptions] = None`
+
+##### 📌 `class EmbeddingConfig`
+*Line: 107*
+
+**Docstring:**
+`````
+Configuration for embedding + chunking (Step 2-3 of RAG pipeline).
+`````
+
+**Class Variables (7):**
+- `model: str = 'text-embedding-3-small'`
+- `api_key: Optional[str] = None`
+- `base_url: Optional[str] = None`
+- `chunk_size: int = 1000`
+- `chunk_overlap: int = 200`
+- `batch_size: int = 20`
+- `max_token_chars: int = 0`
+
+##### 📌 `class RerankConfig`
+*Line: 119*
+
+**Docstring:**
+`````
+Configuration for reranking (Step 7 of RAG pipeline).
+Set model=None to disable reranking.
+`````
+
+**Class Variables (4):**
+- `model: Optional[str] = None`
+- `api_key: Optional[str] = None`
+- `base_url: Optional[str] = None`
+- `top_n: Optional[int] = None`
+
+##### 📌 `class HistoryConfig`
+*Line: 129*
+
+**Docstring:**
+`````
+Configuration for multi-turn conversation history (Step 5, 10 of RAG pipeline).
+`````
+
+**Class Variables (4):**
+- `mode: str = 'clean'`
+- `max_turns: int = 10`
+- `query_rewrite: bool = False`
+- `query_rewrite_model: Optional[str] = None`
+
+##### 📌 `class RAGConfig`
+*Line: 138*
+
+**Docstring:**
+`````
 Configuration class for RAG.
-Dataclass design: users may subclass and override; IDE completion covers all fields.
 
 Example::
 
     config = RAGConfig(
         model="deepseek",
-        embedding_model="text-embedding-3-small",
+        api_key="...",
+        base_url="...",
+        embedding=EmbeddingConfig(model="BAAI/bge-m3", chunk_size=5000),
+        rerank=RerankConfig(model="BAAI/bge-reranker-v2-m3"),
         top_k=20,
     )
     rag = RAG(config)
 `````
 
-**Class Variables (14):**
+**Class Variables (25):**
 - `model: str = 'deepseek'`
 - `api_key: Optional[str] = None`
 - `base_url: Optional[str] = None`
 - `system: Optional[str] = None`
-- `embedding_model: str = 'text-embedding-3-small'`
-- `embedding_api_key: Optional[str] = None`
-- `embedding_base_url: Optional[str] = None`
-- `chunk_size: int = 500`
-- `chunk_overlap: int = 50`
+- `embedding: EmbeddingConfig = field(default_factory=EmbeddingConfig)`
+- `rerank: RerankConfig = field(default_factory=RerankConfig)`
+- `history: HistoryConfig = field(default_factory=HistoryConfig)`
 - `top_k: int = 20`
-- `embedding_batch_size: int = 20`
-- `embedding_max_token_chars: int = 0`
 - `vectorstore: str = 'memory'`
 - `vectorstore_path: Optional[str] = None`
+- `embedding_model: Optional[str] = None`
+- `embedding_api_key: Optional[str] = None`
+- `embedding_base_url: Optional[str] = None`
+- `chunk_size: Optional[int] = None`
+- `chunk_overlap: Optional[int] = None`
+- `embedding_batch_size: Optional[int] = None`
+- `embedding_max_token_chars: Optional[int] = None`
+- `rerank_model: Optional[str] = None`
+- `rerank_api_key: Optional[str] = None`
+- `rerank_base_url: Optional[str] = None`
+- `rerank_top_n: Optional[int] = None`
+- `rag_history_mode: Optional[str] = None`
+- `rag_max_history_turns: Optional[int] = None`
+- `rag_query_rewrite: Optional[bool] = None`
+- `rag_query_rewrite_model: Optional[str] = None`
 
 
 ---
@@ -669,8 +746,9 @@ from nb_llm import RAG, RAGConfig
 rag = RAG(RAGConfig(model="deepseek"))
 rag.add("./docs/")  # Load a directory
 rag.add("manual.pdf")  # Load a single file
-answer = rag.chat("How to install this product?")
-print(answer)
+answer = rag.send("How to install this product?")
+print(answer)  # RAGResponse inherits str, prints directly
+print(f"Tokens: {answer.usage.total_tokens}")
 for src in answer.sources:
     print(f"{src.file}: {src.chunk[:50]}...")
 ```
@@ -695,7 +773,7 @@ rag = RAG(RAGConfig(
 if len(rag.vectorstore) == 0:
     rag.add("large_document.txt")
 
-answer = rag.chat("How does it work?")
+answer = rag.send("How does it work?")
 ```
 
 #### Standalone Embedding
@@ -1669,9 +1747,10 @@ from nb_llm import RAG, RAGConfig
 rag = RAG(RAGConfig(model="deepseek"))
 rag.add("./docs/")           # load directory
 rag.add("document.pdf")      # load file
-answer = rag.chat("How to install?")
-print(answer)
+answer = rag.send("How to install?")  # RAGResponse (inherits str)
+print(answer)                # prints content directly
 print(answer.sources)        # list of SourceInfo
+print(answer.usage)          # token usage info
 ```
 
 ## RAGConfig Fields
@@ -1689,6 +1768,9 @@ print(answer.sources)        # list of SourceInfo
 | `embedding_batch_size` | 20 | Batch size for embedding API |
 | `vectorstore` | `"memory"` | `"memory"` / `"faiss"` / `"chromadb"` |
 | `vectorstore_path` | None | Persist directory for chromadb |
+| `rag_history_mode` | `"clean"` | `"clean"` stores original user text only |
+| `rag_max_history_turns` | 10 | Max conversation turns to keep (0=unlimited) |
+| `rag_query_rewrite` | False | Auto-rewrite query using history context |
 
 ## ChromaDB Persistence (Recommended for large docs)
 
@@ -1709,7 +1791,7 @@ rag = RAG(RAGConfig(
 if len(rag.vectorstore) == 0:
     rag.add("large_document.txt")
 
-answer = rag.chat("Your question")
+answer = rag.send("Your question")
 ```
 
 Requires: `pip install chromadb`
@@ -1740,9 +1822,26 @@ vectors = emb.embed(["A", "B", "C"])   # batch → List[List[float]]
 ```python
 rag.add("file_or_dir")      # add file or directory
 rag.add_text("raw text")    # add raw text
-rag.retrieve("query")       # get SourceInfo list without chat
-rag.chat("question")        # retrieve + LLM answer
-len(rag.vectorstore)         # number of stored chunks
+rag.retrieve("query")       # get SourceInfo list without LLM call
+
+# Chat-like API (same pattern as Chat class)
+answer = rag.ask("question")    # simple text answer (RAGResponse, str-like)
+answer = rag.send("question")   # full metadata (RAGResponse with usage/sources)
+for chunk in rag.stream("question"):  # streaming output
+    print(chunk, end='')
+
+# Async versions
+answer = await rag.aio_ask("question")
+answer = await rag.aio_send("question")
+
+# Per-call options
+from nb_llm import RAGSendOptions
+answer = rag.send("q", RAGSendOptions(top_k=30, query_rewrite=True))
+
+# History management
+rag.history              # conversation history (clean: original user text only)
+rag.clear_history()      # clear conversation history
+len(rag.vectorstore)     # number of stored chunks
 ```
 
 ## Key Points
@@ -3152,7 +3251,11 @@ Dependency: Only needs an Embedding API (using SiliconFlow's free bce-embedding 
 """
 import logging
 from nb_llm import RAG, RAGConfig
-from my_configs.common_config import MODEL, BASE_URL, MODEL_EMBEDDING, API_KEY
+from my_configs.common_config import (
+    MODEL, BASE_URL, API_KEY,
+    RAG_EMBEDDING_MODEL, RAG_EMBEDDING_BASE_URL, RAG_EMBEDDING_API_KEY,
+    RAG_RERANK_MODEL, RAG_RERANK_BASE_URL, RAG_RERANK_API_KEY,
+)
 
 logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
 logging.getLogger('nb_llm.rag').setLevel(logging.DEBUG)
@@ -3162,7 +3265,12 @@ rag = RAG(RAGConfig(
     model=MODEL,
     api_key=API_KEY,
     base_url=BASE_URL,
-    embedding_model=MODEL_EMBEDDING,
+    embedding_model=RAG_EMBEDDING_MODEL,
+    embedding_api_key=RAG_EMBEDDING_API_KEY,
+    embedding_base_url=RAG_EMBEDDING_BASE_URL,
+    rerank_model=RAG_RERANK_MODEL,
+    rerank_api_key=RAG_RERANK_API_KEY,
+    rerank_base_url=RAG_RERANK_BASE_URL,
     top_k=3,
     chunk_size=200,
 ))
@@ -3214,8 +3322,8 @@ for q in questions:
     print(f"\n{'='*60}")
     print(f"Q: {q}")
     print("=" * 60)
-    result = rag.chat(q)
-    print(f"A: {result}")
+    result = rag.send(q)
+    print(f"A: {result.content}")
 
     if result.sources:
         print(f"\n  [Sources] Retrieved {len(result.sources)} chunks:")
@@ -3240,7 +3348,11 @@ then test if the model can answer questions based on this real content.
 """
 import logging
 from nb_llm import RAG, RAGConfig
-from my_configs.common_config import MODEL, BASE_URL, MODEL_EMBEDDING, API_KEY
+from my_configs.common_config import (
+    MODEL, BASE_URL, API_KEY,
+    RAG_EMBEDDING_MODEL, RAG_EMBEDDING_BASE_URL, RAG_EMBEDDING_API_KEY,
+    RAG_RERANK_MODEL, RAG_RERANK_BASE_URL, RAG_RERANK_API_KEY,
+)
 
 logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
 logging.getLogger('nb_llm.rag').setLevel(logging.DEBUG)
@@ -3249,7 +3361,12 @@ rag = RAG(RAGConfig(
     model=MODEL,
     api_key=API_KEY,
     base_url=BASE_URL,
-    embedding_model=MODEL_EMBEDDING,
+    embedding_model=RAG_EMBEDDING_MODEL,
+    embedding_api_key=RAG_EMBEDDING_API_KEY,
+    embedding_base_url=RAG_EMBEDDING_BASE_URL,
+    rerank_model=RAG_RERANK_MODEL,
+    rerank_api_key=RAG_RERANK_API_KEY,
+    rerank_base_url=RAG_RERANK_BASE_URL,
     top_k=5,
     chunk_size=500,
     chunk_overlap=50,
@@ -3276,8 +3393,8 @@ for q in questions:
     print(f"\n{'='*70}")
     print(f"Q: {q}")
     print("=" * 70)
-    result = rag.chat(q)
-    print(f"A: {result}")
+    result = rag.send(q)
+    print(f"A: {result.content}")
 
     if result.sources:
         print(f"\n  [Sources] Retrieved {len(result.sources)} chunks:")
@@ -3329,28 +3446,42 @@ Embedding 用硅基流动免费的 BAAI/bge-m3 (8192 token limit)，Chat 用 com
 import os
 import logging
 import sys
-from nb_llm import RAG, RAGConfig
-from my_configs.common_config import MODEL, BASE_URL, API_KEY
+from nb_llm import RAG, RAGConfig, EmbeddingConfig, RerankConfig
+from my_configs.common_config import (
+    MODEL, BASE_URL, API_KEY,
+    RAG_EMBEDDING_MODEL, RAG_EMBEDDING_BASE_URL, RAG_EMBEDDING_API_KEY,
+    RAG_RERANK_MODEL, RAG_RERANK_BASE_URL, RAG_RERANK_API_KEY,
+)
 
 logging.basicConfig(level=logging.WARNING, format='[%(name)s] %(message)s')
 logging.getLogger('nb_llm.rag').setLevel(logging.INFO)
 logging.getLogger('nb_llm.embedding').setLevel(logging.INFO)
 
-FUNBOOST_DOC = r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_txt_files\funboost_all_docs_and_codes.txt"
+FUNBOOST_DOC = r"D:\codes\nb_ai_context\markdown_gen_files_git_ignore\ai_md_files\funboost_all_docs_and_codes.md"
 VECTOR_DB_DIR = r"D:\codes\nb_llm\tests\ai_codes\funboost_vectordb_3"
 
-SILICONFLOW_API_KEY = os.getenv('SILICONFLOW_API_KEY')
+# 是否删除向量库，重新开始向量化（取消注释即可）
+# if os.path.exists(VECTOR_DB_DIR):
+#     import shutil
+#     shutil.rmtree(VECTOR_DB_DIR)
 
 rag = RAG(RAGConfig(
     model=MODEL,
     api_key=API_KEY,
     base_url=BASE_URL,
-    embedding_model="BAAI/bge-m3",
-    embedding_api_key=SILICONFLOW_API_KEY,
-    embedding_base_url="https://api.siliconflow.cn/v1",
-    top_k=15,
-    chunk_size=5000,
-    chunk_overlap=500,
+    embedding=EmbeddingConfig(
+        model=RAG_EMBEDDING_MODEL,
+        api_key=RAG_EMBEDDING_API_KEY,
+        base_url=RAG_EMBEDDING_BASE_URL,
+        chunk_size=5000,
+        chunk_overlap=1000,
+    ),
+    rerank=RerankConfig(
+        model=RAG_RERANK_MODEL,
+        api_key=RAG_RERANK_API_KEY,
+        base_url=RAG_RERANK_BASE_URL,
+    ),
+    top_k=60,
     vectorstore="chromadb",
     vectorstore_path=VECTOR_DB_DIR,
 ))
@@ -3368,23 +3499,31 @@ if __name__ == "__main__":
     pass
     # sys.exit()
     questions = [
-        "funboost 怎么安装？",
-        "funboost 支持哪些消息中间件？",
-        "写一个 funboost 最简单的使用 demo",
-        "funboost 的 boost 装饰器有哪些参数？",
-        "funboost 怎么实现分布式消费？",
+        # "funboost 怎么安装？",
+        # "funboost 支持哪些消息中间件？",
+        # "写一个 funboost 最简单的使用 demo",
+        # "funboost 的 boost 装饰器有哪些参数？",
+        # "funboost 怎么实现分布式消费？",
+        'funboost写个最简单的2层级爬虫例子demo'
+        # 'funboost 装饰器的入参大全有哪些，一个不能漏都列举出来'
     ]
 
     for q in questions:
         print(f"\n{'='*60}")
         print(f"Q: {q}")
         print("=" * 60)
-        result = rag.chat(q)
-        print(f"A: {result}")
+        sys.stdout.write("A: ")
+        stream = rag.stream(q)
+        for chunk in stream:
+            sys.stdout.write(chunk)
+            sys.stdout.flush()
+        sys.stdout.write("\n")
+        print(f"  [Token] {stream.usage.total_tokens}")
 
-        if result.sources:
-            print(f"\n  [来源] 检索到 {len(result.sources)} 个相关片段:")
-            for i, src in enumerate(result.sources):
+        sources = rag.last_sources
+        if sources:
+            print(f"\n  [来源] 检索到 {len(sources)} 个相关片段:")
+            for i, src in enumerate(sources[:5]):
                 snippet = src.chunk[:100].replace('\n', ' ')
                 print(f"    [{i+1}] (相似度 {src.score:.4f}) {snippet}...")
 
@@ -3447,6 +3586,7 @@ if __name__ == "__main__":
     │   ├── __init__.py
     │   ├── loaders.py
     │   ├── rag.py
+    │   ├── reranker.py
     │   ├── splitter.py
     │   └── vectorstore.py
     ├── tools
@@ -3464,7 +3604,7 @@ if __name__ == "__main__":
 ---
 
 
-## nb_llm (relative dir: `nb_llm`)  Included Files (total: 34 files)
+## nb_llm (relative dir: `nb_llm`)  Included Files (total: 35 files)
 
 
 - `nb_llm/exceptions.py`
@@ -3516,6 +3656,8 @@ if __name__ == "__main__":
 - `nb_llm/rag/loaders.py`
 
 - `nb_llm/rag/rag.py`
+
+- `nb_llm/rag/reranker.py`
 
 - `nb_llm/rag/splitter.py`
 
@@ -3672,6 +3814,20 @@ logger_rag = logging.getLogger('nb_llm.rag')
 logger_embedding = logging.getLogger('nb_llm.embedding')
 """Embedding vectorization: number of texts requested, model, returned vector dimensions"""
 
+logger_httpx_debug_ellipsis = logging.getLogger('nb_llm.httpx_debug_ellipsis')
+"""HTTP-level debug with ellipsis: method, url, body (truncated), status, response body (truncated), elapsed time"""
+
+
+def _truncate_for_log(obj, max_chars: int = 100):
+    """Recursively truncate long strings and list items for logging."""
+    if isinstance(obj, str):
+        return obj[:max_chars] + f"...({len(obj)} chars)" if len(obj) > max_chars else obj
+    if isinstance(obj, list):
+        return [_truncate_for_log(item, max_chars) for item in obj]
+    if isinstance(obj, dict):
+        return {k: _truncate_for_log(v, max_chars) for k, v in obj.items()}
+    return obj
+
 `````
 
 --- **end of file: nb_llm/loggers.py** (project: nb_llm) --- 
@@ -3686,8 +3842,12 @@ logger_embedding = logging.getLogger('nb_llm.embedding')
 nb_llm — A powerful LLM framework
 """
 from nb_llm.core.chat import Chat, ChatSession, Pipeline
-from nb_llm.core.config import ChatConfig, SendOptions, RAGConfig
-from nb_llm.core.response import ChatResponse, StreamResponse
+from nb_llm.core.config import (
+    ChatConfig, SendOptions,
+    RAGConfig, RAGSendOptions,
+    EmbeddingConfig, RerankConfig, HistoryConfig,
+)
+from nb_llm.core.response import ChatResponse, StreamResponse, RAGResponse
 from nb_llm.core.data_types import (
     UsageInfo, ToolCallRecord, PendingToolCall,
     SourceInfo, TeamMessage, TeamResult, CostTracker,
@@ -3706,6 +3866,7 @@ from nb_llm.exceptions import (
 from nb_llm.providers.registry import register_provider
 from nb_llm.embedding.embedding import Embedding
 from nb_llm.rag.rag import RAG
+from nb_llm.rag.reranker import Reranker
 from nb_llm.rag.vectorstore import MemoryVectorStore, FaissVectorStore, ChromaVectorStore
 from nb_llm.agents.router import Router
 from nb_llm.agents.team import Team
@@ -3721,9 +3882,9 @@ __version__ = "0.1.0"
 
 __all__ = [
     # Core
-    "Chat", "ChatConfig", "SendOptions", "RAGConfig",
+    "Chat", "ChatConfig", "SendOptions", "RAGConfig", "RAGSendOptions",
     # Response types
-    "ChatResponse", "StreamResponse",
+    "ChatResponse", "StreamResponse", "RAGResponse",
     "UsageInfo", "ToolCallRecord", "PendingToolCall",
     "SourceInfo", "TeamMessage", "TeamResult", "CostTracker",
     # Session & Pipeline
@@ -5173,7 +5334,7 @@ class _SyncWrap:
 """ChatConfig, SendOptions, RAGConfig dataclass definitions"""
 from __future__ import annotations
 
-from dataclasses import dataclass, field, field
+from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
 
@@ -5264,44 +5425,131 @@ class SendOptions:
 
 
 @dataclass
+class RAGSendOptions:
+    """
+    Per-call options for RAG.send() / RAG.ask() / RAG.stream().
+    Similar to SendOptions for Chat; controls retrieval and generation behavior per call.
+    """
+    retrieve: bool = True
+    top_k: Optional[int] = None
+    query_rewrite: Optional[bool] = None
+    send_options: Optional[SendOptions] = None
+
+
+@dataclass
+class EmbeddingConfig:
+    """Configuration for embedding + chunking (Step 2-3 of RAG pipeline)."""
+    model: str = "text-embedding-3-small"
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    chunk_size: int = 1000
+    chunk_overlap: int = 200
+    batch_size: int = 20
+    max_token_chars: int = 0
+
+
+@dataclass
+class RerankConfig:
+    """Configuration for reranking (Step 7 of RAG pipeline).
+    Set model=None to disable reranking."""
+    model: Optional[str] = None  # None = disabled; e.g. "BAAI/bge-reranker-v2-m3"
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    top_n: Optional[int] = None  # keep top_n after rerank (None = same as top_k)
+
+
+@dataclass
+class HistoryConfig:
+    """Configuration for multi-turn conversation history (Step 5, 10 of RAG pipeline)."""
+    mode: str = "clean"  # "clean" = store original user text only; "full" = store augmented prompt
+    max_turns: int = 10  # max conversation turns (0 = unlimited)
+    query_rewrite: bool = False  # auto-rewrite query using history context
+    query_rewrite_model: Optional[str] = None  # model for rewriting (None = use main model)
+
+
+@dataclass
 class RAGConfig:
     """
     Configuration class for RAG.
-    Dataclass design: users may subclass and override; IDE completion covers all fields.
 
     Example::
 
         config = RAGConfig(
             model="deepseek",
-            embedding_model="text-embedding-3-small",
+            api_key="...",
+            base_url="...",
+            embedding=EmbeddingConfig(model="BAAI/bge-m3", chunk_size=5000),
+            rerank=RerankConfig(model="BAAI/bge-reranker-v2-m3"),
             top_k=20,
         )
         rag = RAG(config)
     """
+    # Chat model (for final LLM generation)
     model: str = "deepseek"
     api_key: Optional[str] = None
     base_url: Optional[str] = None
     system: Optional[str] = None  # None=default strict mode, ""=disabled
 
-    # Embedding configuration
-    embedding_model: str = "text-embedding-3-small"
-    embedding_api_key: Optional[str] = None
-    embedding_base_url: Optional[str] = None
-
-    # Chunking parameters
-    chunk_size: int = 500
-    chunk_overlap: int = 50
+    # Sub-configs for each pipeline stage
+    embedding: EmbeddingConfig = field(default_factory=EmbeddingConfig)
+    rerank: RerankConfig = field(default_factory=RerankConfig)
+    history: HistoryConfig = field(default_factory=HistoryConfig)
 
     # Retrieval parameters
     top_k: int = 20
 
-    # Embedding batch
-    embedding_batch_size: int = 20
-    embedding_max_token_chars: int = 0
-
     # Vector store
     vectorstore: str = "memory"  # "memory" | "faiss" | "chromadb"
     vectorstore_path: Optional[str] = None  # persist directory for chromadb / faiss
+
+    # --- Backward compatibility (flat params → sub-config) ---
+    embedding_model: Optional[str] = None
+    embedding_api_key: Optional[str] = None
+    embedding_base_url: Optional[str] = None
+    chunk_size: Optional[int] = None
+    chunk_overlap: Optional[int] = None
+    embedding_batch_size: Optional[int] = None
+    embedding_max_token_chars: Optional[int] = None
+    rerank_model: Optional[str] = None
+    rerank_api_key: Optional[str] = None
+    rerank_base_url: Optional[str] = None
+    rerank_top_n: Optional[int] = None
+    rag_history_mode: Optional[str] = None
+    rag_max_history_turns: Optional[int] = None
+    rag_query_rewrite: Optional[bool] = None
+    rag_query_rewrite_model: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if self.embedding_model is not None:
+            self.embedding.model = self.embedding_model
+        if self.embedding_api_key is not None:
+            self.embedding.api_key = self.embedding_api_key
+        if self.embedding_base_url is not None:
+            self.embedding.base_url = self.embedding_base_url
+        if self.chunk_size is not None:
+            self.embedding.chunk_size = self.chunk_size
+        if self.chunk_overlap is not None:
+            self.embedding.chunk_overlap = self.chunk_overlap
+        if self.embedding_batch_size is not None:
+            self.embedding.batch_size = self.embedding_batch_size
+        if self.embedding_max_token_chars is not None:
+            self.embedding.max_token_chars = self.embedding_max_token_chars
+        if self.rerank_model is not None:
+            self.rerank.model = self.rerank_model
+        if self.rerank_api_key is not None:
+            self.rerank.api_key = self.rerank_api_key
+        if self.rerank_base_url is not None:
+            self.rerank.base_url = self.rerank_base_url
+        if self.rerank_top_n is not None:
+            self.rerank.top_n = self.rerank_top_n
+        if self.rag_history_mode is not None:
+            self.history.mode = self.rag_history_mode
+        if self.rag_max_history_turns is not None:
+            self.history.max_turns = self.rag_max_history_turns
+        if self.rag_query_rewrite is not None:
+            self.history.query_rewrite = self.rag_query_rewrite
+        if self.rag_query_rewrite_model is not None:
+            self.history.query_rewrite_model = self.rag_query_rewrite_model
 
 `````
 
@@ -5714,7 +5962,7 @@ def create_backend(backend_type: str = 'memory',
 --- **start of file: nb_llm/core/response.py** (project: nb_llm) --- 
 
 `````python
-"""ChatResponse and StreamResponse definitions"""
+"""ChatResponse, StreamResponse and RAGResponse definitions"""
 from __future__ import annotations
 
 import json
@@ -5722,6 +5970,7 @@ from typing import Any, List, Optional, Iterator
 
 from nb_llm.core.data_types import (
     UsageInfo, ToolCallRecord, PendingToolCall, SourceInfo, ToolCallRound,
+    DataMixin,
 )
 
 
@@ -5743,6 +5992,7 @@ class ChatResponse(str):
     logprobs: Any
     raw: dict
     model: str
+    reasoning_content: Optional[str]
 
     def __new__(cls, text: str = '', **kwargs) -> ChatResponse:
         instance = super().__new__(cls, text)
@@ -5758,6 +6008,7 @@ class ChatResponse(str):
         instance.logprobs = kwargs.get('logprobs', None)
         instance.raw = kwargs.get('raw', {})
         instance.model = kwargs.get('model', '')
+        instance.reasoning_content = kwargs.get('reasoning_content', None)
         return instance
 
     @property
@@ -5776,6 +6027,8 @@ class ChatResponse(str):
             'sources': [s.to_dict() for s in (self.sources or [])],
             'model': self.model,
         }
+        if self.reasoning_content:
+            d['reasoning_content'] = self.reasoning_content
         if self.parsed is not None:
             if hasattr(self.parsed, 'model_dump'):
                 d['parsed'] = self.parsed.model_dump()
@@ -5795,11 +6048,18 @@ class ChatResponse(str):
     @classmethod
     def _from_api_response(cls, raw_response: dict,
                             model_name: str = '') -> ChatResponse:
-        """Build ChatResponse from raw API response"""
+        """Build ChatResponse from raw API response.
+        Supports reasoning models (e.g. GLM-4.7, DeepSeek-R1) that return
+        reasoning_content alongside or instead of content.
+        """
         choices = raw_response.get('choices', [{}])
         first_choice = choices[0] if choices else {}
         message = first_choice.get('message', {})
         text = message.get('content', '') or ''
+        reasoning = message.get('reasoning_content', None)
+
+        if not text and reasoning:
+            text = reasoning
 
         usage_data = raw_response.get('usage', {})
         usage = UsageInfo.from_dict(usage_data)
@@ -5812,6 +6072,7 @@ class ChatResponse(str):
             raw=raw_response,
             model=raw_response.get('model', model_name),
             logprobs=first_choice.get('logprobs'),
+            reasoning_content=reasoning,
         )
         return resp
 
@@ -5826,11 +6087,13 @@ class StreamResponse:
         self._stream_iter = stream_iter
         self._model_name = model_name
         self._chunks: List[str] = []
+        self._reasoning_chunks: List[str] = []
         self._done = False
         self._on_done = on_done
         self.usage: UsageInfo = UsageInfo()
         self.finish_reason: str = 'stop'
         self.text: str = ''
+        self.reasoning_content: str = ''
         self.tool_calls_made: List[ToolCallRecord] = []
 
     def __iter__(self):
@@ -5843,6 +6106,9 @@ class StreamResponse:
                 choices = chunk_data.get('choices', [{}])
                 delta = choices[0].get('delta', {}) if choices else {}
                 text = delta.get('content', '') or ''
+                reasoning = delta.get('reasoning_content', '') or ''
+                if reasoning:
+                    self._reasoning_chunks.append(reasoning)
                 finish = choices[0].get('finish_reason') if choices else None
                 if finish:
                     self.finish_reason = finish
@@ -5857,6 +6123,7 @@ class StreamResponse:
         except StopIteration:
             self._done = True
             self.text = ''.join(self._chunks)
+            self.reasoning_content = ''.join(self._reasoning_chunks)
             if self._on_done:
                 self._on_done(self.text)
             raise
@@ -5871,6 +6138,52 @@ class StreamResponse:
 
     def to_json_str(self, indent=4, ensure_ascii=False, **kwargs) -> str:
         return json.dumps(self.to_dict(), indent=indent, ensure_ascii=ensure_ascii, **kwargs)
+
+
+class RAGResponse(str):
+    """
+    RAG response. Inherits str like ChatResponse; can be used as a string directly.
+    Access RAG-specific metadata (sources, rewritten_query, etc.) via attributes.
+    """
+
+    sources: List[SourceInfo]
+    usage: UsageInfo
+    model: str
+    rewritten_query: Optional[str]
+    finish_reason: str
+    raw: dict
+
+    def __new__(cls, content: str = '', **kwargs) -> RAGResponse:
+        instance = super().__new__(cls, content)
+        instance.sources = kwargs.get('sources', [])
+        instance.usage = kwargs.get('usage', UsageInfo())
+        instance.model = kwargs.get('model', '')
+        instance.rewritten_query = kwargs.get('rewritten_query', None)
+        instance.finish_reason = kwargs.get('finish_reason', 'stop')
+        instance.raw = kwargs.get('raw', {})
+        return instance
+
+    @property
+    def content(self) -> str:
+        """Get text content (equivalent to str(self), for parity with other frameworks)"""
+        return str(self)
+
+    def to_dict(self) -> dict:
+        return {
+            'content': self.content,
+            'sources': [s.to_dict() for s in (self.sources or [])],
+            'usage': self.usage.to_dict() if self.usage else {},
+            'model': self.model,
+            'rewritten_query': self.rewritten_query,
+            'finish_reason': self.finish_reason,
+        }
+
+    def to_json_str(self, indent=4, ensure_ascii=False, **kwargs) -> str:
+        return json.dumps(self.to_dict(), indent=indent, ensure_ascii=ensure_ascii, **kwargs)
+
+    def __repr__(self):
+        src_count = len(self.sources) if self.sources else 0
+        return f"RAGResponse(len={len(self)}, sources={src_count})"
 
 `````
 
@@ -5900,7 +6213,7 @@ import json
 import os
 from typing import List, Optional, Union
 
-from nb_llm.loggers import logger_embedding as logger
+from nb_llm.loggers import logger_embedding as logger, logger_httpx_debug_ellipsis, _truncate_for_log
 
 try:
     import requests as _requests
@@ -5987,12 +6300,28 @@ class Embedding:
             'Content-Type': 'application/json',
         }
         payload = {'model': self.model, 'input': texts}
+        body_str = json.dumps(payload, ensure_ascii=False)
         logger.debug("Sending Embedding request → %s\n%s",
                      self.model,
                      json.dumps(payload, ensure_ascii=False, indent=2))
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST %s  model=%s body_len=%d",
+                                  url, payload.get('model', ''), len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(payload), ensure_ascii=False, indent=2))
+
+        import time as _time
+        t0 = _time.time()
         resp = _requests.post(url, headers=headers, json=payload, timeout=60)
+        elapsed = _time.time() - t0
         resp.raise_for_status()
         data = resp.json()
+
+        resp_str = json.dumps(data, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("RESPONSE: HTTP POST %d ← %s  model=%s (%.2fs)  req_len=%d resp_len=%d",
+                                  resp.status_code, url, data.get('model', payload.get('model', '')),
+                                  elapsed, len(body_str), len(resp_str))
+        logger_httpx_debug_ellipsis.debug("RESPONSE body:\n%s",
+                                  json.dumps(_truncate_for_log(data), ensure_ascii=False, indent=2))
         logger.debug("Received Embedding response ← %s\n%s",
                      self.model,
                      json.dumps(self._summarize_response(data), ensure_ascii=False, indent=2))
@@ -6394,7 +6723,7 @@ from nb_llm.exceptions import (
     AuthenticationError, ProviderError, RateLimitError,
     TokenLimitError, TimeoutError as NbTimeoutError,
 )
-from nb_llm.loggers import logger_request, logger_response
+from nb_llm.loggers import logger_request, logger_response, logger_httpx_debug_ellipsis, _truncate_for_log
 from nb_llm.providers.base import BaseProvider
 
 if TYPE_CHECKING:
@@ -6468,6 +6797,8 @@ class OpenAICompatibleProvider(BaseProvider):
             )
         return self._client
 
+    DEFAULT_MAX_TOKENS = 65536
+
     def _build_request_body(self, messages: list,
                             config: Optional[ChatConfig],
                             options: Optional[SendOptions],
@@ -6483,6 +6814,9 @@ class OpenAICompatibleProvider(BaseProvider):
 
         params = _merge_params(config, options)
         body.update(params)
+
+        if 'max_tokens' not in body:
+            body['max_tokens'] = self.DEFAULT_MAX_TOKENS
 
         if tools:
             body['tools'] = tools
@@ -6506,13 +6840,16 @@ class OpenAICompatibleProvider(BaseProvider):
         logger_request.debug("Sending request → %s\n%s",
                              self.model, json.dumps(body, ensure_ascii=False, indent=2))
 
+        t0 = time.time()
         if self._use_sdk:
             result = self._sdk_chat(messages, config, options, tools)
         else:
             result = self._http_chat(messages, config, options, tools)
+        elapsed = time.time() - t0
 
-        logger_response.debug("Received response ← %s\n%s",
-                              self.model, json.dumps(result, ensure_ascii=False, indent=2))
+        logger_response.debug("Received response ← %s (%.2fs)\n%s",
+                              self.model, elapsed,
+                              json.dumps(result, ensure_ascii=False, indent=2))
         return result
 
     def _sdk_chat(self, messages: list, config: Optional[ChatConfig],
@@ -6523,9 +6860,26 @@ class OpenAICompatibleProvider(BaseProvider):
         body.pop('model', None)
         model = self.model
 
+        url = f"{self.base_url}/chat/completions"
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST (sdk) %s  model=%s body_len=%d",
+                                  url, model, len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
+
+        t0 = time.time()
         try:
             resp = client.chat.completions.create(model=model, **body)
-            return resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+            result = resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+
+            elapsed = time.time() - t0
+            result_str = json.dumps(result, ensure_ascii=False)
+            logger_httpx_debug_ellipsis.info("RESPONSE: HTTP POST (sdk) 200 ← %s  model=%s (%.2fs)  req_len=%d resp_len=%d",
+                                      url, result.get('model', model),
+                                      elapsed, len(body_str), len(result_str))
+            logger_httpx_debug_ellipsis.debug("RESPONSE body:\n%s",
+                                      json.dumps(_truncate_for_log(result), ensure_ascii=False, indent=2))
+            return result
         except openai_sdk.AuthenticationError as e:
             raise AuthenticationError(str(e))
         except openai_sdk.RateLimitError as e:
@@ -6552,11 +6906,27 @@ class OpenAICompatibleProvider(BaseProvider):
             'Authorization': f'Bearer {self.api_key}',
         }
 
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST %s  model=%s body_len=%d",
+                                  url, body.get('model', ''), len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
+
+        t0 = time.time()
         try:
             with httpx.Client(timeout=self.timeout) as client:
                 resp = client.post(url, json=body, headers=headers)
         except httpx.TimeoutException as e:
             raise NbTimeoutError(str(e))
+
+        elapsed = time.time() - t0
+        resp_text = resp.text
+        resp_data = resp.json() if resp.status_code == 200 else {}
+        logger_httpx_debug_ellipsis.info("RESPONSE: HTTP POST %d ← %s  model=%s (%.2fs)  req_len=%d resp_len=%d",
+                                  resp.status_code, url, resp_data.get('model', body.get('model', '')),
+                                  elapsed, len(body_str), len(resp_text))
+        logger_httpx_debug_ellipsis.debug("RESPONSE body:\n%s",
+                                  json.dumps(_truncate_for_log(resp_data), ensure_ascii=False, indent=2))
 
         _handle_api_error(resp.status_code, resp.text)
         return resp.json()
@@ -6577,6 +6947,13 @@ class OpenAICompatibleProvider(BaseProvider):
         body.pop('stream', None)
         body.pop('stream_options', None)
         model = self.model
+
+        url = f"{self.base_url}/chat/completions"
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST (sdk-stream) %s  model=%s body_len=%d",
+                                  url, model, len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
 
         try:
             stream = client.chat.completions.create(
@@ -6607,6 +6984,12 @@ class OpenAICompatibleProvider(BaseProvider):
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.api_key}',
         }
+
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST (stream) %s  model=%s body_len=%d",
+                                  url, body.get('model', ''), len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
 
         try:
             with httpx.Client(timeout=self.timeout) as client:
@@ -6641,13 +7024,16 @@ class OpenAICompatibleProvider(BaseProvider):
         logger_request.debug("[async] Sending request → %s\n%s",
                              self.model, json.dumps(body, ensure_ascii=False, indent=2))
 
+        t0 = time.time()
         if self._use_sdk:
             result = await self._async_sdk_chat(messages, config, options, tools)
         else:
             result = self.chat_completion(messages, config, options, tools)
+        elapsed = time.time() - t0
 
-        logger_response.debug("[async] Received response ← %s\n%s",
-                              self.model, json.dumps(result, ensure_ascii=False, indent=2))
+        logger_response.debug("[async] Received response ← %s (%.2fs)\n%s",
+                              self.model, elapsed,
+                              json.dumps(result, ensure_ascii=False, indent=2))
         return result
 
     async def _async_sdk_chat(self, messages: list, config: Optional[ChatConfig],
@@ -6657,9 +7043,26 @@ class OpenAICompatibleProvider(BaseProvider):
         body = self._build_request_body(messages, config, options, tools)
         body.pop('model', None)
 
+        url = f"{self.base_url}/chat/completions"
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST (async-sdk) %s  model=%s body_len=%d",
+                                  url, self.model, len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
+
+        t0 = time.time()
         try:
             resp = await client.chat.completions.create(model=self.model, **body)
-            return resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+            result = resp.model_dump() if hasattr(resp, 'model_dump') else resp.to_dict()
+
+            elapsed = time.time() - t0
+            result_str = json.dumps(result, ensure_ascii=False)
+            logger_httpx_debug_ellipsis.info("RESPONSE: HTTP POST (async-sdk) 200 ← %s  model=%s (%.2fs)  req_len=%d resp_len=%d",
+                                      url, result.get('model', self.model),
+                                      elapsed, len(body_str), len(result_str))
+            logger_httpx_debug_ellipsis.debug("RESPONSE body:\n%s",
+                                      json.dumps(_truncate_for_log(result), ensure_ascii=False, indent=2))
+            return result
         except openai_sdk.AuthenticationError as e:
             raise AuthenticationError(str(e))
         except openai_sdk.RateLimitError as e:
@@ -6690,6 +7093,13 @@ class OpenAICompatibleProvider(BaseProvider):
         body.pop('model', None)
         body.pop('stream', None)
         body.pop('stream_options', None)
+
+        url = f"{self.base_url}/chat/completions"
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST (async-sdk-stream) %s  model=%s body_len=%d",
+                                  url, self.model, len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
 
         try:
             stream = await client.chat.completions.create(
@@ -7009,39 +7419,51 @@ def walk_files(directory: str) -> List[str]:
 --- **start of file: nb_llm/rag/rag.py** (project: nb_llm) --- 
 
 `````python
-"""RAG class: Retrieval-Augmented Generation"""
+"""RAG class: Retrieval-Augmented Generation with full Chat-like API"""
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
-from nb_llm.core.config import ChatConfig, RAGConfig, SendOptions
+from nb_llm.core.config import ChatConfig, RAGConfig, RAGSendOptions, SendOptions
 from nb_llm.core.data_types import SourceInfo
+from nb_llm.core.response import RAGResponse, StreamResponse
 from nb_llm.embedding.embedding import Embedding
 from nb_llm.loggers import logger_rag as logger
 from nb_llm.rag.loaders import get_loader, walk_files
 from nb_llm.rag.splitter import SmartSplitter
 from nb_llm.rag.vectorstore import MemoryVectorStore, create_vectorstore
 
-if TYPE_CHECKING:
-    from nb_llm.core.response import ChatResponse
-
 
 class RAG:
     """RAG (Retrieval-Augmented Generation) all-in-one wrapper.
-    Build a knowledge base in one line, auto-retrieve + inject context.
+    Provides Chat-like API (ask/send/stream) with automatic retrieval.
+
+    Features:
+        - Level 1: Clean history (only user original text, no chunks in history)
+        - Level 2: History window (max N turns)
+        - Level 3: Query rewrite (auto-rewrite using conversation context)
 
     Usage::
 
-        rag = RAG(RAGConfig(model="deepseek", embedding_model="bce-embedding"))
+        rag = RAG(RAGConfig(model="deepseek", embedding_model="bge-m3"))
         rag.add_text("knowledge content...")
-        answer = rag.chat("question")
+        answer = rag.ask("question")           # plain text
+        response = rag.send("question")        # RAGResponse with usage/sources
+        for chunk in rag.stream("question"):   # streaming
+            print(chunk, end='')
     """
 
     DEFAULT_SYSTEM = (
         'You are a knowledge base assistant. Answer user questions based on the reference materials provided below.\n'
         'Combine and summarize information from multiple references when relevant.\n'
         'If the references truly contain no related information at all, say so. Otherwise, try your best to answer.'
+    )
+
+    REWRITE_SYSTEM = (
+        'You are a query rewriter. Given conversation history and the latest user question, '
+        'rewrite the question into a standalone search query that captures the full intent. '
+        'Output ONLY the rewritten query, nothing else.'
     )
 
     def __init__(
@@ -7055,24 +7477,284 @@ class RAG:
             config = RAGConfig()
         self.config = config
 
+        emb = config.embedding
+        rnk = config.rerank
+
         rag_system = config.system if config.system is not None else self.DEFAULT_SYSTEM
         self._chat = Chat(ChatConfig(
             model=config.model, api_key=config.api_key, base_url=config.base_url,
             system=rag_system,
         ))
         self.embedding = Embedding(
-            model=config.embedding_model,
-            api_key=config.embedding_api_key or config.api_key,
-            base_url=config.embedding_base_url or config.base_url,
-            max_token_chars=config.embedding_max_token_chars,
+            model=emb.model,
+            api_key=emb.api_key or config.api_key,
+            base_url=emb.base_url or config.base_url,
+            max_token_chars=emb.max_token_chars,
         )
         self.vectorstore = create_vectorstore(config.vectorstore, config.vectorstore_path)
-        self.splitter = SmartSplitter(config.chunk_size, config.chunk_overlap)
+        self.splitter = SmartSplitter(emb.chunk_size, emb.chunk_overlap)
         self.top_k = config.top_k
         self._file_map: dict = {}
+        self._last_sources: List[SourceInfo] = []
+        self._history: List[dict] = []
+
+        self.reranker = None
+        if rnk.model:
+            from nb_llm.rag.reranker import Reranker
+            self.reranker = Reranker(
+                model=rnk.model,
+                api_key=rnk.api_key or config.api_key or '',
+                base_url=rnk.base_url or config.base_url or 'https://api.siliconflow.cn/v1',
+            )
 
         if sources:
             self._load_sources(sources)
+
+    # ==================== Public API (Chat-like) ====================
+
+    def ask(self, question: str,
+            options: Optional[RAGSendOptions] = None) -> RAGResponse:
+        """Retrieve + generate, return RAGResponse (str-like via __str__)."""
+        return self._do_rag_call(question, options, mode='ask')
+
+    def send(self, question: str,
+             options: Optional[RAGSendOptions] = None) -> RAGResponse:
+        """Retrieve + generate, return RAGResponse with full metadata."""
+        return self._do_rag_call(question, options, mode='send')
+
+    def stream(self, question: str,
+               options: Optional[RAGSendOptions] = None) -> StreamResponse:
+        """Retrieve + stream generate. Returns StreamResponse (iterable)."""
+        opts = options or RAGSendOptions()
+        sources, rewritten = self._prepare_retrieval(question, opts)
+        augmented = self._build_augmented_prompt(question, sources)
+
+        self._chat._history = list(self._history)
+        stream_resp = self._chat.stream(augmented, opts.send_options)
+
+        original_on_done = stream_resp._on_done
+
+        def _rag_on_done(full_text):
+            self._update_history(question, full_text)
+            self._last_sources = sources
+
+        stream_resp._on_done = _rag_on_done
+        return stream_resp
+
+    async def aio_ask(self, question: str,
+                      options: Optional[RAGSendOptions] = None) -> RAGResponse:
+        """Async version of ask()."""
+        return await self._aio_do_rag_call(question, options, mode='ask')
+
+    async def aio_send(self, question: str,
+                       options: Optional[RAGSendOptions] = None) -> RAGResponse:
+        """Async version of send()."""
+        return await self._aio_do_rag_call(question, options, mode='send')
+
+    async def aio_stream(self, question: str,
+                         options: Optional[RAGSendOptions] = None):
+        """Async version of stream(). Returns async StreamResponse."""
+        opts = options or RAGSendOptions()
+        sources, rewritten = self._prepare_retrieval(question, opts)
+        augmented = self._build_augmented_prompt(question, sources)
+
+        self._chat._history = list(self._history)
+        stream_resp = await self._chat.aio_stream(augmented, opts.send_options)
+
+        self._update_history(question, stream_resp.text)
+        self._last_sources = sources
+        return stream_resp
+
+    @property
+    def last_sources(self) -> List[SourceInfo]:
+        """Sources from the most recent retrieval."""
+        return self._last_sources
+
+    @property
+    def history(self) -> List[dict]:
+        """Conversation history (user original text + assistant responses)."""
+        return list(self._history)
+
+    def clear_history(self) -> None:
+        """Clear conversation history."""
+        self._history.clear()
+        self._chat.clear()
+
+    # ==================== Retrieval ====================
+
+    def retrieve(self, query: str,
+                 top_k: Optional[int] = None) -> List[SourceInfo]:
+        k = top_k or self.top_k
+        retrieve_k = k
+        if self.reranker:
+            retrieve_k = max(k * 3, 50)
+        logger.debug("Retrieving query: %.100s..., top_k=%d (vector_k=%d, rerank=%s)",
+                      query, k, retrieve_k, bool(self.reranker))
+        query_vec = self.embedding.embed(query)
+        results = self.vectorstore.search(query_vec, retrieve_k)
+
+        sources = []
+        for chunk_text, score, meta in results:
+            sources.append(SourceInfo(
+                file=meta.get('file', ''),
+                chunk=chunk_text,
+                score=score,
+            ))
+
+        if self.reranker and sources:
+            rerank_top_n = self.config.rerank.top_n or k
+            documents = [src.chunk for src in sources]
+            reranked = self.reranker.rerank(query, documents, top_n=rerank_top_n)
+            reranked_sources = []
+            for orig_idx, rerank_score, _ in reranked:
+                if orig_idx < len(sources):
+                    src = sources[orig_idx]
+                    reranked_sources.append(SourceInfo(
+                        file=src.file,
+                        chunk=src.chunk,
+                        score=rerank_score,
+                    ))
+            sources = reranked_sources
+            logger.debug("Reranked %d → %d results", retrieve_k, len(sources))
+
+        if sources:
+            lines = [f"Retrieved {len(sources)} results:"]
+            for i, src in enumerate(sources):
+                preview = src.chunk[:100].replace('\n', ' ')
+                lines.append(f"  [{i+1}] (score {src.score:.4f}) {preview}...")
+            logger.debug("\n".join(lines))
+        else:
+            logger.debug("Retrieved 0 results")
+        return sources
+
+    # ==================== Knowledge management ====================
+
+    def add(self, source: str) -> None:
+        if os.path.isfile(source):
+            self._load_file(source)
+        elif os.path.isdir(source):
+            self._load_sources([source])
+
+    def add_text(self, text: str) -> None:
+        chunks = self.splitter.split(text)
+        if not chunks:
+            return
+        vectors = self.embedding.embed(chunks, batch_size=self.config.embedding.batch_size)
+        if isinstance(vectors[0], float):
+            vectors = [vectors]
+        if len(vectors) != len(chunks):
+            raise ValueError(
+                f"Embedding count mismatch: {len(chunks)} chunks but got {len(vectors)} vectors"
+            )
+        self.vectorstore.add(chunks, vectors)
+
+    # ==================== Internal ====================
+
+    def _do_rag_call(self, question: str, options: Optional[RAGSendOptions],
+                     mode: str) -> RAGResponse:
+        opts = options or RAGSendOptions()
+        sources, rewritten = self._prepare_retrieval(question, opts)
+        augmented = self._build_augmented_prompt(question, sources)
+
+        self._chat._history = list(self._history)
+        chat_resp = self._chat.send(augmented, opts.send_options)
+
+        content = str(chat_resp)
+        self._update_history(question, content)
+        self._last_sources = sources
+
+        return RAGResponse(
+            content,
+            sources=sources,
+            usage=chat_resp.usage,
+            model=chat_resp.model,
+            rewritten_query=rewritten,
+            finish_reason=chat_resp.finish_reason,
+            raw=chat_resp.raw,
+        )
+
+    async def _aio_do_rag_call(self, question: str, options: Optional[RAGSendOptions],
+                                mode: str) -> RAGResponse:
+        opts = options or RAGSendOptions()
+        sources, rewritten = self._prepare_retrieval(question, opts)
+        augmented = self._build_augmented_prompt(question, sources)
+
+        self._chat._history = list(self._history)
+        chat_resp = await self._chat.aio_send(augmented, opts.send_options)
+
+        content = str(chat_resp)
+        self._update_history(question, content)
+        self._last_sources = sources
+
+        return RAGResponse(
+            content,
+            sources=sources,
+            usage=chat_resp.usage,
+            model=chat_resp.model,
+            rewritten_query=rewritten,
+            finish_reason=chat_resp.finish_reason,
+            raw=chat_resp.raw,
+        )
+
+    def _prepare_retrieval(self, question: str,
+                           opts: RAGSendOptions) -> tuple:
+        """Returns (sources, rewritten_query_or_none)."""
+        rewritten = None
+        search_query = question
+
+        should_rewrite = opts.query_rewrite if opts.query_rewrite is not None else self.config.history.query_rewrite
+        if should_rewrite and self._history:
+            rewritten = self._rewrite_query(question)
+            search_query = rewritten
+            logger.debug("Query rewritten: %s → %s", question, rewritten)
+
+        sources = []
+        if opts.retrieve:
+            k = opts.top_k or self.top_k
+            sources = self.retrieve(search_query, k)
+
+        return sources, rewritten
+
+    def _rewrite_query(self, question: str) -> str:
+        """Use LLM to rewrite the question based on conversation history."""
+        from nb_llm.core.chat import Chat
+
+        rewrite_model = self.config.history.query_rewrite_model or self.config.model
+        rewriter = Chat(ChatConfig(
+            model=rewrite_model,
+            api_key=self.config.api_key,
+            base_url=self.config.base_url,
+            system=self.REWRITE_SYSTEM,
+        ))
+
+        history_text = '\n'.join(
+            f"{msg['role']}: {msg['content']}" for msg in self._history[-6:]
+        )
+        rewrite_prompt = f"Conversation history:\n{history_text}\n\nLatest question: {question}"
+        result = rewriter.ask(rewrite_prompt)
+        return str(result).strip()
+
+    def _build_augmented_prompt(self, question: str,
+                                sources: List[SourceInfo]) -> str:
+        if not sources:
+            return question
+
+        context_parts = [f"[{i+1}] {src.chunk}" for i, src in enumerate(sources)]
+        context = '\n\n'.join(context_parts)
+        return f"Reference materials:\n{context}\n\nUser question: {question}"
+
+    def _update_history(self, original_question: str, answer: str) -> None:
+        """Update conversation history (Level 1: clean mode stores original question only)."""
+        if self.config.history.mode == 'clean':
+            self._history.append({"role": "user", "content": original_question})
+        else:
+            pass  # 'full' mode would store the augmented prompt; not recommended
+
+        self._history.append({"role": "assistant", "content": answer})
+
+        max_turns = self.config.history.max_turns
+        if max_turns > 0 and len(self._history) > max_turns * 2:
+            self._history = self._history[-(max_turns * 2):]
 
     def _load_sources(self, sources: List[str]) -> None:
         for source in sources:
@@ -7090,7 +7772,7 @@ class RAG:
             return
 
         logger.debug("Loading file: %s → %d chunks", path, len(chunks))
-        vectors = self.embedding.embed(chunks, batch_size=self.config.embedding_batch_size)
+        vectors = self.embedding.embed(chunks, batch_size=self.config.embedding.batch_size)
         if isinstance(vectors[0], float):
             vectors = [vectors]
 
@@ -7104,69 +7786,147 @@ class RAG:
         metadata = [{'file': path, 'chunk_index': start_idx + i} for i in range(len(chunks))]
         self.vectorstore.add(chunks, vectors, metadata)
 
-    def retrieve(self, query: str,
-                 top_k: Optional[int] = None) -> List[SourceInfo]:
-        k = top_k or self.top_k
-        logger.debug("Retrieving query: %.100s..., top_k=%d", query, k)
-        query_vec = self.embedding.embed(query)
-        results = self.vectorstore.search(query_vec, k)
-
-        sources = []
-        for chunk_text, score, meta in results:
-            sources.append(SourceInfo(
-                file=meta.get('file', ''),
-                chunk=chunk_text,
-                score=score,
-            ))
-        if sources:
-            lines = [f"Retrieved {len(sources)} results:"]
-            for i, src in enumerate(sources):
-                preview = src.chunk[:100].replace('\n', ' ')
-                lines.append(f"  [{i+1}] (similarity {src.score:.4f}) {preview}...")
-            logger.debug("\n".join(lines))
-        else:
-            logger.debug("Retrieved 0 results")
-        return sources
-
-    def chat(self, prompt: str,
-             options: Optional[SendOptions] = None) -> ChatResponse:
-        sources = self.retrieve(prompt)
-        context_parts = []
-        for i, src in enumerate(sources):
-            context_parts.append(f"[{i+1}] {src.chunk}")
-        context = '\n\n'.join(context_parts)
-
-        augmented_prompt = f"Reference materials:\n{context}\n\nUser question: {prompt}"
-        logger.debug("Augmented prompt:\n%s", augmented_prompt)
-        resp = self._chat.ask(augmented_prompt, options)
-        resp.sources = sources
-        return resp
-
-    def add(self, source: str) -> None:
-        if os.path.isfile(source):
-            self._load_file(source)
-        elif os.path.isdir(source):
-            self._load_sources([source])
-
-    def add_text(self, text: str) -> None:
-        chunks = self.splitter.split(text)
-        if not chunks:
-            return
-        vectors = self.embedding.embed(chunks, batch_size=self.config.embedding_batch_size)
-        if isinstance(vectors[0], float):
-            vectors = [vectors]
-        if len(vectors) != len(chunks):
-            raise ValueError(
-                f"Embedding count mismatch: {len(chunks)} chunks but got {len(vectors)} vectors"
-            )
-        self.vectorstore.add(chunks, vectors)
-
     def __repr__(self):
         return f"RAG(docs={len(self.vectorstore)}, top_k={self.top_k})"
 
 `````
 
 --- **end of file: nb_llm/rag/rag.py** (project: nb_llm) --- 
+
+---
+
+
+--- **start of file: nb_llm/rag/reranker.py** (project: nb_llm) --- 
+
+`````python
+"""Reranker: precision re-ranking using cross-encoder models via /rerank API"""
+from __future__ import annotations
+
+import json
+import logging
+import time
+from typing import List, Optional, Tuple
+
+from nb_llm.loggers import logger_httpx_debug_ellipsis, _truncate_for_log
+
+try:
+    import httpx
+except ImportError:
+    httpx = None
+
+logger = logging.getLogger('nb_llm.rerank')
+
+
+class Reranker:
+    """Call /rerank API (SiliconFlow / Jina / Cohere compatible) to re-rank documents.
+
+    Usage::
+
+        reranker = Reranker(model="BAAI/bge-reranker-v2-m3", api_key="...", base_url="...")
+        results = reranker.rerank("user query", ["doc1", "doc2", "doc3"], top_n=3)
+        # results: [(index, score, text), ...]  sorted by score descending
+    """
+
+    def __init__(self, model: str, api_key: str = '',
+                 base_url: str = 'https://api.siliconflow.cn/v1') -> None:
+        self.model = model
+        self.api_key = api_key
+        self.base_url = base_url.rstrip('/')
+
+    def rerank(self, query: str, documents: List[str],
+               top_n: Optional[int] = None) -> List[Tuple[int, float, str]]:
+        """Rerank documents by relevance to query.
+
+        Returns list of (original_index, relevance_score, document_text) sorted by score desc.
+        """
+        if not documents:
+            return []
+
+        url = f"{self.base_url}/rerank"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.api_key}',
+        }
+        body = {
+            'model': self.model,
+            'query': query,
+            'documents': documents,
+            'return_documents': True,
+        }
+        if top_n is not None:
+            body['top_n'] = top_n
+
+        logger.debug("Rerank request → %s, query=%.80s..., %d docs, top_n=%s",
+                      self.model, query, len(documents), top_n)
+        body_str = json.dumps(body, ensure_ascii=False)
+        logger_httpx_debug_ellipsis.info("REQUEST: HTTP POST %s  model=%s body_len=%d",
+                                  url, body.get('model', ''), len(body_str))
+        logger_httpx_debug_ellipsis.debug("REQUEST body:\n%s",
+                                  json.dumps(_truncate_for_log(body), ensure_ascii=False, indent=2))
+
+        t0 = time.time()
+        try:
+            if httpx is None:
+                raise ImportError("Reranker requires httpx: pip install httpx")
+            with httpx.Client(timeout=60.0) as client:
+                resp = client.post(url, json=body, headers=headers)
+
+            resp_text = resp.text
+            resp_data = resp.json() if resp.status_code == 200 else {}
+            resp_elapsed = time.time() - t0
+            logger_httpx_debug_ellipsis.info("RESPONSE: HTTP POST %d ← %s  model=%s (%.2fs)  req_len=%d resp_len=%d",
+                                      resp.status_code, url, resp_data.get('model', body.get('model', '')),
+                                      resp_elapsed, len(body_str), len(resp_text))
+            logger_httpx_debug_ellipsis.debug("RESPONSE body:\n%s",
+                                      json.dumps(_truncate_for_log(resp_data),
+                                                  ensure_ascii=False, indent=2))
+
+            if resp.status_code != 200:
+                logger.error("Rerank API error (%d): %s", resp.status_code, resp_text[:200])
+                return [(i, 0.0, doc) for i, doc in enumerate(documents)]
+
+            data = resp.json()
+        except Exception as e:
+            logger.error("Rerank failed: %s", e)
+            return [(i, 0.0, doc) for i, doc in enumerate(documents)]
+
+        elapsed = time.time() - t0
+
+        raw_results = data.get('results', None)
+        if raw_results is None or not isinstance(raw_results, list):
+            logger.error("Rerank API returned invalid format (missing 'results'): %s",
+                          str(data)[:300])
+            return [(i, 0.0, doc) for i, doc in enumerate(documents)]
+
+        if len(raw_results) == 0:
+            logger.warning("Rerank API returned 0 results for %d documents", len(documents))
+            return [(i, 0.0, doc) for i, doc in enumerate(documents)]
+
+        results = []
+        for item in raw_results:
+            idx = item.get('index', -1)
+            if idx < 0 or idx >= len(documents):
+                logger.warning("Rerank returned out-of-range index %d (total docs=%d), skipping",
+                                idx, len(documents))
+                continue
+            score = item.get('relevance_score', 0.0)
+            text = item.get('document', {}).get('text', documents[idx])
+            results.append((idx, score, text))
+
+        if top_n is not None and len(results) < top_n:
+            logger.warning("Rerank returned %d results, expected top_n=%d",
+                            len(results), top_n)
+
+        results.sort(key=lambda x: x[1], reverse=True)
+
+        logger.debug("Rerank done (%.2fs): %d → %d results, top score=%.4f",
+                      elapsed, len(documents), len(results),
+                      results[0][1] if results else 0.0)
+        return results
+
+`````
+
+--- **end of file: nb_llm/rag/reranker.py** (project: nb_llm) --- 
 
 ---
 

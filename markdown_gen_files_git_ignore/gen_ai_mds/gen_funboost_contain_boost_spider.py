@@ -12,6 +12,7 @@ project_summary = """
 
 - `funboost` 是 Python 全功能分布式函数调度框架。
 - `funboost.faas` 是 funboost 的战略级核武器，使函数调度框架产生架构质变：从 Worker 到 Service（一行代码即可为 FastAPI/Flask/Django 生成标准 Web 接口）。
+- `boost_spider` 是基于 funboost 的爬虫增强包，包含 `RequestClient`, `SpiderResponse`, `DatasetSink`，用于实现无拘无束的超高光速并发爬虫。
 
 - 🚨 **AI 必读：本文档中包含一个专门为你准备的目录 `funboost/md_for_ai/`**  
   该目录下的文件对你理解和使用 funboost 至关重要，请优先阅读并按其中规则执行。
@@ -71,7 +72,11 @@ project_summary = """
 """
 
 
+boost_spider_summary = """
+- **`boost_spider` = `funboost` 的超跑引擎 + 一套为爬虫量身打造的瑞士军刀。所有仿scrapy api爬虫框架都还是处在变花样造一辆马车**
 
+- `boost_spider` 是增加了3个爬虫常用类，RequestClient  和  SpiderResponse  和 DatasetSink, 由funboost 驱动调度和并发。
+"""
 
 
 ai_md_codes = AiMdGenerator(
@@ -113,6 +118,16 @@ funboost_most_core_source_code_file_list=[
     .add_project_summary(
         project_summary=project_summary, 
         most_core_source_code_file_list=funboost_most_core_source_code_file_list)
+    .add_project_summary(
+        project_summary=boost_spider_summary, 
+        project_root=r"D:\codes\boost_spider",
+        most_core_source_code_file_list=[
+           "boost_spider/__init__.py",
+           "boost_spider/http/request_client.py",
+           "boost_spider/sink/dataset_sink.py",
+         
+        
+    ])
     # .merge_from_dir(
     #     relative_dir_name='examples',
     #     use_gitignore=True,
@@ -160,8 +175,27 @@ funboost_most_core_source_code_file_list=[
         excluded_file_name_list=[],
         include_ast_metadata=False,
     )
-
-
+    .merge_from_dir(
+        project_root=r"D:\codes\boost_spider",
+        relative_dir_name="boost_spider",
+        use_gitignore=True,
+        as_title="boost_spider codes",
+        # 只包含 .py 和 .md 文件
+        should_include_suffixes=[".py", ".md", ".html"],
+        # 排除 __pycache__ 目录和特定的测试文件
+        excluded_dir_name_list=[],
+        include_ast_metadata=False,
+    )
+    #  .merge_from_dir(
+    #     project_root=r"D:\codes\boost_spider",
+    #     relative_dir_name="demo_crawler",
+    #     use_gitignore=True,
+    #     as_title="demo_crawler  4 kind codes",
+    #     # 只包含 .py 和 .md 文件
+    #     should_include_suffixes=[".py", ".md", ".html"],
+    #     # 排除 __pycache__ 目录和特定的测试文件
+    #     excluded_dir_name_list=[],
+    # )
     .get_textfile_info(is_show_info=True)
 )
 
@@ -175,7 +209,15 @@ funboost_most_core_source_code_file_list=[
         project_root=r"D:\codes\funboost",
         most_core_source_code_file_list=funboost_most_core_source_code_file_list
     )
-
+    .add_project_summary(
+        project_summary=boost_spider_summary, 
+        project_root=r"D:\codes\boost_spider",
+        most_core_source_code_file_list=[
+           "boost_spider/__init__.py",
+           "boost_spider/http/request_client.py",
+           "boost_spider/sink/dataset_sink.py",
+        
+    ])
     .append_text( # 添加 funboost 教程 标题大全
         f'''
 
@@ -214,7 +256,11 @@ funboost_most_core_source_code_file_list=[
             # 'source/articles/c16.md'
         ],
     )
-
+    .merge_from_files(
+        relative_file_name_list=["README.md"],
+        project_root=r"D:\codes\boost_spider",
+        as_title="boost_spider readme",
+    )
     .get_textfile_info(is_show_info=True)
 )
 

@@ -1,3 +1,17 @@
 {
-    "python.languageServer": "None"
+        "python.defaultInterpreterPath": "D:/ProgramData/Miniconda3/envs/py312/python.exe",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": [],
+    "terminal.integrated.profiles.windows": {
+        "PowerShell (conda py312)": {
+            "source": "PowerShell",
+            "args": [
+                "-ExecutionPolicy", "ByPass",
+                "-NoExit",
+                "-Command", "& 'D:\\ProgramData\\miniconda3\\shell\\condabin\\conda-hook.ps1'; conda activate py312"
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell (conda py312)"
 }
