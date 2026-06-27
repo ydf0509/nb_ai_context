@@ -1,30 +1,30 @@
 ﻿﻿
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
+> **此文档生成时间**：2026-05-11 16:22:15
 > **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
-> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+> **文档性质**：这**不是**一份普通的面向人类的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并，请开启"代码解析器"的心智模式。
+
 
 ## 🧠 AI 认知与解析准则
 
-这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请严格遵循以下自适应阅读策略：
 
-### 1. 信息的层级与互补
-*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
-*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
-*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+### 1. 信息的层级与冲突处理
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果生成器省略了对应源码，请完全信任文档逻辑，以此为基础推理。
+*   **源码即事实**：遇到 `.py` 源码或 AST 元数据（类/函数签名）时，以此作为实现细节、类型约束和语法准确性的**最终事实标准**。
+*   **冲突处理**：若文档与源码/AST 存在矛盾，请以源码为准，并在回答中向用户简要指出该差异。
+*   **测试代码的忽略**：为优化 Token 长度，集成/单元测试及非核心 API 源码通常被隐藏。**绝对不要**因此推断或提醒用户“项目缺乏测试”或“代码未实现”。
 
 ### 2. 文件边界与架构感知
-*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
-    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
-*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
-*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+*   **上下文定界**：工具使用 `--- **start of file: <路径>** ---` 等标记严格界定文件。**在你的回复中，请使用标准 Markdown 代码块，切勿模仿使用此类系统定界符。**
+*   **结构可视化**：利用“文件树 (File Tree)”章节建立项目的宏观架构认知。
+*   **依赖关系**：利用“文件依赖分析”章节理清模块间的 import 数据流向。
 
-### 3. 代码生成与交互
-*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
-*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
-*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
-    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
-    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+### 3. 严格的代码生成与交互边界
+*   **事实锚定 (Fact Anchoring)**：你生成的代码必须严格锚定在本文档范围内！API 调用必须基于**源码中的 AST 签名**或**文档中的演示示例**。
+*   **严禁臆造 (Zero Fabrication)**：绝对禁止编造文档中未定义或未提及的类名、方法名或参数。
+*   **越界拒绝**：如果用户询问的功能在当前提供的上下文中完全不存在，请明确告知“当前上下文中未包含该信息”，而不是试图凭空生成。
 
 ---
 # markdown content namespace: nb_cmd project summary 
@@ -2708,7 +2708,7 @@ class GitRemote(NbCmd):
 ---
 
 
-## nb_cmd (relative dir: `examples`)  Included Files (total: 24 files)
+## nb_cmd (relative dir: `examples`)  Included Files (total: 20 files)
 
 
 - `examples/bigone_cmd.py`
@@ -6236,10 +6236,6 @@ Git 命令行工具 — nb_cmd 实现。
     python git_nb_cmd.py --verbose branch create feature/login --from-branch develop
     python git_nb_cmd.py -C ~/my-config config user name "John Doe"
     python git_nb_cmd.py --verbose config user email
-
-D:/ProgramData/Miniconda3/envs/py39b/python.exe D:\codes/nb_cmd/examples/git_demos/git_nb_cmd.py --tui
-
-
 """
 import sys
 import os
@@ -6322,7 +6318,7 @@ class UserConfigCmd(NbCmd):
     nbctx: GitCtx
 
     def name(self, value: Annotated[str, '用户名 (不传则查询)'] = None):
-        """获取/设置用户名 — 深层子命令，（通过 self.nbctx 访问全局参数）"""
+        """获取/设置用户名 — 深层子命令，通过 self.nbctx 访问全局参数"""
         work_path = self.nbctx.path
         if value:
             print(f'git -C {work_path} config user.name "{value}"')
@@ -6334,7 +6330,7 @@ class UserConfigCmd(NbCmd):
             print(f'  (详细模式: 工作目录={work_path})')
 
     def email(self, value: Annotated[str, '用户邮箱 (不传则查询)'] = None):
-        """获取/设置用户邮箱 — 深层子命令，（通过 self.nbctx 访问全局参数，传入 value 则设置，不传入则查询）"""
+        """获取/设置用户邮箱 — 深层子命令，通过 self.nbctx 访问全局参数"""
         work_path = self.nbctx.path
         if value:
             print(f'git -C {work_path} config user.email "{value}"')
