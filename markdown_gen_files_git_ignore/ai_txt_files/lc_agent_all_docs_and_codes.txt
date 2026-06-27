@@ -1,59 +1,59 @@
 ﻿﻿
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
+> **此文档生成时间**：2026-06-14 21:14:30
 > **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
-> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+> **文档性质**：这**不是**一份普通的面向人类的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并，请开启"代码解析器"的心智模式。
+
 
 ## 🧠 AI 认知与解析准则
 
-这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请严格遵循以下自适应阅读策略：
 
-### 1. 信息的层级与互补
-*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
-*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
-*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+### 1. 信息的层级与冲突处理
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果生成器省略了对应源码，请完全信任文档逻辑，以此为基础推理。
+*   **源码即事实**：遇到 `.py` 源码或 AST 元数据（类/函数签名）时，以此作为实现细节、类型约束和语法准确性的**最终事实标准**。
+*   **冲突处理**：若文档与源码/AST 存在矛盾，请以源码为准，并在回答中向用户简要指出该差异。
+*   **测试代码的忽略**：为优化 Token 长度，集成/单元测试及非核心 API 源码通常被隐藏。**绝对不要**因此推断或提醒用户“项目缺乏测试”或“代码未实现”。
 
 ### 2. 文件边界与架构感知
-*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
-    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
-*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
-*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+*   **上下文定界**：工具使用 `--- **start of file: <路径>** ---` 等标记严格界定文件。**在你的回复中，请使用标准 Markdown 代码块，切勿模仿使用此类系统定界符。**
+*   **结构可视化**：利用“文件树 (File Tree)”章节建立项目的宏观架构认知。
+*   **依赖关系**：利用“文件依赖分析”章节理清模块间的 import 数据流向。
 
-### 3. 代码生成与交互
-*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
-*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
-*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
-    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
-    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+### 3. 严格的代码生成与交互边界
+*   **事实锚定 (Fact Anchoring)**：你生成的代码必须严格锚定在本文档范围内！API 调用必须基于**源码中的 AST 签名**或**文档中的演示示例**。
+*   **严禁臆造 (Zero Fabrication)**：绝对禁止编造文档中未定义或未提及的类名、方法名或参数。
+*   **越界拒绝**：如果用户询问的功能在当前提供的上下文中完全不存在，请明确告知“当前上下文中未包含该信息”，而不是试图凭空生成。
 
 ---
-# markdown content namespace: lc-agent project summary 
+# markdown content namespace: lc_agent project summary 
 
 
 
-- `lc-agent` 是基于 LangChain / LangGraph 的 AI Agent 应用框架。
-- 提供 WebSocket 流式对话、工具调用、MCP 集成、Skill 系统、多 Agent 管理等能力。
-- 前端使用 Vue 3 + Element Plus + Vite 构建，后端使用 FastAPI + LangGraph。
-- `lc-agent-bfzs` 是基于 lc-agent 框架的自定义 Agent 应用实例。
-
-核心模块:
-  - `lc_agent/app.py` — 应用入口 LcAgentApp
-  - `lc_agent/core/engine.py` — AgentEngine 核心引擎
-  - `lc_agent/server/websocket.py` — WebSocket 流式对话
-  - `lc_agent/mcp/` — MCP 服务管理
-  - `lc_agent/skills/` — Skill 扫描与执行
-  - `lc_agent/tools/` — 工具注册与调用
-  - `frontend/src/` — Vue 3 前端
-
-
-## 📋 lc-agent most core source files metadata (Entry Points)
+- `lc-agent` 是基于 LangChain / LangGraph 的 AI Agent Web 应用框架。
+- 提供 WebSocket 流式对话、工具调用、MCP 集成、Skill 系统、多 Agent Preset 管理等能力。
+- 前端使用 Vue 3 + Element Plus + Vite，后端使用 FastAPI + LangGraph。
+- 核心模块：
+  - `lc_agent/app.py`: LcAgentApp — 应用编排入口，创建引擎、注册路由、启动服务
+  - `lc_agent/core/engine.py`: AgentEngine — 核心引擎，管理 Agent 实例、Preset、工具组
+  - `lc_agent/server/websocket.py`: ChatWebSocketHandler — WebSocket 流式事件转发
+  - `lc_agent/mcp/manager.py`: McpManager — MCP 服务连接管理
+  - `lc_agent/tools/registry.py`: ToolRegistry — 工具注册表
+  - `lc_agent/skills/scanner.py`: SkillScanner — Skill 扫描与匹配
+  - `lc_agent/db/`: SQLAlchemy 异步数据持久化
+  - `frontend/src/`: Vue 3 前端界面
+- 用户用法：`from lc_agent import LcAgentApp, load_config`
 
 
-以下是项目 lc-agent 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
+## 📋 lc_agent most core source files metadata (Entry Points)
+
+
+以下是项目 lc_agent 最核心的入口文件的结构化元数据，帮助快速理解项目架构：
 
 
 
-### the project lc-agent most core source code files as follows: 
+### the project lc_agent most core source code files as follows: 
 - `lc_agent/__init__.py`
 - `lc_agent/app.py`
 - `lc_agent/core/engine.py`
@@ -88,7 +88,9 @@ lc_agent — LangChain Agent framework with built-in Web UI.
 #### 📦 Imports
 
 - `from __future__ import annotations`
+- `from contextlib import asynccontextmanager`
 - `import uvicorn`
+- `from fastapi import FastAPI`
 - `from fastapi import WebSocket`
 - `from fastapi import WebSocketDisconnect`
 - `from lc_agent.core.engine import AgentEngine`
@@ -99,20 +101,20 @@ lc_agent — LangChain Agent framework with built-in Web UI.
 - `from lc_agent.skills.scanner import SkillScanner`
 - `from lc_agent.mcp.manager import McpManager`
 - `import asyncio`
+- `import asyncio`
 - `from lc_agent.db.engine import get_async_session`
 - `from lc_agent.db.models import AgentPresetDB`
 - `from lc_agent.core.models import AgentPreset`
 - `from sqlalchemy import select`
 - `from lc_agent.core.models import AgentPreset`
 - `from lc_agent import __version__`
-- `import asyncio`
 - `from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver`
 - `import aiosqlite`
 
 #### 🏛️ Classes (1)
 
 ##### 📌 `class LcAgentApp`
-*Line: 13*
+*Line: 15*
 
 **Docstring:**
 `````
@@ -157,8 +159,9 @@ Main application orchestrator — creates engine, server, and runs.
 - `from lc_agent.core.models import AgentPreset`
 - `from lc_agent.core.models import ModelInfo`
 - `from lc_agent.tools.registry import ToolRegistry`
-- `from langgraph.prebuilt import create_react_agent`
-- `from langchain_openai import ChatOpenAI`
+- `from langchain.agents import create_agent`
+- `from langchain.chat_models import init_chat_model`
+- `from lc_agent.core.chat_model import ChatOpenAIReasoning`
 
 #### 🏛️ Classes (1)
 
@@ -167,7 +170,7 @@ Main application orchestrator — creates engine, server, and runs.
 
 **Docstring:**
 `````
-Core agent engine wrapping LangChain create_agent with middleware support.
+Core agent engine wrapping langchain.agents.create_agent with middleware support.
 `````
 
 **🔧 Constructor (`__init__`):**
@@ -220,6 +223,8 @@ Core agent engine wrapping LangChain create_agent with middleware support.
 - `from fastapi import WebSocket`
 - `from lc_agent.core.engine import AgentEngine`
 - `import time`
+- `from lc_agent.db.engine import get_async_session`
+- `from lc_agent.db.repository import SessionRepository`
 - `from lc_agent.db.engine import get_async_session`
 - `from lc_agent.db.repository import SessionRepository`
 - `from langgraph.types import Command`
@@ -420,7 +425,7 @@ Central registry for all tools, supporting groups and filtering.
 
 
 
-## 🔗 lc-agent Some File Dependencies Analysis
+## 🔗 lc_agent Some File Dependencies Analysis
 
 以下是项目文件之间的依赖关系，帮助 AI 理解代码结构：
 
@@ -501,8 +506,8 @@ Core Files (imported by other files, sorted by import count):
 
 - `aiosqlite`
 - `fastapi`
+- `langchain`
 - `langchain_core`
-- `langchain_openai`
 - `langgraph`
 - `mcp`
 - `sqlalchemy`
@@ -511,18 +516,15 @@ Core Files (imported by other files, sorted by import count):
 
 
 ---
-# markdown content namespace: lc-agent 项目文档 
+# markdown content namespace: lc_agent Project Root Dir Some Files 
 
 
-## lc-agent File Tree (relative dir: `.`)
+## lc_agent File Tree (relative dir: `.`)
 
 
 `````
 
 ├── README.md
-├── docs
-│   └── my_docs
-│       └── task.md
 └── pyproject.toml
 
 `````
@@ -530,20 +532,18 @@ Core Files (imported by other files, sorted by import count):
 ---
 
 
-## lc-agent (relative dir: `.`)  Included Files (total: 3 files)
+## lc_agent (relative dir: `.`)  Included Files (total: 2 files)
 
 
 - `README.md`
 
 - `pyproject.toml`
 
-- `docs/my_docs/task.md`
-
 
 ---
 
 
---- **start of file: README.md** (project: lc-agent) --- 
+--- **start of file: README.md** (project: lc_agent) --- 
 
 `````markdown
 # lc-agent
@@ -690,11 +690,22 @@ npm run build    # 构建到 lc_agent/web/dist/
 
 | 层级 | 技术 |
 |------|------|
-| AI 引擎 | LangGraph `create_react_agent` |
+| AI 引擎 | LangChain `create_agent` + `init_chat_model` (多提供商) |
+| LLM 客户端 | `ChatOpenAIReasoning` — 自动提取 reasoning_content（兼容所有供应商） |
 | 后端 | FastAPI + SQLModel + asyncio |
 | 前端 | Vue 3 + TypeScript + Element Plus + Vite |
 | 数据库 | SQLite (aiosqlite) |
 | 通信 | WebSocket (流式) + REST API |
+
+## Reasoning / 思考过程显示
+
+框架使用自定义的 `ChatOpenAIReasoning` 类（继承 `ChatOpenAI`），自动从流式响应中提取 `reasoning_content` 字段，支持任何返回该字段的模型：
+
+- DeepSeek 系列（通过 DeepSeek 官方 / 字节方舟 / 阿里百炼等）
+- GLM 系列（复杂任务时自动触发思考）
+- 任何其他返回 `reasoning_content` 或 `reasoning` 的供应商
+
+无需为每个供应商 import 不同的 Chat Model 类。
 
 ## License
 
@@ -702,12 +713,12 @@ MIT
 
 `````
 
---- **end of file: README.md** (project: lc-agent) --- 
+--- **end of file: README.md** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: pyproject.toml** (project: lc-agent) --- 
+--- **start of file: pyproject.toml** (project: lc_agent) --- 
 
 `````text
 [project]
@@ -759,102 +770,14 @@ line-length = 120
 
 `````
 
---- **end of file: pyproject.toml** (project: lc-agent) --- 
+--- **end of file: pyproject.toml** (project: lc_agent) --- 
 
 ---
 
-
---- **start of file: docs/my_docs/task.md** (project: lc-agent) --- 
-
-`````markdown
-
-# 1. 开发一个 lc_agent 的框架
-
-使用langchain  langgraph deepagents 框架技术开发，
+# markdown content namespace: lc_agent Python 后端源码 
 
 
-功能要类似nb_agent框架， 但是不使用tui终端，而是使用web界面。web采用vue + element-ui-plus 框架。
-
-lc_agent 定位是一个框架， 然后用户可以导入lc_agent 框架开发，开发自己的具体的agent应用。可以在页面创建智能体。
-
-后端采用fastapi + sqlmodel ，要使用asyncio生态编程
-
-# 2. nb_agent 项目文件夹
-ai先必须熟悉nb_agent框架，以及nb_agent_bfzs项目和nb_agent之间的关系。
-
-nb_agent 项目文件夹：
-"D:\codes\nb_agent"   
-
-nb_agent_bfzs(基于nb_agent框架开发的自定义项目)项目文件夹:
-"D:\codes\nb_agent_bfzs"
-
-我是让你参考nb_agent，内让你照抄， 尽量使用langchain全家桶的2026年最新用法，不用学nb_agent那样都自己实现。
-
-# 3.AI 写langchain 家族框架代码时候的规则
-
-## 3.1 写 langchain / langgraph / deepagents 代码时，禁止使用ai预训练的过时的语法写法。
-  要使用最新的框架语法。 写代码时候要用 docs-langchain 和 reference-langchain 这个两个langchain官方文档的mcp工具查询框架最新用法。
-
-
-## 3.2 如果有必要，要用 nb_rag mcp查询 langchain / langgraph / deepagents  用法
-  如果官方的文档，不够用，ai要调用 nbrag mcp的一些列工具来查询用法，要多次多轮深入调用nbrag的一系列工具，不要浅尝辄止，没检索足够足够的资料就开始回答。
-
-  nbrag已向量化langchain相关源码和教程到知识库 `langchain_ai_codes_and_docs`
-
-  langchain_ai_codes_and_docs 知识库包含如下文件件的内容
-  ```python
-  r'D:\codes\docs\src',
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_anthropic",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_classic",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_community",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_core",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_deepseek",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_google_genai",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_openai",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_protocol",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_text_splitters",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langdetect",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langgraph",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langgraph_sdk",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langsmith",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain",
-       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\deepagents",
-  ```
-
-## 3.3 ai可以从 `D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\` 目录下深入 langchain 相关的源码，包含函数入参和注释和用法。
-
-ai可以从 `D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\` 目录下深入 langchain 相关的源码，包含函数入参和注释和用法。
-
-
-# 4 web界面
-
-web界面要需要非常炫酷黑暗风， 要使用vue + element-ui-plus 框架。
-采用左边菜单栏，中间内容区的方式，右边显示现在nbagent tui那些模型 tools 和 mcp skill，可以热切换屏蔽和激活。
-
-不要照抄 nb_agent tui的布局和相似，因为python开发的tui有固定的局限性，web要按照最佳实践来设计和开发。
-
-# 5 所有 tools 和 mcp 和 skills 都能快速按分组屏蔽
-tools 和 mcp 都要能方便按分组激活和屏蔽
-
-例如skill.md 的 希望题头元数据如果加上 ,方便快速激活或者屏蔽一组技能
-metadata
-    group: "技能组1"$
-
-# 6 关于智能体
-
-智能体就是langchian的 complinedgraph类型， 用户可以在python代码在创建多个agent，页面要能显示这些智能体。
-
-并且支持用户在页面创建智能体， 就像nbaegnt那样的是 promote + tools + mcp + skills 的组合。
-`````
-
---- **end of file: docs/my_docs/task.md** (project: lc-agent) --- 
-
----
-
-# markdown content namespace: lc-agent Python 后端源码 
-
-
-## lc-agent File Tree (relative dir: `lc_agent`)
+## lc_agent File Tree (relative dir: `lc_agent`)
 
 
 `````
@@ -869,6 +792,7 @@ metadata
     │   └── schema.py
     ├── core
     │   ├── __init__.py
+    │   ├── chat_model.py
     │   ├── engine.py
     │   └── models.py
     ├── db
@@ -898,17 +822,19 @@ metadata
     ├── skills
     │   ├── __init__.py
     │   └── scanner.py
-    └── tools
-        ├── __init__.py
-        ├── builtin.py
-        └── registry.py
+    ├── tools
+    │   ├── __init__.py
+    │   ├── builtin.py
+    │   └── registry.py
+    └── utils
+        └── loggers.py
 
 `````
 
 ---
 
 
-## lc-agent (relative dir: `lc_agent`)  Included Files (total: 34 files)
+## lc_agent (relative dir: `lc_agent`)  Included Files (total: 36 files)
 
 
 - `lc_agent/app.py`
@@ -924,6 +850,8 @@ metadata
 - `lc_agent/config/schema.py`
 
 - `lc_agent/config/__init__.py`
+
+- `lc_agent/core/chat_model.py`
 
 - `lc_agent/core/engine.py`
 
@@ -963,6 +891,8 @@ metadata
 
 - `lc_agent/tools/__init__.py`
 
+- `lc_agent/utils/loggers.py`
+
 - `lc_agent/server/routes/agents.py`
 
 - `lc_agent/server/routes/health.py`
@@ -983,14 +913,80 @@ metadata
 ---
 
 
---- **start of file: lc_agent/app.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/app.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/app.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from contextlib import asynccontextmanager`
+- `import uvicorn`
+- `from fastapi import FastAPI`
+- `from fastapi import WebSocket`
+- `from fastapi import WebSocketDisconnect`
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.db.engine import init_db`
+- `from lc_agent.server.app import create_app`
+- `from lc_agent.server.app import mount_static_files`
+- `from lc_agent.server.websocket import ChatWebSocketHandler`
+- `from lc_agent.skills.scanner import SkillScanner`
+- `from lc_agent.mcp.manager import McpManager`
+- `import asyncio`
+- `import asyncio`
+- `from lc_agent.db.engine import get_async_session`
+- `from lc_agent.db.models import AgentPresetDB`
+- `from lc_agent.core.models import AgentPreset`
+- `from sqlalchemy import select`
+- `from lc_agent.core.models import AgentPreset`
+- `from lc_agent import __version__`
+- `from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver`
+- `import aiosqlite`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class LcAgentApp`
+*Line: 15*
+
+**Docstring:**
+`````
+Main application orchestrator — creates engine, server, and runs.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, config: dict, host: str = '127.0.0.1', port: int = 8000)`
+  - **Parameters:**
+    - `self`
+    - `config: dict`
+    - `host: str = '127.0.0.1'`
+    - `port: int = 8000`
+
+**Public Methods (2):**
+- `def add_agent(self, name: str, graph, description: str = '')`
+  - **Docstring:**
+  `````
+  Register a pre-built CompiledStateGraph as a named agent.
+  
+  Args:
+      name: Unique agent identifier
+      graph: A compiled LangGraph (must have ainvoke and astream_events)
+      description: Human-readable description
+  `````
+- `def run(self)`
+  - *Start the server (blocking).*
+
+
+---
 
 `````python
 # lc_agent/app.py
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 import uvicorn
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 from lc_agent.core.engine import AgentEngine
 from lc_agent.db.engine import init_db
@@ -1015,7 +1011,7 @@ class LcAgentApp:
         from lc_agent.mcp.manager import McpManager
         mcp_config = config.get("mcp_servers", {})
         self.mcp_manager = McpManager(mcp_config)
-        self.fastapi_app = create_app(config)
+        self.fastapi_app = create_app(config, lifespan=self._lifespan)
         self.fastapi_app.state.mcp_manager = self.mcp_manager
         self.fastapi_app.state.skill_scanner = self.skill_scanner
         self.engine._skill_scanner = self.skill_scanner
@@ -1025,34 +1021,36 @@ class LcAgentApp:
         self._setup_websocket_route()
         mount_static_files(self.fastapi_app)
 
-        @self.fastapi_app.on_event("startup")
-        async def startup():
-            await init_db(self._db_url)
+    @asynccontextmanager
+    async def _lifespan(self, app: FastAPI):
+        """FastAPI lifespan: startup and shutdown logic."""
+        import asyncio
+
+        await init_db(self._db_url)
+        try:
+            from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+            import aiosqlite
+            conn = await aiosqlite.connect(self._checkpoint_path)
+            saver = AsyncSqliteSaver(conn)
+            await saver.setup()
+            self.engine._checkpointer = saver
+        except Exception as e:
+            print(f"[Warning] Checkpoint saver setup failed, using None: {e}")
+
+        await self._load_presets_from_db()
+
+        async def _connect_mcp_background():
             try:
-                from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
-                import aiosqlite
-                conn = await aiosqlite.connect(self._checkpoint_path)
-                saver = AsyncSqliteSaver(conn)
-                await saver.setup()
-                self.engine._checkpointer = saver
+                await self.mcp_manager.connect_all()
+                connected = [s for s in self.mcp_manager.servers if s.status == "connected"]
+                if connected:
+                    print(f"[MCP] Connected: {[s.name for s in connected]}")
+                    self.engine._mcp_generation += 1
             except Exception as e:
-                print(f"[Warning] Checkpoint saver setup failed, using None: {e}")
+                print(f"[MCP] Background connection error: {e}")
 
-            await self._load_presets_from_db()
-
-            import asyncio
-
-            async def _connect_mcp_background():
-                try:
-                    await self.mcp_manager.connect_all()
-                    connected = [s for s in self.mcp_manager.servers if s.status == "connected"]
-                    if connected:
-                        print(f"[MCP] Connected: {[s.name for s in connected]}")
-                        self.engine._mcp_generation += 1
-                except Exception as e:
-                    print(f"[MCP] Background connection error: {e}")
-
-            asyncio.create_task(_connect_mcp_background())
+        asyncio.create_task(_connect_mcp_background())
+        yield
 
     def _setup_websocket_route(self):
         import asyncio
@@ -1153,6 +1151,7 @@ class LcAgentApp:
         from lc_agent.core.models import AgentPreset
 
         self.engine._agents[name] = graph
+        self.engine._agent_mcp_gen[name] = self.engine._mcp_generation
         preset = AgentPreset(
             id=name,
             name=name,
@@ -1173,12 +1172,29 @@ class LcAgentApp:
 
 `````
 
---- **end of file: lc_agent/app.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/app.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/main.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/main.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/main.py`
+
+#### 📦 Imports
+
+- `import argparse`
+- `from lc_agent.config.loader import load_config`
+- `from lc_agent.app import LcAgentApp`
+
+#### 🔧 Public Functions (1)
+
+- `def main()`
+  - *Line: 5*
+
+
+---
 
 `````python
 # lc_agent/main.py
@@ -1208,12 +1224,31 @@ if __name__ == "__main__":
 
 `````
 
---- **end of file: lc_agent/main.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/main.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/__init__.py`
+
+#### 📝 Module Docstring
+
+`````
+lc_agent — LangChain Agent framework with built-in Web UI.
+`````
+
+#### 📦 Imports
+
+- `from lc_agent.app import LcAgentApp`
+- `from lc_agent.config.loader import load_config`
+- `from lc_agent.tools.registry import ToolRegistry`
+- `from lc_agent.tools.registry import tool`
+
+
+---
 
 `````python
 # lc_agent/__init__.py
@@ -1235,12 +1270,22 @@ __all__ = [
 
 `````
 
---- **end of file: lc_agent/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/__main__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/__main__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/__main__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.main import main`
+
+
+---
 
 `````python
 from lc_agent.main import main
@@ -1250,12 +1295,44 @@ if __name__ == "__main__":
 
 `````
 
---- **end of file: lc_agent/__main__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/__main__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/config/loader.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/config/loader.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/config/loader.py`
+
+#### 📦 Imports
+
+- `import os`
+- `import re`
+- `from pathlib import Path`
+- `from typing import Any`
+- `import commentjson`
+- `from dotenv import load_dotenv`
+
+#### 🔧 Public Functions (4)
+
+- `def substitute_env_vars(data: Any) -> Any`
+  - *Line: 12*
+  - *Recursively replace {env:VAR_NAME} patterns with environment variable values.*
+
+- `def load_config_from_file(path: str) -> dict`
+  - *Line: 36*
+  - *Load a JSONC configuration file and apply env substitution.*
+
+- `def load_config(config_path: str | None = None, dotenv_path: str | None = None) -> dict`
+  - *Line: 48*
+  - *Load configuration with priority: explicit path > ./config.jsonc > ~/.lc_agent/config.jsonc > defaults.*
+
+- `def replacer(m)`
+  - *Line: 22*
+
+
+---
 
 `````python
 import os
@@ -1343,12 +1420,82 @@ def load_config(
 
 `````
 
---- **end of file: lc_agent/config/loader.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/config/loader.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/config/schema.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/config/schema.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/config/schema.py`
+
+#### 📦 Imports
+
+- `from pydantic import BaseModel`
+- `from pydantic import Field`
+
+#### 🏛️ Classes (6)
+
+##### 📌 `class ModelConfig(BaseModel)`
+*Line: 4*
+
+**Class Variables (2):**
+- `id: str`
+- `context_limit: int = 8000`
+
+##### 📌 `class ProviderConfig(BaseModel)`
+*Line: 9*
+
+**Class Variables (3):**
+- `api_key: str = ''`
+- `base_url: str = ''`
+- `models: list[ModelConfig] = Field(default_factory=list)`
+
+##### 📌 `class DatabaseConfig(BaseModel)`
+*Line: 15*
+
+**Class Variables (2):**
+- `url: str = 'sqlite+aiosqlite:///./lc_agent_data.db'`
+- `checkpoint_path: str = './lc_agent_checkpoints.db'`
+
+##### 📌 `class SkillsConfig(BaseModel)`
+*Line: 20*
+
+**Class Variables (1):**
+- `directory: str = './skills'`
+
+##### 📌 `class McpServerConfig(BaseModel)`
+*Line: 24*
+
+**Class Variables (6):**
+- `type: str = 'local'`
+- `command: str | list[str] = ''`
+- `args: list[str] = Field(default_factory=list)`
+- `env: dict[str, str] = Field(default_factory=dict)`
+- `url: str = ''`
+- `enabled: bool = True`
+
+##### 📌 `class AppConfig(BaseModel)`
+*Line: 33*
+
+**Docstring:**
+`````
+Application configuration schema.
+`````
+
+**Class Variables (8):**
+- `provider: dict[str, ProviderConfig | dict] = Field(default_factory=dict)`
+- `agent: dict = Field(default_factory=lambda: {'system_prompt': 'You are a helpful assistant.', 'default_model': '', 'streaming': True})`
+- `mcp: dict = Field(default_factory=dict)`
+- `database: DatabaseConfig = Field(default_factory=DatabaseConfig)`
+- `session: dict = Field(default_factory=lambda: {'db_path': ''})`
+- `ui: dict = Field(default_factory=dict)`
+- `skills: SkillsConfig = Field(default_factory=SkillsConfig)`
+- `mcp_servers: dict[str, McpServerConfig] = Field(default_factory=dict)`
+
+
+---
 
 `````python
 from pydantic import BaseModel, Field
@@ -1401,12 +1548,24 @@ class AppConfig(BaseModel):
 
 `````
 
---- **end of file: lc_agent/config/schema.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/config/schema.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/config/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/config/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/config/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.config.loader import load_config`
+- `from lc_agent.config.loader import load_config_from_file`
+- `from lc_agent.config.loader import substitute_env_vars`
+
+
+---
 
 `````python
 from lc_agent.config.loader import load_config, load_config_from_file, substitute_env_vars
@@ -1415,12 +1574,171 @@ __all__ = ["load_config", "load_config_from_file", "substitute_env_vars"]
 
 `````
 
---- **end of file: lc_agent/config/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/config/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/core/engine.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/core/chat_model.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/core/chat_model.py`
+
+#### 📝 Module Docstring
+
+`````
+ChatOpenAI subclass that extracts reasoning_content from streaming deltas.
+
+ChatOpenAI only supports official OpenAI API fields. Many providers (DeepSeek,
+GLM, etc.) return a non-standard `reasoning_content` field in the streaming
+delta for chain-of-thought / thinking content. This subclass captures it into
+`additional_kwargs["reasoning_content"]` so downstream handlers can display it.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from langchain_core.messages import AIMessageChunk`
+- `from langchain_core.outputs import ChatGenerationChunk`
+- `from langchain_openai import ChatOpenAI`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ChatOpenAIReasoning(ChatOpenAI)`
+*Line: 16*
+
+**Docstring:**
+`````
+ChatOpenAI with reasoning_content extraction from streaming deltas.
+
+Drop-in replacement for ChatOpenAI. Works with any provider that returns
+`reasoning_content` or `reasoning` in the streaming delta dict (e.g.
+DeepSeek, GLM with thinking mode, OpenRouter).
+`````
+
+
+---
+
+`````python
+"""ChatOpenAI subclass that extracts reasoning_content from streaming deltas.
+
+ChatOpenAI only supports official OpenAI API fields. Many providers (DeepSeek,
+GLM, etc.) return a non-standard `reasoning_content` field in the streaming
+delta for chain-of-thought / thinking content. This subclass captures it into
+`additional_kwargs["reasoning_content"]` so downstream handlers can display it.
+"""
+
+from __future__ import annotations
+
+from langchain_core.messages import AIMessageChunk
+from langchain_core.outputs import ChatGenerationChunk
+from langchain_openai import ChatOpenAI
+
+
+class ChatOpenAIReasoning(ChatOpenAI):
+    """ChatOpenAI with reasoning_content extraction from streaming deltas.
+
+    Drop-in replacement for ChatOpenAI. Works with any provider that returns
+    `reasoning_content` or `reasoning` in the streaming delta dict (e.g.
+    DeepSeek, GLM with thinking mode, OpenRouter).
+    """
+
+    def _convert_chunk_to_generation_chunk(
+        self,
+        chunk: dict,
+        default_chunk_class: type,
+        base_generation_info: dict | None,
+    ) -> ChatGenerationChunk | None:
+        generation_chunk = super()._convert_chunk_to_generation_chunk(
+            chunk, default_chunk_class, base_generation_info,
+        )
+        if generation_chunk is None:
+            return None
+
+        choices = chunk.get("choices") or chunk.get("chunk", {}).get("choices") or []
+        if not choices:
+            return generation_chunk
+
+        delta = choices[0].get("delta") or {}
+        if isinstance(generation_chunk.message, AIMessageChunk):
+            reasoning = delta.get("reasoning_content")
+            if reasoning is None:
+                reasoning = delta.get("reasoning")
+            if reasoning is not None:
+                generation_chunk.message.additional_kwargs["reasoning_content"] = reasoning
+
+        return generation_chunk
+
+`````
+
+--- **end of file: lc_agent/core/chat_model.py** (project: lc_agent) --- 
+
+---
+
+
+--- **start of file: lc_agent/core/engine.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/core/engine.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from typing import Any`
+- `from typing import AsyncIterator`
+- `from lc_agent.core.models import AgentPreset`
+- `from lc_agent.core.models import ModelInfo`
+- `from lc_agent.tools.registry import ToolRegistry`
+- `from langchain.agents import create_agent`
+- `from langchain.chat_models import init_chat_model`
+- `from lc_agent.core.chat_model import ChatOpenAIReasoning`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class AgentEngine`
+*Line: 10*
+
+**Docstring:**
+`````
+Core agent engine wrapping langchain.agents.create_agent with middleware support.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, config: dict, checkpointer = None)`
+  - **Parameters:**
+    - `self`
+    - `config: dict`
+    - `checkpointer = None`
+
+**Public Methods (11):**
+- `def get_models(self) -> list[ModelInfo]`
+  - *Return available models.*
+- `def get_builtin_presets(self) -> list[AgentPreset]`
+  - *Return the three built-in agent presets.*
+- `def get_default_preset(self) -> AgentPreset`
+  - *Return the default agent (Chat - safest).*
+- `def build_agent(self, preset: AgentPreset | None = None)`
+  - *Build a LangGraph ReAct agent from preset.*
+- `async def chat(self, message: str, thread_id: str, preset_id: str = '__chat__') -> str`
+  - *Send a message and get a response (non-streaming).*
+- `async def chat_stream(self, message: str, thread_id: str, preset_id: str = '__chat__') -> AsyncIterator[dict]`
+  - *Stream chat responses as events.*
+- `async def generate_title(self, user_message: str, model_id: str = '') -> str`
+  - *Generate a short conversation title from the user's first message.*
+- `def get_presets(self) -> list[AgentPreset]`
+  - *Return all agent presets (including default and custom).*
+- `def add_preset(self, preset: AgentPreset) -> AgentPreset`
+  - *Add a new agent preset.*
+- `def update_preset(self, preset_id: str, data: dict) -> AgentPreset | None`
+  - *Update an existing preset.*
+- `def delete_preset(self, preset_id: str) -> bool`
+  - *Delete a preset. Cannot delete builtin.*
+
+**Class Variables (1):**
+- `BUILTIN_IDS = {'__chat__', '__empty__', '__power__'}`
+
+
+---
 
 `````python
 # lc_agent/core/engine.py
@@ -1433,7 +1751,7 @@ from lc_agent.tools.registry import ToolRegistry
 
 
 class AgentEngine:
-    """Core agent engine wrapping LangChain create_agent with middleware support."""
+    """Core agent engine wrapping langchain.agents.create_agent with middleware support."""
 
     def __init__(self, config: dict, checkpointer=None):
         self.config = config
@@ -1536,7 +1854,7 @@ class AgentEngine:
         model_info = self._find_model(preset.default_model)
         llm = self._create_llm(model_info, preset.default_model)
 
-        from langgraph.prebuilt import create_react_agent
+        from langchain.agents import create_agent
 
         kwargs: dict[str, Any] = {}
         if self._checkpointer:
@@ -1545,10 +1863,10 @@ class AgentEngine:
         if preset.dangerous_tools:
             kwargs["interrupt_before"] = ["tools"]
 
-        agent = create_react_agent(
+        agent = create_agent(
             model=llm,
             tools=tools,
-            prompt=system_prompt,
+            system_prompt=system_prompt,
             **kwargs,
         )
 
@@ -1556,18 +1874,34 @@ class AgentEngine:
         return agent
 
     def _create_llm(self, model_info: ModelInfo | None, model_id: str):
-        """Create a ChatOpenAI instance from model info."""
-        from langchain_openai import ChatOpenAI
+        """Create a chat model instance.
 
-        if model_info:
-            return ChatOpenAI(
+        Uses ChatOpenAIReasoning when base_url is set — extracts reasoning_content
+        from any provider that returns it (DeepSeek, GLM, etc).
+        Uses init_chat_model for standard providers (handles provider routing).
+        """
+        if model_info and model_info.base_url:
+            from lc_agent.core.chat_model import ChatOpenAIReasoning
+            return ChatOpenAIReasoning(
                 model=model_info.id,
-                base_url=model_info.base_url or None,
+                base_url=model_info.base_url,
                 api_key=model_info.api_key or "not-set",
                 temperature=0.7,
                 stream_usage=True,
             )
-        return ChatOpenAI(model=model_id, api_key="not-set", stream_usage=True)
+
+        from langchain.chat_models import init_chat_model
+
+        if model_info:
+            model_str = f"{model_info.provider}:{model_info.id}" if model_info.provider else model_info.id
+            return init_chat_model(
+                model_str,
+                api_key=model_info.api_key or "not-set",
+                temperature=0.7,
+                stream_usage=True,
+            )
+
+        return init_chat_model(model_id, api_key="not-set", temperature=0.7, stream_usage=True)
 
     def _find_model(self, model_id: str) -> ModelInfo | None:
         """Find model info by ID."""
@@ -1672,12 +2006,68 @@ class AgentEngine:
 
 `````
 
---- **end of file: lc_agent/core/engine.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/core/engine.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/core/models.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/core/models.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/core/models.py`
+
+#### 📦 Imports
+
+- `from pydantic import BaseModel`
+- `from pydantic import Field`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class ModelInfo(BaseModel)`
+*Line: 5*
+
+**Docstring:**
+`````
+LLM model metadata.
+`````
+
+**Class Variables (5):**
+- `id: str`
+- `provider: str`
+- `base_url: str`
+- `context_limit: int = 8000`
+- `api_key: str = ''`
+
+##### 📌 `class AgentPreset(BaseModel)`
+*Line: 15*
+
+**Docstring:**
+`````
+Agent preset configuration (three-value semantics from nb_agent).
+
+For allowed_* fields:
+  None  = all allowed (default)
+  []    = all disabled
+  ["a"] = only specified items allowed
+
+source: "builtin" | "code" | "user"
+default_enabled: controls whether tools/MCP/skills default to ON or OFF in the UI
+`````
+
+**Class Variables (10):**
+- `id: str`
+- `name: str`
+- `system_prompt: str`
+- `default_model: str`
+- `allowed_tool_groups: list[str] | None = None`
+- `allowed_mcp_servers: list[str] | None = None`
+- `allowed_skills: list[str] | None = None`
+- `dangerous_tools: list[str] = Field(default_factory=list)`
+- `source: str = 'user'`
+- `default_enabled: bool = True`
+
+
+---
 
 `````python
 # lc_agent/core/models.py
@@ -1721,12 +2111,24 @@ class AgentPreset(BaseModel):
 
 `````
 
---- **end of file: lc_agent/core/models.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/core/models.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/core/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/core/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/core/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.core.models import AgentPreset`
+- `from lc_agent.core.models import ModelInfo`
+
+
+---
 
 `````python
 # lc_agent/core/__init__.py
@@ -1737,12 +2139,41 @@ __all__ = ["AgentEngine", "AgentPreset", "ModelInfo"]
 
 `````
 
---- **end of file: lc_agent/core/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/core/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/db/engine.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/db/engine.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/db/engine.py`
+
+#### 📦 Imports
+
+- `from sqlalchemy.ext.asyncio import create_async_engine`
+- `from sqlalchemy.ext.asyncio import AsyncSession`
+- `from sqlalchemy.orm import sessionmaker`
+- `from sqlmodel import SQLModel`
+
+#### 🔧 Public Functions (4)
+
+- `def get_async_engine(url: str = 'sqlite+aiosqlite:///./lc_agent_data.db')`
+  - *Line: 9*
+
+- `def get_async_session(url: str = 'sqlite+aiosqlite:///./lc_agent_data.db') -> AsyncSession`
+  - *Line: 16*
+
+- `async def init_db(url: str = 'sqlite+aiosqlite:///./lc_agent_data.db')`
+  - *Line: 24*
+  - *Create all tables.*
+
+- `def reset_engine()`
+  - *Line: 31*
+  - *Reset engine state (for testing).*
+
+
+---
 
 `````python
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -1783,12 +2214,64 @@ def reset_engine():
 
 `````
 
---- **end of file: lc_agent/db/engine.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/db/engine.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/db/models.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/db/models.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/db/models.py`
+
+#### 📦 Imports
+
+- `import uuid`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from sqlmodel import SQLModel`
+- `from sqlmodel import Field`
+- `from sqlalchemy import Column`
+- `from sqlalchemy import JSON`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class AgentPresetDB(SQLModel)`
+*Line: 12*
+
+**Class Variables (11):**
+- `__tablename__ = 'agent_presets'`
+- `id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)`
+- `name: str`
+- `system_prompt: str = ''`
+- `default_model: str = ''`
+- `allowed_tool_groups: list[str] | None = Field(default=None, sa_column=Column(JSON))`
+- `allowed_mcp_servers: list[str] | None = Field(default=None, sa_column=Column(JSON))`
+- `allowed_skills: list[str] | None = Field(default=None, sa_column=Column(JSON))`
+- `dangerous_tools: list[str] = Field(default_factory=list, sa_column=Column(JSON))`
+- `created_at: datetime = Field(default_factory=utcnow)`
+- `updated_at: datetime = Field(default_factory=utcnow)`
+
+##### 📌 `class SessionMeta(SQLModel)`
+*Line: 27*
+
+**Class Variables (8):**
+- `__tablename__ = 'sessions'`
+- `id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)`
+- `title: str = '新对话'`
+- `agent_id: str = '__chat__'`
+- `model: str = ''`
+- `message_count: int = 0`
+- `created_at: datetime = Field(default_factory=utcnow)`
+- `updated_at: datetime = Field(default_factory=utcnow)`
+
+#### 🔧 Public Functions (1)
+
+- `def utcnow()`
+  - *Line: 8*
+
+
+---
 
 `````python
 import uuid
@@ -1830,12 +2313,62 @@ class SessionMeta(SQLModel, table=True):
 
 `````
 
---- **end of file: lc_agent/db/models.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/db/models.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/db/repository.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/db/repository.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/db/repository.py`
+
+#### 📦 Imports
+
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from sqlalchemy import select`
+- `from sqlalchemy.ext.asyncio import AsyncSession`
+- `from lc_agent.db.models import AgentPresetDB`
+- `from lc_agent.db.models import SessionMeta`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class PresetRepository`
+*Line: 9*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, session: AsyncSession)`
+  - **Parameters:**
+    - `self`
+    - `session: AsyncSession`
+
+**Public Methods (5):**
+- `async def list_all(self) -> list[AgentPresetDB]`
+- `async def get_by_id(self, preset_id: str) -> AgentPresetDB | None`
+- `async def create(self, **kwargs) -> AgentPresetDB`
+- `async def update(self, preset_id: str, **kwargs) -> AgentPresetDB | None`
+- `async def delete(self, preset_id: str) -> bool`
+
+##### 📌 `class SessionRepository`
+*Line: 48*
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, session: AsyncSession)`
+  - **Parameters:**
+    - `self`
+    - `session: AsyncSession`
+
+**Public Methods (6):**
+- `async def list_all(self, limit: int = 50) -> list[SessionMeta]`
+- `async def get_by_id(self, session_id: str) -> SessionMeta | None`
+- `async def create(self, **kwargs) -> SessionMeta`
+- `async def update(self, session_id: str, **kwargs) -> SessionMeta | None`
+- `async def delete(self, session_id: str) -> bool`
+- `async def increment_messages(self, session_id: str) -> None`
+
+
+---
 
 `````python
 from datetime import datetime, timezone
@@ -1934,12 +2467,28 @@ class SessionRepository:
 
 `````
 
---- **end of file: lc_agent/db/repository.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/db/repository.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/db/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/db/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/db/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.db.models import AgentPresetDB`
+- `from lc_agent.db.models import SessionMeta`
+- `from lc_agent.db.engine import get_async_engine`
+- `from lc_agent.db.engine import get_async_session`
+- `from lc_agent.db.engine import init_db`
+- `from lc_agent.db.repository import PresetRepository`
+- `from lc_agent.db.repository import SessionRepository`
+
+
+---
 
 `````python
 from lc_agent.db.models import AgentPresetDB, SessionMeta
@@ -1958,12 +2507,84 @@ __all__ = [
 
 `````
 
---- **end of file: lc_agent/db/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/db/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/mcp/manager.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/mcp/manager.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/mcp/manager.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import asyncio`
+- `import os`
+- `from dataclasses import dataclass`
+- `from dataclasses import field`
+- `from typing import Any`
+- `from mcp import ClientSession`
+- `from mcp import StdioServerParameters`
+- `from mcp.client.stdio import stdio_client`
+- `from mcp import ClientSession`
+- `from mcp.client.sse import sse_client`
+- `from mcp import ClientSession`
+- `from mcp.client.streamable_http import streamable_http_client`
+- `from lc_agent.mcp.tool_adapter import create_langchain_tools_from_schemas`
+- `from lc_agent.mcp.tool_adapter import create_langchain_tools_from_schemas`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class McpServerStatus`
+*Line: 10*
+
+**Class Variables (9):**
+- `name: str`
+- `type: str = 'local'`
+- `command: str = ''`
+- `url: str = ''`
+- `enabled: bool = True`
+- `status: str = 'disconnected'`
+- `tools: list[str] = field(default_factory=list)`
+- `tool_schemas: list[dict] = field(default_factory=list)`
+- `error: str | None = None`
+
+##### 📌 `class McpManager`
+*Line: 22*
+
+**Docstring:**
+`````
+Manages persistent MCP server connections and tool invocation.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, config: dict[str, dict])`
+  - **Parameters:**
+    - `self`
+    - `config: dict[str, dict]`
+
+**Public Methods (7):**
+- `def get_server(self, name: str) -> McpServerStatus | None`
+- `async def connect_all(self)`
+  - *Connect to all configured MCP servers (persistent).*
+- `async def call_tool(self, server_name: str, tool_name: str, arguments: dict) -> str`
+  - *Invoke a tool on a connected MCP server (serialized per server).*
+- `def get_tools_for_server(self, server_name: str) -> list[str]`
+  - *Get tool names for a given server.*
+- `def get_langchain_tools(self) -> list`
+  - *Get all connected MCP tools as LangChain StructuredTools.*
+- `def get_filtered_langchain_tools(self, allowed_servers: list[str] | None) -> list`
+  - *Get MCP tools filtered by allowed servers (three-value semantics).*
+- `async def shutdown(self)`
+  - *Clean up all persistent connections.*
+
+**Properties (1):**
+- `@property servers -> list[McpServerStatus]`
+
+
+---
 
 `````python
 from __future__ import annotations
@@ -2214,12 +2835,51 @@ class McpManager:
 
 `````
 
---- **end of file: lc_agent/mcp/manager.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/mcp/manager.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/mcp/tool_adapter.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/mcp/tool_adapter.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/mcp/tool_adapter.py`
+
+#### 📝 Module Docstring
+
+`````
+Converts MCP tool schemas into LangChain StructuredTool instances.
+`````
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `from typing import Any`
+- `from langchain_core.tools import StructuredTool`
+- `from pydantic import BaseModel`
+- `from pydantic import Field`
+- `from pydantic import create_model`
+
+#### 🔧 Public Functions (2)
+
+- `def create_langchain_tools_from_schemas(server_name: str, tool_schemas: list[dict], invoke_fn: Any = None) -> list[StructuredTool]`
+  - *Line: 44*
+  - **Docstring:**
+  `````
+  Convert MCP tool schemas to LangChain StructuredTool list.
+  
+  Args:
+      server_name: MCP server name for namespacing
+      tool_schemas: List of {name, description, input_schema}
+      invoke_fn: Optional async callable(tool_name, args) -> result
+  `````
+
+- `def mcp_tool_names_to_display(server_name: str, tool_names: list[str]) -> list[dict]`
+  - *Line: 93*
+  - *Convert MCP tool names to display format.*
+
+
+---
 
 `````python
 """Converts MCP tool schemas into LangChain StructuredTool instances."""
@@ -2323,12 +2983,22 @@ def mcp_tool_names_to_display(server_name: str, tool_names: list[str]) -> list[d
 
 `````
 
---- **end of file: lc_agent/mcp/tool_adapter.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/mcp/tool_adapter.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/mcp/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/mcp/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/mcp/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.mcp.manager import McpManager`
+
+
+---
 
 `````python
 from lc_agent.mcp.manager import McpManager
@@ -2337,12 +3007,44 @@ __all__ = ["McpManager"]
 
 `````
 
---- **end of file: lc_agent/mcp/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/mcp/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/app.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/app.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/app.py`
+
+#### 📦 Imports
+
+- `import mimetypes`
+- `from pathlib import Path`
+- `from fastapi import FastAPI`
+- `from fastapi.middleware.cors import CORSMiddleware`
+- `from fastapi.staticfiles import StaticFiles`
+- `from lc_agent import __version__`
+- `from lc_agent.server.routes.health import router as health_router`
+- `from lc_agent.server.routes.tools import router as tools_router`
+- `from lc_agent.server.routes.models import router as models_router`
+- `from lc_agent.server.routes.agents import router as agents_router`
+- `from lc_agent.server.routes.sessions import router as sessions_router`
+- `from lc_agent.server.routes.skills import router as skills_router`
+- `from lc_agent.server.routes.mcp import router as mcp_router`
+
+#### 🔧 Public Functions (2)
+
+- `def create_app(config: dict, lifespan = None) -> FastAPI`
+  - *Line: 22*
+  - *Create and configure the FastAPI application.*
+
+- `def mount_static_files(app: FastAPI)`
+  - *Line: 53*
+  - *Mount static files AFTER WebSocket routes are registered.*
+
+
+---
 
 `````python
 # lc_agent/server/app.py
@@ -2366,13 +3068,14 @@ from lc_agent.server.routes.skills import router as skills_router
 from lc_agent.server.routes.mcp import router as mcp_router
 
 
-def create_app(config: dict) -> FastAPI:
+def create_app(config: dict, lifespan=None) -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
         title="lc_agent",
         version=__version__,
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
+        lifespan=lifespan,
     )
 
     app.add_middleware(
@@ -2404,12 +3107,40 @@ def mount_static_files(app: FastAPI):
 
 `````
 
---- **end of file: lc_agent/server/app.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/app.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/dependencies.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/dependencies.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/dependencies.py`
+
+#### 📦 Imports
+
+- `from contextlib import asynccontextmanager`
+- `from fastapi import Request`
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.db.engine import get_async_session as _get_db_session`
+- `from lc_agent.tools.registry import ToolRegistry`
+
+#### 🔧 Public Functions (3)
+
+- `def get_engine(request: Request) -> AgentEngine`
+  - *Line: 11*
+  - *Dependency to get the AgentEngine from app state.*
+
+- `def get_registry(request: Request) -> ToolRegistry`
+  - *Line: 16*
+  - *Dependency to get the ToolRegistry singleton.*
+
+- `async def get_db_session()`
+  - *Line: 21*
+  - *Dependency to get an async DB session.*
+
+
+---
 
 `````python
 # lc_agent/server/dependencies.py
@@ -2442,12 +3173,56 @@ async def get_db_session():
 
 `````
 
---- **end of file: lc_agent/server/dependencies.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/dependencies.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/websocket.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/websocket.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/websocket.py`
+
+#### 📦 Imports
+
+- `import asyncio`
+- `import uuid`
+- `from typing import Any`
+- `from fastapi import WebSocket`
+- `from lc_agent.core.engine import AgentEngine`
+- `import time`
+- `from lc_agent.db.engine import get_async_session`
+- `from lc_agent.db.repository import SessionRepository`
+- `from lc_agent.db.engine import get_async_session`
+- `from lc_agent.db.repository import SessionRepository`
+- `from langgraph.types import Command`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ChatWebSocketHandler`
+*Line: 11*
+
+**Docstring:**
+`````
+Handles WebSocket connections for streaming chat.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, engine: AgentEngine)`
+  - **Parameters:**
+    - `self`
+    - `engine: AgentEngine`
+
+**Public Methods (3):**
+- `async def connect(self, websocket: WebSocket, thread_id: str | None = None) -> str`
+  - *Accept WebSocket connection.*
+- `async def disconnect(self, thread_id: str)`
+  - *Clean up on disconnect.*
+- `async def handle_message(self, websocket: WebSocket, thread_id: str, data: dict)`
+  - *Process incoming message and stream response.*
+
+
+---
 
 `````python
 # lc_agent/server/websocket.py
@@ -2498,6 +3273,17 @@ class ChatWebSocketHandler:
             self._cancel_flags[thread_id] = False
             usage_rounds: list[dict] = []
             round_start_time = time.time()
+
+            is_first = self._message_counts.get(thread_id, 0) == 0
+            if is_first:
+                preliminary_title = content[:30].strip()
+                await websocket.send_json({
+                    "type": "title_update",
+                    "thread_id": thread_id,
+                    "title": preliminary_title,
+                })
+                asyncio.create_task(self._save_title(thread_id, preliminary_title))
+
             try:
                 async for event in self.engine.chat_stream(content, thread_id, preset_id):
                     if self._cancel_flags.get(thread_id):
@@ -2509,6 +3295,10 @@ class ChatWebSocketHandler:
                     if len(usage_rounds) > prev_len:
                         usage_rounds[-1]["duration_ms"] = int((time.time() - round_start_time) * 1000)
                         round_start_time = time.time()
+                        await websocket.send_json({
+                            "type": "llm_usage",
+                            **usage_rounds[-1],
+                        })
 
                 done_payload: dict = {"type": "done"}
                 if usage_rounds:
@@ -2550,6 +3340,20 @@ class ChatWebSocketHandler:
                 await websocket.send_json({"type": "done"})
             except Exception as e:
                 await websocket.send_json({"type": "error", "message": str(e)})
+
+    async def _save_title(self, thread_id: str, title: str):
+        """Save title to DB without pushing to client."""
+        try:
+            from lc_agent.db.engine import get_async_session
+            from lc_agent.db.repository import SessionRepository
+            session = get_async_session()
+            try:
+                repo = SessionRepository(session)
+                await repo.update(thread_id, title=title)
+            finally:
+                await session.close()
+        except Exception:
+            pass
 
     async def _generate_and_push_title(self, websocket: WebSocket, thread_id: str, first_message: str, preset_id: str = "__chat__"):
         """Generate title from first message using the agent's model, save to DB, and push to client."""
@@ -2640,7 +3444,8 @@ class ChatWebSocketHandler:
         if kind == "on_chat_model_stream":
             chunk = event.get("data", {}).get("chunk")
             if chunk:
-                reasoning = (getattr(chunk, "additional_kwargs", None) or {}).get("reasoning_content")
+                additional = getattr(chunk, "additional_kwargs", None) or {}
+                reasoning = additional.get("reasoning_content") or additional.get("reasoning")
                 if reasoning:
                     await websocket.send_json({"type": "thinking", "content": reasoning})
                 if hasattr(chunk, "content") and chunk.content:
@@ -2675,12 +3480,22 @@ class ChatWebSocketHandler:
 
 `````
 
---- **end of file: lc_agent/server/websocket.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/websocket.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.server.app import create_app`
+
+
+---
 
 `````python
 # lc_agent/server/__init__.py
@@ -2690,12 +3505,72 @@ __all__ = ["create_app"]
 
 `````
 
---- **end of file: lc_agent/server/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/skills/scanner.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/skills/scanner.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/skills/scanner.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import re`
+- `from dataclasses import dataclass`
+- `from pathlib import Path`
+- `import yaml`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class SkillInfo`
+*Line: 11*
+
+**Class Variables (6):**
+- `name: str`
+- `description: str`
+- `content: str`
+- `file_path: str`
+- `group: str = ''`
+- `metadata: dict = None`
+
+##### 📌 `class SkillScanner`
+*Line: 24*
+
+**Docstring:**
+`````
+Discovers and parses SKILL.md files from a directory.
+`````
+
+**🔧 Constructor (`__init__`):**
+- `def __init__(self, directory: str = './skills')`
+  - **Parameters:**
+    - `self`
+    - `directory: str = './skills'`
+
+**Public Methods (5):**
+- `def scan(self) -> list[SkillInfo]`
+  - *Scan directory recursively for SKILL.md files.*
+- `def get_by_name(self, name: str) -> SkillInfo | None`
+  - *Get a skill by name.*
+- `def get_filtered(self, allowed: list[str] | None) -> list[SkillInfo]`
+  - **Docstring:**
+  `````
+  Filter skills by allowed list (three-value semantics).
+  Also excludes runtime-disabled skills.
+  `````
+- `def get_groups(self) -> list[str]`
+  - *Return unique skill group names.*
+- `def get_by_group(self, group: str) -> list[SkillInfo]`
+  - *Get all skills in a specific group.*
+
+**Properties (1):**
+- `@property skills -> list[SkillInfo]`
+
+
+---
 
 `````python
 from __future__ import annotations
@@ -2812,12 +3687,23 @@ class SkillScanner:
 
 `````
 
---- **end of file: lc_agent/skills/scanner.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/skills/scanner.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/skills/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/skills/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/skills/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.skills.scanner import SkillInfo`
+- `from lc_agent.skills.scanner import SkillScanner`
+
+
+---
 
 `````python
 from lc_agent.skills.scanner import SkillInfo, SkillScanner
@@ -2826,12 +3712,29 @@ __all__ = ["SkillInfo", "SkillScanner"]
 
 `````
 
---- **end of file: lc_agent/skills/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/skills/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/tools/builtin.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/tools/builtin.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/tools/builtin.py`
+
+#### 📦 Imports
+
+- `from datetime import datetime`
+- `from lc_agent.tools.registry import tool`
+
+#### 🔧 Public Functions (1)
+
+- `def get_current_time() -> str` `tool(group='builtin')`
+  - *Line: 8*
+  - *获取当前日期和时间。*
+
+
+---
 
 `````python
 # lc_agent/tools/builtin.py
@@ -2847,12 +3750,103 @@ def get_current_time() -> str:
 
 `````
 
---- **end of file: lc_agent/tools/builtin.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/tools/builtin.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/tools/registry.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/tools/registry.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/tools/registry.py`
+
+#### 📦 Imports
+
+- `from __future__ import annotations`
+- `import functools`
+- `import re`
+- `from typing import Any`
+- `from typing import Callable`
+- `from typing import overload`
+- `from langchain_core.tools import BaseTool`
+- `from langchain_core.tools import StructuredTool`
+
+#### 🏛️ Classes (1)
+
+##### 📌 `class ToolRegistry`
+*Line: 13*
+
+**Docstring:**
+`````
+Central registry for all tools, supporting groups and filtering.
+`````
+
+**Public Methods (6):**
+- `def get_all_tools(self) -> list[BaseTool]`
+  - *Return all registered tools as LangChain BaseTool instances.*
+- `def get_tools_by_groups(self, groups: list[str]) -> list[BaseTool]`
+  - *Return tools belonging to specified groups.*
+- `def get_filtered_tools(self, allowed_groups: list[str] | None) -> list[BaseTool]`
+  - **Docstring:**
+  `````
+  Filter tools by allowed groups (three-value semantics).
+  
+  None = all allowed, [] = none allowed, ["a","b"] = only those groups.
+  Also excludes runtime-disabled groups.
+  `````
+- `def get_group_names(self) -> list[str]`
+  - *Return unique list of all registered group names.*
+- `def get_group_info(self) -> list[dict[str, str]]`
+  - *Return group id + description pairs.*
+- `def register(self, func: Callable, group: str = '', group_description: str = '') -> BaseTool`
+  - **Docstring:**
+  `````
+  Register a function as a tool.
+  
+  Args:
+      func: The function to register as a tool.
+      group: ASCII group identifier, used as prefix in tool name.
+             Must match ^[a-zA-Z0-9_-]+$ if provided.
+      group_description: Human-readable group description for UI display.
+             If not provided, defaults to the group value.
+  `````
+
+**Class Variables (4):**
+- `_instance: ToolRegistry | None = None`
+- `_global_tools: dict[str, dict[str, Any]] = {}`
+- `_group_descriptions: dict[str, str] = {}`
+- `_disabled_groups: set[str] = set()`
+
+#### 🔧 Public Functions (5)
+
+- `def tool(func: Callable) -> Callable` `overload`
+  - *Line: 109*
+
+- `def tool() -> Callable[[Callable], Callable]` `overload`
+  - *Line: 113*
+
+- `def tool(func: Callable | None = None)`
+  - *Line: 116*
+  - **Docstring:**
+  `````
+  Decorator to register a function as an agent tool.
+  
+  Usage:
+      @tool
+      def my_func(...): ...
+  
+      @tool(group="file_mgmt", group_description="文件管理")
+      def my_func(...): ...
+  `````
+
+- `def decorator(fn: Callable) -> Callable`
+  - *Line: 128*
+
+- `def wrapper(*args, **kwargs)` `functools.wraps(fn)`
+  - *Line: 132*
+
+
+---
 
 `````python
 # lc_agent/tools/registry.py
@@ -2997,12 +3991,23 @@ def tool(func: Callable | None = None, *, group: str = "", group_description: st
 
 `````
 
---- **end of file: lc_agent/tools/registry.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/tools/registry.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/tools/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/tools/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/tools/__init__.py`
+
+#### 📦 Imports
+
+- `from lc_agent.tools.registry import ToolRegistry`
+- `from lc_agent.tools.registry import tool`
+
+
+---
 
 `````python
 # lc_agent/tools/__init__.py
@@ -3012,18 +4017,127 @@ __all__ = ["ToolRegistry", "tool"]
 
 `````
 
---- **end of file: lc_agent/tools/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/tools/__init__.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/agents.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/utils/loggers.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/utils/loggers.py`
+
+#### 📦 Imports
+
+- `import logging`
+
+
+---
+
+`````python
+import logging
+
+debug_logger = logging.getLogger("lc_agent.debug")
+
+
+mcp_logger = logging.getLogger("lc_agent.mcp")
+`````
+
+--- **end of file: lc_agent/utils/loggers.py** (project: lc_agent) --- 
+
+---
+
+
+--- **start of file: lc_agent/server/routes/agents.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/agents.py`
+
+#### 📦 Imports
+
+- `import uuid`
+- `from datetime import datetime`
+- `from datetime import timezone`
+- `from fastapi import APIRouter`
+- `from fastapi import Depends`
+- `from fastapi import HTTPException`
+- `from fastapi import Request`
+- `from fastapi import Response`
+- `from pydantic import BaseModel`
+- `from sqlalchemy import select`
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.core.models import AgentPreset`
+- `from lc_agent.db.engine import get_async_session as _get_db_session`
+- `from lc_agent.db.models import AgentPresetDB`
+- `from lc_agent.server.dependencies import get_engine`
+- `from lc_agent.tools.registry import ToolRegistry`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class AgentCreateRequest(BaseModel)`
+*Line: 25*
+
+**Class Variables (7):**
+- `name: str`
+- `system_prompt: str`
+- `default_model: str`
+- `allowed_tool_groups: list[str] | None = None`
+- `allowed_mcp_servers: list[str] | None = None`
+- `allowed_skills: list[str] | None = None`
+- `dangerous_tools: list[str] = []`
+
+##### 📌 `class AgentUpdateRequest(BaseModel)`
+*Line: 35*
+
+**Class Variables (7):**
+- `name: str | None = None`
+- `system_prompt: str | None = None`
+- `default_model: str | None = None`
+- `allowed_tool_groups: list[str] | None = None`
+- `allowed_mcp_servers: list[str] | None = None`
+- `allowed_skills: list[str] | None = None`
+- `dangerous_tools: list[str] | None = None`
+
+#### 🔧 Public Functions (6)
+
+- `async def get_db()`
+  - *Line: 17*
+
+- `async def list_agents(engine: AgentEngine = Depends(get_engine), db = Depends(get_db))` `router.get('/agents')`
+  - *Line: 61*
+  - *List all agent presets (builtin + code + DB-persisted).*
+
+- `async def create_agent(body: AgentCreateRequest, engine: AgentEngine = Depends(get_engine), db = Depends(get_db))` `router.post('/agents', status_code=201)`
+  - *Line: 91*
+  - *Create a new agent preset (persisted to DB).*
+
+- `async def update_agent(agent_id: str, body: AgentUpdateRequest, engine: AgentEngine = Depends(get_engine), db = Depends(get_db))` `router.put('/agents/{agent_id}')`
+  - *Line: 126*
+  - *Update an agent preset.*
+
+- `async def delete_agent(agent_id: str, engine: AgentEngine = Depends(get_engine), db = Depends(get_db))` `router.delete('/agents/{agent_id}', status_code=204)`
+  - *Line: 177*
+  - *Delete an agent preset.*
+
+- `def activate_agent(agent_id: str, request: Request, engine: AgentEngine = Depends(get_engine))` `router.post('/agents/{agent_id}/activate')`
+  - *Line: 200*
+  - **Docstring:**
+  `````
+  Apply an agent's default toggle state to MCP servers and tool groups.
+  
+  - Agents with default_enabled=False (Empty): disable all MCP + tool groups
+  - Agents with default_enabled=True (Power): enable all MCP + tool groups
+  - Chat agent (allowed=[]): no change needed (preset blocks everything)
+  `````
+
+
+---
 
 `````python
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel
 from sqlalchemy import select
 
@@ -3217,14 +4331,85 @@ async def delete_agent(agent_id: str, engine: AgentEngine = Depends(get_engine),
 
     return Response(status_code=204)
 
+
+@router.post("/agents/{agent_id}/activate")
+def activate_agent(agent_id: str, request: Request, engine: AgentEngine = Depends(get_engine)):
+    """Apply an agent's default toggle state to MCP servers and tool groups.
+
+    - Agents with default_enabled=False (Empty): disable all MCP + tool groups
+    - Agents with default_enabled=True (Power): enable all MCP + tool groups
+    - Chat agent (allowed=[]): no change needed (preset blocks everything)
+    """
+    from lc_agent.tools.registry import ToolRegistry
+
+    preset = engine._resolve_preset(agent_id)
+    manager = getattr(request.app.state, "mcp_manager", None)
+    registry = ToolRegistry()
+
+    if preset.allowed_tool_groups == [] and preset.allowed_mcp_servers == []:
+        return {"agent_id": agent_id, "action": "none", "reason": "preset blocks all"}
+
+    target_enabled = preset.default_enabled
+
+    changed_mcp = []
+    if manager:
+        for server in manager.servers:
+            if server.enabled != target_enabled:
+                server.enabled = target_enabled
+                if not target_enabled:
+                    server.status = "disabled"
+                elif server.name in manager._sessions:
+                    server.status = "connected"
+                else:
+                    server.status = "disconnected"
+                changed_mcp.append(server.name)
+
+    changed_groups = []
+    for group in registry.get_group_names():
+        is_disabled = group in registry._disabled_groups
+        if target_enabled and is_disabled:
+            registry._disabled_groups.discard(group)
+            changed_groups.append(group)
+        elif not target_enabled and not is_disabled:
+            registry._disabled_groups.add(group)
+            changed_groups.append(group)
+
+    if changed_mcp or changed_groups:
+        engine._mcp_generation += 1
+
+    return {
+        "agent_id": agent_id,
+        "default_enabled": target_enabled,
+        "changed_mcp": changed_mcp,
+        "changed_groups": changed_groups,
+    }
+
 `````
 
---- **end of file: lc_agent/server/routes/agents.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/agents.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/health.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/health.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/health.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import Request`
+- `from lc_agent import __version__`
+
+#### 🔧 Public Functions (1)
+
+- `async def health(request: Request)` `router.get('/health')`
+  - *Line: 10*
+  - *Health check endpoint.*
+
+
+---
 
 `````python
 # lc_agent/server/routes/health.py
@@ -3247,12 +4432,34 @@ async def health(request: Request):
 
 `````
 
---- **end of file: lc_agent/server/routes/health.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/health.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/mcp.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/mcp.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/mcp.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import HTTPException`
+- `from fastapi import Request`
+
+#### 🔧 Public Functions (2)
+
+- `def list_mcp_servers(request: Request)` `router.get('/mcp')`
+  - *Line: 7*
+  - *List MCP servers with their status.*
+
+- `def toggle_mcp_server(name: str, request: Request)` `router.post('/mcp/{name}/toggle')`
+  - *Line: 28*
+  - *Toggle a MCP server's enabled state at runtime.*
+
+
+---
 
 `````python
 from fastapi import APIRouter, HTTPException, Request
@@ -3293,18 +4500,44 @@ def toggle_mcp_server(name: str, request: Request):
     server.enabled = not server.enabled
     if not server.enabled:
         server.status = "disabled"
-    elif server.status == "disabled":
-        server.status = "disconnected"
+    else:
+        has_session = name in manager._sessions
+        if has_session:
+            server.status = "connected"
+        else:
+            server.status = "disconnected"
+    engine = getattr(request.app.state, "engine", None)
+    if engine:
+        engine._mcp_generation += 1
     return {"name": name, "enabled": server.enabled, "status": server.status}
 
 `````
 
---- **end of file: lc_agent/server/routes/mcp.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/mcp.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/models.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/models.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/models.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import Depends`
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.server.dependencies import get_engine`
+
+#### 🔧 Public Functions (1)
+
+- `def list_models(engine: AgentEngine = Depends(get_engine))` `router.get('/models')`
+  - *Line: 10*
+  - *List all configured models.*
+
+
+---
 
 `````python
 from fastapi import APIRouter, Depends
@@ -3330,12 +4563,65 @@ def list_models(engine: AgentEngine = Depends(get_engine)):
 
 `````
 
---- **end of file: lc_agent/server/routes/models.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/models.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/sessions.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/sessions.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/sessions.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import Depends`
+- `from fastapi import HTTPException`
+- `from fastapi import Request`
+- `from fastapi import Response`
+- `from pydantic import BaseModel`
+- `from sqlalchemy.ext.asyncio import AsyncSession`
+- `from lc_agent.db.repository import SessionRepository`
+- `from lc_agent.server.dependencies import get_db_session`
+- `from lc_agent.server.dependencies import get_engine`
+
+#### 🏛️ Classes (2)
+
+##### 📌 `class SessionCreateRequest(BaseModel)`
+*Line: 11*
+
+**Class Variables (3):**
+- `title: str = '新对话'`
+- `agent_id: str = '__chat__'`
+- `model: str = ''`
+
+##### 📌 `class SessionUpdateRequest(BaseModel)`
+*Line: 17*
+
+**Class Variables (1):**
+- `title: str | None = None`
+
+#### 🔧 Public Functions (5)
+
+- `async def list_sessions(db: AsyncSession = Depends(get_db_session))` `router.get('/sessions')`
+  - *Line: 22*
+
+- `async def create_session(body: SessionCreateRequest, db: AsyncSession = Depends(get_db_session))` `router.post('/sessions', status_code=201)`
+  - *Line: 40*
+
+- `async def update_session(session_id: str, body: SessionUpdateRequest, db: AsyncSession = Depends(get_db_session))` `router.put('/sessions/{session_id}')`
+  - *Line: 47*
+
+- `async def delete_session(session_id: str, db: AsyncSession = Depends(get_db_session))` `router.delete('/sessions/{session_id}', status_code=204)`
+  - *Line: 57*
+
+- `async def get_session_messages(session_id: str, request: Request)` `router.get('/sessions/{session_id}/messages')`
+  - *Line: 66*
+  - *Retrieve message history for a session from the LangGraph checkpoint.*
+
+
+---
 
 `````python
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -3447,12 +4733,38 @@ async def get_session_messages(session_id: str, request: Request):
 
 `````
 
---- **end of file: lc_agent/server/routes/sessions.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/sessions.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/skills.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/skills.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/skills.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import HTTPException`
+- `from fastapi import Request`
+
+#### 🔧 Public Functions (3)
+
+- `def list_skills(request: Request)` `router.get('/skills')`
+  - *Line: 7*
+  - *List discovered skills.*
+
+- `def toggle_skill(name: str, request: Request)` `router.post('/skills/{name}/toggle')`
+  - *Line: 25*
+  - *Toggle a skill's enabled state at runtime.*
+
+- `def list_skill_groups(request: Request)` `router.get('/skills/groups')`
+  - *Line: 43*
+  - *List skills grouped by their metadata.group field.*
+
+
+---
 
 `````python
 from fastapi import APIRouter, HTTPException, Request
@@ -3517,17 +4829,48 @@ def list_skill_groups(request: Request):
 
 `````
 
---- **end of file: lc_agent/server/routes/skills.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/skills.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/tools.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/tools.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/tools.py`
+
+#### 📦 Imports
+
+- `from fastapi import APIRouter`
+- `from fastapi import Depends`
+- `from fastapi import Request`
+- `from lc_agent.core.engine import AgentEngine`
+- `from lc_agent.server.dependencies import get_engine`
+- `from lc_agent.server.dependencies import get_registry`
+- `from lc_agent.tools.registry import ToolRegistry`
+
+#### 🔧 Public Functions (3)
+
+- `def list_tools(registry: ToolRegistry = Depends(get_registry))` `router.get('/tools')`
+  - *Line: 11*
+  - *List all registered tools.*
+
+- `def list_tool_groups(registry: ToolRegistry = Depends(get_registry))` `router.get('/tools/groups')`
+  - *Line: 26*
+  - *List tool groups with their tools.*
+
+- `def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_registry), engine: AgentEngine = Depends(get_engine))` `router.post('/tools/groups/{group_id}/toggle')`
+  - *Line: 50*
+  - *Toggle a tool group's enabled state.*
+
+
+---
 
 `````python
 from fastapi import APIRouter, Depends, Request
 
-from lc_agent.server.dependencies import get_registry
+from lc_agent.core.engine import AgentEngine
+from lc_agent.server.dependencies import get_engine, get_registry
 from lc_agent.tools.registry import ToolRegistry
 
 router = APIRouter(tags=["tools"])
@@ -3573,7 +4916,11 @@ def list_tool_groups(registry: ToolRegistry = Depends(get_registry)):
 
 
 @router.post("/tools/groups/{group_id}/toggle")
-def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_registry)):
+def toggle_tool_group(
+    group_id: str,
+    registry: ToolRegistry = Depends(get_registry),
+    engine: AgentEngine = Depends(get_engine),
+):
     """Toggle a tool group's enabled state."""
     if group_id in registry._disabled_groups:
         registry._disabled_groups.discard(group_id)
@@ -3581,30 +4928,37 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
     else:
         registry._disabled_groups.add(group_id)
         enabled = False
+    engine._mcp_generation += 1
     return {"id": group_id, "enabled": enabled}
 
 `````
 
---- **end of file: lc_agent/server/routes/tools.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/tools.py** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: lc_agent/server/routes/__init__.py** (project: lc-agent) --- 
+--- **start of file: lc_agent/server/routes/__init__.py** (project: lc_agent) --- 
+
+
+### 📄 Python File Metadata: `lc_agent/server/routes/__init__.py`
+
+
+---
 
 `````python
 
 
 `````
 
---- **end of file: lc_agent/server/routes/__init__.py** (project: lc-agent) --- 
+--- **end of file: lc_agent/server/routes/__init__.py** (project: lc_agent) --- 
 
 ---
 
-# markdown content namespace: lc-agent 前端源码 
+# markdown content namespace: lc_agent 前端源码 (Vue 3) 
 
 
-## lc-agent File Tree (relative dir: `frontend/src`)
+## lc_agent File Tree (relative dir: `frontend/src`)
 
 
 `````
@@ -3631,6 +4985,8 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
         │   └── panels
         │       ├── ModelSelector.vue
         │       └── ToolGroupPanel.vue
+        ├── composables
+        │   └── useTheme.ts
         ├── main.ts
         ├── router
         │   └── index.ts
@@ -3650,7 +5006,7 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
 ---
 
 
-## lc-agent (relative dir: `frontend/src`)  Included Files (total: 23 files)
+## lc_agent (relative dir: `frontend/src`)  Included Files (total: 24 files)
 
 
 - `frontend/src/App.vue`
@@ -3660,6 +5016,8 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
 - `frontend/src/api/http.ts`
 
 - `frontend/src/api/websocket.ts`
+
+- `frontend/src/composables/useTheme.ts`
 
 - `frontend/src/router/index.ts`
 
@@ -3703,10 +5061,11 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
 ---
 
 
---- **start of file: frontend/src/App.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/App.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
+  <ConfigProvider :theme="isDark ? 'dark' : 'light'">
   <div class="app-container">
     <AppHeader
       :model-name="toolsStore.currentModel || agentsStore.currentAgent?.default_model || 'N/A'"
@@ -3733,11 +5092,14 @@ def toggle_tool_group(group_id: str, registry: ToolRegistry = Depends(get_regist
 
     <AgentEditorDialog ref="agentEditorRef" />
   </div>
+  </ConfigProvider>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { ConfigProvider } from 'vue-element-plus-x'
+import { useTheme } from '@/composables/useTheme'
 import { useChatStore } from '@/stores/chat'
 import { useToolsStore } from '@/stores/tools'
 import { useAgentsStore } from '@/stores/agents'
@@ -3746,6 +5108,8 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import RightPanel from '@/components/layout/RightPanel.vue'
 import AgentEditorDialog from '@/components/dialogs/AgentEditorDialog.vue'
+
+const { isDark } = useTheme()
 
 const router = useRouter()
 const route = useRoute()
@@ -3782,10 +5146,11 @@ watch(() => route.params.sessionId, (newId) => {
 })
 
 async function restoreSession(sessionId: string) {
+  if (chatStore.threadId === sessionId) return
   const session = sessionsStore.sessions.find(s => s.id === sessionId)
   if (session) {
     sessionsStore.selectSession(sessionId)
-    if (session.agent_id) {
+    if (session.agent_id && session.agent_id !== agentsStore.currentAgentId) {
       skipAgentWatch = true
       agentsStore.selectAgent(session.agent_id)
     }
@@ -3804,6 +5169,12 @@ function handleNewChat() {
 }
 
 async function handleSwitchSession(sessionId: string) {
+  if (chatStore.threadId === sessionId) {
+    const session = sessionsStore.sessions.find(s => s.id === sessionId)
+    const agentId = session?.agent_id || agentsStore.currentAgentId
+    router.push({ name: 'chat', params: { sessionId }, query: { agent: agentId } })
+    return
+  }
   const session = sessionsStore.sessions.find(s => s.id === sessionId)
   sessionsStore.selectSession(sessionId)
   chatStore.clearMessages()
@@ -3811,7 +5182,7 @@ async function handleSwitchSession(sessionId: string) {
   await chatStore.loadMessages(sessionId)
   chatStore.connect(sessionId)
   const agentId = session?.agent_id || agentsStore.currentAgentId
-  if (session?.agent_id) {
+  if (session?.agent_id && session.agent_id !== agentsStore.currentAgentId) {
     skipAgentWatch = true
     agentsStore.selectAgent(session.agent_id)
   }
@@ -3845,7 +5216,7 @@ function createNewAgent() {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: var(--lc-gradient-bg);
+  background: var(--el-bg-color-page);
   position: relative;
 }
 
@@ -3865,12 +5236,12 @@ function createNewAgent() {
 
 `````
 
---- **end of file: frontend/src/App.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/App.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/main.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/main.ts** (project: lc_agent) --- 
 
 `````typescript
 import { createApp } from 'vue'
@@ -3890,12 +5261,12 @@ app.mount('#app')
 
 `````
 
---- **end of file: frontend/src/main.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/main.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/api/http.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/api/http.ts** (project: lc_agent) --- 
 
 `````typescript
 const BASE_URL = '/api'
@@ -3930,6 +5301,7 @@ export const api = {
   createAgent: (data: object) => fetchApi<any>('/agents', { method: 'POST', body: JSON.stringify(data) }),
   updateAgent: (id: string, data: object) => fetchApi<any>(`/agents/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteAgent: (id: string) => fetchApi<void>(`/agents/${id}`, { method: 'DELETE' }),
+  activateAgent: (id: string) => fetchApi<any>(`/agents/${id}/activate`, { method: 'POST' }),
 
   getSessions: () => fetchApi<any[]>('/sessions'),
   createSession: (data: { title?: string; agent_id?: string; model?: string }) =>
@@ -3944,12 +5316,12 @@ export const api = {
 
 `````
 
---- **end of file: frontend/src/api/http.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/api/http.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/api/websocket.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/api/websocket.ts** (project: lc_agent) --- 
 
 `````typescript
 export interface WsMessage {
@@ -4071,12 +5443,36 @@ export class ChatWebSocket {
 
 `````
 
---- **end of file: frontend/src/api/websocket.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/api/websocket.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/router/index.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/composables/useTheme.ts** (project: lc_agent) --- 
+
+`````typescript
+import { useDark, useToggle } from '@vueuse/core'
+
+export function useTheme() {
+  const isDark = useDark({
+    selector: 'html',
+    attribute: 'class',
+    valueDark: 'dark',
+    valueLight: '',
+  })
+  const toggleDark = useToggle(isDark)
+
+  return { isDark, toggleDark }
+}
+
+`````
+
+--- **end of file: frontend/src/composables/useTheme.ts** (project: lc_agent) --- 
+
+---
+
+
+--- **start of file: frontend/src/router/index.ts** (project: lc_agent) --- 
 
 `````typescript
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -4108,12 +5504,12 @@ export default router
 
 `````
 
---- **end of file: frontend/src/router/index.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/router/index.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/stores/agents.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/stores/agents.ts** (project: lc_agent) --- 
 
 `````typescript
 import { defineStore } from 'pinia'
@@ -4175,8 +5571,13 @@ export const useAgentsStore = defineStore('agents', () => {
     if (currentAgentId.value === id) currentAgentId.value = '__chat__'
   }
 
-  function selectAgent(id: string) {
+  async function selectAgent(id: string) {
     currentAgentId.value = id
+    try {
+      await api.activateAgent(id)
+    } catch {
+      // Non-critical: agent may still work without explicit activation
+    }
   }
 
   function getAgentName(agentId: string): string {
@@ -4206,12 +5607,12 @@ export const useAgentsStore = defineStore('agents', () => {
 
 `````
 
---- **end of file: frontend/src/stores/agents.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/stores/agents.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/stores/chat.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/stores/chat.ts** (project: lc_agent) --- 
 
 `````typescript
 import { defineStore } from 'pinia'
@@ -4416,7 +5817,7 @@ export const useChatStore = defineStore('chat', () => {
         const usageData = (msg as any).usage as any[] | undefined
         if (usageData && usageData.length > 0 && last.usage) {
           if (last.usage.rounds.length === 0) {
-            last.usage.rounds = usageData.map((r: any) => ({
+            const newRounds = usageData.map((r: any) => ({
               inputTokens: r.input_tokens || 0,
               outputTokens: r.output_tokens || 0,
               totalTokens: r.total_tokens || 0,
@@ -4424,6 +5825,7 @@ export const useChatStore = defineStore('chat', () => {
               reasoningTokens: r.reasoning_tokens || 0,
               duration: r.duration_ms || undefined,
             }))
+            last.usage.rounds.splice(0, last.usage.rounds.length, ...newRounds)
           }
         }
       }
@@ -4473,9 +5875,14 @@ export const useChatStore = defineStore('chat', () => {
     const sessionsStore = useSessionsStore()
     const sessionId = sessionsStore.currentSessionId
     if (sessionId && sessionsStore.isLocalSession(sessionId)) {
+      const isFirstMessage = sessionsStore.currentSession?.message_count === 0
       const realId = await sessionsStore.persistSession(sessionId)
-      if (!ws.value || !isConnected.value) {
-        await connect(realId)
+      // Always reconnect with the persisted session ID
+      ws.value?.disconnect()
+      await connect(realId)
+      // Immediately show user's message as title for new conversations
+      if (isFirstMessage) {
+        sessionsStore.updateTitleLocal(realId, content.trim().slice(0, 30))
       }
     } else if (!ws.value || !isConnected.value) {
       if (sessionId) await connect(sessionId)
@@ -4583,12 +5990,12 @@ export const useChatStore = defineStore('chat', () => {
 
 `````
 
---- **end of file: frontend/src/stores/chat.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/stores/chat.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/stores/sessions.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/stores/sessions.ts** (project: lc_agent) --- 
 
 `````typescript
 import { defineStore } from 'pinia'
@@ -4738,12 +6145,12 @@ export const useSessionsStore = defineStore('sessions', () => {
 
 `````
 
---- **end of file: frontend/src/stores/sessions.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/stores/sessions.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/stores/tools.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/stores/tools.ts** (project: lc_agent) --- 
 
 `````typescript
 import { defineStore } from 'pinia'
@@ -4907,12 +6314,12 @@ export const useToolsStore = defineStore('tools', () => {
 
 `````
 
---- **end of file: frontend/src/stores/tools.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/stores/tools.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/utils/markdown.ts** (project: lc-agent) --- 
+--- **start of file: frontend/src/utils/markdown.ts** (project: lc_agent) --- 
 
 `````typescript
 import MarkdownIt from 'markdown-it'
@@ -4939,55 +6346,74 @@ export function renderMarkdown(text: string): string {
 
 `````
 
---- **end of file: frontend/src/utils/markdown.ts** (project: lc-agent) --- 
+--- **end of file: frontend/src/utils/markdown.ts** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/views/ChatView.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/views/ChatView.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
   <div class="chat-view">
     <div class="messages-container">
-      <div class="messages-area" ref="messagesRef">
-        <div v-if="!messages.length" class="empty-state">
-          <div class="empty-icon">⚡</div>
-          <p>开始新的对话</p>
-        </div>
-        <TransitionGroup name="msg" tag="div">
-          <ChatBubble
-            v-for="(msg, idx) in messages"
-            :key="msg.id"
-            :ref="el => setBubbleRef(idx, el)"
-            :message="msg"
-            :show-edit="msg.role === 'user' && idx === lastUserMsgIndex && !isStreaming"
-            @edit="handleEdit(idx)"
-          />
-        </TransitionGroup>
-      </div>
-
-      <div v-if="userMessages.length > 1" class="msg-nav">
-        <div class="msg-nav-label">Q</div>
-        <button
-          v-for="(um, i) in userMessages"
-          :key="um.idx"
-          class="msg-nav-dot"
-          :class="{ active: um.idx === nearestUserMsgIdx }"
-          :title="um.preview"
-          @click="scrollToMessage(um.idx)"
-        >
-          <span class="dot-num">{{ i + 1 }}</span>
-        </button>
-      </div>
+      <Welcome
+        v-if="messages.length === 0 && !isLoading"
+        title="Start a conversation"
+        description="Ask me anything"
+        variant="borderless"
+      />
+      <BubbleList
+        v-else
+        :list="bubbleList"
+        max-height="100%"
+        :auto-scroll="isStreaming"
+        :virtual="false"
+      >
+        <template #content="{ item }">
+          <div class="bubble-content-wrap">
+            <template v-if="item.segments && item.segments.length > 0">
+              <template v-for="(seg, segIdx) in item.segments" :key="segIdx">
+                <div
+                  v-if="seg.type === 'text' && seg.text"
+                  class="markdown-body"
+                  v-html="renderMarkdown(seg.text)"
+                />
+                <div v-else-if="seg.type === 'tool' && item.toolCalls && seg.toolIndex != null" class="tool-call-inline">
+                  <ToolCallCard
+                    :tool-call="item.toolCalls[seg.toolIndex!]"
+                    :collapsed="item.toolCalls[seg.toolIndex!]?.status === 'done'"
+                  />
+                </div>
+              </template>
+            </template>
+            <template v-else>
+              <div
+                v-if="item.isMarkdown"
+                class="markdown-body"
+                v-html="renderMarkdown(stripThinkingMarkers(item.content || ''))"
+              />
+              <span v-else>{{ item.content }}</span>
+            </template>
+            <TokenUsagePanel
+              v-if="item.usage"
+              :usage="item.usage"
+              :tool-calls="item.toolCalls"
+            />
+          </div>
+        </template>
+      </BubbleList>
+      <Thinking
+        v-if="isLoading && !isStreaming"
+        status="thinking"
+        content=""
+      />
     </div>
 
     <ChatInput
       :is-streaming="isStreaming"
-      :edit-content="editContent"
       @send="handleSend"
       @stop="handleStop"
-      @cancel-edit="handleCancelEdit"
     />
 
     <InterruptDialog
@@ -4998,260 +6424,210 @@ export function renderMarkdown(text: string): string {
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import { BubbleList, Thinking, Welcome } from 'vue-element-plus-x'
+import type { BubbleListItemProps } from 'vue-element-plus-x/types/BubbleList'
 import { useChatStore } from '@/stores/chat'
+import type { ToolCall, MessageUsage } from '@/stores/chat'
 import { useAgentsStore } from '@/stores/agents'
-import ChatBubble from '@/components/chat/ChatBubble.vue'
+import { renderMarkdown } from '@/utils/markdown'
 import ChatInput from '@/components/chat/ChatInput.vue'
 import InterruptDialog from '@/components/chat/InterruptDialog.vue'
+import ToolCallCard from '@/components/chat/ToolCallCard.vue'
+import TokenUsagePanel from '@/components/chat/TokenUsagePanel.vue'
+
+interface ContentSegment {
+  type: 'text' | 'tool'
+  text?: string
+  toolIndex?: number
+}
+
+type ChatBubbleItem = BubbleListItemProps & {
+  isMarkdown?: boolean
+  toolCalls?: ToolCall[]
+  segments?: ContentSegment[]
+  usage?: MessageUsage
+}
 
 const chatStore = useChatStore()
 const agentsStore = useAgentsStore()
 const { messages, isStreaming, interrupt } = storeToRefs(chatStore)
-const messagesRef = ref<HTMLElement>()
-const userScrolledUp = ref(false)
-const editContent = ref('')
-const editingIndex = ref(-1)
-const bubbleRefs = ref<Record<number, any>>({})
-const nearestUserMsgIdx = ref(-1)
 
-const lastUserMsgIndex = computed(() => {
-  for (let i = messages.value.length - 1; i >= 0; i--) {
-    if (messages.value[i].role === 'user') return i
-  }
-  return -1
+const isLoading = computed(() => {
+  const msgs = messages.value
+  if (msgs.length === 0) return false
+  const last = msgs[msgs.length - 1]
+  return last.role === 'user' && !isStreaming.value
 })
 
-const userMessages = computed(() => {
-  return messages.value
-    .map((msg, idx) => ({ msg, idx }))
-    .filter(item => item.msg.role === 'user')
-    .map(item => ({
-      idx: item.idx,
-      preview: item.msg.content.slice(0, 20) + (item.msg.content.length > 20 ? '...' : ''),
-    }))
-})
+const bubbleList = computed((): ChatBubbleItem[] =>
+  messages.value
+    .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+    .map((msg, idx, arr) => ({
+      key: msg.id,
+      role: msg.role === 'assistant' ? 'ai' : 'user',
+      placement: msg.role === 'user' ? 'end' : 'start',
+      content: msg.content || '',
+      shape: 'corner' as const,
+      variant: (msg.role === 'user' ? 'outlined' : 'filled') as 'outlined' | 'filled',
+      isMarkdown: msg.role !== 'user',
+      toolCalls: msg.toolCalls,
+      usage: msg.usage,
+      segments: msg.role === 'assistant' && msg.toolCalls?.length
+        ? parseSegments(msg.content || '', msg.toolCalls)
+        : undefined,
+      loading:
+        msg.role === 'assistant'
+        && idx === arr.length - 1
+        && isStreaming.value
+        && !msg.content,
+      avatarSize: '28px',
+      avatarGap: '8px',
+    })),
+)
 
-function setBubbleRef(idx: number, el: any) {
-  if (el) {
-    bubbleRefs.value[idx] = el
-  } else {
-    delete bubbleRefs.value[idx]
-  }
+
+function stripThinkingMarkers(content: string): string {
+  return content.replace(/<!--(?:THINK_START|THINK_END)-->/g, '').trim()
 }
 
-function scrollToMessage(msgIdx: number) {
-  const bubble = bubbleRefs.value[msgIdx]
-  if (!bubble?.$el) return
-  const el = bubble.$el as HTMLElement
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  userScrolledUp.value = true
-}
+function parseSegments(content: string, toolCalls?: ToolCall[]): ContentSegment[] {
+  const segments: ContentSegment[] = []
+  const pattern = /<!--TOOL:(\d+)-->/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
 
-onMounted(() => {
-  chatStore.connect()
-  messagesRef.value?.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  messagesRef.value?.removeEventListener('scroll', handleScroll)
-})
-
-function handleScroll() {
-  if (!messagesRef.value) return
-  const el = messagesRef.value
-  const threshold = 80
-  userScrolledUp.value = el.scrollHeight - el.scrollTop - el.clientHeight > threshold
-  updateNearestUserMsg()
-}
-
-function updateNearestUserMsg() {
-  if (!messagesRef.value) return
-  const containerTop = messagesRef.value.scrollTop
-  let closest = -1
-  let closestDist = Infinity
-
-  for (const um of userMessages.value) {
-    const bubble = bubbleRefs.value[um.idx]
-    if (!bubble?.$el) continue
-    const el = bubble.$el as HTMLElement
-    const dist = Math.abs(el.offsetTop - containerTop)
-    if (dist < closestDist) {
-      closestDist = dist
-      closest = um.idx
+  while ((match = pattern.exec(content)) !== null) {
+    const textBefore = content.slice(lastIndex, match.index).trim()
+    if (textBefore) {
+      segments.push({ type: 'text', text: stripThinkingMarkers(textBefore) })
     }
+    const toolIdx = parseInt(match[1], 10)
+    if (toolCalls && toolIdx < toolCalls.length) {
+      segments.push({ type: 'tool', toolIndex: toolIdx })
+    }
+    lastIndex = match.index + match[0].length
   }
-  nearestUserMsgIdx.value = closest
+
+  const remaining = content.slice(lastIndex).trim()
+  if (remaining) {
+    segments.push({ type: 'text', text: stripThinkingMarkers(remaining) })
+  }
+
+  return segments
 }
 
 function handleSend(content: string) {
-  if (editingIndex.value >= 0) {
-    messages.value.splice(editingIndex.value)
-    editingIndex.value = -1
-  }
-  editContent.value = ''
   chatStore.sendMessage(content, agentsStore.currentAgentId)
-  userScrolledUp.value = false
-  nextTick(() => scrollToBottom())
 }
 
 function handleStop() {
   chatStore.stopGeneration()
 }
 
-function handleEdit(msgIndex: number) {
-  const msg = messages.value[msgIndex]
-  if (!msg) return
-  editContent.value = msg.content
-  editingIndex.value = msgIndex
-}
-
-function handleCancelEdit() {
-  editContent.value = ''
-  editingIndex.value = -1
-}
-
 function handleInterruptDecide(decision: { type: string }) {
   chatStore.respondToInterrupt(decision.type === 'approve', agentsStore.currentAgentId)
 }
 
-function scrollToBottom() {
-  if (messagesRef.value) {
-    messagesRef.value.scrollTop = messagesRef.value.scrollHeight
-  }
-}
 
-watch(messages, () => {
-  if (!userScrolledUp.value) {
-    nextTick(() => scrollToBottom())
-  }
-}, { deep: true })
+onMounted(() => {
+  chatStore.connect()
+})
 </script>
 
 <style scoped>
 .chat-view {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   height: 100%;
 }
 
 .messages-container {
   flex: 1;
-  position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  padding: 16px;
+  background: var(--el-bg-color-page);
 }
 
-.messages-area {
-  height: 100%;
-  overflow-y: auto;
-  padding: 20px 24px;
+.messages-container :deep(.elx-bubble-list) {
+  width: 100%;
 }
 
-.msg-nav {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 4px;
-  background: rgba(22, 27, 34, 0.85);
-  border: 1px solid #30363d;
-  border-radius: 12px;
-  backdrop-filter: blur(6px);
-  z-index: 10;
+.messages-container :deep(.elx-bubble) {
+  max-width: 85% !important;
 }
 
-.msg-nav-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: #58a6ff;
-  margin-bottom: 2px;
-  user-select: none;
+.messages-container :deep(.elx-bubble__content) {
+  max-width: none !important;
 }
 
-.msg-nav-dot {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid #30363d;
-  background: transparent;
+.bubble-content-wrap {
+  width: 100%;
+}
+
+.tool-call-inline {
+  margin: 8px 0;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto !important;
+}
+
+.messages-container :deep([style*="pointer-events"]) .tool-call-inline,
+.messages-container :deep(.tool-call-card) {
+  pointer-events: auto !important;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  padding: 0;
 }
 
-.msg-nav-dot:hover {
-  border-color: #58a6ff;
-  background: rgba(88, 166, 255, 0.1);
+.messages-container :deep(.markdown-body) {
+  line-height: 1.7;
+  font-size: 14px;
+  overflow-wrap: break-word;
 }
 
-.msg-nav-dot.active {
-  border-color: #58a6ff;
-  background: rgba(88, 166, 255, 0.2);
+.messages-container :deep(.markdown-body pre) {
+  border-radius: 8px;
+  overflow-x: auto;
 }
 
-.dot-num {
-  font-size: 9px;
-  font-weight: 600;
-  color: #8b949e;
-  line-height: 1;
+.messages-container :deep(.elx-welcome) {
+  background: var(--el-bg-color-overlay) !important;
+  border: 1px solid var(--el-border-color-lighter) !important;
+  border-radius: 12px;
+  color: var(--el-text-color-primary);
 }
 
-.msg-nav-dot:hover .dot-num,
-.msg-nav-dot.active .dot-num {
-  color: #58a6ff;
+.messages-container :deep(.elx-welcome__title) {
+  color: var(--el-text-color-primary) !important;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--lc-text-secondary);
-  gap: 8px;
-}
-
-.empty-icon {
-  font-size: 48px;
-  opacity: 0.4;
-}
-
-.empty-state p {
-  font-size: 16px;
-  opacity: 0.6;
-}
-
-.msg-enter-active {
-  animation: float-in var(--lc-transition-slow) ease both;
+.messages-container :deep(.elx-welcome__description) {
+  color: var(--el-text-color-secondary) !important;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/views/ChatView.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/views/ChatView.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/views/TestSegments.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/views/TestSegments.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
-  <div style="padding:20px; background:#0d1117; min-height:100vh; color:#c9d1d9;">
+  <div style="padding:20px; background:var(--el-bg-color-page); min-height:100vh; color:var(--el-text-color-regular);">
     <h2>Segments Rendering Test</h2>
     <button @click="simulateStream" style="padding:8px 16px; margin:10px 0;">
       Simulate Stream (think → tool → answer)
     </button>
     <button @click="resetMsg" style="padding:8px 16px; margin:10px;">Reset</button>
-    <div style="margin:10px 0; font-size:12px; color:#8b949e;">
+    <div style="margin:10px 0; font-size:12px; color:var(--el-text-color-secondary);">
       Segments: {{ msg.segments?.length || 0 }} | Content length: {{ msg.content.length }}
     </div>
     <ChatBubble :message="msg" />
@@ -5357,14 +6733,15 @@ async function simulateStream() {
 
 `````
 
---- **end of file: frontend/src/views/TestSegments.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/views/TestSegments.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/chat/ChatBubble.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/chat/ChatBubble.vue** (project: lc_agent) --- 
 
 `````vue
+<!-- @deprecated Use EPX BubbleList in ChatView instead. Kept for TestSegments.vue. -->
 <template>
   <div class="chat-bubble" :class="[message.role, { streaming: message.isStreaming }]">
     <div class="bubble-avatar" :class="message.role">
@@ -5509,8 +6886,8 @@ const modelLabel = computed(() => {
 }
 
 .chat-bubble.assistant {
-  background: var(--lc-glass-bg);
-  border-color: var(--lc-glass-border);
+  background: var(--el-fill-color-light);
+  border-color: var(--el-border-color);
 }
 
 .bubble-avatar {
@@ -5530,7 +6907,7 @@ const modelLabel = computed(() => {
 }
 
 .bubble-avatar.assistant {
-  background: #21262d;
+  background: var(--el-fill-color);
 }
 
 .bubble-body {
@@ -5552,7 +6929,7 @@ const modelLabel = computed(() => {
 }
 
 .ai-name {
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
 }
@@ -5565,7 +6942,7 @@ const modelLabel = computed(() => {
 
 .streaming-cursor {
   animation: blink 1s infinite;
-  color: var(--lc-accent);
+  color: var(--el-color-primary);
   font-size: 16px;
 }
 
@@ -5668,229 +7045,102 @@ const modelLabel = computed(() => {
 
 `````
 
---- **end of file: frontend/src/components/chat/ChatBubble.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/chat/ChatBubble.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/chat/ChatInput.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/chat/ChatInput.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
   <div class="chat-input-wrapper">
-    <div v-if="isEditing" class="edit-hint">
-      <span class="edit-hint-text">✏️ 编辑消息中</span>
-      <button class="edit-cancel-btn" @click="cancelEdit">取消</button>
-    </div>
-    <div class="input-row">
-      <div class="input-area">
-        <el-input
-          v-model="inputText"
-          type="textarea"
-          :placeholder="isStreaming ? 'AI 正在回复...' : '输入消息... (Enter发送, Shift+Enter换行)'"
-          :autosize="{ minRows: 2, maxRows: 8 }"
-          @keydown="handleKeydown"
-        />
-      </div>
-      <div class="input-actions">
-        <button
-          v-if="isStreaming"
-          class="action-btn btn-stop"
-          @click="$emit('stop')"
-        >
-          <span class="btn-icon">■</span>
-          停止
-        </button>
-        <button
-          v-else
-          class="action-btn btn-send"
-          :disabled="!inputText.trim()"
-          @click="send"
-        >
-          <span class="btn-icon">↑</span>
-          {{ isEditing ? '重发' : '发送' }}
-        </button>
-      </div>
-    </div>
+    <XSender
+      ref="senderRef"
+      :loading="isStreaming"
+      :disabled="!isConnected"
+      placeholder="Send a message..."
+      submit-type="enter"
+      clearable
+      auto-focus
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { XSender } from 'vue-element-plus-x'
+import { useChatStore } from '@/stores/chat'
 
-const props = defineProps<{
-  isStreaming: boolean
+defineProps<{
+  isStreaming?: boolean
   editContent?: string
 }>()
+
 const emit = defineEmits<{
   send: [content: string]
   stop: []
   cancelEdit: []
 }>()
 
-const inputText = ref('')
-const isEditing = computed(() => !!props.editContent)
+const chatStore = useChatStore()
+const { isStreaming, isConnected } = storeToRefs(chatStore)
+const senderRef = ref<InstanceType<typeof XSender>>()
 
-watch(() => props.editContent, (val) => {
-  if (val !== undefined && val !== '') {
-    inputText.value = val
-  }
-})
-
-function send() {
-  if (!inputText.value.trim()) return
-  emit('send', inputText.value)
-  inputText.value = ''
-}
-
-function cancelEdit() {
-  inputText.value = ''
-  emit('cancelEdit')
-}
-
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault()
-    if (props.isStreaming) return
-    send()
-  }
-  if (e.key === 'Escape' && isEditing.value) {
-    cancelEdit()
-  }
+function handleSubmit() {
+  const model = senderRef.value?.getModelValue()
+  const text = model?.text ?? ''
+  if (!text.trim()) return
+  emit('send', text.trim())
+  senderRef.value?.clear()
 }
 </script>
 
 <style scoped>
 .chat-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
   padding: 10px 20px 14px;
-  background: var(--lc-glass-bg);
-  border-top: 1px solid var(--lc-glass-border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid var(--el-border-color);
+  background: var(--el-bg-color);
 }
 
-.edit-hint {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0 8px;
-}
-
-.edit-hint-text {
-  font-size: 12px;
-  color: #f0883e;
-  font-weight: 500;
-}
-
-.edit-cancel-btn {
-  font-size: 11px;
-  padding: 2px 8px;
-  border: 1px solid #30363d;
-  border-radius: 4px;
-  background: transparent;
-  color: #8b949e;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.edit-cancel-btn:hover {
-  color: #f85149;
-  border-color: #f85149;
-}
-
-.input-row {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-}
-
-.input-area {
-  flex: 1;
-}
-
-.input-area .el-textarea {
-  width: 100%;
-}
-
-.input-area :deep(.el-textarea__inner) {
-  background: transparent !important;
-  color: var(--lc-text-primary);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.input-actions {
-  display: flex;
-  align-items: center;
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 16px;
-  border: none;
+.chat-input-wrapper :deep(.elx-x-sender) {
+  background: var(--el-bg-color-overlay) !important;
+  border-color: var(--el-border-color) !important;
   border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.btn-icon {
-  font-size: 14px;
+.chat-input-wrapper :deep(.chat-rich-text) {
+  background: transparent !important;
 }
 
-.btn-send {
-  background: linear-gradient(135deg, #238636, #2ea043);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
+.chat-input-wrapper :deep([contenteditable="true"]) {
+  color: var(--el-text-color-primary) !important;
 }
 
-.btn-send:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2ea043, #3fb950);
-  box-shadow: 0 4px 12px rgba(46, 160, 67, 0.4);
-  transform: translateY(-1px);
+.chat-input-wrapper :deep([contenteditable="true"] p),
+.chat-input-wrapper :deep([contenteditable="true"] span) {
+  color: inherit !important;
 }
 
-.btn-send:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.chat-input-wrapper :deep(.elx-x-sender__chat) {
+  background: transparent !important;
 }
 
-.btn-stop {
-  background: linear-gradient(135deg, #da3633, #f85149);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(248, 81, 73, 0.3);
-  animation: pulse-stop 1.5s ease-in-out infinite;
-}
-
-.btn-stop:hover {
-  background: linear-gradient(135deg, #f85149, #ff7b72);
-  box-shadow: 0 4px 12px rgba(248, 81, 73, 0.5);
-  transform: translateY(-1px);
-}
-
-@keyframes pulse-stop {
-  0%, 100% { box-shadow: 0 2px 8px rgba(248, 81, 73, 0.3); }
-  50% { box-shadow: 0 2px 16px rgba(248, 81, 73, 0.6); }
+.chat-input-wrapper :deep(.chat-grid-wrap) {
+  color: var(--el-text-color-primary) !important;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/chat/ChatInput.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/chat/ChatInput.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/chat/InterruptDialog.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/chat/InterruptDialog.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -5937,36 +7187,36 @@ function reject() {
 .action-item {
   margin-bottom: 14px;
   padding: 12px;
-  background: var(--lc-glass-bg);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-md);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
 }
 
 .action-args {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--el-fill-color);
   padding: 10px;
-  border-radius: var(--lc-radius-sm);
+  border-radius: 6px;
   font-size: 12px;
   overflow-x: auto;
   margin-top: 8px;
-  border: 1px solid var(--lc-glass-border);
+  border: 1px solid var(--el-border-color);
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/chat/InterruptDialog.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/chat/InterruptDialog.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/chat/TokenUsagePanel.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/chat/TokenUsagePanel.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
   <div v-if="usage && (usage.rounds.length > 0 || usage.toolCallCount > 0 || usage.totalDuration)" class="token-usage-panel">
-    <div class="usage-header" @click="expanded = !expanded">
+    <div class="usage-header" @click.stop="expanded = !expanded">
       <span class="usage-title">Token 用量</span>
       <div class="usage-badges">
         <span class="badge badge-rounds">🔄 {{ usage.rounds.length }} Rounds</span>
@@ -6121,10 +7371,10 @@ function statusLabel(status: string): string {
 <style scoped>
 .token-usage-panel {
   margin-top: 12px;
-  background: rgba(22, 27, 34, 0.8);
-  border: 1px solid #30363d;
-  border-radius: 10px;
-  padding: 12px 16px;
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
+  padding: 12px;
   font-size: 12px;
 }
 
@@ -6138,7 +7388,7 @@ function statusLabel(status: string): string {
 
 .usage-title {
   font-weight: 700;
-  color: #e6edf3;
+  color: var(--el-text-color-primary);
   font-size: 13px;
 }
 
@@ -6155,21 +7405,21 @@ function statusLabel(status: string): string {
 }
 
 .badge-rounds {
-  background: rgba(88, 166, 255, 0.15);
-  color: #58a6ff;
-  border: 1px solid rgba(88, 166, 255, 0.3);
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+  border: 1px solid var(--el-color-primary-light-5);
 }
 
 .badge-tools {
-  background: rgba(163, 113, 247, 0.15);
-  color: #a371f7;
-  border: 1px solid rgba(163, 113, 247, 0.3);
+  background: var(--el-fill-color);
+  color: var(--el-text-color-primary);
+  border: 1px solid var(--el-border-color);
 }
 
 .badge-time {
-  background: rgba(56, 211, 159, 0.15);
-  color: #38d39f;
-  border: 1px solid rgba(56, 211, 159, 0.3);
+  background: var(--el-color-success-light-9);
+  color: var(--el-color-success);
+  border: 1px solid var(--el-color-success-light-5);
 }
 
 .usage-summary {
@@ -6179,8 +7429,8 @@ function statusLabel(status: string): string {
 }
 
 .summary-card {
-  background: rgba(13, 17, 23, 0.6);
-  border: 1px solid #21262d;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color);
   border-radius: 8px;
   padding: 10px 12px;
   text-align: center;
@@ -6189,14 +7439,15 @@ function statusLabel(status: string): string {
 .summary-value {
   font-size: 18px;
   font-weight: 700;
-  color: #e6edf3;
+  color: var(--el-text-color-primary);
   font-family: 'JetBrains Mono', monospace;
 }
 
 .summary-label {
-  font-size: 11px;
-  color: #8b949e;
-  margin-top: 2px;
+  font-size: 12px;
+  color: var(--el-text-color-primary);
+  margin-top: 4px;
+  font-weight: 600;
 }
 
 .summary-sub {
@@ -6205,24 +7456,24 @@ function statusLabel(status: string): string {
 }
 
 .card-cached .summary-value {
-  color: #3fb950;
+  color: var(--el-color-success);
 }
 
 .summary-sub.cached {
-  color: #3fb950;
+  color: var(--el-color-success);
 }
 
 .summary-sub.reasoning {
-  color: #a371f7;
+  color: var(--el-text-color-regular);
 }
 
 .summary-sub.time {
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
 }
 
 .usage-details {
   margin-top: 12px;
-  border-top: 1px solid #21262d;
+  border-top: 1px solid var(--el-border-color);
   padding-top: 10px;
 }
 
@@ -6234,15 +7485,15 @@ function statusLabel(status: string): string {
 }
 
 .detail-toggle {
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   font-size: 11px;
   cursor: pointer;
 }
 
 .rounds-badge {
   font-size: 10px;
-  color: #58a6ff;
-  background: rgba(88, 166, 255, 0.1);
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
   padding: 1px 6px;
   border-radius: 8px;
 }
@@ -6255,11 +7506,11 @@ function statusLabel(status: string): string {
 }
 
 .details-table th {
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   font-weight: 500;
   text-align: right;
   padding: 4px 8px;
-  border-bottom: 1px solid #21262d;
+  border-bottom: 1px solid var(--el-border-color);
 }
 
 .details-table th:first-child {
@@ -6267,35 +7518,35 @@ function statusLabel(status: string): string {
 }
 
 .details-table td {
-  color: #c9d1d9;
+  color: var(--el-text-color-regular);
   text-align: right;
   padding: 4px 8px;
 }
 
 .col-num {
   text-align: left !important;
-  color: #8b949e !important;
+  color: var(--el-text-color-secondary) !important;
   font-weight: 600;
 }
 
 .col-duration {
-  color: #f0883e !important;
+  color: var(--el-color-warning) !important;
 }
 
 .row-sum {
-  border-top: 1px solid #30363d;
+  border-top: 1px solid var(--el-border-color);
 }
 
 .row-sum td {
   font-weight: 700;
-  color: #e6edf3;
+  color: var(--el-text-color-primary);
 }
 
 .usage-summary-minimal {
   display: flex;
   gap: 6px;
   align-items: center;
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   font-size: 12px;
 }
 
@@ -6309,27 +7560,27 @@ function statusLabel(status: string): string {
 }
 
 .badge-tools:hover {
-  background: rgba(163, 113, 247, 0.3);
+  background: var(--el-fill-color-light);
   transform: scale(1.05);
 }
 
 .tools-details {
   margin-top: 12px;
-  border-top: 1px solid #21262d;
+  border-top: 1px solid var(--el-border-color);
   padding-top: 10px;
 }
 
 .tools-badge {
   font-size: 10px;
-  color: #a371f7;
-  background: rgba(163, 113, 247, 0.1);
+  color: var(--el-text-color-primary);
+  background: var(--el-fill-color);
   padding: 1px 6px;
   border-radius: 8px;
 }
 
 .col-tool-name {
   text-align: left !important;
-  color: #58a6ff !important;
+  color: var(--el-color-primary) !important;
   font-weight: 500;
 }
 
@@ -6347,36 +7598,36 @@ function statusLabel(status: string): string {
 }
 
 .status-dot.done {
-  background: #3fb950;
+  background: var(--el-color-success);
 }
 
 .status-dot.running {
-  background: #d29922;
+  background: var(--el-color-warning);
 }
 
 .status-dot.error {
-  background: #f85149;
+  background: var(--el-color-danger);
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/chat/TokenUsagePanel.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/chat/TokenUsagePanel.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/chat/ToolCallCard.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/chat/ToolCallCard.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
   <div class="tool-call-card" :class="[toolCall.status, { 'is-collapsed': isCollapsed }]">
-    <div class="tool-header" @click="toggleCollapse">
+    <div class="tool-header" @click.stop="toggleCollapse">
       <span class="collapse-icon">{{ isCollapsed ? '▸' : '▾' }}</span>
       <el-icon v-if="toolCall.status === 'running'" class="spinning">
         <Loading />
       </el-icon>
-      <el-icon v-else-if="toolCall.status === 'done'" style="color: var(--lc-success)">
+      <el-icon v-else-if="toolCall.status === 'done'" style="color: var(--el-color-success)">
         <Check />
       </el-icon>
       <span class="tool-name">{{ toolCall.name }}</span>
@@ -6485,27 +7736,26 @@ const statusLabel = computed(() => {
 
 <style scoped>
 .tool-call-card {
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-md);
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
   padding: 10px 14px;
   margin: 6px 0;
-  background: var(--lc-glass-bg);
-  border-left: 3px solid var(--lc-text-secondary);
-  transition: border-color var(--lc-transition-normal), box-shadow var(--lc-transition-normal);
-  animation: float-in var(--lc-transition-slow) ease both;
+  background: var(--el-fill-color-light);
+  border-left: 3px solid var(--el-text-color-secondary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tool-call-card.running {
-  border-left-color: var(--lc-accent);
-  box-shadow: 0 0 12px rgba(88, 166, 255, 0.08);
+  border-left-color: var(--el-color-primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--el-color-primary) 8%, transparent);
 }
 
 .tool-call-card.done {
-  border-left-color: var(--lc-success);
+  border-left-color: var(--el-color-success);
 }
 
 .tool-call-card.error {
-  border-left-color: var(--lc-danger);
+  border-left-color: var(--el-color-danger);
 }
 
 .tool-header {
@@ -6522,7 +7772,7 @@ const statusLabel = computed(() => {
 
 .collapse-icon {
   font-size: 10px;
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   width: 12px;
   flex-shrink: 0;
 }
@@ -6534,7 +7784,7 @@ const statusLabel = computed(() => {
 .tool-name {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 12px;
-  color: var(--lc-accent);
+  color: var(--el-color-primary);
   font-weight: 500;
 }
 
@@ -6547,14 +7797,14 @@ const statusLabel = computed(() => {
 
 .meta-item {
   font-size: 11px;
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   white-space: nowrap;
 }
 
 .tool-args {
   margin-top: 6px;
   padding: 5px 8px;
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--el-fill-color);
   border-radius: 4px;
   font-size: 11px;
   font-family: 'JetBrains Mono', monospace;
@@ -6568,25 +7818,25 @@ const statusLabel = computed(() => {
 }
 
 .arg-key {
-  color: #79c0ff;
+  color: var(--el-color-primary);
   flex-shrink: 0;
   font-weight: 500;
 }
 
 .arg-value {
-  color: #d2a8ff;
+  color: var(--el-text-color-regular);
   word-break: break-all;
 }
 
 .tool-result {
   margin-top: 8px;
   padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--lc-radius-sm);
+  background: var(--el-fill-color);
+  border-radius: 6px;
   font-size: 12px;
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid var(--lc-glass-border);
+  border: 1px solid var(--el-border-color);
   position: relative;
 }
 
@@ -6594,7 +7844,7 @@ const statusLabel = computed(() => {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-all;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
 }
 
 .fullscreen-btn {
@@ -6603,23 +7853,23 @@ const statusLabel = computed(() => {
   float: right;
   padding: 2px 8px;
   font-size: 14px;
-  color: #58a6ff;
-  background: rgba(13, 17, 23, 0.9);
-  border: 1px solid rgba(88, 166, 255, 0.3);
+  color: var(--el-color-primary);
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-color-primary-light-5);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .fullscreen-btn:hover {
-  background: rgba(88, 166, 255, 0.15);
-  border-color: #58a6ff;
+  background: var(--el-color-primary-light-9);
+  border-color: var(--el-color-primary);
 }
 
 .tool-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: color-mix(in srgb, var(--el-bg-color-page) 70%, transparent);
   z-index: 10000;
   display: flex;
   align-items: center;
@@ -6628,14 +7878,14 @@ const statusLabel = computed(() => {
 }
 
 .tool-modal {
-  background: #161b22;
-  border: 1px solid #30363d;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color);
   border-radius: 12px;
   max-width: 90vw;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--el-bg-color-page) 50%, transparent);
   min-width: 500px;
 }
 
@@ -6644,7 +7894,7 @@ const statusLabel = computed(() => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-bottom: 1px solid #30363d;
+  border-bottom: 1px solid var(--el-border-color);
   gap: 12px;
 }
 
@@ -6657,29 +7907,29 @@ const statusLabel = computed(() => {
 .modal-toggle-btn {
   padding: 4px 10px;
   font-size: 12px;
-  border: 1px solid #30363d;
+  border: 1px solid var(--el-border-color);
   border-radius: 6px;
-  background: #21262d;
-  color: #c9d1d9;
+  background: var(--el-fill-color);
+  color: var(--el-text-color-regular);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .modal-toggle-btn:hover {
-  background: #30363d;
+  background: var(--el-fill-color-light);
 }
 
 .modal-toggle-btn.active {
-  background: #1f3d5e;
-  border-color: #58a6ff;
-  color: #58a6ff;
+  background: var(--el-color-primary-light-9);
+  border-color: var(--el-color-primary);
+  color: var(--el-color-primary);
 }
 
 .tool-modal-title {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   font-weight: 600;
-  color: #58a6ff;
+  color: var(--el-color-primary);
 }
 
 .tool-modal-close {
@@ -6691,14 +7941,14 @@ const statusLabel = computed(() => {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   font-size: 16px;
   cursor: pointer;
 }
 
 .tool-modal-close:hover {
-  background: #21262d;
-  color: #e6edf3;
+  background: var(--el-fill-color);
+  color: var(--el-text-color-primary);
 }
 
 .tool-modal-body {
@@ -6710,7 +7960,7 @@ const statusLabel = computed(() => {
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-all;
-  color: #c9d1d9;
+  color: var(--el-text-color-regular);
 }
 
 .tool-modal-body.rendered {
@@ -6720,7 +7970,7 @@ const statusLabel = computed(() => {
 
 .spinning {
   animation: spin 1s linear infinite;
-  color: var(--lc-accent);
+  color: var(--el-color-primary);
 }
 
 @keyframes spin {
@@ -6731,12 +7981,12 @@ const statusLabel = computed(() => {
 
 `````
 
---- **end of file: frontend/src/components/chat/ToolCallCard.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/chat/ToolCallCard.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/dialogs/AgentEditorDialog.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/dialogs/AgentEditorDialog.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -7010,9 +8260,9 @@ defineExpose({ open })
 .custom-groups {
   margin-top: 8px;
   padding: 10px;
-  background: var(--lc-glass-bg-hover);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-md);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
   max-height: 200px;
   overflow-y: auto;
 }
@@ -7025,7 +8275,7 @@ defineExpose({ open })
 
 .skill-hint {
   font-size: 11px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   margin-left: 4px;
   opacity: 0.7;
 }
@@ -7033,12 +8283,12 @@ defineExpose({ open })
 
 `````
 
---- **end of file: frontend/src/components/dialogs/AgentEditorDialog.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/dialogs/AgentEditorDialog.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/layout/AppHeader.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/layout/AppHeader.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -7075,14 +8325,18 @@ defineExpose({ open })
       <span class="model-badge">{{ modelName }}</span>
       <span class="status-dot" :class="connected ? 'connected' : 'disconnected'" />
       <span class="status-text">{{ connected ? '已连接' : '未连接' }}</span>
+      <el-button :icon="isDark ? Sunny : Moon" circle size="small" @click="toggleDark()" />
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { useAgentsStore } from '@/stores/agents'
+import { useTheme } from '@/composables/useTheme'
+import { Sunny, Moon } from '@element-plus/icons-vue'
 
 const agentsStore = useAgentsStore()
+const { isDark, toggleDark } = useTheme()
 
 defineProps<{
   modelName: string
@@ -7102,10 +8356,8 @@ defineEmits<{
   align-items: center;
   justify-content: space-between;
   padding: 8px 20px;
-  background: var(--lc-glass-bg);
-  backdrop-filter: blur(var(--lc-glass-blur-heavy));
-  -webkit-backdrop-filter: blur(var(--lc-glass-blur-heavy));
-  border-bottom: 1px solid var(--lc-glass-border);
+  background: var(--el-bg-color);
+  border-bottom: 1px solid var(--el-border-color);
   height: 52px;
   z-index: 100;
 }
@@ -7113,10 +8365,7 @@ defineEmits<{
 .logo {
   font-size: 16px;
   font-weight: 700;
-  background: var(--lc-gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--el-color-primary);
 }
 
 .header-center {
@@ -7128,16 +8377,16 @@ defineEmits<{
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .model-badge {
   font-size: 12px;
   padding: 3px 10px;
-  background: var(--lc-glass-bg-hover);
-  border: 1px solid var(--lc-glass-border);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
   border-radius: 12px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
 }
 
 .status-dot {
@@ -7147,18 +8396,17 @@ defineEmits<{
 }
 
 .status-dot.connected {
-  background: var(--lc-success);
-  box-shadow: 0 0 8px rgba(63, 185, 80, 0.5);
+  background: var(--el-color-success);
   animation: pulse 2s infinite;
 }
 
 .status-dot.disconnected {
-  background: var(--lc-danger);
+  background: var(--el-color-danger);
 }
 
 .status-text {
   font-size: 12px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
 }
 
 .agent-option {
@@ -7176,21 +8424,21 @@ defineEmits<{
 }
 
 .badge-builtin {
-  background: rgba(88, 166, 255, 0.15);
-  color: #58a6ff;
-  border: 1px solid rgba(88, 166, 255, 0.3);
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+  border: 1px solid var(--el-color-primary-light-5);
 }
 
 .badge-code {
-  background: rgba(255, 180, 50, 0.15);
-  color: #ffb832;
-  border: 1px solid rgba(255, 180, 50, 0.3);
+  background: var(--el-color-warning-light-9);
+  color: var(--el-color-warning);
+  border: 1px solid var(--el-color-warning-light-5);
 }
 
 .badge-user {
-  background: rgba(63, 185, 80, 0.15);
-  color: #6ee77a;
-  border: 1px solid rgba(63, 185, 80, 0.3);
+  background: var(--el-color-success-light-9);
+  color: var(--el-color-success);
+  border: 1px solid var(--el-color-success-light-5);
 }
 
 .header-btn {
@@ -7209,45 +8457,43 @@ defineEmits<{
 }
 
 .btn-edit {
-  background: #21262d;
-  color: #c9d1d9;
-  border: 1px solid #30363d;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-regular);
+  border: 1px solid var(--el-border-color);
 }
 
 .btn-edit:hover:not(:disabled) {
-  background: #30363d;
-  color: #e6edf3;
+  background: var(--el-fill-color);
+  color: var(--el-text-color-primary);
 }
 
 .btn-new-agent {
-  background: linear-gradient(135deg, #238636, #2ea043);
-  color: #ffffff;
+  background: var(--el-color-success);
+  color: var(--el-color-white);
 }
 
 .btn-new-agent:hover {
-  background: linear-gradient(135deg, #2ea043, #3fb950);
-  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
+  background: var(--el-color-success-light-3);
 }
 
 .btn-new-chat {
-  background: linear-gradient(135deg, #1f6feb, #388bfd);
-  color: #ffffff;
+  background: var(--el-color-primary);
+  color: var(--el-color-white);
 }
 
 .btn-new-chat:hover {
-  background: linear-gradient(135deg, #388bfd, #58a6ff);
-  box-shadow: 0 2px 8px rgba(56, 139, 253, 0.3);
+  background: var(--el-color-primary-light-3);
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/layout/AppHeader.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/layout/AppHeader.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/layout/LeftSidebar.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/layout/LeftSidebar.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -7256,166 +8502,163 @@ defineEmits<{
       <transition name="fade">
         <span v-if="!collapsed" class="sidebar-brand">Chats</span>
       </transition>
-      <button class="toggle-btn" @click="emit('toggleCollapse')" :title="collapsed ? '展开侧边栏' : '收起侧边栏'">
-        <span class="toggle-icon" :class="{ flipped: collapsed }">«</span>
+      <div v-if="!collapsed" class="header-actions">
+        <button class="action-btn" @click="toggleAllGroups" :title="allCollapsed ? '全部展开' : '全部折叠'">
+          <span v-if="allCollapsed">⊞</span>
+          <span v-else>⊟</span>
+        </button>
+        <button class="toggle-btn" @click="emit('toggleCollapse')" :title="collapsed ? '展开侧边栏' : '收起侧边栏'">
+          <span class="toggle-icon" :class="{ flipped: collapsed }">«</span>
+        </button>
+      </div>
+      <button v-else class="toggle-btn" @click="emit('toggleCollapse')" title="展开侧边栏">
+        <span class="toggle-icon flipped">«</span>
       </button>
     </div>
 
-    <div v-if="!collapsed" class="session-scroll">
-      <div v-for="group in sessionsStore.groupedByAgent" :key="group.agentId" class="agent-group">
-        <div class="agent-group-header" @click="toggleGroup(group.agentId)">
-          <span class="chevron" :class="{ expanded: !collapsedGroups[group.agentId] }">›</span>
-          <span class="agent-dot" :class="`dot-${group.agentSource}`" />
-          <span class="agent-name">{{ group.agentName }}</span>
-          <span class="source-tag" :class="`tag-${group.agentSource}`">
-            {{ group.agentSource === 'builtin' ? '内置' : group.agentSource === 'code' ? '代码' : '自建' }}
-          </span>
-          <span class="session-count">{{ group.sessions.length }}</span>
-        </div>
-        <transition name="slide">
-          <div v-show="!collapsedGroups[group.agentId]" class="agent-group-body">
-            <div
-              v-for="session in group.sessions"
-              :key="session.id"
-              class="session-item"
-              :class="{ active: session.id === sessionsStore.currentSessionId }"
-              @click="emit('switchSession', session.id)"
-              @contextmenu.prevent="openMenu($event, session)"
-            >
-              <template v-if="renaming === session.id">
-                <input
-                  class="rename-input"
-                  v-model="renameInput"
-                  @keyup.enter="confirmRename(session.id)"
-                  @keyup.escape="cancelRename"
-                  @blur="confirmRename(session.id)"
-                />
-              </template>
-              <template v-else>
-                <span class="session-title">{{ session.title }}</span>
-                <span class="session-time">{{ formatTime(session.updated_at) }}</span>
-              </template>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div v-if="!sessionsStore.sessions.length" class="empty-state">
-        <span class="empty-icon">💬</span>
-        <span class="empty-text">暂无会话</span>
-      </div>
-    </div>
-
-    <teleport to="body">
-      <div v-if="menuVisible" class="menu-backdrop" @click="closeMenu" />
-      <div
-        v-if="menuVisible"
-        class="context-menu"
-        :style="{ left: menuPosition.x + 'px', top: menuPosition.y + 'px' }"
+    <div v-if="!collapsed" class="session-list">
+      <Conversations
+        v-model:active="currentSessionId"
+        :items="conversationItems"
+        :show-tooltip="true"
+        :show-built-in-menu="true"
+        :groupable="true"
+        ungrouped-title="未分组"
+        row-key="id"
+        @change="handleSessionChange"
+        @menu-command="handleMenuCommand"
       >
-        <div class="menu-item" @click="startRename">
-          <span class="menu-icon">✏️</span> 重命名
-        </div>
-        <div class="menu-divider" />
-        <div class="menu-item menu-item-danger" @click="deleteTarget">
-          <span class="menu-icon">🗑️</span> 删除
-        </div>
-      </div>
-    </teleport>
+        <template #groupTitle="{ group }">
+          <div
+            class="group-header"
+            :data-group="group.title"
+            :class="{ 'is-collapsed': collapsedGroups.has(group.title) }"
+            @click.stop="toggleGroup(group.title)"
+          >
+            <span class="group-arrow" :class="{ collapsed: collapsedGroups.has(group.title) }">▶</span>
+            <span class="group-name">{{ group.title }}</span>
+            <span class="group-count">{{ group.children?.length || 0 }}</span>
+          </div>
+        </template>
+      </Conversations>
+    </div>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, nextTick } from 'vue'
-import { useSessionsStore, type Session } from '@/stores/sessions'
+import { computed, ref, watchEffect, nextTick, onMounted } from 'vue'
+import { ElMessageBox } from 'element-plus'
+import { Conversations } from 'vue-element-plus-x'
+import type { ConversationItem, ConversationMenuCommand } from 'vue-element-plus-x/types/Conversations'
+import { useSessionsStore } from '@/stores/sessions'
+import { useAgentsStore } from '@/stores/agents'
 
 defineProps<{ collapsed: boolean }>()
 
 const sessionsStore = useSessionsStore()
+const agentsStore = useAgentsStore()
 const emit = defineEmits<{ newChat: []; switchSession: [id: string]; toggleCollapse: [] }>()
 
-const collapsedGroups = reactive<Record<string, boolean>>({})
-const menuVisible = ref(false)
-const menuPosition = ref({ x: 0, y: 0 })
-const menuTarget = ref<Session | null>(null)
-const renaming = ref<string | null>(null)
-const renameInput = ref('')
+const collapsedGroups = ref<Set<string>>(new Set())
 
-function toggleGroup(agentId: string) {
-  collapsedGroups[agentId] = !collapsedGroups[agentId]
+const allCollapsed = computed(() => {
+  const groupNames = new Set(conversationItems.value.map(i => i.group).filter(Boolean))
+  return groupNames.size > 0 && groupNames.size === collapsedGroups.value.size
+})
+
+function toggleGroup(title: string) {
+  if (collapsedGroups.value.has(title)) {
+    collapsedGroups.value.delete(title)
+  } else {
+    collapsedGroups.value.add(title)
+  }
+  nextTick(syncCollapsedDOM)
 }
 
-function openMenu(event: MouseEvent, session: Session) {
-  menuTarget.value = session
-  menuPosition.value = { x: event.clientX, y: event.clientY }
-  menuVisible.value = true
-}
-
-function closeMenu() {
-  menuVisible.value = false
-  menuTarget.value = null
-}
-
-function startRename() {
-  if (!menuTarget.value) return
-  renaming.value = menuTarget.value.id
-  renameInput.value = menuTarget.value.title
-  closeMenu()
-  nextTick(() => {
-    const input = document.querySelector('.rename-input') as HTMLInputElement
-    input?.focus()
-    input?.select()
+function syncCollapsedDOM() {
+  const headers = document.querySelectorAll('.group-header[data-group]')
+  headers.forEach(header => {
+    const groupName = header.getAttribute('data-group') || ''
+    const groupItems = header.closest('.elx-conversations__group')?.querySelector('.elx-conversations__group-items') as HTMLElement | null
+    if (groupItems) {
+      if (collapsedGroups.value.has(groupName)) {
+        groupItems.style.display = 'none'
+      } else {
+        groupItems.style.display = ''
+      }
+    }
   })
 }
 
-async function confirmRename(sessionId: string) {
-  if (renameInput.value.trim()) {
-    await sessionsStore.updateTitle(sessionId, renameInput.value.trim())
+function toggleAllGroups() {
+  if (allCollapsed.value) {
+    collapsedGroups.value.clear()
+  } else {
+    const groupNames = new Set(conversationItems.value.map(i => i.group).filter(Boolean))
+    collapsedGroups.value = groupNames as Set<string>
   }
-  renaming.value = null
+  nextTick(syncCollapsedDOM)
 }
 
-function cancelRename() {
-  renaming.value = null
+const conversationItems = computed<ConversationItem[]>(() =>
+  sessionsStore.sessions.map(s => ({
+    id: s.id,
+    label: s.title || 'New Chat',
+    group: agentsStore.getAgentName(s.agent_id || '__chat__'),
+  }))
+)
+
+const currentSessionId = computed({
+  get: () => sessionsStore.currentSessionId ?? undefined,
+  set: (_val: string | number | undefined) => { /* handled by @change */ },
+})
+
+function handleSessionChange(item: ConversationItem) {
+  emit('switchSession', String(item.id))
 }
 
-async function deleteTarget() {
-  if (!menuTarget.value) return
-  const id = menuTarget.value.id
-  const wasCurrent = id === sessionsStore.currentSessionId
-  closeMenu()
-  await sessionsStore.deleteSession(id)
-  if (wasCurrent) {
-    if (sessionsStore.sessions.length > 0) {
-      emit('switchSession', sessionsStore.sessions[0].id)
-    } else {
-      emit('newChat')
+async function handleMenuCommand(command: ConversationMenuCommand, item: ConversationItem) {
+  const id = String(item.id)
+  const cmd = typeof command === 'string' ? command : String(command)
+
+  if (cmd === 'rename') {
+    try {
+      const { value } = await ElMessageBox.prompt('输入新标题', '重命名', {
+        inputValue: item.label || '',
+        inputValidator: (v) => !!v?.trim() || '标题不能为空',
+      })
+      if (value?.trim()) {
+        await sessionsStore.updateTitle(id, value.trim())
+      }
+    } catch {
+      // cancelled
+    }
+    return
+  }
+
+  if (cmd === 'delete') {
+    const wasCurrent = id === sessionsStore.currentSessionId
+    await sessionsStore.deleteSession(id)
+    if (wasCurrent) {
+      if (sessionsStore.sessions.length > 0) {
+        emit('switchSession', sessionsStore.sessions[0].id)
+      } else {
+        emit('newChat')
+      }
     }
   }
-}
-
-function formatTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const minutes = Math.floor(diff / 60000)
-  if (minutes < 1) return '刚刚'
-  if (minutes < 60) return `${minutes}分前`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}时前`
-  const days = Math.floor(hours / 24)
-  if (days < 30) return `${days}天前`
-  return new Date(iso).toLocaleDateString()
 }
 </script>
 
 <style scoped>
 .left-sidebar {
-  width: 270px;
-  background: #0d1117;
-  border-right: 1px solid #21262d;
+  width: 260px;
+  background: var(--el-bg-color);
+  border-right: 1px solid var(--el-border-color);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .left-sidebar.collapsed {
@@ -7426,16 +8669,42 @@ function formatTime(iso: string): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 14px 10px;
+  padding: 12px;
   flex-shrink: 0;
-  border-bottom: 1px solid #21262d;
+  border-bottom: 1px solid var(--el-border-color);
 }
 
 .sidebar-brand {
   font-size: 14px;
   font-weight: 700;
-  color: #c9d1d9;
+  color: var(--el-text-color-primary);
   letter-spacing: 0.3px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--el-text-color-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-primary);
 }
 
 .toggle-btn {
@@ -7447,15 +8716,15 @@ function formatTime(iso: string): string {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #8b949e;
+  color: var(--el-text-color-secondary);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.15s ease;
 }
 
 .toggle-btn:hover {
-  background: #21262d;
-  color: #c9d1d9;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-primary);
 }
 
 .toggle-icon {
@@ -7467,290 +8736,133 @@ function formatTime(iso: string): string {
   transform: rotate(180deg);
 }
 
-
-.session-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
-}
-
-.session-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-.session-scroll::-webkit-scrollbar-thumb {
-  background: #30363d;
-  border-radius: 4px;
-}
-
-.agent-group {
-  margin-bottom: 0;
-}
-
-.agent-group-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 14px;
-  margin: 0 8px 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-  background: linear-gradient(135deg, #1a3052 0%, #162544 100%);
-  border: 1px solid #234876;
-  border-radius: 8px;
-  position: sticky;
-  top: 4px;
-  z-index: 1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  margin-top: 8px;
-}
-
-.agent-group-header:hover {
-  background: linear-gradient(135deg, #1f3a62 0%, #1a2d50 100%);
-  border-color: #2d5a9e;
-}
-
-.chevron {
-  font-size: 11px;
-  color: #8b949e;
-  transition: transform 0.2s ease;
-  width: 12px;
-  text-align: center;
-}
-
-.chevron.expanded {
-  transform: rotate(90deg);
-}
-
-.agent-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.dot-builtin {
-  background: #58a6ff;
-}
-
-.dot-code {
-  background: #d29922;
-}
-
-.dot-user {
-  background: #3fb950;
-}
-
-.source-tag {
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-.tag-builtin {
-  background: #1c3a5e;
-  color: #58a6ff;
-}
-
-.tag-code {
-  background: #3d2e00;
-  color: #d29922;
-}
-
-.tag-user {
-  background: #0f2d16;
-  color: #3fb950;
-}
-
-.agent-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #79b8ff;
+.session-list {
   flex: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.session-count {
-  font-size: 10px;
-  color: #8b949e;
-  background: #21262d;
-  padding: 1px 6px;
-  border-radius: 10px;
-  font-weight: 500;
-  min-width: 18px;
-  text-align: center;
-}
-
-.agent-group-body {
-  padding: 4px 8px;
-  background: #0d1117;
-}
-
-.session-item {
-  display: flex;
-  align-items: center;
-  padding: 7px 12px;
-  margin: 1px 0;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  color: #7d8590;
-  transition: all 0.15s ease;
-  position: relative;
-  background: transparent;
-}
-
-.session-item:hover {
-  background: #21262d;
-  color: #c9d1d9;
-}
-
-.session-item.active {
-  background: #161b22;
-  color: #c9d1d9;
-  border-left: 2px solid #58a6ff;
-  padding-left: 10px;
-}
-
-.session-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  margin-right: 8px;
-  line-height: 1.4;
-}
-
-.session-time {
-  font-size: 10px;
-  color: #484f58;
-  flex-shrink: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.session-item:hover .session-time {
-  opacity: 1;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 40px 16px;
-  color: #484f58;
-}
-
-.empty-icon {
-  font-size: 24px;
-}
-
-.empty-text {
-  font-size: 12px;
-}
-
-.rename-input {
+.session-list :deep(.elx-conversations) {
+  height: 100%;
   width: 100%;
-  padding: 4px 8px;
-  font-size: 13px;
-  border: 1px solid #58a6ff;
+  --elx-conversations-list-auto-bg-color: transparent !important;
+}
+
+.session-list :deep(.elx-conversations__list) {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 4px 4px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+}
+
+.session-list :deep(.elx-conversations-item) {
+  margin: 0;
+  padding: 8px 8px;
+  border-radius: 6px;
+  color: var(--el-text-color-regular);
+}
+
+.session-list :deep(.elx-conversations-item__label) {
+  max-width: none !important;
+  color: var(--el-text-color-regular) !important;
+}
+
+.session-list :deep(.elx-conversations-item--active) {
+  background: var(--el-color-primary-light-9) !important;
+}
+
+.session-list :deep(.elx-conversations-item--active .elx-conversations-item__label) {
+  color: var(--el-color-primary) !important;
+  font-weight: 600;
+}
+
+/* Group header custom styling */
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 4px 8px;
+  margin-top: 4px;
+  cursor: pointer;
+  border-top: 1px solid var(--el-border-color-lighter);
+  user-select: none;
+  transition: background 0.15s;
   border-radius: 4px;
-  background: #0d1117;
-  color: #e6edf3;
-  outline: none;
 }
 
-.rename-input:focus {
-  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+.group-header:hover {
+  background: var(--el-fill-color-lighter);
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: all 0.2s ease;
+.session-list :deep(.elx-conversations__group:first-child .group-header) {
+  border-top: none;
+  margin-top: 0;
+}
+
+.group-arrow {
+  font-size: 9px;
+  color: var(--el-text-color-secondary);
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+  flex-shrink: 0;
+}
+
+.group-arrow.collapsed {
+  transform: rotate(0deg);
+}
+
+.group-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--el-text-color-primary);
+  letter-spacing: 0.3px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-count {
+  font-size: 10px;
+  color: var(--el-text-color-placeholder);
+  background: var(--el-fill-color);
+  padding: 1px 5px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Hide group items when collapsed */
+.session-list :deep(.elx-conversations__group-items) {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
   overflow: hidden;
 }
-.slide-enter-from, .slide-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-.slide-enter-to, .slide-leave-from {
-  max-height: 500px;
-  opacity: 1;
+
+/* Reset EPX default group title styling (we use custom slot content) */
+.session-list :deep(.elx-conversations__group-title) {
+  all: unset !important;
+  display: block !important;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.2s ease;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-}
-</style>
-
-<style>
-.context-menu {
-  position: fixed;
-  z-index: 9999;
-  background: #1c2128;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  padding: 4px;
-  min-width: 140px;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  font-size: 13px;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #c9d1d9;
-  transition: background 0.12s ease;
-}
-
-.menu-item:hover {
-  background: #30363d;
-}
-
-.menu-item-danger {
-  color: #f87171;
-}
-
-.menu-item-danger:hover {
-  background: #3d1f1f;
-}
-
-.menu-icon {
-  font-size: 14px;
-}
-
-.menu-divider {
-  height: 1px;
-  background: #30363d;
-  margin: 3px 8px;
-}
-
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/layout/LeftSidebar.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/layout/LeftSidebar.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/layout/RightPanel.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/layout/RightPanel.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -7855,37 +8967,35 @@ const agentsStore = useAgentsStore()
 
 <style scoped>
 .right-panel {
-  width: 420px;
-  background: var(--lc-glass-bg);
-  backdrop-filter: blur(var(--lc-glass-blur));
-  -webkit-backdrop-filter: blur(var(--lc-glass-blur));
-  border-left: 1px solid var(--lc-glass-border);
-  padding: 14px;
+  width: 300px;
+  background: var(--el-bg-color);
+  border-left: 1px solid var(--el-border-color);
+  padding: 16px;
   overflow-y: auto;
 }
 
 .panel-section {
   margin-bottom: 16px;
   padding: 12px;
-  background: var(--lc-glass-bg);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-md);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 8px;
 }
 
 .panel-section h4 {
   margin: 0 0 10px;
   font-size: 11px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.7px;
   font-weight: 600;
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--lc-glass-border);
+  border-bottom: 1px solid var(--el-border-color);
 }
 
 .empty-hint {
   font-size: 12px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   margin: 4px 0;
   opacity: 0.6;
 }
@@ -7900,26 +9010,26 @@ const agentsStore = useAgentsStore()
 
 .status-section code {
   font-size: 11px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
 }
 
 .mcp-item {
   margin-bottom: 8px;
   padding: 8px 10px;
-  background: var(--lc-glass-bg-hover);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-sm);
-  transition: border-color var(--lc-transition-fast);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 6px;
+  transition: border-color 0.15s ease;
 }
 
 .mcp-item:hover {
-  border-color: var(--lc-glass-border-hover);
+  border-color: var(--el-color-primary-light-5);
 }
 
 .mcp-item:has(.el-switch:not(.is-checked)) {
   opacity: 0.75;
-  border: 1px dashed rgba(255, 180, 80, 0.35) !important;
-  background: rgba(255, 170, 50, 0.04) !important;
+  border: 1px dashed var(--el-color-warning-light-5) !important;
+  background: var(--el-color-warning-light-9) !important;
 }
 
 .mcp-header {
@@ -7936,7 +9046,7 @@ const agentsStore = useAgentsStore()
 
 .mcp-error {
   font-size: 11px;
-  color: var(--lc-danger);
+  color: var(--el-color-danger);
   margin-top: 4px;
   word-break: break-all;
   opacity: 0.8;
@@ -7957,14 +9067,14 @@ const agentsStore = useAgentsStore()
 .skill-item {
   padding: 8px 10px;
   margin-bottom: 4px;
-  background: var(--lc-glass-bg-hover);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-sm);
-  transition: border-color var(--lc-transition-fast);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 6px;
+  transition: border-color 0.15s ease;
 }
 
 .skill-item:hover {
-  border-color: var(--lc-glass-border-hover);
+  border-color: var(--el-color-primary-light-5);
 }
 
 .skill-header {
@@ -7976,35 +9086,47 @@ const agentsStore = useAgentsStore()
 .skill-name {
   font-size: 13px;
   font-weight: 500;
-  color: var(--lc-accent);
-  transition: color var(--lc-transition-fast), opacity var(--lc-transition-fast);
+  color: var(--el-color-primary);
+  transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .skill-name.dimmed {
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   opacity: 0.6;
 }
 
 .skill-disabled {
-  opacity: 0.75;
-  border: 1px dashed rgba(255, 180, 80, 0.4) !important;
-  background: rgba(255, 170, 50, 0.05) !important;
+  opacity: 0.85;
+  border: 1px dashed var(--el-border-color) !important;
+  background: var(--el-fill-color-lighter) !important;
 }
 
 .skill-disabled .skill-name {
-  color: rgba(255, 200, 100, 0.85) !important;
+  color: var(--el-text-color-secondary) !important;
   text-decoration: line-through;
 }
 
+.skill-disabled .skill-desc {
+  color: var(--el-text-color-placeholder);
+}
+
 .skill-desc {
-  font-size: 11px;
-  color: var(--lc-text-secondary);
+  font-size: 12px;
+  color: var(--el-text-color-regular);
   margin-top: 3px;
-  opacity: 0.8;
+  line-height: 1.5;
 }
 
 .not-allowed {
-  opacity: 0.4;
+  opacity: 0.6;
+}
+
+.not-allowed .skill-name {
+  color: var(--el-text-color-secondary) !important;
+}
+
+.not-allowed .skill-desc {
+  color: var(--el-text-color-secondary);
 }
 
 .chat-only-hint {
@@ -8030,24 +9152,24 @@ const agentsStore = useAgentsStore()
 .hint-text {
   font-size: 14px;
   font-weight: 500;
-  color: var(--lc-text-primary);
+  color: var(--el-text-color-primary);
 }
 
 .hint-sub {
   font-size: 12px;
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   opacity: 0.7;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/layout/RightPanel.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/layout/RightPanel.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/panels/ModelSelector.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/panels/ModelSelector.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -8066,7 +9188,7 @@ const agentsStore = useAgentsStore()
         :value="model.id"
       >
         <span>{{ model.id }}</span>
-        <span style="float:right; color:var(--lc-text-secondary); font-size:11px">
+        <span style="float:right; color:var(--el-text-color-secondary); font-size:11px">
           {{ model.provider }}
         </span>
       </el-option>
@@ -8090,12 +9212,12 @@ defineEmits<{ change: [modelId: string] }>()
 
 `````
 
---- **end of file: frontend/src/components/panels/ModelSelector.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/panels/ModelSelector.vue** (project: lc_agent) --- 
 
 ---
 
 
---- **start of file: frontend/src/components/panels/ToolGroupPanel.vue** (project: lc-agent) --- 
+--- **start of file: frontend/src/components/panels/ToolGroupPanel.vue** (project: lc_agent) --- 
 
 `````vue
 <template>
@@ -8136,15 +9258,15 @@ defineEmits<{ toggle: [groupId: string] }>()
 .group-item {
   margin-bottom: 8px;
   padding: 10px;
-  background: var(--lc-glass-bg-hover);
-  border: 1px solid var(--lc-glass-border);
-  border-radius: var(--lc-radius-sm);
-  transition: border-color var(--lc-transition-fast), background var(--lc-transition-fast);
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 6px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .group-item:hover {
-  border-color: var(--lc-glass-border-hover);
-  background: var(--lc-glass-bg-active);
+  border-color: var(--el-color-primary-light-5);
+  background: var(--el-fill-color);
 }
 
 .group-header {
@@ -8157,7 +9279,7 @@ defineEmits<{ toggle: [groupId: string] }>()
 .group-name {
   font-size: 13px;
   font-weight: 500;
-  color: var(--lc-text-primary);
+  color: var(--el-text-color-primary);
 }
 
 .group-tools {
@@ -8167,7 +9289,7 @@ defineEmits<{ toggle: [groupId: string] }>()
 }
 
 .empty {
-  color: var(--lc-text-secondary);
+  color: var(--el-text-color-secondary);
   font-size: 12px;
   opacity: 0.6;
 }
@@ -8175,631 +9297,126 @@ defineEmits<{ toggle: [groupId: string] }>()
 .not-allowed {
   opacity: 0.4;
   border-style: dashed;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--el-border-color) !important;
 }
 </style>
 
 `````
 
---- **end of file: frontend/src/components/panels/ToolGroupPanel.vue** (project: lc-agent) --- 
+--- **end of file: frontend/src/components/panels/ToolGroupPanel.vue** (project: lc_agent) --- 
 
 ---
 
-# markdown content namespace: lc-agent-bfzs 自定义 Agent 应用 
+# markdown content namespace: 项目规划文档 
 
 
-## lc-agent File Tree (relative dir: `bfzs`)
+## lc_agent File Tree (relative dir: `docs/my_docs`)
 
 
 `````
 
-└── bfzs
-    ├── __init__.py
-    ├── agents
-    │   ├── __init__.py
-    │   └── research_agent.py
-    ├── main.py
-    └── tools
-        ├── __init__.py
-        ├── data_tools.py
-        └── file_tools.py
+└── docs
+    └── my_docs
+        └── task.md
 
 `````
 
 ---
 
 
-## lc-agent (relative dir: `bfzs`)  Included Files (total: 7 files)
+## lc_agent (relative dir: `docs/my_docs`)  Included Files (total: 1 files)
 
 
-- `bfzs/main.py`
-
-- `bfzs/__init__.py`
-
-- `bfzs/agents/research_agent.py`
-
-- `bfzs/agents/__init__.py`
-
-- `bfzs/tools/data_tools.py`
-
-- `bfzs/tools/file_tools.py`
-
-- `bfzs/tools/__init__.py`
+- `docs/my_docs/task.md`
 
 
 ---
 
 
---- **start of file: bfzs/main.py** (project: lc-agent) --- 
+--- **start of file: docs/my_docs/task.md** (project: lc_agent) --- 
 
-`````python
-"""bfzs 应用入口 — 演示如何使用 lc-agent 框架开发自定义 Agent 应用"""
+`````markdown
 
-import argparse
-from pathlib import Path
+# 1. 开发一个 lc_agent 的框架
 
-
-def main():
-    parser = argparse.ArgumentParser(description="lc-agent-bfzs 自定义 Agent 应用")
-    parser.add_argument("--config", "-c", help="配置文件路径", default=None)
-    parser.add_argument("--host", default="127.0.0.1", help="服务器地址")
-    parser.add_argument("--port", "-p", type=int, default=8001, help="服务器端口")
-    args = parser.parse_args()
-
-    config_path = args.config or str(Path(__file__).parent.parent / "config.jsonc")
-
-    from lc_agent import LcAgentApp, load_config
-
-    config = load_config(config_path=config_path)
-
-    # 导入自定义工具（导入即注册到全局 ToolRegistry）
-    import bfzs.tools.file_tools  # noqa: F401
-    import bfzs.tools.data_tools  # noqa: F401
-
-    app = LcAgentApp(config, host=args.host, port=args.port)
-
-    # 注册自定义 CompiledGraph Agent
-    from bfzs.agents.research_agent import build_research_agent
-
-    research_graph = build_research_agent(config)
-    app.add_agent(
-        name="research_assistant",
-        graph=research_graph,
-        description="研究助手：擅长多步骤信息收集、整理和分析",
-    )
-
-    app.run()
+使用langchain  langgraph deepagents 框架技术开发，
 
 
-if __name__ == "__main__":
-    main()
+功能要类似nb_agent框架， 但是不使用tui终端，而是使用web界面。web采用vue + element-ui-plus 框架。
 
+lc_agent 定位是一个框架， 然后用户可以导入lc_agent 框架开发，开发自己的具体的agent应用。可以在页面创建智能体。
+
+后端采用fastapi + sqlmodel ，要使用asyncio生态编程
+
+# 2. nb_agent 项目文件夹
+ai先必须熟悉nb_agent框架，以及nb_agent_bfzs项目和nb_agent之间的关系。
+
+nb_agent 项目文件夹：
+"D:\codes\nb_agent"   
+
+nb_agent_bfzs(基于nb_agent框架开发的自定义项目)项目文件夹:
+"D:\codes\nb_agent_bfzs"
+
+我是让你参考nb_agent，内让你照抄， 尽量使用langchain全家桶的2026年最新用法，不用学nb_agent那样都自己实现。
+
+# 3.AI 写langchain 家族框架代码时候的规则
+
+## 3.1 写 langchain / langgraph / deepagents 代码时，禁止使用ai预训练的过时的语法写法。
+  要使用最新的框架语法。 写代码时候要用 docs-langchain 和 reference-langchain 这个两个langchain官方文档的mcp工具查询框架最新用法。
+
+
+## 3.2 如果有必要，要用 nb_rag mcp查询 langchain / langgraph / deepagents  用法
+  如果官方的文档，不够用，ai要调用 nbrag mcp的一些列工具来查询用法，要多次多轮深入调用nbrag的一系列工具，不要浅尝辄止，没检索足够足够的资料就开始回答。
+
+  nbrag已向量化langchain相关源码和教程到知识库 `langchain_ai_codes_and_docs`
+
+  langchain_ai_codes_and_docs 知识库包含如下文件件的内容
+  ```python
+  r'D:\codes\docs\src',
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_anthropic",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_classic",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_community",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_core",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_deepseek",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_google_genai",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_openai",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_protocol",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain_text_splitters",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langdetect",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langgraph",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langgraph_sdk",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langsmith",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\langchain",
+       r"D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\deepagents",
+  ```
+
+## 3.3 ai可以从 `D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\` 目录下深入 langchain 相关的源码，包含函数入参和注释和用法。
+
+ai可以从 `D:\ProgramData\miniconda3\envs\py312\Lib\site-packages\` 目录下深入 langchain 相关的源码，包含函数入参和注释和用法。
+
+
+# 4 web界面
+
+web界面要需要非常炫酷黑暗风， 要使用vue + element-ui-plus 框架。
+采用左边菜单栏，中间内容区的方式，右边显示现在nbagent tui那些模型 tools 和 mcp skill，可以热切换屏蔽和激活。
+
+不要照抄 nb_agent tui的布局和相似，因为python开发的tui有固定的局限性，web要按照最佳实践来设计和开发。
+
+# 5 所有 tools 和 mcp 和 skills 都能快速按分组屏蔽
+tools 和 mcp 都要能方便按分组激活和屏蔽
+
+例如skill.md 的 希望题头元数据如果加上 ,方便快速激活或者屏蔽一组技能
+metadata
+    group: "技能组1"$
+
+# 6 关于智能体
+
+智能体就是langchian的 complinedgraph类型， 用户可以在python代码在创建多个agent，页面要能显示这些智能体。
+
+并且支持用户在页面创建智能体， 就像nbaegnt那样的是 promote + tools + mcp + skills 的组合。
 `````
 
---- **end of file: bfzs/main.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/__init__.py** (project: lc-agent) --- 
-
-`````python
-"""lc-agent-bfzs — 基于 lc-agent 框架的自定义 Agent 应用"""
-
-__version__ = "0.1.0"
-
-`````
-
---- **end of file: bfzs/__init__.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/agents/research_agent.py** (project: lc-agent) --- 
-
-`````python
-"""研究助手 Agent — 演示如何创建自定义 CompiledGraph 并注册到框架
-
-这是一个多步骤研究 Agent，能够：
-1. 根据用户问题制定研究计划
-2. 逐步执行研究（调用工具搜集信息）
-3. 整合结果并给出结论
-"""
-
-from __future__ import annotations
-
-from typing import Annotated, TypedDict
-
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, END
-from langgraph.graph.message import add_messages
-
-
-class ResearchState(TypedDict):
-    """研究 Agent 的状态定义"""
-    messages: Annotated[list, add_messages]
-    research_plan: str
-    findings: list[str]
-    step: int
-
-
-RESEARCH_SYSTEM_PROMPT = """你是一个专业的研究助手。你的工作流程是：
-1. 分析用户的问题，制定研究计划
-2. 逐步执行研究计划
-3. 整合所有发现，给出完整的分析报告
-
-请用中文回答，条理清晰，有理有据。"""
-
-
-def build_research_agent(config: dict):
-    """构建研究助手的 CompiledGraph。
-
-    Args:
-        config: 应用配置字典，用于获取 LLM 配置
-
-    Returns:
-        编译后的 LangGraph StateGraph (CompiledGraph)
-    """
-    provider_conf = {}
-    for name, conf in config.get("provider", {}).items():
-        if isinstance(conf, dict) and conf.get("models"):
-            provider_conf = conf
-            break
-
-    model_id = config.get("agent", {}).get("default_model", "gpt-4")
-    llm = ChatOpenAI(
-        model=model_id,
-        base_url=provider_conf.get("base_url") or None,
-        api_key=provider_conf.get("api_key", "not-set"),
-        temperature=0.3,
-    )
-
-    async def plan_node(state: ResearchState) -> dict:
-        """制定研究计划"""
-        messages = [SystemMessage(content=RESEARCH_SYSTEM_PROMPT)] + state["messages"]
-        planning_prompt = (
-            "请分析用户的问题，制定一个简洁的研究计划（2-3个步骤）。"
-            "只输出计划本身，格式：步骤1: xxx\n步骤2: xxx"
-        )
-        messages.append(HumanMessage(content=planning_prompt))
-        response = await llm.ainvoke(messages)
-        return {
-            "research_plan": response.content,
-            "step": 1,
-            "messages": [AIMessage(content=f"📋 研究计划:\n{response.content}")],
-        }
-
-    async def research_node(state: ResearchState) -> dict:
-        """执行研究"""
-        messages = [SystemMessage(content=RESEARCH_SYSTEM_PROMPT)] + state["messages"]
-        research_prompt = (
-            f"根据研究计划:\n{state['research_plan']}\n\n"
-            f"现在执行步骤 {state['step']}，给出你的分析和发现。"
-        )
-        messages.append(HumanMessage(content=research_prompt))
-        response = await llm.ainvoke(messages)
-        findings = state.get("findings", []) + [response.content]
-        return {
-            "findings": findings,
-            "step": state["step"] + 1,
-            "messages": [AIMessage(content=f"🔍 步骤{state['step']}发现:\n{response.content}")],
-        }
-
-    async def summarize_node(state: ResearchState) -> dict:
-        """整合总结"""
-        messages = [SystemMessage(content=RESEARCH_SYSTEM_PROMPT)] + state["messages"]
-        findings_text = "\n\n".join(
-            f"发现{i+1}: {f}" for i, f in enumerate(state.get("findings", []))
-        )
-        summary_prompt = (
-            f"请整合以下研究发现，给出一份简洁、结构化的最终报告:\n\n{findings_text}"
-        )
-        messages.append(HumanMessage(content=summary_prompt))
-        response = await llm.ainvoke(messages)
-        return {
-            "messages": [AIMessage(content=f"📝 研究报告:\n{response.content}")],
-        }
-
-    def should_continue_research(state: ResearchState) -> str:
-        """判断是否继续研究"""
-        plan_lines = [l for l in state.get("research_plan", "").split("\n") if l.strip()]
-        total_steps = max(len(plan_lines), 2)
-        if state.get("step", 1) > total_steps:
-            return "summarize"
-        return "research"
-
-    graph = StateGraph(ResearchState)
-
-    graph.add_node("plan", plan_node)
-    graph.add_node("research", research_node)
-    graph.add_node("summarize", summarize_node)
-
-    graph.set_entry_point("plan")
-    graph.add_edge("plan", "research")
-    graph.add_conditional_edges("research", should_continue_research, {
-        "research": "research",
-        "summarize": "summarize",
-    })
-    graph.add_edge("summarize", END)
-
-    return graph.compile()
-
-`````
-
---- **end of file: bfzs/agents/research_agent.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/agents/__init__.py** (project: lc-agent) --- 
-
-`````python
-"""自定义 Agent 模块 — 使用 LangGraph 构建自定义 CompiledGraph"""
-
-`````
-
---- **end of file: bfzs/agents/__init__.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/tools/data_tools.py** (project: lc-agent) --- 
-
-`````python
-"""数据分析工具组 — 提供简单的数据处理和计算功能"""
-
-import json
-import math
-from typing import Any
-
-from lc_agent import tool
-
-
-@tool(group="data_analysis", group_description="数据分析")
-def calculate(expression: str) -> str:
-    """计算数学表达式。支持基本运算和 math 模块函数。
-
-    Args:
-        expression: 数学表达式，如 "2**10", "math.sqrt(144)", "sum([1,2,3,4,5])"
-    """
-    allowed_names = {
-        k: v for k, v in math.__dict__.items() if not k.startswith("_")
-    }
-    allowed_names.update({"abs": abs, "round": round, "sum": sum, "min": min, "max": max})
-
-    try:
-        result = eval(expression, {"__builtins__": {}}, allowed_names)
-        return f"{expression} = {result}"
-    except Exception as e:
-        return f"计算错误: {e}"
-
-
-@tool(group="data_analysis", group_description="数据分析")
-def parse_json(json_string: str) -> str:
-    """解析 JSON 字符串并格式化输出。
-
-    Args:
-        json_string: JSON 格式字符串
-    """
-    try:
-        data = json.loads(json_string)
-        formatted = json.dumps(data, ensure_ascii=False, indent=2)
-        return f"解析结果:\n{formatted}"
-    except json.JSONDecodeError as e:
-        return f"JSON 解析失败: {e}"
-
-
-@tool(group="data_analysis", group_description="数据分析")
-def text_statistics(text: str) -> str:
-    """统计文本的基本信息。
-
-    Args:
-        text: 要分析的文本
-    """
-    lines = text.split("\n")
-    words = text.split()
-    chars = len(text)
-    chars_no_space = len(text.replace(" ", "").replace("\n", ""))
-
-    return (
-        f"文本统计:\n"
-        f"  总字符数: {chars}\n"
-        f"  字符数(不含空格): {chars_no_space}\n"
-        f"  行数: {len(lines)}\n"
-        f"  词数/段落数: {len(words)}"
-    )
-
-
-@tool(group="data_analysis", group_description="数据分析")
-def csv_preview(file_path: str, max_rows: int = 10) -> str:
-    """预览 CSV 文件的前几行。
-
-    Args:
-        file_path: CSV 文件路径
-        max_rows: 最多显示的行数，默认10行
-    """
-    from pathlib import Path
-    import csv
-
-    p = Path(file_path).expanduser()
-    if not p.exists():
-        return f"错误: 文件不存在 - {p}"
-
-    try:
-        with open(p, "r", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            rows = []
-            for i, row in enumerate(reader):
-                if i >= max_rows + 1:
-                    break
-                rows.append(row)
-
-        if not rows:
-            return "CSV 文件为空"
-
-        header = rows[0]
-        data_rows = rows[1:]
-        col_widths = [max(len(str(cell)) for cell in col) for col in zip(*rows)]
-
-        lines = []
-        lines.append(" | ".join(h.ljust(w) for h, w in zip(header, col_widths)))
-        lines.append("-+-".join("-" * w for w in col_widths))
-        for row in data_rows:
-            lines.append(" | ".join(str(c).ljust(w) for c, w in zip(row, col_widths)))
-
-        return f"CSV 预览 ({p.name}, 显示 {len(data_rows)} 行):\n\n" + "\n".join(lines)
-    except Exception as e:
-        return f"读取 CSV 失败: {e}"
-
-`````
-
---- **end of file: bfzs/tools/data_tools.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/tools/file_tools.py** (project: lc-agent) --- 
-
-`````python
-"""文件管理工具组 — 提供文件读写、目录浏览等功能"""
-
-import os
-from pathlib import Path
-
-from lc_agent import tool
-
-
-@tool(group="file_mgmt", group_description="文件管理")
-def read_file(file_path: str) -> str:
-    """读取指定文件的内容。
-
-    Args:
-        file_path: 文件的绝对或相对路径
-    """
-    p = Path(file_path).expanduser()
-    if not p.exists():
-        return f"错误: 文件不存在 - {p}"
-    if not p.is_file():
-        return f"错误: 路径不是文件 - {p}"
-    try:
-        return p.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        return f"错误: 无法以 UTF-8 读取文件（可能是二进制文件）"
-
-
-@tool(group="file_mgmt", group_description="文件管理")
-def write_file(file_path: str, content: str) -> str:
-    """将内容写入指定文件（会覆盖已有内容）。
-
-    Args:
-        file_path: 文件路径
-        content: 要写入的内容
-    """
-    p = Path(file_path).expanduser()
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(content, encoding="utf-8")
-    return f"已写入文件: {p} ({len(content)} 字符)"
-
-
-@tool(group="file_mgmt", group_description="文件管理")
-def list_directory(directory: str = ".", show_hidden: bool = False) -> str:
-    """列出目录下的所有文件和子目录。
-
-    Args:
-        directory: 目录路径，默认当前目录
-        show_hidden: 是否显示隐藏文件
-    """
-    p = Path(directory).expanduser()
-    if not p.exists():
-        return f"错误: 目录不存在 - {p}"
-    if not p.is_dir():
-        return f"错误: 路径不是目录 - {p}"
-
-    items = []
-    for item in sorted(p.iterdir()):
-        if not show_hidden and item.name.startswith("."):
-            continue
-        prefix = "📁 " if item.is_dir() else "📄 "
-        size = ""
-        if item.is_file():
-            s = item.stat().st_size
-            size = f" ({_format_size(s)})"
-        items.append(f"{prefix}{item.name}{size}")
-
-    if not items:
-        return f"目录为空: {p}"
-    return f"目录: {p}\n\n" + "\n".join(items)
-
-
-@tool(group="file_mgmt", group_description="文件管理")
-def search_files(directory: str, pattern: str) -> str:
-    """递归搜索匹配模式的文件。
-
-    Args:
-        directory: 搜索根目录
-        pattern: glob 模式，如 *.py, **/*.md
-    """
-    p = Path(directory).expanduser()
-    if not p.exists():
-        return f"错误: 目录不存在 - {p}"
-
-    matches = list(p.glob(pattern))
-    if not matches:
-        return f"未找到匹配 '{pattern}' 的文件"
-
-    results = [str(m.relative_to(p)) for m in matches[:50]]
-    total = len(matches)
-    output = "\n".join(results)
-    if total > 50:
-        output += f"\n\n... 共 {total} 个匹配，仅显示前 50 个"
-    return output
-
-
-def _format_size(size: int) -> str:
-    for unit in ("B", "KB", "MB", "GB"):
-        if size < 1024:
-            return f"{size:.1f}{unit}" if unit != "B" else f"{size}{unit}"
-        size /= 1024
-    return f"{size:.1f}TB"
-
-`````
-
---- **end of file: bfzs/tools/file_tools.py** (project: lc-agent) --- 
-
----
-
-
---- **start of file: bfzs/tools/__init__.py** (project: lc-agent) --- 
-
-`````python
-"""自定义工具包 — 所有工具模块导入时自动注册到 ToolRegistry"""
-
-`````
-
---- **end of file: bfzs/tools/__init__.py** (project: lc-agent) --- 
-
----
-
-# markdown content namespace: lc-agent-bfzs 配置文件 
-
-
-## lc-agent File Tree (relative dir: `.`)
-
-
-`````
-
-└── config.jsonc
-
-`````
-
----
-
-
-## lc-agent (relative dir: `.`)  Included Files (total: 1 files)
-
-
-- `config.jsonc`
-
-
----
-
-
---- **start of file: config.jsonc** (project: lc-agent) --- 
-
-`````text
-{
-  // LLM 提供商配置
-  "provider": {
-    "litellm": {
-      "api_key": "sk-no-key-needed",
-      "base_url": "http://localhost:4000/v1",
-      "models": [
-        {
-          "id": "ark-deepseek-v4-flash",
-          "context_limit": 200000
-        },
-        {
-          "id": "ds-deepseek-v4-flash",
-          "context_limit": 200000
-        },
-         
-         {
-          "id": "ark-glm-5.1",
-          "context_limit": 200000
-        }
-      ]
-    }
-  },
-
-  "agent": {
-    "system_prompt": "你是一个智能助手，擅长文件管理、数据分析和日常辅助任务。请用中文回答问题。",
-    "default_model": "ds-deepseek-v4-flash",
-    "streaming": true
-  },
-
-  "database": {
-    "url": "sqlite+aiosqlite:///./bfzs_data.db",
-    "checkpoint_path": "./bfzs_checkpoints.db"
-  },
-
-  "skills": {
-    "directory": "./myskills"
-  },
-
-  "mcp_servers": {
-    // Web 搜索 MCP
-    "web-search": {
-      "type": "sse",
-      "url": "http://localhost:3000/sse",
-      "enabled": true
-    },
-
-    // 文件系统 MCP：让 AI 读写指定目录的文件，这个是最知名的第三方文件系统MCP
-    // ⚠ 必须至少提供一个绝对路径，AI 只能访问列出的目录
-    // 如果编程，不要接入这个filesystem mcp，serena就够了，接入太多mcp会浪费tokens和加大ai决策难度。
-    "filesystem": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "D:/codes/nb_agent_bfzs"]
-    },
-
-    // 用户可以先独立方式启动nbrag mcp web服务，也可以使用local模式启动
-    "nbrag": {
-      "type": "http",
-      "url": "http://localhost:9101/mcp"
-    },
-
-    // Context7 MCP
-    "context7": {
-      "type": "local",
-      "command": ["npx", "-y", "@upstash/context7-mcp@latest"],
-      "enabled": true
-    },
-
-    // Serena 代码分析 MCP — 已修正路径
-    "serena": {
-      "type": "local",
-      "command": ["C:/Users/ydf6/.local/bin/serena.exe", "start-mcp-server", "--project", "D:/codes/lc-agent"],
-      "enabled": true
-    },
-
-    // LangChain 官方文档 MCP
-    "docs-langchain": {
-      "type": "http",
-      "url": "https://docs.langchain.com/mcp"
-    },
-
-    // LangChain API 参考 MCP
-    "reference-langchain": {
-      "type": "http",
-      "url": "https://reference.langchain.com/mcp"
-    }
-  }
-}
-
-`````
-
---- **end of file: config.jsonc** (project: lc-agent) --- 
+--- **end of file: docs/my_docs/task.md** (project: lc_agent) --- 
 
 ---
 
