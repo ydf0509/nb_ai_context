@@ -1,30 +1,30 @@
 ﻿
 # 🤖 AI 上下文阅读协议 (由 nb_ai_context 生成)
 
+> **此文档生成时间**：2026-06-30 13:34:24
 > **系统指令**：你正在解析一份由工具 **`nb_ai_context`** 自动生成的**结构化项目快照**。
-> **文档性质**：这**不是**一份普通的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并。
+> **文档性质**：这**不是**一份普通的面向人类的文档，而是专为 AI 大模型（LLM）设计的上下文数据流。它将项目文档、源代码和 AST 架构元数据进行了特殊的结构化合并，请开启"代码解析器"的心智模式。
+
 
 ## 🧠 AI 认知与解析准则
 
-这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请遵循以下自适应阅读策略：
+这份由 `nb_ai_context` 生成的文档是你的核心知识库。其中的内容是动态的——它可能包含完整的底层源码，也可能仅包含使用教程，或者是两者的混合。请严格遵循以下自适应阅读策略：
 
-### 1. 信息的层级与互补
-*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果文档中详细描述了某个功能的用法，即使生成器没有包含其对应的源码实现，也请完全信任文档中的逻辑，并以此为基础进行回答。
-*   **源码即事实**：当遇到 `.py` 源码或 AST 元数据（类/函数签名）时，请以此作为实现细节、类型约束和语法准确性的**事实标准**。
-*   **缺失内容的推断**：如果教程演示了调用 `API.process()`，但本文档未包含 `API` 类的源码，**请勿认为该功能不存在**。你应该基于教程中的演示，合理推断该接口的输入输出和行为模式，并据此协助用户。
+### 1. 信息的层级与冲突处理
+*   **文档即意图**：将 `README`、教程文档和 Docstrings 视为项目设计的**最高意图**。如果生成器省略了对应源码，请完全信任文档逻辑，以此为基础推理。
+*   **源码即事实**：遇到 `.py` 源码或 AST 元数据（类/函数签名）时，以此作为实现细节、类型约束和语法准确性的**最终事实标准**。
+*   **冲突处理**：若文档与源码/AST 存在矛盾，请以源码为准，并在回答中向用户简要指出该差异。
+*   **测试代码的忽略**：为优化 Token 长度，集成/单元测试及非核心 API 源码通常被隐藏。**绝对不要**因此推断或提醒用户“项目缺乏测试”或“代码未实现”。
 
 ### 2. 文件边界与架构感知
-*   **上下文定界**：`nb_ai_context` 使用以下标记严格界定文件内容：
-    `--- **start of file: <路径>** ---` ... 内容 ... `--- **end of file: <路径>** ---`
-*   **结构可视化**：请利用“文件树 (File Tree)”章节来建立项目的宏观架构认知，即便某些文件未被展开显示。
-*   **依赖关系**：利用工具生成的“文件依赖分析”章节来理解模块间的引用关系，这有助于你在只有部分代码的情况下理清数据流向。
+*   **上下文定界**：工具使用 `--- **start of file: <路径>** ---` 等标记严格界定文件。**在你的回复中，请使用标准 Markdown 代码块，切勿模仿使用此类系统定界符。**
+*   **结构可视化**：利用“文件树 (File Tree)”章节建立项目的宏观架构认知。
+*   **依赖关系**：利用“文件依赖分析”章节理清模块间的 import 数据流向。
 
-### 3. 代码生成与交互
-*   **风格一致性**：在生成代码或解释逻辑时，请严格模仿文档中已有的代码风格和命名规范。
-*   **元数据利用**：对于仅展示 AST 元数据（如仅有类定义而无函数体）的 Python 文件，请将其视为有效的接口定义，确保你的代码调用符合这些签名约束。
-*   **事实锚定 (Fact Anchoring)**：生成代码时必须严格**锚定**在本文档提供的范围内。
-    *   涉及 API 调用时，必须基于**源码中的 AST 签名**或**教程中的演示示例**。
-    *   **严禁臆造**文档中既未定义、也未在教程中提及的类名、方法名或参数。确保每一个生成的 Token 都有文档依据。
+### 3. 严格的代码生成与交互边界
+*   **事实锚定 (Fact Anchoring)**：你生成的代码必须严格锚定在本文档范围内！API 调用必须基于**源码中的 AST 签名**或**文档中的演示示例**。
+*   **严禁臆造 (Zero Fabrication)**：绝对禁止编造文档中未定义或未提及的类名、方法名或参数。
+*   **越界拒绝**：如果用户询问的功能在当前提供的上下文中完全不存在，请明确告知“当前上下文中未包含该信息”，而不是试图凭空生成。
 
 ---
 # markdown content namespace: nb_cron project summary 
@@ -195,11 +195,8 @@ Usage::
   `````
   启用自动清理历史一次性任务的功能。
   
-<<<<<<< HEAD
   清理函数是模块级别定义的，支持 funboost ``mp_consume`` 多进程场景。
   
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
   :param cron_expression: 清理任务的 cron 表达式，默认每天 0 点
   :param older_than_days: 清理多少天前的任务
   `````
@@ -1551,7 +1548,6 @@ uvicorn proj2_fastapi_cron:app --reload
 ---
 
 ## 历史一次性定时任务清理功能
-<<<<<<< HEAD
 
 nb_cron 会自动清理已执行完毕的一次性任务（`date` trigger），防止存储膨胀。
 
@@ -1599,14 +1595,6 @@ cron.enable_auto_cleanup(
 - ⚠️ 内部任务 `job_id` 格式为 `_auto_cleanup_{name}`，在任务列表中可见（用于排查）
 
 
-=======
-```
-cron = NbCron("my_project", "redis://localhost:6379/0")
-cron.cleanup_history_jobs(older_than_days=30)   # 手动清理
-cron.enable_auto_cleanup()                       # 每天0点自动清理7天前的
-```
-
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 ## License
 
 MIT - ydf0509
@@ -1646,6 +1634,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries",
     "Topic :: System :: Distributed Computing",
 ]
@@ -1715,15 +1705,7 @@ include = ["nb_cron*"]
 ---
 
 
-<<<<<<< HEAD
 ## nb_cron (relative dir: `examples`)  Included Files (total: 12 files)
-=======
-<<<<<<< HEAD
-## nb_cron (relative dir: `examples`)  Included Files (total: 12 files)
-=======
-## nb_cron (relative dir: `examples`)  Included Files (total: 11 files)
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 
 - `examples/demo1.py`
@@ -1832,21 +1814,13 @@ nb_cron 一次性定时任务清理示例
     python demo_clean_history_date_job.py
 """
 import logging
-<<<<<<< HEAD
 from datetime import datetime, timedelta
-=======
-from datetime import datetime, timedelta, timezone
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 import time
 
 
 from funboost import BoosterParams, BrokerEnum
 
-<<<<<<< HEAD
 from nb_cron import NbCron, cron_register
-=======
-from nb_cron import NbCron, cron_register, add_cron_register
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 from nb_cron.executors.funboost_executor import FunboostExecutor
 
 logging.basicConfig(
@@ -1854,11 +1828,7 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
 )
 
-<<<<<<< HEAD
 fb_executor = FunboostExecutor(
-=======
-executor = FunboostExecutor(
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     BoosterParams(
         queue_name="nb_cron_dispatch2",
         broker_kind=BrokerEnum.REDIS,
@@ -1867,15 +1837,9 @@ executor = FunboostExecutor(
         # max_retry_times=3,
     )
 )
-<<<<<<< HEAD
 
 # 创建调度器（使用 Redis 存储，需要先启动 Redis 服务）
 cron = NbCron("cleanup_demo2", "redis://localhost:6379/0",executor=fb_executor)
-=======
-executor.consume()
-# 创建调度器（使用 Redis 存储，需要先启动 Redis 服务）
-cron = NbCron("cleanup_demo2", "redis://localhost:6379/0",executor=executor)
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 # ─── 注册任务函数 ────────────────────────────────────────────────────
 
@@ -1883,7 +1847,6 @@ cron = NbCron("cleanup_demo2", "redis://localhost:6379/0",executor=executor)
 def test_date_job(job_name: str):
     print(f"[一次性任务] 执行: {job_name}")
 
-<<<<<<< HEAD
 
 def _job_status_text(job) -> str:
     if job.trigger_type == "date" and job.next_run_time is None:
@@ -1892,8 +1855,6 @@ def _job_status_text(job) -> str:
         return "已过期"
     return "正常"
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 # ─── 创建多个一次性任务 ─────────────────────────────────────────────
 
 # 过去的任务（已过期）
@@ -1940,7 +1901,6 @@ cron.add_job(
     args=("未来的任务",)
 )
 
-<<<<<<< HEAD
 if __name__ == "__main__":
     fb_executor.mp_consume(2)
     # fb_executor.consume()
@@ -1971,56 +1931,6 @@ if __name__ == "__main__":
     for job in jobs_after:
         status = _job_status_text(job)
         print(f"- {job.name} (ID: {job.job_id}) - 类型: {job.trigger_type} - 状态: {status}")
-=======
-# ─── 查看当前任务 ───────────────────────────────────────────────────
-print("\n=== 当前所有任务 ===")
-jobs = cron.get_jobs()
-for job in jobs:
-    status = "已过期" if job.next_run_time and job.next_run_time < datetime.now(job.next_run_time.tzinfo) else "正常"
-    print(f"- {job.name} (ID: {job.job_id}) - 类型: {job.trigger_type} - 状态: {status}")
-
-# ─── 手动清理历史任务 ───────────────────────────────────────────────
-# print("\n=== 手动清理历史任务 ===")
-# # delete_count = cron.cleanup_history_jobs(older_than_days=7)
-# print(f"清理结果: 删除了 {delete_count} 个过期的一次性任务")
-
-cron.enable_auto_cleanup(
-    cron_expression="*/5 * * * * *",  # 每5s执行一次清理
-    older_than_days=7  # 清理7天前的任务
-)
-
-time.sleep(10)
-
-# ─── 查看清理后任务 ─────────────────────────────────────────────────
-print("\n=== 清理后剩余任务 ===")
-jobs_after = cron.get_jobs()
-for job in jobs_after:
-    status = "已过期" if job.next_run_time and job.next_run_time < datetime.now(job.next_run_time.tzinfo) else "正常"
-    print(f"- {job.name} (ID: {job.job_id}) - 类型: {job.trigger_type} - 状态: {status}")
-
-# ─── 启用自动清理 ───────────────────────────────────────────────────
-# print("\n=== 启用自动清理 ===")
-# cron.enable_auto_cleanup(
-#     cron_expression="0 0 0 * * *",  # 每天0点执行
-#     older_than_days=7  # 清理7天前的任务
-# )
-# print("已启用自动清理: 每天0点清理7天前的一次性任务")
-
-# ─── 启动调度器 ─────────────────────────────────────────────────────
-print("\n=== 启动调度器 ===")
-cron.start()
-print("调度器已启动，按 Ctrl+C 退出")
-
-# # 保持进程运行
-# import time
-# try:
-#     while True:
-#         time.sleep(1)
-# except KeyboardInterrupt:
-#     print("\n正在停止...")
-#     cron.stop()
-#     print("已停止")
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 `````
 
@@ -2518,11 +2428,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelna
 # proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
 
 
-<<<<<<< HEAD
-proj2_fast_api_cron = NbCron("my_project", "redis://localhost:6379/0")
-=======
 proj2_fast_api_cron = NbCron("example_proj1b", "redis://localhost:6379/0")
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 # ─── 创建 FastAPI app（自带 UI + API） ───
 app = get_fastapi_app(proj2_fast_api_cron)
@@ -3744,10 +3650,6 @@ nb_cron + funboost 集成示例（同进程模式）
 
 安装依赖::
 
-<<<<<<< HEAD
-    pip install nb_cron[redis] funboost
-=======
-<<<<<<< HEAD
     pip install nb_cron[redis] funboost
 
 运行::
@@ -3759,25 +3661,6 @@ from funboost import BoosterParams, BrokerEnum
 
 from nb_cron import NbCron, cron_register, add_cron_register
 from nb_cron.executors.funboost_executor import FunboostExecutor
-=======
-    pip install nb_cron_nb[redis] funboost
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
-
-运行::
-
-    python example_with_funboost.py
-"""
-import logging
-from funboost import BoosterParams, BrokerEnum
-
-from nb_cron import NbCron, cron_register, add_cron_register
-from nb_cron.executors.funboost_executor import FunboostExecutor
-<<<<<<< HEAD
-=======
-from funboost import BoosterParams, BrokerEnum
-from nb_cron.web.app import get_fastapi_app
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 logging.basicConfig(
     level=logging.INFO,
@@ -3804,10 +3687,6 @@ def cleanup():
 # ─── 创建 funboost 执行器 ──────────────────────────────────────────
 # 使用 BoosterParams，IDE 可自动补全所有参数
 
-<<<<<<< HEAD
-executor = FunboostExecutor(
-=======
-<<<<<<< HEAD
 executor = FunboostExecutor(
     BoosterParams(
         queue_name="nb_cron_dispatch",
@@ -3826,35 +3705,6 @@ cron = NbCron(
     "my_project",
     "redis://localhost:6379/0",
     executor=executor,
-=======
-"""
-# 实际上NbCron的executor 永远无脑用 FunboostExecutor 就好了,默认自带的 ThreadExecutor 是简单实现，没有FunboostExecutor的丰富功能，
-# 因为你即使不想安装消息队列，也可以用 broker_kind=BrokerEnum.MEMORY_QUEUE 内存队列作为broker，所以没必要用默认的ThreadExecutor 。
-"""
-funboost_executor = FunboostExecutor(
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
-    BoosterParams(
-        queue_name="nb_cron_dispatch",
-        broker_kind=BrokerEnum.REDIS,
-        concurrent_num=10,
-        qps=20,
-        # max_retry_times=3,
-    )
-)
-
-# ─── 创建调度器 ──────────────────────────────────────────────────────
-# NbCron 构造时自动调用 executor.bind_cron(self)
-# worker 端执行完后直接用 cron.metrics.record() 写指标，无需重建 store
-
-cron = NbCron(
-    "my_project",
-    "redis://localhost:6379/0",
-<<<<<<< HEAD
-    executor=executor,
-=======
-    executor=funboost_executor,
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 )
 
 # ─── 注册定时任务 ─────────────────────────────────────────────────────
@@ -3862,25 +3712,8 @@ cron = NbCron(
 @cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务")
 @cron_register('heartbeat')
 def heartbeat():
-<<<<<<< HEAD
     print("[heartbeat] via funboost!")
 
-=======
-<<<<<<< HEAD
-    print("[heartbeat] via funboost!")
-
-=======
-    time.sleep(1)
-    print("[heartbeat] via funboost!")
-
-@cron.job("*/10 * * * * *", trigger="cron", name="十秒测试任务aio")
-@cron_register('aio_heartbeat')
-async def aio_heartbeat():
-    await asyncio.sleep(1)
-    print("[aio_heartbeat] via funboost!")
-
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
 cron.add_job(
     send_report, "0 0 8 * * *", trigger="cron", name="每日报告",
@@ -3891,48 +3724,18 @@ cron.add_job(sync_users, "0 0 * * * *", trigger="cron", name="每小时同步",
 cron.add_job(cleanup, "0 30 2 * * *", trigger="cron", name="每晚清理")
 
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-app = get_fastapi_app(cron=cron)
-
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 # ─── 启动 ────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     # 启动 funboost consume（consume() 本身非阻塞）
-<<<<<<< HEAD
     executor.mp_consume(process_num=2)
-=======
-<<<<<<< HEAD
-    executor.mp_consume(process_num=2)
-=======
-    funboost_executor.mp_consume(process_num=2)
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
     # 启动 nb_cron 调度器（非阻塞，Ctrl+C 退出）
     cron.start()
 
-<<<<<<< HEAD
     print("\nnb_cron + funboost 已启动（同进程模式）")
     print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
     print("Ctrl+C 退出")
-=======
-<<<<<<< HEAD
-    print("\nnb_cron + funboost 已启动（同进程模式）")
-    print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
-    print("Ctrl+C 退出")
-
-=======
-    print("  scheduler 触发 → push 到队列 → funboost worker 执行 → 自动写回 metrics")
-  
-    # 使用fastapi来启动web界面，可以放在同一个项目启动，也可以在跨不同的git项目从页面管理定时任务。，参考examples\demo_cross_git_project_manage_corn_tasks
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 `````
 
 --- **end of file: examples/use_funboost/example_auto_execute_by_funboost.py** (project: nb_cron) --- 
@@ -3950,11 +3753,7 @@ from funboost import boost, BoosterParams, BrokerEnum, ctrl_c_recv
 # 1. 定义任务函数
 @boost(BoosterParams(
     queue_name='hello_queue66',
-<<<<<<< HEAD
-    broker_kind=BrokerEnum.REDIS,  # 使用本地 SQLite 文件作为队列，零依赖
-=======
     broker_kind=BrokerEnum.REDIS,  # 使用 Redis 作为消息队列
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     qps=2,                                # 精准控频：每秒执行 2 次
     concurrent_num=5,                     # 最多 5 个线程并发
 ))
@@ -5444,48 +5243,28 @@ class NbCron:
     def enable_auto_cleanup(self, cron_expression: str = "0 0 0 * * *", older_than_days: int = 7):
         """启用自动清理历史一次性任务的功能。
 
-<<<<<<< HEAD
         清理函数是模块级别定义的，支持 funboost ``mp_consume`` 多进程场景。
 
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         :param cron_expression: 清理任务的 cron 表达式，默认每天 0 点
         :param older_than_days: 清理多少天前的任务
         """
         cleanup_job_id = f"_auto_cleanup_{self.name}"
-<<<<<<< HEAD
 
         if not FunctionRegistry.is_registered("_nb_cron_auto_cleanup"):
             FunctionRegistry.register_by_name("_nb_cron_auto_cleanup", _nb_cron_auto_cleanup)
 
         self.add_job(
             "_nb_cron_auto_cleanup",
-=======
-        self._auto_cleanup_days = older_than_days
-
-        if not hasattr(self, "_auto_cleanup_func"):
-            def _auto_cleanup_task():
-                return self.cleanup_history_jobs(self._auto_cleanup_days)
-
-            self._auto_cleanup_func = _auto_cleanup_task
-            FunctionRegistry.register_by_name(cleanup_job_id, self._auto_cleanup_func)
-
-        self.add_job(
-            self._auto_cleanup_func,
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
             cron_expression,
             trigger="cron",
             job_id=cleanup_job_id,
             name="内置-历史任务自动清理",
             max_instances=1,
-<<<<<<< HEAD
             kwargs={
                 "store_url": self._store_url,
                 "scheduler_name": self.name,
                 "older_than_days": older_than_days,
             },
-=======
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
         )
         logger.info("Auto cleanup enabled: %s, older_than_days=%d", cron_expression, older_than_days)
 
@@ -6140,25 +5919,13 @@ Funboost 执行器。
     # NbCron 构造时会自动把自身注入给 executor，worker 端直接复用 metrics
     cron = NbCron("my_project", "redis://localhost:6379/0", executor=executor)
 
-<<<<<<< HEAD
-    @cron.job("0 */5 * * * *")
-=======
     @cron.job("0 */5 * * * *", kwargs={"user_id": 42})
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
     @cron_register('my_task')
     def my_task(user_id: int):
         print(f"processing user {user_id}")
 
     # 启动 funboost consume（consume() 本身非阻塞）+ scheduler
-<<<<<<< HEAD
     executor.consume()  # 或 executor.mp_consume(process_num=4)
-=======
-<<<<<<< HEAD
-    executor.consume()  # 或 executor.mp_consume(process_num=4)
-=======
-    executor.consume()
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     cron.start()
 
 Worker 端单独进程（可横向扩展）::
@@ -6190,14 +5957,6 @@ import logging
 import time as _time
 import traceback
 from typing import Any, Callable, Dict, Optional, Tuple
-<<<<<<< HEAD
-
-from nb_cron.executors.base_executor import BaseExecutor
-from funboost import boost, BoosterParams
-
-logger = logging.getLogger("nb_cron.funboost_executor")
-
-=======
 import inspect
 
 import asyncio
@@ -6218,7 +5977,6 @@ def _get_thread_local_loop() -> asyncio.AbstractEventLoop:
         loop = asyncio.new_event_loop()
         tl.asyncio_loop = loop
     return tl.asyncio_loop
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
 
 class FunboostExecutor(BaseExecutor):
     """
@@ -6240,16 +5998,6 @@ class FunboostExecutor(BaseExecutor):
         booster_params: "BoosterParams",
         metrics_recorder: Optional[Callable[[str, bool, float, Optional[str]], None]] = None,
     ):
-<<<<<<< HEAD
-        self._booster_params = booster_params
-        self._metrics_recorder = metrics_recorder
-        # NbCron 构造时会自动赋值（见 NbCron.__init__）
-        self._cron: Optional[Any] = None
-        self.booster = self._build_dispatch_func()
-        self.consume = self.booster.consume
-        self.mp_consume = self.booster.mp_consume
-    
-=======
         self.booster_params = booster_params
         self.booster_params.concurrent_mode = ConcurrentModeEnum.THREADING # 用户无需指定并发模式，_nb_cron_dispatch函数内部自动处理asyncio和同步函数
         self._metrics_recorder = metrics_recorder
@@ -6258,11 +6006,7 @@ class FunboostExecutor(BaseExecutor):
         self.booster = self._build_booster()
         self.consume = self.booster.consume
         self.mp_consume = self.booster.mp_consume
-<<<<<<< HEAD
     
-=======
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 
     # ── NbCron 注入 ──────────────────────────────────────────────────
 
@@ -6286,15 +6030,9 @@ class FunboostExecutor(BaseExecutor):
             return self._cron.metrics.record
         return None
 
-<<<<<<< HEAD
-    def _build_dispatch_func(self):
-        """构建 @boost 装饰的统一 dispatch 函数。"""
-        booster_params = self._booster_params
-=======
     def _build_booster(self):
         """构建 @boost 装饰的统一 dispatch 函数。"""
         booster_params = self.booster_params
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         executor_ref = self
 
         @boost(booster_params)
@@ -6313,12 +6051,6 @@ class FunboostExecutor(BaseExecutor):
             start = _time.monotonic()
             success = False
             error_msg: Optional[str] = None
-<<<<<<< HEAD
-
-            try:
-                func = FunctionRegistry.resolve(cron_func_name)
-                result = func(*args, **(kwargs or {}))
-=======
             kwargs = kwargs or {}
 
             try:
@@ -6342,7 +6074,6 @@ class FunboostExecutor(BaseExecutor):
                         result = loop.run_until_complete(func(*args, **kwargs))
                 else:
                     result = func(*args, **kwargs)
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
                 success = True
                 return result
             except Exception as exc:
@@ -6387,11 +6118,7 @@ class FunboostExecutor(BaseExecutor):
         """推入 funboost 队列。callback 被忽略（执行在 worker 进程）。"""
         logger.debug(
             "push to funboost: job_id=%s func=%s queue=%s",
-<<<<<<< HEAD
-            job_id, func_ref, self._booster_params.queue_name,
-=======
             job_id, func_ref, self.booster_params.queue_name,
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
         )
         self.booster.push(
             cron_func_name=func_ref,
@@ -6399,7 +6126,6 @@ class FunboostExecutor(BaseExecutor):
             kwargs=kwargs or {},
             job_id=job_id,
         )
-<<<<<<< HEAD
         
     
 
@@ -6420,33 +6146,6 @@ class FunboostExecutor(BaseExecutor):
     #     )
     #     self._dispatch_func.mp_consume(process_num=process_num)
 
-=======
-<<<<<<< HEAD
-        
-    
-
-    # def start_funboost_consume(self, process_num: int = 1) -> None:
-    #     """
-    #     启动 funboost 消费者。
-
-    #     ``consume()`` 本身非阻塞，``mp_consume()`` 在此基础上支持多进程。
-
-    #     Parameters
-    #     ----------
-    #     process_num:
-    #         消费者进程数，默认 1。多进程可提升并发消费能力。
-    #     """
-    #     logger.info(
-    #         "Funboost worker starting (queue=%s, process_num=%d)",
-    #         self._booster_params.queue_name, process_num,
-    #     )
-    #     self._dispatch_func.mp_consume(process_num=process_num)
-
-=======
-
-    
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
     def shutdown(self, wait: bool = True) -> None:
         pass
 
@@ -7180,15 +6879,7 @@ class BaseStore(ABC):
 `````python
 import copy
 import threading
-<<<<<<< HEAD
 from datetime import datetime, timedelta, timezone
-=======
-<<<<<<< HEAD
-from datetime import datetime, timedelta, timezone
-=======
-from datetime import datetime
->>>>>>> 887ae111e0f2079196440b0fbea1b8411c9a52a3
->>>>>>> 699d37ae9fa5f9a4fc9f4a1072d06d4509b8d0e8
 from typing import Any, Dict, List, Optional
 
 from nb_cron.core.job import Job
