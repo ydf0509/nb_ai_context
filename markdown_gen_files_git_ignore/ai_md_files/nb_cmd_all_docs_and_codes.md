@@ -55,7 +55,7 @@
 
 `````
 nb_cmd — Python 码农的低代码平台
-写一个 class，自动获得五种能力：Python 直接调用 + CLI + REST API + Web UI + Markdown 文档。
+写一个 class，自动获得六种能力：Python 直接调用 + CLI + REST API + Web UI + TUI 终端交互 + Markdown 文档。
 
 用法::
 
@@ -80,6 +80,7 @@ nb_cmd — Python 码农的低代码平台
 - `from ui.helper import cmdui`
 - `from utils.validators import validate`
 - `from core.gen_cmd import CmdGen`
+- `from core.gen_skill import SkillGen`
 
 
 ---
@@ -97,12 +98,16 @@ NbCmd 基类 —— 所有命令行工具的父类。
 
 #### 📦 Imports
 
+- `from __future__ import annotations`
 - `import logging`
 - `import sys`
 - `from meta import NbCmdMeta`
+- `from typing import Annotated`
 - `import subprocess`
 - `from modes.cli_mode import run_cli`
 - `from modes.web_mode import start_web_server`
+- `from modes.tui_mode import start_tui`
+- `from typing_extensions import Annotated`
 - `from parser import print_full_help`
 - `from parser import print_easy_help`
 - `from parser import print_full_help`
@@ -111,7 +116,7 @@ NbCmd 基类 —— 所有命令行工具的父类。
 #### 🏛️ Classes (1)
 
 ##### 📌 `class NbCmd(object)`
-*Line: 11*
+*Line: 21*
 
 **Docstring:**
 `````
@@ -125,7 +130,7 @@ NbCmd 基类 —— 所有命令行工具的父类。
 功能:
     - 公有方法 → 子命令
     - 方法签名 → 参数自动推导
-    - 五种能力：Python 直接调用 / CLI / REST API / Web UI / Markdown 文档
+    - 六种能力：Python 直接调用 / CLI / REST API / Web UI / TUI 终端交互 / Markdown 文档
     - 支持 OOP 继承覆写
     - 支持多层级子命令（sub_commands）
     - 支持 nbctx 跨层级上下文传递
@@ -135,11 +140,6 @@ NbCmd 基类 —— 所有命令行工具的父类。
     cmdui.success() cmdui.warning() cmdui.error() cmdui.info()
     cmdui.progress() cmdui.confirm() cmdui.prompt() cmdui.select()
 `````
-
-**🔧 Constructor (`__init__`):**
-- `def __init__(self)`
-  - **Parameters:**
-    - `self`
 
 **Public Methods (7):**
 - `def make_nbctx(self)`
@@ -191,7 +191,7 @@ NbCmd 基类 —— 所有命令行工具的父类。
   -------
   str (capture=True 时返回 stdout) 或 None
   `````
-- `def exec(self, cmd: str)`
+- `def exec(self, cmd: Annotated[str, '要执行的系统命令', 'c'])`
   - *执行任意系统命令*
 - `def run(self, args = None)`
   - **Docstring:**
@@ -205,7 +205,7 @@ NbCmd 基类 —— 所有命令行工具的父类。
   `````
 
 **Properties (1):**
-- `@property logger`
+- `@property logger -> logging.Logger`
 
 **Class Variables (4):**
 - `sub_commands = {}`
@@ -255,7 +255,7 @@ NbCmd 的 Meta 配置基类。
 子类继承后可覆盖任意字段，IDE 可自动补全所有可用选项。
 `````
 
-**Class Variables (20):**
+**Class Variables (21):**
 - `name: Optional[str] = None`
 - `version: str = '0.0.1'`
 - `description: Optional[str] = None`
@@ -276,6 +276,7 @@ NbCmd 的 Meta 配置基类。
 - `hide_method_list: Optional[List[str]] = None`
 - `auth_token: Optional[str] = None`
 - `timeout: int = 0`
+- `db_dir: Optional[str] = None`
 
 
 ---
@@ -442,16 +443,18 @@ Core Files (imported by other files, sorted by import count):
 `````markdown
 # nb_cmd
 
-**Python 码农的低代码平台** —— 写一个 class，自动获得五种能力：Python 直接调用 + CLI + REST API + Web UI + Markdown 文档。不写路由、不写前端、不写文档，全自动。
+**Python 码农的低代码平台** —— 写一个 class，自动获得七种能力：Python 直接调用 + CLI + REST API + Web UI + TUI 终端交互 + Markdown 文档 + skills 七种操作方式。不写路由、不写前端、不写 UI 代码、不写文档，全自动。
 
 **nb-cmd: 不是"更好的 CLI 框架"，而是"低代码平台"**
 
-用户只需要写一个 class，nb_cmd 自动生成 `python类自身正常直接调用` + `CLI` + `REST API` + `Web UI(含 WebSocket 实时控制台)` +  `自动生成Markdown使用文档` 五种能力。
+用户只需要写一个 class，nb_cmd 自动生成 `python类自身正常直接调用` + `CLI` + `REST API` + `Web UI(含 WebSocket 实时控制台)` + `TUI 终端交互界面` + `自动生成Markdown使用文档` + `为ai生成agentskills.io规范的skills` 七种能力。
 - 类自身完全照常使用（Python 直接调用）
 - 自动生成 CLI 命令行
 - 自动生成 REST API（含 Swagger 文档）
 - 自动生成 Markdown 使用文档（CmdGen）
 - 自动生成前端 Web UI（含 WebSocket 实时控制台）
+- 自动生成 TUI 终端交互界面（基于 Textual，命令树 + 参数表单 + 实时控制台）
+- 自动生成 为ai生成agentskills.io规范）规范的skills
 
 [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -469,6 +472,7 @@ Core Files (imported by other files, sorted by import count):
 - [为什么用 nb_cmd？](#为什么用-nb_cmd)
 - [核心价值与典型场景](#核心价值与典型场景)
 - [安装](#安装)
+- [nbcmd —— 零代码个人命令中心](#nbcmd--零代码个人命令中心)
 - [5 分钟快速上手](#5-分钟快速上手)
 - [核心特性](#核心特性)
 - [完整 API 速查](#完整-api-速查)
@@ -503,17 +507,17 @@ nb_cmd 换了一种思路：**Class 是中心，能力是投影。**
              └── Markdown 使用文档（CmdGen 自动生成）
 ```
 
-一次编写，五种能力全自动，不改一行代码。
+一次编写，七种能力全自动，不改一行代码。
 
 **你写什么 → 你得到什么：**
 
 | 你写的 | 自动获得 |
 |--------|----------|
-| 方法签名 `def deploy(self, host: str, port: int = 22)` | CLI 参数 + API 端点 + Web 表单（输入框/数字框/复选框） |
-| 方法的 docstring `"""部署到远程服务器"""` | CLI --help + Swagger 文档 + Web UI 描述 |
-| 类型注解 `env: Environment`（Enum） | CLI choices + API 校验 + Web 下拉选择 |
-| `print()` / `cmdui.table()` | CLI 终端输出 + Web 实时流式推送（WebSocket + ANSI 彩色渲染） |
-| `sub_commands = {'git': GitTool}` | CLI 多级子命令 + API 嵌套路由 + Web UI 折叠分组 |
+| 方法签名 `def deploy(self, host: str, port: int = 22)` | CLI 参数 + API 端点 + Web 表单 + TUI 参数表单 |
+| 方法的 docstring `"""部署到远程服务器"""` | CLI --help + Swagger 文档 + Web/TUI UI 描述 |
+| 类型注解 `env: Environment`（Enum） | CLI choices + API 校验 + Web/TUI 下拉选择 |
+| `print()` / `cmdui.table()` | CLI 终端输出 + Web 实时流式推送 + TUI 实时控制台 |
+| `sub_commands = {'git': GitTool}` | CLI 多级子命令 + API 嵌套路由 + Web/TUI 折叠分组 |
 | `CmdGen(MyApp).doc(file='cli.md')` | **自动生成带 TOC + 参数表格 + 可复制命令行的 Markdown 文档** |
 | `self.nbctx = AppCtx(region=self.region)` | **跨层级强类型上下文，自动穿透到所有子命令组，IDE 补全 + 零手动传递** |
 | `MyTool().greet('张三', 3)` | **方法就是普通 Python 方法，随时直接调用、单元测试、import 复用** |
@@ -532,7 +536,8 @@ nb_cmd 换了一种思路：**Class 是中心，能力是投影。**
 | 类型驱动 | 手动 | 手动 | ✓ | ✗ | **✓** |
 | OOP 继承/覆写 | ✗ | ✗ | ✗ | 有限 | **✓** |
 | 自动生成 REST API | ✗ | ✗ | ✗ | ✗ | **✓** |
-| 自动生成 Web UI | ✗ | ✗ | ✗ | ✗ | **✓** |
+| 自动生成 Web UI | ✗ | ✗ | ✗ |  | **✓** |
+| 自动生成 TUI | ✗ | ✗ | ✗ | ✗ | **✓（Textual 终端图形界面）** |
 | 多层级子命令 | 手动 | ✓ | ✓ | 有限 | **✓** |
 | Swagger 文档 | ✗ | ✗ | ✗ | ✗ | **✓** |
 | 进度条/表格/彩色 | ✗ | ✓ | ✓(rich) | ✗ | **✓** |
@@ -642,11 +647,90 @@ pip install nb-cmd[all]
 
 ---
 
+## nb_cmd 的两种使用方式
+
+nb_cmd 提供两种使用方式，满足不同场景：
+
+### 方式一：`nbcmd` 内置命令 —— 零代码个人命令中心
+
+**不需要创建项目，不需要写任何一行 Python 代码。**
+
+`nbcmd` 是 nb_cmd 自带的一个开箱即用的命令行工具。安装后，在任何终端直接输入 `nbcmd --tui`，即可启动一个个人命令管理器——通过内置的 `exec` 执行任意系统命令，收藏常用命令并设置短别名，以后再也不用记复杂的命令行。
+
+你可以把 nbcmd --tui 当做linux服务器的的万能首屏，太香了，因为你可以把任何常用命令和其他click命令都收藏起来，一键点击运行。
+xshell 和 finalshell的命令收藏，只有你一个人看得到，换个软件和电脑就看不到了，别人也看不到，nbcmd 的命令收藏是保存到sqlite持久化，所有人无论用xshell还是finalshell还是网页堡垒机，永远都可以看到。
+
+```bash
+# 一次安装
+pip install nb-cmd[tui]
+
+# 随时随地，在任何终端直接启动（无需进入任何项目目录）
+nbcmd --tui
+
+# 或者用浏览器模式
+nbcmd --web
+```
+
+**工作流：**
+
+```
+1. 在任何终端输入 nbcmd --tui，打开命令中心
+2. 选择 exec → 输入命令（如 docker-compose -f /opt/project/docker-compose.yml up -d）
+3. 点击收藏 ★ → 输入别名（如"启动生产环境"）
+4. 以后直接在收藏夹里找到并一键运行，永远不用再记命令
+```
+
+**典型场景**：一台 Linux 服务器上跑着 5 个项目，每个项目有不同的启动、部署、日志查看命令。以前要记 20 多条命令，现在全部收藏到 `nbcmd`，加上别名，一目了然。
+
+| 功能 | 说明 |
+|------|------|
+| **exec 执行** | 通过内置 `exec` 命令执行任意系统命令 |
+| **收藏 + 别名** | 给常用命令加短别名（如 `[启动前端]`、`[部署生产]`、`[查看日志]`） |
+| **收藏夹运行** | 点击收藏命令直接运行，或填充到输入框修改参数后执行 |
+| **历史记录** | 自动记录最近 1000 条执行历史，可搜索、可回填 |
+| **TUI / Web 双模式** | 终端交互界面 + 浏览器界面，收藏数据自动同步 |
+| **全局数据** | 收藏和历史保存在 `~/.nb_cmd/nb_cmd_web.db`，任何目录下启动都能访问 |
+
+> **团队共享**：把常用命令收藏好，新人入职打开 `nbcmd --tui`，一眼看到所有常用操作，比任何 Wiki 文档都直观。
+
+### 方式二：继承 `NbCmd` 类 —— 写一个 class 获得七种能力
+
+**适合开发者**：继承 `NbCmd` 基类，定义业务方法，自动获得 Python 直接调用 + CLI + REST API + Web UI + TUI + Markdown 文档 + skills 七种能力。这是 nb_cmd 的核心价值，详见下文"5 分钟快速上手"。
+
+```python
+from nb_cmd import NbCmd
+
+class MyTool(NbCmd):
+    """我的运维工具"""
+    def deploy(self, host: str, port: int = 22):
+        """部署到远程服务器"""
+        print('部署到 {}:{}'.format(host, port))
+
+if __name__ == '__main__':
+    MyTool().run()
+```
+
+```bash
+python my_tool.py deploy web-01           # CLI 模式
+python my_tool.py --web                   # Web UI + REST API 模式
+python my_tool.py --tui                   # TUI 终端交互模式
+```
+
+> **两种方式的区别**：`nbcmd` 是内置的零配置工具，只有 `exec` 命令，适合"不想写代码，只想管理命令"的场景；继承 `NbCmd` 是开发者模式，适合"把业务逻辑封装成专业工具"的场景。
+
+---
+
 ## nb_cmd 网页截图
 
 > `nb_cmd` 只要你写了一个继承 `NbCmd` 的类，就自动生成 FastAPI 接口和接口文档，自动生成前端输入框和按钮。让你只写普通的类，无需接触 Web 后端接口开发，更无需接触前端界面开发，更无需接触 WebSocket 实时输出——你的方法中的任何普通的日志和 `print` 都会自动实时推送到 Web 前端页面上。
 
 ![nb_cmd 网页截图](https://github.com/ydf0509/nb_cmd/blob/main/docs/images/nb_cmd_web.png)
+
+## nb_cmd TUI 截图
+
+> `nb_cmd` 只要你写了一个继承 `NbCmd` 的类，就自动生成 Textual 终端图形界面，支持命令树、参数表单、实时控制台输出、命令历史、收藏等功能。
+
+![nb_cmd TUI 截图](https://github.com/ydf0509/nb_cmd/blob/main/pictures/tui1.png)
 
 ## 5 分钟快速上手
 
@@ -1411,10 +1495,11 @@ class MyTool(NbCmd):
 | `enable_exec` | bool | `True` | 是否暴露内置 `exec` 命令（设为 `False` 可防止恶意执行系统命令） |
 | `help_mode` | str | `'full'` | `-h` 的默认行为：`'full'` 显示完整帮助，`'easy'` 显示 argparse 原生格式 |
 | `aliases` | dict | `{}` | 参数别名（推荐用 `Annotated[..., 'desc', 'a']` 指定短别名替代） |
-| `allow_method_list` | list | `None` | 命令白名单（仅限制 CLI/API/Web 暴露；`None` 暴露全部；Python 直接调用不受影响） |
-| `hide_method_list` | list | `None` | 命令黑名单（与白名单互斥，白名单优先；仅限制 CLI/API/Web） |
+| `allow_method_list` | list | `None` | 命令白名单（仅限制 CLI/API/Web/TUI 暴露；`None` 暴露全部；Python 直接调用不受影响） |
+| `hide_method_list` | list | `None` | 命令黑名单（与白名单互斥，白名单优先；仅限制 CLI/API/Web/TUI） |
 | `auth_token` | str | `None` | 简易 Bearer token 鉴权（配置后 API/Web 请求须带 `Authorization: Bearer <token>`） |
-| `timeout` | int | `0` | 命令执行超时秒数（0=不限；作用于 CLI/API/Web 模式） |
+| `timeout` | int | `0` | 命令执行超时秒数（0=不限；作用于 CLI/API/Web/TUI 模式） |
+| `db_dir` | str | `None` | SQLite 数据库目录（默认当前工作目录；设为 `~/.nb_cmd` 可全局共享收藏和历史） |
 
 ### 10. 生命周期钩子
 
@@ -1704,7 +1789,7 @@ def status():
 # 想加 API？对不起，请重写一遍...
 ```
 
-**nb_cmd（一次编写，五种能力）：**
+**nb_cmd（一次编写，七种能力）：**
 
 ```python
 from nb_cmd import NbCmd
@@ -1729,7 +1814,7 @@ python deploy.py deploy web-01            # CLI
 python deploy.py --web --web-port 8080     # Web UI + REST API
 ```
 
-**核心差异：** argparse / click / typer 的世界观是"CLI 是终点"。nb_cmd 的世界观是"Class 是中心，能力是投影"——Python 直接调用、CLI、API、Web UI、Markdown 文档 只是同一份业务逻辑的五种不同表现形式。
+**核心差异：** argparse / click / typer 的世界观是"CLI 是终点"。nb_cmd 的世界观是"Class 是中心，能力是投影"——Python 直接调用、CLI、API、Web UI、TUI、Markdown 文档 、为ai生成agentskills.io规范的skills， 只是同一份业务逻辑的七种不同表现形式。
 
 ### vs 传统前后端开发
 
@@ -1745,7 +1830,7 @@ python deploy.py --web --web-port 8080     # Web UI + REST API
 | 新增 1 个参数 | 改 3 处（后端/前端/文档） | **改 1 处（方法签名）** |
 | 前端开发者 | 需要 | **不需要** |
 
-> **本质区别：** 传统开发是"手动映射"——后端定义接口，前端照着文档手写表单；nb_cmd 是"自动投影"——Python 类是唯一真相源，Python 直接调用 / CLI / REST API / Web UI / Markdown 文档 是它的五个不同维度的投影。改真相源，投影自动跟着变。
+> **本质区别：** 传统开发是"手动映射"——后端定义接口，前端照着文档手写表单；nb_cmd 是"自动投影"——Python 类是唯一真相源，Python 直接调用 / CLI / REST API / Web UI / TUI / Markdown 文档 是它的六个不同维度的投影。改真相源，投影自动跟着变。
 
 ---
 
@@ -1767,7 +1852,8 @@ nb_cmd/
 ├── modes/
 │   ├── cli_mode.py        # CLI 执行引擎
 │   ├── api_mode.py        # REST API 路由生成（FastAPI）
-│   └── web_mode.py        # Web UI 页面生成 + WebSocket 实时输出
+│   ├── web_mode.py        # Web UI 页面生成 + WebSocket 实时输出
+│   └── tui_mode.py        # TUI 终端交互界面（基于 Textual）
 ├── ui/
 │   ├── helper.py          # UIHelper（cmdui 单例）
 │   ├── colors.py          # ANSI 彩色输出
@@ -1786,6 +1872,7 @@ nb_cmd/
 |------|----------|------|
 | CLI 模式 | **无** | 纯标准库，开箱即用 |
 | Web UI + REST API | fastapi + uvicorn | `pip install nb-cmd[web]` |
+| TUI 终端交互 | textual | `pip install nb-cmd[tui]` |
 | nb_log 增强日志 | nb_log | 可选，`pip install nb_log` |
 
 ---
@@ -1810,15 +1897,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nb-cmd"
-version = "0.2.1"
-description = "万能接口生成器——你写一个 Python class，自动获得 CLI + REST API + Web UI + Python 直接调用 四种操作方式，堪称python界低代码平台"
+version = "0.2.2"
+description = "万能接口生成器——你写一个 Python class，自动获得 CLI + REST API + Web UI + TUI 终端交互 + Python 直接调用 + markdown说明文档 + 为ai生成agentskills.io规范的skills 7种操作方式，堪称python界低代码平台"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.7"
 authors = [
     {name = "ydf", email = "ydf0509@sohu.com"},
 ]
-keywords = ["cli", "api", "webui", "command", "argparse", "fastapi"]
+keywords = ["cli", "api", "webui", "tui", "command", "argparse", "fastapi", "textual"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -1840,8 +1927,12 @@ classifiers = [
 [project.optional-dependencies]
 api = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "pydantic>=1.8.0"]
 web = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "websockets>=10.0"]
-all = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "pydantic>=1.8.0", "websockets>=10.0"]
+tui = ["textual>=1.0.0"]
+all = ["fastapi>=0.68.0", "uvicorn>=0.15.0", "pydantic>=1.8.0", "websockets>=10.0", "textual>=1.0.0"]
 nb = ["nb_log"]
+
+[project.scripts]
+nbcmd = "nb_cmd.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/ydf0509/nb_cmd"
@@ -2579,6 +2670,15 @@ class GitRemote(NbCmd):
 `````
 
 └── examples
+    ├── ai_skill_gen_demo
+    │   ├── ai_skill_gen_demo.py
+    │   └── skills
+    │       ├── devops-tool
+    │       │   └── SKILL.md
+    │       ├── devops-tool-full
+    │       │   └── SKILL.md
+    │       └── devops-tool-py
+    │           └── SKILL.md
     ├── bigone_cmd.py
     ├── demo_advanced.py
     ├── demo_basic.py
@@ -2631,6 +2731,14 @@ class GitRemote(NbCmd):
 
 - `examples/five_in_one_demo_doc.md`
 
+- `examples/ai_skill_gen_demo/ai_skill_gen_demo.py`
+
+- `examples/ai_skill_gen_demo/skills/devops-tool/SKILL.md`
+
+- `examples/ai_skill_gen_demo/skills/devops-tool-full/SKILL.md`
+
+- `examples/ai_skill_gen_demo/skills/devops-tool-py/SKILL.md`
+
 - `examples/github_cli_demos/gh_click.py`
 
 - `examples/github_cli_demos/gh_comparison.md`
@@ -2660,7 +2768,7 @@ class GitRemote(NbCmd):
 `````python
 # -*- coding: utf-8 -*-
 """
-nb_cmd 综合入口 demo —— 把多个 NbCmd 类组合到一个统一的 CLI / Web UI / REST API
+nb_cmd 综合入口 demo —— 把多个 NbCmd 类组合到一个统一的 CLI / Web UI / TUI / REST API
 
 用法:
     python bigone_cmd.py --help
@@ -3384,13 +3492,14 @@ if __name__ == '__main__':
 `````python
 # -*- coding: utf-8 -*-
 """
-nb_cmd 五重能力演示 —— 一次编写，五处全自动
+nb_cmd 六重能力演示 —— 一次编写，六处全自动
 
     1. Python 直接调用（类自身完全照常使用）
     2. 自动生成 CLI 命令行
     3. 自动生成 REST API（含 Swagger 文档）
     4. 自动生成 Markdown 使用文档
     5. 自动生成 Web UI（含 WebSocket 实时控制台）
+    6. 自动生成 TUI 终端交互界面（基于 Textual）
 
 用法:
     # --- 能力 2: CLI ---
@@ -3401,6 +3510,9 @@ nb_cmd 五重能力演示 —— 一次编写，五处全自动
 
     # --- 能力 3+5: API + Web UI ---
     python five_in_one_demo.py --web
+
+    # --- 能力 6: TUI ---
+    python five_in_one_demo.py --tui
 
     # --- 能力 4: 自动生成 Markdown 文档 ---
     python five_in_one_demo.py gen-doc
@@ -3457,7 +3569,7 @@ if __name__ == '__main__':
     # tool.ping('127.0.0.1', count=2)
     # tool.calc(100, 200)
 
-    # --- 能力 2~5: CLI / API / Web / 文档 全自动 ---
+    # --- 能力 2~6: CLI / API / Web / TUI / 文档 全自动 ---
     NetTool().run()
 
 `````
@@ -3495,18 +3607,22 @@ if __name__ == '__main__':
 | `--cmd-version` | 显示版本号 |
 | `--web` | 以 Web UI + REST API 模式启动 |
 | `--web-port PORT` | Web UI 服务端口（用于 `--web`） |
+| `--tui` | 以 TUI 终端交互模式启动 |
 
 ## Quick Start
 
 ```bash
 # 查看完整帮助
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py -fh
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py -fh
 
 # 查看版本
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py --cmd-version
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py --cmd-version
 
 # 启动 Web UI
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py --web
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py --web
+
+# 启动 TUI 终端交互
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py --tui
 ```
 
 ## 命令行约定
@@ -3533,7 +3649,7 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py --web
 | `--b` | `int` | *(required)* | - |
 
 ```bash
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py calc --a $<a> --b $<b>
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py calc --a $<a> --b $<b>
 ```
 
 ### `gen-doc`
@@ -3541,7 +3657,7 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py calc --a $<a
 自动生成 Markdown 使用文档
 
 ```bash
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py gen-doc
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py gen-doc
 ```
 
 ### `ping`
@@ -3554,7 +3670,7 @@ Ping 指定主机
 | `--count` | `int` | `4` | - |
 
 ```bash
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py ping --host $<host> --count ${4}
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py ping --host $<host> --count ${4}
 ```
 
 ### `scan`
@@ -3568,12 +3684,1251 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py ping --host 
 | `--verbose` | `bool` | `False` | - |
 
 ```bash
-D:\ProgramData\miniconda3\envs\py39b\python.exe five_in_one_demo.py scan --target $<target> --port ${80} --verbose
+D:\ProgramData\miniconda3\python.exe five_in_one_demo.py scan --target $<target> --port ${80} --verbose
 ```
 
 `````
 
 --- **end of file: examples/five_in_one_demo_doc.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/ai_skill_gen_demo/ai_skill_gen_demo.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+AI Skill 自动生成演示 —— nb_cmd 第七种能力。
+
+本示例演示如何将一个普通的 NbCmd 工具类，一键生成符合
+agentskills.io 国际开放标准的 AI Skill 文件夹，让 Cursor、
+Claude Code、Codex 等 AI Agent 能自动识别并正确使用你的工具。
+
+功能:
+    - 定义一个带全局参数 + 多级子命令组的 DevOps 工具
+    - 一键生成 AI Skill 文件夹（仅 SKILL.md）
+    - 演示 SkillGen 的各种配置选项
+
+用法:
+    # 1. 直接运行（Python 本地调用 + SkillGen 演示）
+    python ai_skill_gen_demo.py
+
+    # 2. CLI 模式
+    python ai_skill_gen_demo.py --env staging deploy --version 2.1.0
+
+    # 3. Web UI 模式
+    python ai_skill_gen_demo.py --web --web-port 8086
+
+    # 4. TUI 模式
+    python ai_skill_gen_demo.py --tui
+"""
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+from dataclasses import dataclass
+from typing import Annotated
+from nb_cmd import NbCmd, SkillGen
+
+
+# ==================== 1. 全局上下文 ====================
+
+@dataclass
+class DevCtx:
+    """DevOps 全局上下文"""
+    env: str = 'prod'
+    region: str = 'us-east'
+    verbose: bool = False
+
+
+# ==================== 2. 子命令组 ====================
+
+class DbCmd(NbCmd):
+    """数据库管理 (二级子命令组)"""
+    nbctx: DevCtx
+
+    def migrate(self,
+                dry_run: Annotated[bool, '仅预览，不执行'] = False,
+                target: Annotated[str, '目标迁移版本'] = 'latest'):
+        """执行数据库迁移"""
+        prefix = '[DRY-RUN]' if dry_run else '[EXEC]'
+        print(f'{prefix} [{self.nbctx.env}/{self.nbctx.region}] 迁移到 {target}')
+
+    def backup(self, compress: Annotated[bool, '启用压缩'] = True):
+        """备份数据库"""
+        fmt = 'tar.gz' if compress else 'sql'
+        print(f'[{self.nbctx.env}] 备份数据库 → backup.{fmt}')
+
+    def restore(self, file: Annotated[str, '备份文件路径']):
+        """从备份恢复数据库"""
+        print(f'[{self.nbctx.env}] 恢复数据库: {file}')
+
+
+class DeployCmd(NbCmd):
+    """部署管理 (二级子命令组)"""
+    nbctx: DevCtx
+
+    def rolling(self,
+                version: Annotated[str, '部署版本号', 'v'],
+                batch_size: Annotated[int, '每批实例数'] = 3,
+                wait: Annotated[int, '每批等待秒数'] = 30):
+        """滚动部署"""
+        print(f'[{self.nbctx.env}] 滚动部署 v{version} (每批 {batch_size} 台, 等待 {wait}s)')
+
+    def canary(self,
+               version: Annotated[str, '部署版本号', 'v'],
+               traffic: Annotated[float, '流量比例 0-1'] = 0.1):
+        """金丝雀部署"""
+        print(f'[{self.nbctx.env}] 金丝雀部署 v{version} (流量 {traffic*100:.0f}%)')
+
+    def rollback(self, steps: Annotated[int, '回退步数'] = 1):
+        """回滚到上一个版本"""
+        print(f'[{self.nbctx.env}] 回滚 {steps} 个版本')
+
+
+class MonitorCmd(NbCmd):
+    """监控告警 (二级子命令组)"""
+    nbctx: DevCtx
+
+    def status(self, service: Annotated[str, '服务名'] = None):
+        """查看服务状态"""
+        target = service or 'all'
+        print(f'[{self.nbctx.env}] 服务状态: {target}')
+
+    def alert(self, rule: Annotated[str, '告警规则名'], threshold: Annotated[float, '阈值']):
+        """配置告警规则"""
+        print(f'[{self.nbctx.env}] 告警规则: {rule} > {threshold}')
+
+
+# ==================== 3. 顶层工具类 ====================
+
+class DevOpsTool(NbCmd):
+    """
+    DevOps 运维工具 —— AI Skill 自动生成演示。
+
+    支持数据库管理、部署管理、监控告警三大模块。
+    全局参数 env/region/verbose 自动穿透到所有子命令组。
+    """
+    nbctx: DevCtx
+
+    class Meta:
+        name = 'devops-tool'
+        version = '1.0.0'
+        description = 'DevOps 运维工具，支持数据库管理、部署、监控等操作。'
+        enable_exec = False
+
+    def __init__(self,
+                 env: Annotated[str, '运行环境 prod/staging/dev'] = 'prod',
+                 region: Annotated[str, '部署区域'] = 'us-east',
+                 verbose: Annotated[bool, '输出详细信息'] = False):
+        self.env = env
+        self.region = region
+        self.verbose = verbose
+
+    def make_nbctx(self):
+        return DevCtx(env=self.env, region=self.region, verbose=self.verbose)
+
+    sub_commands = {
+        'db': DbCmd,
+        'deploy': DeployCmd,
+        'monitor': MonitorCmd,
+    }
+
+    def health(self):
+        """查看全局健康状态"""
+        print(f'=== 全局健康检查 [{self.nbctx.env}/{self.nbctx.region}] ===')
+        print('  Database: OK')
+        print('  API:      OK')
+        print('  Cache:    OK')
+
+    def version(self):
+        """查看工具版本"""
+        return {'tool': 'devops-tool', 'version': '1.0.0', 'env': self.nbctx.env}
+
+
+# ==================== 4. SkillGen 演示 ====================
+
+def demo_basic():
+    """演示 1: 最简用法 —— 一键生成 Skill"""
+    print('\n' + '='*60)
+    print('演示 1: SkillGen 最简用法')
+    print('='*60)
+
+    base_dir = os.path.join(os.path.dirname(__file__), 'skills')
+    g = SkillGen(DevOpsTool, base_dir=base_dir, script='ai_skill_gen_demo.py')
+    path = g.gen()
+    print(f'\nSkill 已生成到: {path}')
+    print(f'  SKILL.md -> {os.path.join(path, "SKILL.md")}')
+
+
+def demo_full():
+    """演示 2: 完整用法 —— 自定义元数据 + 环境提示"""
+    print('\n' + '='*60)
+    print('演示 2: SkillGen 完整用法（含环境提示 + 元数据）')
+    print('='*60)
+
+    base_dir = os.path.join(os.path.dirname(__file__), 'skills')
+    priority_prompt = (
+        '## 运行环境说明\n'
+        '- 线上服务器：使用 `/usr/bin/python3`，脚本位于 `/opt/devops/ai_skill_gen_demo.py`\n'
+        '- 本地开发：使用 `python`，脚本位于当前目录\n'
+        '- 运行前请确保设置 `PYTHONPATH=/opt/devops`（线上）或项目根目录（本地）'
+    )
+
+    g = SkillGen(
+        DevOpsTool,
+        base_dir=base_dir,
+        name='devops-tool-full',
+        script='ai_skill_gen_demo.py',
+        description='DevOps 运维工具 —— 数据库迁移/备份/恢复、滚动/金丝雀部署、服务监控。当需要执行运维操作时使用。',
+        license='MIT',
+        compatibility='Requires Python 3.8+ and nb_cmd >= 0.2.0',
+        metadata={'author': 'ops-team', 'version': '1.0', 'category': 'devops'},
+        user_highest_priority_skill_prompt=priority_prompt,
+        include_python_examples=True,
+    )
+    path = g.gen()
+    print(f'\nSkill 已生成到: {path}')
+    print(f'  SKILL.md -> OK')
+
+
+def demo_string_only():
+    """演示 3: 仅生成 SKILL.md 内容字符串（不写入文件）"""
+    print('\n' + '='*60)
+    print('演示 3: 仅生成 SKILL.md 字符串')
+    print('='*60)
+
+    g = SkillGen(DevOpsTool, base_dir='/tmp', script='ai_skill_gen_demo.py')
+    content = g.gen_skill_md()
+
+    print(f'\nSKILL.md 内容长度: {len(content)} 字符, {len(content.splitlines())} 行')
+    print('\n--- 前 20 行预览 ---')
+    for i, line in enumerate(content.splitlines()[:20], 1):
+        print(f'  {i:2}: {line}')
+    print('  ...')
+
+
+def demo_python_examples():
+    """演示 4: 开启 Python 调用示例"""
+    print('\n' + '='*60)
+    print('演示 4: 开启 Python 调用示例')
+    print('='*60)
+
+    base_dir = os.path.join(os.path.dirname(__file__), 'skills')
+    g = SkillGen(
+        DevOpsTool,
+        base_dir=base_dir,
+        name='devops-tool-py',
+        script='ai_skill_gen_demo.py',
+        include_python_examples=True,
+    )
+    path = g.gen()
+    print(f'\nSkill 已生成到: {path}')
+
+    skill_md = os.path.join(path, 'SKILL.md')
+    with open(skill_md, 'r', encoding='utf-8') as f:
+        content = f.read()
+    has_python = '```python' in content
+    has_cli = '```bash' in content
+    print(f'  包含 Python 示例: {has_python}')
+    print(f'  包含 CLI 示例: {has_cli}')
+
+
+def print_generated_skills():
+    """打印生成的 Skill 文件夹结构"""
+    print('\n' + '='*60)
+    print('生成的 Skill 目录结构')
+    print('='*60)
+
+    skills_dir = os.path.join(os.path.dirname(__file__), 'skills')
+    if not os.path.exists(skills_dir):
+        print('(无)')
+        return
+
+    for root, dirs, files in os.walk(skills_dir):
+        level = root.replace(skills_dir, '').count(os.sep)
+        indent = '  ' * level
+        print(f'{indent}{os.path.basename(root)}/')
+        subindent = '  ' * (level + 1)
+        for f in files:
+            print(f'{subindent}{f}')
+
+
+# ==================== 5. 入口 ====================
+
+if __name__ == '__main__':
+    import sys as _sys
+
+    if len(_sys.argv) > 1:
+        # CLI / Web / API / TUI 模式
+        DevOpsTool().run()
+    else:
+        # 本地直接调用演示
+        print('='*60)
+        print('AI Skill 自动生成演示')
+        print('='*60)
+
+        # 先清理旧的生成结果
+        skills_dir = os.path.join(os.path.dirname(__file__), 'skills')
+        if os.path.exists(skills_dir):
+            import shutil
+            shutil.rmtree(skills_dir)
+            print('\n已清理旧的 skills/ 目录')
+
+        # 运行各种演示
+        demo_basic()
+        demo_full()
+        demo_string_only()
+        demo_python_examples()
+        print_generated_skills()
+
+        print('\n' + '='*60)
+        print('所有演示完成！')
+        print('='*60)
+        print(f'\n查看生成的 Skill 文件:')
+        print(f'  {skills_dir}')
+        print('\n你也可以运行 CLI 模式测试:')
+        print(f'  python ai_skill_gen_demo.py --env staging db migrate --dry-run')
+
+`````
+
+--- **end of file: examples/ai_skill_gen_demo/ai_skill_gen_demo.py** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/ai_skill_gen_demo/skills/devops-tool/SKILL.md** (project: nb_cmd) --- 
+
+`````markdown
+---
+name: devops-tool
+description: >-
+  DevOps 运维工具，支持数据库管理、部署、监控等操作。
+---
+# devops-tool
+
+## Overview
+
+DevOps 运维工具 —— AI Skill 自动生成演示。
+
+支持数据库管理、部署管理、监控告警三大模块。
+全局参数 env/region/verbose 自动穿透到所有子命令组。
+
+## Guidelines
+
+- This tool is implemented using the `nb_cmd` framework. Each public instance method of the `NbCmd` subclass becomes a subcommand. You can read the `Implementation Note` to learn more details.
+- If you are unsure about the specific logic of a command, inspect the source code of the corresponding method in the implementation.
+- Global parameters defined in `__init__` are automatically passed to all subcommands.
+- Boolean flags default to `False`; add the flag to set it to `True`.
+- Subcommand groups are accessed via space, e.g., `<group> <command>`.
+- Use `--help` or `-h` to see available commands and options.
+- Use `--full-help` or `-fh` to see detailed parameter descriptions.
+
+## When to Use
+
+Activate this skill when you need to perform devops-tool-related operations, such as:
+- health
+- version
+- db backup
+- db migrate
+- db restore
+- deploy canary
+- deploy rollback
+- deploy rolling
+- monitor alert
+- monitor status
+
+## Command Structure
+
+### CLI
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py [global_params] <command_path> [command_params]
+```
+
+**Parameter conventions:**
+- `${value}` — parameter with default value (replace as needed)
+- `$<name>` — **required** parameter (must provide a value)
+- `--flag` (no value) — boolean switch (add to enable)
+
+## Global Parameters
+
+These parameters are defined in `__init__` and passed to all subcommands automatically.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--env` | `str` | `prod` | 运行环境 prod/staging/dev |
+| `--region` | `str` | `us-east` | 部署区域 |
+| `--verbose` | `bool` | `False` | 输出详细信息 |
+
+## Commands
+
+### `health`
+
+查看全局健康状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose health
+```
+
+### `version`
+
+查看工具版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose version
+```
+
+### `db` *(subcommand group)*
+
+数据库管理 (二级子命令组)
+
+### `db backup`
+
+备份数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--compress` | `bool` | `True` | 启用压缩 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db backup
+```
+
+### `db migrate`
+
+执行数据库迁移
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--dry-run` | `bool` | `False` | 仅预览，不执行 |
+| `--target` | `str` | `latest` | 目标迁移版本 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db migrate --dry-run --target ${latest}
+```
+
+### `db restore`
+
+从备份恢复数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--file` | `str` | *(required)* | 备份文件路径 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db restore --file $<file>
+```
+
+### `deploy` *(subcommand group)*
+
+部署管理 (二级子命令组)
+
+### `deploy canary`
+
+金丝雀部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--traffic` | `float` | `0.1` | 流量比例 0-1 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy canary --version $<version> --traffic ${0.1}
+```
+
+### `deploy rollback`
+
+回滚到上一个版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--steps` | `int` | `1` | 回退步数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rollback --steps ${1}
+```
+
+### `deploy rolling`
+
+滚动部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--batch-size` | `int` | `3` | 每批实例数 |
+| `--wait` | `int` | `30` | 每批等待秒数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rolling --version $<version> --batch-size ${3} --wait ${30}
+```
+
+### `monitor` *(subcommand group)*
+
+监控告警 (二级子命令组)
+
+### `monitor alert`
+
+配置告警规则
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--rule` | `str` | *(required)* | 告警规则名 |
+| `--threshold` | `float` | *(required)* | 阈值 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor alert --rule $<rule> --threshold $<threshold>
+```
+
+### `monitor status`
+
+查看服务状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--service` | `str` | `None` | 服务名 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor status --service ${None}
+```
+
+
+## Implementation Note
+
+This tool is built on the `nb_cmd` framework. Here is how the Python source code maps to CLI commands:
+
+1. **Class = Top-level command group**. The main class `DevOpsTool` inherits from `NbCmd`.
+   Each public instance method of this class becomes a top-level subcommand.
+
+2. **`sub_commands` dict = Nested command groups**. When a class defines:
+   ```python
+   sub_commands = {"db": DbCmd, "deploy": DeployCmd}
+   ```
+   the keys become the command path segments, and the values are other `NbCmd` subclasses.
+   So `DbCmd.backup(...)` in Python maps to `db backup` on the CLI.
+   Deeper nesting works the same way: if `DbCmd` itself has `sub_commands = {"ops": OpsCmd}`,
+   then `OpsCmd.deploy(...)` maps to `db ops deploy` on the CLI.
+
+3. **`__init__` params = Global CLI options**. Parameters of `__init__(self, ...)` become global options:
+   - `str` / `int` / `float` params → `--name value` (e.g., `--env prod`, `--port 8080`)
+   - `bool` params with default `False` → `--name` (no value, presence means `True`)
+   - `bool` params with default `True` → `--no-name` (no value, presence means `False`)
+   These options are automatically passed to all subcommands and subcommand groups.
+   Inside subcommands, global parameters are accessed via instance attributes or `self.nbctx`.
+
+4. **Method params = Command-level options**. Same parameter-to-flag rules as above:
+   - `str` / `int` / `float` → `--name value`
+   - `bool` default `False` → `--name`
+   - `bool` default `True` → `--no-name`
+   - **No default value** → required parameter (marked as `*(required)*` in the parameter table)
+   For example:
+   - `def backup(self, compress: bool = True)` produces `--compress` (default True, so `--no-compress` to disable)
+   - `def restore(self, file: str)` produces `--file` (required, no default)
+   - Parameter descriptions and short aliases (e.g., `--version, -v`) come from `Annotated[type, "description", "-v"]`.
+
+5. **Method docstring = Command description**. The first line of a method's docstring becomes the help text for that command.
+
+6. **Return values**. If a method returns a value, `nb_cmd` automatically prints it in CLI mode.
+
+7. **Python direct call vs CLI**. In Python you instantiate the class with global params:
+   ```python
+   app = DevOpsTool(env="staging", region="us-west")
+   app.db.backup(compress=False)
+   ```
+   The equivalent CLI is:
+   ```bash
+   python ai_skill_gen_demo.py --env staging --region us-west db backup --no-compress
+   ```
+
+If a command's behavior is unclear, locate the corresponding method in the source code of `DevOpsTool` (or its nested `NbCmd` subclasses) and read the implementation directly.
+
+`````
+
+--- **end of file: examples/ai_skill_gen_demo/skills/devops-tool/SKILL.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/ai_skill_gen_demo/skills/devops-tool-full/SKILL.md** (project: nb_cmd) --- 
+
+`````markdown
+---
+name: devops-tool-full
+description: >-
+  DevOps 运维工具 —— 数据库迁移/备份/恢复、滚动/金丝雀部署、服务监控。当需要执行运维操作时使用。
+license: MIT
+compatibility: Requires Python 3.8+ and nb_cmd >= 0.2.0
+metadata:
+  author: "ops-team"
+  version: "1.0"
+  category: "devops"
+---
+# devops-tool
+
+## Overview
+
+DevOps 运维工具 —— AI Skill 自动生成演示。
+
+支持数据库管理、部署管理、监控告警三大模块。
+全局参数 env/region/verbose 自动穿透到所有子命令组。
+
+## Important
+
+## 运行环境说明
+- 线上服务器：使用 `/usr/bin/python3`，脚本位于 `/opt/devops/ai_skill_gen_demo.py`
+- 本地开发：使用 `python`，脚本位于当前目录
+- 运行前请确保设置 `PYTHONPATH=/opt/devops`（线上）或项目根目录（本地）
+
+## Guidelines
+
+- This tool is implemented using the `nb_cmd` framework. Each public instance method of the `NbCmd` subclass becomes a subcommand. You can read the `Implementation Note` to learn more details.
+- If you are unsure about the specific logic of a command, inspect the source code of the corresponding method in the implementation.
+- Global parameters defined in `__init__` are automatically passed to all subcommands.
+- Boolean flags default to `False`; add the flag to set it to `True`.
+- Subcommand groups are accessed via space, e.g., `<group> <command>`.
+- Use `--help` or `-h` to see available commands and options.
+- Use `--full-help` or `-fh` to see detailed parameter descriptions.
+
+## When to Use
+
+Activate this skill when you need to perform devops-tool-related operations, such as:
+- health
+- version
+- db backup
+- db migrate
+- db restore
+- deploy canary
+- deploy rollback
+- deploy rolling
+- monitor alert
+- monitor status
+
+## Command Structure
+
+### CLI
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py [global_params] <command_path> [command_params]
+```
+
+### Python
+```python
+from ai_skill_gen_demo import DevOpsTool
+app = DevOpsTool()  # pass global params if needed
+# app.subcommand.method(param=value)
+```
+
+**Parameter conventions:**
+- `${value}` — parameter with default value (replace as needed)
+- `$<name>` — **required** parameter (must provide a value)
+- `--flag` (no value) — boolean switch (add to enable)
+
+## Global Parameters
+
+These parameters are defined in `__init__` and passed to all subcommands automatically.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--env` | `str` | `prod` | 运行环境 prod/staging/dev |
+| `--region` | `str` | `us-east` | 部署区域 |
+| `--verbose` | `bool` | `False` | 输出详细信息 |
+
+## Commands
+
+### `health`
+
+查看全局健康状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose health
+```
+
+**Python:**
+```python
+app.health()
+```
+
+### `version`
+
+查看工具版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose version
+```
+
+**Python:**
+```python
+app.version()
+```
+
+### `db` *(subcommand group)*
+
+数据库管理 (二级子命令组)
+
+### `db backup`
+
+备份数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--compress` | `bool` | `True` | 启用压缩 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db backup
+```
+
+**Python:**
+```python
+app.db.backup(compress=True)
+```
+
+### `db migrate`
+
+执行数据库迁移
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--dry-run` | `bool` | `False` | 仅预览，不执行 |
+| `--target` | `str` | `latest` | 目标迁移版本 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db migrate --dry-run --target ${latest}
+```
+
+**Python:**
+```python
+app.db.migrate(dry_run=False, target="latest")
+```
+
+### `db restore`
+
+从备份恢复数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--file` | `str` | *(required)* | 备份文件路径 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db restore --file $<file>
+```
+
+**Python:**
+```python
+app.db.restore(file=<file>)
+```
+
+### `deploy` *(subcommand group)*
+
+部署管理 (二级子命令组)
+
+### `deploy canary`
+
+金丝雀部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--traffic` | `float` | `0.1` | 流量比例 0-1 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy canary --version $<version> --traffic ${0.1}
+```
+
+**Python:**
+```python
+app.deploy.canary(version=<version>, traffic=0.1)
+```
+
+### `deploy rollback`
+
+回滚到上一个版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--steps` | `int` | `1` | 回退步数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rollback --steps ${1}
+```
+
+**Python:**
+```python
+app.deploy.rollback(steps=1)
+```
+
+### `deploy rolling`
+
+滚动部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--batch-size` | `int` | `3` | 每批实例数 |
+| `--wait` | `int` | `30` | 每批等待秒数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rolling --version $<version> --batch-size ${3} --wait ${30}
+```
+
+**Python:**
+```python
+app.deploy.rolling(version=<version>, batch_size=3, wait=30)
+```
+
+### `monitor` *(subcommand group)*
+
+监控告警 (二级子命令组)
+
+### `monitor alert`
+
+配置告警规则
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--rule` | `str` | *(required)* | 告警规则名 |
+| `--threshold` | `float` | *(required)* | 阈值 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor alert --rule $<rule> --threshold $<threshold>
+```
+
+**Python:**
+```python
+app.monitor.alert(rule=<rule>, threshold=<threshold>)
+```
+
+### `monitor status`
+
+查看服务状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--service` | `str` | `None` | 服务名 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor status --service ${None}
+```
+
+**Python:**
+```python
+app.monitor.status(service=None)
+```
+
+
+## Implementation Note
+
+This tool is built on the `nb_cmd` framework. Here is how the Python source code maps to CLI commands:
+
+1. **Class = Top-level command group**. The main class `DevOpsTool` inherits from `NbCmd`.
+   Each public instance method of this class becomes a top-level subcommand.
+
+2. **`sub_commands` dict = Nested command groups**. When a class defines:
+   ```python
+   sub_commands = {"db": DbCmd, "deploy": DeployCmd}
+   ```
+   the keys become the command path segments, and the values are other `NbCmd` subclasses.
+   So `DbCmd.backup(...)` in Python maps to `db backup` on the CLI.
+   Deeper nesting works the same way: if `DbCmd` itself has `sub_commands = {"ops": OpsCmd}`,
+   then `OpsCmd.deploy(...)` maps to `db ops deploy` on the CLI.
+
+3. **`__init__` params = Global CLI options**. Parameters of `__init__(self, ...)` become global options:
+   - `str` / `int` / `float` params → `--name value` (e.g., `--env prod`, `--port 8080`)
+   - `bool` params with default `False` → `--name` (no value, presence means `True`)
+   - `bool` params with default `True` → `--no-name` (no value, presence means `False`)
+   These options are automatically passed to all subcommands and subcommand groups.
+   Inside subcommands, global parameters are accessed via instance attributes or `self.nbctx`.
+
+4. **Method params = Command-level options**. Same parameter-to-flag rules as above:
+   - `str` / `int` / `float` → `--name value`
+   - `bool` default `False` → `--name`
+   - `bool` default `True` → `--no-name`
+   - **No default value** → required parameter (marked as `*(required)*` in the parameter table)
+   For example:
+   - `def backup(self, compress: bool = True)` produces `--compress` (default True, so `--no-compress` to disable)
+   - `def restore(self, file: str)` produces `--file` (required, no default)
+   - Parameter descriptions and short aliases (e.g., `--version, -v`) come from `Annotated[type, "description", "-v"]`.
+
+5. **Method docstring = Command description**. The first line of a method's docstring becomes the help text for that command.
+
+6. **Return values**. If a method returns a value, `nb_cmd` automatically prints it in CLI mode.
+
+7. **Python direct call vs CLI**. In Python you instantiate the class with global params:
+   ```python
+   app = DevOpsTool(env="staging", region="us-west")
+   app.db.backup(compress=False)
+   ```
+   The equivalent CLI is:
+   ```bash
+   python ai_skill_gen_demo.py --env staging --region us-west db backup --no-compress
+   ```
+
+If a command's behavior is unclear, locate the corresponding method in the source code of `DevOpsTool` (or its nested `NbCmd` subclasses) and read the implementation directly.
+
+`````
+
+--- **end of file: examples/ai_skill_gen_demo/skills/devops-tool-full/SKILL.md** (project: nb_cmd) --- 
+
+---
+
+
+--- **start of file: examples/ai_skill_gen_demo/skills/devops-tool-py/SKILL.md** (project: nb_cmd) --- 
+
+`````markdown
+---
+name: devops-tool-py
+description: >-
+  DevOps 运维工具，支持数据库管理、部署、监控等操作。
+---
+# devops-tool
+
+## Overview
+
+DevOps 运维工具 —— AI Skill 自动生成演示。
+
+支持数据库管理、部署管理、监控告警三大模块。
+全局参数 env/region/verbose 自动穿透到所有子命令组。
+
+## Guidelines
+
+- This tool is implemented using the `nb_cmd` framework. Each public instance method of the `NbCmd` subclass becomes a subcommand. You can read the `Implementation Note` to learn more details.
+- If you are unsure about the specific logic of a command, inspect the source code of the corresponding method in the implementation.
+- Global parameters defined in `__init__` are automatically passed to all subcommands.
+- Boolean flags default to `False`; add the flag to set it to `True`.
+- Subcommand groups are accessed via space, e.g., `<group> <command>`.
+- Use `--help` or `-h` to see available commands and options.
+- Use `--full-help` or `-fh` to see detailed parameter descriptions.
+
+## When to Use
+
+Activate this skill when you need to perform devops-tool-related operations, such as:
+- health
+- version
+- db backup
+- db migrate
+- db restore
+- deploy canary
+- deploy rollback
+- deploy rolling
+- monitor alert
+- monitor status
+
+## Command Structure
+
+### CLI
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py [global_params] <command_path> [command_params]
+```
+
+### Python
+```python
+from ai_skill_gen_demo import DevOpsTool
+app = DevOpsTool()  # pass global params if needed
+# app.subcommand.method(param=value)
+```
+
+**Parameter conventions:**
+- `${value}` — parameter with default value (replace as needed)
+- `$<name>` — **required** parameter (must provide a value)
+- `--flag` (no value) — boolean switch (add to enable)
+
+## Global Parameters
+
+These parameters are defined in `__init__` and passed to all subcommands automatically.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--env` | `str` | `prod` | 运行环境 prod/staging/dev |
+| `--region` | `str` | `us-east` | 部署区域 |
+| `--verbose` | `bool` | `False` | 输出详细信息 |
+
+## Commands
+
+### `health`
+
+查看全局健康状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose health
+```
+
+**Python:**
+```python
+app.health()
+```
+
+### `version`
+
+查看工具版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| *(none)* | — | — | This command takes no parameters. |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose version
+```
+
+**Python:**
+```python
+app.version()
+```
+
+### `db` *(subcommand group)*
+
+数据库管理 (二级子命令组)
+
+### `db backup`
+
+备份数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--compress` | `bool` | `True` | 启用压缩 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db backup
+```
+
+**Python:**
+```python
+app.db.backup(compress=True)
+```
+
+### `db migrate`
+
+执行数据库迁移
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--dry-run` | `bool` | `False` | 仅预览，不执行 |
+| `--target` | `str` | `latest` | 目标迁移版本 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db migrate --dry-run --target ${latest}
+```
+
+**Python:**
+```python
+app.db.migrate(dry_run=False, target="latest")
+```
+
+### `db restore`
+
+从备份恢复数据库
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--file` | `str` | *(required)* | 备份文件路径 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose db restore --file $<file>
+```
+
+**Python:**
+```python
+app.db.restore(file=<file>)
+```
+
+### `deploy` *(subcommand group)*
+
+部署管理 (二级子命令组)
+
+### `deploy canary`
+
+金丝雀部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--traffic` | `float` | `0.1` | 流量比例 0-1 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy canary --version $<version> --traffic ${0.1}
+```
+
+**Python:**
+```python
+app.deploy.canary(version=<version>, traffic=0.1)
+```
+
+### `deploy rollback`
+
+回滚到上一个版本
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--steps` | `int` | `1` | 回退步数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rollback --steps ${1}
+```
+
+**Python:**
+```python
+app.deploy.rollback(steps=1)
+```
+
+### `deploy rolling`
+
+滚动部署
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--version, -v` | `str` | *(required)* | 部署版本号 |
+| `--batch-size` | `int` | `3` | 每批实例数 |
+| `--wait` | `int` | `30` | 每批等待秒数 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose deploy rolling --version $<version> --batch-size ${3} --wait ${30}
+```
+
+**Python:**
+```python
+app.deploy.rolling(version=<version>, batch_size=3, wait=30)
+```
+
+### `monitor` *(subcommand group)*
+
+监控告警 (二级子命令组)
+
+### `monitor alert`
+
+配置告警规则
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--rule` | `str` | *(required)* | 告警规则名 |
+| `--threshold` | `float` | *(required)* | 阈值 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor alert --rule $<rule> --threshold $<threshold>
+```
+
+**Python:**
+```python
+app.monitor.alert(rule=<rule>, threshold=<threshold>)
+```
+
+### `monitor status`
+
+查看服务状态
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `--service` | `str` | `None` | 服务名 |
+
+**CLI:**
+```bash
+D:\ProgramData\Miniconda3\envs\py39b\python.exe ai_skill_gen_demo.py --env ${prod} --region ${us-east} --verbose monitor status --service ${None}
+```
+
+**Python:**
+```python
+app.monitor.status(service=None)
+```
+
+
+## Implementation Note
+
+This tool is built on the `nb_cmd` framework. Here is how the Python source code maps to CLI commands:
+
+1. **Class = Top-level command group**. The main class `DevOpsTool` inherits from `NbCmd`.
+   Each public instance method of this class becomes a top-level subcommand.
+
+2. **`sub_commands` dict = Nested command groups**. When a class defines:
+   ```python
+   sub_commands = {"db": DbCmd, "deploy": DeployCmd}
+   ```
+   the keys become the command path segments, and the values are other `NbCmd` subclasses.
+   So `DbCmd.backup(...)` in Python maps to `db backup` on the CLI.
+   Deeper nesting works the same way: if `DbCmd` itself has `sub_commands = {"ops": OpsCmd}`,
+   then `OpsCmd.deploy(...)` maps to `db ops deploy` on the CLI.
+
+3. **`__init__` params = Global CLI options**. Parameters of `__init__(self, ...)` become global options:
+   - `str` / `int` / `float` params → `--name value` (e.g., `--env prod`, `--port 8080`)
+   - `bool` params with default `False` → `--name` (no value, presence means `True`)
+   - `bool` params with default `True` → `--no-name` (no value, presence means `False`)
+   These options are automatically passed to all subcommands and subcommand groups.
+   Inside subcommands, global parameters are accessed via instance attributes or `self.nbctx`.
+
+4. **Method params = Command-level options**. Same parameter-to-flag rules as above:
+   - `str` / `int` / `float` → `--name value`
+   - `bool` default `False` → `--name`
+   - `bool` default `True` → `--no-name`
+   - **No default value** → required parameter (marked as `*(required)*` in the parameter table)
+   For example:
+   - `def backup(self, compress: bool = True)` produces `--compress` (default True, so `--no-compress` to disable)
+   - `def restore(self, file: str)` produces `--file` (required, no default)
+   - Parameter descriptions and short aliases (e.g., `--version, -v`) come from `Annotated[type, "description", "-v"]`.
+
+5. **Method docstring = Command description**. The first line of a method's docstring becomes the help text for that command.
+
+6. **Return values**. If a method returns a value, `nb_cmd` automatically prints it in CLI mode.
+
+7. **Python direct call vs CLI**. In Python you instantiate the class with global params:
+   ```python
+   app = DevOpsTool(env="staging", region="us-west")
+   app.db.backup(compress=False)
+   ```
+   The equivalent CLI is:
+   ```bash
+   python ai_skill_gen_demo.py --env staging --region us-west db backup --no-compress
+   ```
+
+If a command's behavior is unclear, locate the corresponding method in the source code of `DevOpsTool` (or its nested `NbCmd` subclasses) and read the implementation directly.
+
+`````
+
+--- **end of file: examples/ai_skill_gen_demo/skills/devops-tool-py/SKILL.md** (project: nb_cmd) --- 
 
 ---
 
@@ -3987,7 +5342,7 @@ python gh_nb_cmd.py --web --web-port 8090
 CmdGen(GhCli, script='gh_nb_cmd.py').doc(file='gh_nb_cmd_gen_doc.md')
 ```
 
-Click 和 Typer 只提供 CLI，需额外用 FastAPI/Flask 重写才能支持 Web/API。
+Click 和 Typer 只提供 CLI，需额外用 FastAPI/Flask 重写才能支持 Web/API/TUI。
 
 ---
 
@@ -4032,7 +5387,7 @@ GitHub CLI — nb_cmd 实现。
 
 演示 nb_cmd 在多层级子命令 + 全局参数场景下的碾压优势：
   - 零装饰器：所有命令通过纯 Class + 方法定义
-  - __init__ 直接赋值 self.nbctx：无需 make_nbctx()，CLI/Web/API 所有模式均正确传参
+  - __init__ 直接赋值 self.nbctx：无需 make_nbctx()，CLI/Web/TUI/API 所有模式均正确传参
   - self.nbctx 强类型 + IDE 补全：子命令组通过类型注解获取代码补全和跳转
   - 子命令独立可测：每个 NbCmd 子类可脱离父级单独实例化和测试
   - CmdGen 自动文档：一行代码生成完整 Markdown 文档
@@ -4043,6 +5398,9 @@ GitHub CLI — nb_cmd 实现。
     3. CLI:  python gh_nb_cmd.py -R team/cli --no-prompt --auth-token ghp_xxx issue create --title "Deploy failed"
     4. Web:  python gh_nb_cmd.py --web --web-port 8090
     5. 本地: python gh_nb_cmd.py  (无参数，进入本地演示)
+
+D:\ProgramData\miniconda3\envs\py39b\python.exe D:/codes/nb_cmd/examples/git_demos/git_nb_cmd.py --tui
+
 """
 import sys
 import os
@@ -4181,7 +5539,7 @@ class GhCli(NbCmd):
         self.auth_token = auth_token
         self.debug = debug
         self.no_prompt = no_prompt
-        # 直接赋值 nbctx，CLI/Web/API 所有模式均能拿到正确的参数值
+        # 直接赋值 nbctx，CLI/Web/TUI/API 所有模式均能拿到正确的参数值
         self.nbctx = GhCtx(
             repo=self.repo,
             hostname=self.hostname,
@@ -5328,12 +6686,13 @@ nb_cmd nbctx 跨层级上下文传递 demo。
 
 演示：顶层全局参数（region/env/debug）如何自动穿透到任意深度的子命令组。
 
-五种能力：
+六种能力：
     1. Python 直接调用: 见本文件底部 if __name__ == '__main__' 部分
     2. CLI:  python nbctx_demo.py --region shanghai db migrate
     3. REST API:  curl -X POST http://localhost:8085/db/migrate -d '{"init_params":{"region":"shanghai"}}'
     4. Web UI:  python nbctx_demo.py --web --web-port 8085
-    5. 文档生成: 见本文件底部 CmdGen 示例
+    5. TUI:  python nbctx_demo.py --tui
+    6. 文档生成: 见本文件底部 CmdGen 示例
 """
 import sys
 import os
@@ -5721,6 +7080,7 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
 
 └── nb_cmd
     ├── __init__.py
+    ├── cli.py
     ├── core
     │   ├── __init__.py
     │   ├── _io_dispatch.py
@@ -5728,6 +7088,7 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
     │   ├── base.py
     │   ├── discovery.py
     │   ├── gen_cmd.py
+    │   ├── gen_skill.py
     │   ├── meta.py
     │   ├── parser.py
     │   ├── result_handler.py
@@ -5736,6 +7097,7 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
     │   ├── __init__.py
     │   ├── api_mode.py
     │   ├── cli_mode.py
+    │   ├── tui_mode.py
     │   └── web_mode.py
     ├── ui
     │   ├── __init__.py
@@ -5753,8 +7115,10 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
 ---
 
 
-## nb_cmd (relative dir: `nb_cmd`)  Included Files (total: 23 files)
+## nb_cmd (relative dir: `nb_cmd`)  Included Files (total: 26 files)
 
+
+- `nb_cmd/cli.py`
 
 - `nb_cmd/__init__.py`
 
@@ -5765,6 +7129,8 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
 - `nb_cmd/core/discovery.py`
 
 - `nb_cmd/core/gen_cmd.py`
+
+- `nb_cmd/core/gen_skill.py`
 
 - `nb_cmd/core/meta.py`
 
@@ -5781,6 +7147,8 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
 - `nb_cmd/modes/api_mode.py`
 
 - `nb_cmd/modes/cli_mode.py`
+
+- `nb_cmd/modes/tui_mode.py`
 
 - `nb_cmd/modes/web_mode.py`
 
@@ -5806,13 +7174,60 @@ D:\ProgramData\miniconda3\envs\py39b\python.exe nbctx_demo.py --region ${beijing
 ---
 
 
+--- **start of file: nb_cmd/cli.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+nbcmd —— 个人命令中心。
+
+零代码启动，通过 exec 收藏和管理所有常用系统命令。
+
+用法:
+    nbcmd --tui          # TUI 终端交互模式
+    nbcmd --web          # Web 浏览器模式
+    nbcmd exec <命令>    # 直接执行系统命令
+    nbcmd -h             # 查看帮助
+"""
+import os
+
+from nb_cmd.core.base import NbCmd
+from nb_cmd.core.meta import NbCmdMeta
+
+
+class _NbCmdApp(NbCmd):
+    """个人命令中心 —— 收藏和管理常用系统命令"""
+
+    class Meta(NbCmdMeta):
+        name = 'nbcmd'
+        version = '0.2.1'
+        description = '个人命令中心 —— 通过 exec 收藏和管理所有常用系统命令'
+        web_title = 'NbCmd 命令中心'
+        db_dir = os.path.join(os.path.expanduser('~'), '.nb_cmd')
+
+
+def main():
+    app = _NbCmdApp()
+    app.run()
+
+
+if __name__ == '__main__':
+    main()
+
+`````
+
+--- **end of file: nb_cmd/cli.py** (project: nb_cmd) --- 
+
+---
+
+
 --- **start of file: nb_cmd/__init__.py** (project: nb_cmd) --- 
 
 `````python
 # -*- coding: utf-8 -*-
 """
 nb_cmd — Python 码农的低代码平台
-写一个 class，自动获得五种能力：Python 直接调用 + CLI + REST API + Web UI + Markdown 文档。
+写一个 class，自动获得六种能力：Python 直接调用 + CLI + REST API + Web UI + TUI 终端交互 + Markdown 文档。
 
 用法::
 
@@ -5835,6 +7250,7 @@ from .core.arg import Annotated, Param  # noqa: F401
 from .ui.helper import UIHelper, cmdui  # noqa: F401
 from .utils.validators import validate  # noqa: F401
 from .core.gen_cmd import CmdGen  # noqa: F401
+from .core.gen_skill import SkillGen  # noqa: F401
 
 `````
 
@@ -6017,10 +7433,20 @@ def _unwrap_optional(tp):
 """
 NbCmd 基类 —— 所有命令行工具的父类。
 """
+from __future__ import annotations
+
 import logging
 import sys
 
 from .meta import NbCmdMeta
+
+try:
+    from typing import Annotated
+except ImportError:
+    try:
+        from typing_extensions import Annotated
+    except ImportError:
+        pass
 
 
 class NbCmd(object):
@@ -6035,7 +7461,7 @@ class NbCmd(object):
     功能:
         - 公有方法 → 子命令
         - 方法签名 → 参数自动推导
-        - 五种能力：Python 直接调用 / CLI / REST API / Web UI / Markdown 文档
+        - 六种能力：Python 直接调用 / CLI / REST API / Web UI / TUI 终端交互 / Markdown 文档
         - 支持 OOP 继承覆写
         - 支持多层级子命令（sub_commands）
         - 支持 nbctx 跨层级上下文传递
@@ -6051,10 +7477,6 @@ class NbCmd(object):
     Meta = NbCmdMeta
 
     nbctx = None  # 跨层级共享的上下文对象，子类通过 nbctx: AppCtx 注解获取 IDE 补全
-
-    def __init__(self):
-        self._logger = None
-        self._setup_logging()
 
     def make_nbctx(self):
         """
@@ -6118,8 +7540,10 @@ class NbCmd(object):
         return getattr(self.__class__, 'Meta', NbCmd.Meta)
 
     @property
-    def logger(self):
-        """日志器"""
+    def logger(self) -> logging.Logger:
+        """日志器（懒初始化：子类未调 super().__init__() 时也能正常工作）"""
+        if not hasattr(self, '_logger') or self._logger is None:
+            self._setup_logging()
         return self._logger
 
     # ==================== 生命周期钩子 ====================
@@ -6134,8 +7558,7 @@ class NbCmd(object):
 
     def on_error(self, command, error):
         """子命令执行出错时的钩子，子类可覆写"""
-        if self._logger:
-            self._logger.error('命令 {} 执行失败: {}'.format(command, error))
+        self.logger.error('命令 {} 执行失败: {}'.format(command, error))
 
     # ==================== 系统命令工具 ====================
 
@@ -6154,24 +7577,38 @@ class NbCmd(object):
         str (capture=True 时返回 stdout) 或 None
         """
         import subprocess
-        result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True,
-        )
-        if check and result.returncode != 0:
-            raise RuntimeError(
-                '命令执行失败 (exit {}): {}\n{}'.format(
-                    result.returncode, cmd, result.stderr
-                )
-            )
         if capture:
+            result = subprocess.run(
+                cmd, shell=True, capture_output=True, text=True,
+            )
+            if check and result.returncode != 0:
+                raise RuntimeError(
+                    '命令执行失败 (exit {}): {}\n{}'.format(
+                        result.returncode, cmd, result.stderr
+                    )
+                )
             return result.stdout.strip()
-        else:
-            if result.stdout:
-                print(result.stdout, end='')
-            if result.stderr:
-                print(result.stderr, end='', file=sys.stderr)
 
-    def exec(self, cmd: str):
+        proc = subprocess.Popen(
+            cmd, shell=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=1,
+        )
+        try:
+            if proc.stdout:
+                for line in proc.stdout:
+                    print(line, end='')
+            proc.wait()
+        except KeyboardInterrupt:
+            proc.kill()
+            proc.wait()
+            raise
+        if check and proc.returncode != 0:
+            raise RuntimeError(
+                '命令执行失败 (exit {}): {}'.format(proc.returncode, cmd)
+            )
+
+    def exec(self, cmd: Annotated[str, '要执行的系统命令', 'c']):
         """执行任意系统命令"""
         self.shell(cmd)
 
@@ -6194,6 +7631,9 @@ class NbCmd(object):
 
         if '--web' in raw_args:
             return self._start_web_server(raw_args)
+
+        if '--tui' in raw_args:
+            return self._start_tui()
 
         from ..modes.cli_mode import run_cli
         return run_cli(self, NbCmd, args)
@@ -6238,6 +7678,11 @@ class NbCmd(object):
 
         from ..modes.web_mode import start_web_server
         start_web_server(self, NbCmd, host=host, port=port)
+
+    def _start_tui(self):
+        """启动 TUI 模式"""
+        from ..modes.tui_mode import start_tui
+        start_tui(self, NbCmd)
 
     @staticmethod
     def _extract_port(raw_args):
@@ -6403,6 +7848,14 @@ def discover_commands(instance, base_cls, include_builtins=True, enable_exec=Tru
                 'doc': (inspect.getdoc(group_val) or "").split('\n')[0],
                 'is_group': True,
                 'init_kwargs': {},
+            }
+        elif isinstance(group_val, dict) and 'cls' in group_val:
+            group_cls = group_val['cls']
+            commands[group_name] = {
+                'cls': group_cls,
+                'doc': group_val.get('doc', (inspect.getdoc(group_cls) or "").split('\n')[0]),
+                'is_group': True,
+                'init_kwargs': {k: v for k, v in group_val.items() if k not in ('cls', 'doc')},
             }
         elif isinstance(group_val, base_cls):
             group_cls = group_val.__class__
@@ -6784,6 +8237,7 @@ class CmdGen(object):
             ('`--cmd-version`', '显示版本号'),
             ('`--web`', '以 Web UI + REST API 模式启动'),
             ('`--web-port PORT`', 'Web UI 服务端口（用于 `--web`）'),
+            ('`--tui`', '以 TUI 终端交互模式启动'),
         ]
         for flag, desc in sys_params:
             lines.append('| {} | {} |'.format(flag, desc))
@@ -6811,6 +8265,9 @@ class CmdGen(object):
         lines.append('')
         lines.append('# 启动 Web UI')
         lines.append('{} {} --web'.format(self.python, self.script))
+        lines.append('')
+        lines.append('# 启动 TUI 终端交互')
+        lines.append('{} {} --tui'.format(self.python, self.script))
         lines.append('```')
         lines.append('')
 
@@ -7174,6 +8631,650 @@ def _apply_fmt(cmd_line, fmt):
 ---
 
 
+--- **start of file: nb_cmd/core/gen_skill.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+AI Skill 文件夹生成器 —— 自动生成符合 agentskills.io 规范的 Skill 文件夹。
+
+用法::
+
+    from nb_cmd import SkillGen
+
+    g = SkillGen(MyApp, base_dir='./skills')
+    g.gen()
+"""
+import os
+import re
+import sys
+import inspect
+
+from .discovery import discover_commands
+from .gen_cmd import (
+    _find_base_cls,
+    _get_allow_method_list,
+    _get_hide_method_list,
+    _find_command_path,
+    _format_init_args,
+    _format_method_args,
+    _safe_instantiate,
+    _collect_init_params,
+)
+from .type_utils import is_optional, unwrap_optional, type_display_name
+
+
+class SkillGen(object):
+    """
+    AI Skill 文件夹生成器。
+
+    根据 NbCmd 子类的结构，自动生成符合 agentskills.io 规范的 Skill 文件夹。
+
+    Parameters
+    ----------
+    entry_cls : class
+        顶层入口类，如 MyApp
+    name : str, optional
+        Skill name（默认从 Meta.name 或类名转 kebab-case）。
+        最终生成的 Skill 文件夹名即为 name。
+    base_dir : str, optional
+        父目录路径。默认当前目录 `.`。最终输出路径为 `{base_dir}/{name}/`。
+    script : str, optional
+        脚本名。默认用 sys.argv[0]。
+    python : str, optional
+        Python 解释器路径。默认用 sys.executable。
+    description : str, optional
+        Skill description（默认从 Meta.description 或类 docstring）
+    license : str, optional
+        License 名称
+    compatibility : str, optional
+        环境兼容性说明
+    metadata : dict, optional
+        额外元数据键值对
+    allowed_tools : str, optional
+        允许使用的工具列表（空格分隔）
+    disable_model_invocation : bool, optional
+        是否禁用模型自动触发（默认 False，允许自动触发）
+    user_highest_priority_skill_prompt : str, optional
+        用户自定义的最高优先级提示语，会放在 SKILL.md 的显要位置。
+        可用于告知 AI 运行环境信息（如 Python 解释器路径、脚本位置、
+        PYTHONPATH 设置等）。
+    include_cli_examples : bool, optional
+        是否在 SKILL.md 中包含 CLI 命令示例（默认 True）
+    include_python_examples : bool, optional
+        是否在 SKILL.md 中包含 Python 调用示例（默认 False）
+    include_api_examples : bool, optional
+        是否在 SKILL.md 中包含 REST API 调用示例（默认 False）
+    """
+
+    def __init__(
+        self,
+        entry_cls,
+        name=None,
+        base_dir='.',
+        script=None,
+        python=None,
+        description=None,
+        license=None,
+        compatibility=None,
+        metadata=None,
+        allowed_tools=None,
+        disable_model_invocation=False,
+        user_highest_priority_skill_prompt=None,
+        include_cli_examples=True,
+        include_python_examples=False,
+        include_api_examples=False,
+    ):
+        self.entry_cls = entry_cls
+        self._base_dir = base_dir
+        self.script = script or self._get_script_name()
+        self.python = python or sys.executable
+        self._base_cls = _find_base_cls(entry_cls)
+        self._allow_methods = _get_allow_method_list(entry_cls)
+        self._hide_methods = _get_hide_method_list(entry_cls)
+
+        self._user_name = name
+        self._user_description = description
+        self._license = license
+        self._compatibility = compatibility
+        self._metadata = metadata or {}
+        self._allowed_tools = allowed_tools
+        self._disable_model_invocation = disable_model_invocation
+        self._user_priority_prompt = user_highest_priority_skill_prompt
+
+        self._include_cli = include_cli_examples
+        self._include_python = include_python_examples
+        self._include_api = include_api_examples
+
+        self._name = self._resolve_name()
+        self._description = self._resolve_description()
+        self._validate_name()
+        self._validate_description()
+        self.output_dir = os.path.join(self._base_dir, self._name)
+
+    def _get_script_name(self):
+        import os
+        name = sys.argv[0] if sys.argv[0] else 'script.py'
+        return os.path.basename(name)
+
+    def _resolve_name(self):
+        """解析 Skill name，优先级：用户传入 > Meta.name > 类名转 kebab-case"""
+        if self._user_name:
+            return self._user_name.strip()
+        meta = getattr(self.entry_cls, 'Meta', None)
+        if meta:
+            meta_name = getattr(meta, 'name', None)
+            if meta_name:
+                return self._to_kebab_case(meta_name)
+        return self._to_kebab_case(self.entry_cls.__name__)
+
+    def _to_kebab_case(self, s):
+        """将字符串转为 kebab-case"""
+        s = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1-\2', s)
+        s = re.sub(r'([a-z\d])([A-Z])', r'\1-\2', s)
+        s = s.lower().replace('_', '-').replace(' ', '-')
+        s = re.sub(r'-+', '-', s)
+        return s.strip('-')
+
+    def _validate_name(self):
+        """校验 name 是否符合 agentskills.io 规范"""
+        n = self._name
+        if not n:
+            raise ValueError('Skill name cannot be empty')
+        if len(n) > 64:
+            raise ValueError('Skill name must be <= 64 characters, got {}'.format(len(n)))
+        if n.startswith('-') or n.endswith('-'):
+            raise ValueError('Skill name cannot start or end with a hyphen')
+        if '--' in n:
+            raise ValueError('Skill name cannot contain consecutive hyphens')
+        if not re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', n):
+            raise ValueError(
+                'Skill name must be lowercase alphanumeric with hyphens only, '
+                'got: {}'.format(n)
+            )
+
+    def _resolve_description(self):
+        """解析 Skill description，优先级：用户传入 > Meta.description > 类 docstring > 自动生成"""
+        if self._user_description:
+            return self._user_description.strip()
+        meta = getattr(self.entry_cls, 'Meta', None)
+        if meta:
+            meta_desc = getattr(meta, 'description', None)
+            if meta_desc:
+                return meta_desc.strip()
+        doc = inspect.getdoc(self.entry_cls)
+        if doc:
+            lines = [ln.strip() for ln in doc.strip().split('\n') if ln.strip()]
+            if lines:
+                # 取前几句（不超过 200 字符），确保包含足够信息
+                desc = lines[0]
+                for ln in lines[1:]:
+                    if len(desc) + len(ln) + 1 < 200:
+                        desc += ' ' + ln
+                    else:
+                        break
+                return desc
+        return self._auto_description()
+
+    def _auto_description(self):
+        """自动生成 description（英文，适配任意工具）"""
+        meta = getattr(self.entry_cls, 'Meta', None)
+        app_name = getattr(meta, 'name', self.entry_cls.__name__) if meta else self.entry_cls.__name__
+        instance = _safe_instantiate(self.entry_cls)
+        commands = discover_commands(
+            instance, self._base_cls,
+            include_builtins=False, enable_exec=False,
+            allow_method_list=self._allow_methods,
+            hide_method_list=self._hide_methods,
+        )
+        cmd_names = [k.replace('_', '-') for k in commands.keys() if not commands[k].get('is_group')]
+        if not cmd_names:
+            cmd_names = [k.replace('_', '-') for k in commands.keys()]
+        cmd_preview = ', '.join(cmd_names[:5])
+        if len(commands) > 5:
+            cmd_preview += ', etc.'
+        desc = '{} —— supports operations such as {}. Activate when you need to run {} commands.'.format(
+            app_name, cmd_preview, app_name
+        )
+        return desc
+
+    def _validate_description(self):
+        """校验 description 长度"""
+        if not self._description:
+            raise ValueError('Skill description cannot be empty')
+        if len(self._description) > 1024:
+            raise ValueError(
+                'Skill description must be <= 1024 characters, got {}'.format(len(self._description))
+            )
+
+    def gen(self):
+        """
+        生成 Skill 文件夹（仅包含 SKILL.md）。
+
+        Returns
+        -------
+        str
+            生成的 Skill 文件夹路径
+        """
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        skill_md_content = self.gen_skill_md()
+        skill_md_path = os.path.join(self.output_dir, 'SKILL.md')
+        with open(skill_md_path, 'w', encoding='utf-8') as f:
+            f.write(skill_md_content)
+
+        return self.output_dir
+
+    def gen_skill_md(self):
+        """
+        生成 SKILL.md 内容字符串。
+
+        Returns
+        -------
+        str
+            SKILL.md 完整内容
+        """
+        frontmatter = self._gen_frontmatter()
+        body = self._gen_body()
+        return frontmatter + '\n' + body
+
+    def _gen_frontmatter(self):
+        """生成 YAML frontmatter"""
+        lines = ['---']
+        lines.append('name: {}'.format(self._name))
+
+        # description 使用 >- 折叠块样式（保留换行但折叠为空格）
+        desc = self._description
+        lines.append('description: >-')
+        for paragraph in desc.split('\n\n'):
+            for wrap_line in self._wrap_text(paragraph.strip(), 78):
+                lines.append('  {}'.format(wrap_line))
+
+        if self._license:
+            lines.append('license: {}'.format(self._license))
+        if self._compatibility:
+            lines.append('compatibility: {}'.format(self._compatibility))
+        if self._metadata:
+            lines.append('metadata:')
+            for k, v in self._metadata.items():
+                val = str(v)
+                # YAML 安全处理：如果值含双引号，用单引号包裹
+                if '"' in val:
+                    lines.append("  {}: '{}'".format(k, val))
+                else:
+                    lines.append('  {}: "{}"'.format(k, val))
+        if self._allowed_tools:
+            lines.append('allowed-tools: {}'.format(self._allowed_tools))
+        if self._disable_model_invocation:
+            lines.append('disable-model-invocation: true')
+
+        lines.append('---')
+        return '\n'.join(lines)
+
+    def _wrap_text(self, text, width):
+        """简单文本折行"""
+        if len(text) <= width:
+            return [text]
+        words = text.split(' ')
+        lines = []
+        current = ''
+        for word in words:
+            if len(current) + len(word) + 1 > width:
+                if current:
+                    lines.append(current)
+                current = word
+            else:
+                current = current + ' ' + word if current else word
+        if current:
+            lines.append(current)
+        return lines if lines else ['']
+
+    def _gen_body(self):
+        """生成 Markdown body"""
+        instance = _safe_instantiate(self.entry_cls)
+        commands = discover_commands(
+            instance, self._base_cls,
+            include_builtins=False, enable_exec=False,
+            allow_method_list=self._allow_methods,
+            hide_method_list=self._hide_methods,
+        )
+        meta = getattr(self.entry_cls, 'Meta', type('Meta', (), {}))
+        app_name = getattr(meta, 'name', self.entry_cls.__name__) if meta else self.entry_cls.__name__
+        doc = inspect.getdoc(instance) or app_name
+
+        lines = []
+        lines.append('# {}'.format(app_name))
+        lines.append('')
+        lines.append('## Overview')
+        lines.append('')
+        lines.append(doc)
+        lines.append('')
+
+        if self._user_priority_prompt:
+            lines.append('## Important')
+            lines.append('')
+            lines.append(self._user_priority_prompt)
+            lines.append('')
+
+        init_params = _collect_init_params(self.entry_cls)
+        lines.append('## Guidelines')
+        lines.append('')
+        lines.append(self._gen_guidelines(init_params))
+        lines.append('')
+
+        lines.append('## When to Use')
+        lines.append('')
+        lines.append(self._gen_when_to_use(commands, app_name))
+        lines.append('')
+
+        lines.append('## Command Structure')
+        lines.append('')
+        lines.append(self._gen_command_structure())
+        lines.append('')
+
+        if init_params:
+            lines.append('## Global Parameters')
+            lines.append('')
+            lines.append('These parameters are defined in `__init__` and passed to all subcommands automatically.')
+            lines.append('')
+            lines.append('| Flag | Type | Default | Description |')
+            lines.append('|------|------|---------|-------------|')
+            for p in init_params:
+                lines.append('| `{}` | `{}` | `{}` | {} |'.format(
+                    p['flag'], p['type'], p['default'], p['desc']))
+            lines.append('')
+
+        lines.append('## Commands')
+        lines.append('')
+        self._collect_skill_commands(
+            commands, '', lines, depth=0,
+            allow_method_list=self._allow_methods,
+            hide_method_list=self._hide_methods,
+            command_prefix='',
+        )
+        lines.append('')
+
+        lines.append('## Implementation Note')
+        lines.append('')
+        lines.append(self._gen_impl_note())
+        lines.append('')
+
+        return '\n'.join(lines)
+
+    def _gen_when_to_use(self, commands, app_name):
+        """生成 When to Use 段落（递归收集所有叶子命令）"""
+        cmd_names = []
+        self._collect_leaf_commands(commands, '', cmd_names)
+
+        when_lines = ['Activate this skill when you need to perform {}-related operations, such as:'.format(app_name)]
+        for cmd_name in cmd_names[:15]:
+            when_lines.append('- {}'.format(cmd_name))
+        if len(cmd_names) > 15:
+            when_lines.append('- And other {} commands'.format(app_name))
+        return '\n'.join(when_lines)
+
+    def _collect_leaf_commands(self, commands, prefix, result):
+        """递归收集所有叶子命令名"""
+        for cmd_name, cmd_info in commands.items():
+            full_path = '{} {}'.format(prefix, cmd_name).strip() if prefix else cmd_name
+            display = full_path.replace('_', '-')
+            if cmd_info.get('is_group'):
+                group_cls = cmd_info['cls']
+                group_instance = _safe_instantiate(group_cls)
+                sub_commands = discover_commands(
+                    group_instance, self._base_cls,
+                    include_builtins=False, enable_exec=False,
+                    allow_method_list=self._allow_methods,
+                    hide_method_list=self._hide_methods,
+                )
+                self._collect_leaf_commands(sub_commands, full_path, result)
+            else:
+                result.append(display)
+
+    def _gen_command_structure(self):
+        """生成命令结构说明"""
+        lines = []
+        if self._include_cli:
+            lines.append('### CLI')
+            lines.append('```bash')
+            lines.append('{} {} [global_params] <command_path> [command_params]'.format(self.python, self.script))
+            lines.append('```')
+            lines.append('')
+        if self._include_python:
+            lines.append('### Python')
+            lines.append('```python')
+            lines.append('from {} import {}'.format(
+                self._module_name_hint(), self.entry_cls.__name__))
+            lines.append('app = {}()  # pass global params if needed'.format(self.entry_cls.__name__))
+            lines.append('# app.subcommand.method(param=value)')
+            lines.append('```')
+            lines.append('')
+        if self._include_api:
+            lines.append('### REST API')
+            lines.append('```bash')
+            lines.append('curl -X POST http://localhost:8000/api/v1/<command_path> \\')
+            lines.append('  -H "Content-Type: application/json" \\')
+            lines.append('  -d \'{"param": "value"}\'')
+            lines.append('```')
+            lines.append('')
+        lines.append('**Parameter conventions:**')
+        lines.append('- `${value}` — parameter with default value (replace as needed)')
+        lines.append('- `$<name>` — **required** parameter (must provide a value)')
+        lines.append('- `--flag` (no value) — boolean switch (add to enable)')
+        return '\n'.join(lines)
+
+    def _module_name_hint(self):
+        """推测模块导入名"""
+        module = inspect.getmodule(self.entry_cls)
+        if module and hasattr(module, '__name__') and module.__name__ != '__main__':
+            return module.__name__
+        return self.script.replace('.py', '').replace('/', '.').replace('\\', '.')
+
+    def _collect_skill_commands(self, commands, prefix, lines, depth=0,
+                                allow_method_list=None, hide_method_list=None,
+                                command_prefix=''):
+        """递归收集命令说明（面向 AI 的 Skill 格式）"""
+        for cmd_name, cmd_info in commands.items():
+            full_path = '{} {}'.format(prefix, cmd_name).strip() if prefix else cmd_name
+            display = full_path.replace('_', '-')
+
+            if cmd_info.get('is_group'):
+                group_cls = cmd_info['cls']
+                group_doc = cmd_info.get('doc', '')
+                level = '###'
+                lines.append('{} `{}` *(subcommand group)*'.format(level, display))
+                lines.append('')
+                if group_doc:
+                    lines.append(group_doc)
+                    lines.append('')
+                group_instance = _safe_instantiate(group_cls)
+                group_path = '{}/{}'.format(command_prefix, cmd_name) if command_prefix else cmd_name
+                sub_commands = discover_commands(
+                    group_instance, self._base_cls,
+                    include_builtins=False, enable_exec=False,
+                    allow_method_list=allow_method_list,
+                    hide_method_list=hide_method_list,
+                    command_prefix=group_path,
+                )
+                self._collect_skill_commands(
+                    sub_commands, full_path, lines, depth=depth + 1,
+                    allow_method_list=allow_method_list,
+                    hide_method_list=hide_method_list,
+                    command_prefix=group_path,
+                )
+            else:
+                method = cmd_info['method']
+                doc = cmd_info.get('doc', '')
+                level = '###'
+                lines.append('{} `{}`'.format(level, display))
+                lines.append('')
+                if doc:
+                    lines.append(doc)
+                    lines.append('')
+
+                # 参数表格
+                sig = cmd_info['signature']
+                hints = cmd_info.get('type_hints', {})
+                arg_meta = cmd_info.get('arg_meta', {})
+                param_rows = []
+                for pname, param in sig.parameters.items():
+                    if pname == 'self':
+                        continue
+                    ptype = hints.get(pname, str)
+                    real_type = unwrap_optional(ptype) if is_optional(ptype) else ptype
+                    tname = type_display_name(real_type)
+                    has_default = param.default is not inspect.Parameter.empty
+                    arg_inst = arg_meta.get(pname)
+                    desc = arg_inst.desc if arg_inst and arg_inst.desc else '-'
+                    flag = '--{}'.format(pname.replace('_', '-'))
+                    if arg_inst and arg_inst.aliases:
+                        flag = '{}, {}'.format(flag, ', '.join(arg_inst.aliases))
+                    default_str = '`{}`'.format(param.default) if has_default else '*(required)*'
+                    param_rows.append((flag, tname, default_str, desc))
+
+                lines.append('| Param | Type | Default | Description |')
+                lines.append('|-------|------|---------|-------------|')
+                if param_rows:
+                    for flag, tname, default_str, desc in param_rows:
+                        lines.append('| `{}` | `{}` | {} | {} |'.format(
+                            flag, tname, default_str, desc))
+                else:
+                    lines.append('| *(none)* | — | — | This command takes no parameters. |')
+                lines.append('')
+
+                # 示例
+                method_args = _format_method_args(method)
+                display_name = cmd_name.replace('_', '-')
+
+                if self._include_cli:
+                    global_args = _format_init_args(self.entry_cls)
+                    parts = [self.python, self.script]
+                    if global_args:
+                        parts.append(global_args)
+                    if prefix:
+                        parts.append(prefix.replace('_', '-'))
+                    parts.append(display_name)
+                    if method_args:
+                        parts.append(method_args)
+                    cmd_line = ' '.join(parts)
+                    lines.append('**CLI:**')
+                    lines.append('```bash')
+                    lines.append(cmd_line)
+                    lines.append('```')
+                    lines.append('')
+
+                if self._include_python:
+                    lines.append('**Python:**')
+                    lines.append('```python')
+                    # 生成 Python 调用示例
+                    py_parts = ['app']
+                    if prefix:
+                        for part in prefix.split():
+                            py_parts.append(part.replace('_', ''))
+                    py_parts.append('{}({})'.format(
+                        cmd_name,
+                        self._format_python_args(method),
+                    ))
+                    lines.append('.'.join(py_parts))
+                    lines.append('```')
+                    lines.append('')
+
+    def _format_python_args(self, method):
+        """格式化 Python 调用示例的参数"""
+        sig = inspect.signature(method)
+        parts = []
+        for pname, param in sig.parameters.items():
+            if pname == 'self':
+                continue
+            default = param.default
+            if default is inspect.Parameter.empty:
+                ptype = param.annotation if param.annotation is not inspect.Parameter.empty else str
+                if ptype is bool:
+                    parts.append('{}=True'.format(pname))
+                else:
+                    parts.append('{}=<{}>'.format(pname, pname))
+            else:
+                if isinstance(default, bool):
+                    parts.append('{}={}'.format(pname, default))
+                elif isinstance(default, str):
+                    parts.append('{}="{}"'.format(pname, default))
+                else:
+                    parts.append('{}={}'.format(pname, default))
+        return ', '.join(parts)
+
+    def _gen_guidelines(self, init_params):
+        """生成使用指南"""
+        lines = []
+        lines.append('- This tool is implemented using the `nb_cmd` framework. Each public instance method of the `NbCmd` subclass becomes a subcommand. You can read the `Implementation Note` to learn more details.')
+        lines.append('- If you are unsure about the specific logic of a command, inspect the source code of the corresponding method in the implementation.')
+        if init_params:
+            lines.append('- Global parameters defined in `__init__` are automatically passed to all subcommands.')
+        lines.append('- Boolean flags default to `False`; add the flag to set it to `True`.')
+        lines.append('- Subcommand groups are accessed via space, e.g., `<group> <command>`.')
+        lines.append('- Use `--help` or `-h` to see available commands and options.')
+        lines.append('- Use `--full-help` or `-fh` to see detailed parameter descriptions.')
+        return '\n'.join(lines)
+    
+    def _gen_impl_note(self):
+        """生成实现原理说明，帮助 AI 理解源码与命令行的对应关系"""
+        lines = []
+        lines.append('This tool is built on the `nb_cmd` framework. Here is how the Python source code maps to CLI commands:')
+        lines.append('')
+        lines.append('1. **Class = Top-level command group**. The main class `{}` inherits from `NbCmd`.'.format(self.entry_cls.__name__))
+        lines.append('   Each public instance method of this class becomes a top-level subcommand.')
+        lines.append('')
+        lines.append('2. **`sub_commands` dict = Nested command groups**. When a class defines:')
+        lines.append('   ```python')
+        lines.append('   sub_commands = {"db": DbCmd, "deploy": DeployCmd}')
+        lines.append('   ```')
+        lines.append('   the keys become the command path segments, and the values are other `NbCmd` subclasses.')
+        lines.append('   So `DbCmd.backup(...)` in Python maps to `db backup` on the CLI.')
+        lines.append('   Deeper nesting works the same way: if `DbCmd` itself has `sub_commands = {"ops": OpsCmd}`,')
+        lines.append('   then `OpsCmd.deploy(...)` maps to `db ops deploy` on the CLI.')
+        lines.append('')
+        lines.append('3. **`__init__` params = Global CLI options**. Parameters of `__init__(self, ...)` become global options:')
+        lines.append('   - `str` / `int` / `float` params → `--name value` (e.g., `--env prod`, `--port 8080`)')
+        lines.append('   - `bool` params with default `False` → `--name` (no value, presence means `True`)')
+        lines.append('   - `bool` params with default `True` → `--no-name` (no value, presence means `False`)')
+        lines.append('   These options are automatically passed to all subcommands and subcommand groups.')
+        lines.append('   Inside subcommands, global parameters are accessed via instance attributes or `self.nbctx`.')
+        lines.append('')
+        lines.append('4. **Method params = Command-level options**. Same parameter-to-flag rules as above:')
+        lines.append('   - `str` / `int` / `float` → `--name value`')
+        lines.append('   - `bool` default `False` → `--name`')
+        lines.append('   - `bool` default `True` → `--no-name`')
+        lines.append('   - **No default value** → required parameter (marked as `*(required)*` in the parameter table)')
+        lines.append('   For example:')
+        lines.append('   - `def backup(self, compress: bool = True)` produces `--compress` (default True, so `--no-compress` to disable)')
+        lines.append('   - `def restore(self, file: str)` produces `--file` (required, no default)')
+        lines.append('   - Parameter descriptions and short aliases (e.g., `--version, -v`) come from `Annotated[type, "description", "-v"]`.')
+        lines.append('')
+        lines.append('5. **Method docstring = Command description**. The first line of a method\'s docstring becomes the help text for that command.')
+        lines.append('')
+        lines.append('6. **Return values**. If a method returns a value, `nb_cmd` automatically prints it in CLI mode.')
+        lines.append('')
+        lines.append('7. **Python direct call vs CLI**. In Python you instantiate the class with global params:')
+        lines.append('   ```python')
+        lines.append('   app = {}(env="staging", region="us-west")'.format(self.entry_cls.__name__))
+        lines.append('   app.db.backup(compress=False)')
+        lines.append('   ```')
+        lines.append('   The equivalent CLI is:')
+        lines.append('   ```bash')
+        lines.append('   python {} --env staging --region us-west db backup --no-compress'.format(self.script))
+        lines.append('   ```')
+        lines.append('')
+        lines.append('If a command\'s behavior is unclear, locate the corresponding method in the source code of `{}` (or its nested `NbCmd` subclasses) and read the implementation directly.'.format(self.entry_cls.__name__))
+        return '\n'.join(lines)
+
+
+
+`````
+
+--- **end of file: nb_cmd/core/gen_skill.py** (project: nb_cmd) --- 
+
+---
+
+
 --- **start of file: nb_cmd/core/meta.py** (project: nb_cmd) --- 
 
 `````python
@@ -7221,6 +9322,7 @@ class NbCmdMeta(object):
     hide_method_list: Optional[List[str]] = None   # 命令黑名单（与白名单互斥；仅限制 CLI/API/Web 暴露）
     auth_token: Optional[str] = None               # 简易鉴权 token（配置后 API/Web 请求须带 Authorization: Bearer <token>）
     timeout: int = 0                               # 命令执行超时秒数（0=不限；仅作用于 CLI/API/Web 模式）
+    db_dir: Optional[str] = None                     # SQLite 数据库目录（默认 None=当前工作目录；可设为 ~/.nb_cmd 等固定路径）
 
 `````
 
@@ -7287,6 +9389,8 @@ def build_parser(instance, commands, meta, base_cls=None, allow_method_list=None
                            help='以Web UI + REST API模式启动')
     sys_group.add_argument('--web-port', type=int, default=None,
                            help='Web UI 服务端口（用于 --web）')
+    sys_group.add_argument('--tui', action='store_true',
+                           help='以 TUI 终端交互模式启动')
 
     init_group = parser.add_argument_group('init params')
     _add_init_global_options(init_group, instance)
@@ -7412,6 +9516,7 @@ def _build_full_help_lines(instance, base_cls, color=True):
         '    {:<24s} {}'.format('--cmd-version', '显示版本号'),
         '    {:<24s} {}'.format('--web', '以Web UI + REST API模式启动'),
         '    {:<24s} {}'.format('--web-port PORT', 'Web UI 服务端口（用于 --web）'),
+        '    {:<24s} {}'.format('--tui', '以 TUI 终端交互模式启动'),
         '',
     ]
 
@@ -7629,13 +9734,20 @@ def _add_init_global_options(parser, instance):
 
 
 def _add_method_arguments(sub_parser, cmd_info, meta):
-    """根据方法签名向 subparser 添加参数"""
+    """根据方法签名向 subparser 添加参数。
+
+    必填参数采用"双模式"：同时注册位置参数（nargs='?'）和 --flag，
+    用户可以 ``fa 5`` 也可以 ``fa --x 5``，两种写法等价。
+    """
     sig = cmd_info['signature']
     hints = cmd_info.get('type_hints', {})
     arg_meta = cmd_info.get('arg_meta', {})
     method_name = cmd_info['method'].__name__
 
     aliases_map = getattr(meta, 'aliases', {})
+
+    pos_index = 0
+    positional_map = []
 
     for param_name, param in sig.parameters.items():
         if param_name == 'self':
@@ -7692,30 +9804,105 @@ def _add_method_arguments(sub_parser, cmd_info, meta):
         else:
             auto_help = '({}, 必填)'.format(type_name)
             help_text = '{} {}'.format(desc, auto_help) if desc else auto_help
-            if extra_flags:
+
+            use_dual = (nargs is None)
+
+            if use_dual:
+                pos_dest = '_nb_pos_{}'.format(pos_index)
+                pos_index += 1
+                positional_map.append((pos_dest, param_name, ap_type))
+
+                sub_parser.add_argument(
+                    pos_dest, nargs='?', default=None, type=str,
+                    help=argparse.SUPPRESS,
+                )
+
                 flags = [cli_flag] + extra_flags
-                kwargs = dict(
+                flag_kwargs = dict(
                     type=ap_type,
-                    required=True,
+                    default=None,
                     dest=param_name,
                     help=help_text,
                 )
-                if nargs is not None:
-                    kwargs['nargs'] = nargs
                 if choices is not None:
-                    kwargs['choices'] = choices
-                sub_parser.add_argument(*flags, **kwargs)
+                    flag_kwargs['choices'] = choices
+                sub_parser.add_argument(*flags, **flag_kwargs)
             else:
-                kwargs = dict(
-                    type=ap_type,
-                    help=help_text,
-                    metavar=param_name.upper(),
-                )
-                if nargs is not None:
-                    kwargs['nargs'] = nargs
-                if choices is not None:
-                    kwargs['choices'] = choices
-                sub_parser.add_argument(param_name, **kwargs)
+                if extra_flags:
+                    flags = [cli_flag] + extra_flags
+                    kwargs = dict(
+                        type=ap_type,
+                        required=True,
+                        dest=param_name,
+                        help=help_text,
+                    )
+                    if nargs is not None:
+                        kwargs['nargs'] = nargs
+                    if choices is not None:
+                        kwargs['choices'] = choices
+                    sub_parser.add_argument(*flags, **kwargs)
+                else:
+                    kwargs = dict(
+                        type=ap_type,
+                        help=help_text,
+                        metavar=param_name.upper(),
+                    )
+                    if nargs is not None:
+                        kwargs['nargs'] = nargs
+                    if choices is not None:
+                        kwargs['choices'] = choices
+                    sub_parser.add_argument(param_name, **kwargs)
+
+    if positional_map:
+        sub_parser.set_defaults(_nb_pos_map=positional_map)
+
+
+def reassign_positionals(parsed):
+    """后处理：将位置参数值与 --flag 值智能合并。
+
+    规则：--flag 优先；被 flag "顶掉" 的位置值向后挪给其他未填参数。
+    位置参数统一以 str 类型接收，此处完成目标类型的转换。
+    """
+    pos_map = getattr(parsed, '_nb_pos_map', None)
+    if not pos_map:
+        return
+
+    free_values = []
+    for pos_dest, param_name, ap_type in pos_map:
+        flag_val = getattr(parsed, param_name, None)
+        pos_val = getattr(parsed, pos_dest, None)
+        if flag_val is not None and pos_val is not None:
+            free_values.append((pos_val, ap_type))
+        elif flag_val is None and pos_val is not None:
+            setattr(parsed, param_name, _safe_convert(pos_val, ap_type))
+
+    for _, param_name, ap_type in pos_map:
+        if getattr(parsed, param_name, None) is None and free_values:
+            val, orig_type = free_values.pop(0)
+            setattr(parsed, param_name, _safe_convert(val, ap_type))
+
+    for pos_dest, _, _ in pos_map:
+        try:
+            delattr(parsed, pos_dest)
+        except AttributeError:
+            pass
+
+    missing = [pn for _, pn, _ in pos_map if getattr(parsed, pn, None) is None]
+    if missing:
+        import sys
+        flags = ', '.join('--' + m.replace('_', '-') for m in missing)
+        sys.stderr.write('error: 缺少必填参数: {}\n'.format(flags))
+        raise SystemExit(2)
+
+
+def _safe_convert(value, ap_type):
+    """将字符串值转换为目标类型，转换失败时原样返回"""
+    if ap_type is None or ap_type is str:
+        return value
+    try:
+        return ap_type(value)
+    except (ValueError, TypeError):
+        return value
 
 
 def _build_group_subparser(parent_parser, group_cls, base_cls, init_kwargs=None, depth=1,
@@ -8593,7 +10780,7 @@ import asyncio
 import inspect
 
 from ..core.discovery import discover_commands
-from ..core.parser import build_parser
+from ..core.parser import build_parser, reassign_positionals
 from ..core.type_utils import convert_value
 from ..core.result_handler import handle_cli_result
 
@@ -8645,6 +10832,7 @@ def run_cli(instance, base_cls, args=None):
                           hide_method_list=_hide_methods)
 
     parsed = parser.parse_args(args)
+    reassign_positionals(parsed)
 
     _apply_init_args(instance, parsed)
     _ensure_nbctx(instance)
@@ -8804,6 +10992,1625 @@ def _run_group_command(instance, group_info, parsed, base_cls, depth=1,
 ---
 
 
+--- **start of file: nb_cmd/modes/tui_mode.py** (project: nb_cmd) --- 
+
+`````python
+# -*- coding: utf-8 -*-
+"""
+TUI 模式 —— 基于 Textual 的终端图形交互界面。
+需要安装: pip install textual (Python 3.8+)
+"""
+import asyncio
+import inspect
+import sys
+import time
+
+from ..core.discovery import discover_commands
+from ..core.result_handler import handle_api_result
+
+
+class _TuiWriter(object):
+    """将 print 输出按行缓冲，通过回调安全地写入 RichLog。"""
+
+    def __init__(self, write_fn):
+        self._write = write_fn
+        self._buf = ''
+
+    def write(self, data):
+        if not data:
+            return
+        self._buf += data
+        lines = self._buf.split('\n')
+        for line in lines[:-1]:
+            self._write(line)
+        self._buf = lines[-1]
+
+    def flush(self):
+        if self._buf:
+            self._write(self._buf)
+            self._buf = ''
+
+
+def _detect_init_params(instance, unwrap_optional, _is_opt, is_enum_type,
+                        get_choices, type_display_name, unwrap_arg):
+    """提取 __init__ 中的参数信息，用于 TUI 全局参数面板。"""
+    init_method = instance.__class__.__init__
+    if init_method is object.__init__:
+        return []
+    sig = inspect.signature(init_method)
+    params = []
+    for pname, param in sig.parameters.items():
+        if pname == 'self':
+            continue
+        has_default = param.default is not inspect.Parameter.empty
+        raw_hint = param.annotation
+        if raw_hint is inspect.Parameter.empty:
+            if has_default and param.default is not None:
+                raw_hint = type(param.default)
+            else:
+                raw_hint = str
+        real_type, arg_inst = unwrap_arg(raw_hint)
+        unwrapped = unwrap_optional(real_type) if _is_opt(real_type) else real_type
+        desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+        choices = get_choices(real_type)
+        current_val = getattr(instance, pname, param.default if has_default else None)
+        params.append({
+            'name': pname,
+            'type': unwrapped,
+            'type_name': type_display_name(unwrapped),
+            'real_type': real_type,
+            'required': not has_default,
+            'default': param.default if has_default else None,
+            'current': current_val,
+            'choices': choices,
+            'desc': desc,
+            'is_enum': is_enum_type(unwrapped),
+        })
+    return params
+
+
+def start_tui(instance, base_cls):
+    """启动 TUI 模式"""
+    try:
+        from textual.app import App, ComposeResult
+        from textual.screen import Screen
+        from textual.widgets import (
+            Header, Footer, Tree, RichLog, Input, Button,
+            Switch, Select, Static, Markdown, Label, Collapsible,
+            TextArea,
+        )
+        from textual.containers import Horizontal, Vertical, VerticalScroll
+        from textual import work
+        from rich.text import Text
+    except ImportError:
+        print("TUI 模式需要安装 textual:")
+        print("  pip install nb-cmd[tui]")
+        if sys.version_info < (3, 8):
+            print("  注意: TUI 模式需要 Python 3.8+")
+        return
+
+    from ..core.type_utils import (
+        type_display_name, is_enum_type, unwrap_optional,
+        is_optional as _is_opt, get_choices, convert_value,
+    )
+    from ..core.gen_cmd import CmdGen
+    import re as _re
+
+    _ANSI_FG = {
+        '30': '#b0bec5', '31': '#ff6b6b', '32': '#69f0ae', '33': '#fff176',
+        '34': '#64b5f6', '35': '#ce93d8', '36': '#80deea', '37': '#ffffff',
+        '90': '#cfd8dc', '91': '#ff1744', '92': '#b9f6ca', '93': '#ffff8d',
+        '94': '#90caf9', '95': '#ea80fc', '96': '#b2ebf2', '97': '#ffffff',
+    }
+    _ANSI_BG = {
+        '40': '#78909c', '41': '#ff1744', '42': '#00e676', '43': '#ffea00',
+        '44': '#2979ff', '45': '#d500f9', '46': '#00e5ff', '47': '#ffffff',
+    }
+
+    def _ansi_to_rich(data):
+        """ANSI → Rich Text, stateful parser with vivid bg + auto-contrast."""
+        parts = _re.split(r'\x1b\[([0-9;]*)m', data)
+        txt = Text()
+        st_fg = None
+        st_bg = None
+        st_bold = False
+        st_ul = False
+        for i, part in enumerate(parts):
+            if i % 2 == 0:
+                if part:
+                    sp = []
+                    if st_bold:
+                        sp.append('bold')
+                    if st_ul:
+                        sp.append('underline')
+                    if st_bg:
+                        sp.append('on ' + st_bg)
+                        h = st_bg.lstrip('#')
+                        r = int(h[0:2], 16)
+                        g = int(h[2:4], 16)
+                        b = int(h[4:6], 16)
+                        lum = 0.299 * r + 0.587 * g + 0.114 * b
+                        sp.insert(0, '#000000' if lum > 128 else '#ffffff')
+                    elif st_fg:
+                        sp.insert(0, st_fg)
+                    txt.append(part, style=' '.join(sp) if sp else None)
+            else:
+                for c in part.split(';'):
+                    if c == '0' or c == '':
+                        st_fg = st_bg = None
+                        st_bold = st_ul = False
+                    elif c == '1':
+                        st_bold = True
+                    elif c == '4':
+                        st_ul = True
+                    elif c in _ANSI_FG:
+                        st_fg = _ANSI_FG[c]
+                    elif c in _ANSI_BG:
+                        st_bg = _ANSI_BG[c]
+        return txt
+
+    import os as _os
+    import sqlite3 as _sqlite3
+
+    _meta_db_dir = getattr(
+        getattr(instance.__class__, 'Meta', type('Meta', (), {})),
+        'db_dir', None)
+    if _meta_db_dir:
+        _db_dir = _os.path.expanduser(_meta_db_dir)
+        if not _os.path.isdir(_db_dir):
+            _os.makedirs(_db_dir, exist_ok=True)
+    else:
+        _db_dir = _os.getcwd()
+    _db_path = _os.path.join(_db_dir, 'nb_cmd_web.db')
+
+    def _get_db():
+        conn = _sqlite3.connect(_db_path)
+        conn.execute(
+            'CREATE TABLE IF NOT EXISTS saved_commands '
+            '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            'command TEXT UNIQUE NOT NULL, '
+            'alias TEXT DEFAULT NULL, '
+            'created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        conn.execute(
+            'CREATE TABLE IF NOT EXISTS command_history '
+            '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            'command TEXT NOT NULL, '
+            'executed_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        try:
+            conn.execute('ALTER TABLE saved_commands ADD COLUMN alias TEXT DEFAULT NULL')
+        except Exception:
+            pass
+        return conn
+
+    _get_db().close()
+
+    meta = getattr(instance.__class__, 'Meta', type('Meta', (), {}))
+    title = (getattr(meta, 'web_title', None)
+             or getattr(meta, 'name', None)
+             or instance.__class__.__name__)
+    version = getattr(meta, 'version', None) or '0.0.1'
+    _enable_exec = getattr(meta, 'enable_exec', True)
+    _allow = getattr(meta, 'allow_method_list', None)
+    _hide = getattr(meta, 'hide_method_list', None)
+    _timeout = getattr(meta, 'timeout', 0)
+
+    commands = discover_commands(
+        instance, base_cls,
+        enable_exec=_enable_exec,
+        allow_method_list=_allow,
+        hide_method_list=_hide,
+    )
+    user_cls = instance.__class__
+
+    from ..core.arg import unwrap_arg
+    init_params_info = _detect_init_params(instance, unwrap_optional, _is_opt,
+                                           is_enum_type, get_choices,
+                                           type_display_name, unwrap_arg)
+
+    gen = CmdGen(user_cls, fmt='markdown')
+    md_doc = gen.doc()
+
+    # ================================================================
+    #  HistoryScreen — 命令执行历史
+    # ================================================================
+    class HistoryScreen(Screen):
+        BINDINGS = [("escape", "dismiss_screen", "返回")]
+
+        def compose(self):
+            yield Header()
+            yield Static(" \u25b6 命令执行历史 (最近100条)", id="hist-title")
+            yield VerticalScroll(id="hist-list")
+            yield Footer()
+
+        async def on_mount(self):
+            container = self.query_one("#hist-list")
+            conn = _get_db()
+            rows = conn.execute(
+                'SELECT command, executed_at FROM command_history '
+                'ORDER BY id DESC LIMIT 100'
+            ).fetchall()
+            conn.close()
+            if not rows:
+                await container.mount(
+                    Static("暂无历史记录", classes="hist-empty"))
+                return
+            seen = set()
+            for cmd, ts in rows:
+                if cmd in seen:
+                    continue
+                seen.add(cmd)
+                btn = Button(
+                    '{} ({})'.format(cmd, ts[:16] if ts else ''),
+                    classes="hist-item",
+                )
+                btn._hist_cmd = cmd
+                await container.mount(btn)
+
+        def on_button_pressed(self, event):
+            cmd = getattr(event.button, '_hist_cmd', None)
+            if cmd:
+                self.app.pop_screen()
+                try:
+                    main = self.app.get_screen("main")
+                    gen_input = main.query_one("#cmd-gen", TextArea)
+                    gen_input.text = cmd
+                    main.notify("已填充: {}".format(cmd[:40]), timeout=2)
+                except Exception:
+                    pass
+
+        def action_dismiss_screen(self):
+            self.app.pop_screen()
+
+    # ================================================================
+    #  AliasInputScreen — 别名输入弹窗
+    # ================================================================
+    class AliasInputScreen(Screen):
+        BINDINGS = [("escape", "dismiss_screen", "取消")]
+
+        def __init__(self, command, existing_alias='', on_done=None):
+            super().__init__()
+            self._command = command
+            self._existing_alias = existing_alias or ''
+            self._on_done = on_done
+
+        def compose(self):
+            yield Header()
+            with Vertical(id="alias-box"):
+                yield Static("为收藏命令设置别名（可留空跳过）", id="alias-hint")
+                yield Static("命令: {}".format(
+                    self._command[:60] + ('...' if len(self._command) > 60 else '')
+                ), id="alias-cmd-preview")
+                yield Input(
+                    value=self._existing_alias,
+                    placeholder="输入别名，如: 查看日志、部署生产...",
+                    id="alias-input",
+                )
+                with Horizontal(id="alias-btn-bar"):
+                    yield Button("确定", variant="success", id="alias-ok")
+                    yield Button("跳过", variant="default", id="alias-skip")
+            yield Footer()
+
+        def on_button_pressed(self, event):
+            if event.button.id == 'alias-ok':
+                alias = self.query_one("#alias-input", Input).value.strip()
+                self._finish(alias)
+            elif event.button.id == 'alias-skip':
+                self._finish('')
+
+        def on_input_submitted(self, event):
+            if event.input.id == 'alias-input':
+                alias = event.input.value.strip()
+                self._finish(alias)
+
+        def _finish(self, alias):
+            if self._on_done:
+                self._on_done(self._command, alias)
+            self.app.pop_screen()
+
+        def action_dismiss_screen(self):
+            self.app.pop_screen()
+
+    # ================================================================
+    #  FavoritesScreen — 收藏命令
+    # ================================================================
+    class FavoritesScreen(Screen):
+        BINDINGS = [("escape", "dismiss_screen", "返回")]
+
+        def compose(self):
+            yield Header()
+            yield Static(" \u2605 收藏命令列表", id="fav-title")
+            yield VerticalScroll(id="fav-list")
+            yield Footer()
+
+        async def on_mount(self):
+            await self._load_items()
+
+        async def _load_items(self):
+            container = self.query_one("#fav-list")
+            await container.remove_children()
+            conn = _get_db()
+            rows = conn.execute(
+                'SELECT command, alias, created_at FROM saved_commands '
+                'ORDER BY id DESC'
+            ).fetchall()
+            conn.close()
+            if not rows:
+                await container.mount(
+                    Static("暂无收藏命令", classes="fav-empty"))
+                return
+            for cmd, alias, ts in rows:
+                row = Horizontal(classes="fav-row")
+                await container.mount(row)
+                if alias:
+                    label = Text()
+                    label.append('[{}]'.format(alias), style='bold #e65100')
+                    label.append(' {}'.format(cmd))
+                else:
+                    label = cmd
+                btn = Button(label, classes="fav-item")
+                btn._fav_cmd = cmd
+                run_btn = Button("\u25b6", variant="success", classes="fav-run")
+                run_btn._fav_cmd = cmd
+                copy_btn = Button("\u2398", variant="primary", classes="fav-copy")
+                copy_btn._fav_cmd = cmd
+                edit_btn = Button("\u270e", variant="warning", classes="fav-edit")
+                edit_btn._fav_cmd = cmd
+                edit_btn._fav_alias = alias or ''
+                del_btn = Button("\u2716", variant="error", classes="fav-del")
+                del_btn._fav_cmd = cmd
+                await row.mount(btn, run_btn, copy_btn, edit_btn, del_btn)
+
+        def _on_alias_edited(self, command, alias):
+            conn = _get_db()
+            try:
+                conn.execute(
+                    'UPDATE saved_commands SET alias = ? WHERE command = ?',
+                    (alias if alias else None, command))
+                conn.commit()
+            finally:
+                conn.close()
+            self.notify("别名已更新" if alias else "别名已清除", timeout=2)
+            self.call_later(self._load_items)
+
+        def on_button_pressed(self, event):
+            cmd = getattr(event.button, '_fav_cmd', None)
+            if not cmd:
+                return
+            if 'fav-del' in event.button.classes:
+                conn = _get_db()
+                try:
+                    conn.execute(
+                        'DELETE FROM saved_commands WHERE command = ?', (cmd,))
+                    conn.commit()
+                finally:
+                    conn.close()
+                self.notify("已取消收藏", timeout=2)
+                self.call_later(self._load_items)
+            elif 'fav-edit' in event.button.classes:
+                existing = getattr(event.button, '_fav_alias', '')
+                self.app.push_screen(
+                    AliasInputScreen(cmd, existing, self._on_alias_edited))
+            elif 'fav-run' in event.button.classes:
+                self.app.pop_screen()
+                try:
+                    main = self.app.get_screen("main")
+                    gen_input = main.query_one("#cmd-gen", TextArea)
+                    gen_input.text = cmd
+                    main._execute_from_cli_text()
+                except Exception:
+                    pass
+            elif 'fav-copy' in event.button.classes:
+                try:
+                    self.app.copy_to_clipboard(cmd)
+                    self.notify("已复制: {}".format(cmd[:40]), timeout=2)
+                except Exception:
+                    self.notify("复制失败", timeout=2)
+            else:
+                self.app.pop_screen()
+                try:
+                    main = self.app.get_screen("main")
+                    gen_input = main.query_one("#cmd-gen", TextArea)
+                    gen_input.text = cmd
+                    main.notify("已填充: {}".format(cmd[:40]), timeout=2)
+                except Exception:
+                    pass
+
+        def action_dismiss_screen(self):
+            self.app.pop_screen()
+
+    # ================================================================
+    #  DocScreen — 首屏: CmdGen 生成的 Markdown 文档
+    # ================================================================
+    class DocScreen(Screen):
+        BINDINGS = [
+            ("enter", "go_main", "请按回车键进入交互模式"),
+            ("escape", "go_main", "请按回车键进入交互模式"),
+            ("ctrl+q", "quit_app", "退出"),
+        ]
+
+        def compose(self):
+            yield Header()
+            with VerticalScroll():
+                yield Markdown(md_doc, id="doc-md")
+            yield Footer()
+
+        def action_go_main(self):
+            self.app.switch_screen("main")
+
+        def action_quit_app(self):
+            self.app.exit()
+
+    # ================================================================
+    #  MainScreen — 左右分栏交互界面
+    # ================================================================
+    class MainScreen(Screen):
+        BINDINGS = [
+            ("ctrl+e", "execute", "执行"),
+            ("ctrl+x", "stop", "停止"),
+            ("ctrl+h", "show_history", "历史"),
+            ("ctrl+f", "show_favorites", "收藏夹"),
+            ("ctrl+l", "clear_log", "清空控制台"),
+            ("ctrl+y", "copy_log", "复制输出"),
+            ("ctrl+d", "show_doc", "查看文档"),
+            ("ctrl+q", "quit_app", "退出"),
+        ]
+
+        def __init__(self):
+            super().__init__()
+            self._current_cmd = None
+            self._current_path = None
+            from collections import deque
+            self._log_buffer = deque(maxlen=5000)
+            self._worker_tid = None
+            self._param_cache = {}
+
+        def compose(self):
+            yield Header()
+            with Horizontal(id="main-split"):
+                with Vertical(id="left-panel"):
+                    with VerticalScroll(id="left-scroll"):
+                        yield Static(" \u25b6 命令列表", id="tree-title")
+                        tree = Tree(title, id="cmd-tree")
+                        tree.root.expand()
+                        self._build_tree(tree.root, commands, '')
+                        yield tree
+
+                        if init_params_info:
+                            with Collapsible(title="全局参数", id="init-collapsible", collapsed=False):
+                                init_form = VerticalScroll(id="init-form")
+                                yield init_form
+
+                        with Collapsible(title="参数", id="param-collapsible", collapsed=False):
+                            yield VerticalScroll(
+                                Static("\u2190 请在上方选择一个命令", id="form-hint"),
+                                id="param-form",
+                            )
+                    with Horizontal(id="cmd-gen-bar"):
+                        yield Label("CLI:", classes="cmd-gen-label")
+                        yield TextArea(
+                            id="cmd-gen",
+                            language=None,
+                            soft_wrap=True,
+                            show_line_numbers=False,
+                        )
+                        with Vertical(id="cmd-gen-btns"):
+                            yield Button("\u2605", id="btn-star")
+                            yield Button("生成", id="btn-gen")
+                            yield Button("运行", id="btn-run")
+                    with Horizontal(id="btn-bar"):
+                        yield Button("执行", variant="success", id="btn-exec")
+                        yield Button("停止", variant="error", id="btn-stop", disabled=True)
+                        yield Button("历史", id="btn-history")
+                        yield Button("收藏夹", id="btn-favs")
+                        yield Button("复制输出", variant="primary", id="btn-copy")
+                        yield Button("清空控制台", variant="warning", id="btn-clear")
+                        yield Button("退出", id="btn-quit")
+
+                with Vertical(id="right-panel"):
+                    yield Static(" \u25b6 输出控制台", id="log-title")
+                    yield RichLog(
+                        highlight=True,
+                        markup=True,
+                        auto_scroll=True,
+                        wrap=True,
+                        max_lines=5000,
+                        id="output-log",
+                    )
+            yield Footer()
+
+        # ---------- Init params form ----------
+
+        async def on_mount(self):
+            if not init_params_info:
+                return
+            form = self.query_one("#init-form")
+            for p in init_params_info:
+                pname = p['name']
+                wid = 'init-{}'.format(pname)
+                req = ' *' if p['required'] else ''
+                label_text = '--{}{}:'.format(pname.replace('_', '-'), req)
+                if p['desc']:
+                    label_text += ' ({})'.format(p['desc'])
+
+                val = p['current']
+                if p['type'] is bool:
+                    widget = Switch(value=bool(val) if val else False, id=wid)
+                elif p['is_enum'] and p['choices']:
+                    opts = [(str(c), c) for c in p['choices']]
+                    sel_val = Select.BLANK
+                    if val is not None:
+                        dv = val.value if hasattr(val, 'value') else val
+                        for _, v in opts:
+                            if v == dv:
+                                sel_val = dv
+                                break
+                    widget = Select(options=opts, value=sel_val, id=wid)
+                else:
+                    sv = str(val) if val is not None else ''
+                    widget = Input(value=sv, placeholder=p['type_name'], id=wid)
+
+                row = Horizontal(classes="form-row")
+                await form.mount(row)
+                await row.mount(
+                    Label(label_text, classes="param-label"),
+                    widget,
+                )
+
+        def _collect_init_params(self):
+            """Collect init params from widgets, return dict or None."""
+            if not init_params_info:
+                return None
+            form = self.query_one("#init-form")
+            kwargs = {}
+            for p in init_params_info:
+                wid = '#init-{}'.format(p['name'])
+                try:
+                    w = form.query_one(wid)
+                except Exception:
+                    continue
+                if isinstance(w, Switch):
+                    kwargs[p['name']] = w.value
+                elif isinstance(w, Select):
+                    if w.value != Select.BLANK:
+                        kwargs[p['name']] = convert_value(w.value, p['real_type'])
+                elif isinstance(w, Input):
+                    if w.value.strip():
+                        kwargs[p['name']] = convert_value(w.value.strip(), p['real_type'])
+                    elif p['default'] is not None:
+                        kwargs[p['name']] = p['default']
+            return kwargs if kwargs else None
+
+        def _make_instance(self, init_kwargs=None):
+            """Create a fresh instance with optional init param overrides."""
+            if not init_kwargs:
+                inst = user_cls()
+            else:
+                inst = user_cls(**init_kwargs)
+            ctx = inst.make_nbctx()
+            if ctx is not None:
+                inst.nbctx = ctx
+            return inst
+
+        # ---------- Tree building ----------
+
+        def _build_tree(self, parent, cmds, prefix):
+            for name, info in cmds.items():
+                cli_name = name.replace('_', '-')
+                full_path = '{}/{}'.format(prefix, name) if prefix else name
+                if info.get('is_group'):
+                    doc = info.get('doc', '')
+                    label = '{} {}'.format(
+                        cli_name,
+                        '({})'.format(doc[:30]) if doc else '',
+                    )
+                    node = parent.add(
+                        label,
+                        data={'type': 'group', 'path': full_path, 'info': info},
+                    )
+                    g_cls = info['cls']
+                    g_kw = info.get('init_kwargs', {})
+                    try:
+                        g_inst = g_cls(**g_kw) if g_kw else g_cls()
+                    except TypeError:
+                        g_inst = g_cls.__new__(g_cls)
+                    g_cmds = discover_commands(
+                        g_inst, base_cls, include_builtins=False,
+                        allow_method_list=_allow,
+                        hide_method_list=_hide,
+                        command_prefix=full_path,
+                    )
+                    self._build_tree(node, g_cmds, full_path)
+                    node.expand()
+                else:
+                    doc = info.get('doc', '')
+                    label = cli_name
+                    if doc:
+                        label = '{}  {}'.format(cli_name, doc[:40])
+                    parent.add_leaf(
+                        label,
+                        data={'type': 'command', 'path': full_path, 'info': info},
+                    )
+
+        # ---------- Tree selection → form update ----------
+
+        async def on_tree_node_selected(self, event):
+            node_data = event.node.data
+            if not node_data or node_data['type'] != 'command':
+                return
+            if self._current_path and self._current_cmd:
+                self._param_cache[self._current_path] = self._collect_params()
+            self._current_cmd = node_data['info']
+            self._current_path = node_data['path']
+            if init_params_info:
+                try:
+                    init_coll = self.query_one("#init-collapsible")
+                    is_builtin = node_data['path'] in ('exec', 'shell')
+                    init_coll.display = not is_builtin
+                except Exception:
+                    pass
+            await self._refresh_form(node_data['info'])
+
+        async def _refresh_form(self, cmd_info):
+            form = self.query_one("#param-form")
+            await form.remove_children()
+
+            sig = cmd_info['signature']
+            hints = cmd_info.get('type_hints', {})
+            arg_meta = cmd_info.get('arg_meta', {})
+
+            rows = []
+            for pname, param in sig.parameters.items():
+                if pname == 'self':
+                    continue
+                ptype = hints.get(pname, str)
+                has_default = param.default is not inspect.Parameter.empty
+                default = param.default if has_default else None
+                real_type = unwrap_optional(ptype) if _is_opt(ptype) else ptype
+                choices = get_choices(ptype)
+
+                arg_inst = arg_meta.get(pname)
+                desc = arg_inst.desc if arg_inst and arg_inst.desc else ''
+                req = ' *' if not has_default else ''
+                label_text = '--{}{}:'.format(pname.replace('_', '-'), req)
+                if desc:
+                    label_text += ' ({})'.format(desc)
+
+                wid = 'param-{}'.format(pname)
+                if real_type is bool:
+                    widget = Switch(
+                        value=bool(default) if default else False,
+                        id=wid,
+                    )
+                elif is_enum_type(real_type) and choices:
+                    opts = [(str(c), c) for c in choices]
+                    sel_val = Select.BLANK
+                    if default is not None:
+                        dv = default.value if hasattr(default, 'value') else default
+                        for _, v in opts:
+                            if v == dv:
+                                sel_val = dv
+                                break
+                    widget = Select(options=opts, value=sel_val, id=wid)
+                elif pname == 'cmd' and real_type is str:
+                    val = str(default) if default is not None else ''
+                    widget = TextArea(
+                        val, id=wid, language=None,
+                        soft_wrap=True, show_line_numbers=False,
+                    )
+                else:
+                    val = str(default) if default is not None else ''
+                    ph = type_display_name(real_type)
+                    widget = Input(value=val, placeholder=ph, id=wid)
+
+                rows.append((label_text, widget))
+
+            if not rows:
+                await form.mount(
+                    Static("该命令没有参数，直接点击执行", id="no-params")
+                )
+                return
+
+            for label_text, widget in rows:
+                row = Horizontal(classes="form-row")
+                await form.mount(row)
+                await row.mount(
+                    Label(label_text, classes="param-label"),
+                    widget,
+                )
+
+            cached = self._param_cache.get(self._current_path)
+            if cached:
+                for pname, val in cached.items():
+                    wid = '#param-{}'.format(pname)
+                    try:
+                        w = form.query_one(wid)
+                    except Exception:
+                        continue
+                    if isinstance(w, Switch):
+                        w.value = bool(val)
+                    elif isinstance(w, Select):
+                        sv = val.value if hasattr(val, 'value') else val
+                        try:
+                            w.value = sv
+                        except Exception:
+                            pass
+                    elif isinstance(w, TextArea):
+                        w.text = str(val) if val is not None else ''
+                    elif isinstance(w, Input):
+                        w.value = str(val) if val is not None else ''
+
+        # ---------- Collect form values ----------
+
+        def _collect_params(self):
+            if not self._current_cmd:
+                return {}
+            form = self.query_one("#param-form")
+            sig = self._current_cmd['signature']
+            hints = self._current_cmd.get('type_hints', {})
+            kwargs = {}
+            for pname, param in sig.parameters.items():
+                if pname == 'self':
+                    continue
+                wid = '#param-{}'.format(pname)
+                try:
+                    w = form.query_one(wid)
+                except Exception:
+                    continue
+                ptype = hints.get(pname, str)
+                if isinstance(w, Switch):
+                    kwargs[pname] = w.value
+                elif isinstance(w, Select):
+                    if w.value != Select.BLANK:
+                        kwargs[pname] = convert_value(w.value, ptype)
+                elif isinstance(w, TextArea):
+                    if w.text.strip():
+                        kwargs[pname] = convert_value(w.text.strip(), ptype)
+                    elif param.default is not inspect.Parameter.empty:
+                        kwargs[pname] = param.default
+                elif isinstance(w, Input):
+                    if w.value.strip():
+                        kwargs[pname] = convert_value(w.value.strip(), ptype)
+                    elif param.default is not inspect.Parameter.empty:
+                        kwargs[pname] = param.default
+            return kwargs
+
+        def _build_cmd_str(self, path=None, kwargs=None):
+            if path is None:
+                path = self._current_path or ''
+            if kwargs is None:
+                kwargs = self._collect_params()
+            cmd = path.replace('/', ' ').replace('_', '-')
+            for k, v in kwargs.items():
+                if isinstance(v, bool):
+                    if v:
+                        cmd += ' --{}'.format(k.replace('_', '-'))
+                else:
+                    sv = str(v)
+                    if ' ' in sv or '\n' in sv or '"' in sv:
+                        sv = '"{}"'.format(sv.replace('"', '\\"'))
+                    cmd += ' --{} {}'.format(k.replace('_', '-'), sv)
+            is_builtin = path in ('exec', 'shell')
+            if not is_builtin:
+                init_kw = self._collect_init_params()
+                if init_kw:
+                    for k, v in init_kw.items():
+                        if isinstance(v, bool):
+                            if v:
+                                cmd += ' --{}'.format(k.replace('_', '-'))
+                        else:
+                            sv = str(v)
+                            if ' ' in sv or '\n' in sv or '"' in sv:
+                                sv = '"{}"'.format(sv.replace('"', '\\"'))
+                            cmd += ' --{} {}'.format(k.replace('_', '-'), sv)
+            return cmd
+
+        def _update_cmd_gen(self):
+            try:
+                gen_input = self.query_one("#cmd-gen", TextArea)
+                gen_input.text = self._build_cmd_str()
+            except Exception:
+                pass
+
+        def _parse_cli_text(self):
+            """解析 CLI 输入框文本 → (cmd_path, kwargs, cmd_info) 或 None"""
+            text = self.query_one("#cmd-gen", TextArea).text.strip()
+            if not text:
+                return None
+            import shlex
+            try:
+                tokens = shlex.split(text)
+            except ValueError:
+                tokens = text.split()
+            if not tokens:
+                return None
+
+            path_parts = []
+            current_cmds = commands
+            i = 0
+            cmd_info = None
+            while i < len(tokens):
+                token = tokens[i]
+                if token.startswith('-'):
+                    break
+                py_name = token.replace('-', '_')
+                if py_name not in current_cmds:
+                    break
+                info = current_cmds[py_name]
+                path_parts.append(py_name)
+                if info.get('is_group'):
+                    g_cls = info['cls']
+                    g_kw = info.get('init_kwargs', {})
+                    try:
+                        g_inst = g_cls(**g_kw) if g_kw else g_cls()
+                    except TypeError:
+                        g_inst = g_cls.__new__(g_cls)
+                    current_cmds = discover_commands(
+                        g_inst, base_cls, include_builtins=False,
+                        allow_method_list=_allow,
+                        hide_method_list=_hide,
+                        command_prefix='/'.join(path_parts),
+                    )
+                else:
+                    cmd_info = info
+                    i += 1
+                    break
+                i += 1
+
+            if not path_parts or cmd_info is None:
+                return None
+            cmd_path = '/'.join(path_parts)
+
+            arg_tokens = tokens[i:]
+            raw_kwargs = {}
+            positional_tokens = []
+            j = 0
+            while j < len(arg_tokens):
+                tok = arg_tokens[j]
+                if tok.startswith('--'):
+                    key = tok[2:].replace('-', '_')
+                    if j + 1 < len(arg_tokens) and not arg_tokens[j + 1].startswith('-'):
+                        raw_kwargs[key] = arg_tokens[j + 1]
+                        j += 2
+                    else:
+                        raw_kwargs[key] = True
+                        j += 1
+                elif tok.startswith('-') and len(tok) == 2:
+                    short_flag = tok
+                    alias_map = cmd_info.get('arg_meta', {})
+                    matched = None
+                    for pn, am in alias_map.items():
+                        if am and short_flag in am.aliases:
+                            matched = pn
+                            break
+                    key = matched or tok[1:]
+                    if j + 1 < len(arg_tokens) and not arg_tokens[j + 1].startswith('-'):
+                        raw_kwargs[key] = arg_tokens[j + 1]
+                        j += 2
+                    else:
+                        raw_kwargs[key] = True
+                        j += 1
+                else:
+                    positional_tokens.append(tok)
+                    j += 1
+
+            sig = cmd_info.get('signature')
+            hints = cmd_info.get('type_hints', {})
+
+            if sig and positional_tokens:
+                pos_idx = 0
+                for pname, param in sig.parameters.items():
+                    if pname == 'self' or pname in raw_kwargs:
+                        continue
+                    if param.default is not inspect.Parameter.empty:
+                        continue
+                    if pos_idx < len(positional_tokens):
+                        raw_kwargs[pname] = positional_tokens[pos_idx]
+                        pos_idx += 1
+                if pos_idx < len(positional_tokens):
+                    last_required = None
+                    for pname, param in sig.parameters.items():
+                        if pname == 'self':
+                            continue
+                        if param.default is inspect.Parameter.empty:
+                            last_required = pname
+                    if last_required and last_required in raw_kwargs:
+                        remaining = positional_tokens[pos_idx:]
+                        raw_kwargs[last_required] = raw_kwargs[last_required] + ' ' + ' '.join(remaining)
+
+            kwargs = {}
+            if sig:
+                for k, v in raw_kwargs.items():
+                    if k not in sig.parameters:
+                        continue
+                    if isinstance(v, bool):
+                        kwargs[k] = v
+                    else:
+                        ptype = hints.get(k, str)
+                        real = unwrap_optional(ptype) if _is_opt(ptype) else ptype
+                        kwargs[k] = convert_value(str(v), real)
+            else:
+                kwargs = raw_kwargs
+            return cmd_path, kwargs, cmd_info
+
+        def _execute_from_cli_text(self):
+            """解析 CLI 输入框文本并执行命令"""
+            result = self._parse_cli_text()
+            if result is None:
+                self.notify("请输入有效命令（如: log --max-count 5）", timeout=3)
+                return
+            cmd_path, kwargs, cmd_info = result
+            if self._worker_tid is not None:
+                self.notify("有命令正在执行中", timeout=2)
+                return
+            self._current_cmd = cmd_info
+            self._current_path = cmd_path
+            self._exec_log = self.query_one("#output-log", RichLog)
+            self._exec_kwargs = kwargs
+            self._exec_path = cmd_path
+            self.query_one("#btn-exec", Button).disabled = True
+            self.query_one("#btn-stop", Button).disabled = False
+            self._do_execute()
+
+        # ---------- Resolve command path → (method, instance) ----------
+
+        def _resolve(self, route_path):
+            parts = route_path.split('/')
+            init_kwargs = self._collect_init_params()
+            if init_kwargs is not None:
+                root_inst = self._make_instance(init_kwargs)
+            else:
+                root_inst = self._make_instance()
+
+            if len(parts) == 1:
+                name = parts[0]
+                if name in commands and not commands[name].get('is_group'):
+                    return getattr(root_inst, name), root_inst
+                return None, None
+
+            current_inst = root_inst
+            current_cmds = commands
+            current_prefix = ''
+            for i, part in enumerate(parts):
+                if part not in current_cmds:
+                    return None, None
+                info = current_cmds[part]
+                if info.get('is_group'):
+                    g_cls = info['cls']
+                    g_kw = info.get('init_kwargs', {})
+                    try:
+                        child = g_cls(**g_kw) if g_kw else g_cls()
+                    except TypeError:
+                        child = g_cls.__new__(g_cls)
+                    if current_inst.nbctx is not None:
+                        child.nbctx = current_inst.nbctx
+                    current_inst = child
+                    current_prefix = (
+                        '{}/{}'.format(current_prefix, part)
+                        if current_prefix else part
+                    )
+                    current_cmds = discover_commands(
+                        current_inst, base_cls,
+                        include_builtins=False,
+                        allow_method_list=_allow,
+                        hide_method_list=_hide,
+                        command_prefix=current_prefix,
+                    )
+                elif i == len(parts) - 1:
+                    return getattr(current_inst, part), current_inst
+            return None, None
+
+        # ---------- Execution ----------
+
+        def on_button_pressed(self, event):
+            bid = event.button.id
+            if bid == 'btn-exec':
+                self.action_execute()
+            elif bid == 'btn-stop':
+                self.action_stop()
+            elif bid == 'btn-star':
+                self._toggle_star()
+            elif bid == 'btn-gen':
+                self._update_cmd_gen()
+            elif bid == 'btn-run':
+                self._execute_from_cli_text()
+            elif bid == 'btn-history':
+                self.action_show_history()
+            elif bid == 'btn-favs':
+                self.action_show_favorites()
+            elif bid == 'btn-copy':
+                self.action_copy_log()
+            elif bid == 'btn-clear':
+                self.action_clear_log()
+            elif bid == 'btn-quit':
+                self.action_quit_app()
+
+        def on_input_submitted(self, event):
+            self.action_execute()
+
+        def action_execute(self):
+            cli_text = ''
+            try:
+                cli_text = self.query_one("#cmd-gen", TextArea).text.strip()
+            except Exception:
+                pass
+            if not self._current_cmd or not self._current_path:
+                if cli_text:
+                    self._execute_from_cli_text()
+                return
+            if self._worker_tid is not None:
+                self.notify("有命令正在执行中", timeout=2)
+                return
+            self._exec_log = self.query_one("#output-log", RichLog)
+            self._exec_kwargs = self._collect_params()
+            self._exec_path = self._current_path
+            self._update_cmd_gen()
+            self.query_one("#btn-exec", Button).disabled = True
+            self.query_one("#btn-stop", Button).disabled = False
+            self._do_execute()
+
+        def action_stop(self):
+            tid = self._worker_tid
+            if tid is None:
+                return
+            import ctypes
+            try:
+                ctypes.pythonapi.PyThreadState_SetAsyncExc(
+                    ctypes.c_ulong(tid),
+                    ctypes.py_object(KeyboardInterrupt),
+                )
+            except Exception:
+                pass
+
+        def action_clear_log(self):
+            self.query_one("#output-log", RichLog).clear()
+            self._log_buffer.clear()
+
+        def action_copy_log(self):
+            text = '\n'.join(self._log_buffer)
+            if text.strip():
+                try:
+                    self.app.copy_to_clipboard(text)
+                    self.notify("已复制到剪贴板", timeout=2)
+                except Exception:
+                    self.notify("复制失败，请用 Shift+鼠标 选择文字", timeout=3)
+            else:
+                self.notify("控制台为空", timeout=2)
+
+        def action_show_doc(self):
+            self.app.switch_screen("doc")
+
+        def action_show_history(self):
+            self.app.push_screen(HistoryScreen())
+
+        def action_show_favorites(self):
+            self.app.push_screen(FavoritesScreen())
+
+        def _toggle_star(self):
+            cmd = self._build_cmd_str()
+            if not cmd.strip():
+                self.notify("请先选择命令", timeout=2)
+                return
+            conn = _get_db()
+            try:
+                exists = conn.execute(
+                    'SELECT 1 FROM saved_commands WHERE command = ?',
+                    (cmd,),
+                ).fetchone()
+                if exists:
+                    conn.execute(
+                        'DELETE FROM saved_commands WHERE command = ?', (cmd,))
+                    self.notify("已取消收藏", timeout=2)
+                    conn.commit()
+                else:
+                    conn.commit()
+                    self.app.push_screen(
+                        AliasInputScreen(cmd, '', self._on_star_done))
+            finally:
+                conn.close()
+
+        def _on_star_done(self, command, alias):
+            conn = _get_db()
+            try:
+                conn.execute(
+                    'INSERT OR IGNORE INTO saved_commands (command, alias) VALUES (?, ?)',
+                    (command, alias if alias else None))
+                conn.commit()
+            finally:
+                conn.close()
+            if alias:
+                self.notify("已收藏: [{}]".format(alias), timeout=2)
+            else:
+                self.notify("已收藏", timeout=2)
+
+        def action_quit_app(self):
+            self.app.exit()
+
+        def _buf_write(self, log, content, plain_text=None):
+            """Write to RichLog and buffer plain text for clipboard copy."""
+            buf_text = plain_text if plain_text is not None else str(content)
+            self._log_buffer.append(buf_text)
+            self.app.call_from_thread(log.write, content)
+
+        def _reset_btn_state(self):
+            try:
+                self.query_one("#btn-exec", Button).disabled = False
+                self.query_one("#btn-stop", Button).disabled = True
+            except Exception:
+                pass
+
+        @work(thread=True)
+        def _do_execute(self):
+            import threading
+            self._worker_tid = threading.current_thread().ident
+
+            log = self._exec_log
+            path = self._exec_path
+            kwargs = self._exec_kwargs
+
+            cmd_str = self._build_cmd_str(path, kwargs)
+            echo = '$ {}'.format(cmd_str)
+
+            try:
+                conn = _get_db()
+                conn.execute(
+                    'INSERT INTO command_history (command) VALUES (?)',
+                    (cmd_str,))
+                conn.execute(
+                    'DELETE FROM command_history WHERE id NOT IN '
+                    '(SELECT id FROM command_history '
+                    'ORDER BY id DESC LIMIT 1000)')
+                conn.commit()
+                conn.close()
+            except Exception:
+                pass
+            self._buf_write(log, echo)
+
+            method, target_inst = self._resolve(path)
+            if method is None:
+                err = '[错误] 无法解析命令: {}'.format(path)
+                self._buf_write(
+                    log, Text.from_markup('[bold red]{}[/]'.format(err)), err,
+                )
+                self._worker_tid = None
+                self.app.call_from_thread(self._reset_btn_state)
+                return
+
+            old_stdout = sys.stdout
+            old_stderr = sys.stderr
+
+            def _on_line(d):
+                self._log_buffer.append(d)
+                self.app.call_from_thread(
+                    log.write, _ansi_to_rich(d) if d else d,
+                )
+
+            writer = _TuiWriter(_on_line)
+            sys.stdout = writer
+            sys.stderr = writer
+
+            start = time.time()
+            try:
+                target_inst.before_run()
+                result = method(**kwargs)
+                if inspect.iscoroutine(result):
+                    result = asyncio.run(result)
+                result = handle_api_result(result)
+                if result is not None:
+                    self._buf_write(log, str(result))
+                elapsed = int((time.time() - start) * 1000)
+                done = '[完成] {}ms'.format(elapsed)
+                self._buf_write(
+                    log, Text.from_markup('[bold green]{}[/]'.format(done)), done,
+                )
+            except KeyboardInterrupt:
+                elapsed = int((time.time() - start) * 1000)
+                msg = '[已取消] {}ms'.format(elapsed)
+                self._buf_write(
+                    log, Text.from_markup('[bold yellow]{}[/]'.format(msg)), msg,
+                )
+            except Exception as exc:
+                elapsed = int((time.time() - start) * 1000)
+                err = '[错误] {} ({}ms)'.format(str(exc), elapsed)
+                self._buf_write(
+                    log, Text.from_markup('[bold red]{}[/]'.format(err)), err,
+                )
+                try:
+                    target_inst.on_error(path, exc)
+                except Exception as hook_err:
+                    herr = '[on_error 钩子异常] {}'.format(hook_err)
+                    self._buf_write(
+                        log, Text.from_markup('[bold red]{}[/]'.format(herr)), herr,
+                    )
+            finally:
+                writer.flush()
+                sys.stdout = old_stdout
+                sys.stderr = old_stderr
+                try:
+                    target_inst.after_run()
+                except Exception as hook_err:
+                    herr = '[after_run 钩子异常] {}'.format(hook_err)
+                    self._buf_write(
+                        log, Text.from_markup('[bold red]{}[/]'.format(herr)), herr,
+                    )
+                self._worker_tid = None
+                self.app.call_from_thread(self._reset_btn_state)
+
+    # ================================================================
+    #  App
+    # ================================================================
+    class NbCmdTuiApp(App):
+        TITLE = '{} v{}'.format(title, version)
+
+        CSS = """
+        #main-split {
+            height: 1fr;
+        }
+        #left-panel {
+            width: 2fr;
+            border-right: tall #0097e6;
+        }
+        #right-panel {
+            width: 3fr;
+        }
+        #tree-title {
+            background: #1a237e;
+            color: #64b5f6;
+            text-style: bold;
+            height: 1;
+            padding: 0 1;
+        }
+        #init-collapsible > CollapsibleTitle {
+            background: #e65100;
+            color: #ffe0b2;
+            text-style: bold;
+            padding: 0 1;
+        }
+        #param-collapsible > CollapsibleTitle {
+            background: #1b5e20;
+            color: #a5d6a7;
+            text-style: bold;
+            padding: 0 1;
+        }
+        Collapsible {
+            border: none;
+            padding: 0;
+        }
+        #log-title {
+            background: #4a148c;
+            color: #ce93d8;
+            text-style: bold;
+            height: 1;
+            padding: 0 1;
+        }
+        #cmd-tree {
+            height: auto;
+            max-height: 50%;
+            border-bottom: heavy #0f3460;
+            scrollbar-color: #00b0ff;
+            scrollbar-background: #001a33;
+        }
+        Tree > .tree--cursor {
+            background: #0d47a1;
+            color: #bbdefb;
+            text-style: bold;
+        }
+        Tree > .tree--highlight {
+            background: #1a237e;
+        }
+        #init-collapsible {
+            height: auto;
+            max-height: 10;
+        }
+        #param-collapsible {
+            height: auto;
+            max-height: 50%;
+        }
+        #init-form {
+            height: auto;
+            max-height: 8;
+            scrollbar-color: #e040fb;
+            scrollbar-background: #1a002e;
+        }
+        #param-form {
+            height: auto;
+            max-height: 100%;
+            scrollbar-color: #00e676;
+            scrollbar-background: #001a0d;
+        }
+        .form-row {
+            height: auto;
+            padding: 0 1;
+        }
+        .param-label {
+            width: 18;
+            min-width: 14;
+            height: 3;
+            content-align: left middle;
+            padding-right: 1;
+            color: #90caf9;
+        }
+        .form-row Input {
+            width: 1fr;
+            border: tall #37474f;
+        }
+        .form-row Input:focus {
+            border: tall #00bcd4;
+        }
+        .form-row Switch {
+            width: auto;
+            height: auto;
+            background: #1a2332;
+            border: tall #37474f;
+            padding: 0 1;
+        }
+        .form-row Switch:focus {
+            border: tall #00bcd4;
+        }
+        Switch > .switch--slider {
+            color: #90caf9;
+        }
+        Switch.-on > .switch--slider {
+            color: #00e676;
+        }
+        .form-row Select {
+            width: 1fr;
+            border: tall #37474f;
+        }
+        .form-row Select:focus {
+            border: tall #00bcd4;
+        }
+        #form-hint, #no-params {
+            padding: 1;
+            color: #546e7a;
+        }
+        #left-scroll {
+            height: 1fr;
+            scrollbar-color: #ff6d00;
+            scrollbar-background: #1a1000;
+        }
+        #cmd-gen-bar {
+            height: auto;
+            min-height: 4;
+            max-height: 10;
+            padding: 0 1;
+            dock: bottom;
+            margin-bottom: 3;
+        }
+        .cmd-gen-label {
+            width: 5;
+            height: 3;
+            content-align: right middle;
+            color: #64b5f6;
+            text-style: bold;
+        }
+        #cmd-gen {
+            width: 1fr;
+            min-height: 3;
+            max-height: 8;
+            border: tall #0097e6;
+            background: #0a1929;
+        }
+        #cmd-gen:focus {
+            border: tall #00e5ff;
+        }
+        #cmd-gen-btns {
+            width: auto;
+            height: auto;
+            padding: 0;
+        }
+        #cmd-gen-btns Button {
+            height: 3;
+            min-width: 6;
+            margin: 0 0 0 0;
+        }
+        .form-row TextArea {
+            width: 1fr;
+            min-height: 6;
+            max-height: 12;
+            border: tall #37474f;
+        }
+        .form-row TextArea:focus {
+            border: tall #00bcd4;
+        }
+        #btn-star {
+            width: 5;
+            min-width: 5;
+            background: #f57f17;
+            color: #000000;
+        }
+        #btn-gen {
+            min-width: 6;
+            background: #0288d1;
+            color: white;
+        }
+        #btn-run {
+            min-width: 6;
+            background: #2e7d32;
+            color: white;
+        }
+        #btn-bar {
+            height: 3;
+            align: left middle;
+            padding: 0 0;
+            dock: bottom;
+            background: #0a1929;
+        }
+        #btn-bar Button {
+            min-width: 4;
+            padding: 0 1;
+            margin: 0 0 0 1;
+        }
+        #btn-stop {
+            background: #d32f2f;
+            color: white;
+        }
+        #btn-stop:disabled {
+            background: #7f1d1d;
+            color: #999999;
+        }
+        #btn-history {
+            background: #00897b;
+            color: white;
+        }
+        #btn-favs {
+            background: #6a1b9a;
+            color: white;
+        }
+        #btn-quit {
+            background: #455a64;
+            color: white;
+        }
+        #output-log {
+            height: 1fr;
+            scrollbar-color: #7c4dff;
+            scrollbar-background: #0a1929;
+        }
+        #hist-title {
+            background: #1a237e;
+            color: #64b5f6;
+            text-style: bold;
+            height: 1;
+            padding: 0 1;
+        }
+        #fav-title {
+            background: #6a1b9a;
+            color: #ffffff;
+            text-style: bold;
+            height: 1;
+            padding: 0 1;
+        }
+        #fav-list {
+            background: #12001a;
+            scrollbar-color: #ab47bc;
+            scrollbar-background: #12001a;
+        }
+        .hist-item {
+            width: 100%;
+            margin: 0 0 1 0;
+        }
+        .hist-empty {
+            padding: 2;
+            color: #546e7a;
+        }
+        .fav-empty {
+            padding: 2;
+            color: #ce93d8;
+        }
+        .fav-row {
+            height: auto;
+            max-height: 4;
+            background: #1e0533;
+            border-bottom: solid #2d1b4e;
+        }
+        .fav-item {
+            width: 1fr;
+            background: transparent;
+            color: #ffffff;
+        }
+        .fav-item:hover {
+            background: #38006b;
+            color: #00e676;
+            text-style: bold;
+        }
+        .fav-item:focus {
+            background: #4a148c;
+            color: #00e676;
+            text-style: bold;
+        }
+        .fav-run {
+            width: 5;
+            min-width: 5;
+            background: #2e7d32;
+            color: #ffffff;
+        }
+        .fav-run:hover {
+            background: #43a047;
+            color: #ffffff;
+        }
+        .fav-copy {
+            width: 5;
+            min-width: 5;
+            background: #0277bd;
+            color: #ffffff;
+        }
+        .fav-copy:hover {
+            background: #039be5;
+            color: #ffffff;
+        }
+        .fav-edit {
+            width: 5;
+            min-width: 5;
+            background: #e65100;
+            color: #ffffff;
+        }
+        .fav-edit:hover {
+            background: #ff6d00;
+            color: #ffffff;
+        }
+        .fav-del {
+            width: 5;
+            min-width: 5;
+            background: #b71c1c;
+            color: #ffffff;
+        }
+        .fav-del:hover {
+            background: #d50000;
+            color: #ffffff;
+        }
+        #alias-box {
+            align: center middle;
+            width: 70%;
+            max-width: 80;
+            height: auto;
+            margin: 4 0;
+            padding: 2;
+            border: tall #0097e6;
+            background: #0a1929;
+        }
+        #alias-hint {
+            color: #64b5f6;
+            text-style: bold;
+            height: 1;
+            margin-bottom: 1;
+        }
+        #alias-cmd-preview {
+            color: #90a4ae;
+            height: 1;
+            margin-bottom: 1;
+        }
+        #alias-input {
+            width: 100%;
+            border: tall #37474f;
+            margin-bottom: 1;
+        }
+        #alias-input:focus {
+            border: tall #00bcd4;
+        }
+        #alias-btn-bar {
+            height: 3;
+            align: center middle;
+        }
+        #alias-btn-bar Button {
+            margin: 0 1;
+            min-width: 8;
+        }
+        """
+
+        def on_mount(self):
+            self.install_screen(DocScreen(), name="doc")
+            self.install_screen(MainScreen(), name="main")
+            self.push_screen("main")
+
+    app = NbCmdTuiApp()
+    app.run()
+
+`````
+
+--- **end of file: nb_cmd/modes/tui_mode.py** (project: nb_cmd) --- 
+
+---
+
+
 --- **start of file: nb_cmd/modes/web_mode.py** (project: nb_cmd) --- 
 
 `````python
@@ -8949,18 +12756,32 @@ def start_web_server(instance, base_cls, host=None, port=None):
     import queue as _queue
     import sqlite3 as _sqlite3
 
-    _db_path = os.path.join(os.getcwd(), 'nb_cmd_web.db')
+    _meta_db_dir = getattr(
+        getattr(instance.__class__, 'Meta', type('Meta', (), {})),
+        'db_dir', None)
+    if _meta_db_dir:
+        _db_dir = os.path.expanduser(_meta_db_dir)
+        if not os.path.isdir(_db_dir):
+            os.makedirs(_db_dir, exist_ok=True)
+    else:
+        _db_dir = os.getcwd()
+    _db_path = os.path.join(_db_dir, 'nb_cmd_web.db')
 
     def _get_db():
         conn = _sqlite3.connect(_db_path)
         conn.execute('CREATE TABLE IF NOT EXISTS saved_commands '
                      '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
                      'command TEXT UNIQUE NOT NULL, '
+                     'alias TEXT DEFAULT NULL, '
                      'created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
         conn.execute('CREATE TABLE IF NOT EXISTS command_history '
                      '(id INTEGER PRIMARY KEY AUTOINCREMENT, '
                      'command TEXT NOT NULL, '
                      'executed_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        try:
+            conn.execute('ALTER TABLE saved_commands ADD COLUMN alias TEXT DEFAULT NULL')
+        except Exception:
+            pass
         return conn
 
     _get_db().close()
@@ -8969,19 +12790,38 @@ def start_web_server(instance, base_cls, host=None, port=None):
     async def get_saved_commands():
         conn = _get_db()
         rows = conn.execute(
-            'SELECT id, command, created_at FROM saved_commands ORDER BY id DESC'
+            'SELECT id, command, alias, created_at FROM saved_commands ORDER BY id DESC'
         ).fetchall()
         conn.close()
-        return [{'id': r[0], 'command': r[1], 'created_at': r[2]} for r in rows]
+        return [{'id': r[0], 'command': r[1], 'alias': r[2], 'created_at': r[3]} for r in rows]
 
     @app.post('/api/save-command', summary='收藏命令（去重）')
     async def save_command(body: dict):
         cmd = body.get('command', '').strip()
         if not cmd:
             return {'status': 'error', 'message': '命令不能为空'}
+        alias = body.get('alias', '').strip() or None
         conn = _get_db()
         try:
-            conn.execute('INSERT OR IGNORE INTO saved_commands (command) VALUES (?)', (cmd,))
+            conn.execute(
+                'INSERT OR IGNORE INTO saved_commands (command, alias) VALUES (?, ?)',
+                (cmd, alias))
+            conn.commit()
+        finally:
+            conn.close()
+        return {'status': 'ok'}
+
+    @app.put('/api/save-command', summary='更新收藏命令别名')
+    async def update_saved_alias(body: dict):
+        cmd = body.get('command', '').strip()
+        if not cmd:
+            return {'status': 'error', 'message': '命令不能为空'}
+        alias = body.get('alias', '').strip() or None
+        conn = _get_db()
+        try:
+            conn.execute(
+                'UPDATE saved_commands SET alias = ? WHERE command = ?',
+                (alias, cmd))
             conn.commit()
         finally:
             conn.close()
@@ -9116,11 +12956,10 @@ def start_web_server(instance, base_cls, host=None, port=None):
             def _run():
                 _tls.output_queue = output_q
                 saved_streams = []
-                if hasattr(target_inst, '_logger') and target_inst._logger:
-                    for h in target_inst._logger.handlers:
-                        if hasattr(h, 'stream'):
-                            saved_streams.append((h, h.stream))
-                            h.stream = sys.stderr
+                for h in target_inst.logger.handlers:
+                    if hasattr(h, 'stream'):
+                        saved_streams.append((h, h.stream))
+                        h.stream = sys.stderr
                 try:
                     target_inst.before_run()
                     r = method(**kwargs)
@@ -9489,7 +13328,11 @@ body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
 .s2-item:hover { background: var(--hover-bg); }
 .s2-item .s2-iico { margin-right: 6px; flex-shrink: 0; font-size: 11px; }
 .s2-item .s2-itxt { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-.s2-item .s2-idel { flex-shrink: 0; margin-left: 6px; color: #888; cursor: pointer;
+.s2-item .s2-alias { color: #e65100; font-weight: bold; font-size: 11px; margin-right: 4px; flex-shrink: 0; }
+.s2-item .s2-iedit { flex-shrink: 0; margin-left: 4px; color: #888; cursor: pointer;
+                     border: none; background: none; font-size: 12px; padding: 0 3px; }
+.s2-item .s2-iedit:hover { color: #ffd740; }
+.s2-item .s2-idel { flex-shrink: 0; margin-left: 4px; color: #888; cursor: pointer;
                      border: none; background: none; font-size: 13px; padding: 0 4px; }
 .s2-item .s2-idel:hover { color: var(--error); }
 .s2-empty { padding: 10px; font-size: 11px; color: #636e72; text-align: center; }
@@ -9815,16 +13658,19 @@ function generateCmd(formId) {
       }
     });
   }
-  var initP = getInitParams();
-  if (initP) {
-    Object.entries(initP).forEach(function(e) {
-      if (typeof e[1] === 'boolean') {
-        if (e[1]) parts.push('--' + e[0].replace(/_/g, '-'));
-      } else {
-        parts.push('--' + e[0].replace(/_/g, '-'));
-        parts.push(String(e[1]));
-      }
-    });
+  var isBuiltin = (formId === 'exec' || formId === 'shell');
+  if (!isBuiltin) {
+    var initP = getInitParams();
+    if (initP) {
+      Object.entries(initP).forEach(function(e) {
+        if (typeof e[1] === 'boolean') {
+          if (e[1]) parts.push('--' + e[0].replace(/_/g, '-'));
+        } else {
+          parts.push('--' + e[0].replace(/_/g, '-'));
+          parts.push(String(e[1]));
+        }
+      });
+    }
   }
   document.getElementById('cmdInput').value = parts.join(' ');
   document.getElementById('cmdInput').focus();
@@ -10009,9 +13855,11 @@ async function loadHistory() {
 async function saveCurrentCmd() {
   var cmd = document.getElementById('cmdInput').value.trim();
   if (!cmd) return;
+  var alias = prompt('为收藏命令设置别名（可留空跳过）：', '');
+  if (alias === null) return;
   await fetch('/api/save-command', {
     method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({command: cmd})
+    body: JSON.stringify({command: cmd, alias: alias.trim() || ''})
   });
   await loadSavedCmds();
   renderSaved();
@@ -10022,6 +13870,18 @@ async function deleteSavedCmd(cmd, ev) {
   await fetch('/api/save-command', {
     method: 'DELETE', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({command: cmd})
+  });
+  await loadSavedCmds();
+  renderSaved();
+}
+
+async function editSavedAlias(cmd, oldAlias, ev) {
+  if (ev) ev.stopPropagation();
+  var alias = prompt('修改别名（留空清除）：', oldAlias || '');
+  if (alias === null) return;
+  await fetch('/api/save-command', {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({command: cmd, alias: alias.trim() || ''})
   });
   await loadSavedCmds();
   renderSaved();
@@ -10049,15 +13909,23 @@ function fuzzyMatch(query, text) {
 function renderSaved() {
   var body = document.getElementById('savedBody');
   var q = document.getElementById('savedSearch').value.trim();
-  var filtered = savedCmds.filter(function(s) { return fuzzyMatch(q, s.command); });
+  var filtered = savedCmds.filter(function(s) {
+    return fuzzyMatch(q, s.command) || (s.alias && fuzzyMatch(q, s.alias));
+  });
   document.getElementById('savedCount').textContent = savedCmds.length;
   var html = '';
   if (filtered.length > 0) {
     filtered.forEach(function(s) {
-      html += '<div class="s2-item" onclick="fillCmd(\\''+s.command.replace(/'/g,"\\\\'")+'\\')">';
+      var ce = s.command.replace(/'/g,"\\\\'");
+      var ae = (s.alias||'').replace(/'/g,"\\\\'");
+      html += '<div class="s2-item" onclick="fillCmd(\\''+ce+'\\')">';
       html += '<span class="s2-iico" style="color:#ffd740;">&#9733;</span>';
+      if (s.alias) {
+        html += '<span class="s2-alias">['+esc(s.alias)+']</span> ';
+      }
       html += '<span class="s2-itxt">' + esc(s.command) + '</span>';
-      html += '<button class="s2-idel" onclick="deleteSavedCmd(\\''+s.command.replace(/'/g,"\\\\'")+'\\'  ,event)" title="取消收藏">&times;</button>';
+      html += '<button class="s2-iedit" onclick="editSavedAlias(\\''+ce+'\\',\\''+ae+'\\',event)" title="编辑别名">&#9998;</button>';
+      html += '<button class="s2-idel" onclick="deleteSavedCmd(\\''+ce+'\\',event)" title="取消收藏">&times;</button>';
       html += '</div>';
     });
   } else {

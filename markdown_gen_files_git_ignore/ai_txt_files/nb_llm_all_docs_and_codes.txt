@@ -7466,6 +7466,11 @@ class RAG:
         'Output ONLY the rewritten query, nothing else.'
     )
 
+    DEFAULT_SYSTEM = (
+        '你是一个知识库助手。请严格根据下方提供的参考资料回答用户问题。\n'
+        '如果参考资料中没有相关信息，请明确告知"参考资料中未找到相关信息"，不要编造答案。'
+    )
+
     def __init__(
         self,
         config: Optional[RAGConfig] = None,
